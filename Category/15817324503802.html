@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  Archives - eredin-blog
+  tuple 使用 - eredin-blog
   
   </title>
   
@@ -96,80 +96,118 @@
 
  <script type="text/javascript">
   $(function(){
-    $('#menu_item_archives').addClass('is_active');
+    $('#menu_item_index').addClass('is_active');
   });
 </script>
 <div class="row">
   <div class="large-8 medium-8 columns">
-    <div id="archives-page-wrap">
-        <h1>Archives</h1>
-        <div class="markdown-body archives-wrap">
+      <div class="markdown-body article-wrap">
+       <div class="article">
           
-             
-                <h1>2020</h1>
-            
-            <div class="article">
-              <a class="clearlink" href="15817324707716.html">
-                <h1>应对DDos攻击和TFO</h1>
-              </a>
-              <div class="read-more clearfix">
-                <span class="date">2020/02/15 10:07 上午</span>
-                <span>posted in&nbsp;</span> 
-                
-                    <span class="posted-in"><a href='Linux.html'>Linux</a></span>
-                 
-              </div>
-            </div><!-- article -->
+          <h1>tuple 使用</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2020/02/15 10:07 上午</span>
 
+          <span>posted in&nbsp;</span> 
           
-            
-            <div class="article">
-              <a class="clearlink" href="15817324503802.html">
-                <h1>tuple 使用</h1>
-              </a>
-              <div class="read-more clearfix">
-                <span class="date">2020/02/15 10:07 上午</span>
-                <span>posted in&nbsp;</span> 
-                
-                    <span class="posted-in"><a href='C++.html'>C++</a></span>
-                 
-              </div>
-            </div><!-- article -->
-
-          
-            
-            <div class="article">
-              <a class="clearlink" href="15817321188330.html">
-                <h1>collections</h1>
-              </a>
-              <div class="read-more clearfix">
-                <span class="date">2020/02/15 10:01 上午</span>
-                <span>posted in&nbsp;</span> 
-                
-                    <span class="posted-in"><a href='Python.html'>Python</a></span>
-                 
-              </div>
-            </div><!-- article -->
-
-          
-            
-            <div class="article">
-              <a class="clearlink" href="15817315071479.html">
-                <h1>列表&字典&集合</h1>
-              </a>
-              <div class="read-more clearfix">
-                <span class="date">2020/02/15 09:51 上午</span>
-                <span>posted in&nbsp;</span> 
-                
-                    <span class="posted-in"><a href='Python.html'>Python</a></span>
-                 
-              </div>
-            </div><!-- article -->
-
+              <span class="posted-in"><a href='C++.html'>C++</a></span>
            
+         
+          <span class="comments">
+            
+
+            
+          </span>
+
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <h4>类模板</h4>
+
+<ul>
+<li>类模板 std::tuple 是固定大小的异类值汇集。它是 std::pair 的推广。</li>
+</ul>
+
+<h4>使用</h4>
+
+<pre class="line-numbers"><code class="language-cpp">#include &lt;tuple&gt;
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+ 
+std::tuple&lt;double, char, std::string&gt; get_student(int id)
+{
+    if (id == 0) return std::make_tuple(3.8, &#39;A&#39;, &quot;Lisa Simpson&quot;);
+    if (id == 1) return std::make_tuple(2.9, &#39;C&#39;, &quot;Milhouse Van Houten&quot;);
+    if (id == 2) return std::make_tuple(1.7, &#39;D&#39;, &quot;Ralph Wiggum&quot;);
+    throw std::invalid_argument(&quot;id&quot;);
+}
+ 
+int main()
+{
+    auto student0 = get_student(0);
+    std::cout &lt;&lt; &quot;ID: 0, &quot;
+              &lt;&lt; &quot;GPA: &quot; &lt;&lt; std::get&lt;0&gt;(student0) &lt;&lt; &quot;, &quot;
+              &lt;&lt; &quot;grade: &quot; &lt;&lt; std::get&lt;1&gt;(student0) &lt;&lt; &quot;, &quot;
+              &lt;&lt; &quot;name: &quot; &lt;&lt; std::get&lt;2&gt;(student0) &lt;&lt; &#39;\n&#39;;
+ 
+    double gpa1;
+    char grade1;
+    std::string name1;
+    std::tie(gpa1, grade1, name1) = get_student(1);
+    std::cout &lt;&lt; &quot;ID: 1, &quot;
+              &lt;&lt; &quot;GPA: &quot; &lt;&lt; gpa1 &lt;&lt; &quot;, &quot;
+              &lt;&lt; &quot;grade: &quot; &lt;&lt; grade1 &lt;&lt; &quot;, &quot;
+              &lt;&lt; &quot;name: &quot; &lt;&lt; name1 &lt;&lt; &#39;\n&#39;;
+ 
+    // C++17 结构化绑定：
+    auto [ gpa2, grade2, name2 ] = get_student(2);
+    std::cout &lt;&lt; &quot;ID: 2, &quot;
+              &lt;&lt; &quot;GPA: &quot; &lt;&lt; gpa2 &lt;&lt; &quot;, &quot;
+              &lt;&lt; &quot;grade: &quot; &lt;&lt; grade2 &lt;&lt; &quot;, &quot;
+              &lt;&lt; &quot;name: &quot; &lt;&lt; name2 &lt;&lt; &#39;\n&#39;;
+}
+</code></pre>
+
+
+    
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+          <a href="15817324707716.html" 
+          title="Previous Post: 应对DDos攻击和TFO">&laquo; 应对DDos攻击和TFO</a>
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="15817321188330.html" 
+          title="Next Post: collections">collections &raquo;</a>
+      
+      </p>
         </div>
       </div>
-  </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          
+
+          
+
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
+
+
+
 
  <div class="large-4 medium-4 columns">
   <div class="hide-for-small">

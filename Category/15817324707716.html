@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  Archives - eredin-blog
+  应对DDos攻击和TFO - eredin-blog
   
   </title>
   
@@ -96,80 +96,116 @@
 
  <script type="text/javascript">
   $(function(){
-    $('#menu_item_archives').addClass('is_active');
+    $('#menu_item_index').addClass('is_active');
   });
 </script>
 <div class="row">
   <div class="large-8 medium-8 columns">
-    <div id="archives-page-wrap">
-        <h1>Archives</h1>
-        <div class="markdown-body archives-wrap">
+      <div class="markdown-body article-wrap">
+       <div class="article">
           
-             
-                <h1>2020</h1>
-            
-            <div class="article">
-              <a class="clearlink" href="15817324707716.html">
-                <h1>应对DDos攻击和TFO</h1>
-              </a>
-              <div class="read-more clearfix">
-                <span class="date">2020/02/15 10:07 上午</span>
-                <span>posted in&nbsp;</span> 
-                
-                    <span class="posted-in"><a href='Linux.html'>Linux</a></span>
-                 
-              </div>
-            </div><!-- article -->
+          <h1>应对DDos攻击和TFO</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2020/02/15 10:07 上午</span>
 
+          <span>posted in&nbsp;</span> 
           
-            
-            <div class="article">
-              <a class="clearlink" href="15817324503802.html">
-                <h1>tuple 使用</h1>
-              </a>
-              <div class="read-more clearfix">
-                <span class="date">2020/02/15 10:07 上午</span>
-                <span>posted in&nbsp;</span> 
-                
-                    <span class="posted-in"><a href='C++.html'>C++</a></span>
-                 
-              </div>
-            </div><!-- article -->
-
-          
-            
-            <div class="article">
-              <a class="clearlink" href="15817321188330.html">
-                <h1>collections</h1>
-              </a>
-              <div class="read-more clearfix">
-                <span class="date">2020/02/15 10:01 上午</span>
-                <span>posted in&nbsp;</span> 
-                
-                    <span class="posted-in"><a href='Python.html'>Python</a></span>
-                 
-              </div>
-            </div><!-- article -->
-
-          
-            
-            <div class="article">
-              <a class="clearlink" href="15817315071479.html">
-                <h1>列表&字典&集合</h1>
-              </a>
-              <div class="read-more clearfix">
-                <span class="date">2020/02/15 09:51 上午</span>
-                <span>posted in&nbsp;</span> 
-                
-                    <span class="posted-in"><a href='Python.html'>Python</a></span>
-                 
-              </div>
-            </div><!-- article -->
-
+              <span class="posted-in"><a href='Linux.html'>Linux</a></span>
            
+         
+          <span class="comments">
+            
+
+            
+          </span>
+
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <h4>DDos参数配置</h4>
+
+<ul>
+<li>/proc/sys/net/ipv4/tcp_syncookies</li>
+<li>/proc/sys/net/ipv4/tcp_max_syn_backlog</li>
+<li>/proc/sys/net/ipv4/tcp_synack_retries</li>
+<li>当 SYN 队列满后，新的 SYN 不进入队列，计算出 cookie 再以 SYN+ACK 中的序列号返回客户端，正常客户端发报文时，服务器根据报文中携带的 cookie 重新恢复连接</li>
+<li>当 SYN 队列满后，新的 SYN 不进入队列，计算出 cookie 再以 SYN+ACK 中的序列号返回客户端，正常客户端发报文时，服务器根据报文中携带的 cookie 重新恢复连接</li>
+<li>由于cookies 占用序列号空间，导致此时所有 TCP 可选功能失效，例如扩充窗口、时间戳等</li>
+<li>tcp_syncookies只有在队列满了之后才使用，防止ddos攻击</li>
+<li>SYN-Cookie避免了内存空间被爆掉，但是却引来了CPU时间被爆掉的机会，这又是一种时间-空间之间的权衡！如果攻击者发送大量的ACK包过来，那么被攻击机器将会花费大量的CPU时间在计算Cookie上，造成正常的逻辑无法被执行，同时即便是大量的SYN包也可以将CPU爆满</li>
+</ul>
+
+<h4>Tcp Fast Open</h4>
+
+<h5>开启</h5>
+
+<pre class="line-numbers"><code class="language-text">服务器配置 echo 3 &gt; /proc/sys/net/ipv4/tcp_fastopen系统开启TFO功能
+</code></pre>
+
+<ul>
+<li>0: 关闭</li>
+<li>1: 作为客户端时可以使用 TFO</li>
+<li>2: 作为服务器时可以使用 TFO</li>
+<li>3: 无论作为客户端还是服务器，都可以使用 TFO</li>
+<li>ip tcp_metrics show | grep &quot;fo_cookie&quot; 查看cookie</li>
+</ul>
+
+<h5>截图</h5>
+
+<ul>
+<li><img src="media/15601259183343/15642728044011.jpg" alt="" style="width:1617px;"/></li>
+<li>为防止带数据的 SYN 攻击，限制最大长度，指定 TFO 连接队列的最大长度</li>
+<li>减少Cpu消耗</li>
+<li>客户端的TFOcookie多长时间后删除，谁来维护和删除？</li>
+<li>nginx的TFO队列具体是什么意思？队列满了会怎样？数值设定多少合适？ </li>
+</ul>
+
+<h5>TFO原理</h5>
+
+<ul>
+<li>客户端发送SYN包，包尾加一个FOC请求，只有4个字节。</li>
+<li>服务端受到FOC请求，验证后根据来源ip地址声称cookie(8个字节)，将这个COOKIE加载SYN+ACK包的末尾发送回去。</li>
+<li>客户端缓存住获取到的Cookie 可以给下一次使用。</li>
+<li>下一次请求开始，客户端发送SYN包，这时候后面带上缓存的COOKIE，然后就是正式发送的数据。</li>
+<li>服务器端验证COOKIE正确，将数据交给上层应用处理得到相应结果，然后在发送SYN+ACK时，不再等待客户端的ACK确认，即开始发送相应数据。</li>
+</ul>
+
+
+    
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="15817324503802.html" 
+          title="Next Post: tuple 使用">tuple 使用 &raquo;</a>
+      
+      </p>
         </div>
       </div>
-  </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          
+
+          
+
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
+
+
+
 
  <div class="large-4 medium-4 columns">
   <div class="hide-for-small">
