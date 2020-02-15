@@ -1,0 +1,480 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  Adapter - eredin-blog
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="eredin-blog" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site: ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="self" href="index.html">Home</a></li>
+        
+        <li id=""><a target="_self" href="archives.html">Archives</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="https://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; eredin-blog</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+        
+        <li><a target="self" href="index.html">Home</a></li>
+        
+        <li><a target="_self" href="archives.html">Archives</a></li>
+        
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html">C++基础与提高</a></li>
+        
+            <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html">设计模式之美</a></li>
+        
+            <li><a href="Python.html">Python</a></li>
+        
+            <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html">设计模式</a></li>
+        
+            <li><a href="Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html">Linux性能优化实战</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
+</script>
+<div class="row">
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>Adapter</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2019/11/16 08:14 上午</span>
+
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+           
+         
+          <span class="comments">
+            
+
+            
+          </span>
+
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <h4>动机</h4>
+
+<ul>
+<li><p>在软件系统中，由于应用环境的变化，常常需要将““一些现存的对象”放在新的环境中应用，但是新环境要求的接口是这些现存对象所不满足的</p></li>
+<li><p>如何应对这种“迁移的变化“？如何既能利用现有对象的良好实现，同时又能满足新的应用环境所要求的接口？</p></li>
+</ul>
+
+<h4>结构</h4>
+
+<p><img src="media/15738632806643/15808782023371.jpg" alt="" style="width:1193px;"/></p>
+
+<h4>要点总结</h4>
+
+<ul>
+<li>Adapters 模式主要应用于“希望复用一些现存的类，但是接口又与</li>
+<li>复用环境要求不一致的情況”，在遗留代码复用、类库注移等方面非常有用。</li>
+<li>GoF23 采用了两种 Adapter 模式的实现结构：对象和适配器。但类适配器采用“多继承”的实现方式般不推荐使用。对象适配器采用“对象组合“的方式，更符合松耦合精神。</li>
+<li>Adapter 模式可以实现的非常灵活，不必拘泥于 Gof23 中定义的两种结构。例如，完全可以将 Adapter 模式中现存对象”作为新的接口方法参数，来达到适配的目的。</li>
+<li>对象适配器比类适配器好</li>
+</ul>
+
+<h4>Cpp_demo</h4>
+
+<pre class="line-numbers"><code class="language-cpp">//
+// Created by eredinliu on 2020-02-05.
+//
+#include &lt;iostream&gt;
+using namespace std;
+
+class IAdapter {
+public:
+    virtual void Charge() = 0;
+    IAdapter() {}
+};
+
+class ITarget {
+public:
+    virtual void Process() = 0;
+    ITarget(IAdapter* adapter) : adapter_(adapter) {}
+protected:
+    IAdapter* adapter_;
+};
+
+class CNCharge : public IAdapter {
+public:
+    CNCharge() {}
+
+    void Charge() {
+        cout &lt;&lt; typeid(this).name() &lt;&lt; &quot; Charge \n&quot;;
+    }
+};
+
+class USCharge : public ITarget {
+public:
+    USCharge(IAdapter* adapter) : ITarget(adapter) {}
+
+    void Process() {
+        cout &lt;&lt; typeid(this).name() &lt;&lt; &quot; Process \n&quot;;
+        this-&gt;adapter_-&gt;Charge();
+    }
+};
+
+int main() {
+    IAdapter* cn_charge = new CNCharge();
+    ITarget* target = new USCharge(cn_charge);
+    target-&gt;Process();
+}
+</code></pre>
+
+<h4>golang_demo</h4>
+
+<pre class="line-numbers"><code class="language-go">type ITarget interface {
+    Process()
+}
+
+type IAdapter interface {
+    Charge()
+}
+
+type CNCharge struct {
+}
+
+func (c *CNCharge) Charge() {
+    println(reflect.TypeOf(c).String() + &quot; Charge&quot;)
+}
+
+type USCharge struct {
+    IAdapter
+}
+
+func (u *USCharge) Process() {
+    println(reflect.TypeOf(u).String() + &quot; Process&quot;)
+    u.IAdapter.Charge()
+}
+
+func NewUSCharge(adapter IAdapter) *USCharge {
+    return &amp;USCharge{
+        IAdapter: adapter,
+    }
+}
+
+
+func TestAdapter_Request2(t *testing.T) {
+    cnCharge := &amp;CNCharge{}
+    target := NewUSCharge(cnCharge)
+    target.Process()
+}
+</code></pre>
+
+<h4>python_code</h4>
+
+<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
+
+class ITarget(metaclass=ABCMeta):
+
+    @abstractmethod
+    def process(self):
+        pass
+
+    def __init__(self, adapter):
+        self.adapter = adapter
+
+class IAdapter(metaclass=ABCMeta):
+
+    @abstractmethod
+    def charge(self):
+        pass
+
+class CNCharge(IAdapter):
+
+    def charge(self):
+        print(type(self).__name__ + &#39; charge&#39;)
+
+class USCharge(ITarget):
+
+    def __init__(self, adapter):
+        super().__init__(adapter)
+
+    def process(self):
+        print(type(self).__name__ + &#39; process&#39;)
+        self.adapter.charge()
+
+if __name__ == &#39;__main__&#39;:
+    cn_charge = CNCharge()
+    target = USCharge(cn_charge)
+    target.process()
+</code></pre>
+
+
+    
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+          <a href="15738717951389.html" 
+          title="Previous Post: with上下文管理器">&laquo; with上下文管理器</a>
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="15737766048515.html" 
+          title="Next Post: assert">assert &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          
+
+          
+
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
+
+
+
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <h1>eredin-blog</h1>
+                <div class="site-des">生命的意义是成为你自己！</div>
+                <div class="social">
+
+
+
+
+
+
+
+
+
+
+
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html"><strong>C++基础与提高</strong></a>
+        
+            <a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html"><strong>设计模式之美</strong></a>
+        
+            <a href="Python.html"><strong>Python</strong></a>
+        
+            <a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html"><strong>设计模式</strong></a>
+        
+            <a href="Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html"><strong>Linux性能优化实战</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="15814649492497.html">Simple Factory</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15814189410719.html">代码的可测试性</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15814188057978.html">重构</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15813811739408.html">tuple 使用</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
+
+
+  </body>
+</html>

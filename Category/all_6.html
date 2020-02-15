@@ -1,0 +1,2849 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  eredin-blog
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="eredin-blog" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site: ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="self" href="index.html">Home</a></li>
+        
+        <li id=""><a target="_self" href="archives.html">Archives</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="https://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; eredin-blog</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+        
+        <li><a target="self" href="index.html">Home</a></li>
+        
+        <li><a target="_self" href="archives.html">Archives</a></li>
+        
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html">C++基础与提高</a></li>
+        
+            <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html">设计模式之美</a></li>
+        
+            <li><a href="Python.html">Python</a></li>
+        
+            <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html">设计模式</a></li>
+        
+            <li><a href="Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html">Linux性能优化实战</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+	$(function(){
+		$('#menu_item_index').addClass('is_active');
+	});
+</script>
+<div class="row">
+	<div class="large-8 medium-8 columns">
+		<div class="markdown-body home-categories">
+		
+			<div class="article">
+                <a class="clearlink" href="15730828183314.html">
+                
+                  <h1>值传递和引用传递</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>赋值</h4>
+
+<ul>
+<li>Python 的数据类型，例如整型（int）、字符串（string）等等，是不可变的</li>
+</ul>
+
+<h4>变量删除</h4>
+
+<pre class="line-numbers"><code class="language-python">l = [1, 2, 3]
+del l
+</code></pre>
+
+<ul>
+<li>Python 里的变量可以被删除，但是对象无法被删除</li>
+<li>del l 删除了 l 这个变量，从此以后你无法访问 l，但是对象 [1, 2, 3] 仍然存在。Python 程序运行时，其自带的垃圾回收系统会跟踪每个对象的引用。如果 [1, 2, 3] 除了 l 外，还在其他地方被引用，那就不会被回收，反之则会被回收</li>
+</ul>
+
+<h4>变量总结</h4>
+
+<ul>
+<li>变量的赋值，只是表示让变量指向了某个对象，并不表示拷贝对象给变量；而一个对象，可以被多个变量所指向。</li>
+<li>可变对象（列表，字典，集合等等）的改变，会影响所有指向该对象的变量。</li>
+<li>对于不可变对象（字符串，整型，元祖等等），所有指向该对象的变量的值总是一样的，也不会改变。但是通过某些操作（+= 等等）更新不可变对象的值时，会返回一个新的对象。</li>
+<li>变量可以被删除，但是对象无法被删</li>
+<li>如果对象是可变的，当其改变时，所有指向这个对象的变量都会改变。如果对象不可变，简单的赋值只能改变其中一个变量的值，其余变量则不受影响。</li>
+</ul>
+
+<h4>函数传参</h4>
+
+<pre class="line-numbers"><code class="language-python">def my_func5(l2):
+ l2 = l2 + [4]
+ return l2
+</code></pre>
+
+<h4>思考</h4>
+
+<pre class="line-numbers"><code class="language-python">l1 = [1, 2, 3]
+l2 = [1, 2, 3]
+l3 = l2
+</code></pre>
+
+<ul>
+<li>列表是可变对象，每创建一个列表，都会重新分配内存，因此 1 和 12 并不是同个对象，由于 I3=12 表明 13 指向 12 的对象。</li>
+</ul>
+
+<h5>整型数组问题</h5>
+
+<ul>
+<li>出于对性能优化的考虑，Python 内部会对 -5 到 256 的整型维持一个数组，起到一个缓存的作用。这样，每次你试图创建一个 -5 到 256 范围内的整型数字时，Python 都会从这个数组中返回相对应的引用，而不是重新开辟一块新的内存空间</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/07 07:26 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15730795693761.html">
+                
+                  <h1>Clone</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>模式定义</h4>
+
+<ul>
+<li>使用原型实例指定创建对象的种类，然后通过拷贝这些原型来创建新的对象。</li>
+</ul>
+
+<h4>结构</h4>
+
+<p><img src="media/15730795693761/15806429826202.jpg" alt="" style="width:719px;"/></p>
+
+<h4>动机</h4>
+
+<ul>
+<li>在软件系统中，经常面临着“某些结构复杂的对象“的创建工作；由于需求的变化，这些对象经常面临着剧烈的变化，但是它们却拥有七较稳定一致的接口。</li>
+<li>如何应对这种变化？如何向“客户程序（使用这些对象的程序）“隔离出“这些易变对象”，从而使得“依赖这些易变对象的客户程序”不随着需求改变而改变？</li>
+</ul>
+
+<h4>要点总结</h4>
+
+<ul>
+<li>Prototype 模式同样用于隔离类对象的使用者和具体类型（易变类）之间的耦合关系，它同样要求这些“易变类”拥有“稳定的接口“”。</li>
+<li>Prototype 模式对于“如何创建易变类的实体对象”“采用“原型克隆”的方法来做，它使得我们可以非常灵活地动态创建“拥有某些稳定接口“的新对象一一所需工作仅仅是注册一个新类的对象（即原型然后在任何需要的地方 Clone。</li>
+<li>Prototype 模式中的 Clone 方法可以利用某些框架中的序列化来实现深拷贝。</li>
+</ul>
+
+<h4>cpp_demo</h4>
+
+<pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
+
+using namespace std;
+
+class Monkey {
+ public:
+  Monkey() {}
+
+  virtual Monkey* Clone() = 0;
+  virtual void Play() = 0;
+};
+
+class Goku : public Monkey {
+ public:
+  Goku(const string&amp; name) : _name(name) {}
+  Goku(const Goku&amp; other) {_name = other._name;}
+  ~Goku() {}
+
+  Monkey* Clone() {
+    return new Goku(*this);
+  }
+
+  void Play() {std::cout &lt;&lt; &quot; Goku Playing&quot; &lt;&lt; std::endl;}
+  string _name;
+};
+
+int main() {
+  Monkey* m = new Goku(&quot;QitianDasheng&quot;);
+  Monkey* m1 = m-&gt;Clone();
+  Monkey* m2 = m-&gt;Clone();
+  Monkey* m3 = m-&gt;Clone();
+  m1-&gt;Play();
+  m2-&gt;Play();
+  m3-&gt;Play();
+}
+</code></pre>
+
+<h3>golang_demo</h3>
+
+<pre class="line-numbers"><code class="language-go">package prototype
+
+import &quot;fmt&quot;
+
+type Monkey interface {
+        Clone() Monkey
+        Play()
+}
+
+type Goku struct{}
+
+func (g *Goku) Clone() Monkey {
+        return &amp;Goku{}
+}
+
+func (g *Goku) Play() {
+        fmt.Println(&quot;Goku Play&quot;)
+}
+func TestPrototype(t *testing.T) {
+        var m Monkey = &amp;Goku{}
+        m1 := m.Clone()
+        m2 := m.Clone()
+        m3 := m.Clone()
+        m1.Play()
+        m2.Play()
+        m3.Play()
+}
+</code></pre>
+
+<h4>python_code</h4>
+
+<pre class="line-numbers"><code class="language-python">
+from abc import ABCMeta, abstractmethod
+
+class Prototype(metaclass=ABCMeta):
+    @abstractmethod
+    def clone(self):
+        pass
+        
+import copy
+
+
+class Knight(object):
+    def __init__(self, level):
+        self.unit_type = &quot;knight&quot;
+
+        file_name = &quot;./{}_{}.dat&quot;.format(self.unit_type, level)
+        print(file_name)
+        with open(file_name, &#39;r&#39;) as parameter_file:
+            lines = parameter_file.read().split(&quot;\n&quot;)
+            self.life = lines[0]
+            self.attack_power = lines[1]
+            self.attack_range = lines[2]
+            self.weapon = lines[3]
+            self.speed = lines[4]
+
+    def __str__(self):
+        return &quot;Life: {0} Speed: {1} &quot; \
+               &quot; Attack Power: {2}&quot; \
+               &quot; Attack Range: {3}&quot; \
+               &quot; Weapon: {4}&quot; \
+               &quot; Type: {5}&quot;.format(self.life,
+                                   self.speed,
+                                   self.attack_power,
+                                   self.attack_range,
+                                   self.weapon,
+                                   self.unit_type)
+
+    def clone(self):
+        return copy.deepcopy(self)
+
+
+class Archer(object):
+    def __init__(self, level):
+        self.unit_type = &quot;archer&quot;
+
+        file_name = &quot;./{}_{}.dat&quot;.format(self.unit_type, level)
+        print(file_name)
+        with open(file_name, &#39;r&#39;) as parameter_file:
+            lines = parameter_file.read().split(&quot;\n&quot;)
+            self.life = lines[0]
+            self.attack_power = lines[1]
+            self.attack_range = lines[2]
+            self.weapon = lines[3]
+            self.speed = lines[4]
+
+    def __str__(self):
+        return &quot;Life: {0} Speed: {1} &quot; \
+               &quot; Attack Power: {2}&quot; \
+               &quot; Attack Range: {3}&quot; \
+               &quot; Weapon: {4}&quot; \
+               &quot; Type: {5}&quot;.format(self.life,
+                                   self.speed,
+                                   self.attack_power,
+                                   self.attack_range,
+                                   self.weapon,
+                                   self.unit_type)
+
+    def clone(self):
+        return copy.deepcopy(self)
+
+
+class Barracks(object):
+
+    def __init__(self):
+        self.units = {
+            &quot;knight&quot;: {
+                1: Knight(1),
+            },
+            &quot;archer&quot;: {
+                2: Archer(2),
+            }
+        }
+
+    def build_units(self, unit_type, level):
+        return self.units[unit_type][level].clone()
+
+
+if __name__ == &#39;__main__&#39;:
+    barracks = Barracks()
+    archer1 = barracks.build_units(&quot;archer&quot;, 2)
+    knight1 = barracks.build_units(&quot;knight&quot;, 1)
+    print(&#39;knight {}&#39;.format(knight1))
+    print(&#39;archer {}&#39;.format(archer1))
+</code></pre>
+
+<h4>建筑者和简历</h4>
+
+<pre class="line-numbers"><code class="language-go">package design_pattern
+
+type ProtoType interface {
+    clone() ProtoType
+}
+
+type Knight struct {
+    Name,Weapon string
+}
+
+func (k *Knight) clone() ProtoType {
+    knight := (*k)
+    return &amp;knight
+}
+
+func (k *Knight) setWeapon(weapon string) {
+    k.Weapon = weapon
+}
+
+type Archer struct {
+    Name,Weapon string
+}
+
+func (r *Archer) clone() ProtoType {
+    archer := (*r)
+    return &amp;archer
+}
+
+type Barracks struct {
+    units map[string]interface{}
+}
+
+func NewBarracks() *Barracks {
+    return &amp;Barracks{
+        units: make(map[string]interface{}),
+    }
+}
+
+func (b *Barracks) Add(name string, types ProtoType) {
+    b.units[name] = types
+}
+
+func (b *Barracks) Build(name string) ProtoType {
+    return b.units[name].(ProtoType).clone()
+}
+
+type WorkExperience struct {
+    date, company string
+}
+
+
+func (w *WorkExperience) clone() ProtoType {
+    work := (*w)
+    return &amp;work
+}
+
+type PersonInfo struct {
+    name, sex, age string
+}
+
+type Resume struct {
+    name, sex, age string
+    work *WorkExperience
+}
+
+func (r *Resume) clone() ProtoType {
+    resume := &amp;Resume{
+        name: r.name,
+    }
+    return resume
+}
+
+func (r *Resume) setPerson(sex, age string) {
+    r.sex, r.age = sex, age
+}
+
+func (r *Resume) setWork(date, company string) {
+    r.work = &amp;WorkExperience{}
+    r.work.date, r.work.company = date, company
+}
+
+package design_pattern
+
+import (
+    &quot;fmt&quot;
+    &quot;testing&quot;
+)
+
+func TestPrototype(t *testing.T) {
+    barracks := NewBarracks()
+    knight := &amp;Knight{&quot;knight&quot;, &quot;long bow&quot;}
+    archer := &amp;Archer{&quot;archer&quot;, &quot;short bow&quot;}
+    barracks.Add(&quot;knight&quot;, knight)
+    barracks.Add(&quot;archer&quot;, archer)
+
+    k1 := barracks.Build(&quot;knight&quot;)
+    a1 := barracks.Build(&quot;archer&quot;)
+    k2 := barracks.Build(&quot;knight&quot;)
+    a2 := barracks.Build(&quot;archer&quot;)
+    fmt.Println(k1, a1)
+    fmt.Println(k2, a2)
+}
+
+func TestResume(t *testing.T) {
+    var resume ProtoType = &amp;Resume{name : &quot;a&quot;}
+    resume.(*Resume).setPerson(&quot;male&quot;, &quot;29&quot;)
+    resume.(*Resume).setWork(&quot;2019-02-01&quot;, &quot;apple&quot;)
+
+    resume2 := resume.clone()
+    resume2.(*Resume).setPerson(&quot;male&quot;, &quot;30&quot;)
+    resume2.(*Resume).setWork(&quot;2019-02-17&quot;, &quot;alia&quot;)
+    fmt.Println(resume, resume2)
+}
+</code></pre>
+
+<h4>cpp_code</h4>
+
+<pre class="line-numbers"><code class="language-cpp">//
+// Created by eredinliu on 2020-02-02.
+//
+
+#include &lt;iostream&gt;
+
+using namespace std;
+
+class IClone {
+public:
+    virtual IClone* Clone() = 0;
+    virtual void Show() = 0;
+    virtual void Coding() = 0;
+    IClone() {}
+};
+
+class Person : public IClone {
+public:
+    Person(const string&amp; name, __const string&amp; age) : name_(name), age_(age) {}
+
+    IClone* Clone() {
+        IClone* copy = new Person(this-&gt;name_, this-&gt;age_);
+        return copy;
+    }
+
+    void Show() {
+        cout &lt;&lt; &quot;I&#39;m &quot; &lt;&lt; this-&gt;name_ &lt;&lt; &quot; age &quot; &lt;&lt; this-&gt;age_ &lt;&lt; endl;
+    }
+
+    void Coding() {
+        cout &lt;&lt; &quot;I&#39;m programmer, coding change world \n&quot;;
+    }
+
+private:
+    string name_, age_;
+};
+
+int main() {
+    IClone* person = new Person(&quot;tony&quot;, &quot;27&quot;);
+
+    IClone* clone = person-&gt;Clone();
+    clone-&gt;Coding();
+    clone-&gt;Show();
+}
+</code></pre>
+
+<h4>golang_code</h4>
+
+<pre class="line-numbers"><code class="language-go">package desian_pattern_practise
+
+
+type IClone interface {
+    Clone() IClone
+    Show()
+    Coding()
+}
+
+type Career struct {
+    name, age string
+}
+
+func (c *Career) Show() {
+    println(&quot;I&#39;m&quot;, c.name, &quot;Age&quot;, c.age)
+}
+
+func (c *Career) Coding() {
+    println(&quot;I&#39;m programmer, coding change world&quot;)
+}
+
+func (c *Career) Clone() IClone {
+    return &amp;Career{
+        name: c.name,
+        age: c.age,
+    }
+}
+
+func TestCareer_Clone(t *testing.T) {
+    career := &amp;Career{&quot;ming&quot;, &quot;IT&quot;}
+
+    var c1 IClone = career.Clone()
+    c1.Show()
+    c1.Coding()
+}
+</code></pre>
+
+<h4>python_code</h4>
+
+<pre class="line-numbers"><code class="language-python">from copy import copy, deepcopy
+
+class Clone(object):
+
+    def clone(self):
+        return copy(self)
+
+    def deep_clone(self):
+        return deepcopy(self)
+
+class Person(Clone):
+
+    def __init__(self, name, age):
+        self.__name = name
+        self.__age = age
+
+    def show(self):
+        print(&quot;I&#39;m {} age {}&quot;.format(self.__name, self.__age))
+
+    def coding(self):
+        print(&quot;I&#39;m programmer, coding change world&quot;)
+
+    def reading(self):
+        print(&#39;reading make me happy&#39;)
+
+    def fall_love(self):
+        print(&#39;fall in love&#39;)
+
+if __name__ == &#39;__main__&#39;:
+
+    tony = Person(&#39;tony&#39;, 27)
+    tony.show()
+    tony.coding()
+
+    tony1 = tony.clone()
+    tony.show()
+    tony.coding()
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/07 06:32 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15730785241033.html">
+                
+                  <h1>设计模式和面向对象关系</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>设计原则</h4>
+
+<ul>
+<li>SOLID 原则 -SRP 单一职责原则SOLID 原则</li>
+<li>OCP 开闭原则SOLID 原则</li>
+<li>LSP 里式替换原则SOLID 原则</li>
+<li>ISP 接口隔离原则SOLID 原则</li>
+<li>DIP 依赖倒置原则DRY 原则、KISS 原则、YAGNI 原则、LOD 法则</li>
+</ul>
+
+<h4>设计模式分类</h4>
+
+<h5>创建型</h5>
+
+<ul>
+<li>常用的有：单例模式、工厂模式（工厂方法和抽象工厂）、建造者模式。不常用的有：原型模式。</li>
+</ul>
+
+<h5>结构型</h5>
+
+<ul>
+<li>常用的有：代理模式、桥接模式、装饰者模式、适配器模式。不常用的有：门面模式、组合模式、享元模式。</li>
+</ul>
+
+<h5>行为型</h5>
+
+<ul>
+<li>常用的有：观察者模式、模板模式、策略模式、职责链模式、迭代器模式、状态模式。不常用的有：访问者模式、备忘录模式、命令模式、解释器模式、中介模式。</li>
+</ul>
+
+<h4>总结</h4>
+
+<p><img src="media/15730785241033/f3262ef8152517d3b11bfc3f2d2b12d3.png" alt="f3262ef8152517d3b11bfc3f2d2b12d3"/></p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/07 06:15 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15729950422631.html">
+                
+                  <h1>Abstract factory</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>动机</h4>
+
+<ul>
+<li>在软件系统中，经常面临着“一系列相互依赖的对象”的创建工作；同时，由于需求的变化，往往存在更多系列对象的创建工作。</li>
+<li>如何应对这种变化？如何绕过常规的对象创建方法（new），提供种“封裝机制“来避免客户程序和这种多系列具体对象创建工作“的紧耦合？</li>
+</ul>
+
+<h4>模式定义</h4>
+
+<ul>
+<li>提供一个接口，让该接口负责创建一系列“相关或者相互依赖的对象”，无需指定它们具体的类。</li>
+</ul>
+
+<h4>结构图</h4>
+
+<p><img src="media/15729950422631/15809876460184.jpg" alt="" style="width:812px;"/></p>
+
+<h4>要点总结</h4>
+
+<ul>
+<li>如果没有应对多系列对象构建”的需求变化，则没有必要使用abstract Factory/模式,这时候使用简单的工厂完全可以。</li>
+<li>系列对象”指的是在某一特定系列下的对象之间有相互依赖、或作用的关系。不同系列的对象之间不能相互依赖。</li>
+<li>Abstract Factory 模式主要在于应对“新系列的需求变动。其缺点在于难以应对“新对象”的需求变动。</li>
+<li>抽象工厂是工厂方法模式的升级版本，工厂方法不能解决具有二级分类的产品的创建问题，抽象工厂就是用来解决这个问题的</li>
+<li>模式稳定的部分就是缺点</li>
+</ul>
+
+<h4>cpp_demo</h4>
+
+<pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
+
+class Article {
+ public:
+  virtual void produce() = 0;
+};
+
+class Video {
+ public:
+  virtual void produce() = 0;
+};
+
+class CourseFactory {
+ public:
+  virtual Video* getVideo() = 0;
+  virtual Article* getArticle()= 0;
+};
+
+class JavaArticle : public Article {
+ public:
+  void produce() {
+    std::cout &lt;&lt; &quot; JavaArticl produce&quot; &lt;&lt; std::endl;
+  }
+};
+
+class JavaVideo : public Video {
+ public:
+  void produce() {
+    std::cout &lt;&lt; &quot; JavaVideo produce&quot; &lt;&lt; std::endl;
+  }
+};
+class JavaCourseFactory : public CourseFactory {
+ public:
+  Video* getVideo() {
+    return new JavaVideo();
+  }
+  Article* getArticle() {
+    return new JavaArticle();
+  }
+};
+
+class PythonArticle : public Article {
+ public:
+  void produce() {
+    std::cout &lt;&lt; &quot; PythonArticl produce&quot; &lt;&lt; std::endl;
+  }
+};
+
+class PythonVideo : public Video {
+ public:
+  void produce() {
+    std::cout &lt;&lt; &quot; PythonVideo produce&quot; &lt;&lt; std::endl;
+  }
+};
+
+class PythonCourseFactory : public CourseFactory {
+ public:
+  Video* getVideo() {
+    return new PythonVideo();
+  }
+  Article* getArticle() {
+    return new PythonArticle();
+  }
+};
+int main() {
+  CourseFactory* f1 = new JavaCourseFactory();
+  Video* v1 = f1-&gt;getVideo();
+  Article* a1 = f1-&gt;getArticle();
+  v1-&gt;produce();
+  a1-&gt;produce();
+
+  CourseFactory* f2 = new PythonCourseFactory();
+  Video* v2 = f2-&gt;getVideo();
+  Article* a2 = f2-&gt;getArticle();
+  v2-&gt;produce();
+  a2-&gt;produce();
+}
+</code></pre>
+
+<h4>golang_demo</h4>
+
+<pre class="line-numbers"><code class="language-go">package abstractfactory
+
+import &quot;fmt&quot;
+
+type Article interface {
+        produce()
+}
+
+type Video interface {
+        produce()
+}
+
+type CourseFactory interface {
+        getVideo() Video
+        getArticle() Article
+}
+
+type JavaArticle struct{}
+
+func (j *JavaArticle) produce() {
+        fmt.Println(&quot;JavaArticle produce&quot;)
+}
+
+type JavaVideo struct{}
+
+func (j *JavaVideo) produce() {
+        fmt.Println(&quot;JavaVideo produce&quot;)
+}
+
+type JavaCourseFactory struct{}
+
+func (jc *JavaCourseFactory) getVideo() Video {
+        return &amp;JavaVideo{}
+}
+
+func (jc *JavaCourseFactory) getArticle() Article {
+        return &amp;JavaArticle{}
+}
+type PythonArticle struct{}
+
+func (p *PythonArticle) produce() {
+        fmt.Println(&quot;PythonArticle produce&quot;)
+}
+
+type PythonVideo struct{}
+
+func (p *PythonVideo) produce() {
+        fmt.Println(&quot;PythonVideo produce&quot;)
+}
+
+type PythonCourseFactory struct{}
+
+func (py *PythonCourseFactory) getVideo() Video {
+        return &amp;PythonVideo{}
+}
+
+func (py *PythonCourseFactory) getArticle() Article {
+        return &amp;PythonArticle{}
+}
+import &quot;testing&quot;
+
+func getArticleAndVideo(factory CourseFactory) {
+        factory.getArticle().produce()
+        factory.getVideo().produce()
+}
+
+func TestABSFactory(t *testing.T) {
+        var f1 CourseFactory = &amp;JavaCourseFactory{}
+        getArticleAndVideo(f1)
+        var f2 CourseFactory = &amp;PythonCourseFactory{}
+        getArticleAndVideo(f2)
+}
+</code></pre>
+
+<h4>python_code</h4>
+
+<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
+
+class Article(metaclass=ABCMeta):
+    
+    def produce(self):
+        pass
+    
+class Video(metaclass=ABCMeta):
+    
+    def produce(self):
+        pass
+    
+class CourseFactory(metaclass=ABCMeta):
+    
+    def get_article(self):
+        pass
+    
+    def get_video(self):
+        pass
+    
+class JavaArticle(Article):
+    
+    def produce(self):
+        print(type(self).__name__, &quot; produce&quot;)
+
+
+class JavaVideo(Video):
+
+    def produce(self):
+        print(type(self).__name__, &quot; produce&quot;)
+        
+class JavaCourseFactory(CourseFactory):
+    
+    def get_article(self):
+        return JavaArticle()
+    
+    def get_video(self):
+        return JavaVideo()
+
+
+class CppArticle(Article):
+
+    def produce(self):
+        print(type(self).__name__, &quot; produce&quot;)
+
+
+class CppVideo(Video):
+
+    def produce(self):
+        print(type(self).__name__, &quot; produce&quot;)
+
+
+class CppCourseFactory(CourseFactory):
+
+    def get_article(self):
+        return CppArticle()
+
+    def get_video(self):
+        return CppVideo()
+
+
+class PythonArticle(Article):
+
+    def produce(self):
+        print(type(self).__name__, &quot; produce&quot;)
+
+
+class PythonVideo(Video):
+
+    def produce(self):
+        print(type(self).__name__, &quot; produce&quot;)
+
+
+class PythonCourseFactory(CourseFactory):
+
+    def get_article(self):
+        return PythonArticle()
+
+    def get_video(self):
+        return PythonVideo()
+
+if __name__ == &#39;__main__&#39;:
+
+    java = JavaCourseFactory()
+    java.get_video().produce()
+    java.get_article().produce()
+
+    cpp = CppCourseFactory()
+    cpp.get_article().produce()
+    cpp.get_video().produce()
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/06 07:04 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15729049211046.html">
+                
+                  <h1>Factory</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>典型模式</h4>
+
+<ul>
+<li>通过“对象创建”模式绕开 new，来避免对象创建（new）过程中所导致的紧耦合（依赖具体类），从而支持对象创建的稳定。它是接口抽象之后的第一步工作。</li>
+</ul>
+
+<h4>典型模式</h4>
+
+<ul>
+<li>Factory Method</li>
+<li>Abstract Factory</li>
+<li>Prototype</li>
+<li>Builder</li>
+</ul>
+
+<h4>定义</h4>
+
+<ul>
+<li>定义ー个用于创建对象的接口，让子类决定实例化哪一个类 Factory Method 使得一个类的实例化延迟（目的：解耦，手段：虚函数）到子类。</li>
+</ul>
+
+<h4>结构图</h4>
+
+<p><img src="media/15729049211046/15809845877086.jpg" alt="" style="width:728px;"/></p>
+
+<h4>总结</h4>
+
+<ul>
+<li>Factory Method 模式用于隔离类对象的使用者和具体类型之间的耦合关系。面对一个经常变化的具体类型，紧耦合关系（new）会导致软件的脆弱。</li>
+<li>Factory Methodi 模式通过面向对象的手法，将所要创建的具体对象工作延迟到子类，从而实现一种扩展（而非更改）的策略，较好地解决了这种紧耦合关系。</li>
+<li>Factory Method 模式解决“单个对象”的需求变化。缺点在于要求创 建方法/参数相同。</li>
+</ul>
+
+<h4>cpp_demo</h4>
+
+<pre class="line-numbers"><code class="language-cpp">class Video {
+ public:
+  virtual void produce() = 0;
+};
+
+class VideoFactory {
+ public:
+  virtual Video* getVideo() = 0;
+};
+
+class FEVideo : public Video {
+ public:
+  void produce() {
+    std::cout &lt;&lt; &quot; FE video &quot; &lt;&lt; std::endl;
+  }
+};
+
+class FEVideoFactory : public VideoFactory {
+ public:
+  Video* getVideo() {
+    return new FEVideo();
+  }
+};
+
+class JavaVideo : public Video {
+ public:
+  void produce() {
+    std::cout &lt;&lt; &quot; Java video &quot; &lt;&lt; std::endl;
+  }
+};
+class JavaVideoFactory : public VideoFactory {
+ public:
+  Video* getVideo() {
+    return new JavaVideo();
+  }
+};
+
+class PythonVideo : public Video {
+ public:
+  void produce() {
+    std::cout &lt;&lt; &quot; Python video &quot; &lt;&lt; std::endl;
+  }
+};
+
+class PythonVideoFactory : public VideoFactory {
+ public:
+  Video* getVideo() {
+    return new PythonVideo();
+  }
+};
+
+int main() {
+  VideoFactory* f1 = new PythonVideoFactory();
+  VideoFactory* f2 = new JavaVideoFactory();
+  VideoFactory* f3 = new FEVideoFactory();
+  Video* v1 = f1-&gt;getVideo();
+  Video* v2 = f2-&gt;getVideo();
+  Video* v3 = f3-&gt;getVideo();
+  v1-&gt;produce();
+  v2-&gt;produce();
+  v3-&gt;produce();
+}
+</code></pre>
+
+<h4>golang_demo</h4>
+
+<pre class="line-numbers"><code class="language-go">package desian_pattern_practise
+
+import &quot;reflect&quot;
+
+type Video interface {
+    Produce()
+}
+
+type VideoFactory interface {
+    GetVideo() Video
+}
+
+type CppVideo struct {
+}
+
+func (c *CppVideo) Produce() {
+    println(reflect.TypeOf(c).String(), &quot;Produce&quot;)
+}
+
+type CppFactory struct {
+}
+
+func (c *CppFactory) GetVideo() Video {
+    return &amp;CppVideo{}
+}
+
+type JavaVideo struct {
+}
+
+func (c *JavaVideo) Produce() {
+    println(reflect.TypeOf(c).String(), &quot;Produce&quot;)
+}
+
+type JavaFactory struct {
+}
+
+func (c *JavaFactory) GetVideo() Video {
+    return &amp;JavaVideo{}
+}
+
+type PythonVideo struct {
+}
+
+func (c *PythonVideo) Produce() {
+    println(reflect.TypeOf(c).String(), &quot;Produce&quot;)
+}
+
+type PythonFactory struct {
+}
+
+func (c *PythonFactory) GetVideo() Video {
+    return &amp;PythonVideo{}
+}
+
+func TestCppFactory_GetVideo(t *testing.T) {
+    py := &amp;PythonFactory{}
+    py.GetVideo().Produce()
+
+    cpp := &amp;CppFactory{}
+    cpp.GetVideo().Produce()
+
+    java := &amp;JavaFactory{}
+    java.GetVideo().Produce()
+}
+</code></pre>
+
+<h4>python_demo</h4>
+
+<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
+
+class Video(metaclass=ABCMeta):
+    def produce(self):
+        pass
+
+class VideoFactory(metaclass=ABCMeta):
+
+    def get_video(self):
+        pass
+
+class CppVideo(Video):
+
+    def produce(self):
+        print(type(self).__name__, &quot; produce&quot;)
+        
+class CppFactory(VideoFactory):
+    
+    def get_video(self):
+        return CppVideo()
+
+
+class JavaVideo(Video):
+
+    def produce(self):
+        print(type(self).__name__, &quot; produce&quot;)
+
+
+class JavaFactory(VideoFactory):
+
+    def get_video(self):
+        return JavaVideo()
+
+
+class PythonVideo(Video):
+
+    def produce(self):
+        print(type(self).__name__, &quot; produce&quot;)
+
+
+class PythonFactory(VideoFactory):
+
+    def get_video(self):
+        return PythonVideo()
+
+if __name__ == &#39;__main__&#39;:
+    cpp = CppFactory()
+    cpp.get_video().produce()
+
+    java = JavaFactory()
+    java.get_video().produce()
+
+    python = PythonFactory()
+    python.get_video().produce()
+</code></pre>
+
+<h4>golang_demo</h4>
+
+<pre class="line-numbers"><code class="language-go">import &quot;fmt&quot;
+type ICar interface {
+    Name()
+}
+
+type Factory interface {
+    CreateCar() ICar
+}
+
+type BenzCar struct {
+}
+
+func (bc *BenzCar) Name() {
+    fmt.Println(&quot;BenzCar Create&quot;)
+}
+
+type BenzFactory struct{}
+
+func (b *BenzFactory) CreateCar() ICar {
+    return &amp;BenzCar{}
+}
+
+type BmwCar struct {
+    ICar
+}
+
+func (bc *BmwCar) Name() {
+    fmt.Println(&quot;BmwCar Create&quot;)
+}
+
+type BmwFactory struct{}
+
+func (b *BmwFactory) CreateCar() ICar {
+    return &amp;BmwCar{}
+}
+
+type AudiCar struct {
+    ICar
+}
+
+func (bc *AudiCar) Name() {
+    fmt.Println(&quot;AudiCar Create&quot;)
+}
+
+type AudiFactory struct{}
+
+func (b *AudiFactory) CreateCar() ICar {
+    return &amp;AudiCar{}
+}
+
+func TestAudiFactory_CreateCar(t *testing.T) {
+    audi := &amp;AudiFactory{}
+    audi.CreateCar().Name()
+
+    bmw := &amp;BmwFactory{}
+    bmw.CreateCar().Name()
+
+    benz := &amp;BenzFactory{}
+    benz.CreateCar().Name()
+}
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/05 06:02 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15728255199604.html">
+                
+                  <h1>自定义函数和匿名函数</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>函数定义</h4>
+
+<ul>
+<li>def 是可执行语句，这意味着函数直到被调用前，都是不存在的。当程序调用函数时，def 语句才会创建一个新的函数对象，并赋予其名字。</li>
+<li>主程序调用函数时，必须保证这个函数此前已经定义过，不然就会报错</li>
+<li>如果我们在函数内部调用其他函数，函数间哪个声明在前、哪个在后就无所谓，因为 def 是可执行语句，函数在调用之前都不存在，我们只需保证调用时，所需的函数都已经声明定义：</li>
+</ul>
+
+<h4>参数类型</h4>
+
+<ul>
+<li>Python 不用考虑输入的数据类型，而是将其交给具体的代码去判断执行，同样的一个函数（比如这边的相加函数 my_sum()），可以同时应用在整型、列表、字符串等等的操作中。</li>
+</ul>
+
+<h4>局部变量</h4>
+
+<ul>
+<li>不能在函数内部随意改变全局变量的值。</li>
+<li>要在函数内部改变全局变量的值，就必须加上 global 这个声明</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">MIN_VLAUE = 1
+MAX_VLAUE = 10
+
+def check(value):
+    if value &lt; MIN_VLAUE or value &gt; MAX_VLAUE:
+        global MIN_VLAUE
+        MIN_VLAUE += 1
+        raise Exception(&#39;check fails&#39;)
+    else:
+        print(&#39;check ok&#39;)
+
+
+def main():
+    check(3)
+
+if __name__ == &#39;__main__&#39;:
+    main()
+</code></pre>
+
+<ul>
+<li>告诉 Python 解释器，函数内部的变量 MIN_VALUE，就是之前定义的全局变量，并不是新的全局变量，也不是局部变量。这样，程序就可以在函数内部访问全局变量，并修改它的值了。</li>
+<li>对于嵌套函数来说，内部函数可以访问外部函数定义的变量，但是无法修改，若要修改，必须加上 nonlocal 这个关键字</li>
+</ul>
+
+<h4>闭包</h4>
+
+<pre class="line-numbers"><code class="language-python">def nth_power(ex):
+    def exon_of(base):
+        return base ** ex
+    return exon_of
+
+def main():
+    sq = nth_power(2)
+    cub = nth_power(3)
+    print(sq(2))
+    print(cub(3))
+
+if __name__ == &#39;__main__&#39;:
+    main()
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/04 07:58 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15728246052216.html">
+                
+                  <h1>异常处理</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>异常</h4>
+
+<pre class="line-numbers"><code class="language-python">
+try:
+    s = input(&#39;please enter two numbers separated by comma: &#39;)
+    num1 = int(s.split(&#39;,&#39;)[0].strip())
+    num2 = int(s.split(&#39;,&#39;)[1].strip())
+    ... 
+except ValueError as err:
+    print(&#39;Value Error: {}&#39;.format(err))
+
+print(&#39;continue&#39;)
+</code></pre>
+
+<ul>
+<li>是在最后一个 except block，声明其处理的异常类型是 Exception。Exception 是其他所有非系统异常的基类，能够匹配任意非系统异常,如果多个 except 声明的异常类型都与实际相匹配，那么只有最前面的 except block 会被执行，其他则被忽略</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">
+try:
+    s = input(&#39;please enter two numbers separated by comma: &#39;)
+    num1 = int(s.split(&#39;,&#39;)[0].strip())
+    num2 = int(s.split(&#39;,&#39;)[1].strip())
+    ...
+except ValueError as err:
+    print(&#39;Value Error: {}&#39;.format(err))
+except IndexError as err:
+    print(&#39;Index Error: {}&#39;.format(err))
+except Exception as err:
+    print(&#39;Other error: {}&#39;.format(err))
+
+print(&#39;continue&#39;)
+</code></pre>
+
+<h4>finally</h4>
+
+<ul>
+<li>finally，经常和 try、except 放在一起来用。无论发生什么情况，finally block 中的语句都会被执行，哪怕前面的 try 和 excep block 中使用了 return 语句。</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">
+import sys
+try:
+    f = open(&#39;file.txt&#39;, &#39;r&#39;)
+    .... # some data processing
+except OSError as err:
+    print(&#39;OS error: {}&#39;.format(err))
+except:
+    print(&#39;Unexpected error:&#39;, sys.exc_info()[0])
+finally:
+    f.close()
+</code></pre>
+
+<h4>多异常处理</h4>
+
+<pre class="line-numbers"><code class="language-python">
+try:
+    db = DB.connect(&#39;&lt;db path&gt;&#39;) # 可能会抛出异常
+    raw_data = DB.queryData(&#39;&lt;viewer_id&gt;&#39;) # 可能会抛出异常
+except (DBConnectionError, DBQueryDataError) err:
+    print(&#39;Error: {}&#39;.format(err))
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/04 07:43 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15728200383131.html">
+                
+                  <h1>桥模式</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>单一职责模式</h4>
+
+<ul>
+<li>在软件组件的设计中，如果责任划分的不清晰，使用继承得到的结果往往是随着需求的变化，子类急剧膨胀，同时充斥着重复代码，这时侯的关键是划清责任</li>
+</ul>
+
+<h4>动机</h4>
+
+<ul>
+<li>只override了一部分</li>
+<li>抽象部分（业务功能）与实现部分（平台实现）分离，使它们可以独立地变化。</li>
+<li>由于某些类型的固有的实现逻辑，使得它们具有两个变化的维度乃至多个纬度的变化</li>
+<li>如何应对这种“多维度的变化“？如何利用面向对象技术来使得类型</li>
+<li>可以轻松地沿着两个乃至多个方向变化，而不引入额外的复杂度？</li>
+</ul>
+
+<h4>结构</h4>
+
+<ul>
+<li><img src="media/15728200383131/15728212883849.jpg" alt="" style="width:788px;"/></li>
+</ul>
+
+<h4>要点总结</h4>
+
+<ul>
+<li>Bridge 模式使用“对象间的组合关系”解耦了抽象和实现之间固有的绑定关系，使得抽象和实现可以沿着各自的维度来变化。所谓抽象和实现沿着各自纬度的变化，即“子类化“它们。</li>
+<li>Bridge 模式有时候类似于多继承方案，但是多继承方案往往违背单职责原则（即一个类只有一个变化的原因），复用性比较差。Bridge 模式是比多继承方案更好的解决方法</li>
+<li>Bridge 模式的应用一般在“两个非常强的变化维度”，有时一个类也有多于两个的变化维度，这时可以使用 Bridge 的扩展模式。</li>
+</ul>
+
+<h4>cpp_demo</h4>
+
+<pre class="line-numbers"><code class="language-cpp">class ISwitch
+{
+ public:
+  ISwitch(IElectricalEquipment *ee) { m_pEe = ee; }
+  virtual ~ISwitch() {}
+
+  virtual void On() = 0;
+
+  virtual void Off() = 0;
+
+ protected:
+  IElectricalEquipment *m_pEe;
+};
+
+class IElectricalEquipment
+{
+ public:
+  virtual ~IElectricalEquipment() {}
+
+  virtual void PowerOn() = 0;
+
+  virtual void PowerOff() = 0;
+};
+class Light : public IElectricalEquipment
+{
+ public:
+  // 开灯
+  virtual void PowerOn() override {
+    std::cout &lt;&lt; &quot;Light is on.&quot; &lt;&lt; std::endl;
+  }
+
+  // 关灯
+  virtual void PowerOff() override {
+    std::cout &lt;&lt; &quot;Light is off.&quot; &lt;&lt; std::endl;
+  }
+};
+
+// 风扇
+class Fan : public IElectricalEquipment
+{
+ public:
+  // 打开风扇
+  virtual void PowerOn() override {
+    std::cout &lt;&lt; &quot;Fan is on.&quot; &lt;&lt; std::endl;
+  }
+
+  // 关闭风扇
+  virtual void PowerOff() override {
+    std::cout &lt;&lt; &quot;Fan is off.&quot; &lt;&lt; std::endl;
+  }
+};
+// 拉链式开关
+class PullChainSwitch : public ISwitch
+{
+public:
+    PullChainSwitch(IElectricalEquipment *ee) : ISwitch(ee) {}
+
+    // 用拉链式开关打开电器
+    virtual void On() override {
+        std::cout &lt;&lt; &quot;Switch on the equipment with a pull chain switch.&quot; &lt;&lt; std::endl;
+        m_pEe-&gt;PowerOn();
+    }
+
+    // 用拉链式开关关闭电器
+    virtual void Off() override {
+        std::cout &lt;&lt; &quot;Switch off the equipment with a pull chain switch.&quot; &lt;&lt; std::endl;
+        m_pEe-&gt;PowerOff();
+    }
+};
+// 两位开关
+class TwoPositionSwitch : public ISwitch
+{
+ public:
+  TwoPositionSwitch(IElectricalEquipment *ee) : ISwitch(ee) {}
+
+  // 用两位开关打开电器
+  virtual void On() override {
+    std::cout &lt;&lt; &quot;Switch on the equipment with a two-position switch.&quot; &lt;&lt; std::endl;
+    m_pEe-&gt;PowerOn();
+  }
+
+  // 用两位开关关闭电器
+  virtual void Off() override {
+    std::cout &lt;&lt; &quot;Switch off the equipment with a two-position switch.&quot; &lt;&lt; std::endl;
+    m_pEe-&gt;PowerOff();
+  }
+};
+int main()
+{
+    // 创建电器 - 电灯、风扇
+    IElectricalEquipment *light = new Light();
+    IElectricalEquipment *fan = new Fan();
+
+    /**
+    * 创建开关 - 拉链式开关、两位开关
+    * 将拉链式开关和电灯关联起来，将两位开关和风扇关联起来
+    **/
+    ISwitch *pullChain = new PullChainSwitch(light);
+    ISwitch *twoPosition = new TwoPositionSwitch(fan);
+
+    // 开灯、关灯
+    pullChain-&gt;On();
+    pullChain-&gt;Off();
+
+    // 打开风扇、关闭风扇
+    twoPosition-&gt;On();
+    twoPosition-&gt;Off();
+}
+</code></pre>
+
+<h4>golang_demo</h4>
+
+<pre class="line-numbers"><code class="language-go">package design_pattern
+
+import (
+    &quot;fmt&quot;
+    &quot;reflect&quot;
+)
+
+type ISwitch interface {
+    On()
+    Off()
+}
+
+type IEquip interface {
+    PowerOn()
+    PowerOff()
+}
+
+type Light struct {}
+
+func (l *Light) PowerOn() {
+    fmt.Println(reflect.TypeOf(l).String() + &quot; PowerOn&quot;)
+}
+
+func (l *Light) PowerOff() {
+    fmt.Println(reflect.TypeOf(l).String() + &quot; PowerOff&quot;)
+}
+
+type Fen struct {}
+
+func (l *Fen) PowerOn() {
+    fmt.Println(reflect.TypeOf(l).String() + &quot; PowerOn&quot;)
+}
+
+func (l *Fen) PowerOff() {
+    fmt.Println(reflect.TypeOf(l).String() + &quot; PowerOff&quot;)
+}
+
+type PullSwitch struct {
+    IEquip
+}
+
+func NewPullSwitch(i IEquip) ISwitch {
+    return &amp;PullSwitch{
+        IEquip: i,
+    }
+}
+
+func (p *PullSwitch) On() {
+    p.IEquip.PowerOn()
+}
+
+func (p *PullSwitch) Off() {
+    p.IEquip.PowerOff()
+}
+
+type TwoBiteSwitch struct {
+    IEquip
+}
+
+func NewTwoBiteSwitch(i IEquip) ISwitch {
+    return &amp;TwoBiteSwitch{
+        IEquip: i,
+    }
+}
+
+func (p *TwoBiteSwitch) On() {
+    p.IEquip.PowerOn()
+}
+
+func (p *TwoBiteSwitch) Off() {
+    p.IEquip.PowerOff()
+}
+
+type Message interface {
+    SendMsg()
+}
+
+type AsyncMsg struct {
+    ConcreteMsg
+}
+
+func NewAsyncMsg(c ConcreteMsg) *AsyncMsg {
+    return &amp;AsyncMsg{
+        ConcreteMsg: c,
+    }
+}
+
+func (a *AsyncMsg) SendMsg() {
+    a.ConcreteMsg.Send()
+}
+
+type SyncMsg struct {
+    ConcreteMsg
+}
+
+func NewSyncMsg(c ConcreteMsg) *SyncMsg {
+    return &amp;SyncMsg{
+        ConcreteMsg: c,
+    }
+}
+
+func (a *SyncMsg) SendMsg() {
+    a.ConcreteMsg.Send()
+}
+
+type ConcreteMsg interface {
+    Send()
+}
+
+type Email struct {
+}
+
+func (e *Email) Send() {
+    fmt.Println(reflect.TypeOf(e).String() + &quot; Send&quot;)
+}
+
+type WeChat struct {
+}
+
+func (w *WeChat) Send() {
+    fmt.Println(reflect.TypeOf(w).String() + &quot; Send&quot;)
+}
+
+func TestBridge(t *testing.T) {
+    ab := NewAbstraction()
+
+    imA := NewConcreteImA()
+    ab.SetImplement(imA)
+    ab.Operation()
+
+    imB := NewConcreteImB()
+    ab.SetImplement(imB)
+    ab.Operation()
+}
+
+func TestPullSwitch_On(t *testing.T) {
+    light := &amp;Light{}
+    fen := &amp;Fen{}
+
+    pull:= NewPullSwitch(light)
+    pull.On()
+    pull.Off()
+
+    two := NewTwoBiteSwitch(fen)
+    two.On()
+    two.Off()
+}
+
+func TestMsg(t *testing.T) {
+    email := &amp;Email{}
+    weChat := &amp;WeChat{}
+
+    async := NewAsyncMsg(email)
+    async.SendMsg()
+
+    sync := NewSyncMsg(weChat)
+    sync.SendMsg()
+}
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/04 06:27 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15727842506087.html">
+                
+                  <h1>输入输出&json</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>输入输出</h4>
+
+<pre class="line-numbers"><code class="language-python">import re
+
+def parse(text):
+    text = re.sub(r&#39;[^\w]&#39;, &#39; &#39;, text)
+
+    text = text.lower()
+
+    word_list = text.split(&#39; &#39;)
+
+    word_list = filter(None, word_list)
+
+    word_cnt = {}
+
+    for word in word_list:
+        if word not in word_cnt:
+            word_cnt[word] = 0
+        word_cnt[word] += 1
+
+    sorted_word_cnt = sorted(word_cnt.items(), key=lambda kv : kv[1], reverse=True)
+
+    return sorted_word_cnt
+
+def main():
+  with open(&#39;./demo.txt&#39;, &#39;r&#39;) as fin:
+    text = fin.read()
+
+  word_and_freq = parse(text)
+
+  print(word_and_freq)
+
+  with open(&#39;./out.txt&#39;, &#39;w&#39;) as fout:
+      for word, freq in word_and_freq:
+          fout.write(&#39;{}{}\n&#39;.format(word, freq))
+
+
+if __name__ == &#39;__main__&#39;:
+    main()
+</code></pre>
+
+<h4>json</h4>
+
+<ul>
+<li>json.dumps() 这个函数，接受 Python 的基本数据类型，然后将其序列化为 string</li>
+<li>json.loads() 这个函数，接受一个合法字符串，然后将其反序列化为 Python 的基本数据类型。</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">import json
+
+params = {
+    &#39;symbol&#39; : &#39;123456&#39;,
+    &#39;type&#39;: &#39;limit&#39;,
+    &#39;price&#39;: 123.4,
+    &#39;amount&#39;: 23
+}
+
+json_str = json.dumps(params)
+
+print(json_str)
+
+print(&#39;json_str {} params {}&#39;.format(type(json_str), params))
+
+origin_params = json.loads(json_str)
+
+print(&#39;type origin={}, origin={}&#39;.format(type(origin_params), origin_params))
+</code></pre>
+
+<h4>for&amp;while</h4>
+
+<ul>
+<li>range() 函数是直接由 C 语言写的，调用它速度非常快。而 while 循环中的“i += 1”这个操作，得通过 Python 的解释器间接调用底层的 C 语言；并且这个简单的操作，又涉及到了对象的创建和删除（因为 i 是整型，是 immutable，i += 1 相当于 i = new int(i + 1)）。所以，显然，for 循环的效率更胜一筹</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">
+i = 0
+while i &lt; 1000000:
+    i += 1
+
+for i in range(0, 1000000):
+    pass
+</code></pre>
+
+<h4>条件与循环的复用</h4>
+
+<pre class="line-numbers"><code class="language-python">expression for item in iterable if condition
+
+[(xx, yy) for xx in x for yy in y if xx != yy]
+</code></pre>
+
+<h4>demo</h4>
+
+<pre class="line-numbers"><code class="language-python">attributes = [&#39;name&#39;, &#39;dob&#39;, &#39;gender&#39;]
+values = [[&#39;jason&#39;, &#39;2000-01-01&#39;, &#39;male&#39;],
+[&#39;mike&#39;, &#39;1999-01-01&#39;, &#39;male&#39;],
+[&#39;nancy&#39;, &#39;2001-02-01&#39;, &#39;female&#39;]
+]
+
+res = [dict(zip(attributes, value)) for value in values]
+print(res)
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/03 20:30 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15727410293846.html">
+                
+                  <h1>Decorate</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>单一指责模式</h4>
+
+<ul>
+<li>在软件组件的设计中，如果责任划分的不清晰，使用继承得到的结果往往是随着需求的变化，子类急剧膨胀，同时充斥着重复代码，这时候的关键是划清责任</li>
+<li>典型模式</li>
+<li>decorator</li>
+<li>bridge</li>
+</ul>
+
+<h4>动机</h4>
+
+<ul>
+<li>在某些情况下我们可能会“过度地使用继承来扩展对象的功能”，由于继承为类型引人的静态特质，使得这种扩展方式缺乏灵活性；并且随着子类的增多（扩展功能的增多），各种子类的组合（扩展功能的组合）会导致更多子类的膨胀</li>
+<li>如何使“对象功能的扩展“能够根据需要来动态地实现？同时避免“扩展功能的増多”带来的子类膨胀问题？从而使得任何“功能扩展变化“所导致的影响将为最低？</li>
+</ul>
+
+<h4>demo</h4>
+
+<ul>
+<li><img src="media/15727410293846/15727411990518.jpg" alt="" style="width:535px;"/></li>
+<li><img src="media/15727410293846/15727415664698.jpg" alt="" style="width:1092px;"/></li>
+<li><img src="media/15727410293846/15727417495967.jpg" alt="" style="width:674px;"/></li>
+<li><img src="media/15727410293846/15727424291605.jpg" alt="" style="width:626px;"/></li>
+</ul>
+
+<h4>结构</h4>
+
+<p><img src="media/15727410293846/15805306433109.jpg" alt="" style="width:886px;"/></p>
+
+<h4>slide</h4>
+
+<ul>
+<li>编译时共用</li>
+<li>运行时多态</li>
+<li>运行时装配</li>
+<li><img src="media/15727410293846/15727426290997.jpg" alt="" style="width:666px;"/></li>
+</ul>
+
+<h5>重构之后</h5>
+
+<p><img src="media/15727410293846/15727429404116.jpg" alt="" style="width:1015px;"/></p>
+
+<h4>要点总结</h4>
+
+<ul>
+<li><p>通过采用组合而非继承的手法，Decorator 模式实现了在运行时动态扩展对象功能的能力，而且可以根据需要扩展多个功能。避免了使用继承带来的“灵活性差”和“多子类衍生问题”。</p></li>
+<li><p>Decorator 类在接口上表现为 is- a Componenti 的继承关系，即 Decorator 类继承了 Component 类所具有的接口。但在实现上又表现为 has- a Component 的组合关系，即 Decorator 类又使用了另外个 Component 类。</p></li>
+<li><p>Decorator/模式的目的并非解决“多子类衍生的多继承”问题，Decorator 模式应用的要点在于解决“主体类在多个方向上的扩展功能”一是为“装饰”的含义</p></li>
+</ul>
+
+<h4>装饰器的标示</h4>
+
+<ul>
+<li><img src="media/15727410293846/15727461029717.jpg" alt="" style="width:586px;"/></li>
+<li>同时继承和组合</li>
+</ul>
+
+<h4>golang-demo</h4>
+
+<pre class="line-numbers"><code class="language-go">package decorator
+
+type Component interface {
+    Calc() int
+}
+
+type ConcreteComponent struct{}
+
+func (*ConcreteComponent) Calc() int {
+    return 0
+}
+
+type MulDecorator struct {
+    Component
+    num int
+}
+
+func WarpMulDecorator(c Component, num int) Component {
+    return &amp;MulDecorator{
+        Component: c,
+        num:       num,
+    }
+}
+
+func (d *MulDecorator) Calc() int {
+    return d.Component.Calc() * d.num
+}
+
+type AddDecorator struct {
+    Component
+    num int
+}
+
+func WarpAddDecorator(c Component, num int) Component {
+    return &amp;AddDecorator{
+        Component: c,
+        num:       num,
+    }
+}
+
+func (d *AddDecorator) Calc() int {
+    return d.Component.Calc() + d.num
+}
+
+package decorator
+
+import &quot;fmt&quot;
+
+func ExampleDecorator() {
+    var c Component = &amp;ConcreteComponent{}
+    c = WarpAddDecorator(c, 10)
+    c = WarpMulDecorator(c, 8)
+    res := c.Calc()
+
+    fmt.Printf(&quot;res %d\n&quot;, res)
+    // Output:
+    // res 80
+}
+</code></pre>
+
+<h4>golang_demo2</h4>
+
+<pre class="line-numbers"><code class="language-go">type IMachine interface {
+    show()
+}
+
+type Machine struct {
+    name string
+}
+
+func (m *Machine) show() {
+}
+
+type AirCondition struct {
+    *Machine
+}
+
+func (a *AirCondition) show() {
+    println(&quot;machine name is &quot; + a.name)
+}
+
+func NewAirCondition(name string) *AirCondition {
+    return &amp;AirCondition{
+        Machine: &amp;Machine{
+            name: name,
+        },
+    }
+}
+
+type Television struct {
+    *Machine
+}
+
+func (t *Television) show() {
+    println(&quot;machine name is &quot; + t.name)
+}
+
+func NewTelevision(name string) *Television {
+    return &amp;Television{
+        Machine: &amp;Machine{
+            name: name,
+        },
+    }
+}
+
+type Decorator struct {
+    IMachine
+}
+
+func (d *Decorator) show() {
+    println(reflect.TypeOf(d.IMachine).String() + &quot; show&quot;)
+}
+
+func NewDecorator(m IMachine) *Decorator {
+    return &amp;Decorator{
+        IMachine: m,
+    }
+}
+
+type AirDecorator struct {
+    *Decorator
+}
+
+func (a *AirDecorator) show() {
+    a.external()
+    a.IMachine.show()
+}
+
+func (a *AirDecorator) external() {
+    println(&quot;AirDecorator external function&quot;)
+}
+
+func NewAirDecorator(m IMachine) *AirDecorator {
+    return &amp;AirDecorator{
+        Decorator: NewDecorator(m),
+    }
+}
+
+
+type TeleDecorator struct {
+    *Decorator
+}
+
+func (a *TeleDecorator) show() {
+    a.external()
+    a.IMachine.show()
+}
+
+func (a *TeleDecorator) external() {
+    println(&quot;TeleDecorator external function&quot;)
+}
+
+func NewTeleDecorator(m IMachine) *TeleDecorator {
+    return &amp;TeleDecorator{
+        Decorator: NewDecorator(m),
+    }
+}
+
+func TestMachineDecorator(t *testing.T) {
+    air := NewAirCondition(&quot;air&quot;)
+    dec1 := NewAirDecorator(air)
+    dec1.show()
+
+    tele := NewTelevision(&quot;tele&quot;)
+    dec2 := NewTeleDecorator(tele)
+    dec2.show()
+}
+</code></pre>
+
+<h4>cpp_demo</h4>
+
+<pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
+
+class Machine
+{
+ public:
+  std::string _name;
+ public:
+  Machine(std::string tmp) :_name(tmp){}
+  Machine(){}
+  virtual void show() = 0;
+};
+
+class AirCondition:public Machine
+{
+ public:
+  AirCondition(std::string name):Machine(name){}
+  AirCondition(){}
+  virtual void show()
+  {
+    std::cout&lt;&lt;&quot;machine name is &quot; &lt;&lt; _name &lt;&lt; std::endl;
+  }
+};
+
+class Television:public Machine
+{
+ public:
+  Television(std::string name):Machine(name){}
+  Television(){}
+  virtual void show()
+  {
+    std::cout&lt;&lt;&quot;machine name is &quot; &lt;&lt; _name &lt;&lt; std::endl;
+  }
+};
+class Decorator:public Machine
+{
+ protected:
+  Machine* _person;   //要进行装饰的类
+ public:
+  Decorator(Machine* tmp)
+  {
+    _person = tmp;
+  }
+
+  virtual void show()
+  {
+    _person-&gt;show();
+  }
+};
+
+class AirDecorator :public Decorator
+{
+ public:
+  AirDecorator(Machine *tmp):Decorator(tmp){}
+  virtual void show()
+  {
+    this-&gt;ExternalFunction();
+    Decorator::show();
+  }
+
+  void ExternalFunction() //额外功能
+  {
+    std::cout &lt;&lt; &quot;AirDecorator ExternalFunction &quot; &lt;&lt; std::endl;
+  }
+};
+class TeleDecorator :public Decorator
+{
+ public:
+  TeleDecorator(Machine *tmp):Decorator(tmp){}
+  virtual void show()
+  {
+    this-&gt;ExternalFunction();
+    Decorator::show();
+  }
+
+  void ExternalFunction() //额外功能
+  {
+    std::cout &lt;&lt; &quot;TeleDecorator ExternalFunction &quot; &lt;&lt; std::endl;
+  }
+};
+
+int main()
+{
+  Machine *air = new AirCondition(&quot;air&quot;);
+  Decorator * dec1 = new AirDecorator(air);
+
+  dec1-&gt;show();
+
+  Machine *tele = new Television(&quot;tele&quot;);
+  Decorator * dec2 = new TeleDecorator(tele);
+
+  dec2-&gt;show();
+}
+</code></pre>
+
+<h4>python_code</h4>
+
+<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
+
+class Machine(metaclass=ABCMeta):
+
+    @abstractmethod
+    def show(self):
+        pass
+
+    def __init__(self, name):
+        self.name = name
+
+class AirCondition(Machine):
+
+    def __init__(self, name):
+        super().__init__(name)
+
+    def show(self):
+        print(&quot;machine name is {}&quot;.format(self.name))
+
+
+class Television(Machine):
+
+    def __init__(self, name):
+        super().__init__(name)
+
+    def show(self):
+        print(&#39;machine name is {}&#39;.format(self.name))
+
+class Decorator(Machine):
+
+    def __init__(self, machine):
+        self.machine = machine
+
+    def show(self):
+        self.machine.show()
+
+class AirDecorator(Decorator):
+
+    def __init__(self, machine):
+        super().__init__(machine)
+
+    def show(self):
+        self.external_function()
+        super().show()
+
+    def external_function(self):
+        print(&#39;air decorator external function&#39;)
+
+class TeleDecorator(Decorator):
+
+    def __init__(self, machine):
+        super().__init__(machine)
+
+    def show(self):
+        self.external_function()
+        super().show()
+
+    def external_function(self):
+        print(&#39;tele decorator external function&#39;)
+
+if __name__ == &#39;__main__&#39;:
+    air = AirCondition(&#39;air&#39;)
+    dec1 = AirDecorator(air)
+    dec1.show()
+
+    tele = Television(&#39;tele&#39;)
+    dec2 = TeleDecorator(tele)
+    dec2.show()
+</code></pre>
+
+<h4>golang_demo</h4>
+
+<pre class="line-numbers"><code class="language-go">package desian_pattern_practise
+
+import (
+    &quot;fmt&quot;
+    &quot;reflect&quot;
+)
+
+type IPerson interface {
+    Wear()
+}
+
+type Person struct {
+    name string
+}
+
+func (p *Person) Wear() {
+}
+
+type Engineer struct {
+    *Person
+    skill string
+}
+
+func (e *Engineer) Wear() {
+    fmt.Println(reflect.TypeOf(e).String(), &quot;I&#39;m&quot;, e.name, &quot;skill&quot;, e.skill)
+}
+
+func NewEngineer(name, skill string) *Engineer {
+    return &amp;Engineer{
+        Person: &amp;Person{
+            name: name,
+        },
+        skill: skill,
+    }
+}
+
+type Teacher struct {
+    *Person
+    title string
+}
+
+func (e *Teacher) Wear() {
+    fmt.Println(reflect.TypeOf(e).String(),&quot;I&#39;m&quot;, e.name, &quot;title&quot;, e.title)
+}
+
+func (e *Teacher) NewTeacher(name, title string) *Teacher {
+    return &amp;Teacher{
+        Person: &amp;Person{
+            name: name,
+        },
+        title: title,
+    }
+}
+
+type Decorator struct {
+    IPerson
+}
+
+func (d *Decorator) Wear() {
+    println(reflect.TypeOf(d.IPerson).String() + &quot; Wear&quot;)
+    d.IPerson.Wear()
+}
+
+type CasualPan struct {
+    *Decorator
+}
+
+func (c *CasualPan) Wear() {
+    c.Decorator.Wear()
+    c.Decorate()
+}
+
+func (c *CasualPan) Decorate() {
+    println(&quot;CasualPan&quot;)
+}
+
+func NewCasualPan(person IPerson) *CasualPan {
+    return &amp;CasualPan{
+        Decorator: &amp;Decorator{
+            IPerson: person,
+        },
+    }
+}
+
+type Belt struct {
+    *Decorator
+}
+
+func (c *Belt) Wear() {
+    c.Decorator.Wear()
+    c.Decorate()
+}
+
+func (c *Belt) Decorate() {
+    println(&quot;Belt&quot;)
+}
+
+func NewBelt(person IPerson) *Belt {
+    return &amp;Belt{
+        Decorator: &amp;Decorator{
+            IPerson: person,
+        },
+    }
+}
+
+
+type LeatherShoes struct {
+    *Decorator
+}
+
+func (c *LeatherShoes) Wear() {
+    c.Decorator.Wear()
+    c.Decorate()
+}
+
+func (c *LeatherShoes) Decorate() {
+    println(&quot;LeatherShoes&quot;)
+}
+
+func NewLeatherShoes(person IPerson) *LeatherShoes {
+    return &amp;LeatherShoes{
+        Decorator: &amp;Decorator{
+            IPerson: person,
+        },
+    }
+}
+
+package desian_pattern_practise
+
+import &quot;testing&quot;
+
+func TestDecorator_Wear(t *testing.T) {
+    engineer := NewEngineer(&quot;ming&quot;, &quot;Golang&quot;)
+    pant := NewCasualPan(engineer)
+    belt := NewBelt(pant)
+    shoes := NewLeatherShoes(belt)
+    shoes.Wear()
+}
+</code></pre>
+
+<h3>cpp_demo</h3>
+
+<pre class="line-numbers"><code class="language-cpp">//
+// Created by eredinliu on 2020-02-01.
+//
+
+#include &lt;iostream&gt;
+
+using namespace std;
+
+class Person {
+public:
+    virtual void Wear() { cout &lt;&lt; &quot;person wear&quot; &lt;&lt; endl; }
+
+    Person(const string&amp; name) : name_(name) {}
+
+    Person() {}
+
+protected:
+    string name_;
+};
+
+class Engineer : public Person {
+
+public:
+    Engineer(const string&amp; name, const string&amp; skill) : Person(name),
+    skill_(skill) {}
+
+    string&amp; GetSkill() {return this-&gt;skill_;}
+
+    void Wear() {
+        cout &lt;&lt; &quot;I&#39;m &quot; &lt;&lt; name_ &lt;&lt; &quot; engineer &quot; &lt;&lt; name_ &lt;&lt; endl;
+        Person::Wear();
+    }
+private:
+    string skill_;
+};
+
+class Decorator : public  Person {
+public:
+    Decorator(Person* person) : decorated_(person) {}
+
+    void Wear() {
+        this-&gt;decorated_-&gt;Wear();
+        this-&gt;Decorate();
+    }
+
+    virtual void Decorate() = 0;
+
+protected:
+    Person* decorated_;
+};
+
+class CasualPant : public Decorator {
+public:
+    CasualPant(Person* person) : Decorator(person) {}
+
+    void Decorate() {
+        cout &lt;&lt; &quot;CasualPant&quot; &lt;&lt; endl;
+    }
+};
+
+class Belt : public Decorator {
+public:
+    Belt(Person* person) : Decorator(person) {}
+
+    void Decorate() {
+        cout &lt;&lt; &quot;Belt&quot; &lt;&lt; endl;
+    }
+};
+
+class LeatherShoes : public Decorator {
+public:
+    LeatherShoes(Person* person) : Decorator(person) {}
+
+    void Decorate() {
+        cout &lt;&lt; &quot;LeatherShoes&quot; &lt;&lt; endl;
+    }
+};
+
+int main() {
+    Person* tony = new Engineer(&quot;engineer&quot;, &quot;Go&quot;);
+    Person* pant = new CasualPant(tony);
+    Person* belt = new Belt(pant);
+    Person* shoes = new LeatherShoes(belt);
+    shoes-&gt;Wear();
+}
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/03 08:30 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+              
+
+
+			<div class="row">
+			  <div class="large-6 columns">
+			  <p class="text-left" style="padding-top:25px;">
+			   <a href="all_5.html">&laquo; Prev Page</a>  
+			  </p>
+			  </div>
+			  <div class="large-6 columns">
+			<p class="text-right" style="padding-top:25px;">
+			 <a href="all_7.html">&raquo; Next Page</a> 
+			</p>
+			  </div>
+			</div>
+		</div>
+	</div><!-- large 8 -->
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <h1>eredin-blog</h1>
+                <div class="site-des">生命的意义是成为你自己！</div>
+                <div class="social">
+
+
+
+
+
+
+
+
+
+
+
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html"><strong>C++基础与提高</strong></a>
+        
+            <a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html"><strong>设计模式之美</strong></a>
+        
+            <a href="Python.html"><strong>Python</strong></a>
+        
+            <a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html"><strong>设计模式</strong></a>
+        
+            <a href="Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html"><strong>Linux性能优化实战</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="15814649492497.html">Simple Factory</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15814189410719.html">代码的可测试性</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15814188057978.html">重构</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15813811739408.html">tuple 使用</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
+
+
+  </body>
+</html>

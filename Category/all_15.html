@@ -1,0 +1,1408 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  eredin-blog
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="eredin-blog" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site: ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="self" href="index.html">Home</a></li>
+        
+        <li id=""><a target="_self" href="archives.html">Archives</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="https://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; eredin-blog</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+        
+        <li><a target="self" href="index.html">Home</a></li>
+        
+        <li><a target="_self" href="archives.html">Archives</a></li>
+        
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html">C++基础与提高</a></li>
+        
+            <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html">设计模式之美</a></li>
+        
+            <li><a href="Python.html">Python</a></li>
+        
+            <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html">设计模式</a></li>
+        
+            <li><a href="Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html">Linux性能优化实战</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+	$(function(){
+		$('#menu_item_index').addClass('is_active');
+	});
+</script>
+<div class="row">
+	<div class="large-8 medium-8 columns">
+		<div class="markdown-body home-categories">
+		
+			<div class="article">
+                <a class="clearlink" href="15464093479091.html">
+                
+                  <h1>内存泄露实战</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>导致内存泄露的内存段</h4>
+
+<ul>
+<li>堆内存</li>
+<li>内存映射段，包括动态连接库和共享内存，其中共享内存由程序动态分配和管理，如果忘了回收也会导致内存泄露</li>
+</ul>
+
+<h4>使用memleak</h4>
+
+<ul>
+<li>/usr/share/bcc/tools/memleak -p $(pidof main) -a</li>
+<li>显示如下</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">  [22:44:58] Top 10 stacks with outstanding allocations:
+</code></pre>
+
+<ul>
+<li>表示没有内存泄露</li>
+</ul>
+
+<h4>脏页回收</h4>
+
+<ul>
+<li>fsync</li>
+<li>pdflush</li>
+</ul>
+
+<h4>堆内存</h4>
+
+<ul>
+<li>就是应用程序动态分配的堆内存，也就是匿名页</li>
+</ul>
+
+<h4>内存回收</h4>
+
+<ul>
+<li>直接内存回收</li>
+<li>定期内存回收 kswapd0</li>
+</ul>
+
+<h4>定期内存回收</h4>
+
+<ul>
+<li>页最小阈值（pages_min）</li>
+<li>页低阈值（pages_low）</li>
+<li>页高阈值（pages_high）</li>
+<li>剩余内存 pages_free 表示。</li>
+</ul>
+
+<h4>匿名页和文件页</h4>
+
+<ul>
+<li>对文件页的回收，当然就是直接回收缓存，或者把脏页写回磁盘后再回收。</li>
+<li>而对匿名页的回收，其实就是通过 Swap 机制，把它们写入磁盘后再释放内存。</li>
+<li>swappiness来控制匿名页和文件页的回收，数值越大，越积极使用Swap</li>
+</ul>
+
+<h4>内存指标动态监控</h4>
+
+<ul>
+<li>perf record -e kmem:* -p 27027 -g -- sleep 100</li>
+<li>perf script -i perf.data &amp;&gt; perf.unfold</li>
+<li>./stackcollapse-perf.pl perf.unfold &amp;&gt; perf.folded</li>
+<li>./flamegraph.pl perf.folded &gt; perf.svg</li>
+<li>perf script | ./stackcollapse-perf.pl | ./flamegraph.pl &gt; process.svg</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/01/02 14:09 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15457876165545.html">
+                
+                  <h1>Linux buffer和cache</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>buffer和cache</h4>
+
+<ul>
+<li>Buffers 是内核缓冲区用到的内存，对应的是 /proc/meminfo 中的 Buffers 值。</li>
+<li>Cache 是内核页缓存和 Slab 用到的内存，对应的是 /proc/meminfo 中的 Cached 与 SReclaimable 之和。</li>
+<li>Buffers 是对原始磁盘块的临时存储，也就是用来缓存磁盘的数据，通常不会特别大（20MB 左右）。这样，内核就可以把分散的写集中起来，统一优化磁盘的写入，比如可以把多次小的写合并成单次大的写等等。</li>
+<li>Cached 是从磁盘读取文件的页缓存，也就是用来缓存从文件读取的数据。这样，下次访问这些文件数据时，就可以直接从内存中快速获取，而不需要再次访问缓慢的磁盘。</li>
+<li>SReclaimable 是 Slab 的一部分。Slab 包括两部分，其中的可回收部分，用 </li>
+<li>SReclaimable 记录；而不可回收部分，用 SUnreclaim 记录。</li>
+</ul>
+
+<h4>结论</h4>
+
+<ul>
+<li>Buffer 既可以用作“将要写入磁盘数据的缓存”，也可以用作“从磁盘读取数据的缓存”。</li>
+<li>Cache 既可以用作“从文件读取数据的页缓存”，也可以用作“写文件的页缓存”。</li>
+</ul>
+
+<h4>思考</h4>
+
+<ul>
+<li>如何统计出所有进程的物理内存使用量呢？</li>
+</ul>
+
+<h4>利用缓存来提升效率</h4>
+
+<ul>
+<li>缓存命中率</li>
+<li>cachestat 提供了整个系统缓存的读写命中情况。</li>
+<li>cachetop 提供了每个进程的缓存命中情况。</li>
+<li>strace -p $(pgrep app) 查看进行的系统调用</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/12/26 09:26 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15456164768088.html">
+                
+                  <h1>Linux内存工作机制</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>内存映射</h4>
+
+<ul>
+<li>每个进程都有很大的地址空间</li>
+<li>并不是所有的虚拟内存都会分配物理内存，只有那些实际使用的虚拟内存才分配物理内存，并且分配后的物理内存，是通过内存映射来管理的。</li>
+<li>将虚拟内存地址映射到物理内存地址。为了完成内存映射，内核为每个进程都维护了一张页表，记录虚拟地址与物理地址的映射关系</li>
+</ul>
+
+<h4>缺页异常</h4>
+
+<ul>
+<li> 进程访问的虚拟地址在页表中查不到时，系统会产生一个缺页异常，进入内核空间分配物理内存、更新进程页表，最后再返回用户空间，恢复进程的运行</li>
+</ul>
+
+<h4>解决页表过多</h4>
+
+<ul>
+<li>多级页表</li>
+<li>大页面</li>
+</ul>
+
+<h4>虚拟内存空间</h4>
+
+<p><img src="media/15456164768088/15456168238060.jpg" alt=""/></p>
+
+<ul>
+<li>文件映射包括动态库，共享内存</li>
+</ul>
+
+<h4>malloc内存</h4>
+
+<ul>
+<li>&gt;128K 使用mmap mmap() 方式分配的内存，会在释放时直接归还系统，所以每次 mmap 都会发生缺页异常。在内存工作繁忙时，频繁的内存分配会导致大量的缺页异常，使内核的管理负担增大。这也是 malloc 只对大块内存使用 mmap 的原因。</li>
+<li>&lt;128K 使用brk brk() 方式的缓存，可以减少缺页异常的发生，提高内存访问效率。不过，由于这些内存没有归还系统，在内存工作繁忙时，频繁的内存分配和释放会造成内存碎片。</li>
+<li>slab是内核空间的，只用来管理内核中的小块内存</li>
+</ul>
+
+<h4>管理小内存</h4>
+
+<ul>
+<li>slab管理器管理小内存</li>
+</ul>
+
+<h4>系统回收机制</h4>
+
+<ul>
+<li>回收缓存，比如使用 LRU（Least Recently Used）算法，回收最近使用最少的内存页面；</li>
+<li>回收不常访问的内存，把不常用的内存通过交换分区直接写到磁盘中；</li>
+<li>杀死进程，内存紧张时系统还会通过 OOM（Out of Memory），直接杀掉占用大量内存的进程。oom_adj的范围-17~15</li>
+</ul>
+
+<h4>top</h4>
+
+<ul>
+<li>VIRT 进程虚拟内存的大小，只要是进程申请过的内存，即便还没有真正分配物理内存，也会计算在内。</li>
+<li>RES 是常驻内存的大小，也就是进程实际使用的物理内存大小</li>
+<li>SHR 是共享内存的大小，比如与其他进程共同使用的共享内存、加载的动态链接库以及程序的代码段等。</li>
+<li>共享内存 SHR 并不一定是共享的，比方说，程序的代码段、非共享的动态链接库，也都算在 SHR 里。当然，SHR 也包括了进程间真正共享的内存。所以在计算多个进程的内存使用时，不要把所有进程的 SHR 直接相加得出结果</li>
+</ul>
+
+<h4>查看系统内存情况</h4>
+
+<ul>
+<li>cat /proc/[pid]/status和pmap -x pid</li>
+</ul>
+
+<h4>拓展阅读</h4>
+
+<ul>
+<li><a href="https://blog.holbertonschool.com/hack-the-virtual-memory-malloc-the-heap-the-program-break/">https://blog.holbertonschool.com/hack-the-virtual-memory-malloc-the-heap-the-program-break/</a></li>
+</ul>
+
+<h4>内存分配</h4>
+
+<ul>
+<li>调用c标准库的都是用户空间的调用，用户空间的内存分配都是基于buddy算法（伙伴算法），并不涉及slab</li>
+<li>brk()方式之所以会产生内存碎片，是由于brk分配的内存是推_edata指针，从堆的低地址向高地址推进。这种情况下，如果高地址的内存不释放，低地址的内存是得不到释放的</li>
+<li>mmap()方式分配的内存，是在堆与栈之间的空闲区域分配虚拟内存，直接拿到的是内存地址，可以直接操作内存的释放</li>
+<li>上述的都是在用户空间发生的行为，只有在内核空间，内核调用kmalloc去分配内存的时候，才会涉及到slab</li>
+</ul>
+
+<h4>缺页异常</h4>
+
+<ul>
+<li>缺页异常是内存分配必要步骤：陷入内核态分配内存并完成内存映射的过程</li>
+<li>可以直接从物理内存中分配时，被称为次缺页异常。</li>
+<li>需要磁盘 I/O 介入（比如 Swap）时，被称为主缺页异常。</li>
+</ul>
+
+<h4>oom_score</h4>
+
+<ul>
+<li>一个进程消耗的内存越大，oom_score 就越大；</li>
+<li>一个进程运行占用的 CPU 越多，oom_score 就越小。</li>
+<li>通过oom_adj来调整大小</li>
+</ul>
+
+<h4>缓存</h4>
+
+<ul>
+<li>cachestat 系统缓存和缓冲区的命中率</li>
+<li>cachetop 进程缓存和缓冲区的命中率</li>
+</ul>
+
+<h4>内存选项</h4>
+
+<ul>
+<li>RSS (Resident set size），使用 top 命令可以查询到，是最常用的内存指标，表示进程占用的物理内存大小。但是，将各进程的 RSS 值相加，通常会超出整个系统的内存消耗，这是因为 RSS 中包含了各进程间共享的内存。</li>
+<li>PSS (Proportional set size）所有使用某共享库的程序均分该共享库占用的内存时。显然所有进程的 PSS 之和就是系统的内存使用量。它会更准确一些，它将共享内存的大小进行平均后，再分推到各进程上去。</li>
+<li>USS (Unique set size）进程独自占用的内存，它只计算了进程独自占用的内存大小，</li>
+<li>smem -k  -s uss</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/12/24 09:54 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15450953397782.html">
+                
+                  <h1>CPU优化套路</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>应用程序优化</h4>
+
+<ul>
+<li>编译器优化</li>
+<li>算法优化</li>
+<li>异步处理</li>
+<li>多线程代替多进程 多线程上下文切换并不切换进程地址空间，可以降低上文文切换的成本</li>
+<li>善用缓存</li>
+</ul>
+
+<h4>系统进程优化</h4>
+
+<ul>
+<li>CPU绑定</li>
+<li>CPU分组进行CPU独占</li>
+<li>优先级调整</li>
+<li>进程设置资源限制</li>
+<li>NUMA优化 访问本地内存</li>
+<li>中断负载均衡 irqbalance和smp_affinity</li>
+</ul>
+
+<h4>wait区别</h4>
+
+<ul>
+<li>pidstat 中， %wait 表示进程等待 CPU 的时间百分比。</li>
+<li>top 中 ，iowait% 则表示等待 I/O 的 CPU 时间百分比。</li>
+</ul>
+
+<h4>指定容器文件系统的路径</h4>
+
+<ul>
+<li>bindfs</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/12/18 09:08 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15447499262312.html">
+                
+                  <h1>快速分析CPU性能瓶颈</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>CPU性能指标</h4>
+
+<ul>
+<li>CPU使用率</li>
+<li>平均负载</li>
+<li>进程上下文切换</li>
+<li>CPU缓存命中率
+<img src="media/15447499262312/1e66612e0022cd6c17847f3ab6989007.png" alt="1e66612e0022cd6c17847f3ab6989007"/></li>
+</ul>
+
+<h4>可中断睡眠和不可中断睡眠</h4>
+
+<ul>
+<li>可中断的睡眠状态的进程会睡眠直到某个条件变为真，如产生一个硬件中断、释放进程正在等待的系统资源或是传递一个信号都可以是唤醒进程的条件。</li>
+<li>不可中断睡眠状态与可中断睡眠状态类似，但是它有一个例外，那就是把信号传递到这种睡眠状态的进程不能改变它的状态，也就是说它不响应信号的唤醒。</li>
+</ul>
+
+<h4>总结</h4>
+
+<p><img src="media/15447499262312/596397e1d6335d2990f70427ad4b14ec.png" alt="596397e1d6335d2990f70427ad4b14e"/><br/>
+<img src="media/15447499262312/b0c67a7196f5ca4cc58f14f959a364ca.png" alt="b0c67a7196f5ca4cc58f14f959a364ca"/><br/>
+<img src="media/15447499262312/7a445960a4bc0a58a02e1bc75648aa17.png" alt="7a445960a4bc0a58a02e1bc75648aa17"/></p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/12/14 09:12 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15445235023007.html">
+                
+                  <h1>软中断</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>Linux内核中断</h4>
+
+<ul>
+<li>上半部用来快速处理中断，它在中断禁止模式下运行，主要处理跟硬件紧密相关的或时间敏感的工作。</li>
+<li>下半部用来延迟处理上半部未完成的工作，通常以内核线程的方式运行。</li>
+<li>上半部直接处理硬件请求，是硬中断，快速执行，会立即打断cpu正在执行的任务</li>
+<li>下半部是内核触发，就是软中断，特点是延迟执行，在每个cpu都对应一个内核线程ksoftirqd/0</li>
+</ul>
+
+<h4>内核线程</h4>
+
+<ul>
+<li>ps 的输出中，名字括在中括号里的，一般都是内核线程</li>
+<li>ksoftirqd/n，每个处理器都有一组辅助处理中断的内核线程，专为出现大量软中断处理而设计，避免跟其他重要任务抢夺资源</li>
+</ul>
+
+<h4>实验</h4>
+
+<ul>
+<li> 发起攻击方 hping3 -S -p 9091 -i u1 10.62.45.4</li>
+<li> watch -d cat /proc/softirqs</li>
+<li> sar -n DEV 1 | grep -Ew &#39;(eth0|IFACE)&#39; 查看网卡收发包情况</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">
+17时30分03秒     IFACE   rxpck/s   txpck/s    rxkB/s    txkB/s   rxcmp/s   txcmp/s  rxmcst/s
+17时30分04秒      eth0    311.00    330.00    104.47    210.60      0.00      0.00      0.00
+17时30分04秒     IFACE   rxpck/s   txpck/s    rxkB/s    txkB/s   rxcmp/s   txcmp/s  rxmcst/s
+17时30分05秒      eth0    565.00    576.00    967.40   8123.24      0.00      0.00      0.00
+17时30分05秒     IFACE   rxpck/s   txpck/s    rxkB/s    txkB/s   rxcmp/s   txcmp/s  rxmcst/s
+17时30分06秒      eth0    165.00    205.00     31.62     95.04      0.00      0.00      0.00
+17时30分06秒     IFACE   rxpck/s   txpck/s    rxkB/s    txkB/s   rxcmp/s   txcmp/s  rxmcst/s
+17时30分07秒      eth0    126.00    125.00     72.29     12.88      0.00      0.00      0.00
+17时30分07秒     IFACE   rxpck/s   txpck/s    rxkB/s    txkB/s   rxcmp/s   txcmp/s  rxmcst/s
+</code></pre>
+
+<ul>
+<li>第三、四列：rxpck/s 和 txpck/s 分别表示每秒接收、发送的网络帧数，也就是 PPS。</li>
+<li>第五、六列：rxkB/s 和 txkB/s 分别表示每秒接收、发送的千字节数，也就是 BPS。</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/12/11 18:18 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15441451175680.html">
+                
+                  <h1>不可中断进程和僵尸进程</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>概念</h4>
+
+<ul>
+<li>不可中断状态，一般表示进程正在跟硬件交互，为了保护进程数据与硬件一致，系统不允许其他进程或中断打断该进程。</li>
+<li>僵尸进程表示进程已经退出，但它的父进程没有回收该进程所占用的资源</li>
+</ul>
+
+<h4>进程状态</h4>
+
+<ul>
+<li>R 是 Running 或 Runnable 的缩写，表示进程在 CPU 的就绪队列中，正在运行或者正在等待运行。</li>
+<li>D 是 Disk Sleep 的缩写，也就是不可中断状态睡眠（Uninterruptible Sleep），一般表示进程正在跟硬件交互，并且交互过程不允许被其他进程或中断打断。</li>
+<li>Z 是 Zombie 的缩写，如果你玩过“植物大战僵尸”这款游戏，应该知道它的意思。它表示僵尸进程，也就是进程实际上已经结束了，但是父进程还没有回收它的资源（比如进程的描述符、PID 等）。</li>
+<li>S 是 Interruptible Sleep 的缩写，也就是可中断状态睡眠，表示进程因为等待某个事件而被系统挂起。当进程等待的事件发生时，它会被唤醒并进入 R 状态。</li>
+<li>I 是 Idle 的缩写，也就是空闲状态，用在不可中断睡眠的内核线程上。前面说了，硬件交互导致的不可中断进程用 D 表示，但对某些内核线程来说，它们有可能实际上并没有任何负载，用 Idle 正是为了区分这种情况。要注意，D 状态的进程会导致平均负载升高， I 状态的进程却不会。</li>
+</ul>
+
+<h4>下面问题分析</h4>
+
+<p><img src="media/15441451175680/15441459602016.jpg" alt=""/></p>
+
+<ul>
+<li>iowait太高，导致系统的平均负载升高，甚至达到了系统CPU的个数</li>
+<li>僵尸进程正在不断增多，说明程序没能正确清理进程的资源
+<img src="media/15441451175680/15441462091525.jpg" alt=""/></li>
+<li>dstat 1 10
+<img src="media/15441451175680/15441465462749.jpg" alt=""/></li>
+<li> iowait 升高（wai）时，磁盘的读请求（read）都会很大。这说明 iowait 的升高跟磁盘的读请求有关，很可能就是磁盘读导致的。</li>
+<li>查看一个进程的资源使用情况pidstat</li>
+<li>利用perf record -g &amp; perf report 来查看结果
+<img src="media/15441451175680/15441491197686.jpg" alt=""/></li>
+</ul>
+
+<h4>僵尸进程太多</h4>
+
+<pre class="line-numbers"><code class="language-text">ps -A -o stat,ppid,pid,cmd | grep -e &#39;^[Zz]&#39;
+</code></pre>
+
+<ul>
+<li>通过上述命令找到僵尸进程，然后执行pstree -aps zombine-id找出父进程</li>
+<li>僵尸进程主要是找父进程</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/12/07 09:11 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15435593108560.html">
+                
+                  <h1>CPU使用率</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>节拍率</h4>
+
+<ul>
+<li>为了维护 CPU 时间，Linux 通过事先定义的节拍率（内核中表示为 HZ），触发时间中断，并使用全局变量 Jiffies 记录了开机以来的节拍数</li>
+<li>nice 低优先级用户态CPU时间，就是进程的nice值被调整被1~19之间时的CPU时间</li>
+<li> steal 当前系统运行虚拟机的时候，被虚拟机占用的CPU时间</li>
+</ul>
+
+<h4>CPU使用率</h4>
+
+<ul>
+<li>CPU使用率 = 1 - (空闲时间/总CPU时间)</li>
+<li>平均CPU使用率 = 1 - (空间时间new - 空闲时间old)/(总cpu时间new - 总空闲时间old)</li>
+</ul>
+
+<h4>PID不停的在变，CPU使用率高</h4>
+
+<ul>
+<li>要么是这些进程在不停地重启，要么就是全新的进程，这无非也就两个原因：</li>
+<li>第一个原因，进程在不停地崩溃重启，比如因为段错误、配置错误等等，这时，进程在退出后可能又被监控系统自动重启了。</li>
+<li>第二个原因，这些进程都是短时进程，也就是在其他应用内部通过 exec 调用的外面命令。这些命令一般都只运行很短的时间就会结束，你很难用 top 这种间隔时间比较长的工具发现</li>
+</ul>
+
+<h4>查看父进程</h4>
+
+<ul>
+<li>pstree | grep stress</li>
+<li>短时进程</li>
+</ul>
+
+<h4>execsnoop</h4>
+
+<pre class="line-numbers"><code class="language-text">  #!/bin/bash
+#
+# execsnoop - trace process exec() with arguments.
+#             Written using Linux ftrace.
+#
+# This shows the execution of new processes, especially short-lived ones that
+# can be missed by sampling tools such as top(1).
+#
+# USAGE: ./execsnoop [-hrt] [-n name]
+#
+# REQUIREMENTS: FTRACE and KPROBE CONFIG, sched:sched_process_fork tracepoint,
+# and either the sys_execve, stub_execve or do_execve kernel function. You may
+# already have these on recent kernels. And awk.
+#
+# This traces exec() from the fork()-&gt;exec() sequence, which means it won&#39;t
+# catch new processes that only fork(). With the -r option, it will also catch
+# processes that re-exec. It makes a best-effort attempt to retrieve the program
+# arguments and PPID; if these are unavailable, 0 and &quot;[?]&quot; are printed
+# respectively. There is also a limit to the number of arguments printed (by
+# default, 8), which can be increased using -a.
+#
+# This implementation is designed to work on older kernel versions, and without
+# kernel debuginfo. It works by dynamic tracing an execve kernel function to
+# read the arguments from the %si register. The sys_execve function is tried
+# first, then stub_execve and do_execve. The sched:sched_process_fork
+# tracepoint is used to get the PPID. This program is a workaround that should be
+# improved in the future when other kernel capabilities are made available. If
+# you need a more reliable tool now, then consider other tracing alternatives
+# (eg, SystemTap). This tool is really a proof of concept to see what ftrace can
+# currently do.
+#
+# From perf-tools: https://github.com/brendangregg/perf-tools
+#
+# See the execsnoop(8) man page (in perf-tools) for more info.
+#
+# COPYRIGHT: Copyright (c) 2014 Brendan Gregg.
+#
+#  This program is free software; you can redistribute it and/or
+#  modify it under the terms of the GNU General Public License
+#  as published by the Free Software Foundation; either version 2
+#  of the License, or (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software Foundation,
+#  Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#
+#  (http://www.gnu.org/copyleft/gpl.html)
+#
+# 07-Jul-2014   Brendan Gregg   Created this.
+
+### default variables
+tracing=/sys/kernel/debug/tracing
+flock=/var/tmp/.ftrace-lock; wroteflock=0
+opt_duration=0; duration=; opt_name=0; name=; opt_time=0; opt_reexec=0
+opt_argc=0; argc=8; max_argc=16; ftext=
+trap &#39;:&#39; INT QUIT TERM PIPE HUP # sends execution to end tracing section
+
+function usage {
+    cat &lt;&lt;-END &gt;&amp;2
+    USAGE: execsnoop [-hrt] [-a argc] [-d secs] [name]
+                     -d seconds      # trace duration, and use buffers
+                     -a argc         # max args to show (default 8)
+                     -r              # include re-execs
+                     -t              # include time (seconds)
+                     -h              # this usage message
+                     name            # process name to match (REs allowed)
+      eg,
+           execsnoop                 # watch exec()s live (unbuffered)
+           execsnoop -d 1            # trace 1 sec (buffered)
+           execsnoop grep            # trace process names containing grep
+           execsnoop &#39;udevd$&#39;        # process names ending in &quot;udevd&quot;
+
+    See the man page and example file for more info.
+END
+    exit
+}
+
+function warn {
+    if ! eval &quot;$@&quot;; then
+        echo &gt;&amp;2 &quot;WARNING: command failed \&quot;$@\&quot;&quot;
+    fi
+}
+
+function end {
+    # disable tracing
+    echo 2&gt;/dev/null
+    echo &quot;Ending tracing...&quot; 2&gt;/dev/null
+    cd $tracing
+    warn &quot;echo 0 &gt; events/kprobes/$kname/enable&quot;
+    warn &quot;echo 0 &gt; events/sched/sched_process_fork/enable&quot;
+    warn &quot;echo -:$kname &gt;&gt; kprobe_events&quot;
+    warn &quot;echo &gt; trace&quot;
+    (( wroteflock )) &amp;&amp; warn &quot;rm $flock&quot;
+}
+
+function die {
+    echo &gt;&amp;2 &quot;$@&quot;
+    exit 1
+}
+
+function edie {
+    # die with a quiet end()
+    echo &gt;&amp;2 &quot;$@&quot;
+    exec &gt;/dev/null 2&gt;&amp;1
+    end
+    exit 1
+}
+
+### process options
+while getopts a:d:hrt opt
+do
+    case $opt in
+    a)  opt_argc=1; argc=$OPTARG ;;
+    d)  opt_duration=1; duration=$OPTARG ;;
+    r)  opt_reexec=1 ;;
+    t)  opt_time=1 ;;
+    h|?)    usage ;;
+    esac
+done
+shift $(( $OPTIND - 1 ))
+if (( $# )); then
+    opt_name=1
+    name=$1
+    shift
+fi
+(( $# )) &amp;&amp; usage
+
+### option logic
+(( opt_pid &amp;&amp; opt_name )) &amp;&amp; die &quot;ERROR: use either -p or -n.&quot;
+(( opt_pid )) &amp;&amp; ftext=&quot; issued by PID $pid&quot;
+(( opt_name )) &amp;&amp; ftext=&quot; issued by process name \&quot;$name\&quot;&quot;
+(( opt_file )) &amp;&amp; ftext=&quot;$ftext for filenames containing \&quot;$file\&quot;&quot;
+(( opt_argc &amp;&amp; argc &gt; max_argc )) &amp;&amp; die &quot;ERROR: max -a argc is $max_argc.&quot;
+if (( opt_duration )); then
+    echo &quot;Tracing exec()s$ftext for $duration seconds (buffered)...&quot;
+else
+    echo &quot;Tracing exec()s$ftext. Ctrl-C to end.&quot;
+fi
+
+### select awk
+if (( opt_duration )); then
+    [[ -x /usr/bin/mawk ]] &amp;&amp; awk=mawk || awk=awk
+else
+    # workarounds for mawk/gawk fflush behavior
+    if [[ -x /usr/bin/gawk ]]; then
+        awk=gawk
+    elif [[ -x /usr/bin/mawk ]]; then
+        awk=&quot;mawk -W interactive&quot;
+    else
+        awk=awk
+    fi
+fi
+
+### check permissions
+cd $tracing || die &quot;ERROR: accessing tracing. Root user? Kernel has FTRACE?
+    debugfs mounted? (mount -t debugfs debugfs /sys/kernel/debug)&quot;
+
+### ftrace lock
+[[ -e $flock ]] &amp;&amp; die &quot;ERROR: ftrace may be in use by PID $(cat $flock) $flock&quot;
+echo $$ &gt; $flock || die &quot;ERROR: unable to write $flock.&quot;
+wroteflock=1
+
+### build probe
+if [[ -x /usr/bin/getconf ]]; then
+    bits=$(getconf LONG_BIT)
+else
+    bits=64
+    [[ $(uname -m) == i* ]] &amp;&amp; bits=32
+fi
+(( offset = bits / 8 ))
+function makeprobe {
+    func=$1
+    kname=execsnoop_$func
+    kprobe=&quot;p:$kname $func&quot;
+    i=0
+    while (( i &lt; argc + 1 )); do
+        # p:kname do_execve +0(+0(%si)):string +0(+8(%si)):string ...
+        kprobe=&quot;$kprobe +0(+$(( i * offset ))(%si)):string&quot;
+        (( i++ ))
+    done
+}
+# try in this order: sys_execve, stub_execve, do_execve
+makeprobe sys_execve
+
+### setup and begin tracing
+echo nop &gt; current_tracer
+if ! echo $kprobe &gt;&gt; kprobe_events 2&gt;/dev/null; then
+    makeprobe stub_execve
+    if ! echo $kprobe &gt;&gt; kprobe_events 2&gt;/dev/null; then
+        makeprobe do_execve
+        if ! echo $kprobe &gt;&gt; kprobe_events 2&gt;/dev/null; then
+            edie &quot;ERROR: adding a kprobe for execve. Exiting.&quot;
+        fi
+    fi
+fi
+if ! echo 1 &gt; events/kprobes/$kname/enable; then
+    edie &quot;ERROR: enabling kprobe for execve. Exiting.&quot;
+fi
+if ! echo 1 &gt; events/sched/sched_process_fork/enable; then
+    edie &quot;ERROR: enabling sched:sched_process_fork tracepoint. Exiting.&quot;
+fi
+echo &quot;Instrumenting $func&quot;
+(( opt_time )) &amp;&amp; printf &quot;%-16s &quot; &quot;TIMEs&quot;
+printf &quot;%6s %6s %s\n&quot; &quot;PID&quot; &quot;PPID&quot; &quot;ARGS&quot;
+
+#
+# Determine output format. It may be one of the following (newest first):
+#           TASK-PID   CPU#  ||||    TIMESTAMP  FUNCTION
+#           TASK-PID    CPU#    TIMESTAMP  FUNCTION
+# To differentiate between them, the number of header fields is counted,
+# and an offset set, to skip the extra column when needed.
+#
+offset=$($awk &#39;BEGIN { o = 0; }
+    $1 == &quot;#&quot; &amp;&amp; $2 ~ /TASK/ &amp;&amp; NF == 6 { o = 1; }
+    $2 ~ /TASK/ { print o; exit }&#39; trace)
+
+### print trace buffer
+warn &quot;echo &gt; trace&quot;
+( if (( opt_duration )); then
+    # wait then dump buffer
+    sleep $duration
+    cat -v trace
+else
+    # print buffer live
+    cat -v trace_pipe
+fi ) | $awk -v o=$offset -v opt_name=$opt_name -v name=$name \
+    -v opt_duration=$opt_duration -v opt_time=$opt_time -v kname=$kname \
+    -v opt_reexec=$opt_reexec &#39;
+    # common fields
+    $1 != &quot;#&quot; {
+        # task name can contain dashes
+        comm = pid = $1
+        sub(/-[0-9][0-9]*/, &quot;&quot;, comm)
+        sub(/.*-/, &quot;&quot;, pid)
+    }
+
+    $1 != &quot;#&quot; &amp;&amp; $(4+o) ~ /sched_process_fork/ {
+        cpid=$0
+        sub(/.* child_pid=/, &quot;&quot;, cpid)
+        sub(/ .*/, &quot;&quot;, cpid)
+        getppid[cpid] = pid
+        delete seen[pid]
+    }
+
+    $1 != &quot;#&quot; &amp;&amp; $(4+o) ~ kname {
+        if (seen[pid])
+            next
+        if (opt_name &amp;&amp; comm !~ name)
+            next
+
+        #
+        # examples:
+        # ... arg1=&quot;/bin/echo&quot; arg2=&quot;1&quot; arg3=&quot;2&quot; arg4=&quot;3&quot; ...
+        # ... arg1=&quot;sleep&quot; arg2=&quot;2&quot; arg3=(fault) arg4=&quot;&quot; ...
+        # ... arg1=&quot;&quot; arg2=(fault) arg3=&quot;&quot; arg4=&quot;&quot; ...
+        # the last example is uncommon, and may be a race.
+        #
+        if ($0 ~ /arg1=&quot;&quot;/) {
+            args = comm &quot; [?]&quot;
+        } else {
+            args=$0
+            sub(/ arg[0-9]*=\(fault\).*/, &quot;&quot;, args)
+            sub(/.*arg1=&quot;/, &quot;&quot;, args)
+            gsub(/&quot; arg[0-9]*=&quot;/, &quot; &quot;, args)
+            sub(/&quot;$/, &quot;&quot;, args)
+            if ($0 !~ /\(fault\)/)
+                args = args &quot; [...]&quot;
+        }
+
+        if (opt_time) {
+            time = $(3+o); sub(&quot;:&quot;, &quot;&quot;, time)
+            printf &quot;%-16s &quot;, time
+        }
+        printf &quot;%6s %6d %s\n&quot;, pid, getppid[pid], args
+        if (!opt_duration)
+            fflush()
+        if (!opt_reexec) {
+            seen[pid] = 1
+            delete getppid[pid]
+        }
+    }
+
+    $0 ~ /LOST.*EVENT[S]/ { print &quot;WARNING: &quot; $0 &gt; &quot;/dev/stderr&quot; }
+&#39;
+
+### end tracing
+end
+</code></pre>
+
+<ul>
+<li>基于内核BPF技术实现</li>
+</ul>
+
+<h4>拓展阅读</h4>
+
+<ul>
+<li><a href="http://blog.bruceding.com/420.html">http://blog.bruceding.com/420.html</a> </li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/11/30 14:28 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15432181027120.html">
+                
+                  <h1>上下文切换-CPU使用率</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>cpu上下文</h4>
+
+<ul>
+<li>cpu寄存器和程序计数器叫上下文</li>
+<li>CPU 寄存器，是 CPU 内置的容量小、但速度极快的内存。而程序计数器，则是用来存储 CPU 正在执行的指令位置、或者即将执行的下一条指令位置。</li>
+</ul>
+
+<h4>上下文切换场景</h4>
+
+<ul>
+<li>进程上下文切换 包括了虚拟内存、栈、全局变量等用户空间的资源，还包括了内核堆栈、寄存器等内核空间的状态</li>
+<li>线程上下文切换</li>
+<li>中断上下文切换</li>
+<li>系统调用发生了两次上下文切换 并不会涉及到虚拟内存等进程用户态的资源，也不会切换进程。这跟我们通常所说的进程上下文切换是不一样的</li>
+<li></li>
+</ul>
+
+<h4>系统调用</h4>
+
+<ul>
+<li>系统调用过程通常称为特权模式切换，而不是上下文切换。但实际上，系统调用过程中，CPU 的上下文切换还是无法避免的。</li>
+<li>一次系统调用的过程，其实是发生了两次 CPU 上下文切换</li>
+</ul>
+
+<h4>TLB作用</h4>
+
+<ul>
+<li>TLB（Translation Lookaside Buffer）来管理虚拟内存到物理内存的映射关系。当虚拟内存更新后，TLB 也需要刷新，内存的访问也会随之变慢。特别是在多处理器系统上，缓存是被多个处理器共享的，刷新缓存不仅会影响当前处理器的进程，还会影响共享缓存的其他处理器的进程。</li>
+</ul>
+
+<h4>进程上下文切换</h4>
+
+<ul>
+<li>进程的上下文切换就比系统调用时多了一步：在保存当前进程的内核状态和 CPU 寄存器之前，（需要先把该进程的虚拟内存、栈等保存下来；而加载了下一进程的内核态后，还需要刷新进程的虚拟内存和用户栈）。<strong><em>这个系统调用并没有</em></strong></li>
+<li><img src="media/15432181027120/15432189386717.jpg" alt=""/></li>
+<li>线程也有自己的私有数据，比如栈和寄存器等，这些在上下文切换时也是需要保存的。</li>
+<li>两个线程属于同一个进程。此时，因为虚拟内存是共享的，所以在切换时，虚拟内存这些资源就保持不动，只需要切换线程的私有数据、寄存器等不共享的数据。</li>
+</ul>
+
+<h4>中断上下文切换</h4>
+
+<ul>
+<li>线程是调度的基本单位，进程是资源拥有的基本单位，同属一个进程的线程，发生上下文切换，只切换线程的私有数据，共享数据不变，速度很快。</li>
+</ul>
+
+<h4>怎么查看系统的上下文情况</h4>
+
+<ul>
+<li>vmstat</li>
+<li>自愿上下文切换 是指进程无法获取所需资源导致的上下文切换，比如IO,内存</li>
+<li>非自愿上下文切换， 进程由于时间片已到等时间，被系统强制调度，进而发生的上下文呢切换</li>
+</ul>
+
+<h4>有哪些减少上下文切换的技术用例？</h4>
+
+<p>数据库连接池（复用连接）、合理设置应用的最大进程，线程数、直接内存访问DMA、零拷贝技术</p>
+
+<h4>压力测试</h4>
+
+<ul>
+<li>sysbench --threads=10 --max-time=300 threads run</li>
+<li>线程切换 sysbench --num-threads=10 --max-time=300 --test=threads run</li>
+<li>我们可以知道，系统的就绪队列过长，也就是正在运行和等待 CPU 的进程数过多，导致了大量的上下文切换，而上下文切换又导致了系统 CPU 的占用率升高。</li>
+<li>查看中断变化watch -d cat /proc/interrupts</li>
+<li>查看进程中线程变化的数据 pidstat -wt 1</li>
+<li>Rescheduling interrupts多处理器系统（SMP）中，调度器用来分散任务到不同 CPU 的机制，通常也被称为处理器间中断（Inter-Processor Interrupts，IPI）</li>
+</ul>
+
+<h4>上下文切换类型</h4>
+
+<ul>
+<li>自愿上下文切换变多了，说明进程都在等待资源，有可能发生了 I/O 等其他问题；</li>
+<li>非自愿上下文切换变多了，说明进程都在被强制调度，也就是都在争抢 CPU，说明 CPU 的确成了瓶颈；</li>
+<li>中断次数变多了，说明 CPU 被中断处理程序占用，还需要通过查看 /proc/interrupts 文件来分析具体的中断类型。</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/11/26 15:41 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15429373418994.html">
+                
+                  <h1>平均负载</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>定义</h4>
+
+<ul>
+<li>单位时间内，系统处于可运行状态和不可中断状态的平均进程数，和cpu使用率没有直接关系</li>
+<li>包括了正在使用 CPU 的进程，还包括等待 CPU 和等待 I/O 的进程。</li>
+<li>本质上是平均活跃进程数</li>
+<li></li>
+</ul>
+
+<h4>过载</h4>
+
+<ul>
+<li>一旦1分钟的平均负载接近或超过了CPU的个数，就意味着系统正在发生过载的问题</li>
+<li>排查问题的阀门</li>
+<li><strong><em>当平均负载高于 CPU 数量 70% 的时候，你就应该分析排查负载高的问题了。</em></strong></li>
+</ul>
+
+<h4>cpu负载和cpu对应率的关系</h4>
+
+<ul>
+<li>CPU 密集型进程，使用大量 CPU 会导致平均负载升高，此时这两者是一致的。</li>
+<li>I/O 密集型进程，等待 I/O 也会导致平均负载升高，但 CPU 使用率不一定很高。</li>
+<li>大量等待 CPU 的进程调度也会导致平均负载升高，此时的 CPU 使用率也会比较高。</li>
+</ul>
+
+<h4>工具stress和sysstat</h4>
+
+<ul>
+<li>stress系统压力测试工具</li>
+<li>sysstat作为性能工具</li>
+<li>mpstat 是一个常用的多核 CPU 性能分析工具，用来实时查看每个 CPU 的性能指标，以及所有 CPU 的平均指标。</li>
+<li>pidstat 是一个常用的进程性能分析工具，用来实时查看进程的 CPU、内存、I/O 以及上下文切换等性能指标。</li>
+<li>pidstat wait就是进程等待CPU时间</li>
+<li>stress 缓冲区可能比较小，无法产生大的IO压力，这样大部分就都是系统调用的消耗了</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/11/23 09:42 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+              
+
+
+			<div class="row">
+			  <div class="large-6 columns">
+			  <p class="text-left" style="padding-top:25px;">
+			   <a href="all_14.html">&laquo; Prev Page</a>  
+			  </p>
+			  </div>
+			  <div class="large-6 columns">
+			<p class="text-right" style="padding-top:25px;">
+			 <a href="all_16.html">&raquo; Next Page</a> 
+			</p>
+			  </div>
+			</div>
+		</div>
+	</div><!-- large 8 -->
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <h1>eredin-blog</h1>
+                <div class="site-des">生命的意义是成为你自己！</div>
+                <div class="social">
+
+
+
+
+
+
+
+
+
+
+
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html"><strong>C++基础与提高</strong></a>
+        
+            <a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html"><strong>设计模式之美</strong></a>
+        
+            <a href="Python.html"><strong>Python</strong></a>
+        
+            <a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html"><strong>设计模式</strong></a>
+        
+            <a href="Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html"><strong>Linux性能优化实战</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="15814649492497.html">Simple Factory</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15814189410719.html">代码的可测试性</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15814188057978.html">重构</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15813811739408.html">tuple 使用</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
+
+
+  </body>
+</html>

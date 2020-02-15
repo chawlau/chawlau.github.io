@@ -1,0 +1,637 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  单一职责模式 - eredin-blog
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="eredin-blog" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site: ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="self" href="index.html">Home</a></li>
+        
+        <li id=""><a target="_self" href="archives.html">Archives</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="https://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; eredin-blog</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+        
+        <li><a target="self" href="index.html">Home</a></li>
+        
+        <li><a target="_self" href="archives.html">Archives</a></li>
+        
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html">C++基础与提高</a></li>
+        
+            <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html">设计模式之美</a></li>
+        
+            <li><a href="Python.html">Python</a></li>
+        
+            <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html">设计模式</a></li>
+        
+            <li><a href="Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html">Linux性能优化实战</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
+</script>
+<div class="row">
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>单一职责模式</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2019/12/24 07:49 上午</span>
+
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html'>设计模式之美</a></span>
+           
+         
+          <span class="comments">
+            
+
+            
+          </span>
+
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <h4>单一职责划分标准</h4>
+
+<ul>
+<li>类中的代码行数、函数或属性过多，会影响代码的可读性和可维护性，我们就需要考虑对类进行拆分；</li>
+<li>类依赖的其他类过多，或者依赖类的其他类过多，不符合高内聚、低耦合的设计思想，我们就需要考虑对类进行拆分；</li>
+<li>私有方法过多，我们就要考虑能否将私有方法独立到新的类中，设置为 public 方法，供更多的类使用，从而提高代码的复用性；</li>
+<li>比较难给类起一个合适名字，很难用一个业务名词概括，或者只能用一些笼统的 Manager、Context 之类的词语来命名，这就说明类的职责定义得可能不够清晰；</li>
+<li>类中大量的方法都是集中操作类中的某几个属性，比如，在 UserInfo 例子中，如果一半的方法都是在操作 address 信息，那就可以考虑将这几个属性和对应的方法拆分出来</li>
+</ul>
+
+<h4>单一职责</h4>
+
+<ul>
+<li>一个类只负责完成一个职责或者功能。不要设计大而全的类，要设计粒度小、功能单一的类。单一职责原则是为了实现代码高内聚、低耦合，提高代码的复用性、可读性、可维护性。</li>
+</ul>
+
+<h4>耦合和内聚</h4>
+
+<ul>
+<li>1 内聚和耦合其实是对一个意思（即合在一块）从相反方向的两种阐述。</li>
+<li>2 内聚是从功能相关来谈，主张高内聚。把功能高度相关的内容不必要地分离开，就降低了内聚性，成了低内聚。</li>
+<li>3 耦合是从功能无关来谈，主张低耦合。把功能明显无关的内容随意地结合起来，就增加了耦合性，成了高耦合</li>
+</ul>
+
+<h4>职责单一判断</h4>
+
+<ul>
+<li>类中的代码行数、函数或者属性过多；</li>
+<li>类依赖的其他类过多，或者依赖类的其他类过多；</li>
+<li>私有方法过多；比较难给类起一个合适的名字；</li>
+<li>类中大量的方法都是集中操作类中的某几个属性。</li>
+</ul>
+
+<h4>对扩展开放和对修改关闭</h4>
+
+<pre class="line-numbers"><code class="language-cpp">//
+// Created by eredinliu on 2020-01-05.
+//
+
+#include &lt;iostream&gt;
+#include &lt;list&gt;
+using namespace std;
+
+class AlertRule {
+public:
+    int64_t getMatchRule(string&amp; api) {
+        return 10;
+    }
+};
+
+class Notification{
+public:
+    void notify(int64_t level, const string&amp; msg) {
+        cout &lt;&lt; &quot;level &quot; &lt;&lt; level &lt;&lt; &quot; msg &quot; &lt;&lt; msg &lt;&lt; endl;
+    }
+};
+
+class ApiStateInfo;
+
+class AlertHandle {
+public:
+    AlertHandle(AlertRule* rule, Notification* noti): _rule(rule), _noti(noti){}
+
+    virtual void check(ApiStateInfo* stateInfo) = 0;
+
+
+    AlertRule* getRule() {
+        return _rule;
+    }
+
+    Notification* getNoti() {
+        return _noti;
+    }
+
+private:
+    AlertRule* _rule;
+    Notification* _noti;
+};
+
+class ApiStateInfo {
+public:
+    string api;
+    int64_t reqCount;
+    int64_t errCount;
+    int64_t duration;
+    int64_t timeOut;
+    ApiStateInfo(const string&amp; _api, int64_t _reqCount, int64_t _errCount,
+            int64_t _duration, int64_t _timeOut) : api(_api), reqCount
+            (_reqCount), errCount
+            (_errCount),duration(_duration), timeOut(_timeOut) {}
+};
+
+class Alert {
+public:
+    void addAlertHandle(AlertHandle* handle) {
+        this-&gt;handleList.push_back(handle);
+    }
+
+    void check(ApiStateInfo* stateInfo) {
+        for (auto handler : handleList) {
+            handler-&gt;check(stateInfo);
+        }
+    }
+
+private:
+    list&lt;AlertHandle*&gt; handleList{};
+};
+
+class TpsAlertHandler : public AlertHandle {
+public:
+    using AlertHandle::AlertHandle;
+
+    void check(ApiStateInfo* stateInfo) {
+        int64_t tps = stateInfo-&gt;reqCount / stateInfo-&gt;duration;
+        if (tps &gt; AlertHandle::getRule()-&gt;getMatchRule(stateInfo-&gt;api)) {
+           AlertHandle::getNoti()-&gt;notify(-1, &quot;TpsAlert Handle&quot;);
+        }
+    }
+};
+
+class ErrorAlertHandler : public AlertHandle {
+public:
+    using AlertHandle::AlertHandle;
+
+    void check(ApiStateInfo* stateInfo) {
+        if (stateInfo-&gt;errCount &gt; AlertHandle::getRule()-&gt;getMatchRule(
+                stateInfo-&gt;api)) {
+            AlertHandle::getNoti()-&gt;notify(-2, &quot;ErrAlert Handle&quot;);
+        }
+    }
+};
+
+class TimeOutAlertHandler : public AlertHandle {
+public:
+    using AlertHandle::AlertHandle;
+
+    void check(ApiStateInfo* stateInfo) {
+        if (stateInfo-&gt;timeOut &gt; AlertHandle::getRule()-&gt;getMatchRule(
+                stateInfo-&gt;api)) {
+            AlertHandle::getNoti()-&gt;notify(-3, &quot;TimeOutAlert Handle&quot;);
+        }
+    }
+};
+
+class ApplicationContext {
+public:
+    ApplicationContext() {
+        _rule = new AlertRule();
+        _noti = new Notification();
+        _alert = new Alert();
+        _alert-&gt;addAlertHandle(new TpsAlertHandler(_rule, _noti));
+        _alert-&gt;addAlertHandle(new ErrorAlertHandler(_rule, _noti));
+        _alert-&gt;addAlertHandle(new TimeOutAlertHandler(_rule, _noti));
+    }
+
+    Alert* getAlert() {
+        return _alert;
+    }
+
+private:
+    AlertRule* _rule;
+    Notification* _noti;
+    Alert* _alert;
+};
+
+int main() {
+    ApiStateInfo* stateInfo = new ApiStateInfo(&quot;Money&quot;, 10000, 20 ,30, 60);
+    ApplicationContext* ctx = new ApplicationContext();
+    ctx-&gt;getAlert()-&gt;check(stateInfo);
+}
+</code></pre>
+
+<h4>golang_demo</h4>
+
+<pre class="line-numbers"><code class="language-go">package design_pattern
+
+import &quot;fmt&quot;
+
+type AlertRule struct {
+}
+
+func (*AlertRule) getMatchRule(api string) int64 {
+    return 10;
+}
+
+type Notification struct {
+}
+
+func (*Notification) notify(level int64, msg string) {
+    fmt.Println(&quot;level&quot;, level, &quot; msg&quot;, msg)
+}
+
+type ApiStateInfo struct {
+    api string
+    reqCount, errCount, duration, timeOut  int64
+}
+
+type AlertHandle interface {
+    check(*ApiStateInfo)
+}
+
+type Alert struct {
+    handleList []AlertHandle
+}
+
+func (a *Alert) addAlertHandle(handle AlertHandle) {
+    a.handleList = append(a.handleList, handle)
+}
+
+func (a *Alert) check(info *ApiStateInfo) {
+    for _, v := range a.handleList {
+        v.check(info)
+    }
+}
+
+type TpsAlertHandler struct {
+    *AlertRule
+    *Notification
+}
+
+func (t *TpsAlertHandler) check(info *ApiStateInfo) {
+    tps := info.reqCount / info.duration
+
+    if tps &gt; t.AlertRule.getMatchRule(info.api) {
+        t.Notification.notify(-1, &quot;TpsAlert Handle&quot;)
+    }
+}
+
+type ErrorAlertHandler struct {
+    *AlertRule
+    *Notification
+}
+
+func (t *ErrorAlertHandler) check(info *ApiStateInfo) {
+    tps := info.reqCount / info.duration
+
+    if tps &gt; t.AlertRule.getMatchRule(info.api) {
+        t.Notification.notify(-2, &quot;ErrorAlert Handle&quot;)
+    }
+}
+
+type TimeOutAlertHandler struct {
+    *AlertRule
+    *Notification
+}
+
+func (t *TimeOutAlertHandler) check(info *ApiStateInfo) {
+    tps := info.reqCount / info.duration
+
+    if tps &gt; t.AlertRule.getMatchRule(info.api) {
+        t.Notification.notify(-3, &quot;TimeOutAlert Handle&quot;)
+    }
+}
+
+type ApplicationContext struct {
+    rule *AlertRule
+    noti *Notification
+    alert *Alert
+}
+
+func NewAppContext() *ApplicationContext {
+    ctx := &amp;ApplicationContext{
+        rule: &amp;AlertRule{},
+        noti: &amp;Notification{},
+        alert: &amp;Alert{},
+    }
+
+    tpsHandler := &amp;TpsAlertHandler{
+        AlertRule: ctx.rule,
+        Notification: ctx.noti,
+    }
+
+    errHandler := &amp;ErrorAlertHandler{
+        AlertRule: ctx.rule,
+        Notification: ctx.noti,
+    }
+
+    timeOutHandler := &amp;TimeOutAlertHandler{
+        AlertRule: ctx.rule,
+        Notification: ctx.noti,
+    }
+
+    ctx.alert.addAlertHandle(tpsHandler)
+    ctx.alert.addAlertHandle(errHandler)
+    ctx.alert.addAlertHandle(timeOutHandler)
+    return ctx
+}
+
+import &quot;testing&quot;
+
+func TestAlert(t *testing.T) {
+    stateInfo := &amp;ApiStateInfo{&quot;Money&quot;, 10000, 20, 30, 60}
+    ctx := NewAppContext()
+    ctx.alert.check(stateInfo)
+}
+</code></pre>
+
+<h4>指导思想</h4>
+
+<ul>
+<li>为了尽量写出扩展性好的代码，我们要时刻具备扩展意识、抽象意识、封装意识。这些“潜意识”可能比任何开发技巧都重要。</li>
+<li>提高代码扩展性 多态、依赖注入、基于接口而非实现编程，以及大部分的设计模式（比如，装饰、策略、模板、职责链、状态等）。</li>
+<li>多态、依赖注入、基于接口而非实现编程</li>
+</ul>
+
+
+    
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+          <a href="15775908801763.html" 
+          title="Previous Post: Command">&laquo; Command</a>
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="15768853718636.html" 
+          title="Next Post: Chain of Responsibility">Chain of Responsibility &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          
+
+          
+
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
+
+
+
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <h1>eredin-blog</h1>
+                <div class="site-des">生命的意义是成为你自己！</div>
+                <div class="social">
+
+
+
+
+
+
+
+
+
+
+
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html"><strong>C++基础与提高</strong></a>
+        
+            <a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html"><strong>设计模式之美</strong></a>
+        
+            <a href="Python.html"><strong>Python</strong></a>
+        
+            <a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html"><strong>设计模式</strong></a>
+        
+            <a href="Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html"><strong>Linux性能优化实战</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="15814649492497.html">Simple Factory</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15814189410719.html">代码的可测试性</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15814188057978.html">重构</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15813811739408.html">tuple 使用</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
+
+
+  </body>
+</html>

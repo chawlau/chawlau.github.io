@@ -1,0 +1,389 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  网卡中断过高优化 - eredin-blog
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="eredin-blog" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site: ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="self" href="index.html">Home</a></li>
+        
+        <li id=""><a target="_self" href="archives.html">Archives</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="https://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; eredin-blog</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+        
+        <li><a target="self" href="index.html">Home</a></li>
+        
+        <li><a target="_self" href="archives.html">Archives</a></li>
+        
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html">C++基础与提高</a></li>
+        
+            <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html">设计模式之美</a></li>
+        
+            <li><a href="Python.html">Python</a></li>
+        
+            <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html">设计模式</a></li>
+        
+            <li><a href="Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html">Linux性能优化实战</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
+</script>
+<div class="row">
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>网卡中断过高优化</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2019/10/03 15:55 下午</span>
+
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+           
+         
+          <span class="comments">
+            
+
+            
+          </span>
+
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <h4>软硬中断区别</h4>
+
+<ul>
+<li>(1) 硬中断是有外设硬件发出的，需要有中断控制器参与，而软中断则通常是由硬中断处理程序或者进程调度程序等软件程序发出的中断信号，无需中断控制器参与。</li>
+<li>(2) 硬中断直接以硬件的方式引发，处理速度快。软中断以软件指令之方式适合于对响应速度要求不是特别严格的场景。</li>
+<li>(3) 硬中断通过设置 CPU 的屏蔽位可进行屏蔽，软中断则由于是指令之方式给出, 不能屏蔽。</li>
+<li>(4)硬中断和软中断均会引起上下文切换(进程/线程之切换），进程切换的过程是差不多的</li>
+</ul>
+
+<h4>诊断中断</h4>
+
+<ul>
+<li>top</li>
+<li>cat /proc/interrupts | grep ens33 获取中断号</li>
+<li>IRQ 号決定了需要被 CPU 处理的优先级，IRQ 号越小意味着被优先执行的级别越高</li>
+<li>mpstat -P ALL 2 //查看所有cpu核的状态信息</li>
+<li>cat /proc/irq/19/smp_affinity</li>
+<li>cat /proc/irq/19/smp_affinity_list 查看网卡中断集中在哪个cpu上</li>
+<li>echo 1 &gt; /proc/irq/19/smp_affinity_list 设置网卡中断亲和</li>
+</ul>
+
+<h4>配置 RPS 绑定网卡队列到 CPU</h4>
+
+<ul>
+<li>echo 0,1 &gt; /proc/irq/19/smp_affinity_list 仍然会导致网卡中断集中在一个cpu上</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">echo f &gt; /sys/class/net/ens33/queues/rx-0/rps_cpus
+sysctl net.core.rps_sock_flow_entries=32768
+echo 32678 &gt; /sys/class/net/ens33/queues/rx-0/rps_flow_cnt
+</code></pre>
+
+<ul>
+<li>软件层面模拟实现硬件的多队列网卡功能。</li>
+</ul>
+
+<h4>使用IRQBalance服务</h4>
+
+<h4>RSS</h4>
+
+<ul>
+<li>RSS (Receive Side Scaling）是网卡的硬件特性，实现了多队列。通过多队列网卡驱动加载，就可以获取网卡型号，得到网卡的硬件队列数量，并结合 CPU 核的数量，最终得出所要激活的网卡队列的数量。</li>
+<li>ethtool -l eth0</li>
+<li>ethtool -L eth0 combined num//最多支持的队列数目</li>
+<li>手动绑定,获取网卡的中断号</li>
+<li>cat /proc/interrupts | awk &#39;{print \(1, \)NF}&#39; | grep eth0-TxRx</li>
+<li>echo 中断号 &gt; /proc/irq/19/smp_affinity_list</li>
+</ul>
+
+<h4>如果队列数目小于cpu数目</h4>
+
+<ul>
+<li>如果手动绑定 CPU 与中断号ーー对应，就会出现软中断负载跑在 0-7 核上，8-1 5 核不处理软中断的情况，这样一来，CPU 的 0-7 核负载依然会很高。</li>
+<li>RFS (Receive Flow Steering）是 RPS 的扩展，由于 RPS 只是单纯的把数据包均衡到不同的 CPU 上，此时如果应用程序所在 CPU 和中断处理的 CPU 不在同个核，将会对 CPU Cache 影响很大，RFS 的作用就是将应用程序和软中断处理分配到同一个 CPU 上</li>
+<li>在多队列情况下，rps_flow_cntl 的值建议设为 rps_sock_flow_entries 除以 N，其中 N 是设备中接收队列的数量。例如，如果 rps flow_entries 设为 32768, 并且有 8 个配置接收队列，那么 rps_flow_cnt 就应设为 4096</li>
+</ul>
+
+
+    
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+          <a href="15700925706491.html" 
+          title="Previous Post: Redis 性能调优">&laquo; Redis 性能调优</a>
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="15700073181059.html" 
+          title="Next Post: function&& bind">function&& bind &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          
+
+          
+
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
+
+
+
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <h1>eredin-blog</h1>
+                <div class="site-des">生命的意义是成为你自己！</div>
+                <div class="social">
+
+
+
+
+
+
+
+
+
+
+
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html"><strong>C++基础与提高</strong></a>
+        
+            <a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html"><strong>设计模式之美</strong></a>
+        
+            <a href="Python.html"><strong>Python</strong></a>
+        
+            <a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html"><strong>设计模式</strong></a>
+        
+            <a href="Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html"><strong>Linux性能优化实战</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="15814649492497.html">Simple Factory</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15814189410719.html">代码的可测试性</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15814188057978.html">重构</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15813811739408.html">tuple 使用</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
+
+
+  </body>
+</html>

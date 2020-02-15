@@ -1,0 +1,462 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  左值和右值 - eredin-blog
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="eredin-blog" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site: ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="self" href="index.html">Home</a></li>
+        
+        <li id=""><a target="_self" href="archives.html">Archives</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="https://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; eredin-blog</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+        
+        <li><a target="self" href="index.html">Home</a></li>
+        
+        <li><a target="_self" href="archives.html">Archives</a></li>
+        
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html">C++基础与提高</a></li>
+        
+            <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html">设计模式之美</a></li>
+        
+            <li><a href="Python.html">Python</a></li>
+        
+            <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html">设计模式</a></li>
+        
+            <li><a href="Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html">Linux性能优化实战</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
+</script>
+<div class="row">
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>左值和右值</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2019/08/22 18:39 下午</span>
+
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+           
+         
+          <span class="comments">
+            
+
+            
+          </span>
+
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <h4>左值和右值</h4>
+
+<ul>
+<li>左值 能用在赋值语句=左边的东西</li>
+<li>C++表达式要么是左值，要么是右值</li>
+<li>i = i + 1 i有右值属性，i出现在左边，拥有左值属性</li>
+<li>赋值运算符</li>
+<li>取地址</li>
+<li>string vector []左值 iter是迭代器</li>
+<li>看一个运算符在一个字面值能不能操作</li>
+<li>左值表达式 左值</li>
+<li>右值表达式 右值</li>
+</ul>
+
+<h4>引用分类</h4>
+
+<ul>
+<li>左值引用 绑定到左值</li>
+<li>const引用 左值引用</li>
+<li>右值引用 绑定到右值，临时对象 </li>
+</ul>
+
+<h4>左值引用</h4>
+
+<ul>
+<li>左值引用不能绑定到右值</li>
+<li>const 左值引用可以绑定到右值</li>
+</ul>
+
+<h4>右值引用</h4>
+
+<ul>
+<li>来绑定一些临时对象和即将销毁的对象</li>
+<li>右值引用理解为对象</li>
+<li>绑定到坐值的引用，一般都不能绑定到右值</li>
+<li>&amp;&amp;代表新的数据类型</li>
+<li>提高程序运行效率，把拷贝对象变成移动对象，转换对象的所有者</li>
+<li>移动对象如何发生 移动构造函数，应付移动构造函数</li>
+</ul>
+
+<h4>总结</h4>
+
+<ul>
+<li>返回左值引用的函数，连同赋值，下标，解引用都是左值引用 --i </li>
+<li>i-- 右值引用</li>
+<li>++i ++i直接给变量i+1,然后返回i本身</li>
+<li>i是变量，所以可以被赋值</li>
+<li>右值引用的变量本身是左值</li>
+<li>任何函数的行参都是左值func(int&amp;&amp; w) w是左值</li>
+<li>临时对象都是右值</li>
+<li>如果一个 prvalue 被绑定到一个引用上，它的生命周期则会延长到跟这个引用变量一样长。</li>
+</ul>
+
+<h4>std::move</h4>
+
+<ul>
+<li>把一个左值强制转换成右值</li>
+</ul>
+
+<h4>指分左右</h4>
+
+<p><img src="media/15808686074669/18b692072537d4ce179d3857a8a0133c.png" alt="18b692072537d4ce179d3857a8a0133"/></p>
+
+<ul>
+<li>一个 lvalue 是通常可以放在等号左边的表达式 左值</li>
+<li>一个 rvalue 是通常只能放在等号右边的表达式，右值</li>
+<li>一个 glvalue 是 generalized lvalue，广义左值</li>
+<li>一个 xvalue 是 expiring lvalue，将亡值</li>
+<li>一个 prvalue 是 pure rvalue，纯右值</li>
+</ul>
+
+<h4>对比</h4>
+
+<pre class="line-numbers"><code class="language-cpp">smart_ptr&lt;shape&gt; ptr1{new circle()};
+smart_ptr&lt;shape&gt; ptr2 = std::move(ptr1);
+</code></pre>
+
+<ul>
+<li> std::move(ptr) 就有趣点了。它的作用是把一个左值引用强制转换成一个右值引用，而并不改变其内容。从实用的角度，在我们这儿 std::move(ptr1) 等价于 static_cast<smart_ptr<shape>&amp;&amp;&gt;(ptr1)</li>
+<li> 把 std::move(ptr1) 看作是一个有名字的右值。为了跟无名的纯右值 prvalue 相区别，C++ 里目前就把这种表达式叫做 xvalue。跟左值 lvalue 不同，xvalue 仍然是不能取地址的——这点上，xvalue 和 prvalue 相同。所以，xvalue 和 prvalue 都被归为右值 rvalue</li>
+<li> <img src="media/15808686074669/15808730621501.jpg" alt="" style="width:583px;"/></li>
+</ul>
+
+<h4>字符串绑定</h4>
+
+<pre class="line-numbers"><code class="language-cpp">string str{&quot;I love china&quot;};
+  string&amp; s1{str};
+
+  //左值引用不能绑定到临时变量,临时变量被系统当右值
+  //string&amp; s2{&quot;I love china&quot;};
+  //const引用绑定到右值，执行隐式转换并放入string临时变量
+  const string&amp; s3{&quot;I love china&quot;};
+  //string&amp;&amp; s4{s3};
+  string&amp;&amp; s5{&quot;I love China&quot;};//可以绑定到一个临时变量，
+</code></pre>
+
+<h4>Move函数</h4>
+
+<pre class="line-numbers"><code class="language-cpp">  int tmp = 10;
+  int&amp; l1 = tmp;
+  int&amp;&amp; l2 = tmp * 100;
+  const int&amp; l4 = i * 100;
+  const int&amp;&amp; r5 = i * 100;
+  //成功绑定右值,但是此后r6的值和tmp没有关系
+  int&amp;&amp; r6 = tmp++;
+  tmp = 12;
+  printf(&quot; %d %d \n&quot;, r6, tmp);
+  int&amp;&amp; r7 = std::move(tmp);
+  r7 = 35;
+  printf(&quot; %d %d \n&quot;, r7, tmp);
+
+  int&amp;&amp; r8 = 100;
+  int&amp;&amp; r9 = std::move(r8);
+  printf(&quot; %d %d \n&quot;, r8, r9);
+
+  string st = &quot;Im ok&quot;;
+  //sring移动构造函数把st的内容拷贝到def，def重新开辟内存,同时把st清空
+  //string def = std::move(st);
+  //sring移动构造函数把st的内容拷贝到def，def重新开辟内存,同时把st清空
+  string&amp;&amp; sr  = std::move(st);
+  cout &lt;&lt; sr &lt;&lt; &quot; &quot; &lt;&lt; st &lt;&lt; endl;
+</code></pre>
+
+<h4>返回值优化</h4>
+
+<ul>
+<li>一个本地对象意味着这个对象会被拷贝，除非编译器发现可以做返回值优化（named return value optimization，或 NRVO</li>
+<li></li>
+</ul>
+
+
+    
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+          <a href="15666414947293.html" 
+          title="Previous Post: 临时对象深入探讨，解析，提高性能手段">&laquo; 临时对象深入探讨，解析，提高性能手段</a>
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="15664699170964.html" 
+          title="Next Post: 继承关系">继承关系 &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          
+
+          
+
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
+
+
+
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <h1>eredin-blog</h1>
+                <div class="site-des">生命的意义是成为你自己！</div>
+                <div class="social">
+
+
+
+
+
+
+
+
+
+
+
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html"><strong>C++基础与提高</strong></a>
+        
+            <a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html"><strong>设计模式之美</strong></a>
+        
+            <a href="Python.html"><strong>Python</strong></a>
+        
+            <a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html"><strong>设计模式</strong></a>
+        
+            <a href="Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html"><strong>Linux性能优化实战</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="15814649492497.html">Simple Factory</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15814189410719.html">代码的可测试性</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15814188057978.html">重构</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15813811739408.html">tuple 使用</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
+
+
+  </body>
+</html>

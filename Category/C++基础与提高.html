@@ -1,0 +1,1293 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  C++基础与提高 - eredin-blog
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="eredin-blog" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site: ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="self" href="index.html">Home</a></li>
+        
+        <li id=""><a target="_self" href="archives.html">Archives</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="https://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; eredin-blog</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+        
+        <li><a target="self" href="index.html">Home</a></li>
+        
+        <li><a target="_self" href="archives.html">Archives</a></li>
+        
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html">C++基础与提高</a></li>
+        
+            <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html">设计模式之美</a></li>
+        
+            <li><a href="Python.html">Python</a></li>
+        
+            <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html">设计模式</a></li>
+        
+            <li><a href="Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html">Linux性能优化实战</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+	$(function(){
+		$('#menu_item_index').addClass('is_active');
+	});
+</script>
+<div class="row">
+	<div class="large-8 medium-8 columns">
+		<div class="markdown-body home-categories">
+		
+			<div class="article">
+                <a class="clearlink" href="15813811739408.html">
+                
+                  <h1>tuple 使用</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>类模板</h4>
+
+<ul>
+<li>类模板 std::tuple 是固定大小的异类值汇集。它是 std::pair 的推广。</li>
+</ul>
+
+<h4>使用</h4>
+
+<pre class="line-numbers"><code class="language-cpp">#include &lt;tuple&gt;
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+ 
+std::tuple&lt;double, char, std::string&gt; get_student(int id)
+{
+    if (id == 0) return std::make_tuple(3.8, &#39;A&#39;, &quot;Lisa Simpson&quot;);
+    if (id == 1) return std::make_tuple(2.9, &#39;C&#39;, &quot;Milhouse Van Houten&quot;);
+    if (id == 2) return std::make_tuple(1.7, &#39;D&#39;, &quot;Ralph Wiggum&quot;);
+    throw std::invalid_argument(&quot;id&quot;);
+}
+ 
+int main()
+{
+    auto student0 = get_student(0);
+    std::cout &lt;&lt; &quot;ID: 0, &quot;
+              &lt;&lt; &quot;GPA: &quot; &lt;&lt; std::get&lt;0&gt;(student0) &lt;&lt; &quot;, &quot;
+              &lt;&lt; &quot;grade: &quot; &lt;&lt; std::get&lt;1&gt;(student0) &lt;&lt; &quot;, &quot;
+              &lt;&lt; &quot;name: &quot; &lt;&lt; std::get&lt;2&gt;(student0) &lt;&lt; &#39;\n&#39;;
+ 
+    double gpa1;
+    char grade1;
+    std::string name1;
+    std::tie(gpa1, grade1, name1) = get_student(1);
+    std::cout &lt;&lt; &quot;ID: 1, &quot;
+              &lt;&lt; &quot;GPA: &quot; &lt;&lt; gpa1 &lt;&lt; &quot;, &quot;
+              &lt;&lt; &quot;grade: &quot; &lt;&lt; grade1 &lt;&lt; &quot;, &quot;
+              &lt;&lt; &quot;name: &quot; &lt;&lt; name1 &lt;&lt; &#39;\n&#39;;
+ 
+    // C++17 结构化绑定：
+    auto [ gpa2, grade2, name2 ] = get_student(2);
+    std::cout &lt;&lt; &quot;ID: 2, &quot;
+              &lt;&lt; &quot;GPA: &quot; &lt;&lt; gpa2 &lt;&lt; &quot;, &quot;
+              &lt;&lt; &quot;grade: &quot; &lt;&lt; grade2 &lt;&lt; &quot;, &quot;
+              &lt;&lt; &quot;name: &quot; &lt;&lt; name2 &lt;&lt; &#39;\n&#39;;
+}
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2020/02/11 08:32 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15811508963305.html">
+                
+                  <h1>constexpr</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>使用</h4>
+
+<pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;array&gt;
+
+using namespace std;
+constexpr int sqr(int n) {return n * n;}
+
+int main() {
+    constexpr int n = sqr(3);
+    int b[n];
+
+    constexpr string_view sv {&quot;vi&quot;};
+    constexpr pair pr{sv[0], sv[1]};
+    constexpr array a{pr.first, pr.second};
+    constexpr int n1 = a[0];
+    constexpr int n2 = a[1];
+    cout &lt;&lt; n1 &lt;&lt; &#39; &#39; &lt;&lt; n2 &lt;&lt; &quot;\n&quot;;
+}
+</code></pre>
+
+<ul>
+<li>如果一个类的构造函数里面只包含常量表达式、满足对 constexpr 函数的限制的话（这也意味着，里面不可以有任何动态内存分配），并且类的析构函数是平凡的，那这个类就可以被称为是一个字面类型。换一个角度想，对 constexpr 函数——包括字面类型构造函数——的要求是，得让编译器能在编译期进行计算，而不会产生任何“副作用”，比如内存分配、输入、输出等等</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2020/02/08 16:34 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15810442440467.html">
+                
+                  <h1>decltype</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>类型推导与auto一起使用</h4>
+
+<pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+template &lt;class T, class U&gt;
+auto add(T t, U u) -&gt; decltype(t + u) {
+    return t + u;
+}
+
+int foo(int&amp; i) {cout &lt;&lt; &quot;foo int&amp; i \n&quot;; return i; }
+float foo(float&amp; i) {cout &lt;&lt; &quot;foo float&amp; i \n&quot;; return i; }
+
+template &lt;class T&gt;
+auto func(T&amp; val) -&gt; decltype(foo(val)) {
+    return foo(val);
+}
+
+int main() {
+    int a = 3;
+    float b = 5.5;
+    cout &lt;&lt; add(a, b) &lt;&lt; endl;
+
+    func(a);
+    func(b);
+}
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2020/02/07 10:57 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15708740577150.html">
+                
+                  <h1>分配器&迭代器</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>作用</h4>
+
+<ul>
+<li>内存分配器，扮演内存池的角色，通过大量较少对malloc的调用，来节省内存，分配效率有提高</li>
+<li>缺省的alloactor没有使用内存池技术</li>
+</ul>
+
+<h4>其他的分配器</h4>
+
+<p><img src="media/15708740577150/15708752337942.jpg" alt="" style="width:884px;"/></p>
+
+<h4>迭代器</h4>
+
+<h5>分类</h5>
+
+<ul>
+<li>迭代器的移动特性以及在这个迭代器的操作</li>
+<li>迭代器表示一个位置，一般分类是依据他的跳跃能力</li>
+<li>输出型迭代器 struct output_iterator_tag;</li>
+<li>输入型迭代器 struct input_iterator_tag;</li>
+<li>前向迭代器 struct forward_iterator_tag</li>
+<li>双向迭代器 struct bidirectional_iterator_tag</li>
+<li>随机访问迭代器 struct random_access_iterator_tag
+<img src="media/15708740577150/15708760939711.jpg" alt="" style="width:778px;"/></li>
+<li>并不是所有容器都有迭代器 stack queue heap
+<img src="media/15708740577150/15708762347915.jpg" alt="" style="width:849px;"/></li>
+</ul>
+
+<h5>迭代器</h5>
+
+<p><img src="media/15708740577150/15708766232720.jpg" alt="" style="width:810px;"/></p>
+
+<ul>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/10/12 17:54 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15702724482478.html">
+                
+                  <h1>可变参数函数&&initializer_list</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>可变参数函数</h4>
+
+<ul>
+<li>这种能够接收非固定个数数的数就是可变参数还数</li>
+<li>initialiser_1 ist 标准库类型，该类型能够使用的前提条件是所有的实多类型相同</li>
+<li>参数类型一致，但是个数不可预知</li>
+</ul>
+
+<h4>拷贝和赋值</h4>
+
+<ul>
+<li>不会拷贝列表中元素，原来对象拷贝</li>
+</ul>
+
+<h4>省略号形参</h4>
+
+<ul>
+<li>这种省略形参式的可变参数函数虽然参数数量不固定，但是函数的所有参数是存储在线性连续的空间中的</li>
+<li>可变参数只能是字符串类型和int类型</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">double sum(int num, ...) {
+  va_list valist;
+  double sum = 0;
+  va_start(valist, num);
+  for (int i = 0; i &lt; num; i++) {
+    sum = sum + va_arg(valist, int);
+  }
+  va_end(valist);
+  return sum;
+}
+
+void funcTest(const char* msg...) {
+  va_list  valist;
+  int cnt = atoi(msg);
+  va_start(valist, msg);
+  int args = 0;
+  while (args &lt; cnt) {
+    char* p = va_arg(valist, char*);
+    printf(&quot;args %d %s \n&quot;, cnt, p);
+    args++;
+  }
+  va_end(valist);
+}
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/10/05 18:47 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15702694837901.html">
+                
+                  <h1>lamda陷阱</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>捕获异常</h4>
+
+<ul>
+<li>捕获列表中的：捕获外部作用域中所有变量，并作为引用在lambda 表达式中使用, 按照引用这种捕获方式，会导致 1 abda 表达式包含绑定到局部变量的引用</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">vector&lt;function&lt;bool(int)&gt;&gt; gv;
+
+void func() {
+  srand((int)time(NULL));
+
+  int tmp = rand() % 6;
+
+  gv.push_back([&amp;](int v) {
+                if (v % tmp == 0) {
+                  return true;
+                }
+                return false;
+               });
+}
+
+int main() {
+  func();
+
+  cout &lt;&lt; gv[0](10) &lt;&lt; endl;
+}
+</code></pre>
+
+<ul>
+<li>引用捕获超过范围的情形也叫引用悬空</li>
+<li>采用按值捕获可以解决引用悬空</li>
+</ul>
+
+<h4>成员变量</h4>
+
+<ul>
+<li>=是按值捕获的意思我们会认为这个[=]是按值捕获，使用我们能够访问成员变量tmp,所以我们顺理成量的认为，这里这个1ambda 表达式是所使用的tmp是按值捕获的</li>
+<li>lamda表达式的行正确与否，取決于pat対象是否存在,只有PAT对存在，这个lamda表达式行オ正确</li>
+<li>this指向对象本身，所以这里[=]捕获的是this指针值</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">vector&lt;function&lt;bool(int)&gt;&gt; gv;
+class AT {
+ public:
+  vector&lt;function&lt;bool(int)&gt;&gt; gv;
+
+  int tmp = 5;
+  void addItem() {
+    gv.push_back([=](auto v) {
+                 if (v % tmp == 0) {
+                 return true;
+                 }
+                 return false;
+                 });
+  };
+};
+
+int main() {
+  func();
+
+
+  AT* pat = new AT();
+  pat-&gt;addItem();
+  delete pat;
+  cout &lt;&lt; gv[0](10) &lt;&lt; endl;
+}
+</code></pre>
+
+<ul>
+<li>使用临时变量来捕获</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">vector&lt;function&lt;bool(int)&gt;&gt; gv;
+class AT {
+ public:
+  vector&lt;function&lt;bool(int)&gt;&gt; gv;
+
+  int tmp = 5;
+  void addItem() {
+    auto t_tmp = tmp;
+    gv.push_back([t_tmp](auto v) {
+                 if (v % t_tmp == 0) {
+                 return true;
+                 }
+                 return false;
+                 });
+  };
+};
+</code></pre>
+
+<h4>广义捕获</h4>
+
+<pre class="line-numbers"><code class="language-cpp">class AT {
+ public:
+  vector&lt;function&lt;bool(int)&gt;&gt; gv;
+
+  int tmp = 5;
+  void addItem() {
+    gv.push_back([t_tmp = tmp](auto v) {
+                 if (v % t_tmp == 0) {
+                 return true;
+                 }
+                 return false;
+                 });
+  };
+};
+</code></pre>
+
+<h4>静态局部变量</h4>
+
+<ul>
+<li>捕获不包括静态局部变量，但是可以使用</li>
+<li>静态变量使用类似按引用捕获效果</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">vector&lt;function&lt;bool(int)&gt;&gt; gv;
+
+void func() {
+  srand((int)time(NULL));
+
+  static int tmp = 5;
+
+  gv.push_back([](auto v) {
+                cout &lt;&lt; &quot; static val &quot; &lt;&lt; tmp &lt;&lt; endl;
+                if (v % tmp == 0) {
+                  return true;
+                }
+                return false;
+               });
+  tmp++;
+}
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/10/05 17:58 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15700989065972.html">
+                
+                  <h1>lambda</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>特点</h4>
+
+<ul>
+<li>是个匿名函数, 可调用的代码单元</li>
+<li>返回类型可以自动推导，可以省略</li>
+<li>没有参数的时候()可以省略·</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">auto f = [](int a)-&gt;int {
+    return a + 1;
+  };
+
+  auto f1 = [](int a) {
+    return a + 1;
+  };
+
+  auto f2 = [] {return  2;};
+</code></pre>
+
+<h4>捕获列表</h4>
+
+<ul>
+<li>捕获一定范围内的变量</li>
+<li>lambda可以捕获局部静态变量</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">  static int i = 9;
+  auto f3 = [] {
+    return i;
+  };
+
+</code></pre>
+
+<ul>
+<li>[&amp;] 捕获所有外部变量</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">  int j = 9;
+  auto f4 = [&amp;] {
+    j = 10;
+  };
+  f4();
+</code></pre>
+
+<ul>
+<li>[=] 值使用，只能用，不能修改</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">auto f5 = [=] {
+    cout &lt;&lt; &quot;j &quot; &lt;&lt; j &lt;&lt; endl;
+  };
+  f5();
+
+</code></pre>
+
+<ul>
+<li>[this] 用于类中，拥有和成员函数一样的权限</li>
+<li>[变量名] 表示按值捕获，同时不捕获其他变量，按值分隔</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">class CT {
+ public:
+  int m_i = 5;
+  void func(int x, int y) {
+    //auto ld = [this] {
+    //auto ld = [this, x, y] {
+    auto ld = [this, &amp;x, &amp;y] {
+      x = 5;
+      y = 2;
+      return m_i;
+    };
+  }
+};
+</code></pre>
+
+<ul>
+<li>[=,&amp;变量名] 按值捕获所有变量, 但按引用捕获&amp;中所指的变量，第一个都是默认捕获，隐式捕获方式，其他的是显式捕获，后面的引用方式是相反的[&amp;,x]</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp"> int x = 2, y = 3;
+  auto f6 = [=, &amp;x, &amp;y] {
+    cout &lt;&lt; &quot;j &quot; &lt;&lt; j &lt;&lt; endl;
+  };
+  f6();
+
+  auto f7 = [&amp;, x, y] {
+    cout &lt;&lt; &quot;j &quot; &lt;&lt; j &lt;&lt; endl;
+  };
+  f6();
+</code></pre>
+
+<h4>lambda表达式延迟调用易出错</h4>
+
+<pre class="line-numbers"><code class="language-cpp">  int x1 = 5;
+  auto f8 = [=] {
+    return x1;
+  };
+  x1 = 10;
+  cout &lt;&lt; f8() &lt;&lt; endl;//5
+</code></pre>
+
+<ul>
+<li>lamda表达式引用外部变量的那一刻，复制了一份存储在表达式中</li>
+<li>如果采用引用，就不会出错</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp"> int x1 = 5;
+  auto f8 = [&amp;] {
+    return x1;
+  };
+  x1 = 10;
+  cout &lt;&lt; f8() &lt;&lt; endl;//5
+</code></pre>
+
+<h4>mutable</h4>
+
+<pre class="line-numbers"><code class="language-cpp">  int x2 = 5;
+  auto f9 = [=]() mutable {
+    x2 = 7;
+    return x2;
+  };
+  cout &lt;&lt; f9() &lt;&lt; endl;
+</code></pre>
+
+<ul>
+<li>可以修改按值捕获的变量</li>
+</ul>
+
+<h4>表达式类型和存储</h4>
+
+<ul>
+<li>Closure Type</li>
+<li>闭包 函数内的函数，本质就是lambda表达式创建时运行时间对象</li>
+<li>闭包类的类型的对象，可以认为是带有operator()的类型的对象</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">int x = 5;
+auto f = [&amp;] {
+  return x;
+}
+
+function&lt;int(int)&gt; fc1 = [](int t) {return  t;};
+  cout &lt;&lt; fc1(15) &lt;&lt; endl;
+function&lt;int(int)&gt; fc2 = bind(
+      [](int t) {
+      return t;
+      },
+      16
+      );
+</code></pre>
+
+<h4>总结</h4>
+
+<pre class="line-numbers"><code class="language-cpp">  vector&lt;int&gt; vec = {10,20,30,40,50};
+  int sum = 0;
+  for_each (vec.begin(), vec.end(), [&amp;sum](int val) {
+            sum += val;
+            cout &lt;&lt; val &lt;&lt; endl;
+            });
+  cout &lt;&lt; &quot; sum &quot; &lt;&lt; sum &lt;&lt; endl;
+
+  find_if (vec.begin(), vec.end(), [](int val) {
+           cout &lt;&lt; val &lt;&lt; endl;
+           if (val &gt; 15)
+              return true;
+           return false;
+           });
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/10/03 18:35 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15700073181059.html">
+                
+                  <h1>function&& bind</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>可调用对象</h4>
+
+<ul>
+<li>函数</li>
+<li>重载()对象</li>
+</ul>
+
+<h4>可被转换的函数指针的类对象</h4>
+
+<pre class="line-numbers"><code class="language-cpp">class CT {
+ public:
+  using tfptr = void(*)(int);
+
+  static void st_func(int t) {
+    cout &lt;&lt; &quot;static function &quot; &lt;&lt; t &lt;&lt; endl;
+  }
+
+  operator tfptr() {return st_func;}
+};
+int main() {
+  using ptr = void(*)(int);
+  CT ct;
+  ct(5);
+}
+</code></pre>
+
+<h4>function</h4>
+
+<ul>
+<li><p>能够通过给它指定模版参数，能够以统一的方式来处理函数</p>
+<pre class="line-numbers"><code class="language-cpp">function&lt;void(int)&gt; ptr = func;
+ptr(3);<br/>
+function&lt;void(int)&gt; ptr2 = TC::st_func;<br/>
+ptr2(12);<br/>
+TC tc;<br/>
+function&lt;void(int)&gt; ptr3 = tc;<br/>
+ptr3(12);
+</code></pre></li>
+</ul>
+
+<h4>bind</h4>
+
+<ul>
+<li>可调用对象和参数绑定到一起， 构成防函数</li>
+<li>如果是多个参数，可以部分绑定</li>
+<li>bind对预先绑定的参数是通过值传递的</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">void func(int t) {
+  cout &lt;&lt; &quot; t &quot; &lt;&lt; t &lt;&lt; endl;
+}
+
+class CT {
+ public:
+  using tfptr = void(*)(int);
+
+  static void st_func(int t) {
+    cout &lt;&lt; &quot;static function &quot; &lt;&lt; t &lt;&lt; endl;
+
+  }
+
+  operator tfptr() {return st_func;}
+
+  void func(int x, int y) {
+    m_a++;
+    cout &lt;&lt; &quot;x &quot; &lt;&lt; x &lt;&lt; &quot; y &quot; &lt;&lt; y &lt;&lt; &quot; m_a &quot;&lt;&lt; m_a &lt;&lt; endl;
+  }
+
+  ~CT() { std::cout &lt;&lt; &quot; destory &quot; &lt;&lt; endl;}
+  CT() { std::cout &lt;&lt; &quot; construct &quot; &lt;&lt; endl;}
+  int m_a;
+};
+
+void bfunc(int x, int y, int z) {
+  cout &lt;&lt; &quot;x &quot; &lt;&lt; x &lt;&lt; &quot; y &quot; &lt;&lt; y &lt;&lt; &quot; z &quot; &lt;&lt; z &lt;&lt; endl;
+}
+void bfunc2(int&amp; x, int&amp; y) {
+  x++;
+  y++;
+}
+
+int main() {
+  //绑定函数bfunc的参数30，placeholders::_1表示需要f1来参数
+  auto f1 = bind(bfunc, placeholders::_1, placeholders::_1, 30);
+  bind(bfunc, placeholders::_1, placeholders::_2, 30)(5, 15);
+  f1(1);
+
+  auto f3 = bind(bfunc, placeholders::_2, placeholders::_1, 30);
+  f3(5,15);
+
+
+  int a = 2, b = 3;
+  //bind对预先绑定的参数是通过值传递的,所以a值是值传递的, 没有事先绑定的是引用传
+  //递
+  auto f4 = bind(bfunc2, a, placeholders::_1);
+  f4(b);
+  cout &lt;&lt; &quot;a &quot; &lt;&lt; a &lt;&lt; &quot; b &quot; &lt;&lt; b &lt;&lt; endl;
+
+  CT ct;
+  ct.m_a = 1;
+  //生成了防函数的临时对象，后续的func修改的是临时对象的m_a;
+  //如果传的是对象引用，则不生成临时对象
+  auto f5 = bind(&amp;CT::func, ct, placeholders::_1, placeholders::_2);
+  f5(10, 20);
+  cout &lt;&lt; &quot;ct m_a = &quot; &lt;&lt; ct.m_a &lt;&lt; endl;
+
+  function&lt;void(int,int)&gt; f6 = bind(&amp;CT::func, ct, placeholders::_1, placeholders::_2);
+  f6(10, 223);
+
+  cout &lt;&lt; &quot;=================&quot; &lt;&lt; endl;
+  CT ct1;
+  //第一次拷贝系统需要ct1产生临时对象，第二次是bind本身要返回临时对象，但是bind
+  //执行完毕后，临时对象会被释放
+  function&lt;int &amp;()&gt; f7 = bind(&amp;CT::m_a, &amp;ct1);
+  f7() = 60;
+}
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/10/02 17:08 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15699255854846.html">
+                
+                  <h1>forward补充&auto</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>auto类型常规推断</h4>
+
+<ul>
+<li>auto自动类型推断发生在编译器，不会影响程序性能</li>
+<li>auto定义变量必须初始化</li>
+<li>auto使用灵活</li>
+<li>auto类型推断和函数模版推断非常类似, auto相当于函数模板T</li>
+</ul>
+
+<h4>传值方式</h4>
+
+<pre class="line-numbers"><code class="language-cpp">auto xy2 = xy; //xy2=int auto=int传值方式，引用和const类型都被抛弃
+</code></pre>
+
+<ul>
+<li>传值的方式引用类型会被抛弃，const属性也会被放弃</li>
+</ul>
+
+<h4>指针或者引用</h4>
+
+<pre class="line-numbers"><code class="language-cpp">const auto *xp = &amp;x;//xp = const int*, auto = int;
+auto* xp2 = &amp;x; //xp2=int*, auto = int
+auto xp3 = &amp;x; //xp3 int*, auto int*
+</code></pre>
+
+<ul>
+<li>不会抛弃const限定，但是会丢弃引用</li>
+</ul>
+
+<h4>万能引用</h4>
+
+<pre class="line-numbers"><code class="language-cpp">auto&amp;&amp; wn = x;//auto=int&amp;, wn = int&amp;
+auto&amp;&amp; wn2 = x2;//auto=int&amp;, wn2 const int &amp;
+auto&amp;&amp; wn3 = 100;//auto=int, wn3=int&amp;&amp;
+</code></pre>
+
+<h4>auto针对数组和函数的推断</h4>
+
+<pre class="line-numbers"><code class="language-cpp">const char mystr[] = &quot;hello&quot;
+auto str = mystr //const char*
+auto&amp; str2 = str//const char (&amp;)[14]
+int a[2] = {1,2};
+auto pa = a;//auto=int*, pa=int*
+auto tmp = func;//void(*)(double,int)
+auto&amp; tmp2 = func;//void(&amp;)(double, int)
+tmp(12.3, 4);
+tmp2(12.3, 4);
+</code></pre>
+
+<h4>std::initializer_list</h4>
+
+<pre class="line-numbers"><code class="language-cpp">auto x3 = {30};//auto initializer_list
+auto x4{40};
+只适合auto，不适合模板
+= {} 有隐式类型转换
+</code></pre>
+
+<h4>auto作为函数返回类型</h4>
+
+<h4>auto不适用类型</h4>
+
+<ul>
+<li>auto不能用于函数参数</li>
+<li>普通成员变量不能是auto</li>
+<li>静态成员是可以</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">class CT {
+ public:
+  static const auto i = 5; //ok
+  auto j = 5;//err
+};
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/10/01 18:26 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15698082286112.html">
+                
+                  <h1>noexcept</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>作用</h4>
+
+<ul>
+<li>该关键字告诉编译器，函数中不会发生异常,这有利于编译器对程序做更多的优化。<br/>
+如果在运行时，noexecpt函数向外抛出了异常（如果函数内部捕捉了异常并完成处理，这种情况不算抛出异常），程序会直接终止，调用std::terminate()函数，该函数内部会调用std::abort()终止程序</li>
+</ul>
+
+<h4>使用情形</h4>
+
+<ul>
+<li>移动构造函数（move constructor）</li>
+<li>移动分配函数（move assignment）</li>
+<li>析构函数（destructor）。这里提一句，在新版本的编译器中，析构函数是默认加上关键字noexcept的。下面代码可以检测编译器是否给析构函数加上关键字noexcept。</li>
+<li>叶子函数（Leaf Function）。叶子函数是指在函数内部不分配栈空间，也不调用其它函数，也不存储非易失性寄存器，也不处理异常。</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/09/30 09:50 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+              
+
+
+			<div class="row">
+			  <div class="large-6 columns">
+			  <p class="text-left" style="padding-top:25px;">
+			   
+			  </p>
+			  </div>
+			  <div class="large-6 columns">
+			<p class="text-right" style="padding-top:25px;">
+			 <a href="C++基础与提高_1.html">&raquo; Next Page</a> 
+			</p>
+			  </div>
+			</div>
+		</div>
+	</div><!-- large 8 -->
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <h1>eredin-blog</h1>
+                <div class="site-des">生命的意义是成为你自己！</div>
+                <div class="social">
+
+
+
+
+
+
+
+
+
+
+
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html"><strong>C++基础与提高</strong></a>
+        
+            <a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html"><strong>设计模式之美</strong></a>
+        
+            <a href="Python.html"><strong>Python</strong></a>
+        
+            <a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html"><strong>设计模式</strong></a>
+        
+            <a href="Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html"><strong>Linux性能优化实战</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="15814649492497.html">Simple Factory</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15814189410719.html">代码的可测试性</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15814188057978.html">重构</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15813811739408.html">tuple 使用</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
+
+
+  </body>
+</html>

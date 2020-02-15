@@ -1,0 +1,2835 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  eredin-blog
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="eredin-blog" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site: ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="self" href="index.html">Home</a></li>
+        
+        <li id=""><a target="_self" href="archives.html">Archives</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="https://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; eredin-blog</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+        
+        <li><a target="self" href="index.html">Home</a></li>
+        
+        <li><a target="_self" href="archives.html">Archives</a></li>
+        
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html">C++基础与提高</a></li>
+        
+            <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html">设计模式之美</a></li>
+        
+            <li><a href="Python.html">Python</a></li>
+        
+            <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html">设计模式</a></li>
+        
+            <li><a href="Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html">Linux性能优化实战</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+	$(function(){
+		$('#menu_item_index').addClass('is_active');
+	});
+</script>
+<div class="row">
+	<div class="large-8 medium-8 columns">
+		<div class="markdown-body home-categories">
+		
+			<div class="article">
+                <a class="clearlink" href="15755890034719.html">
+                
+                  <h1>Memento</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>定义</h4>
+
+<ul>
+<li>在组件构建过程中，某些对象的状态经常面临变化，如何对这些变化进行有效的管理？同时又维持高层模块的稳定？“状态变化模式为这一问题提供了一种解决方案。</li>
+</ul>
+
+<h4>动机</h4>
+
+<ul>
+<li>在软件构建过程中，某些对象的状态在转换过程中，可能由于某种需要，要求程序能够回溯到对象之前处于某个点时的状态。如果使用一些公有接口来让其他对象得到对象的状态，便会暴露对象的细节实现。</li>
+<li>如何实现对象状态的良好保存与恢复？但同时又不会因此而破坏对象本身的封装性。</li>
+</ul>
+
+<h4>结构</h4>
+
+<ul>
+<li><p><img src="media/15755890034719/15815148061622.jpg" alt="" style="width:736px;"/></p></li>
+<li><p>设计模式是94年</p></li>
+<li><p>序列化的方案实现memento</p></li>
+</ul>
+
+<h5>golang_demo</h5>
+
+<pre class="line-numbers"><code class="language-go">package design_pattern
+
+type GameRole struct {
+    atk, def, vit int
+}
+
+func (g *GameRole) InitState() {
+    g.atk, g.def, g.vit = 100, 100, 100
+}
+
+func (g *GameRole) SaveState() *RoleMemento {
+    return &amp;RoleMemento{g.atk, g.def, g.vit}
+}
+
+func (g *GameRole) ResumeState(m *RoleMemento) {
+    g.atk, g.def, g.vit = m.atk, m.def, m.vit
+}
+
+func (g *GameRole) Fight() {
+    g.atk, g.def, g.vit = 0, 0, 0
+}
+
+type RoleCaretaker struct {
+    m *RoleMemento
+}
+
+type Originator struct {
+    state string
+}
+
+type Memento struct {
+    state string
+}
+
+type RoleMemento struct {
+    vit, atk, def int
+}
+
+func (o *Originator) CreateMemento() *Memento {
+    return &amp;Memento{o.state}
+}
+
+func (o *Originator) SetMemento(m *Memento) {
+    o.state = m.state
+}
+
+type Caretaker struct {
+    memento *Memento
+}
+</code></pre>
+
+<h4>python_demo</h4>
+
+<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
+
+class Snapshot(object):
+
+    def __init__(self, state):
+        self.state = state
+
+
+class Caretake(object):
+
+    def __init__(self):
+        pass
+
+    def add_snapshot(self, snapshot):
+        self.snapshot = snapshot
+
+class Editor(object):
+
+    def __init__(self, state):
+        self.state = state
+
+    def create_snapshot(self):
+        return Snapshot(self.state)
+
+    def recover_snapshot(self, snapshot):
+        self.state = snapshot.state
+
+    def change_state(self, state):
+        self.state = state
+
+if __name__ == &#39;__main__&#39;:
+    editor = Editor(&quot;original&quot;)
+    snapshot = editor.create_snapshot()
+    print(editor.state)
+    editor.change_state(&quot;state2&quot;)
+    print(editor.state)
+    editor.recover_snapshot(snapshot)
+    print(editor.state)
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/12/06 07:36 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15752419123800.html">
+                
+                  <h1>组合和继承</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>组合的优势</h4>
+
+<ul>
+<li>利用组合（composition）、接口、委托（delegation）三个技术手段，一块儿来解决刚刚继承存在的问题</li>
+</ul>
+
+<h4>继承的劣势</h4>
+
+<ul>
+<li>继承是面向对象的四大特性之一，用来表示类之间的 is-a 关系，可以解决代码复用的问题。虽然继承有诸多作用，但继承层次过深、过复杂，也会影响到代码的可维护性。在这种情况下，我们应该尽量少用，甚至不用继承</li>
+</ul>
+
+<h4>组合的优势</h4>
+
+<ul>
+<li>继承主要有三个作用：表示 is-a 关系，支持多态特性，代码复用。而这三个作用都可以通过组合、接口、委托三个技术手段来达成。除此之外，利用组合还能解决层次过深、过复杂的继承关系影响代码可维护性的问题。</li>
+</ul>
+
+<h4>继承和组合的判断</h4>
+
+<ul>
+<li>如果类之间的继承结构稳定，层次比较浅，关系不复杂，我们就可以大胆地使用继承。反之，我们就尽量使用组合来替代继承</li>
+</ul>
+
+<h4>cpp_demo</h4>
+
+<pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
+class Flyable {
+public:
+    virtual void fly() = 0;
+};
+
+class Tweetable {
+public:
+    virtual void tweet() = 0;
+};
+
+class EggLayable {
+public:
+    virtual void layEgg() = 0;
+};
+
+class FlyAbility : public Flyable {
+public:
+    void fly() {
+        std::cout &lt;&lt; &quot;Fly Ability &quot; &lt;&lt; std::endl;
+    }
+};
+
+class TweetAbility: public Tweetable {
+public:
+    void tweet() {
+        std::cout &lt;&lt; &quot;TweetAbility&quot; &lt;&lt; std::endl;
+    }
+};
+
+class EggLayAbility: public EggLayable {
+public:
+    void layEgg() {
+        std::cout &lt;&lt; &quot;EggLayAbility&quot; &lt;&lt; std::endl;
+    }
+};
+
+class Ostrich : public Tweetable, public  EggLayable {
+private:
+    EggLayAbility* eggLayAbility;
+    TweetAbility* tweetAbility;
+public:
+    void tweet() {
+        tweetAbility-&gt;tweet();
+    }
+
+    void layEgg() {
+        eggLayAbility-&gt;layEgg();
+    }
+
+    Ostrich() {
+        eggLayAbility = new EggLayAbility();
+        tweetAbility = new TweetAbility();
+    }
+};
+
+int main() {
+    Ostrich* os = new Ostrich();
+    os-&gt;tweet();
+    os-&gt;layEgg();
+}
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/12/02 07:11 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html'>设计模式之美</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15752402085375.html">
+                
+                  <h1>基于接口而非实现编程</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>设计原则</h4>
+
+<ul>
+<li>越抽象、越顶层、越脱离具体某一实现的设计，越能提高代码的灵活性，越能应对未来的需求变化。好的代码设计，不仅能应对当下的需求，而且在将来需求发生变化的时候，仍然能够在不破坏原有代码设计的情况下灵活应对。</li>
+</ul>
+
+<h4>设计要点</h4>
+
+<ul>
+<li>函数的命名不能暴露任何实现细节。比如，前面提到的 uploadToAliyun() 就不符合要求，应该改为去掉 aliyun 这样的字眼，改为更加抽象的命名方式，比如：upload()。</li>
+<li>封装具体的实现细节。比如，跟阿里云相关的特殊上传（或下载）流程不应该暴露给调用者。我们对上传（或下载）流程进行封装，对外提供一个包裹所有上传（或下载）细节的方法，给调用者使用。</li>
+<li>为实现类定义抽象的接口。具体的实现类都依赖统一的接口定义，遵从一致的上传功能协议。使用者依赖接口，而不是具体的实现类来编程。</li>
+<li>抽象意识、封装意识、接口意识</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/12/02 06:43 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html'>设计模式之美</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15751681913786.html">
+                
+                  <h1>封装和抽象和继承多态</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>继承的作用</h4>
+
+<ul>
+<li>继承最大的一个好处就是代码复用。假如两个类有一些相同的属性和方法，我们就可以将这些相同的部分，抽取到父类中，让两个子类继承父类。这样，两个子类就可以重用父类中的代码，避免代码重复写多遍。不过，这一点也并不是继承所独有的，我们也可以通过其他方式来解决这个代码复用的问题，比如利用组合关系而不是继承关系</li>
+</ul>
+
+<h4>接口和抽象类</h4>
+
+<ul>
+<li>抽象类更多的是为了代码复用，而接口就更侧重于解耦。接口是对行为的一种抽象，相当于一组协议或者契约</li>
+</ul>
+
+<h4>抽象模拟接口</h4>
+
+<pre class="line-numbers"><code class="language-cpp">class Strategy { // 用抽象类模拟接口
+  public:
+    ~Strategy();
+    virtual void algorithm()=0;
+  protected:
+    Strategy();
+};
+</code></pre>
+
+<ul>
+<li>抽象类 Strategy 没有定义任何属性，并且所有的方法都声明为 virtual 类型（等同于 Java 中的 abstract 关键字），这样，所有的方法都不能有代码实现，并且所有继承这个抽象类的子类，都要实现这些方法。从语法特性上来看，这个抽象类就相当于一个接口。</li>
+</ul>
+
+<h4>抽象类和接口</h4>
+
+<ul>
+<li>判断的标准很简单。如果我们要表示一种 is-a 的关系，并且是为了解决代码复用的问题，我们就用抽象类；如果我们要表示一种 has-a 关系，并且是为了解决抽象而非代码复用的问题，那我们就可以使用接口</li>
+</ul>
+
+<h4>附件上传服务器实现</h4>
+
+<ul>
+<li>需求：支持上传、下载、删除以及文件的存储，存储的话需要支持存本地和云端，涉及附件上传的业务点有十几个。</li>
+<li>设计思路：</li>
+<li>接口设计：上传、下载、删除是公共行为，抽象到接口中</li>
+<li>2、存储方法是一大块公共代码，写到抽象类里面</li>
+<li>3、每个业务的附件上传子类实现接口、继承抽象类</li>
+</ul>
+
+<h4>接口属性</h4>
+
+<ul>
+<li>接口不能包含属性（也就是成员变量）。接口只能声明方法，方法不能包含代码实现。类实现接口的时候，必须实现接口中声明的所有方法。</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;list&gt;
+
+class RpcReq {
+public:
+    RpcReq() {}
+};
+
+class Filter {
+public:
+    virtual void doFilter(RpcReq req) = 0;
+};
+
+class AuthencationFilter : public Filter {
+public:
+    void doFilter(RpcReq req) { std::cout &lt;&lt; &quot;AuthencationFilter&quot; &lt;&lt; std::endl;}
+};
+
+class RateLimitFilter : public Filter {
+public:
+    void doFilter(RpcReq req) { std::cout &lt;&lt; &quot;RateLimitFilter&quot; &lt;&lt; std::endl; }
+};
+
+class Application {
+private:
+    std::list&lt;Filter*&gt; filters;
+
+public:
+    void handleRequest(RpcReq req) {
+        for (auto filter : filters) {
+            filter-&gt;doFilter(req);
+        }
+    }
+
+    void AddFilter(Filter* filter) {
+        filters.push_back(filter);
+    }
+};
+
+int main() {
+    Application* app = new Application();
+    app-&gt;AddFilter(new AuthencationFilter());
+    app-&gt;AddFilter(new RateLimitFilter());
+    RpcReq req;
+    app-&gt;handleRequest(req);
+}
+</code></pre>
+
+<h4>日志</h4>
+
+<pre class="line-numbers"><code class="language-cpp">//
+// Created by 刘超 on 2019-12-01.
+//
+
+#include &lt;iostream&gt;
+
+using namespace std;
+
+class Level {
+private:
+    int value_;
+public:
+    Level(int val = 2) : value_(val) {}
+
+    int intValue() {
+        return value_;
+    }
+};
+
+class Logger {
+public:
+    string _name;
+    bool _enabled;
+    Level *_minLevel;
+public:
+    Logger(string name, bool enabled, Level *minLevel) : _name(name),
+                                                         _enabled(enabled),
+                                                         _minLevel(minLevel) {
+    }
+
+    void log(string message) {
+        if (!isLoggable()) return;
+        doLog(message);
+    }
+
+    virtual void doLog(string message) = 0;
+
+protected:
+    bool isLoggable() {
+        return _enabled &amp;&amp; (_minLevel-&gt;intValue() &lt;= 3);
+    }
+};
+
+class Writer {
+public:
+    void write(string msg) {
+        std::cout &lt;&lt; msg &lt;&lt; std::endl;
+    }
+};
+
+class FileLogger : public Logger {
+private:
+    Writer *fileWriter;
+public:
+    FileLogger(string name, bool enabled, Level *minLevel)
+            : Logger(name, enabled, minLevel), fileWriter(new Writer()) {
+    }
+
+    void doLog(string message) {
+        fileWriter-&gt;write(message);
+    }
+};
+
+class MessageQueueClient {
+public:
+    void send(string msg) {
+        std::cout &lt;&lt; msg &lt;&lt; std::endl;
+    }
+};
+
+class MessageQueueLogger : public Logger {
+private:
+    MessageQueueClient *_client;
+public:
+    MessageQueueLogger(string name, bool enabled, Level *minLevel)
+            : Logger(name, enabled, minLevel),
+              _client(new MessageQueueClient()) {
+    }
+
+    void doLog(string message) {
+        _client-&gt;send(message);
+    }
+};
+
+int main() {
+    Logger* fileLog = new FileLogger(&quot;file&quot;, true, new Level());
+    Logger* mqLog
+            = new MessageQueueLogger(&quot;kafka&quot;, true, new Level());
+    fileLog-&gt;doLog(&quot;file logger&quot;);
+    mqLog-&gt;doLog(&quot;kafka mq logger&quot;);
+}
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/12/01 10:43 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html'>设计模式之美</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15748977610569.html">
+                
+                  <h1>State</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>定义</h4>
+
+<ul>
+<li>在组件构建过程中，某些对象的状态经常面临变化，如何对这些变化进行有效的管理？同时又维持高层模块的稳定？“状态变化“模式为这一问题提供了一种解决方案。</li>
+</ul>
+
+<h4>典型模式</h4>
+
+<ul>
+<li>State</li>
+<li>Memento</li>
+</ul>
+
+<h4>动机</h4>
+
+<ul>
+<li>在软件构建过程中，某些对象的状态如果改变，其行为也会随之而发生变化，比如文档处于只读状态，其支持的行为和读写状态支持的行为就可能完全不同。</li>
+<li>如何在运行时根据对象的状态来透明地更改对象的行为？而不会为对象操作和状态转化之间引入紧耦合？</li>
+<li>虚函数本质上是运行态的if else</li>
+</ul>
+
+<h4>模式定义</h4>
+
+<ul>
+<li>允许一个对象在其内部状态改变时改变它的行为。从而使对象看起来似乎修改了其行为。</li>
+</ul>
+
+<h4>结构</h4>
+
+<ul>
+<li><img src="media/15748977610569/15802943356618.jpg" alt="" style="width:799px;"/></li>
+</ul>
+
+<h4>要点总结</h4>
+
+<ul>
+<li>State 模式将所有与个特定状态相关的行为都放入ー个 State 的子<br/>
+类对象中，往对象状态切換时应的对象但同时维持State的接口，这样实现了具体操作与状态转换之间的解耦。</li>
+<li>为不同的状态引入不同的对象使得状态转换变得更加明确，而且可以保证不会出现状态不一致的情况，因为转换是原子性的-即要么彻底转换过来，要么不转换</li>
+<li>如果State对象没有实例变量，那么各个上下文可以共享同一个State对象，从而节省开销</li>
+</ul>
+
+<h4>cpp_demo</h4>
+
+<pre class="line-numbers"><code class="language-cpp">//
+// Created by geraltliu on 2019-12-07.
+//
+
+#ifndef CPPCODE_STATE2_H
+#define CPPCODE_STATE2_H
+//
+// Created by geraltliu on 2019-12-07.
+//
+
+#include &lt;iostream&gt;
+
+//
+// Created by 刘超 on 2019-11-28.
+//
+
+class NetworkState {
+public:
+    NetworkState *pNext;
+
+    virtual void Operation1() = 0;
+
+    virtual void Operation2() = 0;
+
+    virtual void Operation3() = 0;
+
+    virtual ~NetworkState() {}
+};
+
+class OpenState : public NetworkState {
+    static NetworkState *m_instance;
+public:
+    static NetworkState *getInstance();
+
+    void Operation1();
+
+    void Operation2();
+
+    void Operation3();
+};
+
+
+class CloseState : public NetworkState {
+    static NetworkState *m_instance;
+public:
+    static NetworkState *getInstance();
+
+    void Operation1();
+
+    void Operation2();
+
+    void Operation3();
+};
+
+class ConnectState : public NetworkState {
+    static NetworkState *m_instance;
+public:
+    static NetworkState *getInstance();
+
+    void Operation1();
+
+    void Operation2();
+
+    void Operation3();
+};
+
+
+class NetworkProcessor {
+    NetworkState *pState;
+public:
+    NetworkProcessor(NetworkState *pState) {
+        this-&gt;pState = pState;
+    }
+
+    void Operation1() {
+        pState-&gt;Operation1();
+        pState = pState-&gt;pNext;
+    }
+
+    void Operation2() {
+        pState-&gt;Operation2();
+        pState = pState-&gt;pNext;
+    }
+
+    void Operation3() {
+        pState-&gt;Operation3();
+        pState = pState-&gt;pNext;
+    }
+};
+
+#endif //CPPCODE_STATE2_H
+
+//
+// Created by geraltliu on 2019-12-07.
+//
+
+#include &quot;state2.h&quot;
+
+//
+// Created by 刘超 on 2019-11-28.
+//
+
+NetworkState *OpenState::m_instance = nullptr;
+NetworkState *OpenState::getInstance() {
+    if (m_instance == nullptr) {
+        m_instance = new OpenState();
+    }
+    return m_instance;
+}
+
+
+void OpenState::Operation1() {
+    pNext = OpenState::getInstance();
+    std::cout &lt;&lt; &quot;switch to open&quot; &lt;&lt; std::endl;
+}
+
+void OpenState::Operation2() {
+    pNext = ConnectState::getInstance();
+    std::cout &lt;&lt; &quot;switch to connect&quot; &lt;&lt; std::endl;
+}
+
+void OpenState::Operation3() {
+    pNext = CloseState::getInstance();
+    std::cout &lt;&lt; &quot;switch to close&quot; &lt;&lt; std::endl;
+}
+
+
+NetworkState *CloseState::m_instance = nullptr;
+NetworkState *CloseState::getInstance() {
+    if (m_instance == nullptr) {
+        m_instance = new OpenState();
+    }
+    return m_instance;
+}
+
+void CloseState::Operation1() {
+    pNext = OpenState::getInstance();
+    std::cout &lt;&lt; &quot;switch to open&quot; &lt;&lt; std::endl;
+}
+
+void CloseState::Operation2() {
+    pNext = ConnectState::getInstance();
+    std::cout &lt;&lt; &quot;switch to connect&quot; &lt;&lt; std::endl;
+}
+
+void CloseState::Operation3() {
+    pNext = CloseState::getInstance();
+    std::cout &lt;&lt; &quot;switch to close&quot; &lt;&lt; std::endl;
+}
+
+NetworkState *ConnectState::m_instance = nullptr;
+NetworkState *ConnectState::getInstance() {
+    if (m_instance == nullptr) {
+        m_instance = new OpenState();
+    }
+    return m_instance;
+}
+
+void ConnectState::Operation1() {
+    pNext = OpenState::getInstance();
+    std::cout &lt;&lt; &quot;switch to open&quot; &lt;&lt; std::endl;
+}
+
+void ConnectState::Operation2() {
+    pNext = ConnectState::getInstance();
+    std::cout &lt;&lt; &quot;switch to connect&quot; &lt;&lt; std::endl;
+}
+
+void ConnectState::Operation3() {
+    pNext = CloseState::getInstance();
+    std::cout &lt;&lt; &quot;switch to close&quot; &lt;&lt; std::endl;
+}
+
+int main() {
+    NetworkProcessor *process = new NetworkProcessor(new ConnectState());
+    process-&gt;Operation1();
+    process-&gt;Operation2();
+    process-&gt;Operation3();
+}
+</code></pre>
+
+<h4>golang_demo</h4>
+
+<pre class="line-numbers"><code class="language-go">package geek
+
+import &quot;fmt&quot;
+
+type Week interface {
+    Today()
+    Next(*DayContext)
+}
+
+type DayContext struct {
+    today Week
+}
+
+func NewDayContext() *DayContext {
+    return &amp;DayContext{
+        today: &amp;Sunday{},
+    }
+}
+
+func (d *DayContext) Today() {
+    d.today.Today()
+}
+
+func (d *DayContext) Next() {
+    d.today.Next(d)
+}
+
+type Sunday struct{}
+
+func (*Sunday) Today() {
+    fmt.Println(&quot;Sunday&quot;)
+}
+
+func (*Sunday) Next(ctx *DayContext) {
+    ctx.today = &amp;Monday{}
+}
+
+type Monday struct{}
+
+func (*Monday) Today() {
+    fmt.Println(&quot;Monday&quot;)
+}
+
+func (*Monday) Next(ctx *DayContext) {
+    ctx.today = &amp;Monday{}
+}
+
+type Tuesday struct{}
+
+func (*Tuesday) Today() {
+    fmt.Println(&quot;Tuesday&quot;)
+}
+
+func (*Tuesday) Next(ctx *DayContext) {
+    ctx.today = &amp;Tuesday{}
+}
+func TestWeek(t *testing.T) {
+    ctx := NewDayContext()
+    todayAndNext := func() {
+        ctx.Today()
+        ctx.Next()
+    }
+
+    for i := 0; i &lt; 3; i++ {
+        todayAndNext()
+    }
+}
+</code></pre>
+
+<h4>golang_demo2</h4>
+
+<pre class="line-numbers"><code class="language-go">package design_pattern
+
+import (
+    &quot;fmt&quot;
+    &quot;sync&quot;
+)
+
+var (
+    openState    *OpenState
+    connectState *ConnectState
+    closeState   *CloseState
+    stateCtx     *StateContext
+    open         sync.Once
+    conn         sync.Once
+    close        sync.Once
+    state        sync.Once
+)
+
+type NetWorkState interface {
+    State()
+    Next(*StateContext)
+}
+
+type StateContext struct {
+    netState NetWorkState
+}
+
+func GetStateCtxInstance() *StateContext {
+    state.Do(func () {
+        stateCtx = &amp;StateContext{
+            netState: &amp;OpenState{},
+        }
+    })
+    return stateCtx
+}
+
+func (s *StateContext) State() {
+    s.netState.State()
+}
+
+func (s *StateContext) Next() {
+    s.netState.Next(s)
+}
+
+type OpenState struct{}
+
+func GetOpenInstance() *OpenState {
+    open.Do(func() {
+        openState = &amp;OpenState{}
+    })
+    return openState
+}
+
+func (o *OpenState) State() {
+    fmt.Println(&quot;OpenState&quot;)
+}
+
+func (o *OpenState) Next(ctx *StateContext) {
+    ctx.netState = GetConnectInstance()
+}
+
+type ConnectState struct{}
+
+func GetConnectInstance() *ConnectState {
+    conn.Do(func() {
+        connectState = &amp;ConnectState{}
+    })
+    return connectState
+}
+
+func (o *ConnectState) State() {
+    fmt.Println(&quot;ConnectState&quot;)
+}
+
+func (o *ConnectState) Next(ctx *StateContext) {
+    ctx.netState = GetCloseInstance()
+}
+
+type CloseState struct{}
+
+func GetCloseInstance() *CloseState {
+    close.Do(func() {
+        closeState = &amp;CloseState{}
+    })
+    return closeState
+}
+
+func (o *CloseState) State() {
+    fmt.Println(&quot;CloseState&quot;)
+}
+
+func (o *CloseState) Next(ctx *StateContext) {
+    ctx.netState = GetOpenInstance()
+}
+
+
+func TestState(t *testing.T) {
+    stateCtx = GetStateCtxInstance()
+    stateCtx.State()
+    stateCtx.Next()
+
+    stateCtx.State()
+    stateCtx.Next()
+
+    stateCtx.State()
+    stateCtx.Next()
+
+    stateCtx.State()
+    stateCtx.Next()
+}
+</code></pre>
+
+<h4>python_code</h4>
+
+<pre class="line-numbers"><code class="language-python">from abc import abstractmethod, ABCMeta
+
+class Week(metaclass=ABCMeta):
+   @abstractmethod
+   def today(self):
+      pass
+
+   def next(self, context):
+      pass
+
+class DayContext(object):
+
+   def __init__(self, day):
+      self.day = day
+
+   def today(self):
+      self.day.today()
+
+   def next(self):
+      self.day.next(self)
+
+class Sunday(Week):
+
+    def today(self):
+       print(&quot;Sunday&quot;)
+
+    def next(self, context):
+       context.day = Monday()
+
+
+class Monday(Week):
+
+   def today(self):
+      print(&quot;Tuesday&quot;)
+
+   def next(self, context):
+      context.day = Tuesday()
+
+
+class Tuesday(Week):
+
+   def today(self):
+      print(&quot;Tuesday&quot;)
+
+   def next(self, context):
+      context.day = Wensday()
+
+
+class Wensday(Week):
+
+   def today(self):
+      print(&quot;Wensday&quot;)
+
+   def next(self, context):
+      context.day = Friday()
+
+class Friday(Week):
+
+   def today(self):
+      print(&quot;Friday&quot;)
+
+   def next(self, context):
+      context.day = Sunday()
+
+if __name__ == &#39;__main__&#39;:
+  context = DayContext(Sunday())
+  context.today()
+  context.next()
+  context.today()
+</code></pre>
+
+<h4>python_demo3</h4>
+
+<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
+
+
+class Context(metaclass=ABCMeta):
+
+    def __init__(self):
+        self.__states = []
+        self.__cur_state = None
+        self.__temperature = 0
+
+    def add_state(self, state):
+
+        if state not in self.__states:
+            self.__states.append(state)
+
+    def change_state(self, state):
+
+        if state is None:
+            return False
+
+        if self.__cur_state is None:
+            print(&quot;init state {}&quot;.format(state.get_name()))
+        else:
+            print(&quot;change from {} to {}&quot;.format(self.__cur_state.get_name(),
+                                                state.get_name()))
+        self.__cur_state = state
+        self.add_state(state)
+        return True
+
+    def get_state(self):
+        return self.__cur_state
+
+
+    def _set_temperature(self, temperature):
+        self.__temperature = temperature
+        for state in self.__states:
+            if state.is_match(temperature):
+                self.change_state(state)
+
+    def _get_temperature(self):
+        return self.__temperature
+
+class Water(Context):
+
+    def __init__(self):
+        super().__init__()
+        self.add_state(SolidState(&#39;Solid&#39;))
+        self.add_state(LiquidState(&#39;Liquid&#39;))
+        self.add_state(GaseousState(&#39;Gaseous&#39;))
+        self.set_temperature(25)
+
+    def set_temperature(self, temp):
+        self._set_temperature(temp)
+
+    def get_temperature(self):
+        return self._get_temperature()
+
+    def rise_temperature(self, step):
+        self.set_temperature(self.get_temperature() + step)
+
+    def reduce_temperature(self, step):
+        self.set_temperature(self.get_temperature() - step)
+
+    def behavior(self):
+        state = self.get_state()
+        if isinstance(state, State):
+            state.behavior(self)
+
+class State(metaclass=ABCMeta):
+
+    def __init__(self, name):
+        self.__name = name
+
+    def get_name(self):
+        return self.__name
+
+    def is_match(self, temperature):
+        return False
+
+    @abstractmethod
+    def behavior(self, context):
+        pass
+
+
+def singleton(cls, *args, **kwargs):
+    instance = {}
+
+    def __singleton(*args, **kwargs):
+        if cls not in instance:
+            instance[cls] = cls(*args, **kwargs)
+        return instance[cls]
+
+    return __singleton
+
+@singleton
+class SolidState(State):
+
+    def __init__(self, name):
+        super().__init__(name)
+
+
+    def is_match(self, temperature):
+        return temperature &lt; 0
+
+    def behavior(self, context):
+        print(&quot;SolidState current temperature {} C &quot;.format(
+            context._get_temperature()))
+
+
+@singleton
+class LiquidState(State):
+
+    def __init__(self, name):
+        super().__init__(name)
+
+    def is_match(self, temperature):
+        return temperature &gt; 0 and temperature &lt; 100
+
+    def behavior(self, context):
+        print(&quot;LiquidState current temperature {} C &quot;.format(
+            context._get_temperature()))
+
+@singleton
+class GaseousState(State):
+
+    def __init__(self, name):
+        super().__init__(name)
+
+    def is_match(self, temperature):
+        return temperature &gt;= 100
+
+    def behavior(self, context):
+        print(&quot;GaseousState current temperature {} C &quot;.format(
+            context.get_temperature()))
+
+if __name__ == &#39;__main__&#39;:
+    # water = Water(LiquidState(&quot;Liquid&quot;))
+    water = Water()
+    water.behavior()
+    water.set_temperature(-4)
+    water.behavior()
+    water.rise_temperature(100)
+    water.behavior()
+    water.set_temperature(120)
+    water.behavior()
+    water.set_temperature(180)
+    water.behavior()
+</code></pre>
+
+<h4>golang_demo</h4>
+
+<pre class="line-numbers"><code class="language-go">package desian_pattern_practise
+
+import (
+    &quot;fmt&quot;
+    &quot;reflect&quot;
+    &quot;sync&quot;
+)
+
+var  (
+  once sync.Once
+  liquidState *LiquidState
+  solidState  *SolidState
+    gaseousState *GaseousState
+)
+
+
+type Context interface {
+    AddState(IState)
+    ChangeState(IState)
+}
+
+type Water struct {
+    states map[IState]bool
+    curState IState
+    temperature float64
+}
+
+func NewWater() *Water {
+    water := &amp;Water{
+        states: make(map[IState]bool),
+        curState: nil,
+        temperature: 25,
+    }
+    water.AddState(NewLiquidState(&quot;Liquid&quot;))
+    water.AddState(NewSolidState(&quot;Solid&quot;))
+    water.AddState(NewGaseousState(&quot;Gaseous&quot;))
+    return water
+}
+
+func (w *Water) AddState(state IState) {
+    if _, ok := w.states[state]; !ok {
+      w.states[state] = true
+    }
+}
+
+func (w *Water) ChangeState(state IState) {
+    if state == nil {
+        return
+    }
+
+    if w.curState == nil {
+        fmt.Println(&quot;Init State &quot;, reflect.TypeOf(w).String())
+    } else {
+        fmt.Println(&quot;change from state &quot;, reflect.TypeOf(w.curState).String(),
+            &quot; to state &quot;, reflect.TypeOf(state).String())
+    }
+
+    w.curState = state
+    w.AddState(state)
+}
+
+func (w *Water) Behavior() {
+    if w.curState != nil {
+      w.curState.Behavior(w)
+    }
+}
+
+func (w *Water) SetTemperature(temp float64) {
+    w.temperature = temp
+    for k, _ :=range w.states {
+        if k.IsMatch(temp) {
+            w.ChangeState(k)
+        }
+    }
+}
+
+func (w *Water) RiseTemperature(temp float64) {
+    w.SetTemperature(w.temperature + temp)
+}
+
+func (w *Water) ReduceTemperature(temp float64) {
+    w.SetTemperature(w.temperature - temp)
+}
+
+type IState interface {
+    Behavior(Context)
+    IsMatch(float64) bool
+}
+
+type State struct {
+    name string
+}
+
+func (s *State) Behavior(ctx Context) {
+}
+
+type LiquidState struct {
+    *State
+}
+
+func (l *LiquidState) IsMatch(temp float64) bool {
+    return temp &gt; 0 &amp;&amp; temp &lt; 100;
+}
+
+func NewLiquidState(name string) *LiquidState {
+    once.Do(func() {
+        liquidState = &amp;LiquidState{State: &amp;State{name:name}}
+    })
+    return liquidState
+}
+
+func (l *LiquidState) Behavior(ctx Context) {
+    fmt.Println(reflect.TypeOf(l).String() + &quot;current temperature is &quot;,
+        ctx.(*Water).temperature, &quot; C&quot;)
+}
+
+type SolidState struct {
+    *State
+}
+
+func (l *SolidState) IsMatch(temp float64) bool {
+    return temp &lt;= 0;
+}
+
+func NewSolidState(name string) *SolidState {
+    once.Do(func() {
+        solidState = &amp;SolidState{State: &amp;State{name:name}}
+    })
+    return solidState
+}
+
+func (l *SolidState) Behavior(ctx Context) {
+    fmt.Println(reflect.TypeOf(l).String() + &quot;current temperature is &quot;,
+        ctx.(*Water).temperature, &quot; C&quot;)
+}
+
+type GaseousState struct {
+    *State
+}
+
+func (l *GaseousState) IsMatch(temp float64) bool {
+    return temp &gt;= 100;
+}
+
+func NewGaseousState(name string) *GaseousState {
+    once.Do(func() {
+        gaseousState = &amp;GaseousState{State: &amp;State{name:name}}
+    })
+    return gaseousState
+}
+
+func (l *GaseousState) Behavior(ctx Context) {
+    fmt.Println(reflect.TypeOf(l).String() + &quot;current temperature is &quot;,
+        ctx.(*Water).temperature, &quot; C&quot;)
+}
+
+func TestState_Behavior(t *testing.T) {
+    water := NewWater()
+    water.Behavior()
+    water.SetTemperature(-4)
+    water.Behavior()
+    water.SetTemperature(100)
+    water.Behavior()
+    water.ReduceTemperature(50)
+    water.Behavior()
+}
+</code></pre>
+
+<h4>cpp_demo</h4>
+
+<pre class="line-numbers"><code class="language-cpp">//
+// Created by eredinliu on 2020-01-30.
+//
+
+#include &lt;iostream&gt;
+#include &lt;list&gt;
+#include &lt;algorithm&gt;
+#include &lt;mutex&gt;
+#include &lt;chrono&gt;
+#include &lt;thread&gt;
+
+using namespace std;
+
+class LiquidState;
+class GaseousState;
+class SolidState;
+
+class Context;
+
+class State {
+public:
+    virtual bool IsMatch(float temperature) = 0;
+    virtual void Behavior(Context* ctx) = 0;
+    State(const string&amp; _name) : name(_name) {}
+private:
+    string name;
+    friend class Context;
+};
+
+class Context {
+
+public:
+    void AddState(State* state) {
+        if (find(states.begin(), states.end(), state) == states.end()) {
+            states.push_back(state);
+        }
+    }
+    void ChangeState(State* state) {
+        if (state == nullptr) {
+            return;
+        }
+
+        if (cur_state == nullptr) {
+            cout &lt;&lt; &quot;init state &quot; &lt;&lt; state-&gt;name &lt;&lt; endl;
+        } else {
+            if (cur_state != state) {
+                cout &lt;&lt; &quot;change from &quot; &lt;&lt; this-&gt;cur_state-&gt;name &lt;&lt; &quot; to &quot; &lt;&lt;
+                     state-&gt;name &lt;&lt; endl;
+            }
+        }
+
+        cur_state = state;
+        states.push_back(cur_state);
+    }
+
+    virtual void Behavior() = 0;
+
+protected:
+    State* cur_state;
+    list&lt;State*&gt; states;
+};
+
+class Water : public Context {
+public:
+    Water();
+
+    void SetTemperature(float temp) {
+        temperature = temp;
+
+        list&lt;State*&gt; tmp = states;
+        for (auto&amp; it : tmp) {
+            if (it-&gt;IsMatch(temp)) {
+                ChangeState(it);
+            }
+        }
+    }
+
+    float GetTemperature() {
+        return this-&gt;temperature;
+    }
+
+    void RiseTemperature(float temp) {
+        SetTemperature(this-&gt;temperature + temp);
+    }
+
+    void ReduceTemperature(float temp) {
+        SetTemperature(this-&gt;temperature - temp);
+    }
+
+
+    void Behavior() {
+        if (cur_state != nullptr) {
+          cur_state-&gt;Behavior(this);
+        }
+    }
+private:
+    float temperature = 25;
+};
+
+class SolidState : public State {
+public:
+    bool IsMatch(float temp) {
+        return temp &lt;= 0;
+    }
+
+    void Behavior(Context* ctx) {
+        Water* water = reinterpret_cast&lt;Water*&gt;(ctx);
+        cout &lt;&lt; &quot;SolidState current temperature &quot; &lt;&lt; water-&gt;GetTemperature()
+            &lt;&lt; &quot; C &quot; &lt;&lt; endl;
+    }
+
+    static State* GetInstance() {
+        static std::once_flag flag;
+        call_once(flag, [&amp;](){solidState = new SolidState(&quot;SolidState&quot;);});
+        return solidState;
+    }
+
+    static State* solidState;
+private:
+    SolidState(const string&amp; _name) : State(_name) {}
+};
+
+class LiquidState : public State {
+public:
+    bool IsMatch(float temp) {
+        return temp &gt; 0 &amp;&amp; temp &lt; 100;
+    }
+
+    void Behavior(Context* ctx) {
+        Water* water = reinterpret_cast&lt;Water*&gt;(ctx);
+        cout &lt;&lt; &quot;LiquidState current temperature &quot; &lt;&lt; water-&gt;GetTemperature()
+             &lt;&lt; &quot; C &quot; &lt;&lt; endl;
+    }
+
+    static State* GetInstance() {
+        static std::once_flag flag;
+        call_once(flag, [&amp;](){liquidState = new LiquidState(&quot;LiquidState&quot;);});
+        return liquidState;
+    }
+
+    static State* liquidState;
+private:
+    LiquidState(const string&amp; _name) : State(_name) {}
+};
+
+
+class GaseousState : public State {
+public:
+    bool IsMatch(float temp) {
+        return temp &gt; 100;
+    }
+
+    void Behavior(Context* ctx) {
+        Water* water = reinterpret_cast&lt;Water*&gt;(ctx);
+        cout &lt;&lt; &quot;GaseousState current temperature &quot; &lt;&lt; water-&gt;GetTemperature()
+             &lt;&lt; &quot; C &quot; &lt;&lt; endl;
+    }
+
+    static State* GetInstance() {
+        static std::once_flag flag;
+        call_once(flag, [&amp;](){gaseousState = new GaseousState(&quot;GaseousState&quot;);});
+        return gaseousState;
+    }
+
+    static State* gaseousState;
+private:
+    GaseousState(const string&amp; _name) : State(_name) {}
+};
+
+State* LiquidState::liquidState = nullptr;
+State* GaseousState::gaseousState = nullptr;
+State* SolidState::solidState = nullptr;
+
+Water::Water() : Context() {
+    this-&gt;states.push_back(LiquidState::GetInstance());
+    this-&gt;states.push_back(SolidState::GetInstance());
+    this-&gt;states.push_back(GaseousState::GetInstance());
+}
+
+int main() {
+    Water* water = new Water();
+    water-&gt;Behavior();
+    water-&gt;SetTemperature(50);
+    water-&gt;Behavior();
+    water-&gt;SetTemperature(-4);
+    water-&gt;Behavior();
+    water-&gt;SetTemperature(50);
+    water-&gt;Behavior();
+    water-&gt;SetTemperature(120);
+    water-&gt;Behavior();
+    water-&gt;RiseTemperature(30);
+    water-&gt;Behavior();
+}
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/28 07:36 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15745422969850.html">
+                
+                  <h1>自定义序列类</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>序列协议</h4>
+
+<ul>
+<li><img src="media/15745422969850/15745424374141.jpg" alt="" style="width:663px;"/></li>
+</ul>
+
+<h4>add</h4>
+
+<pre class="line-numbers"><code class="language-python">a += (3, 4)
+a += [3, 4]
+通过魔法函数__iadd__来实现，内部通过extends实现
+a = [1, 2]
+c = a + [3, 4]
+print(c)
+
+a += (3, 4)
+a.extend(range(3))//迭代相加每个元素
+a.append((1, 2)) //直接加上整个元组
+a.append([1, 2]) //直接加上整个列表
+print(a)
+</code></pre>
+
+<h4>可切片的对象</h4>
+
+<pre class="line-numbers"><code class="language-python">import numbers
+
+class Group:
+    def __init__(self, group_name, company_name, staffs):
+        self.group_name = group_name
+        self.company_name = company_name
+        self.staffs = staffs
+
+    def __reversed__(self):
+        self.staffs.reverse()
+
+    def __getitem__(self, item):
+        cls = type(self)
+        if isinstance(item, slice):
+            return cls(group_name=self.group_name, company_name=self.company_name, staffs=self.staffs[item])
+        elif isinstance(item, slice):
+            return cls(group_name=self.group_name, company_name=self.company_name, staffs=[self.staffs[item]])
+
+    def __len__(self):
+        return len(self.staffs)
+
+    def __iter__(self):
+        return iter(self.staffs)
+
+    def __contains__(self, item):
+        if item in self.staffs:
+            return True
+        else:
+            return False
+
+staffs = [&quot;bobby1&quot;, &quot;imooc&quot;, &quot;bobby2&quot;, &quot;bobby3&quot;]
+
+group = Group(company_name=&quot;imooc&quot;, group_name=&quot;user&quot;, staffs=staffs)
+reversed(group)
+
+for user in group:
+    print(user)
+</code></pre>
+
+<h4>维持升序排列</h4>
+
+<pre class="line-numbers"><code class="language-python">#用来处理已排序的序列，用来维持已排序的序列， 升序
+import bisect
+
+from  collections import deque
+
+inter_list = deque()
+bisect.insort(inter_list, 3)
+bisect.insort(inter_list, 2)
+bisect.insort(inter_list, 5)
+bisect.insort(inter_list, 1)
+bisect.insort(inter_list, 6)
+
+print(bisect.bisect_left(inter_list, 3))
+
+print(inter_list)
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/24 04:51 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15744656731481.html">
+                
+                  <h1>静态方法&类方法&对象方法</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>三种方法对比</h4>
+
+<ul>
+<li>对象方法，定义中，传入的第一个参数必须是 self，表示实例本身，在其中可使用 self.attr 获取实例的属性。</li>
+<li>class_method 无需实例化，但与实例方法第一个参数必须是 self 类似，类方法第一个参数表示类自身的 cls 参数，可以来调用类的属性、类的方法、类的实例化对象等</li>
+<li>static_method无需 self 参数，无需 cls 参数，直接声明一个静态方法，可无需实例化，直接由类调用，也可实例化后调用</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">class Date:
+    def __init__(self, year, month, day):
+        self.year = year
+        self.month = month
+        self.day = day
+
+    def tomorrow(self):
+        self.day += 1
+
+    @staticmethod
+    def parse_from_string(data_str):
+        year, month, day = tuple(data_str.split(&#39;-&#39;))
+        return Date(int(year), int(month), int(day))
+
+    @staticmethod
+    def valid_str(date_str):
+        year, month, day = tuple(date_str.split(&#39;-&#39;))
+        if int(year) &gt; 0 and (int(month) &gt; 0 and int(month) &lt;=12) and (int(day) &gt; 0 and int(day) &lt;=31):
+            return True
+        else:
+            return False
+
+    @classmethod
+    def from_string(cls, date_str):
+        year, month, day = tuple(date_str.split(&#39;-&#39;))
+        return cls(int(year), int(month), int(day))
+
+    def __str__(self):
+        return &quot;{year}/{month}/{day}&quot;.format(year=self.year, month=self.month, day=self.day)
+
+if __name__ == &#39;__main__&#39;:
+    new_day = Date(2018, 12, 31)
+    new_day.tomorrow()
+    print(new_day)
+
+    date_str = &#39;2018-12-31&#39;
+    year, month, day = tuple(date_str.split(&#39;-&#39;))
+    new_day = Date(int(year), int(month), int(day))
+    print (new_day)
+
+    new_day = Date.parse_from_string(date_str)
+    print (new_day)
+
+    new_day = Date.from_string(date_str)
+    print (new_day)
+    
+    print(Date.valid_str(&quot;2018-12-32&quot;))
+</code></pre>
+
+<h4>私有属性</h4>
+
+<ul>
+<li>双下划线将私有变量进行变形</li>
+<li>通过反射机制也可以拿到这个数值</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">from method import Date
+
+class User:
+    def __init__(self, birthday):
+        self.__birthday = birthday
+    def get_age(self):
+        return 2019 - self.__birthday.year
+
+
+if __name__ == &#39;__main__&#39;:
+    user = User(Date(2018, 10, 1))
+    print(user.get_age())
+</code></pre>
+
+<h4>dict和dir查询属性·</h4>
+
+<pre class="line-numbers"><code class="language-python">from method import Date
+
+class Person:
+    name = &#39;user&#39;
+
+class Student(Person):
+    def __init__(self, school_name):
+        self.school_name = school_name
+
+if __name__ == &#39;__main__&#39;:
+    user = Student(&#39;IMooc&#39;)
+    print(user.__dict__)
+    user.__dict__[&quot;school_addr&quot;] = &quot;Beijing&quot;
+    print(user.school_addr)
+    print(Person.__dict__)
+    print(user.name)
+    a = [1, 2]
+    print(dir(a))
+</code></pre>
+
+<ul>
+<li>dict获取属性</li>
+</ul>
+
+<h4>上下文管理器协议</h4>
+
+<ul>
+<li><img src="media/15744656731481/15744763032317.jpg" alt="" style="width:324px;"/></li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">class Sample:
+    def __enter__(self):
+        #获取资源
+        print(&#39;enter&#39;)
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        #释放资源
+        print(&quot;exit&quot;)
+
+    def do_something(self):
+        print(&quot;doing something&quot;)
+
+with Sample() as sample:
+    sample.do_something()
+</code></pre>
+
+<h4>contextlib协议</h4>
+
+<pre class="line-numbers"><code class="language-python">import contextlib
+
+@contextlib.contextmanager
+def file_open(file_name):
+    print (&quot;file open&quot;)
+    yield {}
+    print (&quot;file end&quot;)
+
+with file_open(&quot;bobby.txt&quot;) as f_opened:
+    print (&quot;file processing&quot;)
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/23 07:34 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15742917885791.html">
+                
+                  <h1>中介模式</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>动机</h4>
+
+<ul>
+<li>在软件构建过程中，经常会出现多个对象互相关联交互的情况，对象之间常常会维持一种复杂的引用关系，如果遇到一些需求的更改，这种直接的引用关系将面临不断的变化。</li>
+<li>在这种情況下，我们可使用一个“中介对象”来管理对象间的关联关系，避免相互交互的对象之间的紧耦合引用关系，从而更好地抵御变化。</li>
+</ul>
+
+<h4>模式定义</h4>
+
+<ul>
+<li>用一个中介对象来封装（封装变化）一系列的对象交互。中介者使各对象不需要显式的相互引用（编译时依赖运行时依赖），从而使其耦合松散（管理变化），而且可以独立地改变它们之间的交互</li>
+<li>编译时依赖改成运行时依赖</li>
+</ul>
+
+<h4>结构</h4>
+
+<p><img src="media/15742917885791/15803924036000.jpg" alt="" style="width:758px;"/></p>
+
+<p><img src="media/15742917885791/15742924128916.jpg" alt="" style="width:986px;"/></p>
+
+<h4>要点总结</h4>
+
+<ul>
+<li><p>将多个对象间复杂的关联关系解耦，Mediator 模式将多个对象间的控制逻辑进行集中管理，变“多个对象互相关联“为“多个对象和一个中介者关联“，简化了系统的维护，抵御了可能的变化。</p></li>
+<li><p>随着控制逻辑的复杂化，Mediator 具体对象的实现可能相当复杂。这时候可以对 Mediator 对象进行分解处理。</p></li>
+<li><p>Facade 模式是解耦系统（单向）的对象关联关系；Mediator 模式是解耦系统内各个对象之间（双向）的关联关系。</p></li>
+</ul>
+
+<h4>golang_demo</h4>
+
+<pre class="line-numbers"><code class="language-go">package desian_pattern_practise
+
+import (
+    &quot;reflect&quot;
+    &quot;strings&quot;
+    &quot;sync&quot;
+)
+
+var (
+    mediator *Mediator
+    monce sync.Once
+)
+type IColleague interface {
+    GetMediator()
+}
+
+type Colleague struct {
+    mediator IMediator
+}
+
+
+type IMediator interface {
+    Execute(IColleague)
+}
+
+type Mediator struct {
+    cd, cpu, videoCard, soundCard IColleague
+}
+
+func (m *Mediator) SetCD(cd IColleague) {
+    m.cd = cd
+}
+
+func (m *Mediator) SetCpu(cpu IColleague) {
+    m.cpu = cpu
+}
+
+func (m *Mediator) SetVideoCard(videoCard IColleague) {
+    m.videoCard = videoCard
+}
+
+func (m *Mediator) SetSoundCard(soundCard IColleague) {
+    m.soundCard = soundCard
+}
+
+func GetMediator() *Mediator {
+    monce.Do(func() {
+        mediator = &amp;Mediator{}
+    })
+    return mediator
+}
+
+func (m *Mediator) Execute(i IColleague) {
+    switch i.(type) {
+    case *CDDriver:
+        m.cpu.(*Cpu).Process(i.(*CDDriver).data)
+    case *Cpu:
+        m.soundCard.(*SoundCard).Play(i.(*Cpu).audio)
+        m.videoCard.(*VideoCard).Display(i.(*Cpu).video)
+    }
+}
+
+type CDDriver struct {
+    *Colleague
+    data string
+}
+
+func NewCDDriver() *CDDriver {
+    return &amp;CDDriver{
+        Colleague: &amp;Colleague{
+            mediator: GetMediator(),
+        },
+    }
+}
+
+func (c *CDDriver) GetMediator() {}
+
+func (c *CDDriver) ReadData() {
+    c.data = &quot;music, image&quot;
+    println(reflect.TypeOf(c).String() + &quot; reading data&quot;)
+    c.mediator.Execute(c)
+}
+
+type Cpu struct {
+    *Colleague
+    video, audio string
+}
+
+func NewCpu() *Cpu{
+    return &amp;Cpu {
+        Colleague: &amp;Colleague{
+            mediator: GetMediator(),
+        },
+    }
+}
+
+func (c *Cpu) GetMediator() {}
+
+func (c *Cpu) Process(data string) {
+    sp := strings.Split(data, &quot;,&quot;)
+    c.video = sp[1]
+    c.audio = sp[0]
+    println(reflect.TypeOf(c).String() + &quot; video &quot; + c.video + &quot; audio &quot;, c.audio)
+    c.mediator.Execute(c)
+}
+
+type VideoCard struct {
+    *Colleague
+}
+
+func NewVideoCard() *VideoCard{
+    return &amp;VideoCard {
+        Colleague: &amp;Colleague{
+            mediator: GetMediator(),
+        },
+    }
+}
+
+func (v *VideoCard) GetMediator() {}
+
+func (v *VideoCard) Display(data string) {
+    println(reflect.TypeOf(v).String() + &quot; display data &quot;, data)
+    v.mediator.Execute(v)
+}
+
+type SoundCard struct {
+    *Colleague
+}
+
+func NewSoundCard() *SoundCard {
+    return &amp;SoundCard {
+        Colleague: &amp;Colleague{
+            mediator: GetMediator(),
+        },
+    }
+}
+
+func (v *SoundCard) GetMediator() {}
+
+func (v *SoundCard) Play(data string) {
+    println(reflect.TypeOf(v).String() + &quot; play data &quot;, data)
+    v.mediator.Execute(v)
+}
+
+package desian_pattern_practise
+
+import &quot;testing&quot;
+
+func TestMediator_Execute(t *testing.T) {
+    cd:= NewCDDriver()
+    cpu := NewCpu()
+    soundCard := NewSoundCard()
+    videoCard := NewVideoCard()
+    GetMediator().SetCD(cd)
+    GetMediator().SetCpu(cpu)
+    GetMediator().SetSoundCard(soundCard)
+    GetMediator().SetVideoCard(videoCard)
+    cd.ReadData()
+}
+</code></pre>
+
+<h4>cpp_demo</h4>
+
+<pre class="line-numbers"><code class="language-cpp">//
+// Created by eredinliu on 2020-01-31.
+//
+#include &lt;iostream&gt;
+#include &lt;mutex&gt;
+#include &lt;typeinfo&gt;
+#include &lt;boost/algorithm/string.hpp&gt;
+#include &lt;vector&gt;
+
+using namespace std;
+using namespace boost;
+
+class Mediator;
+class Colleague {
+public:
+    Colleague(Mediator* _mediator) : mediator(_mediator) {}
+
+protected:
+    Mediator* mediator;
+};
+
+class Cpu;
+class CDDriver;
+class VideoCard;
+class SoundCard;
+
+class Mediator {
+public:
+    static Mediator* mediator;
+
+    static Mediator* GetMediator() {
+        static once_flag flag;
+        call_once(flag, [&amp;](){mediator = new Mediator();});
+        return mediator;
+    }
+
+    void SetCD(CDDriver* cd) {this-&gt;cd = cd;}
+
+    void SetCpu(Cpu* cpu) {this-&gt;cpu = cpu;}
+
+    void SetVideoCard(VideoCard* video) {this-&gt;videoCard = video;}
+
+    void SetSoundCard(SoundCard* sound) {this-&gt;soundCard = sound;}
+
+    void Execute(Colleague* colleague);
+private:
+    CDDriver* cd;
+    Cpu* cpu;
+    VideoCard *videoCard;
+    SoundCard *soundCard;
+    Mediator() {}
+};
+
+Mediator* Mediator::mediator = nullptr;
+
+class CDDriver : public Colleague {
+public:
+    CDDriver(Mediator* _mediator) : Colleague(_mediator) {}
+
+    void ReadData() {
+        this-&gt;data = &quot;Music,Image&quot;;
+        cout &lt;&lt; typeid(this).name() &lt;&lt; &quot; reading data&quot; &lt;&lt; endl;
+        this-&gt;mediator-&gt;Execute(this);
+    }
+
+    string&amp; GetData() {
+        return this-&gt;data;
+    }
+private:
+    string data;
+};
+
+class Cpu : public Colleague {
+public:
+    friend class Mediator;
+    Cpu(Mediator* _mediator) : Colleague(_mediator) {}
+
+    void Process(string&amp; data) {
+        vector&lt;string&gt; str_vec;
+        split(str_vec, data, is_any_of(&quot;,&quot;));
+        this-&gt;video = str_vec[1];
+        this-&gt;sound = str_vec[0];
+        cout &lt;&lt; typeid(this).name() &lt;&lt; &quot; video &quot; &lt;&lt; this-&gt;video &lt;&lt; &quot; sound &quot;
+        &lt;&lt; this-&gt;sound &lt;&lt; endl;
+        this-&gt;mediator-&gt;Execute(this);
+    }
+
+    string&amp; GetVideo() {return this-&gt;video;}
+
+    string&amp; GetSound() {return this-&gt;sound;}
+private:
+    string video, sound;
+};
+
+class VideoCard : public Colleague {
+public:
+    VideoCard(Mediator* _mediator) : Colleague(_mediator) {}
+
+    void Process(string&amp; data) {
+        cout &lt;&lt; typeid(this).name() &lt;&lt; &quot; display &quot; &lt;&lt; data &lt;&lt; endl;
+        this-&gt;mediator-&gt;Execute(this);
+    }
+};
+
+class SoundCard : public Colleague {
+public:
+    SoundCard(Mediator* _mediator) : Colleague(_mediator) {}
+
+    void Process(string&amp; data) {
+        cout &lt;&lt; typeid(this).name() &lt;&lt; &quot; play &quot; &lt;&lt; data &lt;&lt; endl;
+        this-&gt;mediator-&gt;Execute(this);
+    }
+};
+
+void Mediator::Execute(Colleague* colleague) {
+    if (colleague == cd) {
+        cpu-&gt;Process(cd-&gt;GetData());
+    } else if (colleague == cpu){
+        soundCard-&gt;Process(cpu-&gt;GetSound());
+        videoCard-&gt;Process(cpu-&gt;GetVideo());
+    }
+}
+
+int main() {
+    Mediator* mediator = Mediator::GetMediator();
+    CDDriver* cd = new CDDriver(mediator);
+    Cpu* cpu = new Cpu(mediator);
+    SoundCard* soundCard = new SoundCard(mediator);
+    VideoCard* videoCard = new VideoCard(mediator);
+    mediator-&gt;SetCD(cd);
+    mediator-&gt;SetCpu(cpu);
+    mediator-&gt;SetSoundCard(soundCard);
+    mediator-&gt;SetVideoCard(videoCard);
+    cd-&gt;ReadData();
+}
+</code></pre>
+
+<h4>python_code</h4>
+
+<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
+
+class Colleague(object):
+
+    def __init__(self, mediator):
+        self.mediator = mediator
+
+
+def singleton(cls, *args, **kwargs):
+    instance = {}
+
+    def __singleton(*args, **kwargs):
+        if cls not in instance:
+            instance[cls] = cls(*args, **kwargs)
+        return instance[cls]
+
+    return __singleton
+
+@singleton
+class Mediator(object):
+
+    def __init__(self):
+        self.__cd = self.__cpu = self.__video_card = self.__sound_card = None
+
+    def set_cd(self, cd):
+        self.__cd  = cd
+
+    def set_cpu(self, cpu):
+        self.__cpu = cpu
+
+    def set_video_card(self, video_card):
+        self.__video_card = video_card
+
+    def set_sound_card(self, sound_card):
+        self.__sound_card = sound_card
+
+    def execute(self, colleague):
+        if colleague == self.__cd:
+            self.__cpu.process(self.__cd.get_data())
+        elif colleague == self.__cpu:
+            self.__sound_card.process(colleague.get_sound())
+            self.__video_card.process(colleague.get_video())
+
+class CDDriver(Colleague):
+
+    def __init__(self, mediator):
+        super().__init__(mediator)
+        self.__data = &#39;&#39;
+
+    def read_data(self):
+        self.__data = &#39;Music,Image&#39;
+        print(type(self).__name__, &quot; reading data&quot;)
+        self.mediator.execute(self)
+
+    def get_data(self):
+        return self.__data
+
+class Cpu(Colleague):
+
+    def __init__(self, mediator):
+        super().__init__(mediator)
+        self.__video = self.__sound = &#39;&#39;
+
+    def process(self, data):
+        ret = data.split(&#39;,&#39;)
+        self.__video = ret[1]
+        self.__sound = ret[0]
+        print(type(self).__name__, &quot; video {} sound {}&quot;.format(self.__video, 
+                                                               self.__sound))
+
+        self.mediator.execute(self)
+
+    def get_video(self):
+        return self.__video
+
+    def get_sound(self):
+        return self.__sound
+
+
+class VideoCard(Colleague):
+
+    def __init__(self, mediator):
+        super().__init__(mediator)
+
+    def process(self, data):
+        print(type(self).__name__, &quot; display {}&quot;.format(data))
+
+
+class SoundCard(Colleague):
+
+    def __init__(self, mediator):
+        super().__init__(mediator)
+
+    def process(self, data):
+        print(type(self).__name__, &quot; play {}&quot;.format(data))
+
+if __name__ == &#39;__main__&#39;:
+    mediator = Mediator()
+    cd = CDDriver(mediator)
+    cpu = Cpu(mediator)
+    sound_card = SoundCard(mediator)
+    video_card = VideoCard(mediator)
+    mediator.set_cd(cd)
+    mediator.set_cpu(cpu)
+    mediator.set_sound_card(sound_card)
+    mediator.set_video_card(video_card)
+    cd.read_data()
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/21 07:16 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15739426575118.html">
+                
+                  <h1>抽象基类</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>作用</h4>
+
+<ul>
+<li>类型判断</li>
+<li>接口实现</li>
+</ul>
+
+<h4>类对象数组</h4>
+
+<pre class="line-numbers"><code class="language-python">class Cat(object):
+    def say(self):
+        print(&quot;i am a cat&quot;)
+
+
+class Dog(object):
+    def say(self):
+        print(&quot;i am a dog&quot;)
+
+
+class Duck(object):
+    def say(self):
+        print(&quot;i am a duck&quot;)
+
+
+anaimal_list = [Cat, Dog, Duck]
+for anaimal in anaimal_list:
+    anaimal().say()
+</code></pre>
+
+<h4>扩展类</h4>
+
+<ul>
+<li>只要继承了魔法函数getitem就可以</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">class Company(object):
+    def __init__(self, employee_list):
+        self.employee = employee_list
+
+    def __getitem__(self, item):
+        return self.employee[item]
+
+    def __len__(self):
+        return len(self.employee)
+
+
+com = Company([&#39;tom&#39;, &#39;jack&#39;, &#39;jsdon&#39;])
+a = [&#39;b1&#39;, &#39;b2&#39;]
+b = [&#39;b2&#39;, &#39;b3&#39;]
+name_tuple = [&#39;b3&#39;, &#39;b4&#39;]
+name_set = set()
+name_set.add(&#39;b5&#39;)
+name_set.add(&#39;b6&#39;)
+a.extend(com)
+print(a)
+</code></pre>
+
+<h4>强制子类必须实现接口</h4>
+
+<pre class="line-numbers"><code class="language-python">class CacheBase(metaclass=abc.ABCMeta):
+    @abc.abstractmethod
+    def get(self, key):
+        pass
+
+    @abc.abstractmethod
+    def set(self, key, value):
+        pass
+
+class RedisCache(CacheBase):
+    def set(self, key, value):
+        print(&quot;hello&quot;)
+
+    def get(self, key):
+        print(&#39;hello&#39;)
+</code></pre>
+
+<h4>instance&amp;type</h4>
+
+<ul>
+<li>is是判断类别</li>
+<li>==是判断值</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">class A:
+    pass
+
+class B(A):
+    pass
+
+b = B()
+
+print(isinstance(b, B))
+print(isinstance(b, A))
+
+print(type(b) is B)
+print(type(b) is A) #二者的ID不想等
+print(id(b))
+print(id(B))
+</code></pre>
+
+<h4>Mro算法</h4>
+
+<ul>
+<li><img src="media/15739426575118/15739464120394.jpg" alt="" style="width:913px;"/></li>
+<li>C3算法</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/17 06:17 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15738723543218.html">
+                
+                  <h1>魔法函数</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>概念</h4>
+
+<ul>
+<li>python内置</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">class Company(object):
+    def __init__(self, employee_list):
+       self.employee = employee_list
+
+    def __getitem__(self, item):
+        return self.employee[item]
+
+company = Company([&#39;tom&#39;, &#39;jack&#39;, &#39;jsdon&#39;])
+
+for em in company:
+    print(em)
+</code></pre>
+
+<h4>python数据模型</h4>
+
+<pre class="line-numbers"><code class="language-python">class Company(object):
+    def __init__(self, employee_list):
+       self.employee = employee_list
+
+    def __getitem__(self, item):
+        return self.employee[item]
+
+    def __len__(self):
+        return len(self.employee)
+
+company = Company([&#39;tom&#39;, &#39;jack&#39;, &#39;jsdon&#39;])
+
+# company1 = company[:2]
+# for em in company1:
+#     print(em)
+
+print(len(company))
+</code></pre>
+
+<h4>魔法函数</h4>
+
+<ul>
+<li><img src="media/15738723543218/15738740515573.jpg" alt="" style="width:278px;"/></li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">__subclasshook__ 魔法函数
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/16 10:45 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+              
+
+
+			<div class="row">
+			  <div class="large-6 columns">
+			  <p class="text-left" style="padding-top:25px;">
+			   <a href="all_2.html">&laquo; Prev Page</a>  
+			  </p>
+			  </div>
+			  <div class="large-6 columns">
+			<p class="text-right" style="padding-top:25px;">
+			 <a href="all_4.html">&raquo; Next Page</a> 
+			</p>
+			  </div>
+			</div>
+		</div>
+	</div><!-- large 8 -->
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <h1>eredin-blog</h1>
+                <div class="site-des">生命的意义是成为你自己！</div>
+                <div class="social">
+
+
+
+
+
+
+
+
+
+
+
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html"><strong>C++基础与提高</strong></a>
+        
+            <a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html"><strong>设计模式之美</strong></a>
+        
+            <a href="Python.html"><strong>Python</strong></a>
+        
+            <a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html"><strong>设计模式</strong></a>
+        
+            <a href="Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html"><strong>Linux性能优化实战</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="15814649492497.html">Simple Factory</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15814189410719.html">代码的可测试性</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15814188057978.html">重构</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15813811739408.html">tuple 使用</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
+
+
+  </body>
+</html>

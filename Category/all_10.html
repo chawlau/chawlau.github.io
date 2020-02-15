@@ -1,0 +1,1167 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  eredin-blog
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="eredin-blog" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site: ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="self" href="index.html">Home</a></li>
+        
+        <li id=""><a target="_self" href="archives.html">Archives</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="https://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; eredin-blog</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+        
+        <li><a target="self" href="index.html">Home</a></li>
+        
+        <li><a target="_self" href="archives.html">Archives</a></li>
+        
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html">C++基础与提高</a></li>
+        
+            <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html">设计模式之美</a></li>
+        
+            <li><a href="Python.html">Python</a></li>
+        
+            <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html">设计模式</a></li>
+        
+            <li><a href="Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html">Linux性能优化实战</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+	$(function(){
+		$('#menu_item_index').addClass('is_active');
+	});
+</script>
+<div class="row">
+	<div class="large-8 medium-8 columns">
+		<div class="markdown-body home-categories">
+		
+			<div class="article">
+                <a class="clearlink" href="15685431648523.html">
+                
+                  <h1>互斥量用法&死锁</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>互斥量使用</h4>
+
+<ul>
+<li>lock</li>
+<li>unlock</li>
+<li>std::lock_guard</li>
+<li>std::lock_guard<a href="std::mutex">std::mutex</a> sg(my_mutex);</li>
+<li>必须在析构的时候解锁，不够灵活加{}提前析构</li>
+</ul>
+
+<h4>死锁</h4>
+
+<ul>
+<li>至少两把锁 </li>
+<li>解决方案</li>
+<li>保证互斥量上锁的顺序一致</li>
+</ul>
+
+<h4>std::lock函数模版</h4>
+
+<ul>
+<li>一次锁住两或者两个以上的互斥量，至少两个</li>
+<li>不存在因为多个线程中，因为锁的顺序问题导致死锁的风险问题</li>
+<li>如果互斥量一个没锁住，就等待，只有等所有互斥量都锁住，才能往下走</li>
+<li>要么都锁住，要么都没锁住，如果只锁了一个，另外没锁成功，则立即把已经锁住的解锁</li>
+<li>建议一个一个锁</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">std::lock(mutex1, mutex2);
+mutex1.unlock();
+mutex2.unlock();
+</code></pre>
+
+<h4>std::lock_guard&amp;</h4>
+
+<pre class="line-numbers"><code class="language-text">std::lock(mutex1, mutex2);
+std::lock_guard&lt;std::mutex&gt; s1(mutex1, std::adopt_lock);
+std::lock_guard&lt;std::mutex&gt; s2(mutex2, std::adopt_lock);
+</code></pre>
+
+<ul>
+<li>std::adopt_lock表示互斥量已经lock过了</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/09/15 18:26 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15683697645245.html">
+                
+                  <h1>线程传参</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>临时对象</h4>
+
+<ul>
+<li>参数不能传引用和指针</li>
+<li>线程传参传字符串</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">//void myprint(const int&amp; i, char* buf) {
+//存在主线程被回收,char* buf还没有转成string
+void myprint(const int&amp; i, const string&amp; buf) {
+  cout &lt;&lt; &quot; i &quot; &lt;&lt; i &lt;&lt; endl;
+  cout &lt;&lt; &quot;buf &quot; &lt;&lt; buf &lt;&lt; endl;
+}
+thread th(myprint, var, A(var));
+thread th(myprint, var, string(buf));
+</code></pre>
+
+<ul>
+<li>创建线程的同时传递临时对象是可行的</li>
+<li>保证在主线程被回收前</li>
+<li>thread传递值，传递类对象避免隐式类型转换， 全部在创建线程的时候构建出来</li>
+<li>不使用detach，使用join</li>
+</ul>
+
+<h4>临时对象作为线程参数</h4>
+
+<ul>
+<li>获取线程id， this_thread::get_id()来获取</li>
+<li>临时对象构造时机捕获</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">void myprint2(const A&amp; buf) {
+  cout &lt;&lt; &quot;buf &quot; &lt;&lt; &amp;buf &lt;&lt; &quot; thread_id &quot; &lt;&lt; this_thread::get_id() &lt;&lt; endl;
+}
+thread th2(myprint2, var);
+</code></pre>
+
+<ul>
+<li>使用临时对象构建线程，是在主线程中构建完成</li>
+</ul>
+
+<h4>传递类对象和智能指针</h4>
+
+<ul>
+<li>std::ref 可以使用非const拷贝构造函数</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">unique_ptr&lt;int&gt; u_ptr(new int(100));
+thread th3(myprint3, std::move(u_ptr));
+</code></pre>
+
+<h4>成员函数指针做线程函数</h4>
+
+<ul>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/09/13 18:16 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15682829786509.html">
+                
+                  <h1>线程启动 join detach</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>线程启动</h4>
+
+<ul>
+<li>thread是标准库的类</li>
+<li>join 加入汇合 阻塞主线程，让主线程等待子线程执行完毕，主线程执行完，join完毕，主线程就执行</li>
+</ul>
+
+<h5>detach()</h5>
+
+<ul>
+<li>传统多线程主线程要等待子线程执行完毕，然后自己再退出</li>
+<li>主线程不和子线程会和了，主线程和子线程分道扬镳</li>
+<li>detach()之后，与主线程关联的thread对象就会失去与主线程的关联</li>
+<li>子线程就会驻留在后台运行，子线程就会被c++运行时库接管</li>
+<li>detach会导致线程失去控制，不能再join</li>
+</ul>
+
+<h4>joinable（）</h4>
+
+<ul>
+<li>判断是否可以成join, detach</li>
+</ul>
+
+<h4>其他可调用对象</h4>
+
+<ul>
+<li>用类对象创建的线程，一旦主线程执行结束了，这个对象是被复制进新创建的线程中</li>
+<li>执行完主线程后，ta会被销毁。但是所复制的对象依旧存在</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/09/12 18:09 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15680245397248.html">
+                
+                  <h1>unique_ptr删除器尺寸</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>临时对象</h4>
+
+<ul>
+<li>unique_ptr不能拷贝，但是在局部临时对象中，即将被销毁的时候，是可以被拷贝的</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">unique_ptr&lt;int&gt; p1;
+p1 = func();
+</code></pre>
+
+<h4>指定删除器</h4>
+
+<ul>
+<li>unique_ptr&lt;指向的对象,删除器&gt; 智能指针变量名</li>
+<li>删除器 可调用对象 比如函数 重载</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">void mydelete(int *pdel) {
+  delete pdel;
+  pdel = nullptr;
+}
+
+int main() {
+  unique_ptr&lt;int&gt; p1;
+  p1 = func();
+  typedef void(*fp) (int*);
+  using fp = void(*)(int*);
+  typedef decltype(mydelete)* fp2;//decltype返回的是void(int*) ,加*表示函数类型
+  unique_ptr&lt;int, decltype(mydelete)*&gt; ps2(new int(100), mydelete);
+  unique_ptr&lt;int, fp&gt; ps1(new int(100), mydelete);
+}
+</code></pre>
+
+<ul>
+<li>指定删除器会影响unique_ptr的类型</li>
+<li>unique_ptr删除器不同的智能指针不能放入同一个容器</li>
+</ul>
+
+<h4>尺寸问题</h4>
+
+<ul>
+<li>跟裸指针一样大</li>
+<li>如果增加了自己的删除器，则尺寸有可能增加，也可能不增加</li>
+<li>增加删除器会增加unique_ptr尺寸</li>
+</ul>
+
+<h4>智能指针设计思想</h4>
+
+<ul>
+<li>帮助释放内存</li>
+<li>C++ auto_ptr=unique_ptr</li>
+</ul>
+
+<h4>auto_ptr</h4>
+
+<ul>
+<li>具有unique_ptr部分特性</li>
+<li>不能放入容器</li>
+<li>不能从函数中返回</li>
+</ul>
+
+<h4>智能指针</h4>
+
+<ul>
+<li>多个指向同一一个对象的指针，使用shared_ptr</li>
+<li>指向同一个对象的指针，使用unique_ptr首选</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/09/09 18:22 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15677684117226.html">
+                
+                  <h1>unique_ptr</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>概述</h4>
+
+<ul>
+<li>独占式的，专属所有权，同一时刻，只能有一个unique_ptr指针指向这块对象</li>
+<li>当这个unique_ptr被销毁的时候，它所指向的对象也被销毁</li>
+</ul>
+
+<h4>make_unique</h4>
+
+<ul>
+<li>c++14才有</li>
+<li>不支持指定的删除器语法</li>
+</ul>
+
+<h4>不支持的操作</h4>
+
+<ul>
+<li>unique_ptr<string> ps1(new string(&quot;I love China&quot;));</li>
+<li>unique_ptr<string> ps2(ps1)</li>
+<li>拷贝，赋值</li>
+</ul>
+
+<h4>移动语义</h4>
+
+<ul>
+<li>unique_ptr<int> ps5 = std::move(pi3);</li>
+</ul>
+
+<h4>release()</h4>
+
+<ul>
+<li>放弃指针控制权，返回裸指针，将该指针置空</li>
+<li>裸指针可以释放，可以delete, 也可以初始化另外的智能指针</li>
+<li>直接release会导致内存泄露</li>
+<li>int* tmp = p5.release();</li>
+<li>delete tmp</li>
+</ul>
+
+<h4>reset</h4>
+
+<ul>
+<li>不带参数，释放智能指针所指向的对象，并且将智能指针置为空</li>
+<li>带参数 释放智能指针所指向的对象，并且将智能指针指向新对象</li>
+<li>pi2.reset(p5.release());</li>
+</ul>
+
+<h4>nullptr</h4>
+
+<ul>
+<li>释放智能指针指向的对象，并将智能指针置空</li>
+</ul>
+
+<h4>指向数组</h4>
+
+<ul>
+<li>unique_ptr<A> ptr(new A[10]) A没有析构函数，正常</li>
+<li>有析构函数，会导致异常</li>
+</ul>
+
+<h4>get()</h4>
+
+<ul>
+<li>有些函数的参数需要内置的裸指针</li>
+<li>get的指针千万不要delete</li>
+</ul>
+
+<h4>swap</h4>
+
+<ul>
+<li>交换智能指针指向的对象</li>
+</ul>
+
+<h4>智能指针作为判断条件</h4>
+
+<ul>
+<li>if (ptr)</li>
+</ul>
+
+<h4>转换为shared_ptr</h4>
+
+<ul>
+<li>shared_ptr有个显式的构造函数。用于将shared_ptr转换为unique_ptr</li>
+<li>临时对象都是右值</li>
+<li>unique_ptr没有控制块</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/09/06 19:13 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15676787915607.html">
+                
+                  <h1>Shared_ptr使用场景，陷阱和性能分析</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>使用场景</h4>
+
+<ul>
+<li>临时局部变量返回</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">shared_ptr&lt;int&gt; create(int val) {
+  return make_shared&lt;int&gt;(val);
+}
+
+shared_ptr&lt;int&gt;func(int val) {
+  shared_ptr&lt;int&gt; ptr = create(5);
+  return ptr;
+}
+ptr返回的引用计数没有增加
+</code></pre>
+
+<ul>
+<li>不允许隐式转换</li>
+<li>裸指针绑定到shared_ptr后，管理权限就交给智能指针了，不能再操作裸指针</li>
+</ul>
+
+<h4>注意</h4>
+
+<ul>
+<li>不要delete get()返回的指针</li>
+<li>不能随便释放get返回的指针</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">  shared_ptr&lt;int&gt; p1(p);
+  shared_ptr&lt;int&gt; p2(p); //p2p1无关联，导致p1p2内存被释放两次
+  shared_ptr&lt;int&gt; p1(new int);
+  shared_ptr&lt;int&gt; p2(p1); //这种写法p1p2互通，使用同一个控制块kkk
+</code></pre>
+
+<h4>this返回</h4>
+
+<ul>
+<li>不要把this作为shared_ptr返回</li>
+<li>裸指针初始化多个智能指针会导致指向同一内存，但是不是同一控制块</li>
+<li>enable_shared_from_this</li>
+<li>shared_from_this</li>
+<li>enable_shared_from_this中又个weak_ptr监视this，shared_from_this,嗲用了lock方法，让引用计数+1，同时返回shared_ptr</li>
+</ul>
+
+<h4>性能说明</h4>
+
+<ul>
+<li>shared_ptr weak_ptr是裸指针的两倍</li>
+<li>第一个指针指向智能指针所指向的对象</li>
+<li>第二个指针指向的是控制块</li>
+<li>1）指向对象的强引用计数shared_ptr</li>
+<li>2) 指向对象的弱引用计数weak_ptr</li>
+<li>3) 删除器指针 内存分配器</li>
+<li>控制块是由第一个指向对象的shared_ptr创建的</li>
+</ul>
+
+<h4>控制块创建时机</h4>
+
+<ul>
+<li>make_shared 分配并且初始化一个对象，返回对象的shared_ptr</li>
+</ul>
+
+<h4>裸指针初始化shared_ptr</h4>
+
+<ul>
+<li>int* p = new  int;</li>
+<li>shared_ptr<int> p1(p)</li>
+<li>shared_ptr<int> p2(p)</li>
+<li>不允许，会产生多个控制块，就有多个引用计数，导致析构多次</li>
+</ul>
+
+<h4>移动语义</h4>
+
+<ul>
+<li>shared_ptr<int> p1(new int(100))</li>
+<li>shared_ptr<int> p2(std::move(p1))</li>
+<li>移动构造一个新的智能指针对象p2,p1就不再指向该对象，引用计数依旧是一</li>
+<li>shared_ptr<int> p3</li>
+<li>p3 = std::move(p2)</li>
+<li>移动赋值运算符比拷贝构造函数快</li>
+</ul>
+
+<h4>使用建议</h4>
+
+<ul>
+<li>分配器解决内存分配</li>
+<li>优先使用make_shared</li>
+<li>shared_ptr<string> s1(new string(&quot;new&quot;)) 分配两次内存</li>
+<li>auto ps2 = make_shared<string>(&quot;new&quot;) 分配一次内存 </li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/09/05 18:19 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15675915694548.html">
+                
+                  <h1>Weak_ptr</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>概念</h4>
+
+<ul>
+<li>weak_ptr弱 强 shared_ptr</li>
+<li>智能指针，指向由shared_ptr管理的对象</li>
+<li>不控制对象的生命周期，不会改变引用计数</li>
+<li>构造和析构不会增加引用计数</li>
+<li>shared_ptr要释放对象的时候照常释放，不管是否有weak_ptr</li>
+<li>weak_ptr 监视shared_ptr的生命周期，是shared_ptr的扩充</li>
+<li>不是独立的智能指针。不能用来操作所指向的资源，监视对象是否存在</li>
+</ul>
+
+<h4>常规操作</h4>
+
+<ul>
+<li>weak_ptr不能直接来访问对象</li>
+<li>需要lock来访问，如果存在，lock就返回一个对象的shared_ptr指针</li>
+<li>如果不存在，就返回一个空的shared_ptr</li>
+<li>weak_ptr能够判断对象是否存在</li>
+</ul>
+
+<h4>常用指针</h4>
+
+<ul>
+<li>use_count 获取对象强引用的数量</li>
+<li>expired 是否过期，如果use_count=0,对象不存在，观测对象的资源是否被释放</li>
+<li>reset 将弱引用指针设置为空，不影响强引用，</li>
+</ul>
+
+<h4>尺寸问题</h4>
+
+<ul>
+<li>weak_ptr和shared_ptr一样大。裸指针的两倍</li>
+<li>第一个指针指向智能指向对象</li>
+<li>第二个指针指向shared_ptr生成的控制块</li>
+<li><img src="media/15675915694548/15675935853040.jpg" alt="" style="width:898px;"/></li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/09/04 18:06 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15672468334916.html">
+                
+                  <h1>shared_ptr常用操作</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>引用计数增加</h4>
+
+<ul>
+<li>每个shared_ptr都会记录其他的shared_ptr指向对象</li>
+<li>智能当成实参在函数里传递会增加</li>
+<li>如果是引用则不增加</li>
+<li>返回值返回</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">void func(shared_ptr&lt;int&gt;&amp; ptr);不增加
+void func(shared_ptr&lt;int&gt; ptr);//增加
+shared_ptr&lt;int&gt; func2(shared_ptr&lt;int&gt;&amp; ptr)//增加
+</code></pre>
+
+<h4>引用计数减少</h4>
+
+<ul>
+<li>局部的shared_ptr离开其作用域</li>
+<li>指向其他对象</li>
+</ul>
+
+<h4>常用操作</h4>
+
+<ul>
+<li>use_count</li>
+<li>unique</li>
+</ul>
+
+<h4>reset</h4>
+
+<ul>
+<li>若pi是唯一指向该对象的指针，那么释放pi指向的对象，pi置空，否则引用计数减q，不释放对象，同时pi置空</li>
+<li>reset带参数的话</li>
+<li>空指针也可以用reset，指向新的对象</li>
+</ul>
+
+<h4>get</h4>
+
+<ul>
+<li>返回裸指针</li>
+<li>如果智能指针释放了对象，裸指针也就无效了</li>
+<li>第三方函数就是需要裸指针</li>
+</ul>
+
+<h4>swap</h4>
+
+<ul>
+<li>交换两个智能指针的对象</li>
+</ul>
+
+<h4>nullptr</h4>
+
+<ul>
+<li>将指向的对象引用计数减去1，若为0，释放智能指针指向的对象</li>
+</ul>
+
+<h4>指定删除器和数组问题</h4>
+
+<ul>
+<li>默认将delete作为资源析构方式</li>
+<li>我们可以指定自己的删除器来取代系统提供的默认的删除器</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">void  myDelete(int* p) {
+  cout &lt;&lt; __func__ &lt;&lt; endl;
+  delete p;
+}
+shared_ptr&lt;int&gt; p11(new int(12345), myDelete);
+  shared_ptr&lt;int&gt; p12(p11);
+  p12.reset();
+  p11.reset();
+</code></pre>
+
+<ul>
+<li>系统默认删除器处理不了数组</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">* shared_ptr&lt;A&gt; pA(new A[10]);//系统释放PA是delete pA所指向的裸指针，而不delete[]pA
+* defalut_delete
+* shared_ptr&lt;A&gt; pB(new A[10], default_delete&lt;A[]&gt;());
+* shared_ptr&lt;A[]&gt; pC(new A[10]);
+</code></pre>
+
+<h4>指定删除器额外说明</h4>
+
+<ul>
+<li>shared_ptr指定的删除器不同，但是指向的类型的相同</li>
+<li>可以放入同一个容器</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/08/31 18:20 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15671608919349.html">
+                
+                  <h1>智能指针</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>分配</h4>
+
+<ul>
+<li> auto ptr =  new auto(obj)</li>
+<li>智能指针能够帮助delete</li>
+</ul>
+
+<h4>new&amp;&amp;delete</h4>
+
+<ul>
+<li>new 如何记录分配的内存给delete使用，new内部有记录机制</li>
+</ul>
+
+<h4>申请和delete数组</h4>
+
+<ul>
+<li>多出来的4个字节针对数组元素来记录、</li>
+<li>内置类型不需要记录</li>
+</ul>
+
+<h4>智能指针</h4>
+
+<ul>
+<li>auto_ptr 被unique_ptr替代</li>
+<li>unique_ptr 独占式ptr，同一个时间只有一个指针指向对象，所有权可以移交出去</li>
+<li>shared_ptr 共享式指针，多个指针指向同一个对象</li>
+<li>weak_ptr 辅助shared_ptr</li>
+</ul>
+
+<h4>shared_ptr</h4>
+
+<ul>
+<li>释放对象</li>
+<li>shared_ptr被析构的时候</li>
+<li>shared_ptr指向其他的对象的时候</li>
+<li>不要用裸指针初始化shared_ptr</li>
+</ul>
+
+<h4>make_shared 函数模型，安全高效</h4>
+
+<ul>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/08/30 18:28 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15669803261255.html">
+                
+                  <h1>模板</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>类模版</h4>
+
+<ul>
+<li>成员函数必须被实例化后才能使用</li>
+<li>类模板能内部使用并不需要提供模版参数</li>
+<li>类模板用来实例化类型名</li>
+</ul>
+
+<h4>成员函数</h4>
+
+<ul>
+<li>template&lt;&gt; </li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/08/28 16:18 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+              
+
+
+			<div class="row">
+			  <div class="large-6 columns">
+			  <p class="text-left" style="padding-top:25px;">
+			   <a href="all_9.html">&laquo; Prev Page</a>  
+			  </p>
+			  </div>
+			  <div class="large-6 columns">
+			<p class="text-right" style="padding-top:25px;">
+			 <a href="all_11.html">&raquo; Next Page</a> 
+			</p>
+			  </div>
+			</div>
+		</div>
+	</div><!-- large 8 -->
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <h1>eredin-blog</h1>
+                <div class="site-des">生命的意义是成为你自己！</div>
+                <div class="social">
+
+
+
+
+
+
+
+
+
+
+
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html"><strong>C++基础与提高</strong></a>
+        
+            <a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html"><strong>设计模式之美</strong></a>
+        
+            <a href="Python.html"><strong>Python</strong></a>
+        
+            <a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html"><strong>设计模式</strong></a>
+        
+            <a href="Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html"><strong>Linux性能优化实战</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="15814649492497.html">Simple Factory</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15814189410719.html">代码的可测试性</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15814188057978.html">重构</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15813811739408.html">tuple 使用</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
+
+
+  </body>
+</html>

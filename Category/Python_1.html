@@ -1,0 +1,1229 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  Python - eredin-blog
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="eredin-blog" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site: ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="self" href="index.html">Home</a></li>
+        
+        <li id=""><a target="_self" href="archives.html">Archives</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="https://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; eredin-blog</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+        
+        <li><a target="self" href="index.html">Home</a></li>
+        
+        <li><a target="_self" href="archives.html">Archives</a></li>
+        
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html">C++基础与提高</a></li>
+        
+            <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html">设计模式之美</a></li>
+        
+            <li><a href="Python.html">Python</a></li>
+        
+            <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html">设计模式</a></li>
+        
+            <li><a href="Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html">Linux性能优化实战</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+	$(function(){
+		$('#menu_item_index').addClass('is_active');
+	});
+</script>
+<div class="row">
+	<div class="large-8 medium-8 columns">
+		<div class="markdown-body home-categories">
+		
+			<div class="article">
+                <a class="clearlink" href="15758463705532.html">
+                
+                  <h1>GIL</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>概念</h4>
+
+<ul>
+<li>全局解释器锁</li>
+<li>CPython</li>
+<li>GIL使得同一时刻只有一个线程在一个CPU上执行字节码</li>
+<li>无法将多个线程映射到多个CPU上执行</li>
+</ul>
+
+<h4>释放的时机</h4>
+
+<ul>
+<li>根据执行字节码的行数或者执行的时间片来进行释放</li>
+<li>遇到IO操作的时候释放</li>
+</ul>
+
+<h4>线程调度</h4>
+
+<ul>
+<li>对于IO操作来说，多线程和多进程性能差别不大</li>
+</ul>
+
+<h4>thread_demo</h4>
+
+<pre class="line-numbers"><code class="language-python">import time
+import threading
+
+
+def get_detail_html(url):
+    print(&quot;get detail html started&quot;)
+    time.sleep(2)
+    print(&quot;get detail html end&quot;)
+
+
+def get_detail_url(url):
+    print(&quot;get detail url started&quot;)
+    time.sleep(2)
+    print(&quot;get detail url end&quot;)
+
+if __name__ == &quot;__main__&quot;:
+   thread1 = threading.Thread(target=get_detail_html, args=(&quot;&quot;,))
+   thread2 = threading.Thread(target=get_detail_url, args=(&quot;&quot;,))
+   thread1.setDaemon(True)
+   # thread2.setDaemon(True)
+   start_time = time.time()
+   thread1.start()
+   thread2.start()
+
+   print(&quot;last time : {}&quot;.format(time.time() - start_time))
+</code></pre>
+
+<h4>thread_join</h4>
+
+<pre class="line-numbers"><code class="language-python">def get_detail_html(url):
+    print(&quot;get detail html started&quot;)
+    time.sleep(2)
+    print(&quot;get detail html end&quot;)
+
+
+def get_detail_url(url):
+    print(&quot;get detail url started&quot;)
+    time.sleep(4)
+    print(&quot;get detail url end&quot;)
+
+if __name__ == &quot;__main__&quot;:
+   thread1 = threading.Thread(target=get_detail_html, args=(&quot;&quot;,))
+   thread2 = threading.Thread(target=get_detail_url, args=(&quot;&quot;,))
+   # thread1.setDaemon(True)
+   # thread2.setDaemon(True)
+   start_time = time.time()
+   thread1.start()
+   thread2.start()
+   thread1.join()
+   thread2.join()
+
+   print(&quot;last time : {}&quot;.format(time.time() - start_time))
+</code></pre>
+
+<ul>
+<li>deque在字节码的层面是安全的</li>
+</ul>
+
+<h4>集成Thread来实现多线程</h4>
+
+<pre class="line-numbers"><code class="language-python">import time
+import threading
+
+class GetDetailHtml(threading.Thread):
+    def __init__(self, name):
+        super().__init__(name=name)
+
+    def run(self):
+        print(&quot;get detail html started&quot;)
+        time.sleep(2)
+        print(&quot;get detail html end&quot;)
+
+class GetDetailUrl(threading.Thread):
+    def __init__(self, name):
+        super().__init__(name=name)
+
+    def run(self):
+        print(&quot;get detail url started&quot;)
+        time.sleep(4)
+        print(&quot;get detail url end&quot;)
+
+if __name__ == &quot;__main__&quot;:
+    thread1 = GetDetailHtml(&quot;get_detail_html&quot;)
+    thread2 = GetDetailUrl(&quot;get_detail_url&quot;)
+    start_time = time.time()
+    thread1.start()
+    thread2.start()
+    thread1.join()
+    thread2.join()
+
+    print(&quot;last time : {}&quot;.format(time.time() - start_time))
+
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/12/09 07:06 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15745422969850.html">
+                
+                  <h1>自定义序列类</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>序列协议</h4>
+
+<ul>
+<li><img src="media/15745422969850/15745424374141.jpg" alt="" style="width:663px;"/></li>
+</ul>
+
+<h4>add</h4>
+
+<pre class="line-numbers"><code class="language-python">a += (3, 4)
+a += [3, 4]
+通过魔法函数__iadd__来实现，内部通过extends实现
+a = [1, 2]
+c = a + [3, 4]
+print(c)
+
+a += (3, 4)
+a.extend(range(3))//迭代相加每个元素
+a.append((1, 2)) //直接加上整个元组
+a.append([1, 2]) //直接加上整个列表
+print(a)
+</code></pre>
+
+<h4>可切片的对象</h4>
+
+<pre class="line-numbers"><code class="language-python">import numbers
+
+class Group:
+    def __init__(self, group_name, company_name, staffs):
+        self.group_name = group_name
+        self.company_name = company_name
+        self.staffs = staffs
+
+    def __reversed__(self):
+        self.staffs.reverse()
+
+    def __getitem__(self, item):
+        cls = type(self)
+        if isinstance(item, slice):
+            return cls(group_name=self.group_name, company_name=self.company_name, staffs=self.staffs[item])
+        elif isinstance(item, slice):
+            return cls(group_name=self.group_name, company_name=self.company_name, staffs=[self.staffs[item]])
+
+    def __len__(self):
+        return len(self.staffs)
+
+    def __iter__(self):
+        return iter(self.staffs)
+
+    def __contains__(self, item):
+        if item in self.staffs:
+            return True
+        else:
+            return False
+
+staffs = [&quot;bobby1&quot;, &quot;imooc&quot;, &quot;bobby2&quot;, &quot;bobby3&quot;]
+
+group = Group(company_name=&quot;imooc&quot;, group_name=&quot;user&quot;, staffs=staffs)
+reversed(group)
+
+for user in group:
+    print(user)
+</code></pre>
+
+<h4>维持升序排列</h4>
+
+<pre class="line-numbers"><code class="language-python">#用来处理已排序的序列，用来维持已排序的序列， 升序
+import bisect
+
+from  collections import deque
+
+inter_list = deque()
+bisect.insort(inter_list, 3)
+bisect.insort(inter_list, 2)
+bisect.insort(inter_list, 5)
+bisect.insort(inter_list, 1)
+bisect.insort(inter_list, 6)
+
+print(bisect.bisect_left(inter_list, 3))
+
+print(inter_list)
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/24 04:51 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15744656731481.html">
+                
+                  <h1>静态方法&类方法&对象方法</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>三种方法对比</h4>
+
+<ul>
+<li>对象方法，定义中，传入的第一个参数必须是 self，表示实例本身，在其中可使用 self.attr 获取实例的属性。</li>
+<li>class_method 无需实例化，但与实例方法第一个参数必须是 self 类似，类方法第一个参数表示类自身的 cls 参数，可以来调用类的属性、类的方法、类的实例化对象等</li>
+<li>static_method无需 self 参数，无需 cls 参数，直接声明一个静态方法，可无需实例化，直接由类调用，也可实例化后调用</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">class Date:
+    def __init__(self, year, month, day):
+        self.year = year
+        self.month = month
+        self.day = day
+
+    def tomorrow(self):
+        self.day += 1
+
+    @staticmethod
+    def parse_from_string(data_str):
+        year, month, day = tuple(data_str.split(&#39;-&#39;))
+        return Date(int(year), int(month), int(day))
+
+    @staticmethod
+    def valid_str(date_str):
+        year, month, day = tuple(date_str.split(&#39;-&#39;))
+        if int(year) &gt; 0 and (int(month) &gt; 0 and int(month) &lt;=12) and (int(day) &gt; 0 and int(day) &lt;=31):
+            return True
+        else:
+            return False
+
+    @classmethod
+    def from_string(cls, date_str):
+        year, month, day = tuple(date_str.split(&#39;-&#39;))
+        return cls(int(year), int(month), int(day))
+
+    def __str__(self):
+        return &quot;{year}/{month}/{day}&quot;.format(year=self.year, month=self.month, day=self.day)
+
+if __name__ == &#39;__main__&#39;:
+    new_day = Date(2018, 12, 31)
+    new_day.tomorrow()
+    print(new_day)
+
+    date_str = &#39;2018-12-31&#39;
+    year, month, day = tuple(date_str.split(&#39;-&#39;))
+    new_day = Date(int(year), int(month), int(day))
+    print (new_day)
+
+    new_day = Date.parse_from_string(date_str)
+    print (new_day)
+
+    new_day = Date.from_string(date_str)
+    print (new_day)
+    
+    print(Date.valid_str(&quot;2018-12-32&quot;))
+</code></pre>
+
+<h4>私有属性</h4>
+
+<ul>
+<li>双下划线将私有变量进行变形</li>
+<li>通过反射机制也可以拿到这个数值</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">from method import Date
+
+class User:
+    def __init__(self, birthday):
+        self.__birthday = birthday
+    def get_age(self):
+        return 2019 - self.__birthday.year
+
+
+if __name__ == &#39;__main__&#39;:
+    user = User(Date(2018, 10, 1))
+    print(user.get_age())
+</code></pre>
+
+<h4>dict和dir查询属性·</h4>
+
+<pre class="line-numbers"><code class="language-python">from method import Date
+
+class Person:
+    name = &#39;user&#39;
+
+class Student(Person):
+    def __init__(self, school_name):
+        self.school_name = school_name
+
+if __name__ == &#39;__main__&#39;:
+    user = Student(&#39;IMooc&#39;)
+    print(user.__dict__)
+    user.__dict__[&quot;school_addr&quot;] = &quot;Beijing&quot;
+    print(user.school_addr)
+    print(Person.__dict__)
+    print(user.name)
+    a = [1, 2]
+    print(dir(a))
+</code></pre>
+
+<ul>
+<li>dict获取属性</li>
+</ul>
+
+<h4>上下文管理器协议</h4>
+
+<ul>
+<li><img src="media/15744656731481/15744763032317.jpg" alt="" style="width:324px;"/></li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">class Sample:
+    def __enter__(self):
+        #获取资源
+        print(&#39;enter&#39;)
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        #释放资源
+        print(&quot;exit&quot;)
+
+    def do_something(self):
+        print(&quot;doing something&quot;)
+
+with Sample() as sample:
+    sample.do_something()
+</code></pre>
+
+<h4>contextlib协议</h4>
+
+<pre class="line-numbers"><code class="language-python">import contextlib
+
+@contextlib.contextmanager
+def file_open(file_name):
+    print (&quot;file open&quot;)
+    yield {}
+    print (&quot;file end&quot;)
+
+with file_open(&quot;bobby.txt&quot;) as f_opened:
+    print (&quot;file processing&quot;)
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/23 07:34 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15739426575118.html">
+                
+                  <h1>抽象基类</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>作用</h4>
+
+<ul>
+<li>类型判断</li>
+<li>接口实现</li>
+</ul>
+
+<h4>类对象数组</h4>
+
+<pre class="line-numbers"><code class="language-python">class Cat(object):
+    def say(self):
+        print(&quot;i am a cat&quot;)
+
+
+class Dog(object):
+    def say(self):
+        print(&quot;i am a dog&quot;)
+
+
+class Duck(object):
+    def say(self):
+        print(&quot;i am a duck&quot;)
+
+
+anaimal_list = [Cat, Dog, Duck]
+for anaimal in anaimal_list:
+    anaimal().say()
+</code></pre>
+
+<h4>扩展类</h4>
+
+<ul>
+<li>只要继承了魔法函数getitem就可以</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">class Company(object):
+    def __init__(self, employee_list):
+        self.employee = employee_list
+
+    def __getitem__(self, item):
+        return self.employee[item]
+
+    def __len__(self):
+        return len(self.employee)
+
+
+com = Company([&#39;tom&#39;, &#39;jack&#39;, &#39;jsdon&#39;])
+a = [&#39;b1&#39;, &#39;b2&#39;]
+b = [&#39;b2&#39;, &#39;b3&#39;]
+name_tuple = [&#39;b3&#39;, &#39;b4&#39;]
+name_set = set()
+name_set.add(&#39;b5&#39;)
+name_set.add(&#39;b6&#39;)
+a.extend(com)
+print(a)
+</code></pre>
+
+<h4>强制子类必须实现接口</h4>
+
+<pre class="line-numbers"><code class="language-python">class CacheBase(metaclass=abc.ABCMeta):
+    @abc.abstractmethod
+    def get(self, key):
+        pass
+
+    @abc.abstractmethod
+    def set(self, key, value):
+        pass
+
+class RedisCache(CacheBase):
+    def set(self, key, value):
+        print(&quot;hello&quot;)
+
+    def get(self, key):
+        print(&#39;hello&#39;)
+</code></pre>
+
+<h4>instance&amp;type</h4>
+
+<ul>
+<li>is是判断类别</li>
+<li>==是判断值</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">class A:
+    pass
+
+class B(A):
+    pass
+
+b = B()
+
+print(isinstance(b, B))
+print(isinstance(b, A))
+
+print(type(b) is B)
+print(type(b) is A) #二者的ID不想等
+print(id(b))
+print(id(B))
+</code></pre>
+
+<h4>Mro算法</h4>
+
+<ul>
+<li><img src="media/15739426575118/15739464120394.jpg" alt="" style="width:913px;"/></li>
+<li>C3算法</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/17 06:17 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15738723543218.html">
+                
+                  <h1>魔法函数</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>概念</h4>
+
+<ul>
+<li>python内置</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">class Company(object):
+    def __init__(self, employee_list):
+       self.employee = employee_list
+
+    def __getitem__(self, item):
+        return self.employee[item]
+
+company = Company([&#39;tom&#39;, &#39;jack&#39;, &#39;jsdon&#39;])
+
+for em in company:
+    print(em)
+</code></pre>
+
+<h4>python数据模型</h4>
+
+<pre class="line-numbers"><code class="language-python">class Company(object):
+    def __init__(self, employee_list):
+       self.employee = employee_list
+
+    def __getitem__(self, item):
+        return self.employee[item]
+
+    def __len__(self):
+        return len(self.employee)
+
+company = Company([&#39;tom&#39;, &#39;jack&#39;, &#39;jsdon&#39;])
+
+# company1 = company[:2]
+# for em in company1:
+#     print(em)
+
+print(len(company))
+</code></pre>
+
+<h4>魔法函数</h4>
+
+<ul>
+<li><img src="media/15738723543218/15738740515573.jpg" alt="" style="width:278px;"/></li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">__subclasshook__ 魔法函数
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/16 10:45 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15738717951389.html">
+                
+                  <h1>with上下文管理器</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>基于类的上下文管理器</h4>
+
+<pre class="line-numbers"><code class="language-python">class FileManager:
+    def __init__(self, name, mode):
+        print(&#39;calling __init method&#39;)
+        self.name = name
+        self.mode = mode
+        self.file = None
+
+    def __enter__(self):
+        print(&#39;calling __enter__ method&#39;)
+        self.file = open(self.name, self.mode)
+        return self.file
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        print(&#39;calling __exit__ method&#39;)
+        if self.file:
+            self.file.close()
+</code></pre>
+
+<h4>基于生成器的上下文管理器</h4>
+
+<pre class="line-numbers"><code class="language-python">
+from contextlib import contextmanager
+
+@contextmanager
+def file_manager(name, mode):
+    try:
+        f = open(name, mode)
+        yield f
+    finally:
+        f.close()
+        
+with file_manager(&#39;test.txt&#39;, &#39;w&#39;) as f:
+    f.write(&#39;hello world&#39;)
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/16 10:36 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15737766048515.html">
+                
+                  <h1>assert</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>断言</h4>
+
+<ul>
+<li>不带括号</li>
+<li>assert 时，一定不要加上括号，否则无论表达式对与错，assert 检查永远不会 fail。另外，程序中的 assert 语句，可以通过-O等选项被全局 disable</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">def apply_discount(price, discount):
+    update_price = price * (1- discount)
+    assert  0 &lt;= update_price &lt;= price, &#39;price should be greater or equal to  0&#39;
+    return update_price
+
+print(&#39;ret {}&#39;.format(apply_discount(100, 0.2)))
+apply_discount(100, 2)
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/15 08:10 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15735993394297.html">
+                
+                  <h1>Grafna</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>监控案例</h4>
+
+<ul>
+<li>CPU使用率</li>
+<li>除去IO等待造成的CPU高之外，大部 分情况 就是 user%造成<br/>
+另外， </li>
+<li>system% 内核态的CPU 使用率 偶尔也会出现高的情况</li>
+<li>当服务器硬盘IO占用过大时，CPU会等待IO的返回进入interuptable 类型的CPU等待时间</li>
+</ul>
+
+<h4>硬盘监控</h4>
+
+<ul>
+<li>predict_linear()</li>
+<li>磁盘读写((rate(node_disk_read_bytes_total[1m] )+ rate(node_disk_written_bytes_total[1m])) / 1024 /1024) &gt; 0</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/13 06:55 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15735992739195.html">
+                
+                  <h1>对象的比较和拷贝</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>等于&amp;&amp;is</h4>
+
+<ul>
+<li>&#39;==&#39;操作符比较对象之间的值是否相等</li>
+<li>而&#39;is&#39;操作符比较的是对象的身份标识是否相等，即它们是否是同一个对象，是否指向同一个内存地址。</li>
+</ul>
+
+<h4>is效率比较高</h4>
+
+<ul>
+<li>&#39;is&#39;操作符不能被重载</li>
+<li>&#39;==&#39;操作符却不同，执行a == b相当于是去执行a.__eq__(b)，而 Python 大部分的数据类型都会去重载__eq__这个函数，其内部的处理通常会复杂一些。比如，对于列表，__eq__函数会去遍历列表中的元素，比较它们的顺序和值是否相等</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/13 06:54 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15735992285022.html">
+                
+                  <h1>元组和列表</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>内部实现</h4>
+
+<pre class="line-numbers"><code class="language-c">#ifndef Py_LIMITED_API
+typedef struct {
+    PyObject_VAR_HEAD
+    PyObject **ob_item;
+    Py_ssize_t allocated;
+} PyListObject;
+typedef struct {
+    PyObject_VAR_HEAD
+    PyObject *ob_item[1];
+} PyTupleObject;
+</code></pre>
+
+<h4>hash表</h4>
+
+<pre class="line-numbers"><code class="language-c">Indices
+----------------------------------------------------
+None | index | None | None | index | None | index ...
+----------------------------------------------------
+Entries
+--------------------
+hash0   key0  value0
+---------------------
+hash1   key1  value1
+---------------------
+hash2   key2  value2
+---------------------
+        ...
+---------------------
+
+</code></pre>
+
+<ul>
+<li>旧的Hash表越来越稀疏</li>
+</ul>
+
+<h4>全局变量修改</h4>
+
+<pre class="line-numbers"><code class="language-python">x = [1]
+
+def func2():
+    x.append(2)
+func2()
+print(x)
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/13 06:53 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+              
+
+
+			<div class="row">
+			  <div class="large-6 columns">
+			  <p class="text-left" style="padding-top:25px;">
+			   <a href="Python.html">&laquo; Prev Page</a>  
+			  </p>
+			  </div>
+			  <div class="large-6 columns">
+			<p class="text-right" style="padding-top:25px;">
+			 <a href="Python_2.html">&raquo; Next Page</a> 
+			</p>
+			  </div>
+			</div>
+		</div>
+	</div><!-- large 8 -->
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <h1>eredin-blog</h1>
+                <div class="site-des">生命的意义是成为你自己！</div>
+                <div class="social">
+
+
+
+
+
+
+
+
+
+
+
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html"><strong>C++基础与提高</strong></a>
+        
+            <a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html"><strong>设计模式之美</strong></a>
+        
+            <a href="Python.html"><strong>Python</strong></a>
+        
+            <a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html"><strong>设计模式</strong></a>
+        
+            <a href="Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html"><strong>Linux性能优化实战</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="15814649492497.html">Simple Factory</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15814189410719.html">代码的可测试性</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15814188057978.html">重构</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15813811739408.html">tuple 使用</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
+
+
+  </body>
+</html>

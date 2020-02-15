@@ -1,0 +1,606 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  访问器模式 - eredin-blog
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="eredin-blog" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site: ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="self" href="index.html">Home</a></li>
+        
+        <li id=""><a target="_self" href="archives.html">Archives</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="https://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; eredin-blog</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+        
+        <li><a target="self" href="index.html">Home</a></li>
+        
+        <li><a target="_self" href="archives.html">Archives</a></li>
+        
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html">C++基础与提高</a></li>
+        
+            <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html">设计模式之美</a></li>
+        
+            <li><a href="Python.html">Python</a></li>
+        
+            <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html">设计模式</a></li>
+        
+            <li><a href="Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html">Linux性能优化实战</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
+</script>
+<div class="row">
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>访问器模式</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2020/01/05 21:12 下午</span>
+
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+           
+         
+          <span class="comments">
+            
+
+            
+          </span>
+
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <h4>动机</h4>
+
+<ul>
+<li>在软件构建过程中，由于需求的改变，某些类层次结构中常常需要增加新的行为（方法），如果直接在基类中做这样的更改，将会给子类带来很繁重的变更负担，甚至破坏原有设计。</li>
+<li>如何在不更改类层次结构的前提下，在运行时根据需要透明地为类层次结构上的各个类动态添加新的操作，从而避免上述问题？</li>
+</ul>
+
+<h4>定义</h4>
+
+<ul>
+<li>表示一个作用于某对象结构中的各元素的操作。使得可以在不改变（稳定）各元素的类的前提下定义（扩展）作用于这些元素的新操作（变化）。</li>
+</ul>
+
+<h4>结构</h4>
+
+<ul>
+<li><img src="media/15782299761779/15782309016996.jpg" alt="" style="width:696px;"/></li>
+</ul>
+
+<h4>要点总结</h4>
+
+<ul>
+<li><p>Visitor 模式通过所谓双重分发（double dispatch）来实现在不更改（不添加新的操作-编译时）Elementa 类层次结构的前提下，在运行时透明地为类层次结构上的各个类动态添加新的操作（支持变化）。</p></li>
+<li><p>所谓双重分发即 Visitor 模式中间包括了两个多态分发（注意其中的多态机制）：第一个为 accept 方法的多态辨析；第二个为 /isitelementx 方法的多态辨析。</p></li>
+<li><p>Visitor 模式的最大缺点在于扩展类层次结构（增添新的 Element 子类），会导致 Visitor？类的改变。<strong><em>因此 Vistor 模式适用于Element 类层次结构稳定，而其中的操作却经常面临频繁改动</em></strong>。</p></li>
+</ul>
+
+<h4>cpp_demo</h4>
+
+<pre class="line-numbers"><code class="language-cpp">//
+// Created by eredinliu on 2020-01-05.
+//
+
+#include &lt;iostream&gt;
+
+using namespace std;
+
+class Visitor;
+
+class Element {
+public:
+    virtual void accept(Visitor&amp; visitor) = 0;
+};
+
+class ElementA : public Element {
+public:
+    void accept(Visitor&amp; visitor) override {
+        visitor.visitElementA(*this);
+    }
+};
+
+class ElementB : public Element {
+public:
+    void accept(Visitor&amp; visitor) override {
+        visitor.visitElementB(*this);
+    }
+};
+
+
+class Visitor {
+public:
+    virtual void visitElementA(ElementA&amp; e) = 0;
+    virtual void visitElementB(ElementB&amp; e) = 0;
+};
+
+class VisitorA : public Visitor {
+public:
+    void visitElementA(ElementA&amp; e) override {
+        cout &lt;&lt; &quot;VisitorA is processing Element A &quot; &lt;&lt; endl;
+    }
+
+    void visitElementB(ElementB&amp; e) override {
+        cout &lt;&lt; &quot;VisitorA is processing Element B &quot; &lt;&lt; endl;
+    }
+};
+
+class VisitorB : public Visitor {
+public:
+    void visitElementA(ElementA&amp; e) override {
+        cout &lt;&lt; &quot;VisitorB is processing Element A &quot; &lt;&lt; endl;
+    }
+
+    void visitElementB(ElementB&amp; e) override {
+        cout &lt;&lt; &quot;VisitorB is processing Element B &quot; &lt;&lt; endl;
+    }
+};
+
+int main() {
+    VisitorA visitorA;
+    VisitorB visitor;
+    ElementB elementB;
+    elementB.accept(visitor);
+    elementB.accept(visitorA);
+
+
+    ElementA elementA;
+    elementA.accept(visitor);
+    elementA.accept(visitorA);
+}
+</code></pre>
+
+<h4>golang_demo</h4>
+
+<pre class="line-numbers"><code class="language-go">package design_pattern
+
+import &quot;fmt&quot;
+
+type Element interface {
+    Accept(Visitor)
+}
+
+type Visitor interface {
+    visitA(*ElementA)
+    visitB(*ElementB)
+}
+
+type ElementA struct {
+}
+
+func (e *ElementA) Accept(visitor Visitor) {
+    visitor.visitA(e)
+}
+
+type ElementB struct {
+}
+
+func (e *ElementB) Accept(visitor Visitor) {
+    visitor.visitB(e)
+}
+
+type VisitorA struct {
+}
+
+func (v *VisitorA) visitA(e *ElementA) {
+    fmt.Println(&quot;VisitorA is processing Element A &quot; )
+}
+
+func (v *VisitorA) visitB(e *ElementB) {
+    fmt.Println(&quot;VisitorA is processing Element B &quot; )
+}
+
+type VisitorB struct {
+}
+
+func (v *VisitorB) visitA(e *ElementA) {
+    fmt.Println(&quot;VisitorB is processing Element A &quot; )
+}
+
+func (v *VisitorB) visitB(e *ElementB) {
+    fmt.Println(&quot;VisitorB is processing Element B &quot; )
+}
+
+type ObjectStructure struct {
+    elements map[Element]bool
+}
+
+func (o *ObjectStructure) Attach(e Element) {
+    o.elements[e] = true
+}
+
+func (o *ObjectStructure) Detach(e Element) {
+    delete(o.elements, e)
+}
+
+func (o *ObjectStructure) Accept(visitor Visitor) {
+    for k, _ := range o.elements {
+        k.Accept(visitor)
+    }
+}
+
+func NewObjectStructure() *ObjectStructure {
+    return &amp;ObjectStructure{
+        elements: make(map[Element]bool),
+    }
+}
+
+package design_pattern
+
+import &quot;testing&quot;
+
+func TestVisitor(t *testing.T) {
+    obj := NewObjectStructure()
+
+    elementB := &amp;ElementB{}
+    elementA := &amp;ElementA{}
+
+    obj.Attach(elementA)
+    obj.Attach(elementB)
+
+    vA := &amp;VisitorA{}
+    vB := &amp;VisitorB{}
+    obj.Accept(vA)
+    obj.Accept(vB)
+}
+</code></pre>
+
+<h4>python_code</h4>
+
+<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
+
+class Element(metaclass=ABCMeta):
+
+    @abstractmethod
+    def accept(self, visitor):
+        pass
+
+class Visitor(metaclass=ABCMeta):
+
+    @abstractmethod
+    def visitA(self, elementA):
+        pass
+
+    @abstractmethod
+    def visitB(self, elementB):
+        pass
+
+class ElementA(Element):
+
+    def accept(self, visitor):
+        visitor.visitA(self)
+
+class ElementB(Element):
+
+    def accept(self, visitor):
+        visitor.visitB(self)
+
+class VisitorA(Visitor):
+
+    def visitA(self, elementA):
+        print(type(self).__name__, &quot; process elementA&quot;)
+
+    def visitB(self, elementB):
+        print(type(self).__name__, &quot; process elementB&quot;)
+
+
+class VisitorB(Visitor):
+
+    def visitA(self, elementA):
+        print(type(self).__name__, &quot; process elementA&quot;)
+
+    def visitB(self, elementB):
+        print(type(self).__name__, &quot; process elementB&quot;)
+
+class ObjectStructure(object):
+
+    def __init__(self):
+        self.elements = []
+
+    def attach(self, element):
+        self.elements.append(element)
+
+    def detach(self, element):
+        self.elements.remove(element)
+
+    def accept(self, visitor):
+        for e in self.elements:
+            e.accept(visitor)
+
+if __name__ == &#39;__main__&#39;:
+    obj = ObjectStructure()
+
+    eA = ElementA()
+    eB = ElementB()
+
+    obj.attach(eA)
+    obj.attach(eB)
+
+    va = VisitorA()
+    vb = VisitorB()
+
+    obj.accept(va)
+    obj.accept(vb)
+</code></pre>
+
+
+    
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+          <a href="15782640669384.html" 
+          title="Previous Post: 解析器">&laquo; 解析器</a>
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="15782298377426.html" 
+          title="Next Post: 接口隔离原则">接口隔离原则 &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          
+
+          
+
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
+
+
+
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <h1>eredin-blog</h1>
+                <div class="site-des">生命的意义是成为你自己！</div>
+                <div class="social">
+
+
+
+
+
+
+
+
+
+
+
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html"><strong>C++基础与提高</strong></a>
+        
+            <a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html"><strong>设计模式之美</strong></a>
+        
+            <a href="Python.html"><strong>Python</strong></a>
+        
+            <a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html"><strong>设计模式</strong></a>
+        
+            <a href="Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html"><strong>Linux性能优化实战</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="15814649492497.html">Simple Factory</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15814189410719.html">代码的可测试性</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15814188057978.html">重构</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15813811739408.html">tuple 使用</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
+
+
+  </body>
+</html>
