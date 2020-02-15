@@ -1,2 +1,1 @@
-# tech_blog
-tech_blog
+Chawlau Tech Blog
