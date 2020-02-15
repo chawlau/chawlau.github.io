@@ -1,0 +1,1361 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  Mysql优化实战 - eredin-blog
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="eredin-blog" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site: ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="self" href="index.html">Home</a></li>
+        
+        <li id=""><a target="_self" href="archives.html">Archives</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="https://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; eredin-blog</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+        
+        <li><a target="self" href="index.html">Home</a></li>
+        
+        <li><a target="_self" href="archives.html">Archives</a></li>
+        
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="Prometheus.html">Prometheus</a></li>
+        
+            <li><a href="RocketMQ.html">RocketMQ</a></li>
+        
+            <li><a href="%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE.html">网络协议</a></li>
+        
+            <li><a href="Golang.html">Golang</a></li>
+        
+            <li><a href="Django.html">Django</a></li>
+        
+            <li><a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html">C++设计模式实战</a></li>
+        
+            <li><a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html">深入剖析Kubernetes</a></li>
+        
+            <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html">数据结构和算法</a></li>
+        
+            <li><a href="%E5%BE%AE%E6%9C%8D%E5%8A%A1.html">微服务</a></li>
+        
+            <li><a href="%E6%9E%B6%E6%9E%84.html">架构</a></li>
+        
+            <li><a href="%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html">操作系统原理</a></li>
+        
+            <li><a href="Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html">Mysql优化实战</a></li>
+        
+            <li><a href="Kafka.html">Kafka</a></li>
+        
+            <li><a href="linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html">linux服务器研发</a></li>
+        
+            <li><a href="%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86.html">计算机组成原理</a></li>
+        
+            <li><a href="%E7%A8%8B%E5%BA%8F%E5%91%98%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB.html">程序员的自我修养</a></li>
+        
+            <li><a href="C%E8%AF%AD%E8%A8%80%E8%BF%9B%E9%98%B6.html">C语言进阶</a></li>
+        
+            <li><a href="http_study.html">http_study</a></li>
+        
+            <li><a href="%E7%8E%A9%E8%BD%AC%E7%AE%97%E6%B3%95.html">玩转算法</a></li>
+        
+            <li><a href="C++%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B.html">C++对象模型</a></li>
+        
+            <li><a href="SQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html">SQL必知必会</a></li>
+        
+            <li><a href="Zookeeper.html">Zookeeper</a></li>
+        
+            <li><a href="Redis%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A.html">Redis从入门到精通</a></li>
+        
+            <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E8%BF%9B%E9%98%B6.html">数据结构和算法进阶</a></li>
+        
+            <li><a href="Mysql%E6%80%A7%E8%83%BD%E7%AE%A1%E7%90%86%E5%92%8C%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1.html">Mysql性能管理和架构设计</a></li>
+        
+            <li><a href="%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98.html">网络编程实战</a></li>
+        
+            <li><a href="Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html">Redis高并发缓存</a></li>
+        
+            <li><a href="C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html">C++基础与提高</a></li>
+        
+            <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html">设计模式之美</a></li>
+        
+            <li><a href="Python.html">Python</a></li>
+        
+            <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html">设计模式</a></li>
+        
+            <li><a href="Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html">Linux性能优化实战</a></li>
+        
+            <li><a href="%E5%80%99%E6%8D%B7STL.html">候捷STL</a></li>
+        
+            <li><a href="%E6%80%A7%E8%83%BD%E5%B7%A5%E7%A8%8B%E9%AB%98%E6%89%8B%E8%AF%BE.html">性能工程高手课</a></li>
+        
+            <li><a href="%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95.html">性能测试</a></li>
+        
+            <li><a href="ElasticSearch.html">ElasticSearch</a></li>
+        
+            <li><a href="RabbitMQ.html">RabbitMQ</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+	$(function(){
+		$('#menu_item_index').addClass('is_active');
+	});
+</script>
+<div class="row">
+	<div class="large-8 medium-8 columns">
+		<div class="markdown-body home-categories">
+		
+			<div class="article">
+                <a class="clearlink" href="15476969920876.html">
+                
+                  <h1>Mysql主备一致</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>delete导致主备不一致</h4>
+
+<ul>
+<li>在主库执行这条 SQL 语句的时候，用的是索引 a；而在备库执行这条 SQL 语句的时候，却使用了索引 t_modified。主从选择的索引不一样</li>
+<li>线上binlog格式设置为mixed</li>
+</ul>
+
+<h4>row格式好处</h4>
+
+<ul>
+<li>恢复数据比较快</li>
+<li>Flashback工具</li>
+<li>binlog的日志解析出来不能直接拷贝执行</li>
+<li>记录操作的记录的主键真实的值</li>
+<li></li>
+</ul>
+
+<h4>循环复制问题</h4>
+
+<ul>
+<li> log_slave_updates=on可以让备库执行relay log后生成binlog</li>
+</ul>
+
+<h4>线上生产库非双一</h4>
+
+<ul>
+<li>业务高峰期。一般如果有预知的高峰期，DBA 会有预案，把主库设置成“非双 1”。</li>
+<li>备库延迟，为了让备库尽快赶上主库。</li>
+<li>用备份恢复主库的副本，应用 binlog 的过程，这个跟上一种场景类似。</li>
+<li>批量导入数据的时候。</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/01/17 11:49 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15473510902745.html">
+                
+                  <h1>Mysql常见问题整理</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>那么在什么场景下，一天一备会比一周一备更有优势呢？或者说，它影响了这个数据库系统的哪个指标？</h4>
+
+<ul>
+<li>RTO恢复目标时间</li>
+<li>数据库的备份周期影响恢复速度</li>
+</ul>
+
+<h4>怎么避免长事物</h4>
+
+<h5>开发端</h5>
+
+<ul>
+<li>确认是否使用了set autocommit=1。</li>
+<li>确认是否有不必要的只读事务。</li>
+<li>通过 SET MAX_EXECUTION_TIME 命令，来控制每个语句执行的最长时间，避免单个语句意外执行太长时间。</li>
+</ul>
+
+<h5>数据库端</h5>
+
+<ul>
+<li>监控 information_schema.Innodb_trx 表，设置长事务阈值，超过就报警 / 或者 kill；</li>
+<li>Percona 的 pt-kill</li>
+<li>在业务功能测试阶段要求输出所有的 general_log，分析日志行为提前发现问题；</li>
+</ul>
+
+<h4>重建索引</h4>
+
+<h5>好处</h5>
+
+<ul>
+<li>索引可能因为删除，或者页分裂等原因，导致数据页有空洞，重建索引的过程会创建一个新的索引，把数据按顺序插入，这样页面的利用率最高，也就是索引更紧凑、更省空间</li>
+<li>InnoDB虽然删除了表的部分记录,但是它的索引还在, 并未释放只能是重新建表才能重建索引</li>
+<li>重建二级索引可以先drop再create</li>
+<li>重建主键索引alter table T engine=InnoDB</li>
+</ul>
+
+<h4>change buffer引发的性能问题</h4>
+
+<ul>
+<li>某个业务的库内存命中率突然从 99% 降低到了 75%，整个系统处于阻塞状态，更新语句全部堵住</li>
+<li>这个业务有大量插入数据的操作，而他在前一天把其中的某个普通索引改成了唯一索引</li>
+<li>查询性能没有差别，针对更新性能而言,普通索引更新性能会更快一点</li>
+</ul>
+
+<h5>针对机械硬盘的优化</h5>
+
+<ul>
+<li>使用普通索引</li>
+<li>把change buffer开大</li>
+</ul>
+
+<h4>表事物更新不可见的问题</h4>
+
+<ul>
+<li>Innodb 要保证这个规则：事务启动以前所有还没提交的事务，它都不可见。</li>
+<li>但是只存一个已经提交事务的最大值是不够的。 因为存在一个问题，那些比最大值小的事务，之后也可能更新</li>
+<li>所以事务启动的时候还要保存“现在正在执行的所有事物ID列表”，如果一个row trx_id在这列表中，也要不可见。</li>
+</ul>
+
+<h4>联合主键</h4>
+
+<pre class="line-numbers"><code class="language-text">CREATE TABLE `geek` (
+  `a` int(11) NOT NULL,
+  `b` int(11) NOT NULL,
+  `c` int(11) NOT NULL,
+  `d` int(11) NOT NULL,
+  PRIMARY KEY (`a`,`b`),
+  KEY `c` (`c`),
+  KEY `ca` (`c`,`a`),
+  KEY `cb` (`c`,`b`)
+) ENGINE=InnoDB;
+
+</code></pre>
+
+<ul>
+<li>ca 可以去掉，因为c的索引的组织结构和ca一模一样，cb要保留，二级索引在面对联合主键的时候需要把联合主键的数据都加上</li>
+</ul>
+
+<h4>MySQL 怎么知道 binlog 是完整的?</h4>
+
+<ul>
+<li>statement 格式的 binlog，最后会有 COMMIT；</li>
+<li>row 格式的 binlog，最后会有一个 XID event。</li>
+</ul>
+
+<h4>处于 prepare 阶段的 redo log 加上完整 binlog，重启就能恢复，MySQL 为什么要这么设计?</h4>
+
+<ul>
+<li>在时刻 B，也就是 binlog 写完以后 MySQL 发生崩溃，这时候 binlog 已经写入了，之后就会被从库（或者用这个 binlog 恢复出来的库）使用。</li>
+<li>binglog不支持页界别的数据</li>
+</ul>
+
+<h4>业务上有这样的需求，A、B 两个用户，如果互相关注，则成为好友。设计上是有两张表，一个是 like 表，一个是 friend 表，like 表有 user_id、liker_id 两个字段，我设置为复合唯一索引即 uk_user_id_liker_id。语句执行逻辑是这样的</h4>
+
+<h4>sync_binlog=0 的时候，还是可以看到 binlog 文件马上做了修改。</h4>
+
+<ul>
+<li>数据写到了page cache，就是文件系统的 page cache。而你用 ls 命令看到的就是文件系统返回的结果。</li>
+</ul>
+
+<h4>准确定位binlog</h4>
+
+<ul>
+<li>stop-datetime</li>
+</ul>
+
+<h4>Mysql中间件</h4>
+
+<ul>
+<li>网易cetus</li>
+<li>myscat</li>
+<li>canal输出binlog到hadoop</li>
+</ul>
+
+<h4>双 M 结构会出现循环复制</h4>
+
+<ul>
+<li>在一个主库更新事务后，用命令 set global server_id=x 修改了 server_id。等日志再传回来的时候，发现 server_id 跟自己的 server_id 不同，就只能执行了。</li>
+<li>binlog 从B传给A, A和A&#39;构成双M结构</li>
+<li>终止循环复制</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">stop slave；
+CHANGE MASTER TO IGNORE_SERVER_IDS=(server_id_of_B);
+start slave;
+stop slave；
+CHANGE MASTER TO IGNORE_SERVER_IDS=();
+start slave;
+</code></pre>
+
+<h4>主从切换导致主的最新数据没有同步到从</h4>
+
+<ul>
+<li>使用semi-sync</li>
+<li>启动后业务做数据对账</li>
+</ul>
+
+<h4>GTID 模式下设置主从关系的时候，从库执行 start slave 命令后，主库发现需要的 binlog 已经被删除掉了，导致主备创建不成功。这种情况下，你觉得可以怎么处理呢？</h4>
+
+<ul>
+<li>如果业务允许主从不一致的情况那么可以在主上先show global variables like &#39;gtid_purged&#39;;然后在从上执行set global gtid_purged =&#39; &#39;.指定从库从哪个gtid开始同步,binlog缺失那一部分,数据在从库上会丢失,就会造成主从不一致</li>
+<li>需要主从数据一致的话,最好还是通过重新搭建从库来做。</li>
+<li>如果有其它的从库保留有全量的binlog的话，可以把从库指定为保留了全量binlog的从库为主库(级联复制)</li>
+<li>如果binlog有备份的情况,可以先在从库上应用缺失的binlog,然后在start slave</li>
+</ul>
+
+<h4>一主多从等 GTID 的方案，现在你要对主库的一张大表做 DDL，可能会出现什么情况呢？为了避免这种情况，你会怎么做呢？</h4>
+
+<h4>如果一个事务被 kill 之后，持续处于回滚状态，从恢复速度的角度看，你是应该重启等它执行结束，还是应该强行重启整个 MySQL 进程。</h4>
+
+<ul>
+<li>因为重启之后该做的回滚动作还是不能少的，所以从恢复速度的角度来说，应该让它自己结束。</li>
+<li>如果这个语句可能会占用别的锁，或者由于占用 IO 资源过多，从而影响到了别的语句执行的话，就需要先做主备切换，切到新主库提供服务</li>
+</ul>
+
+<h4>如果客户端由于压力过大，迟迟不能接收数据，会对服务端造成什么严重的影响。</h4>
+
+<ul>
+<li>如果前面的语句有更新，意味着它们在占用着行锁，会导致别的语句更新被锁住；</li>
+<li>当然读的事务也有问题，就是会导致 undo log 不能被回收，导致回滚段空间膨胀。</li>
+</ul>
+
+<h4>使用 Block Nested-Loop Join(BNL) 算法时，可能会对被驱动表做多次扫描。如果这个被驱动表是一个大的冷数据表，除了会导致 IO 压力大以外，还会对系统有什么影响呢？</h4>
+
+<ul>
+<li>由于我们的 join 语句在循环读磁盘和淘汰内存页，进入 old 区域的数据页，很可能在 1 秒之内就被淘汰了。这样，就会导致这个 MySQL 实例的 Buffer Pool 在这段时间内，young 区域的数据页没有被合理地淘汰。</li>
+<li>Buffer Pool 的影响就是持续性的，需要依靠后续的查询请求慢慢恢复内存命中率。</li>
+<li>临时补救措施就是join_buffer_size的值增大</li>
+<li><strong><em>主要影响点</em></strong></li>
+<li>可能会多次扫描被驱动表，占用磁盘 IO 资源；</li>
+<li>判断 join 条件需要执行 M*N 次对比（M、N 分别是两张表的行数），如果是大表就会占用非常多的 CPU 资源；</li>
+<li>可能会导致 Buffer Pool 的热数据被淘汰，影响内存命中率。</li>
+</ul>
+
+<h4>维护的 MySQL 系统里有内存表，怎么避免内存表突然丢数据，然后导致主备同步停止的情况。</h4>
+
+<ul>
+<li>那么就把备库的内存表引擎先都改成 InnoDB。对于每个内存表，执行</li>
+<li>set sql_log_bin=off;</li>
+<li>alter table tbl_name engine=innodb;</li>
+<li>可以配置一个自动巡检的工具，在备库上发现内存表就把引擎改了。</li>
+</ul>
+
+<h4>MySQL 解析 statement 格式的 binlog 的时候，对于 load data 命令，解析出来为什么用的是 load data local</h4>
+
+<ul>
+<li>为了确保备库应用 binlog 正常。因为备库可能配置了 secure_file_priv=null，所以如果不用 local 的话，可能会导入失败，造成主备同步延迟。</li>
+<li>应用场景是使用 mysqlbinlog 工具解析 binlog 文件，并应用到目标库，就可以支持非本地的host</li>
+</ul>
+
+<h4>怎么给分区表创建自增主键</h4>
+
+<ul>
+<li>(ftime,id) 使用前缀索引的规则减少索引</li>
+</ul>
+
+<h4>changebuffer 异常断电情况下是否会数据丢失</h4>
+
+<ul>
+<li>是只更新内存，但是在事务提交的时候，我们把 change buffer 的操作也记录到 redo log 里了，所以崩溃恢复的时候，change buffer 也能找回来</li>
+</ul>
+
+<h4>mysql扫描行数变大的情况</h4>
+
+<ul>
+<li>由于mysql是使用标记删除来删除记录的,并不从索引和数据文件中真正的删除。<br/>
+如果delete和insert中间的间隔相对较小,purge线程还没有来得及清理该记录。<br/>
+如果主键相同的情况下,新插入的insert会沿用之前删除的delete的记录的空间。<br/>
+由于相同的数据量以及表大小,所以导致了统计信息没有变化</li>
+<li>为什么开启了session A,session B扫描行数变成3W<br/>
+由于session A开启了一致性读,目的为了保证session A的可重复读,insert只能<br/>
+另起炉灶,不能占用delete的空间。所以出现的情况就是delete虽然删除了,但是<br/>
+未释放空间,insert又增加了空间。导致统计信息有误</li>
+</ul>
+
+<h4>给学号字段创建索引</h4>
+
+<ul>
+<li>使用数字来存9位数字的入学年份</li>
+</ul>
+
+<h4>如果一个高配的机器，redo log 设置太小，会发生什么情况。</h4>
+
+<ul>
+<li>磁盘压力很小，但是数据库出现间歇性的性能下跌。</li>
+<li>SSD性能很好，磁盘压力也很小，但是mysql间歇性的性能下跌</li>
+<li>iops 20000 4个1G redo文件,innodb_io_capacity 20000</li>
+</ul>
+
+<h4>mysql查询很慢</h4>
+
+<ul>
+<li>等MDL锁</li>
+<li>等flush</li>
+<li>等行锁</li>
+</ul>
+
+<h4>快速提高性能的办法</h4>
+
+<ul>
+<li>短连接风暴</li>
+<li>show processlist-&gt;id-&gt;information_schema 库的 innodb_trx找到空闲连接杀掉</li>
+<li>call query_rewrite.flush_rewrite_rules()让新的规则生效</li>
+<li>force index</li>
+</ul>
+
+<h4>主备复制使用row</h4>
+
+<ul>
+<li>当 binlog_format使用row格式的时候，binlog 里面记录了真实操作行的主键 id，这样 binlog 传到备库去的时候，就肯定会操作 id=4 的行，不会有主备操作不同行的问题。statement格式会导致主备选择不同的索引</li>
+</ul>
+
+<h4>循环复制问题</h4>
+
+<ul>
+<li>通过server_id来解决一致性问题</li>
+<li>stop slave</li>
+<li>change master to ignore_server_ids=(server_id_of_B)</li>
+</ul>
+
+<h4>生产数据库设置为双1</h4>
+
+<ul>
+<li>业务高峰期。一般如果有预知的高峰期，DBA 会有预案，把主库设置成“非双 1”。</li>
+<li>备库延迟，为了让备库尽快赶上主库。</li>
+<li>用备份恢复主库的副本，应用 binlog 的过程，这个跟上一种场景类似。</li>
+<li>批量导入数据的时候。</li>
+</ul>
+
+<h4>left join</h4>
+
+<ul>
+<li>如果需要 left join 的语义，就不能把被驱动表的字段放在 where 条件里面做等值判断或不等值判断，必须都写在 on 里面</li>
+</ul>
+
+<h4>为什么BNL性能比NLJ性能好</h4>
+
+<ul>
+<li>在对被驱动表做全表扫描的时候，如果数据没有在 Buffer Pool 中，就需要等待这部分数据从磁盘读入；</li>
+<li>从磁盘读入数据到内存中，会影响正常业务的 Buffer Pool 命中率，而且这个算法天然会对被驱动表的数据做多次访问，更容易将这些数据页放到 Buffer Pool 的头部</li>
+<li>即使被驱动表数据都在内存中，每次查找“下一个记录的操作”，都是类似指针操作。而 join_buffer 中是数组，遍历的成本更低。</li>
+</ul>
+
+<h4>distinct和group by的性能</h4>
+
+<ul>
+<li>所以不需要执行聚合函数时，distinct 和 group by 这两条语句的语义和执行流程是相同的，因此执行性能也相同。</li>
+</ul>
+
+<h4>备库自增主键问题</h4>
+
+<ul>
+<li>在 insert 语句之前，还有一句 SET INSERT_ID=1。这个线程里下一次需要用到自增值的时候，不论当前表的自增值是多少，固定用 1 这个值。</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/01/13 11:44 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15473472500656.html">
+                
+                  <h1>mysql数据可靠性</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>binlog写入机制</h4>
+
+<ul>
+<li>binlog cache 内存 --&gt; write page cache --&gt; fsync --&gt; binlog 磁盘</li>
+<li>sync_binlog=0, 只write, 不fsync</li>
+<li>sync_binlog=1, 每次提交事务都会fsync</li>
+<li>sync_binlog 累积N个事务才fsync, 会丢失N个事务的binlog日志</li>
+</ul>
+
+<h4>redo log写入机制</h4>
+
+<ul>
+<li>三种状态</li>
+<li>redo log buffer 内存</li>
+<li>write--&gt;page cache</li>
+<li>hard disk 持久化到磁盘</li>
+<li>innodb_flush_log_at_trx_commit 0 buffer 1 磁盘 2 page_cache</li>
+</ul>
+
+<h4>Mysql双一配置</h4>
+
+<ul>
+<li> sync_binlog 和 innodb_flush_log_at_trx_commit 都设置成 1。也就是说，一个事务完整提交前，需要等待两次刷盘，一次是 redo log（prepare 阶段），一次是 binlog。</li>
+</ul>
+
+<h4>日志逻辑序列号</h4>
+
+<ul>
+<li>LSN</li>
+<li>多个事务刷盘采用组提交策略
+<img src="media/15473472500656/933fdc052c6339de2aa3bf3f65b188cc.png" alt="933fdc052c6339de2aa3bf3f65b188c"/></li>
+</ul>
+
+<h4>binlog 组提交</h4>
+
+<ul>
+<li>binlog_group_commit_sync_delay 参数，表示延迟多少微秒后才调用 fsync;</li>
+<li>binlog_group_commit_sync_no_delay_count 参数，表示累积多少次以后才调用 fsync。</li>
+</ul>
+
+<h4>WAL机制的优点</h4>
+
+<ul>
+<li>redo log和 binlog都是顺序写</li>
+<li>组提交机制</li>
+</ul>
+
+<h4>mysql出现IO性能瓶颈</h4>
+
+<ul>
+<li>设置 binlog_group_commit_sync_delay 和 binlog_group_commit_sync_no_delay_count 参数，减少 binlog 的写盘次数。这个方法是基于“额外的故意等待”来实现的，因此可能会增加语句的响应时间，但没有丢失数据的风险。</li>
+<li>将 sync_binlog 设置为大于 1 的值（比较常见是 100~1000）。这样做的风险是，主机掉电时会丢 binlog 日志。</li>
+<li>将 innodb_flush_log_at_trx_commit 设置为 2。这样做的风险是，主机掉电的时候会丢数据。 </li>
+</ul>
+
+<h4>两阶段提交的本质</h4>
+
+<ul>
+<li> redo log 的写入拆成了两个步骤：prepare 和 commit，这就是&quot;两阶段提交&quot;。</li>
+</ul>
+
+<h4>Binlog两种模式</h4>
+
+<ul>
+<li>statement 格式的话是记sql语句</li>
+<li>row格式会记录行的内容，记两条，更新前和更新后都有。</li>
+</ul>
+
+<h4>writepos和checkpoint</h4>
+
+<ul>
+<li>“空着的部分”，就是write pos 到3号文件末尾，再加上0号文件开头到checkpoint 的部分。可以写入新的事物日志
+<img src="media/15473472500656/b075250cad8d9f6c791a52b6a600f69c.jpg" alt="b075250cad8d9f6c791a52b6a600f69"/></li>
+</ul>
+
+<h4>事务奔溃恢复原则</h4>
+
+<ul>
+<li>如果 redo log 里面的事务是完整的，也就是已经有了 commit 标识，则直接提交；</li>
+<li>如果 redo log 里面的事务只有完整的 prepare，则判断对应的事务 binlog 是否存在并完整：<br/>
+a. 如果是，则提交事务；<br/>
+b. 否则，回滚事务。</li>
+</ul>
+
+<h4>sync_binlog</h4>
+
+<ul>
+<li>sync_binlog-&gt;binlog_group_commit_sync_no_delay_count </li>
+</ul>
+
+<h4>binlog cache 是每个线程自己维护的，而 redo log buffer 是全局共用的？</h4>
+
+<ul>
+<li>MySQL 这么设计的主要原因是，binlog 是不能“被打断的”。一个事务的 binlog 必须连续写，因此要整个事务完成后，再一起写到文件里。</li>
+<li>而 redo log 并没有这个要求，中间有生成的日志可以写到 redo log buffer 中。redo log buffer 中的内容还能“搭便车”，其他事务提交的时候可以被一起写到磁盘中。</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/01/13 10:40 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15464186907626.html">
+                
+                  <h1>mysql优化</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>短连接风暴</h4>
+
+<ul>
+<li>提高max_connections</li>
+<li>跳过权限认证阶段</li>
+</ul>
+
+<h4>慢查询</h4>
+
+<ul>
+<li>索引没有设计好 主备切换，</li>
+<li>sql语句没写好 query_rewrite</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">  insert into query_rewrite.rewrite_rules(pattern, replacement, pattern_database) values (&quot;select * from t where id + 1 = ?&quot;, &quot;select * from t where id = ? - 1&quot;, &quot;db1&quot;);
+</code></pre>
+
+<ul>
+<li>mysql选错了索引</li>
+</ul>
+
+<h4>QPS暴增问题</h4>
+
+<ul>
+<li>去掉白名单</li>
+<li>删除用户</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/01/02 16:44 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15464129500537.html">
+                
+                  <h1>mysql修改语句</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>加锁规则</h4>
+
+<ul>
+<li>原则 1：加锁的基本单位是 next-key lock</li>
+<li>原则 2：查找过程中访问到的对象才会加锁。</li>
+<li>优化1 索引上的等值查询，给唯一索引加锁的时候，next-key lock 退化为行锁。</li>
+<li>优化2 索引上的等值查询，向右遍历时且最后一个值不满足等值条件的时候，next-key lock 退化为间隙锁。</li>
+<li>bug：唯一索引上的范围查询会访问到不满足条件的第一个值为止。<br/>
+#### 覆盖索引的注意事项</li>
+<li>select选择的字段中含有不在索引中的字段 ，即索引没有覆盖全部的列。</li>
+<li>where条件中不能含有对索引进行like的操作。</li>
+</ul>
+
+<h4>删除数据</h4>
+
+<ul>
+<li>在删除数据的时候尽量加 limit。这样不仅可以控制删除数据的条数，让操作更安全，还可以减小加锁的范围。</li>
+</ul>
+
+<h4>非唯一索引等值锁</h4>
+
+<ul>
+<li>lock in share mode 只锁覆盖索引，但是如果是 for update 就不一样了。 执行 for update 时，系统会认为你接下来要更新数据，因此会顺便给主键索引上满足条件的行加上行锁。</li>
+<li>如果你要用 lock in share mode 来给行加读锁避免数据被更新的话，就必须得绕过覆盖索引的优化，在查询字段中加入索引中不存在的字段。</li>
+</ul>
+
+<h4>next-key lock</h4>
+
+<ul>
+<li> next-key lock具体执行的时候，是要分成间隙锁和行锁两段来执行的</li>
+</ul>
+
+<h4>读提交</h4>
+
+<ul>
+<li>读提交隔离级别下，锁的范围更小，锁的时间更短，这也是不少业务都默认使用读提交隔离级别的原因。</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/01/02 15:09 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15460488614529.html">
+                
+                  <h1>幻读</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>概念</h4>
+
+<ul>
+<li>幻读仅仅指新插入的行</li>
+<li>幻读指的是一个事务在前后两次查询同一个范围的时候，后一次查询看到了前一次查询没有看到的行。</li>
+</ul>
+
+<h4>当前读</h4>
+
+<ul>
+<li>for update</li>
+</ul>
+
+<h4>幻读引发的问题</h4>
+
+<ul>
+<li>数据一致性是数据库内部数据状态在此刻的一致性，还包含了数据和日志在逻辑上的一致性</li>
+</ul>
+
+<h4>间隙锁</h4>
+
+<ul>
+<li>保护两个值之间的空隙不允许插入新的值</li>
+<li>在可重复读的级别下生效，读提交的情况下间隙锁不会生效</li>
+<li>读提交下操作数据的锁范围更小，这个选择是合理的</li>
+<li>binlog_format=row配合间隙锁解决数据和日志不一致</li>
+<li>binlog和实际操作的结果数据不一致</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/12/29 10:01 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15458738062017.html">
+                
+                  <h1>加快插入数据</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<pre class="line-numbers"><code class="language-text">  set global innodb_flush_log_at_trx_commit=0;
+  set global sync_binlog=0;
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/12/27 09:23 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15458731180628.html">
+                
+                  <h1>语句性能差异</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>清除锁表进程</h4>
+
+<ul>
+<li>锁表和解锁表</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text"> lock table t write;
+ unlock  tables;
+ select blocking_pid from sys.schema_table_lock_waits;
+</code></pre>
+
+<h4>查询锁表进程</h4>
+
+<pre class="line-numbers"><code class="language-text">  select * from t sys.innodb_lock_waits where locked_table=`&#39;test&#39;.&#39;t&#39;`\G
+</code></pre>
+
+<h4>读锁比较快</h4>
+
+<pre class="line-numbers"><code class="language-text">  update t set c=c+1 where id=1;
+  start transaction with consistent snapshot;
+  select * from t where id = 1;
+  select * from t where id = 1 lock in share mode 
+</code></pre>
+
+<ul>
+<li>带 lock in share mode 的 SQL 语句，是当前读，因此会直接读到 1000001 这个结果，所以速度很快；而 select * from t where id=1 这个语句，是一致性读，因此需要从 1000001 开始，依次执行 undo log，执行了 100 万次以后，才将 1 这个结果返回。</li>
+</ul>
+
+<h4>参考阅读</h4>
+
+<ul>
+<li><a href="http://hedengcheng.com/?p=771">http://hedengcheng.com/?p=771</a></li>
+<li><a href="http://www.aneasystone.com/archives/2017/11/solving-dead-locks-two.html">http://www.aneasystone.com/archives/2017/11/solving-dead-locks-two.html</a></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/12/27 09:11 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15456176673171.html">
+                
+                  <h1>SQL语句性能分析</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>条件字段函数分析</h4>
+
+<ul>
+<li>索引字段做函数操作，可能会破坏索引值的有序性，因此优化器就决定放弃走树搜索功能。</li>
+<li>索引字段的参数加上函数操作可以使用索引</li>
+</ul>
+
+<h4>隐性类型转换</h4>
+
+<pre class="line-numbers"><code class="language-text">  mysql&gt; select * from tradelog where tradeid=110717;
+</code></pre>
+
+<ul>
+<li>数据类型转换规则会触发函数字段操作会放弃索引树</li>
+</ul>
+
+<h4>隐式字符编码转换</h4>
+
+<pre class="line-numbers"><code class="language-text"> mysql&gt; CREATE TABLE `tradelog` (
+  `id` int(11) NOT NULL,
+  `tradeid` varchar(32) DEFAULT NULL,
+  `operator` int(11) DEFAULT NULL,
+  `t_modified` time DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `tradeid` (`tradeid`),
+  KEY `t_modified` (`t_modified`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+ CREATE TABLE `trade_detail` (
+  `id` int(11) NOT NULL,
+  `tradeid` varchar(32) DEFAULT NULL,
+  `trade_step` int(11) DEFAULT NULL, /* 操作步骤 */
+  `step_info` varchar(32) DEFAULT NULL, /* 步骤信息 */
+  PRIMARY KEY (`id`),
+  KEY `tradeid` (`tradeid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</code></pre>
+
+<ul>
+<li>主动把被驱动表的字符改成utf8
+<code>
+select d.* from tradelog l, trade_detail d where d.tradeid=l.tradeid and l.id=2; <br/>
+select d.* from tradelog l , trade_detail d where d.tradeid=CONVERT(l.tradeid USING utf8) and l.id=2; 
+</code></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/12/24 10:14 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15453606137574.html">
+                
+                  <h1>如何正确的显示随机信息</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>原始算法</h4>
+
+<pre class="line-numbers"><code class="language-text">mysql&gt; select word from words order by rand() limit 3;
+</code></pre>
+
+<h4>优化算法1</h4>
+
+<pre class="line-numbers"><code class="language-text">mysql&gt; select max(id),min(id) into @M,@N from t ;
+set @X= floor((@M-@N+1)*rand() + @N);
+select * from t where id &gt;= @X limit 1;
+</code></pre>
+
+<ul>
+<li>有概率不均匀的问题</li>
+</ul>
+
+<h4>算法2</h4>
+
+<pre class="line-numbers"><code class="language-text">mysql&gt; select count(*) into @C from t;
+set @Y = floor(@C * rand());
+set @sql = concat(&quot;select * from t limit &quot;, @Y, &quot;,1&quot;);
+prepare stmt from @sql;
+execute stmt;
+DEALLOCATE prepare stmt;
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/12/21 10:50 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+              
+
+
+			<div class="row">
+			  <div class="large-6 columns">
+			  <p class="text-left" style="padding-top:25px;">
+			   <a href="Mysql优化实战_1.html">&laquo; Prev Page</a>  
+			  </p>
+			  </div>
+			  <div class="large-6 columns">
+			<p class="text-right" style="padding-top:25px;">
+			 <a href="Mysql优化实战_3.html">&raquo; Next Page</a> 
+			</p>
+			  </div>
+			</div>
+		</div>
+	</div><!-- large 8 -->
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <h1>eredin-blog</h1>
+                <div class="site-des">生命的意义是成为你自己！</div>
+                <div class="social">
+
+
+
+
+
+
+
+
+
+
+
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="Prometheus.html"><strong>Prometheus</strong></a>
+        
+            <a href="RocketMQ.html"><strong>RocketMQ</strong></a>
+        
+            <a href="%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE.html"><strong>网络协议</strong></a>
+        
+            <a href="Golang.html"><strong>Golang</strong></a>
+        
+            <a href="Django.html"><strong>Django</strong></a>
+        
+            <a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html"><strong>C++设计模式实战</strong></a>
+        
+            <a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html"><strong>深入剖析Kubernetes</strong></a>
+        
+            <a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html"><strong>数据结构和算法</strong></a>
+        
+            <a href="%E5%BE%AE%E6%9C%8D%E5%8A%A1.html"><strong>微服务</strong></a>
+        
+            <a href="%E6%9E%B6%E6%9E%84.html"><strong>架构</strong></a>
+        
+            <a href="%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html"><strong>操作系统原理</strong></a>
+        
+            <a href="Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html"><strong>Mysql优化实战</strong></a>
+        
+            <a href="Kafka.html"><strong>Kafka</strong></a>
+        
+            <a href="linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html"><strong>linux服务器研发</strong></a>
+        
+            <a href="%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86.html"><strong>计算机组成原理</strong></a>
+        
+            <a href="%E7%A8%8B%E5%BA%8F%E5%91%98%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB.html"><strong>程序员的自我修养</strong></a>
+        
+            <a href="C%E8%AF%AD%E8%A8%80%E8%BF%9B%E9%98%B6.html"><strong>C语言进阶</strong></a>
+        
+            <a href="http_study.html"><strong>http_study</strong></a>
+        
+            <a href="%E7%8E%A9%E8%BD%AC%E7%AE%97%E6%B3%95.html"><strong>玩转算法</strong></a>
+        
+            <a href="C++%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B.html"><strong>C++对象模型</strong></a>
+        
+            <a href="SQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html"><strong>SQL必知必会</strong></a>
+        
+            <a href="Zookeeper.html"><strong>Zookeeper</strong></a>
+        
+            <a href="Redis%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A.html"><strong>Redis从入门到精通</strong></a>
+        
+            <a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E8%BF%9B%E9%98%B6.html"><strong>数据结构和算法进阶</strong></a>
+        
+            <a href="Mysql%E6%80%A7%E8%83%BD%E7%AE%A1%E7%90%86%E5%92%8C%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1.html"><strong>Mysql性能管理和架构设计</strong></a>
+        
+            <a href="%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98.html"><strong>网络编程实战</strong></a>
+        
+            <a href="Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html"><strong>Redis高并发缓存</strong></a>
+        
+            <a href="C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html"><strong>C++基础与提高</strong></a>
+        
+            <a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html"><strong>设计模式之美</strong></a>
+        
+            <a href="Python.html"><strong>Python</strong></a>
+        
+            <a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html"><strong>设计模式</strong></a>
+        
+            <a href="Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html"><strong>Linux性能优化实战</strong></a>
+        
+            <a href="%E5%80%99%E6%8D%B7STL.html"><strong>候捷STL</strong></a>
+        
+            <a href="%E6%80%A7%E8%83%BD%E5%B7%A5%E7%A8%8B%E9%AB%98%E6%89%8B%E8%AF%BE.html"><strong>性能工程高手课</strong></a>
+        
+            <a href="%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95.html"><strong>性能测试</strong></a>
+        
+            <a href="ElasticSearch.html"><strong>ElasticSearch</strong></a>
+        
+            <a href="RabbitMQ.html"><strong>RabbitMQ</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="15814649492497.html">Simple Factory</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15814189410719.html">代码的可测试性</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15814188057978.html">重构</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15813811739408.html">tuple 使用</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
+
+
+  </body>
+</html>
