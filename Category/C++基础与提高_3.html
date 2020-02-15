@@ -172,6 +172,127 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15672468334916.html">
+                
+                  <h1>shared_ptr常用操作</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>引用计数增加</h4>
+
+<ul>
+<li>每个shared_ptr都会记录其他的shared_ptr指向对象</li>
+<li>智能当成实参在函数里传递会增加</li>
+<li>如果是引用则不增加</li>
+<li>返回值返回</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">void func(shared_ptr&lt;int&gt;&amp; ptr);不增加
+void func(shared_ptr&lt;int&gt; ptr);//增加
+shared_ptr&lt;int&gt; func2(shared_ptr&lt;int&gt;&amp; ptr)//增加
+</code></pre>
+
+<h4>引用计数减少</h4>
+
+<ul>
+<li>局部的shared_ptr离开其作用域</li>
+<li>指向其他对象</li>
+</ul>
+
+<h4>常用操作</h4>
+
+<ul>
+<li>use_count</li>
+<li>unique</li>
+</ul>
+
+<h4>reset</h4>
+
+<ul>
+<li>若pi是唯一指向该对象的指针，那么释放pi指向的对象，pi置空，否则引用计数减q，不释放对象，同时pi置空</li>
+<li>reset带参数的话</li>
+<li>空指针也可以用reset，指向新的对象</li>
+</ul>
+
+<h4>get</h4>
+
+<ul>
+<li>返回裸指针</li>
+<li>如果智能指针释放了对象，裸指针也就无效了</li>
+<li>第三方函数就是需要裸指针</li>
+</ul>
+
+<h4>swap</h4>
+
+<ul>
+<li>交换两个智能指针的对象</li>
+</ul>
+
+<h4>nullptr</h4>
+
+<ul>
+<li>将指向的对象引用计数减去1，若为0，释放智能指针指向的对象</li>
+</ul>
+
+<h4>指定删除器和数组问题</h4>
+
+<ul>
+<li>默认将delete作为资源析构方式</li>
+<li>我们可以指定自己的删除器来取代系统提供的默认的删除器</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">void  myDelete(int* p) {
+  cout &lt;&lt; __func__ &lt;&lt; endl;
+  delete p;
+}
+shared_ptr&lt;int&gt; p11(new int(12345), myDelete);
+  shared_ptr&lt;int&gt; p12(p11);
+  p12.reset();
+  p11.reset();
+</code></pre>
+
+<ul>
+<li>系统默认删除器处理不了数组</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">* shared_ptr&lt;A&gt; pA(new A[10]);//系统释放PA是delete pA所指向的裸指针，而不delete[]pA
+* defalut_delete
+* shared_ptr&lt;A&gt; pB(new A[10], default_delete&lt;A[]&gt;());
+* shared_ptr&lt;A[]&gt; pC(new A[10]);
+</code></pre>
+
+<h4>指定删除器额外说明</h4>
+
+<ul>
+<li>shared_ptr指定的删除器不同，但是指向的类型的相同</li>
+<li>可以放入同一个容器</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/08/31 18:20 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15671608919349.html">
                 
                   <h1>智能指针</h1>
@@ -915,52 +1036,6 @@ typeid(*h1) == typeid(*h2)
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15656903952504.html">
-                
-                  <h1>迭代器</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>const迭代器</h4>
-
-<ul>
-<li>const_iterator</li>
-<li>指向的值不能改变，迭代器本身可以改变</li>
-</ul>
-
-<h4>迭代器失效</h4>
-
-<ul>
-<li>改变容器容量的操作中，会引起迭代器的失效</li>
-<li>容器中增加或者删除元素，可能引起指向容器元素的指针，引用，迭代器失效</li>
-<li>插入数据就break</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/13 17:59 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1102,6 +1177,12 @@ typeid(*h1) == typeid(*h2)
 	      
 		      
 			      <li class="post">
+			        <a href="15817610843879.html">编译期</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15814649492497.html">Simple Factory</a>
 			      </li>
 		     
@@ -1121,12 +1202,6 @@ typeid(*h1) == typeid(*h2)
 		      
 			      <li class="post">
 			        <a href="15813811739408.html">tuple 使用</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

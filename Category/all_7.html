@@ -172,6 +172,142 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15733419433426.html">
+                
+                  <h1>Python协程</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>协程执行方法</h4>
+
+<ul>
+<li>await 进入被调用的协程函数，执行完毕返回后再继续，而这也是 await 的字面意思。</li>
+<li>asyncio.create_task() 来创建任务</li>
+<li>asyncio.run 来触发运行</li>
+</ul>
+
+<h4>执行</h4>
+
+<pre class="line-numbers"><code class="language-python">import asyncio
+import time
+
+async def crawl_page(url):
+    print(&#39;crawling {}&#39;.format(url))
+    sleep_time = int(url.split(&#39;_&#39;)[-1])
+    await  asyncio.sleep(sleep_time)
+    print(&#39;OK {}&#39;.format(url))
+
+async def main(urls):
+    tasks = [asyncio.create_task(crawl_page(url)) for url in urls]
+    for task in tasks:
+        await task
+async def main(urls):
+    tasks = [asyncio.create_task(crawl_page(url)) for url in urls]
+    await asyncio.gather(*tasks)
+
+start = time.time()
+asyncio.run(main([&#39;url_1&#39;, &#39;url_2&#39;, &#39;url_3&#39;, &#39;url_4&#39;]))
+end = time.time()
+print(end-start)
+</code></pre>
+
+<h4>取消协程</h4>
+
+<pre class="line-numbers"><code class="language-python">import asyncio
+import time
+
+async def worker_1():
+    await asyncio.sleep(1)
+    return 1
+
+async def worker_2():
+    await asyncio.sleep(2)
+    return 2 / 0
+
+async def worker_3():
+    await asyncio.sleep(3)
+    return 3
+
+async def main():
+    task_1 = asyncio.create_task(worker_1())
+    task_2 = asyncio.create_task(worker_2())
+    task_3 = asyncio.create_task(worker_3())
+
+    await asyncio.sleep(2)
+    task_3.cancel()
+
+    res = await asyncio.gather(task_1, task_2, task_3, return_exceptions=True)
+    print(res)
+
+start = time.time()
+asyncio.run(main())
+end = time.time()
+print(end-start)
+</code></pre>
+
+<h4>生产者和消费者模型</h4>
+
+<pre class="line-numbers"><code class="language-python">import asyncio
+import time
+import random
+
+async def consumer(queue, id):
+    while True:
+        val = await queue.get()
+        print(&#39;{} get a val {}&#39;.format(id, val))
+        await asyncio.sleep(1)
+
+async def producer(queue, id):
+    for i in range(5):
+        val = random.randint(1, 10)
+        await queue.put(val)
+        print(&#39;{} put a val: {}&#39;.format(id, val))
+        await asyncio.sleep(1)
+
+async def main():
+    queue = asyncio.Queue()
+    con1 = asyncio.create_task(consumer(queue, &#39;con1&#39;))
+    con2 = asyncio.create_task(consumer(queue, &#39;con2&#39;))
+    pro1 = asyncio.create_task(producer(queue, &#39;pro1&#39;))
+    pro2 = asyncio.create_task(producer(queue, &#39;pro2&#39;))
+
+    await  asyncio.sleep(10)
+    con1.cancel()
+    con2.cancel()
+
+    await asyncio.gather(con1, con2, pro1, pro2, return_exceptions=True)
+
+start = time.time()
+asyncio.run(main())
+end = time.time()
+print(end-start)
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/10 07:25 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15732683266177.html">
                 
                   <h1>迭代器和生成器</h1>
@@ -2328,99 +2464,6 @@ func TestAudiFactory_CreateCar(t *testing.T) {
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15728255199604.html">
-                
-                  <h1>自定义函数和匿名函数</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>函数定义</h4>
-
-<ul>
-<li>def 是可执行语句，这意味着函数直到被调用前，都是不存在的。当程序调用函数时，def 语句才会创建一个新的函数对象，并赋予其名字。</li>
-<li>主程序调用函数时，必须保证这个函数此前已经定义过，不然就会报错</li>
-<li>如果我们在函数内部调用其他函数，函数间哪个声明在前、哪个在后就无所谓，因为 def 是可执行语句，函数在调用之前都不存在，我们只需保证调用时，所需的函数都已经声明定义：</li>
-</ul>
-
-<h4>参数类型</h4>
-
-<ul>
-<li>Python 不用考虑输入的数据类型，而是将其交给具体的代码去判断执行，同样的一个函数（比如这边的相加函数 my_sum()），可以同时应用在整型、列表、字符串等等的操作中。</li>
-</ul>
-
-<h4>局部变量</h4>
-
-<ul>
-<li>不能在函数内部随意改变全局变量的值。</li>
-<li>要在函数内部改变全局变量的值，就必须加上 global 这个声明</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-python">MIN_VLAUE = 1
-MAX_VLAUE = 10
-
-def check(value):
-    if value &lt; MIN_VLAUE or value &gt; MAX_VLAUE:
-        global MIN_VLAUE
-        MIN_VLAUE += 1
-        raise Exception(&#39;check fails&#39;)
-    else:
-        print(&#39;check ok&#39;)
-
-
-def main():
-    check(3)
-
-if __name__ == &#39;__main__&#39;:
-    main()
-</code></pre>
-
-<ul>
-<li>告诉 Python 解释器，函数内部的变量 MIN_VALUE，就是之前定义的全局变量，并不是新的全局变量，也不是局部变量。这样，程序就可以在函数内部访问全局变量，并修改它的值了。</li>
-<li>对于嵌套函数来说，内部函数可以访问外部函数定义的变量，但是无法修改，若要修改，必须加上 nonlocal 这个关键字</li>
-</ul>
-
-<h4>闭包</h4>
-
-<pre class="line-numbers"><code class="language-python">def nth_power(ex):
-    def exon_of(base):
-        return base ** ex
-    return exon_of
-
-def main():
-    sq = nth_power(2)
-    cub = nth_power(3)
-    print(sq(2))
-    print(cub(3))
-
-if __name__ == &#39;__main__&#39;:
-    main()
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/04 07:58 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -2562,6 +2605,12 @@ if __name__ == &#39;__main__&#39;:
 	      
 		      
 			      <li class="post">
+			        <a href="15817610843879.html">编译期</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15814649492497.html">Simple Factory</a>
 			      </li>
 		     
@@ -2581,12 +2630,6 @@ if __name__ == &#39;__main__&#39;:
 		      
 			      <li class="post">
 			        <a href="15813811739408.html">tuple 使用</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

@@ -172,6 +172,76 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15675915694548.html">
+                
+                  <h1>Weak_ptr</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>概念</h4>
+
+<ul>
+<li>weak_ptr弱 强 shared_ptr</li>
+<li>智能指针，指向由shared_ptr管理的对象</li>
+<li>不控制对象的生命周期，不会改变引用计数</li>
+<li>构造和析构不会增加引用计数</li>
+<li>shared_ptr要释放对象的时候照常释放，不管是否有weak_ptr</li>
+<li>weak_ptr 监视shared_ptr的生命周期，是shared_ptr的扩充</li>
+<li>不是独立的智能指针。不能用来操作所指向的资源，监视对象是否存在</li>
+</ul>
+
+<h4>常规操作</h4>
+
+<ul>
+<li>weak_ptr不能直接来访问对象</li>
+<li>需要lock来访问，如果存在，lock就返回一个对象的shared_ptr指针</li>
+<li>如果不存在，就返回一个空的shared_ptr</li>
+<li>weak_ptr能够判断对象是否存在</li>
+</ul>
+
+<h4>常用指针</h4>
+
+<ul>
+<li>use_count 获取对象强引用的数量</li>
+<li>expired 是否过期，如果use_count=0,对象不存在，观测对象的资源是否被释放</li>
+<li>reset 将弱引用指针设置为空，不影响强引用，</li>
+</ul>
+
+<h4>尺寸问题</h4>
+
+<ul>
+<li>weak_ptr和shared_ptr一样大。裸指针的两倍</li>
+<li>第一个指针指向智能指向对象</li>
+<li>第二个指针指向shared_ptr生成的控制块</li>
+<li><img src="media/15675915694548/15675935853040.jpg" alt="" style="width:898px;"/></li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/09/04 18:06 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15675851611934.html">
                 
                   <h1>DNS服务发现</h1>
@@ -1008,73 +1078,6 @@ shared_ptr&lt;int&gt; p11(new int(12345), myDelete);
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15671534121507.html">
-                
-                  <h1>微服务架构</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>访问日志</h4>
-
-<ul>
-<li>通过中间件来解决</li>
-<li>日志中间版本</li>
-<li>v.1.7.1</li>
-</ul>
-
-<h4>代码生成器优化</h4>
-
-<pre class="line-numbers"><code class="language-go">exist := util.IsFileExist(filename) controller_generator.go 44
-exist := util.IsFileExist(filename) main_generator.go  18
-</code></pre>
-
-<h4>分布式追踪</h4>
-
-<ul>
-<li>v1.9.2</li>
-<li>元信息从grpc获取</li>
-<li></li>
-</ul>
-
-<h4>解决ETCD冲突</h4>
-
-<ul>
-<li>rm -rf $GOPATH/src/go.etcd.io/etcd/vendor/golang.org/x/net/trace</li>
-</ul>
-
-<h4>安装go1.13</h4>
-
-<ul>
-<li>wget <a href="https://dl.google.com/go/go1.13.linux-amd64.tar.gz">https://dl.google.com/go/go1.13.linux-amd64.tar.gz</a></li>
-<li>tar -C /usr/local -xzf go1.13.linux-amd64.tar.gz</li>
-<li><a href="https://madneal.com/post/gproxy/">https://madneal.com/post/gproxy/</a></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/30 16:23 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1216,6 +1219,12 @@ exist := util.IsFileExist(filename) main_generator.go  18
 	      
 		      
 			      <li class="post">
+			        <a href="15817610843879.html">编译期</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15814649492497.html">Simple Factory</a>
 			      </li>
 		     
@@ -1235,12 +1244,6 @@ exist := util.IsFileExist(filename) main_generator.go  18
 		      
 			      <li class="post">
 			        <a href="15813811739408.html">tuple 使用</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

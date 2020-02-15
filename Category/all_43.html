@@ -172,6 +172,136 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15510052060203.html">
+                
+                  <h1>双机架构</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>高可用本质</h4>
+
+<ul>
+<li>存储高可用方案的本质都是通过将数据复制到多个存储设备，通过数据冗余的方式来实现高可用，其复杂性主要体现在如何应对复制延迟和中断导致的数据不一致问题</li>
+</ul>
+
+<h4>常见方案</h4>
+
+<ul>
+<li>主备</li>
+<li>主从</li>
+<li>主主</li>
+<li>集群</li>
+<li>分区</li>
+</ul>
+
+<h4>双机切换</h4>
+
+<ul>
+<li>主备状态判断</li>
+<li>状态传递的渠道：是相互间互相连接，还是第三方仲裁？</li>
+<li>状态检测的内容：例如机器是否掉电、进程是否存在、响应是否缓慢等。</li>
+<li>切换策略</li>
+<li>切换时机 切换策略 自动程序</li>
+<li>数据冲突解决</li>
+</ul>
+
+<h4>常见架构</h4>
+
+<ul>
+<li>互连式</li>
+<li>中介式 zookeeper和keeplived</li>
+<li>模拟式 模拟式指主备机之间并不传递任何状态数据，而是备机模拟成一个客户端，向主机发起模拟的读写操作，根据读写操作的响应情况来判断主机的状态</li>
+<li>主主复制  临时性、可丢失、可覆盖的数据场景 用户登录产生的 session 数据（可以重新登录生成）、用户行为的日志数据（可以丢失）、论坛的草稿数据（可以丢失）</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/02/24 18:46 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%9E%B6%E6%9E%84.html'>架构</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15510046017020.html">
+                
+                  <h1>FMEA</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>方法</h4>
+
+<ul>
+<li>给出初始的架构设计图。</li>
+<li>假设架构中某个部件发生故障。</li>
+<li>分析此故障对系统功能造成的影响。</li>
+<li>根据分析结果，判断架构是否需要进行优化。</li>
+</ul>
+
+<h4>分析表格</h4>
+
+<ul>
+<li>功能点</li>
+<li>故障模式 故障点和故障形式</li>
+<li>故障影响 功能点偶尔不可用、功能点完全不可用、部分用户功能点不可用、功能点响应缓慢、功能点出错等。</li>
+<li>严重程度  致命 / 高 / 中 / 低 / 无</li>
+<li>故障原因 </li>
+<li>故障概率 硬件 开源系统 自研系统</li>
+<li>风险程度 </li>
+<li>已有措施 检测告警 容错 自恢复</li>
+</ul>
+
+<h4>HDFS</h4>
+
+<ul>
+<li>HDFS可以从</li>
+<li>网络原因分片传输</li>
+<li>存储分片大小</li>
+<li>DataNode故障</li>
+<li>NameNoe故障</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/02/24 18:36 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%9E%B6%E6%9E%84.html'>架构</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15509987141953.html">
                 
                   <h1>分区表</h1>
@@ -682,163 +812,6 @@
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15501998188113.html">
-                
-                  <h1>负载均衡算法</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>轮询</h4>
-
-<h4>加权轮询</h4>
-
-<h4>负载最低优先</h4>
-
-<ul>
-<li>如果是 CPU 密集型，可以以“CPU 负载”来衡量系统压力；</li>
-<li>如果是 I/O 密集型，可以以“I/O 负载”来衡量系统压力。</li>
-<li>复杂度增加很多</li>
-</ul>
-
-<h4>性能最优</h4>
-
-<ul>
-<li>负载均衡系统需要收集和分析每个服务器每个任务的响应时间，在大量任务处理的场景下，这种收集和统计本身也会消耗较多的性能。</li>
-<li>为了减少这种统计上的消耗，可以采取采样的方式来统计，即不统计所有任务的响应时间，而是抽样统计部分任务的响应时间来估算整体任务的响应时间。</li>
-<li>无论是全部统计还是采样统计，都需要选择合适的周期</li>
-</ul>
-
-<h4>Hash类</h4>
-
-<ul>
-<li>源地址HASH</li>
-<li>IDhash</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/15 11:03 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%9E%B6%E6%9E%84.html'>架构</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15501985470108.html">
-                
-                  <h1>负载均衡</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>本质</h4>
-
-<ul>
-<li>高性能集群的复杂性主要体现在需要增加一个任务分配器，以及为任务选择一个合适的任务分配算法</li>
-</ul>
-
-<h4>DNS负载均衡</h4>
-
-<ul>
-<li>一般用来实现地理级别的均衡</li>
-<li>实现简单、成本低，但也存在粒度太粗、负载均衡算法少等缺点</li>
-<li>一般公司自己实现HTTP-DNS</li>
-</ul>
-
-<h4>硬件负载均衡</h4>
-
-<ul>
-<li>F5和A10</li>
-<li>功能和性能强大</li>
-<li>稳定性高</li>
-<li>支持安全防护</li>
-<li>价格昂贵和扩展性差</li>
-</ul>
-
-<h4>软件负载均衡</h4>
-
-<ul>
-<li>一个nginx一般支持5w并发</li>
-</ul>
-
-<h4>应用场景</h4>
-
-<ul>
-<li>地理级别负载均衡DNS</li>
-<li>集群级别负载均衡F5</li>
-<li>机器级别负载均衡nginx和lvs</li>
-</ul>
-
-<h4>日活千万的论坛</h4>
-
-<h5>1、首先，流量评估。</h5>
-
-<ul>
-<li>1000万DAU，换算成秒级，平均约等于116。</li>
-<li>考虑每个用户操作次数，假定10，换算成平均QPS=1160。</li>
-<li>考虑峰值是均值倍数，假定10，换算成峰值QPS=11600。</li>
-<li>考虑静态资源、图片资源、服务拆分等，流量放大效应，假定10，QPS*10=116000。 </li>
-</ul>
-
-<h5>2、其次，容量规划。</h5>
-
-<ul>
-<li>考虑高可用、异地多活，QPS*2=232000。</li>
-<li>考虑未来半年增长，QPS*1.5=348000。</li>
-</ul>
-
-<h5>3、最后，方案设计。</h5>
-
-<ul>
-<li>三级导流。</li>
-<li>第一级，DNS，确定机房，以目前量级，可以不考虑。</li>
-<li>第二级，确定集群，扩展优先，则选Haproxy/LVS，稳定优先则选F5。</li>
-<li>第三级，Nginx+KeepAlived，确定实例。<br/>
-     <br/>
-    </li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/15 10:42 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%9E%B6%E6%9E%84.html'>架构</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -980,6 +953,12 @@
 	      
 		      
 			      <li class="post">
+			        <a href="15817610843879.html">编译期</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15814649492497.html">Simple Factory</a>
 			      </li>
 		     
@@ -999,12 +978,6 @@
 		      
 			      <li class="post">
 			        <a href="15813811739408.html">tuple 使用</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

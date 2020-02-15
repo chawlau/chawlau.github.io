@@ -172,6 +172,99 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15728255199604.html">
+                
+                  <h1>自定义函数和匿名函数</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>函数定义</h4>
+
+<ul>
+<li>def 是可执行语句，这意味着函数直到被调用前，都是不存在的。当程序调用函数时，def 语句才会创建一个新的函数对象，并赋予其名字。</li>
+<li>主程序调用函数时，必须保证这个函数此前已经定义过，不然就会报错</li>
+<li>如果我们在函数内部调用其他函数，函数间哪个声明在前、哪个在后就无所谓，因为 def 是可执行语句，函数在调用之前都不存在，我们只需保证调用时，所需的函数都已经声明定义：</li>
+</ul>
+
+<h4>参数类型</h4>
+
+<ul>
+<li>Python 不用考虑输入的数据类型，而是将其交给具体的代码去判断执行，同样的一个函数（比如这边的相加函数 my_sum()），可以同时应用在整型、列表、字符串等等的操作中。</li>
+</ul>
+
+<h4>局部变量</h4>
+
+<ul>
+<li>不能在函数内部随意改变全局变量的值。</li>
+<li>要在函数内部改变全局变量的值，就必须加上 global 这个声明</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">MIN_VLAUE = 1
+MAX_VLAUE = 10
+
+def check(value):
+    if value &lt; MIN_VLAUE or value &gt; MAX_VLAUE:
+        global MIN_VLAUE
+        MIN_VLAUE += 1
+        raise Exception(&#39;check fails&#39;)
+    else:
+        print(&#39;check ok&#39;)
+
+
+def main():
+    check(3)
+
+if __name__ == &#39;__main__&#39;:
+    main()
+</code></pre>
+
+<ul>
+<li>告诉 Python 解释器，函数内部的变量 MIN_VALUE，就是之前定义的全局变量，并不是新的全局变量，也不是局部变量。这样，程序就可以在函数内部访问全局变量，并修改它的值了。</li>
+<li>对于嵌套函数来说，内部函数可以访问外部函数定义的变量，但是无法修改，若要修改，必须加上 nonlocal 这个关键字</li>
+</ul>
+
+<h4>闭包</h4>
+
+<pre class="line-numbers"><code class="language-python">def nth_power(ex):
+    def exon_of(base):
+        return base ** ex
+    return exon_of
+
+def main():
+    sq = nth_power(2)
+    cub = nth_power(3)
+    print(sq(2))
+    print(cub(3))
+
+if __name__ == &#39;__main__&#39;:
+    main()
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/04 07:58 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15728246052216.html">
                 
                   <h1>异常处理</h1>
@@ -2715,76 +2808,6 @@ func ExampleFTPDownloader() {
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15724763690872.html">
-                
-                  <h1>学习目标</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>目标</h4>
-
-<ul>
-<li>理解松耦合设计思想</li>
-<li>掌握面向对象设计原则</li>
-<li>掌握重构技法改善设计</li>
-<li>掌握 GOF 核心设计模式</li>
-</ul>
-
-<h4>底层思维</h4>
-
-<ul>
-<li>语言构造</li>
-<li>编译转换</li>
-<li>内存模型</li>
-<li>运行时机制</li>
-</ul>
-
-<h4>抽象思维</h4>
-
-<ul>
-<li>面向对象</li>
-<li>组件封装</li>
-<li>设计模式</li>
-<li>架构模式</li>
-</ul>
-
-<h4>解决复杂性</h4>
-
-<ul>
-<li>更高层次来讲，人们处理复杂性有一个通用的技术，即抽象。由于不能掌握全部的复杂对象，我们选择忽视它的非本质细节，而去处理泛化和理想化了的对象模型。</li>
-</ul>
-
-<h4>软件设计的目标</h4>
-
-<ul>
-<li>复用</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/31 06:59 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -2926,6 +2949,12 @@ func ExampleFTPDownloader() {
 	      
 		      
 			      <li class="post">
+			        <a href="15817610843879.html">编译期</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15814649492497.html">Simple Factory</a>
 			      </li>
 		     
@@ -2945,12 +2974,6 @@ func ExampleFTPDownloader() {
 		      
 			      <li class="post">
 			        <a href="15813811739408.html">tuple 使用</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

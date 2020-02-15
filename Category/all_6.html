@@ -172,6 +172,103 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15735993111373.html">
+                
+                  <h1>命令行</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>函数使用</h4>
+
+<h5>rate</h5>
+
+<ul>
+<li>rate(go_goroutines[1m])</li>
+<li>counter类型的数据必须使用rate和increase函数</li>
+<li>在我们的工作中 取1m 还是取5m<br/>
+这个取决于 我们对于监控数据的敏感性程度来挑选</li>
+<li>rate(1m) 是取一段时间增量的平均每秒数量</li>
+<li>rate() -&gt; CPU 内存 硬盘 IO 网络流量</li>
+</ul>
+
+<h5>increase</h5>
+
+<ul>
+<li>increase(1m) 则是 取一段时间增量的总量</li>
+<li>对比rate,曲线基本一致，但是纵坐标单位不一样</li>
+<li><img src="media/15725061245362/15725074004046.jpg" alt="" style="width:1631px;"/></li>
+<li>如果采样点比较少，rate函数容易断链，采用increase比较平缓</li>
+</ul>
+
+<h5>sum</h5>
+
+<ul>
+<li>sum 会把结果集的输出进行总加合</li>
+<li>sum() by (cluster_name)</li>
+<li>sum() by (instance)</li>
+</ul>
+
+<h5>topk</h5>
+
+<ul>
+<li>topk(4,rate(node_network_receive_packets_total[20m]))</li>
+<li>根据给定的数字 取数值最高 &gt;=x 的数值</li>
+<li>Topk因为对于每一个时间点 都只取前三高的数值 那么必然会造成 单个机器的采集数据不连贯,实际使用的时候 一般用topk()函数进行瞬时报警 而不是为了观察曲线图</li>
+</ul>
+
+<h5>count</h5>
+
+<ul>
+<li>count进行一些模糊的监控判断</li>
+<li>比如说 企业中有100台服务器，那么当只有10台服务器CPU高 于80%的时候 这个时候不需要报警但是 当符合80%CPU的服务器数量 超过 30台的时候 那么就 会触发报警 count()</li>
+</ul>
+
+<h5>promethus</h5>
+
+<ul>
+<li>daemonize启动</li>
+<li>--web.read-timeout=5m 链接最大等待时间</li>
+<li>--web-max-connections=512 最大链接数目</li>
+<li>--storage.tsdb.retention=15d 开始采集监控数据后 会存在内存中和硬盘中 对于保留期限的设置</li>
+<li>--storage.tsdb.path=&quot;data/&quot; 存储数据路径</li>
+<li>--query.timeout=2m</li>
+<li>--query.max-concurrency=20</li>
+</ul>
+
+<h4>配置文件</h4>
+
+<ul>
+<li>node_cpu</li>
+<li>node_memory</li>
+<li>node_disk</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/13 06:55 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Prometheus.html'>Prometheus</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15735992739195.html">
                 
                   <h1>对象的比较和拷贝</h1>
@@ -903,142 +1000,6 @@ if __name__ == &#39;__main__&#39;:
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15733419433426.html">
-                
-                  <h1>Python协程</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>协程执行方法</h4>
-
-<ul>
-<li>await 进入被调用的协程函数，执行完毕返回后再继续，而这也是 await 的字面意思。</li>
-<li>asyncio.create_task() 来创建任务</li>
-<li>asyncio.run 来触发运行</li>
-</ul>
-
-<h4>执行</h4>
-
-<pre class="line-numbers"><code class="language-python">import asyncio
-import time
-
-async def crawl_page(url):
-    print(&#39;crawling {}&#39;.format(url))
-    sleep_time = int(url.split(&#39;_&#39;)[-1])
-    await  asyncio.sleep(sleep_time)
-    print(&#39;OK {}&#39;.format(url))
-
-async def main(urls):
-    tasks = [asyncio.create_task(crawl_page(url)) for url in urls]
-    for task in tasks:
-        await task
-async def main(urls):
-    tasks = [asyncio.create_task(crawl_page(url)) for url in urls]
-    await asyncio.gather(*tasks)
-
-start = time.time()
-asyncio.run(main([&#39;url_1&#39;, &#39;url_2&#39;, &#39;url_3&#39;, &#39;url_4&#39;]))
-end = time.time()
-print(end-start)
-</code></pre>
-
-<h4>取消协程</h4>
-
-<pre class="line-numbers"><code class="language-python">import asyncio
-import time
-
-async def worker_1():
-    await asyncio.sleep(1)
-    return 1
-
-async def worker_2():
-    await asyncio.sleep(2)
-    return 2 / 0
-
-async def worker_3():
-    await asyncio.sleep(3)
-    return 3
-
-async def main():
-    task_1 = asyncio.create_task(worker_1())
-    task_2 = asyncio.create_task(worker_2())
-    task_3 = asyncio.create_task(worker_3())
-
-    await asyncio.sleep(2)
-    task_3.cancel()
-
-    res = await asyncio.gather(task_1, task_2, task_3, return_exceptions=True)
-    print(res)
-
-start = time.time()
-asyncio.run(main())
-end = time.time()
-print(end-start)
-</code></pre>
-
-<h4>生产者和消费者模型</h4>
-
-<pre class="line-numbers"><code class="language-python">import asyncio
-import time
-import random
-
-async def consumer(queue, id):
-    while True:
-        val = await queue.get()
-        print(&#39;{} get a val {}&#39;.format(id, val))
-        await asyncio.sleep(1)
-
-async def producer(queue, id):
-    for i in range(5):
-        val = random.randint(1, 10)
-        await queue.put(val)
-        print(&#39;{} put a val: {}&#39;.format(id, val))
-        await asyncio.sleep(1)
-
-async def main():
-    queue = asyncio.Queue()
-    con1 = asyncio.create_task(consumer(queue, &#39;con1&#39;))
-    con2 = asyncio.create_task(consumer(queue, &#39;con2&#39;))
-    pro1 = asyncio.create_task(producer(queue, &#39;pro1&#39;))
-    pro2 = asyncio.create_task(producer(queue, &#39;pro2&#39;))
-
-    await  asyncio.sleep(10)
-    con1.cancel()
-    con2.cancel()
-
-    await asyncio.gather(con1, con2, pro1, pro2, return_exceptions=True)
-
-start = time.time()
-asyncio.run(main())
-end = time.time()
-print(end-start)
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/10 07:25 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1180,6 +1141,12 @@ print(end-start)
 	      
 		      
 			      <li class="post">
+			        <a href="15817610843879.html">编译期</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15814649492497.html">Simple Factory</a>
 			      </li>
 		     
@@ -1199,12 +1166,6 @@ print(end-start)
 		      
 			      <li class="post">
 			        <a href="15813811739408.html">tuple 使用</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

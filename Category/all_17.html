@@ -172,6 +172,54 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15699709788203.html">
+                
+                  <h1>读写分离高可用</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>旧版本复制</h4>
+
+<ul>
+<li>SYNC是一个非常耗费资源的操作</li>
+<li>主服务器需要执行BGSAVE命令来生成RDB文件，这个生成操作会耗费主服务器大量的的 CPU、内存和磁盘读写资源 主服务器将RDB文件发送给从服务器，这个发送操作会耗费主从服务器大量的网络带宽和流 量，并对主服务器响应命令 请求的时间产生影响:接收到RDB文件的从服务器在载入文件的过程是阻塞的，无法处理命令 请求</li>
+</ul>
+
+<h4>新版本复制</h4>
+
+<p><img src="media/15699709788203/15699714704625.jpg" alt="" style="width:1002px;"/><br/>
+<img src="media/15699709788203/15699717831453.jpg" alt="" style="width:1039px;"/></p>
+
+<ul>
+<li>主服务的复制偏移量(replication offset)和从服务器的复制偏移量 主服务器的复制积压缓冲区(replication backlog),默认大小为1M</li>
+<li>服务器的运行ID(run ID),用于存储服务器标识，如从服务器断线重新连接，取到主服务器 的运行ID与重接后的主服务器运行ID进行对比，从而判断是执行部分重同步还是执行完 整重同步</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/10/02 07:02 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html'>Redis高并发缓存</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15699255854846.html">
                 
                   <h1>forward补充&auto</h1>
@@ -1179,101 +1227,6 @@ docker run \
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15694944763341.html">
-                
-                  <h1>类型区别</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>类型推断</h4>
-
-<pre class="line-numbers"><code class="language-text">template&lt;typename T&gt;
-int func(const T&amp; abc) {
-  cout &lt;&lt; &quot;i &quot; &lt;&lt; abc &lt;&lt; endl;
-  return abc;
-}
-
-int main() {
-  func(10);
-}
-</code></pre>
-
-<h4>universal reference 万能引用</h4>
-
-<ul>
-<li>&amp;&amp;abc右值引用</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">template&lt;typename T&gt;
-void func2(T&amp;&amp; tmp) { //&amp;&amp;属于形参的一部分,不属于T的一部分
-  cout &lt;&lt; &quot;tmp &quot; &lt;&lt; tmp &lt;&lt; endl;
-}
-void func2(int&amp; tmp) {
-  cout &lt;&lt; &quot;tmp &quot; &lt;&lt; tmp &lt;&lt; endl;
-}
-</code></pre>
-
-<ul>
-<li>函数模板tmp既能接受左值也能接受右值</li>
-<li>单纯的函数是不可以接受左值</li>
-</ul>
-
-<h5>语境</h5>
-
-<ul>
-<li>必须是函数模版</li>
-<li>必须是发生了模版类型推断并且函数模板形参T&amp;&amp;</li>
-<li>auto也存在万能引用的概念</li>
-<li>右值引用必须传递右值</li>
-<li>万能引用可以传递左值引用和左值引用</li>
-<li>T&amp;&amp;或者tmp才是万能引用</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">template&lt;typename T&gt;
-void func2(vector&lt;T&gt;&amp;&amp; tmp) {}//不是万能引用
-</code></pre>
-
-<h4>万能引用的资格剥夺和确认</h4>
-
-<ul>
-<li>const引用会剥夺万能引用资格，变成右值引用</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">template&lt;typename T&gt;
-void func2(vector&lt;T&gt;&amp;&amp; tmp) {}//不是万能引用
-
-template&lt;typename T&gt;
-class A {
-  void func2(vector&lt;T&gt;&amp;&amp; tmp) {}//不是万能引用,是右值引用
-  //成员函数没有类型推断
-}
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/26 18:41 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1415,6 +1368,12 @@ class A {
 	      
 		      
 			      <li class="post">
+			        <a href="15817610843879.html">编译期</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15814649492497.html">Simple Factory</a>
 			      </li>
 		     
@@ -1434,12 +1393,6 @@ class A {
 		      
 			      <li class="post">
 			        <a href="15813811739408.html">tuple 使用</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

@@ -172,6 +172,132 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15395094398747.html">
+                
+                  <h1>程序实体</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>变量重申明</h4>
+
+<ul>
+<li>变量的类型在其初始化的时候已经确定，再次申明必须和原来类型相同</li>
+<li>变量重申明只能发生在同一个模块</li>
+<li>变量重申明只有在短变量申明时发生</li>
+<li>申明并赋值的变量必须时多个，并且其中至少一个是新的变量，这时我们才可以</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">var err error
+n, err := io.WriteString(os.Stdout, &quot;Hello, everyone!\n&quot;)
+</code></pre>
+
+<h4>总结变量申明方式</h4>
+
+<ul>
+<li>var完整方式</li>
+<li>:= 变量方式</li>
+<li>重申明只可以在短变量定义中出现，并且在多个变量中出现</li>
+</ul>
+
+<h4>类型断言</h4>
+
+<pre class="line-numbers"><code class="language-text">  value, ok := interface{}(container).([]string)
+</code></pre>
+
+<ul>
+<li>类型断言表达式的语法形式必须是接口类型的</li>
+</ul>
+
+<h4>程序可见性</h4>
+
+<ul>
+<li>同包内，结构体变量的成员变量可随时被访问，不受首字母大小写的影响（即便成员变量小写，也可被直接访问，而不需要通过成员函数来实现）。</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/10/14 17:30 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15395080168106.html">
+                
+                  <h1>数组和切片</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>切片重要知识点</h4>
+
+<ul>
+<li>append函数返回的是指向原底层数组的新切片，而在需要扩容的时候，append函数返回的是指向新底层数组的新切片</li>
+<li>切片大量缩容之后多余的内容没有被垃圾回收，可以使用新建一个数组然后copy的方式</li>
+<li>把切片窗口向右扩展到最大的方法 s5 := s4[:cap(s4)]</li>
+<li>切片窗口无法向左扩展</li>
+</ul>
+
+<h4>扩容策略</h4>
+
+<ul>
+<li>如果切片的容量小于 1024 个元素，于是扩容的时候就翻倍增加容量。上面那个例子也验证了这一情况，总容量从原来的4个翻倍到现在的8个。一旦元素个数超过 1024 个元素，那么增长因子就变成 1.25 ，即每次增加原来容量的四分之一。</li>
+</ul>
+
+<h4>切片拷贝</h4>
+
+<pre class="line-numbers"><code class="language-text">  n := copy(slice, array)
+</code></pre>
+
+<h4>切片扩容</h4>
+
+<ul>
+<li>两个切片公用一个数组，如果一个切片扩容超过数组的长度，就会使用新的数组，这个时候，二者的数据不一致了</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/10/14 17:06 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15387022894129.html">
                 
                   <h1>递归&闭包&数组切片&map&锁</h1>
@@ -983,276 +1109,6 @@ type: kubernetes.io/rbd
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15365701104822.html">
-                
-                  <h1>Pod控制器应用进阶</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>容器探测</h4>
-
-<ul>
-<li>livenessProbe</li>
-<li>readinessProbe</li>
-</ul>
-
-<h4>探针类型</h4>
-
-<ul>
-<li>ExecAction exec 嵌套command</li>
-<li>TCPSocketAction tcpSocket</li>
-<li>HTTPGetAction  httpGet</li>
-<li>必须做就绪性探测</li>
-</ul>
-
-<h4>Pod控制器</h4>
-
-<ul>
-<li>ReplicaSet: 新一代(ReplicationController)</li>
-<li>Deployment: 建构在ReplicaSet,管理无状态应用</li>
-<li>DaemonSet：系统级的后台任务，守护进程类</li>
-<li>Job: 完成就退出</li>
-<li>Cronjob:不需要持续后台运行</li>
-<li>StatefulSet 封装控制器</li>
-<li>TPR: Third Party Resources 1.2+</li>
-<li>CDR: Custom Defined Resources, 1.8+</li>
-<li>Operator:</li>
-<li>Helm: 类似yum</li>
-<li>kubectl explain rs</li>
-</ul>
-
-<h4>通过Pod template</h4>
-
-<ul>
-<li> kubectl edit rs myapp</li>
-<li> kubectl get rs -o wide 修改镜像版本</li>
-</ul>
-
-<h4>版本升级</h4>
-
-<ul>
-<li> <img src="media/15365701104822/15366443003667.jpg" alt="" style="width:1071px;"/></li>
-<li>更新策略</li>
-<li>rollingUpdate</li>
-<li>maxSurge</li>
-<li>maxUnavailable</li>
-<li>层级关系</li>
-<li><img src="media/15365701104822/15366456380843.jpg" alt="" style="width:576px;"/></li>
-<li>kubectl apply -f deploy-demo.yaml</li>
-<li>apply可以声明多次</li>
-<li>patch打补丁</li>
-<li>kubectl rollout history deployment myapp-deploy 查看滚动历史</li>
-<li>kubectl rollout status deployment myapp-deploy 查看更新状态</li>
-<li>kubectl rollout undo deployment myapp-deploy --to-revision=1</li>
-</ul>
-
-<h4>Daemenset</h4>
-
-<ul>
-<li>hostNetWork</li>
-<li>hostIPC</li>
-<li>hostPID</li>
-<li><img src="media/15365701104822/15366580951940.jpg" alt=""/></li>
-<li><img src="media/15365701104822/15366580475906.jpg" alt=""/></li>
-<li>工作模式: userspace iptables ipvs</li>
-</ul>
-
-<h4>类型</h4>
-
-<ul>
-<li>ExternalName</li>
-<li>ClusterIP</li>
-<li>NodePort</li>
-<li>LoadBalancer</li>
-</ul>
-
-<h4>资源记录</h4>
-
-<ul>
-<li>SVC_NAME.NS_NAME.DOMAIN.LTD</li>
-<li>svc.cluster.local</li>
-<li>redis.test.svc</li>
-</ul>
-
-<h4>节点标签选择器</h4>
-
-<ul>
-<li>nodeSeletor</li>
-<li>oc label nodes 10.68.1.101 logType=collector --overwrite=true</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  nodeSelector:
-        logType: collector 
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/09/10 17:01 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15363042633543.html">
-                
-                  <h1>k8s资源清单</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>常用资源</h4>
-
-<ul>
-<li>RESTful</li>
-<li>GET PUT DELETE POST</li>
-<li>kubectl run,get,edit</li>
-<li>workload: Pod,ReplicaSet,Deployment,StatefulSet,DaemonSet,Job,Cronjob</li>
-<li>服务发现与均衡: Service, Ingress</li>
-<li>配置与存储: Volume，CSI //TODO</li>
-<li>ConfigMap, Secret</li>
-<li>DownwardAPI</li>
-<li>集群级别资源</li>
-<li>Namespace,Node,Role,ClusterRole,RoleBinding,ClusterRoleBinding</li>
-<li>元数据型资源</li>
-<li>HPA,PodTemplate,LimitRange</li>
-<li>group/version core</li>
-</ul>
-
-<h4>创建资源</h4>
-
-<ul>
-<li>apiserver仅接收json格式的资源定义</li>
-<li>yml格式来提供配置清单,apiserver可自动转为json格式，而后再提交</li>
-</ul>
-
-<h4>大部分资源的配置清单</h4>
-
-<ul>
-<li>apiVersion</li>
-<li>kubectl api-versions</li>
-</ul>
-
-<h5>metadata</h5>
-
-<ul>
-<li>name</li>
-<li>namespace</li>
-<li>lablels</li>
-<li>annotations</li>
-<li>每个资源的引用PATH</li>
-<li>/api/GROUP/VERSION/namespaces/NAMESPACE/TYPE/NAME</li>
-<li>spec: 期望的状态 desired state</li>
-<li>status: 当前状态 current state本字段由集群维护</li>
-</ul>
-
-<h4>Pod资源</h4>
-
-<ul>
-<li>spec.containers</li>
-<li>name </li>
-<li>image</li>
-<li>imagePullPolicy  Always Never IfNotPresent</li>
-<li>修改镜像中的操作</li>
-</ul>
-
-<h4>标签选择器</h4>
-
-<ul>
-<li>等值关系： = ,！= </li>
-<li>集合关系： KEY in (val1,val2)</li>
-<li>Key not in (val1,val2)</li>
-<li>KEY</li>
-</ul>
-
-<h4>许多资源支持内嵌字段</h4>
-
-<ul>
-<li>matchLabels: 直接给定键值</li>
-<li>matchExperssions: 基于给定的表达式来定义使用标签选择器, {key:&quot;KEY&quot;, operator:&quot;OPERATOR&quot;, values:[VAL1,VAL2,...]}</li>
-<li>操作符</li>
-<li>In NotIn: values字段必须为非空列表</li>
-<li>Exists, NotExists: values字段必须为空列表</li>
-</ul>
-
-<h4>nodeSelector</h4>
-
-<ul>
-<li>节点标签选择器</li>
-<li>影响调度算法的指标</li>
-</ul>
-
-<h4>annotations</h4>
-
-<ul>
-<li>与label不同在于，不能用于挑选资源对象，仅用于为对象提供元数据</li>
-</ul>
-
-<h4>Pods生命周期</h4>
-
-<ul>
-<li>状态: Pending, Running, Failed, Succeeded, Unkown</li>
-<li>创建Pod: ApiServer Etcd kubelet</li>
-<li><img src="media/15363042633543/15364876918339.jpg" alt="" style="width:473px;"/></li>
-</ul>
-
-<h5>Pod生命周期的重要行为</h5>
-
-<ul>
-<li>初始化容器</li>
-<li>容器探测</li>
-<li>liveness</li>
-<li>readiness</li>
-</ul>
-
-<h5>restartPolicy</h5>
-
-<ul>
-<li>Always </li>
-<li>OnFailure</li>
-<li>Never 不再重启</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/09/07 15:11 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1394,6 +1250,12 @@ type: kubernetes.io/rbd
 	      
 		      
 			      <li class="post">
+			        <a href="15817610843879.html">编译期</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15814649492497.html">Simple Factory</a>
 			      </li>
 		     
@@ -1413,12 +1275,6 @@ type: kubernetes.io/rbd
 		      
 			      <li class="post">
 			        <a href="15813811739408.html">tuple 使用</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

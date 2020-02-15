@@ -172,6 +172,153 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15576250906291.html">
+                
+                  <h1>Swap内存</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>回收场景</h4>
+
+<ul>
+<li>直接内存回收</li>
+<li>内核线程回收 kswapd0</li>
+</ul>
+
+<h5>三种水位</h5>
+
+<ul>
+<li>页最小阈值（pages_min）</li>
+<li>页低阈值（pages_low）</li>
+<li>页高阈值（pages_high
+<img src="media/15576250906291/c1054f1e71037795c6f290e670b29120.png" alt="c1054f1e71037795c6f290e670b29120"/></li>
+</ul>
+
+<h4>NUMA和Swap</h4>
+
+<ul>
+<li>NUMA 架构下，多个处理器被划分到不同 Node 上，且每个 Node 都拥有自己的本地内存空间。</li>
+<li>Node 内部的内存空间，实际上又可以进一步分为不同的内存域（Zone），比如直接内存访问区（DMA）、普通内存区（NORMAL）、伪内存区（MOVABLE）
+<img src="media/15576250906291/be6cabdecc2ec98893f67ebd5b9aead9.png" alt="be6cabdecc2ec98893f67ebd5b9aead9"/></li>
+</ul>
+
+<h5>回收内存模式</h5>
+
+<ul>
+<li>/proc/sys/vm/zone_reclaim_mode</li>
+<li>0 可以从其他 Node 寻找空闲内存，也可以从本地回收内存</li>
+<li>1、2、4 都表示只回收本地内存，2 表示可以回写脏数据回收内存，4 表示可以用 Swap 方式回收内存</li>
+</ul>
+
+<h4>文件页面和匿名页面</h4>
+
+<ul>
+<li>对文件页的回收，当然就是直接回收缓存，或者把脏页写回磁盘后再回收。</li>
+<li>而对匿名页的回收，其实就是通过 Swap 机制，把它们写入磁盘后再释放内存 </li>
+</ul>
+
+<h4>回收比例</h4>
+
+<ul>
+<li>/proc/sys/vm/swappiness</li>
+</ul>
+
+<h4>swap 类型</h4>
+
+<ul>
+<li>swap分区</li>
+<li>swap文件</li>
+<li>kbcommit，表示当前系统负载需要的内存。它实际上是为了保证系统内存不溢出，对需要内存的估计值。%commit，就是这个值相对总内存的百分比。</li>
+<li>kbactive，表示活跃内存，也就是最近使用过的内存，一般不会被系统回收。</li>
+<li>kbinact，表示非活跃内存，也就是不常访问的内存，有可能会被系统回收。</li>
+</ul>
+
+<h4>清空buffer和cache</h4>
+
+<ul>
+<li>sync; echo 1 &gt; /proc/sys/vm/drop_caches;</li>
+<li>echo 2 &gt; /proc/sys/vm/drop_caches;</li>
+<li>echo 3 &gt; /proc/sys/vm/drop_caches;</li>
+</ul>
+
+<h4>观察系统内存变化</h4>
+
+<ul>
+<li>watch -d grep -A 15 &#39;Normal&#39; /proc/zoneinfo</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/05/12 09:38 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15575401859226.html">
+                
+                  <h1>系统调用</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>操作系统与我们编写的软件并不同属一个进程，两边的内存地址空间都是独立的，如何实现系统调用</h4>
+
+<ul>
+<li>从虚拟内存机制的视角，操作系统内核和所有进程都在同一个地址空间，也就是，操作系统内核，它是所有进程共享的内存
+<img src="media/15575401859226/2b0adde3eca6262ae674a97f478c15b3.png" alt="2b0adde3eca6262ae674a97f478c15b3"/></li>
+<li>中断向量表的地址，以及操作系统内核的地址空间是一个契约。有了中断向量表的地址约定，用户态函数就可以发起一次系统调用（软中断）</li>
+</ul>
+
+<h4>编程接口</h4>
+
+<p><img src="media/15575401859226/b2393a109f849bd91c991b1e750cb3e0.png" alt="b2393a109f849bd91c991b1e750cb3e0"/></p>
+
+<ul>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/05/11 10:03 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15574892932253.html">
                 
                   <h1>线程的创建</h1>
@@ -725,190 +872,6 @@
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15562372828721.html">
-                
-                  <h1>组成原理知识图谱</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>学习地图</h4>
-
-<ul>
-<li><img src="media/15562372828721/12bc980053ea355a201e2b529048e2ff.jpg" alt="12bc980053ea355a201e2b529048e2ff"/></li>
-</ul>
-
-<h4>计算机组成视频教程</h4>
-
-<ul>
-<li><a href="https://www.bilibili.com/video/av24540152/">https://www.bilibili.com/video/av24540152/</a></li>
-<li>计算机组成：结构化方法  //TODO</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/04/26 08:08 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86.html'>计算机组成原理</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15558924748383.html">
-                
-                  <h1>进程数据结构</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>task_struct</h4>
-
-<ul>
-<li>任务ID</li>
-<li>任务展示</li>
-</ul>
-
-<h4>三种睡眠状态</h4>
-
-<ul>
-<li>TASK_INTERRUPTIBLE，可中断的睡眠状态</li>
-<li>TASK_UNINTERRUPTIBLE，不可中断的睡眠状态</li>
-<li>TASK_KILLABLE，可以终止的新睡眠状态 可以响应致命信号</li>
-</ul>
-
-<h4>进程调度</h4>
-
-<ul>
-<li>任务状态</li>
-<li>信号处理</li>
-<li>任务ID</li>
-<li>调度相关</li>
-</ul>
-
-<h4>运行统计信息</h4>
-
-<h4>进程亲缘关系</h4>
-
-<ul>
-<li>parent 指向其父进程。当它终止时，必须向它的父进程发送信号。</li>
-<li>children 表示链表的头部。链表中的所有元素都是它的子进程。</li>
-<li>sibling 用于把当前进程插入到兄弟链表中。
-<img src="media/15558924748383/92711107d8dcdf2c19e8fe4ee3965304.jpeg" alt="92711107d8dcdf2c19e8fe4ee3965304"/></li>
-</ul>
-
-<h4>用户和用户组的信息</h4>
-
-<ul>
-<li>uid gid</li>
-<li>euid egid</li>
-<li>fsuid fsgid</li>
-</ul>
-
-<h4>capabilites</h4>
-
-<ul>
-<li>cap_permitted 表示进程能够使用的权限</li>
-<li>cap_bset，也就是 capability bounding set，是系统中所有进程允许保留的权限。如果这个集合中不存在某个权限，那么系统中的所有进程都没有这个权限。即使以超级用户权限执行的进程，也是一样的</li>
-<li>cap_ambient 是比较新加入内核,执行 exec 的时候，cap_ambient 会被添加到 cap_permitted 中，同时设置到 cap_effective 中</li>
-</ul>
-
-<h4>进程</h4>
-
-<ul>
-<li>任务ID</li>
-<li>亲缘关系</li>
-<li>任务状态</li>
-<li>权限</li>
-<li>运行统计</li>
-<li>调度相关</li>
-<li>信号处理</li>
-<li>内存管理</li>
-<li>文件和文件系统</li>
-<li>内核栈 
-<img src="media/15558924748383/1c91956b52574b62a4418a7c6993d8bc.jpeg" alt="1c91956b52574b62a4418a7c6993d8b"/></li>
-</ul>
-
-<h4>用户栈和内核栈的具体实现</h4>
-
-<ul>
-<li>用户栈详解：<a href="http://blog.csdn.net/tiankong_/article/details/75676131">http://blog.csdn.net/tiankong_/article/details/75676131</a></li>
-<li>内核栈详解：<a href="http://blog.csdn.net/tiankong_/article/details/75647488">http://blog.csdn.net/tiankong_/article/details/75647488</a></li>
-</ul>
-
-<h4>用户态函数栈</h4>
-
-<ul>
-<li>栈是一个从高地址到低地址，往下增长的结构，也就是上面是栈底，下面是栈顶，入栈和出栈的操作都是从下面的栈顶开始的。
-<img src="media/15558924748383/aec865abccf0308155f4138cc905972e.jpg" alt="aec865abccf0308155f4138cc905972e"/></li>
-</ul>
-
-<h4>用户态和内核态执行</h4>
-
-<ul>
-<li>struct thread_info thread_info;</li>
-<li>void  *stack;</li>
-</ul>
-
-<h4>内核栈</h4>
-
-<p><img src="media/15558924748383/31d15bcd2a053235b5590977d12ffa2d.jpeg" alt="31d15bcd2a053235b5590977d12ffa2d"/></p>
-
-<h4>task_struct找内核</h4>
-
-<ul>
-<li>task_struct找内核栈是通过stack指针，直接找到内核线程栈，stack指针记录的是内核栈的首地址。</li>
-<li>task_struck找内核寄存器是通过 内核栈的首地址（1中的stack指针） + (THREAD_SIZE - TOP_OF_KERNEL_STACK_PADDING)定位到pt_regs的最高位地址，再减一得到pt_regs的最低位地址（首地址）</li>
-</ul>
-
-<h4>内核找task_struct</h4>
-
-<ul>
-<li>通过内核栈找到 task_struct<br/>
-  32位 直接由 thread_info 中的指针得到<br/>
-  64位 每个 CPU 当前运行进程的 task_struct 的指针存放到 Per CPU 变量 current_task 中<br/>
- <br/>
- #### </li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/04/22 08:21 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1050,6 +1013,12 @@
 	      
 		      
 			      <li class="post">
+			        <a href="15817610843879.html">编译期</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15814649492497.html">Simple Factory</a>
 			      </li>
 		     
@@ -1069,12 +1038,6 @@
 		      
 			      <li class="post">
 			        <a href="15813811739408.html">tuple 使用</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

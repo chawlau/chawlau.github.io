@@ -172,6 +172,52 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15765398211231.html">
+                
+                  <h1>迭代器模式</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>动机</h4>
+
+<ul>
+<li><p>在软件构建过程中，集合对象内部结构常常变化各异。但对于这些集合对象，我们希望在不暴露其内部结构的同时，可以让外部客户代码透明地访词其中包含的元素；同时这种“透明遍历”也为同一种算法在多种集合对象上进行操作”提供了可能。</p></li>
+<li><p>使用面向对象技术将这种遍历机制抽象为“迭代器对象”为“应对变化中的集合对象”提供了一种优雅的方式。</p></li>
+</ul>
+
+<h4>要点总结</h4>
+
+<ul>
+<li>迭代抽象：访问一个聚合对象的内容而无需暴露它的内部表示。迭代多态：为遍历不同的集合结构提供一个统一的接口，从而支</li>
+<li>持同样的算法在不同的集合结构上进行操作。</li>
+<li>迭代器的健壮性考虑：遍历的同时更改迭代器所在的集合结构，会导致问题。</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/12/17 07:43 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15758501024510.html">
                 
                   <h1>多线程同步</h1>
@@ -2520,178 +2566,6 @@ print(inter_list)
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15744656731481.html">
-                
-                  <h1>静态方法&类方法&对象方法</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>三种方法对比</h4>
-
-<ul>
-<li>对象方法，定义中，传入的第一个参数必须是 self，表示实例本身，在其中可使用 self.attr 获取实例的属性。</li>
-<li>class_method 无需实例化，但与实例方法第一个参数必须是 self 类似，类方法第一个参数表示类自身的 cls 参数，可以来调用类的属性、类的方法、类的实例化对象等</li>
-<li>static_method无需 self 参数，无需 cls 参数，直接声明一个静态方法，可无需实例化，直接由类调用，也可实例化后调用</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-python">class Date:
-    def __init__(self, year, month, day):
-        self.year = year
-        self.month = month
-        self.day = day
-
-    def tomorrow(self):
-        self.day += 1
-
-    @staticmethod
-    def parse_from_string(data_str):
-        year, month, day = tuple(data_str.split(&#39;-&#39;))
-        return Date(int(year), int(month), int(day))
-
-    @staticmethod
-    def valid_str(date_str):
-        year, month, day = tuple(date_str.split(&#39;-&#39;))
-        if int(year) &gt; 0 and (int(month) &gt; 0 and int(month) &lt;=12) and (int(day) &gt; 0 and int(day) &lt;=31):
-            return True
-        else:
-            return False
-
-    @classmethod
-    def from_string(cls, date_str):
-        year, month, day = tuple(date_str.split(&#39;-&#39;))
-        return cls(int(year), int(month), int(day))
-
-    def __str__(self):
-        return &quot;{year}/{month}/{day}&quot;.format(year=self.year, month=self.month, day=self.day)
-
-if __name__ == &#39;__main__&#39;:
-    new_day = Date(2018, 12, 31)
-    new_day.tomorrow()
-    print(new_day)
-
-    date_str = &#39;2018-12-31&#39;
-    year, month, day = tuple(date_str.split(&#39;-&#39;))
-    new_day = Date(int(year), int(month), int(day))
-    print (new_day)
-
-    new_day = Date.parse_from_string(date_str)
-    print (new_day)
-
-    new_day = Date.from_string(date_str)
-    print (new_day)
-    
-    print(Date.valid_str(&quot;2018-12-32&quot;))
-</code></pre>
-
-<h4>私有属性</h4>
-
-<ul>
-<li>双下划线将私有变量进行变形</li>
-<li>通过反射机制也可以拿到这个数值</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-python">from method import Date
-
-class User:
-    def __init__(self, birthday):
-        self.__birthday = birthday
-    def get_age(self):
-        return 2019 - self.__birthday.year
-
-
-if __name__ == &#39;__main__&#39;:
-    user = User(Date(2018, 10, 1))
-    print(user.get_age())
-</code></pre>
-
-<h4>dict和dir查询属性·</h4>
-
-<pre class="line-numbers"><code class="language-python">from method import Date
-
-class Person:
-    name = &#39;user&#39;
-
-class Student(Person):
-    def __init__(self, school_name):
-        self.school_name = school_name
-
-if __name__ == &#39;__main__&#39;:
-    user = Student(&#39;IMooc&#39;)
-    print(user.__dict__)
-    user.__dict__[&quot;school_addr&quot;] = &quot;Beijing&quot;
-    print(user.school_addr)
-    print(Person.__dict__)
-    print(user.name)
-    a = [1, 2]
-    print(dir(a))
-</code></pre>
-
-<ul>
-<li>dict获取属性</li>
-</ul>
-
-<h4>上下文管理器协议</h4>
-
-<ul>
-<li><img src="media/15744656731481/15744763032317.jpg" alt="" style="width:324px;"/></li>
-</ul>
-
-<pre class="line-numbers"><code class="language-python">class Sample:
-    def __enter__(self):
-        #获取资源
-        print(&#39;enter&#39;)
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        #释放资源
-        print(&quot;exit&quot;)
-
-    def do_something(self):
-        print(&quot;doing something&quot;)
-
-with Sample() as sample:
-    sample.do_something()
-</code></pre>
-
-<h4>contextlib协议</h4>
-
-<pre class="line-numbers"><code class="language-python">import contextlib
-
-@contextlib.contextmanager
-def file_open(file_name):
-    print (&quot;file open&quot;)
-    yield {}
-    print (&quot;file end&quot;)
-
-with file_open(&quot;bobby.txt&quot;) as f_opened:
-    print (&quot;file processing&quot;)
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/23 07:34 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -2833,6 +2707,12 @@ with file_open(&quot;bobby.txt&quot;) as f_opened:
 	      
 		      
 			      <li class="post">
+			        <a href="15817610843879.html">编译期</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15814649492497.html">Simple Factory</a>
 			      </li>
 		     
@@ -2852,12 +2732,6 @@ with file_open(&quot;bobby.txt&quot;) as f_opened:
 		      
 			      <li class="post">
 			        <a href="15813811739408.html">tuple 使用</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

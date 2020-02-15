@@ -172,6 +172,217 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15473472500656.html">
+                
+                  <h1>mysql数据可靠性</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>binlog写入机制</h4>
+
+<ul>
+<li>binlog cache 内存 --&gt; write page cache --&gt; fsync --&gt; binlog 磁盘</li>
+<li>sync_binlog=0, 只write, 不fsync</li>
+<li>sync_binlog=1, 每次提交事务都会fsync</li>
+<li>sync_binlog 累积N个事务才fsync, 会丢失N个事务的binlog日志</li>
+</ul>
+
+<h4>redo log写入机制</h4>
+
+<ul>
+<li>三种状态</li>
+<li>redo log buffer 内存</li>
+<li>write--&gt;page cache</li>
+<li>hard disk 持久化到磁盘</li>
+<li>innodb_flush_log_at_trx_commit 0 buffer 1 磁盘 2 page_cache</li>
+</ul>
+
+<h4>Mysql双一配置</h4>
+
+<ul>
+<li> sync_binlog 和 innodb_flush_log_at_trx_commit 都设置成 1。也就是说，一个事务完整提交前，需要等待两次刷盘，一次是 redo log（prepare 阶段），一次是 binlog。</li>
+</ul>
+
+<h4>日志逻辑序列号</h4>
+
+<ul>
+<li>LSN</li>
+<li>多个事务刷盘采用组提交策略
+<img src="media/15473472500656/933fdc052c6339de2aa3bf3f65b188cc.png" alt="933fdc052c6339de2aa3bf3f65b188c"/></li>
+</ul>
+
+<h4>binlog 组提交</h4>
+
+<ul>
+<li>binlog_group_commit_sync_delay 参数，表示延迟多少微秒后才调用 fsync;</li>
+<li>binlog_group_commit_sync_no_delay_count 参数，表示累积多少次以后才调用 fsync。</li>
+</ul>
+
+<h4>WAL机制的优点</h4>
+
+<ul>
+<li>redo log和 binlog都是顺序写</li>
+<li>组提交机制</li>
+</ul>
+
+<h4>mysql出现IO性能瓶颈</h4>
+
+<ul>
+<li>设置 binlog_group_commit_sync_delay 和 binlog_group_commit_sync_no_delay_count 参数，减少 binlog 的写盘次数。这个方法是基于“额外的故意等待”来实现的，因此可能会增加语句的响应时间，但没有丢失数据的风险。</li>
+<li>将 sync_binlog 设置为大于 1 的值（比较常见是 100~1000）。这样做的风险是，主机掉电时会丢 binlog 日志。</li>
+<li>将 innodb_flush_log_at_trx_commit 设置为 2。这样做的风险是，主机掉电的时候会丢数据。 </li>
+</ul>
+
+<h4>两阶段提交的本质</h4>
+
+<ul>
+<li> redo log 的写入拆成了两个步骤：prepare 和 commit，这就是&quot;两阶段提交&quot;。</li>
+</ul>
+
+<h4>Binlog两种模式</h4>
+
+<ul>
+<li>statement 格式的话是记sql语句</li>
+<li>row格式会记录行的内容，记两条，更新前和更新后都有。</li>
+</ul>
+
+<h4>writepos和checkpoint</h4>
+
+<ul>
+<li>“空着的部分”，就是write pos 到3号文件末尾，再加上0号文件开头到checkpoint 的部分。可以写入新的事物日志
+<img src="media/15473472500656/b075250cad8d9f6c791a52b6a600f69c.jpg" alt="b075250cad8d9f6c791a52b6a600f69"/></li>
+</ul>
+
+<h4>事务奔溃恢复原则</h4>
+
+<ul>
+<li>如果 redo log 里面的事务是完整的，也就是已经有了 commit 标识，则直接提交；</li>
+<li>如果 redo log 里面的事务只有完整的 prepare，则判断对应的事务 binlog 是否存在并完整：<br/>
+a. 如果是，则提交事务；<br/>
+b. 否则，回滚事务。</li>
+</ul>
+
+<h4>sync_binlog</h4>
+
+<ul>
+<li>sync_binlog-&gt;binlog_group_commit_sync_no_delay_count </li>
+</ul>
+
+<h4>binlog cache 是每个线程自己维护的，而 redo log buffer 是全局共用的？</h4>
+
+<ul>
+<li>MySQL 这么设计的主要原因是，binlog 是不能“被打断的”。一个事务的 binlog 必须连续写，因此要整个事务完成后，再一起写到文件里。</li>
+<li>而 redo log 并没有这个要求，中间有生成的日志可以写到 redo log buffer 中。redo log buffer 中的内容还能“搭便车”，其他事务提交的时候可以被一起写到磁盘中。</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/01/13 10:40 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15470904831321.html">
+                
+                  <h1>Linux性能答疑</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>内存回收方式</h4>
+
+<ul>
+<li>基于 LRU（Least Recently Used）算法，回收缓存；</li>
+<li>基于 Swap 机制，回收不常访问的匿名页；</li>
+<li>基于 OOM（Out of Memory）机制，杀掉占用大量内存的进程。触发时机是进程在申请内存时，如果申请的虚拟内存加上服务器实际已用的内存之和，比总的物理内存还大，就会触发OOM</li>
+</ul>
+
+<h4>统计总内存</h4>
+
+<ul>
+<li>把共享内存平分到各个进程后，再加上进程本身的非共享内存大小的和。</li>
+<li>grep Pss /proc/[1-9]*/smaps | awk &#39;{total+=$2}; END {printf &quot;%d kB\n&quot;, total }&#39;</li>
+</ul>
+
+<h4>缓存和缓冲区的却别</h4>
+
+<ul>
+<li>缓存包括两部分，一部分是磁盘读取文件的页缓存，用来缓存从磁盘读取的数据，可以加快以后再次访问的速度。另一部分，则是 Slab 分配器中的可回收内存。</li>
+<li>缓冲区是对原始磁盘块的临时存储，用来缓存将要写入磁盘的数据。这样，内核就可以把分散的写集中起来，统一优化磁盘写入。</li>
+</ul>
+
+<h4>各种内存片段</h4>
+
+<ul>
+<li>虚拟内存，包括了进程代码段、数据段、共享内存、已经申请的堆内存和已经换出的内存等。这里要注意，已经申请的内存，即使还没有分配物理内存，也算作虚拟内存。</li>
+<li>常驻内存是进程实际使用的物理内存，不过，它不包括 Swap 和共享内存。</li>
+<li>共享内存，既包括与其他进程共同使用的真实的共享内存，还包括了加载的动态链接库以及程序的代码段等。</li>
+<li><img src="media/15470904831321/e28cf90f0b137574bca170984d1e6736.png" alt="e28cf90f0b137574bca170984d1e6736"/></li>
+</ul>
+
+<h4>内存性能工具</h4>
+
+<ul>
+<li>根据指标找工具</li>
+<li><img src="media/15470904831321/8f477035fc4348a1f80bde3117a7dfed.png" alt="8f477035fc4348a1f80bde3117a7dfed"/></li>
+<li>工具工具找指标
+<img src="media/15470904831321/52bb55fba133401889206d02c224769b.png" alt="52bb55fba133401889206d02c224769b"/></li>
+<li>分析流程图
+<img src="media/15470904831321/d79cd017f0c90b84a36e70a3c5dccffe.png" alt="d79cd017f0c90b84a36e70a3c5dccffe"/></li>
+</ul>
+
+<h4>内存优化思路</h4>
+
+<ul>
+<li>最好禁止 Swap。如果必须开启 Swap，降低 swappiness 的值，减少内存回收时 Swap 的使用倾向。</li>
+<li>减少内存的动态分配。比如，可以使用内存池、大页（HugePage）等。</li>
+<li>尽量使用缓存和缓冲区来访问数据。比如，可以使用堆栈明确声明内存空间，来存储需要缓存的数据；或者用 Redis 这类的外部缓存组件，优化数据的访问。</li>
+<li>使用 cgroups 等方式限制进程的内存使用情况。这样，可以确保系统内存不会被异常进程耗尽。</li>
+<li>通过 /proc/pid/oom_adj ，调整核心应用的 oom_score。这样，可以保证即使内存紧张，核心应用也不会被 OOM 杀死。</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/01/10 11:21 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15470893891809.html">
                 
                   <h1>Pod</h1>
@@ -827,167 +1038,6 @@
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15464093479091.html">
-                
-                  <h1>内存泄露实战</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>导致内存泄露的内存段</h4>
-
-<ul>
-<li>堆内存</li>
-<li>内存映射段，包括动态连接库和共享内存，其中共享内存由程序动态分配和管理，如果忘了回收也会导致内存泄露</li>
-</ul>
-
-<h4>使用memleak</h4>
-
-<ul>
-<li>/usr/share/bcc/tools/memleak -p $(pidof main) -a</li>
-<li>显示如下</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  [22:44:58] Top 10 stacks with outstanding allocations:
-</code></pre>
-
-<ul>
-<li>表示没有内存泄露</li>
-</ul>
-
-<h4>脏页回收</h4>
-
-<ul>
-<li>fsync</li>
-<li>pdflush</li>
-</ul>
-
-<h4>堆内存</h4>
-
-<ul>
-<li>就是应用程序动态分配的堆内存，也就是匿名页</li>
-</ul>
-
-<h4>内存回收</h4>
-
-<ul>
-<li>直接内存回收</li>
-<li>定期内存回收 kswapd0</li>
-</ul>
-
-<h4>定期内存回收</h4>
-
-<ul>
-<li>页最小阈值（pages_min）</li>
-<li>页低阈值（pages_low）</li>
-<li>页高阈值（pages_high）</li>
-<li>剩余内存 pages_free 表示。</li>
-</ul>
-
-<h4>匿名页和文件页</h4>
-
-<ul>
-<li>对文件页的回收，当然就是直接回收缓存，或者把脏页写回磁盘后再回收。</li>
-<li>而对匿名页的回收，其实就是通过 Swap 机制，把它们写入磁盘后再释放内存。</li>
-<li>swappiness来控制匿名页和文件页的回收，数值越大，越积极使用Swap</li>
-</ul>
-
-<h4>内存指标动态监控</h4>
-
-<ul>
-<li>perf record -e kmem:* -p 27027 -g -- sleep 100</li>
-<li>perf script -i perf.data &amp;&gt; perf.unfold</li>
-<li>./stackcollapse-perf.pl perf.unfold &amp;&gt; perf.folded</li>
-<li>./flamegraph.pl perf.folded &gt; perf.svg</li>
-<li>perf script | ./stackcollapse-perf.pl | ./flamegraph.pl &gt; process.svg</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/01/02 14:09 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15460488614529.html">
-                
-                  <h1>幻读</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>概念</h4>
-
-<ul>
-<li>幻读仅仅指新插入的行</li>
-<li>幻读指的是一个事务在前后两次查询同一个范围的时候，后一次查询看到了前一次查询没有看到的行。</li>
-</ul>
-
-<h4>当前读</h4>
-
-<ul>
-<li>for update</li>
-</ul>
-
-<h4>幻读引发的问题</h4>
-
-<ul>
-<li>数据一致性是数据库内部数据状态在此刻的一致性，还包含了数据和日志在逻辑上的一致性</li>
-</ul>
-
-<h4>间隙锁</h4>
-
-<ul>
-<li>保护两个值之间的空隙不允许插入新的值</li>
-<li>在可重复读的级别下生效，读提交的情况下间隙锁不会生效</li>
-<li>读提交下操作数据的锁范围更小，这个选择是合理的</li>
-<li>binlog_format=row配合间隙锁解决数据和日志不一致</li>
-<li>binlog和实际操作的结果数据不一致</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/29 10:01 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1129,6 +1179,12 @@
 	      
 		      
 			      <li class="post">
+			        <a href="15817610843879.html">编译期</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15814649492497.html">Simple Factory</a>
 			      </li>
 		     
@@ -1148,12 +1204,6 @@
 		      
 			      <li class="post">
 			        <a href="15813811739408.html">tuple 使用</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

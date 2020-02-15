@@ -172,6 +172,87 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15594450051359.html">
+                
+                  <h1>编译和连接</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>预处理</h4>
+
+<ul>
+<li>展开宏定义</li>
+<li>处理预编译命令</li>
+<li>处理#include</li>
+<li>删除注释</li>
+<li>添加行号和文件标识符</li>
+<li>保留#prama</li>
+</ul>
+
+<h4>连接过程</h4>
+
+<ul>
+<li>地址和空间分配</li>
+<li>符号决议</li>
+<li>重定位</li>
+</ul>
+
+<h4>ELF</h4>
+
+<ul>
+<li>可重定位的目标文件</li>
+<li>可执行文件</li>
+<li>共享目标文件</li>
+</ul>
+
+<h4>查看目标文件的格式</h4>
+
+<ul>
+<li>objdump -h simple.o</li>
+<li>size simple.o 查看各个段大小</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">SYMBOL TABLE:
+0000000000000000 l    df *ABS*  0000000000000000 simple.c
+0000000000000000 l    d  .text  0000000000000000 .text
+0000000000000000 l    d  .data  0000000000000000 .data
+0000000000000000 l    d  .bss   0000000000000000 .bss
+0000000000000000 l    d  .rodata    0000000000000000 .rodata
+0000000000000000 l     O .data  0000000000000004 static_var.2686
+0000000000000000 l     O .bss   0000000000000004 static_var2.2687
+0000000000000000 l    d  .note.GNU-stack    0000000000000000 .note.GNU-stack
+0000000000000000 l    d  .eh_frame  0000000000000000 .eh_frame
+0000000000000000 l    d  .comment   0000000000000000 .comment
+0000000000000000 g     F .text  0000000000000021 func1
+0000000000000000         *UND*  0000000000000000 printf
+0000000000000021 g     F .text  0000000000000030 main
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/06/02 11:10 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E7%A8%8B%E5%BA%8F%E5%91%98%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB.html'>程序员的自我修养</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15593496513250.html">
                 
                   <h1>硬件文件系统</h1>
@@ -909,106 +990,6 @@ unsigned long arg_start, arg_end, env_start, env_end;
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15576250906291.html">
-                
-                  <h1>Swap内存</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>回收场景</h4>
-
-<ul>
-<li>直接内存回收</li>
-<li>内核线程回收 kswapd0</li>
-</ul>
-
-<h5>三种水位</h5>
-
-<ul>
-<li>页最小阈值（pages_min）</li>
-<li>页低阈值（pages_low）</li>
-<li>页高阈值（pages_high
-<img src="media/15576250906291/c1054f1e71037795c6f290e670b29120.png" alt="c1054f1e71037795c6f290e670b29120"/></li>
-</ul>
-
-<h4>NUMA和Swap</h4>
-
-<ul>
-<li>NUMA 架构下，多个处理器被划分到不同 Node 上，且每个 Node 都拥有自己的本地内存空间。</li>
-<li>Node 内部的内存空间，实际上又可以进一步分为不同的内存域（Zone），比如直接内存访问区（DMA）、普通内存区（NORMAL）、伪内存区（MOVABLE）
-<img src="media/15576250906291/be6cabdecc2ec98893f67ebd5b9aead9.png" alt="be6cabdecc2ec98893f67ebd5b9aead9"/></li>
-</ul>
-
-<h5>回收内存模式</h5>
-
-<ul>
-<li>/proc/sys/vm/zone_reclaim_mode</li>
-<li>0 可以从其他 Node 寻找空闲内存，也可以从本地回收内存</li>
-<li>1、2、4 都表示只回收本地内存，2 表示可以回写脏数据回收内存，4 表示可以用 Swap 方式回收内存</li>
-</ul>
-
-<h4>文件页面和匿名页面</h4>
-
-<ul>
-<li>对文件页的回收，当然就是直接回收缓存，或者把脏页写回磁盘后再回收。</li>
-<li>而对匿名页的回收，其实就是通过 Swap 机制，把它们写入磁盘后再释放内存 </li>
-</ul>
-
-<h4>回收比例</h4>
-
-<ul>
-<li>/proc/sys/vm/swappiness</li>
-</ul>
-
-<h4>swap 类型</h4>
-
-<ul>
-<li>swap分区</li>
-<li>swap文件</li>
-<li>kbcommit，表示当前系统负载需要的内存。它实际上是为了保证系统内存不溢出，对需要内存的估计值。%commit，就是这个值相对总内存的百分比。</li>
-<li>kbactive，表示活跃内存，也就是最近使用过的内存，一般不会被系统回收。</li>
-<li>kbinact，表示非活跃内存，也就是不常访问的内存，有可能会被系统回收。</li>
-</ul>
-
-<h4>清空buffer和cache</h4>
-
-<ul>
-<li>sync; echo 1 &gt; /proc/sys/vm/drop_caches;</li>
-<li>echo 2 &gt; /proc/sys/vm/drop_caches;</li>
-<li>echo 3 &gt; /proc/sys/vm/drop_caches;</li>
-</ul>
-
-<h4>观察系统内存变化</h4>
-
-<ul>
-<li>watch -d grep -A 15 &#39;Normal&#39; /proc/zoneinfo</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/05/12 09:38 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1150,6 +1131,12 @@ unsigned long arg_start, arg_end, env_start, env_end;
 	      
 		      
 			      <li class="post">
+			        <a href="15817610843879.html">编译期</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15814649492497.html">Simple Factory</a>
 			      </li>
 		     
@@ -1169,12 +1156,6 @@ unsigned long arg_start, arg_end, env_start, env_end;
 		      
 			      <li class="post">
 			        <a href="15813811739408.html">tuple 使用</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

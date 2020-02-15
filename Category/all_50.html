@@ -172,6 +172,178 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15484069315619.html">
+                
+                  <h1>读写分离</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>过期读优化方案</h4>
+
+<ul>
+<li>强制走主库方案；</li>
+<li>sleep 方案；</li>
+<li>判断主备无延迟方案；</li>
+<li>配合 semi-sync 方案；</li>
+<li>等主库位点方案；</li>
+<li>等 GTID 方案。</li>
+</ul>
+
+<h4>对比位点</h4>
+
+<ul>
+<li>Master_Log_File 和 Relay_Master_Log_File、Read_Master_Log_Pos 和 Exec_Master_Log_Pos</li>
+</ul>
+
+<h4>GTID 集合确保主备无延迟</h4>
+
+<ul>
+<li>Auto_Position=1 ，表示这对主备关系使用了 GTID 协议。</li>
+<li>Retrieved_Gtid_Set，是备库收到的所有日志的 GTID 集合；</li>
+<li>Executed_Gtid_Set，是备库所有已经执行完成的 GTID 集合。</li>
+</ul>
+
+<h4>semi-sync</h4>
+
+<ul>
+<li>半同步设计</li>
+<li>事务提交的时候，主库把 binlog 发给从库；</li>
+<li>从库收到 binlog 以后，发回给主库一个 ack，表示收到了；</li>
+<li>主库收到这个 ack 以后，才能给客户端返回“事务完成”的确认。</li>
+</ul>
+
+<h4>semi-sync存在的问题</h4>
+
+<ul>
+<li>一主多从的时候，在某些从库执行查询请求会存在过期读的现象；</li>
+<li>在持续延迟的情况下，可能出现过度等待的问题。</li>
+</ul>
+
+<h4>等待位点方案</h4>
+
+<ul>
+<li>trx1 事务更新完成后，马上执行 show master status 得到当前主库执行到的 File 和 Position；</li>
+<li>选定一个从库执行查询语句；</li>
+<li>在从库上执行 select master_pos_wait(File, Position, 1)；</li>
+<li>如果返回值是 &gt;=0 的正整数，则在这个从库执行查询语句；如果 1 秒内 master_pos_wait 返回一个大于等于 0 的整数，就确保了从库上执行的这个查询结果一定包含了 trx1 的数据。</li>
+<li>否则，到主库执行查询语句。 </li>
+</ul>
+
+<h4>等待gtid方案</h4>
+
+<ul>
+<li>trx1 事务更新完成后，从返回包直接获取这个事务的 GTID，记为 gtid1；</li>
+<li>选定一个从库执行查询语句；</li>
+<li>在从库上执行 select wait_for_executed_gtid_set(gtid1, 1)；</li>
+<li>如果返回值是 0，则在这个从库执行查询语句；</li>
+<li>否则，到主库执行查询语句。</li>
+</ul>
+
+<h4>事物更新完直接获取GTID</h4>
+
+<ul>
+<li>参数 session_track_gtids 设置为 OWN_GTID，然后通过 API 接口mysql_session_track_get_first 从返回包解析出 GTID </li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/01/25 17:02 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15482971827337.html">
+                
+                  <h1>深入理解Statefulset</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>有状态应用</h4>
+
+<ul>
+<li>实例之间有不对等关系，以及实例对外部数据有依赖关系的应用，就被称为“有状态应用”（Stateful Application）</li>
+</ul>
+
+<h4>StatefulSet</h4>
+
+<ul>
+<li>拓扑状态</li>
+<li>存储状态</li>
+</ul>
+
+<h4>Headless Service</h4>
+
+<ul>
+<li>第一种方式，是以 Service 的 VIP（Virtual IP，即：虚拟 IP）方式 代理分发</li>
+<li>第二种方式，就是以 Service 的 DNS 方式</li>
+<li>Normal Service 访问DNS--&gt;VIP</li>
+<li>Headless Service --&gt; my-svc代理的Pod的IP地址</li>
+<li>Headless的本质就是没有VIP作为头，以DNS的记录的方式暴露代理</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">&lt;pod-name&gt;.&lt;svc-name&gt;.&lt;namespace&gt;.svc.cluster.local
+</code></pre>
+
+<h4>查看容器</h4>
+
+<ul>
+<li> kubectl exec web-1 -- sh -c &#39;hostname&#39;</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text"> kubectl run -i --tty --image docker.io/busybox:1.28.4 dns-test --restart=Never --rm /bin/sh
+</code></pre>
+
+<h4>stateful set过程</h4>
+
+<ul>
+<li>StatefulSet 这个控制器的主要作用之一，就是使用 Pod 模板创建 Pod 的时候，对它们进行编号，并且按照编号顺序逐一完成创建工作。而当 StatefulSet 的“控制循环”发现 Pod 的“实际状态”与“期望状态”不一致，需要新建或者删除 Pod 进行“调谐”的时候，它会严格按照这些 Pod 编号的顺序，逐一完成这些操作。</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/01/24 10:33 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15481513628351.html">
                 
                   <h1>主库出问题</h1>
@@ -1051,217 +1223,6 @@ start slave;
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15473472500656.html">
-                
-                  <h1>mysql数据可靠性</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>binlog写入机制</h4>
-
-<ul>
-<li>binlog cache 内存 --&gt; write page cache --&gt; fsync --&gt; binlog 磁盘</li>
-<li>sync_binlog=0, 只write, 不fsync</li>
-<li>sync_binlog=1, 每次提交事务都会fsync</li>
-<li>sync_binlog 累积N个事务才fsync, 会丢失N个事务的binlog日志</li>
-</ul>
-
-<h4>redo log写入机制</h4>
-
-<ul>
-<li>三种状态</li>
-<li>redo log buffer 内存</li>
-<li>write--&gt;page cache</li>
-<li>hard disk 持久化到磁盘</li>
-<li>innodb_flush_log_at_trx_commit 0 buffer 1 磁盘 2 page_cache</li>
-</ul>
-
-<h4>Mysql双一配置</h4>
-
-<ul>
-<li> sync_binlog 和 innodb_flush_log_at_trx_commit 都设置成 1。也就是说，一个事务完整提交前，需要等待两次刷盘，一次是 redo log（prepare 阶段），一次是 binlog。</li>
-</ul>
-
-<h4>日志逻辑序列号</h4>
-
-<ul>
-<li>LSN</li>
-<li>多个事务刷盘采用组提交策略
-<img src="media/15473472500656/933fdc052c6339de2aa3bf3f65b188cc.png" alt="933fdc052c6339de2aa3bf3f65b188c"/></li>
-</ul>
-
-<h4>binlog 组提交</h4>
-
-<ul>
-<li>binlog_group_commit_sync_delay 参数，表示延迟多少微秒后才调用 fsync;</li>
-<li>binlog_group_commit_sync_no_delay_count 参数，表示累积多少次以后才调用 fsync。</li>
-</ul>
-
-<h4>WAL机制的优点</h4>
-
-<ul>
-<li>redo log和 binlog都是顺序写</li>
-<li>组提交机制</li>
-</ul>
-
-<h4>mysql出现IO性能瓶颈</h4>
-
-<ul>
-<li>设置 binlog_group_commit_sync_delay 和 binlog_group_commit_sync_no_delay_count 参数，减少 binlog 的写盘次数。这个方法是基于“额外的故意等待”来实现的，因此可能会增加语句的响应时间，但没有丢失数据的风险。</li>
-<li>将 sync_binlog 设置为大于 1 的值（比较常见是 100~1000）。这样做的风险是，主机掉电时会丢 binlog 日志。</li>
-<li>将 innodb_flush_log_at_trx_commit 设置为 2。这样做的风险是，主机掉电的时候会丢数据。 </li>
-</ul>
-
-<h4>两阶段提交的本质</h4>
-
-<ul>
-<li> redo log 的写入拆成了两个步骤：prepare 和 commit，这就是&quot;两阶段提交&quot;。</li>
-</ul>
-
-<h4>Binlog两种模式</h4>
-
-<ul>
-<li>statement 格式的话是记sql语句</li>
-<li>row格式会记录行的内容，记两条，更新前和更新后都有。</li>
-</ul>
-
-<h4>writepos和checkpoint</h4>
-
-<ul>
-<li>“空着的部分”，就是write pos 到3号文件末尾，再加上0号文件开头到checkpoint 的部分。可以写入新的事物日志
-<img src="media/15473472500656/b075250cad8d9f6c791a52b6a600f69c.jpg" alt="b075250cad8d9f6c791a52b6a600f69"/></li>
-</ul>
-
-<h4>事务奔溃恢复原则</h4>
-
-<ul>
-<li>如果 redo log 里面的事务是完整的，也就是已经有了 commit 标识，则直接提交；</li>
-<li>如果 redo log 里面的事务只有完整的 prepare，则判断对应的事务 binlog 是否存在并完整：<br/>
-a. 如果是，则提交事务；<br/>
-b. 否则，回滚事务。</li>
-</ul>
-
-<h4>sync_binlog</h4>
-
-<ul>
-<li>sync_binlog-&gt;binlog_group_commit_sync_no_delay_count </li>
-</ul>
-
-<h4>binlog cache 是每个线程自己维护的，而 redo log buffer 是全局共用的？</h4>
-
-<ul>
-<li>MySQL 这么设计的主要原因是，binlog 是不能“被打断的”。一个事务的 binlog 必须连续写，因此要整个事务完成后，再一起写到文件里。</li>
-<li>而 redo log 并没有这个要求，中间有生成的日志可以写到 redo log buffer 中。redo log buffer 中的内容还能“搭便车”，其他事务提交的时候可以被一起写到磁盘中。</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/01/13 10:40 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15470904831321.html">
-                
-                  <h1>Linux性能答疑</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>内存回收方式</h4>
-
-<ul>
-<li>基于 LRU（Least Recently Used）算法，回收缓存；</li>
-<li>基于 Swap 机制，回收不常访问的匿名页；</li>
-<li>基于 OOM（Out of Memory）机制，杀掉占用大量内存的进程。触发时机是进程在申请内存时，如果申请的虚拟内存加上服务器实际已用的内存之和，比总的物理内存还大，就会触发OOM</li>
-</ul>
-
-<h4>统计总内存</h4>
-
-<ul>
-<li>把共享内存平分到各个进程后，再加上进程本身的非共享内存大小的和。</li>
-<li>grep Pss /proc/[1-9]*/smaps | awk &#39;{total+=$2}; END {printf &quot;%d kB\n&quot;, total }&#39;</li>
-</ul>
-
-<h4>缓存和缓冲区的却别</h4>
-
-<ul>
-<li>缓存包括两部分，一部分是磁盘读取文件的页缓存，用来缓存从磁盘读取的数据，可以加快以后再次访问的速度。另一部分，则是 Slab 分配器中的可回收内存。</li>
-<li>缓冲区是对原始磁盘块的临时存储，用来缓存将要写入磁盘的数据。这样，内核就可以把分散的写集中起来，统一优化磁盘写入。</li>
-</ul>
-
-<h4>各种内存片段</h4>
-
-<ul>
-<li>虚拟内存，包括了进程代码段、数据段、共享内存、已经申请的堆内存和已经换出的内存等。这里要注意，已经申请的内存，即使还没有分配物理内存，也算作虚拟内存。</li>
-<li>常驻内存是进程实际使用的物理内存，不过，它不包括 Swap 和共享内存。</li>
-<li>共享内存，既包括与其他进程共同使用的真实的共享内存，还包括了加载的动态链接库以及程序的代码段等。</li>
-<li><img src="media/15470904831321/e28cf90f0b137574bca170984d1e6736.png" alt="e28cf90f0b137574bca170984d1e6736"/></li>
-</ul>
-
-<h4>内存性能工具</h4>
-
-<ul>
-<li>根据指标找工具</li>
-<li><img src="media/15470904831321/8f477035fc4348a1f80bde3117a7dfed.png" alt="8f477035fc4348a1f80bde3117a7dfed"/></li>
-<li>工具工具找指标
-<img src="media/15470904831321/52bb55fba133401889206d02c224769b.png" alt="52bb55fba133401889206d02c224769b"/></li>
-<li>分析流程图
-<img src="media/15470904831321/d79cd017f0c90b84a36e70a3c5dccffe.png" alt="d79cd017f0c90b84a36e70a3c5dccffe"/></li>
-</ul>
-
-<h4>内存优化思路</h4>
-
-<ul>
-<li>最好禁止 Swap。如果必须开启 Swap，降低 swappiness 的值，减少内存回收时 Swap 的使用倾向。</li>
-<li>减少内存的动态分配。比如，可以使用内存池、大页（HugePage）等。</li>
-<li>尽量使用缓存和缓冲区来访问数据。比如，可以使用堆栈明确声明内存空间，来存储需要缓存的数据；或者用 Redis 这类的外部缓存组件，优化数据的访问。</li>
-<li>使用 cgroups 等方式限制进程的内存使用情况。这样，可以确保系统内存不会被异常进程耗尽。</li>
-<li>通过 /proc/pid/oom_adj ，调整核心应用的 oom_score。这样，可以保证即使内存紧张，核心应用也不会被 OOM 杀死。</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/01/10 11:21 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1403,6 +1364,12 @@ b. 否则，回滚事务。</li>
 	      
 		      
 			      <li class="post">
+			        <a href="15817610843879.html">编译期</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15814649492497.html">Simple Factory</a>
 			      </li>
 		     
@@ -1422,12 +1389,6 @@ b. 否则，回滚事务。</li>
 		      
 			      <li class="post">
 			        <a href="15813811739408.html">tuple 使用</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

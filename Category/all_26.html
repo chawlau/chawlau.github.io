@@ -172,6 +172,597 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15665280444092.html">
+                
+                  <h1>二叉树和递归</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>天然递归结构</h4>
+
+<ul>
+<li>空也是一棵二叉树</li>
+<li>是否存在键值</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">bool contain(Node8 node, Key key) {
+  if (!node) return false;
+  
+  if (key == node-&gt;key) return true;
+  
+  if(contain(node-&gt;left, key) ||
+     contain(node-&gt;right, key)) return true;
+  return false;
+}
+</code></pre>
+
+<ul>
+<li>leet_104</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">class Solution {
+public:
+    int maxDepth(TreeNode* root) {
+        if (!root) return 0;
+        return 1 + max(maxDepth(root-&gt;left), maxDepth(root-&gt;right));
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_111</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a binary tree, find its minimum depth.
+class Solution {
+public:
+    int minDepth(TreeNode* root) {
+        if (!root) return 0;
+        if (!root-&gt;left) return 1 + minDepth(root-&gt;right);
+        if (!root-&gt;right) return 1 + minDepth(root-&gt;left);
+        return 1 + min(minDepth(root-&gt;left), minDepth(root-&gt;right));
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_226</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Invert a binary tree.
+
+     4
+   /   \
+  2     7
+ / \   / \
+1   3 6   9
+
+to
+     4
+   /   \
+  7     2
+ / \   / \
+9   6 3   1
+
+// Recursion
+class Solution {
+public:
+    TreeNode* invertTree(TreeNode* root) {
+        if (!root) return NULL;
+        TreeNode *tmp = root-&gt;left;
+        root-&gt;left = invertTree(root-&gt;right);
+        root-&gt;right = invertTree(tmp);
+        return root;
+    }
+};
+
+// Non-Recursion
+class Solution {
+public:
+    TreeNode* invertTree(TreeNode* root) {
+        if (!root) return NULL;
+        queue&lt;TreeNode*&gt; q;
+        q.push(root);
+        while (!q.empty()) {
+            TreeNode *node = q.front(); q.pop();
+            TreeNode *tmp = node-&gt;left;
+            node-&gt;left = node-&gt;right;
+            node-&gt;right = tmp;
+            if (node-&gt;left) q.push(node-&gt;left);
+            if (node-&gt;right) q.push(node-&gt;right);
+        }
+        return root;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_100</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">判断两棵树是否相同
+class Solution {
+public:
+    bool isSameTree(TreeNode *p, TreeNode *q) {
+        if (!p &amp;&amp; !q) return true;
+        if ((p &amp;&amp; !q) || (!p &amp;&amp; q) || (p-&gt;val != q-&gt;val)) return false;
+        return isSameTree(p-&gt;left, q-&gt;left) &amp;&amp; isSameTree(p-&gt;right, q-&gt;right);
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_101</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a binary tree, check whether it is a mirror of itself (ie, symmetric around its center).
+
+For example, this binary tree is symmetric:
+
+    1
+   / \
+  2   2
+ / \ / \
+3  4 4  3
+
+class Solution {
+public:
+    bool isSymmetric(TreeNode *root) {
+        if (!root) return true;
+        return isSymmetric(root-&gt;left, root-&gt;right);
+    }
+    bool isSymmetric(TreeNode *left, TreeNode *right) {
+        if (!left &amp;&amp; !right) return true;
+        if (left &amp;&amp; !right || !left &amp;&amp; right || left-&gt;val != right-&gt;val) return false;
+        return isSymmetric(left-&gt;left, right-&gt;right) &amp;&amp; isSymmetric(left-&gt;right, right-&gt;left);
+    }
+    
+};
+</code></pre>
+
+<ul>
+<li>leet_222</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a complete binary tree, count the number of nodes.
+Input: 
+    1
+   / \
+  2   3
+ / \  /
+4  5 6
+
+Output: 6
+由 root 根结点往下，分别找最靠左边和最靠右边的路径长度，如果长度相等，则证明二叉树最后一层节点是满的，是满二叉树，直接返回节点个数，如果不相等，则节点个数为左子树的节点个数加上右子树的节点个数再加1(根节点)，
+
+class Solution {
+public:
+    int countNodes(TreeNode* root) {
+        int hLeft = leftHeight(root);
+        int hRight = rightHeight(root);
+        if (hLeft == hRight) return pow(2, hLeft) - 1;
+        return countNodes(root-&gt;left) + countNodes(root-&gt;right) + 1;
+    }
+    int leftHeight(TreeNode* root) {
+        if (!root) return 0;
+        return 1 + leftHeight(root-&gt;left);
+    }
+    int rightHeight(TreeNode* root) {
+        if (!root) return 0;
+        return 1 + rightHeight(root-&gt;right);
+    }
+};
+
+class Solution {
+public:
+    int countNodes(TreeNode* root) {
+        int res = 0, h = getHeight(root);
+        if (h &lt; 0) return 0;
+        if (getHeight(root-&gt;right) == h - 1) return (1 &lt;&lt; h) + countNodes(root-&gt;right);
+        return (1 &lt;&lt; (h - 1)) + countNodes(root-&gt;left);
+    }
+    int getHeight(TreeNode* node) {
+        return node ? (1 + getHeight(node-&gt;left)) : -1;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_110</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a binary tree, determine if it is height-balanced.
+class Solution {
+public:    
+    bool isBalanced(TreeNode *root) {
+        if (checkDepth(root) == -1) return false;
+        else return true;
+    }
+    int checkDepth(TreeNode *root) {
+        if (!root) return 0;
+        int left = checkDepth(root-&gt;left);
+        if (left == -1) return -1;
+        int right = checkDepth(root-&gt;right);
+        if (right == -1) return -1;
+        int diff = abs(left - right);
+        if (diff &gt; 1) return -1;
+        else return 1 + max(left, right);
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_112</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given the below binary tree and sum = 22,
+
+      5
+     / \
+    4   8
+   /   / \
+  11  13  4
+ /  \      \
+7    2      1
+
+class Solution {
+public:
+    bool hasPathSum(TreeNode* root, int sum) {
+        if (!root) return false;
+        if (!root-&gt;left &amp;&amp; !root-&gt;right &amp;&amp; root-&gt;val == sum ) return true;
+        return hasPathSum(root-&gt;left, sum - root-&gt;val) || hasPathSum(root-&gt;right, sum - root-&gt;val);
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_111</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a binary tree, find its minimum depth.
+class Solution {
+public:
+    int minDepth(TreeNode* root) {
+        if (!root) return 0;
+        if (!root-&gt;left) return 1 + minDepth(root-&gt;right);
+        if (!root-&gt;right) return 1 + minDepth(root-&gt;left);
+        return 1 + min(minDepth(root-&gt;left), minDepth(root-&gt;right));
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_404</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Find the sum of all left leaves in a given binary tree.
+class Solution {
+public:
+    int sumOfLeftLeaves(TreeNode* root) {
+        if (!root || (!root-&gt;left &amp;&amp; !root-&gt;right)) return 0;
+        int res = 0;
+        helper(root-&gt;left, true, res);
+        helper(root-&gt;right, false, res);
+        return res;
+    }
+    void helper(TreeNode* node, bool left, int&amp; res) {
+        if (!node) return;
+        if (!node-&gt;left &amp;&amp; !node-&gt;right &amp;&amp; left) res += node-&gt;val;
+        helper(node-&gt;left, true, res);
+        helper(node-&gt;right, false, res);
+    }
+};
+
+class Solution {
+public:
+    int sumOfLeftLeaves(TreeNode* root) {
+        if (!root || (!root-&gt;left &amp;&amp; !root-&gt;right)) return 0;
+        int res = 0;
+        queue&lt;TreeNode*&gt; q;
+        q.push(root);
+        while (!q.empty()) {
+            TreeNode *t = q.front(); q.pop();
+            if (t-&gt;left &amp;&amp; !t-&gt;left-&gt;left &amp;&amp; !t-&gt;left-&gt;right) res += t-&gt;left-&gt;val;
+            if (t-&gt;left) q.push(t-&gt;left);
+            if (t-&gt;right) q.push(t-&gt;right);
+        }
+        return res;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_257</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">For example, given the following binary tree:
+   1
+ /   \
+2     3
+ \
+  5
+All root-to-leaf paths are:
+[&quot;1-&gt;2-&gt;5&quot;, &quot;1-&gt;3&quot;]
+
+class Solution {
+public:
+    vector&lt;string&gt; binaryTreePaths(TreeNode* root) {
+        vector&lt;string&gt; res;
+        if (root) helper(root, &quot;&quot;, res);
+        return res;
+    }
+    void helper(TreeNode* node, string out, vector&lt;string&gt;&amp; res) {
+        if (!node-&gt;left &amp;&amp; !node-&gt;right) res.push_back(out + to_string(node-&gt;val));
+        if (node-&gt;left) helper(node-&gt;left, out + to_string(node-&gt;val) + &quot;-&gt;&quot;, res);
+        if (node-&gt;right) helper(node-&gt;right, out + to_string(node-&gt;val) + &quot;-&gt;&quot;, res);
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_113</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">For example:
+Given the below binary tree and sum = 22,
+
+              5
+             / \
+            4   8
+           /   / \
+          11  13  4
+         /  \    / \
+        7    2  5   1
+return
+[
+   [5,4,11,2],
+   [5,8,4,5]
+]
+
+class Solution {
+public:
+    vector&lt;vector&lt;int&gt;&gt; pathSum(TreeNode* root, int sum) {
+        vector&lt;vector&lt;int&gt;&gt; res;
+        vector&lt;int&gt; out;
+        helper(root, sum, out, res);
+        return res;
+    }
+    void helper(TreeNode* node, int sum, vector&lt;int&gt;&amp; out, vector&lt;vector&lt;int&gt;&gt;&amp; res) {
+        if (!node) return;
+        out.push_back(node-&gt;val);
+        if (sum == node-&gt;val &amp;&amp; !node-&gt;left &amp;&amp; !node-&gt;right) {
+            res.push_back(out);
+        }
+        helper(node-&gt;left, sum - node-&gt;val, out, res);
+        helper(node-&gt;right, sum - node-&gt;val, out, res);
+        out.pop_back();
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_129</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Input: [1,2,3]
+    1
+   / \
+  2   3
+Output: 25
+Explanation:
+The root-to-leaf path 1-&gt;2 represents the number 12.
+The root-to-leaf path 1-&gt;3 represents the number 13.
+Therefore, sum = 12 + 13 = 25.
+
+class Solution {
+public:
+    int sumNumbers(TreeNode* root) {
+        return sumNumbersDFS(root, 0);
+    }
+    int sumNumbersDFS(TreeNode* root, int sum) {
+        if (!root) return 0;
+        sum = sum * 10 + root-&gt;val;
+        if (!root-&gt;left &amp;&amp; !root-&gt;right) return sum;
+        return sumNumbersDFS(root-&gt;left, sum) + sumNumbersDFS(root-&gt;right, sum);
+    }
+};
+</code></pre>
+
+<h4>二分搜索树</h4>
+
+<ul>
+<li>leet_235</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        if (!root) return NULL;
+        if (root-&gt;val &gt; max(p-&gt;val, q-&gt;val)) 
+            return lowestCommonAncestor(root-&gt;left, p, q);
+        else if (root-&gt;val &lt; min(p-&gt;val, q-&gt;val)) 
+            return lowestCommonAncestor(root-&gt;right, p, q);
+        else return root;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_98</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a binary tree, determine if it is a valid binary search tree (BST).
+
+class Solution {
+public:
+  bool isValidBST(TreeNode* root) {
+    return isValidBST(root, nullptr, nullptr);
+  }
+
+  bool isValidBST(TreeNode* root, TreeNode* min, TreeNode* max) {
+    if (!root) return true;
+
+    if (min &amp;&amp; min-&gt;val &gt;= root-&gt;val || max &amp;&amp; max-&gt;val &lt;= root-&gt;val)
+      return false;
+
+    return isValidBST(root-&gt;left, min, root) &amp;&amp; isValidBST(root-&gt;right, root, max);
+  } 
+};
+</code></pre>
+
+<ul>
+<li>leet_450</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">root = [5,3,6,2,4,null,7]
+key = 3
+
+    5
+   / \
+  3   6
+ / \   \
+2   4   7
+
+Given key to delete is 3. So we find the node with value 3 and delete it.
+
+One valid answer is [5,4,6,2,null,null,7], shown in the following BST.
+
+    5
+   / \
+  4   6
+ /     \
+2       7
+
+class Solution {
+public:
+    TreeNode* deleteNode(TreeNode* root, int key) {
+        if (!root) return NULL;
+        if (root-&gt;val &gt; key) {
+            root-&gt;left = deleteNode(root-&gt;left, key);
+        } else if (root-&gt;val &lt; key) {
+            root-&gt;right = deleteNode(root-&gt;right, key);
+        } else {
+            if (!root-&gt;left || !root-&gt;right) {
+                root = (root-&gt;left) ? root-&gt;left : root-&gt;right;
+            } else {
+                TreeNode *cur = root-&gt;right;
+                while (cur-&gt;left) cur = cur-&gt;left;
+                root-&gt;val = cur-&gt;val;
+                root-&gt;right = deleteNode(root-&gt;right, cur-&gt;val);
+            }
+        }
+        return root;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_108</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given the sorted array: [-10,-3,0,5,9],
+
+One possible answer is: [0,-3,9,-10,null,5], which represents the following height balanced BST:
+
+      0
+     / \
+   -3   9
+   /   /
+ -10  5
+class Solution {
+public:
+    TreeNode* sortedArrayToBST(vector&lt;int&gt;&amp; nums) {
+        return helper(nums, 0 , (int)nums.size() - 1);
+    }
+    TreeNode* helper(vector&lt;int&gt;&amp; nums, int left, int right) {
+        if (left &gt; right) return NULL;
+        int mid = left + (right - left) / 2;
+        TreeNode *cur = new TreeNode(nums[mid]);
+        cur-&gt;left = helper(nums, left, mid - 1);
+        cur-&gt;right = helper(nums, mid + 1, right);
+        return cur;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_230</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Input: root = [5,3,6,2,4,null,null,1], k = 3
+       5
+      / \
+     3   6
+    / \
+   2   4
+  /
+ 1
+Output: 3
+class Solution {
+public:
+    int kthSmallest(TreeNode* root, int k) {
+        int cnt = 0;
+        stack&lt;TreeNode*&gt; s;
+        TreeNode *p = root;
+        while (p || !s.empty()) {
+            while (p) {
+                s.push(p);
+                p = p-&gt;left;
+            }
+            p = s.top(); s.pop();
+            ++cnt;
+            if (cnt == k) return p-&gt;val;
+            p = p-&gt;right;
+        }
+        return 0;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_236</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Input: root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1
+Output: 3
+Explanation: The LCA of nodes 5 and 1 is 3.
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+       if (!root || p == root || q == root) return root;
+       TreeNode *left = lowestCommonAncestor(root-&gt;left, p, q);
+       TreeNode *right = lowestCommonAncestor(root-&gt;right, p , q);
+       if (left &amp;&amp; right) return root;
+       return left ? left : right;
+    }
+};
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/08/23 10:40 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E7%8E%A9%E8%BD%AC%E7%AE%97%E6%B3%95.html'>玩转算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15665187356600.html">
                 
                   <h1>kafka认证</h1>
@@ -1605,63 +2196,6 @@ class Solution {
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15661792809222.html">
-                
-                  <h1>B+树</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>常见数据结构优缺点</h4>
-
-<ul>
-<li>散列表的查询性能很好，时间复杂度是 O(1)。但是，散列表不能支持按照区间快速查找数据。所以，散列表不能满足我们的需求</li>
-<li>平衡二叉查找树。尽管平衡二叉查找树查询的性能也很高，时间复杂度是 O(logn)。而且，对树进行中序遍历，我们还可以得到一个从小到大有序的数据序列，但这仍然不足以支持按照区间快速查找数据</li>
-<li>跳表是在链表之上加上多层索引构成的。它支持快速地插入、查找、删除数据，对应的时间复杂度是 O(logn)。并且，跳表也支持按照区间快速地查找数据。我们只需要定位到区间起点值对应在链表中的结点，然后从这个结点开始，顺序遍历链表，直到区间终点对应的结点为止，这期间遍历得到的数据就是满足区间值的数据</li>
-</ul>
-
-<h4>改造二叉树</h4>
-
-<ul>
-<li>树中的节点并不存储数据本身，而是只是作为索引。除此之外，我们把每个叶子节点串在一条链表上，链表中的数据是从小到大有序的</li>
-<li>磁盘 IO 操作非常耗时，所以我们优化的重点就是尽量减少磁盘 IO 操作，也就是，尽量降低树的高度</li>
-<li>内存和磁盘的数据读取都是按页来的</li>
-<li>选择m的时候，尽量让每个节点等于一个页的大小，如果超过m的话，就要将页面进行分裂</li>
-<li>每个节点的子节点都比较少，势必会影响索引的效率， B+ 树中，这个阈值等于 m/2。如果某个节点的子节点个数小于 m/2，我们就将它跟相邻的兄弟节点合并</li>
-</ul>
-
-<h4>B树木</h4>
-
-<ul>
-<li>B 树只是一个每个节点的子节点个数不能小于 m/2 的 m 叉树</li>
-<li>B+ 树中，将叶子节点串起来的链表，是双向链表方便asc和desc</li>
-<li>B+ 树查询效率更稳定。因为 B+ 树每次只有访问到叶子节点才能找到对应的数据，而在 B 树中，非叶子节点也会存储数据，这样就会造成查询效率不稳定的情况，有时候访问到了非叶子节点就可以找到关键字，而有时需要访问到叶子节点才能找到关键字</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/19 09:48 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1803,6 +2337,12 @@ class Solution {
 	      
 		      
 			      <li class="post">
+			        <a href="15817610843879.html">编译期</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15814649492497.html">Simple Factory</a>
 			      </li>
 		     
@@ -1822,12 +2362,6 @@ class Solution {
 		      
 			      <li class="post">
 			        <a href="15813811739408.html">tuple 使用</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

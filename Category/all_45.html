@@ -172,6 +172,159 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15500241034354.html">
+                
+                  <h1>评估系统的网络性能</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>性能测试</h4>
+
+<ul>
+<li>带宽</li>
+<li>吞吐量</li>
+<li>延迟</li>
+<li>PPS</li>
+<li></li>
+</ul>
+
+<h4>各协议层的性能</h4>
+
+<ul>
+<li>web应用层 测试http/https</li>
+<li>服务器 tcp/udp</li>
+<li>交换机和路由器 PPS 网络层的转发性能</li>
+</ul>
+
+<h5>网络接口层</h5>
+
+<ul>
+<li>pktgen测试PPS</li>
+</ul>
+
+<h4>TCP和UDP</h4>
+
+<ul>
+<li>iperf</li>
+<li>netperf</li>
+</ul>
+
+<h4>http</h4>
+
+<ul>
+<li>ab</li>
+<li>webbench</li>
+</ul>
+
+<h4>应用负载请求</h4>
+
+<ul>
+<li>wrk</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/02/13 10:15 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15499501670261.html">
+                
+                  <h1>Libevent</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>优点</h4>
+
+<ul>
+<li>事件驱动</li>
+<li>专注于网络</li>
+<li>支持I/O，定时器和信号</li>
+</ul>
+
+<h4>函数解析</h4>
+
+<ul>
+<li>event_new(struct event_base <em>base, evutil_socket_t fd, short events, void (</em>cb)(evutil_socket_t, short, void *), void *arg)</li>
+<li>arg的参数通过回调用函数的第三个参数传进来</li>
+<li>buffer io event是带缓冲的event</li>
+<li>尽量不要使用bufferevent</li>
+<li>epoll_create和epoll_create1的区别</li>
+<li>persistent event被激活了一次是不会被删掉的</li>
+</ul>
+
+<h4>libevent结构</h4>
+
+<ul>
+<li><img src="media/15499501670261/15502973029899.jpg" alt=""/></li>
+<li><img src="media/15499501670261/15502971650987.jpg" alt=""/></li>
+</ul>
+
+<h4>thrift</h4>
+
+<ul>
+<li>IO线程是和客户端绑定</li>
+<li>监听的socket所在的线程会调用registerEvents，创建2个event：serverEvent用于服务监听，notificationEvent是一个socketpair，用于线程池里线程间的通信；</li>
+<li>当serverEvent变成可读时，调用到handleEvent，接受该请求，并且调用createConnection创建TConnection对象，然后再把tconnectionevent时间添加到libevent；</li>
+<li>当TConnection对象被libevent调用到有事件发生时，读取对端发送过来的内容（workSocket），并且调用transition，把读取到的内容封装成一个task<br/>
+添加到ThreadManager，之后由ThreadManager::Worker（具体的线程）主动去任务池里获取任务并调用任务的run方法。</li>
+<li>此时IO线程中的TConnection等待Worker执行完通知，在被通知之前会把事件从libevent中删除，等收到通知后，再重新添加事件到libevent中。</li>
+</ul>
+
+<h4>thrift不足</h4>
+
+<ul>
+<li>Worker主动从任务队列中获取任务，需要加锁和解锁，这并不是一种优良的处理方法；</li>
+<li>IO Thread在处理客户端同一次连接的多个调用的时序性上，依赖把event从libevent中删掉，等处理完单个调用后再添加进去，影响IO的执行效率。</li>
+<li>debug--&gt;design</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/02/12 13:42 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15499416717639.html">
                 
                   <h1>高性能缓存架构</h1>
@@ -796,133 +949,6 @@
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15497772350660.html">
-                
-                  <h1>服务路由</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>应用场景</h4>
-
-<ul>
-<li>分组调用</li>
-<li>灰度发布</li>
-<li>流量切换</li>
-<li>读写分离</li>
-</ul>
-
-<h4>服务路由规则</h4>
-
-<ul>
-<li>条件路由</li>
-<li>排除某个服务节点</li>
-<li>白名单和黑名单功能</li>
-<li>机房隔离</li>
-<li>读写分离</li>
-</ul>
-
-<h4>脚本路由</h4>
-
-<h4>服务路由的获取方式</h4>
-
-<ul>
-<li>本地配置</li>
-<li>配置中心管理</li>
-<li>动态下发</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/10 13:40 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E5%BE%AE%E6%9C%8D%E5%8A%A1.html'>微服务</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15497703641600.html">
-                
-                  <h1>负载均衡算法</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>随机算法</h4>
-
-<h4>轮询算法</h4>
-
-<h4>加权轮询算法</h4>
-
-<h4>最少活跃连接算法</h4>
-
-<h4>一致性hash算法</h4>
-
-<h4>使用场景</h4>
-
-<ul>
-<li>随机算法：实现比较简单，在请求量远超可用服务节点数量的情况下，各个服务节点被访问的概率基本相同，主要应用在各个服务节点的性能差异不大的情况下。</li>
-<li>轮询算法：跟随机算法类似，各个服务节点被访问的概率也基本相同，也主要应用在各个服务节点性能差异不大的情况下。</li>
-<li>加权轮询算法：在轮询算法基础上的改进，可以通过给每个节点设置不同的权重来控制访问的概率，因此主要被用在服务节点性能差异比较大的情况。比如经常会出现一种情况，因为采购时间的不同，新的服务节点的性能往往要高于旧的节点，这个时候可以给新的节点设置更高的权重，让它承担更多的请求，充分发挥新节点的性能优势。</li>
-<li>最少活跃连接算法：与加权轮询算法预先定义好每个节点的访问权重不同，采用最少活跃连接算法，客户端同服务端节点的连接数是在时刻变化的，理论上连接数越少代表此时服务端节点越空闲，选择最空闲的节点发起请求，能获取更快的响应速度。尤其在服务端节点性能差异较大，而又不好做到预先定义权重时，采用最少活跃连接算法是比较好的选择。</li>
-<li>一致性 hash 算法：因为它能够保证同一个客户端的请求始终访问同一个服务节点，所以适合服务端节点处理不同客户端请求差异较大的场景。比如服务端缓存里保存着客户端的请求结果，如果同一客户端一直访问一个服务节点，那么就可以一直从缓存中获取数据。</li>
-</ul>
-
-<h4>自适应最优算法</h4>
-
-<ul>
-<li>客户端本地维护一份同每一个服务节点的性能统计快照，并且每隔一段时间去更新这个快照</li>
-<li>第一点是每隔一段时间获取客户端同每个服务节点之间调用的平均性能统计</li>
-<li>第二点是按照这个性能统计对服务节点进行排序，对排在性能倒数 20% 的那部分节点赋予一个较低的权重，其余的节点赋予正常的权重</li>
-</ul>
-
-<h4>F5的硬件负载均衡器的特点</h4>
-
-<ul>
-<li>f5一般用在四层负载，软负载一般用在七层负载</li>
-<li>f5性能和功能都很强大，但是设备价格昂贵。软负载成本低，而且可以横向扩展，功能可定制化开发，更加灵活。</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/10 11:46 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E5%BE%AE%E6%9C%8D%E5%8A%A1.html'>微服务</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1064,6 +1090,12 @@
 	      
 		      
 			      <li class="post">
+			        <a href="15817610843879.html">编译期</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15814649492497.html">Simple Factory</a>
 			      </li>
 		     
@@ -1083,12 +1115,6 @@
 		      
 			      <li class="post">
 			        <a href="15813811739408.html">tuple 使用</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

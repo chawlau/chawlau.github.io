@@ -172,6 +172,107 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15489242610954.html">
+                
+                  <h1>容器网络</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>Flannel</h4>
+
+<ul>
+<li><img src="media/15489242610954/01ee306698c7dd6207e80fea0a8238c8.jpg" alt="01ee306698c7dd6207e80fea0a8238"/></li>
+</ul>
+
+<h4>容器网络</h4>
+
+<ul>
+<li>基于 NAT 的容器网络模型在微服务架构下有两个问题，一个是 IP 重叠，一个是端口冲突，需要通过 Overlay 网络的机制保持跨节点的连通性。</li>
+<li>underlay</li>
+<li>Calico 网络的大概思路，即不走 Overlay 网络，不引入另外的网络性能损耗，而是将转发全部用三层网络的路由转发来实现</li>
+</ul>
+
+<h4>Calico</h4>
+
+<ul>
+<li><img src="media/15489242610954/c3e999c033a0417df98c0bcc34c9349c.jpg" alt="c3e999c033a0417df98c0bcc34c9349"/></li>
+<li><img src="media/15489242610954/e59559ad7b46b9811553b6b0a85e8e7d.jpg" alt="e59559ad7b46b9811553b6b0a85e8e7d"/></li>
+<li>Felix 物理机的agent，当创建和删除容器的时候，自动配置路由指向容器</li>
+<li>Bird 是BGP的客户端，将物理机和容器的IP访问路由广播出去</li>
+<li>NetWork Policy配置容器的联通策略</li>
+<li>BGP Router Reflector</li>
+</ul>
+
+<h4>BGP</h4>
+
+<ul>
+<li>数据中心内部协议iBGP</li>
+<li>BGP reflector之间使用的是eBGP</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/01/31 16:44 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE.html'>网络协议</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15489056824394.html">
+                
+                  <h1>Kubernetes三层网络方案</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>host-gw</h4>
+
+<ul>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/01/31 11:34 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15488381890610.html">
                 
                   <h1>容器网络</h1>
@@ -855,166 +956,6 @@ clat ，是指从 I/O 提交到 I/O 完成的时长（Completion latency）；<b
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15486425582591.html">
-                
-                  <h1>动态观点看待加锁</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>查询语句中 where 条件是大于号和小于号，这里的“等值查询”又是从哪里来的呢？</h4>
-
-<ul>
-<li>select * from t where id&gt;9 and id&lt;12 order by id desc for update;</li>
-<li>首先这个查询语句的语义是 order by id desc，要拿到满足条件的所有行，优化器必须先找到“第一个 id&lt;12 的值”。</li>
-<li>在执行过程中，通过树搜索的方式定位记录的时候，用的是“等值查询”的方法。</li>
-</ul>
-
-<h4>lock in share mode 和 for update</h4>
-
-<ul>
-<li>当前事务获取共享锁后，可以读写，其他事务是否可以进行读写操作和获取共享锁：可以读，可以获取共享锁，不可以写</li>
-<li>两个事务同时获取某行数据共享锁后，是否可以进行update操作：不可以</li>
-<li>当前事务获取某行数据排他锁后，其他事务是否可以对该行数据进行读写操作和获取共享锁：其他事务可以读，不可以获取共享锁，不可以写</li>
-</ul>
-
-<h4>行锁和索引的关系</h4>
-
-<ul>
-<li>未加索引时，两种行锁情况为（使用表锁）： 
-<ul>
-<li>事务1获取某行数据共享锁，其他事务可以获取不同行数据的共享锁，不可以获取不同行数据的排他锁 </li>
-<li>事务1获取某行数据排他锁，其他事务不可以获取不同行数据的共享锁、排他锁</li>
-</ul></li>
-<li>加索引后，两种行锁为（使用行锁）：</li>
-<li>事务1获取某行数据共享锁，其他事务可以获取不同行数据的排他锁</li>
-<li>事务1获取某行数据排他锁，其他事务可以获取不同行数据的共享锁、排他锁</li>
-</ul>
-
-<h4>死锁</h4>
-
-<ul>
-<li>select id from t where c in(5,20,10) lock in share mode;</li>
-<li>select id from t where c in(5,20,10) order by c desc for update;</li>
-</ul>
-
-<h4>日志锁类型</h4>
-
-<pre class="line-numbers"><code class="language-text">lock_mode X waiting表示next-key lock；
-lock_mode X locks rec but not gap是只有行锁；
-locks gap before rec 只有间隙锁；
-</code></pre>
-
-<h4>索引优化</h4>
-
-<ul>
-<li>lock in share mode 只锁覆盖索引，但是如果是 for update 就不一样了。 执行 for update 时，系统会认为你接下来要更新数据，因此会顺便给主键索引上满足条件的行加上行锁。</li>
-<li>索引上的等值查询，给唯一索引加锁的时候，next-key lock 退化为行锁</li>
-<li>limit 可以减少间隙锁的范围，只要从左到右满足limit就不在向右锁多余的锁</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/01/28 10:29 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15486417501301.html">
-                
-                  <h1>系统IO瓶颈</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>IO性能指标</h4>
-
-<p><img src="media/15486417501301/9e42aaf53ff4a544b9a7b03b6ce63f38.png" alt="9e42aaf53ff4a544b9a7b03b6ce63f38"/></p>
-
-<h4>文件系统I/O性能指标</h4>
-
-<ul>
-<li>存储空间的使用情况，包括容量、使用量以及剩余空间</li>
-<li>索引节点使用情况</li>
-<li>页缓存、目录项缓存、索引节点缓存以及各个具体文件系统（如 ext4、XFS 等）的缓存</li>
-<li>IOPS</li>
-<li>响应时间</li>
-<li>吞吐量 B/s</li>
-</ul>
-
-<h4>磁盘I/O性能指标</h4>
-
-<ul>
-<li>使用率，是指磁盘忙处理 I/O 请求的百分比。过高的使用率（比如超过 60%）通常意味着磁盘 I/O 存在性能瓶颈。</li>
-<li>IOPS（Input/Output Per Second），是指每秒的 I/O 请求数。</li>
-<li>吞吐量，是指每秒的 I/O 请求大小。</li>
-<li>响应时间，是指从发出 I/O 请求到收到响应的间隔时间。
-<img src="media/15486417501301/b6d67150e471e1340a6f3c3dc3ba0120.png" alt="b6d67150e471e1340a6f3c3dc3ba0120"/></li>
-</ul>
-
-<h4>性能工具</h4>
-
-<ul>
-<li>文件系统缓存 /proc/meminfo、/proc/slabinfo 以及 slabtop</li>
-<li>磁盘 iostat pidstat filetop opensnoop</li>
-</ul>
-
-<h4>工具和性能指标图</h4>
-
-<p><img src="media/15486417501301/6f26fa18a73458764fcda00212006698.png" alt="6f26fa18a73458764fcda00212006698"/><br/>
-<img src="media/15486417501301/c48b6664c6d334695ed881d5047446e9.png" alt="c48b6664c6d334695ed881d5047446e9"/></p>
-
-<h4>IO性能指标分析套路</h4>
-
-<ul>
-<li>先用 iostat 发现磁盘 I/O 性能瓶颈；</li>
-<li>再借助 pidstat ，定位出导致瓶颈的进程；</li>
-<li>随后分析进程的 I/O 行为；</li>
-<li>最后，结合应用程序的原理，分析这些 I/O 的来源。<img src="media/15486417501301/1802a35475ee2755fb45aec55ed2d98a.png" alt="1802a35475ee2755fb45aec55ed2d98a"/></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/01/28 10:15 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1156,6 +1097,12 @@ locks gap before rec 只有间隙锁；
 	      
 		      
 			      <li class="post">
+			        <a href="15817610843879.html">编译期</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15814649492497.html">Simple Factory</a>
 			      </li>
 		     
@@ -1175,12 +1122,6 @@ locks gap before rec 只有间隙锁；
 		      
 			      <li class="post">
 			        <a href="15813811739408.html">tuple 使用</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

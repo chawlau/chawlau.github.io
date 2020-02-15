@@ -172,6 +172,74 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15817610843879.html">
+                
+                  <h1>编译期</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>fmap实现</h4>
+
+<ul>
+<li>用 decltype 来获得用 f 来调用 inputs 元素的类型（参考第 8 讲）；</li>
+<li>用 decay_t 来把获得的类型变成一个普通的值类型；</li>
+<li>缺省使用 vector 作为返回值的容器，但可以通过模板参数改为其他容器；</li>
+<li>使用基于范围的 for 循环来遍历 inputs，对其类型不作其他要求（参考第 7 讲）；</li>
+<li>存放结果的容器需要支持 push_back 成员函数（参考第 4 讲）。</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">template &lt;template &lt;typename, typename&gt;
+class OutContainer = vector, typename F, class R&gt;
+auto fmap(F&amp;&amp; f, R&amp;&amp; inputs) {
+    typedef decay_t&lt;decltype(f(*inputs.begin()))&gt; result_type;
+    OutContainer&lt;result_type, allocator&lt;result_type&gt;&gt; result;
+
+    for (auto&amp;&amp; item : inputs) {
+        result.push_back(f(item));
+    }
+    return result;
+}
+
+int add_1(int x)
+{
+    return x + 1;
+}
+
+int main()
+{
+    vector&lt;int&gt; v{1, 2, 3, 4, 5};
+    auto result = fmap(add_1, v);
+    for (auto it : result) {
+        cout &lt;&lt; it &lt;&lt; &#39;\n&#39;;
+    }
+}
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2020/02/15 18:04 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15813811739408.html">
                 
                   <h1>tuple 使用</h1>
@@ -1126,53 +1194,6 @@ auto x4{40};
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15698082286112.html">
-                
-                  <h1>noexcept</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>作用</h4>
-
-<ul>
-<li>该关键字告诉编译器，函数中不会发生异常,这有利于编译器对程序做更多的优化。<br/>
-如果在运行时，noexecpt函数向外抛出了异常（如果函数内部捕捉了异常并完成处理，这种情况不算抛出异常），程序会直接终止，调用std::terminate()函数，该函数内部会调用std::abort()终止程序</li>
-</ul>
-
-<h4>使用情形</h4>
-
-<ul>
-<li>移动构造函数（move constructor）</li>
-<li>移动分配函数（move assignment）</li>
-<li>析构函数（destructor）。这里提一句，在新版本的编译器中，析构函数是默认加上关键字noexcept的。下面代码可以检测编译器是否给析构函数加上关键字noexcept。</li>
-<li>叶子函数（Leaf Function）。叶子函数是指在函数内部不分配栈空间，也不调用其它函数，也不存储非易失性寄存器，也不处理异常。</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/30 09:50 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1314,6 +1335,12 @@ auto x4{40};
 	      
 		      
 			      <li class="post">
+			        <a href="15817610843879.html">编译期</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15814649492497.html">Simple Factory</a>
 			      </li>
 		     
@@ -1333,12 +1360,6 @@ auto x4{40};
 		      
 			      <li class="post">
 			        <a href="15813811739408.html">tuple 使用</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

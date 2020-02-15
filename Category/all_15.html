@@ -172,6 +172,386 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15708463915098.html">
+                
+                  <h1>Etcd</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>对比</h4>
+
+<p><img src="media/15708463915098/15708464367950.jpg" alt="" style="width:1479px;"/></p>
+
+<ul>
+<li><img src="media/15708463915098/15719107081661.jpg" alt="" style="width:1708px;"/></li>
+</ul>
+
+<h4>MVCC</h4>
+
+<ul>
+<li><img src="media/15708463915098/15708465094763.jpg" alt="" style="width:1492px;"/></li>
+</ul>
+
+<h4>数据存储</h4>
+
+<p><img src="media/15708463915098/15708466612817.jpg" alt="" style="width:1417px;"/></p>
+
+<h4>命令行</h4>
+
+<ul>
+<li>etcdctl get &quot;&quot; --prefix=true</li>
+<li>etcdctl del &quot;&quot; --prefix=true</li>
+</ul>
+
+<h4>etcdAPI</h4>
+
+<p><img src="media/15708463915098/15708480943917.jpg" alt="" style="width:469px;"/></p>
+
+<ul>
+<li>header
+<img src="media/15708463915098/15708481882498.jpg" alt="" style="width:773px;"/></li>
+<li>keyvalue
+<img src="media/15708463915098/15708482182058.jpg" alt="" style="width:788px;"/></li>
+<li>keyrange
+<img src="media/15708463915098/15708487068511.jpg" alt="" style="width:841px;"/></li>
+<li>kv
+<img src="media/15708463915098/15708486683352.jpg" alt="" style="width:896px;"/></li>
+<li>TXn API
+<img src="media/15708463915098/15708527202806.jpg" alt="" style="width:860px;"/>
+<img src="media/15708463915098/15708527736250.jpg" alt="" style="width:878px;"/></li>
+<li>Watch API
+<img src="media/15708463915098/15708530972955.jpg" alt="" style="width:898px;"/></li>
+<li>Lease API
+<img src="media/15708463915098/15708533513999.jpg" alt="" style="width:842px;"/></li>
+</ul>
+
+<pre class="line-numbers"><code class="language-go">package etcd_code
+
+import (
+    &quot;context&quot;
+    &quot;fmt&quot;
+    v3 &quot;go.etcd.io/etcd/clientv3&quot;
+    &quot;testing&quot;
+)
+
+func printGetResponse(r *v3.GetResponse) {
+    fmt.Printf(&quot;response header: %q\n&quot;, r.Header)
+    fmt.Printf(&quot;kvs: %v\n&quot;, r.Kvs)
+    fmt.Printf(&quot;more: %t\n&quot;, r.More)
+    fmt.Printf(&quot;count: %d\n&quot;, r.Count)
+}
+
+// Run beforehand:
+//  etcdctl put TestGet 1
+func TestGet(t *testing.T) {
+    cli := newClient(t)
+    defer cli.Close()
+
+    key := &quot;TestGet&quot;
+
+    response, err := cli.Get(context.Background(), key)
+    if err != nil {
+        t.Fatal(err)
+    }
+    printGetResponse(response)
+}
+
+// Run beforehand:
+//  etcdctl put TestGetWithPrefix 1
+//  etcdctl put TestGetWithPrefix2 2
+func TestGetWithPrefix(t *testing.T) {
+    cli := newClient(t)
+    defer cli.Close()
+
+    keyPrefix := &quot;TestGetWithPrefix&quot;
+    response, err := cli.Get(context.Background(), keyPrefix, v3.WithPrefix())
+    if err != nil {
+        t.Fatal(err)
+    }
+    printGetResponse(response)
+}
+
+// Run beforehand:
+//  etcdctl put TestGetWithRange 1
+//  etcdctl put TestGetWithRange2 2
+func TestGetWithRange(t *testing.T) {
+    cli := newClient(t)
+    defer cli.Close()
+
+    response, err := cli.Get(context.Background(), &quot;TestGetWithRange&quot;, v3.WithRange(&quot;TestGetWithRange2\x00&quot;))
+    if err != nil {
+        t.Fatal(err)
+    }
+    printGetResponse(response)
+}
+
+// Run beforehand:
+//  etcdctl put TestGetWithSerializable 1
+func TestGetWithSerializable(t *testing.T) {
+    cli := newClient(t)
+    defer cli.Close()
+
+    key := &quot;TestGetWithSerializable&quot;
+    response, err := cli.Get(context.Background(), key, v3.WithSerializable())
+    if err != nil {
+        t.Fatal(err)
+    }
+    printGetResponse(response)
+}
+
+func TestPut(t *testing.T) {
+    cli := newClient(t)
+    defer cli.Close()
+
+    key := &quot;TestPut&quot;
+    response, err := cli.Put(context.Background(), key, &quot;1&quot;, v3.WithPrevKV())
+    if err != nil {
+        t.Fatal(err)
+    }
+    fmt.Printf(&quot;header: %q\n&quot;, response.Header)
+    fmt.Printf(&quot;prev_kv: %q\n&quot;, response.PrevKv)
+}
+
+// Run beforehand:
+//  etcdctl put TestDelete 1
+func TestDelete(t *testing.T) {
+    cli := newClient(t)
+    defer cli.Close()
+
+    key := &quot;TestDelete&quot;
+    response, err := cli.Delete(context.Background(), key)
+    if err != nil {
+        t.Fatal(err)
+    }
+    fmt.Printf(&quot;header: %v\n&quot;, response.Header)
+    fmt.Printf(&quot;deleted: %d\n&quot;, response.Deleted)
+    fmt.Printf(&quot;pre_kvs: %v\n&quot;, response.PrevKvs)
+}
+
+// Run beforehand:
+//  etcdctl put TestTxn 1
+func TestTxn(t *testing.T) {
+    cli := newClient(t)
+    defer cli.Close()
+
+    key := &quot;TestTxn&quot;
+    thenValue := &quot;then&quot;
+
+    ctx := context.Background()
+    _, err := cli.Txn(ctx).
+        If(v3.Compare(v3.Value(key), &quot;&lt;&quot;, &quot;2&quot;)).
+        Then(v3.OpPut(key, thenValue)).
+        Else(v3.OpPut(key, &quot;else&quot;)).
+        Commit()
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    // Return &quot;then&quot;
+    gresp, err := cli.Get(ctx, key)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if l := len(gresp.Kvs); l != 1 {
+        t.Errorf(&quot;expeected 1 key-value, but got %d key-values\n&quot;, l)
+    }
+
+    if value := string(gresp.Kvs[0].Value); value != &quot;then&quot; {
+        t.Errorf(&quot;expected value %s, but got %s\n&quot;, thenValue, value)
+    }
+
+    for _, ev := range gresp.Kvs {
+        fmt.Printf(&quot;%s: %s\n&quot;, ev.Key, ev.Value)
+    }
+    //delete(cli, key, t)
+}
+
+func TestTxnOpOrder(t *testing.T) {
+    cli := newClient(t)
+    defer cli.Close()
+    key := &quot;TestTxnOpOrder&quot;
+
+    ctx := context.Background()
+    // If CreateRevision is 0, it means that the key does not exist.
+    cmp := v3.Compare(v3.CreateRevision(key), &quot;=&quot;, 0)
+    put := v3.OpPut(key, &quot;1&quot;)
+    get := v3.OpGet(key)
+
+    // Get Put
+    resp, err := cli.Txn(ctx).If(cmp).Then(get, put).Commit()
+    if err != nil {
+        t.Fatal(err)
+    }
+    printTxnResponse(resp)
+    if l := len(resp.Responses[0].GetResponseRange().Kvs); l != 0 {
+        t.Errorf(&quot;expeected 0 key-value, but got %d key-values\n&quot;, l)
+    }
+    delete(ctx, cli, key, t)
+
+    // Put Get
+    resp, err = cli.Txn(ctx).If(cmp).Then(put, get).Commit()
+    if err != nil {
+        t.Fatal(err)
+    }
+    printTxnResponse(resp)
+    if l := len(resp.Responses[1].GetResponseRange().Kvs); l != 1 {
+        t.Errorf(&quot;expeected 1 key-value, but got %d key-values\n&quot;, l)
+    }
+    delete(ctx, cli, key, t)
+}
+
+func TestTxnMultis(t *testing.T) {
+    cli := newClient(t)
+    defer cli.Close()
+    ctx := context.Background()
+
+    keyPrefix := &quot;TestTxnMultis&quot;
+    keys := []string{keyPrefix + &quot;1&quot;, keyPrefix + &quot;2&quot;}
+    var cmps [2]v3.Cmp
+    var puts [2]v3.Op
+    var gets [2]v3.Op
+    for i := 0; i &lt; 2; i++ {
+        val := string(i + 1)
+        cmps[i] = v3.Compare(v3.CreateRevision(keys[i]), &quot;=&quot;, 0)
+        puts[i] = v3.OpPut(keys[i], val)
+        gets[i] = v3.OpGet(keys[i])
+    }
+
+    // Executes two Puts
+    tresp, err := cli.Txn(ctx).If(cmps[:]...).Then(puts[:]...).Else(gets[:]...).Commit()
+    if err != nil {
+        t.Fatal(t)
+    }
+    if !tresp.Succeeded {
+        t.Fatal(&quot;Txn should succeed, but failed&quot;)
+    }
+
+    // Executes two Gets
+    tresp, err = cli.Txn(ctx).If(cmps[:]...).Then(puts[:]...).Else(gets[:]...).Commit()
+    if err != nil {
+        t.Fatal(t)
+    }
+    if tresp.Succeeded {
+        t.Fatal(&quot;Txn should fail, but succeeded&quot;)
+    }
+    for i := 0; i &lt; 2; i++ {
+        if count := tresp.Responses[i].GetResponseRange().Count; count != 1 {
+            t.Errorf(&quot;expected 1 value for key %s, but got %d value&quot;, keys[0], count)
+        }
+    }
+
+    // Execute two Deletes
+    tresp, err = cli.Txn(ctx).Then(v3.OpDelete(keys[0]), v3.OpDelete(keys[1])).Commit();
+    if err != nil {
+        t.Fatal(err)
+    }
+    for _, r := range tresp.Responses {
+        if deleted := r.GetResponseDeleteRange().Deleted; deleted != 1 {
+            t.Fatalf(&quot;expected to delete 1 key-value, but deleted %d key-value&quot;, deleted)
+        }
+    }
+    gresp, err := cli.Get(ctx, keyPrefix, v3.WithPrefix())
+    if gresp.Count != 0 {
+        t.Errorf(&quot;expected 0 key-values, bot got %d&quot;, gresp.Count)
+    }
+}
+
+func printTxnResponse(resp *v3.TxnResponse) {
+    fmt.Printf(&quot;response header: %q\n&quot;, resp.Header)
+    fmt.Printf(&quot;succeeded: %t\n&quot;, resp.Succeeded)
+}
+
+// version revision test
+func TestVersionAndRevision(t *testing.T) {
+    cli := newClient(t)
+    defer cli.Close()
+    key := &quot;TestVersionAndRevision&quot;
+    ctx := context.Background()
+
+    put(ctx, cli, key, t)
+    get(ctx, cli, key, t)
+    put(ctx, cli, key, t)
+    get(ctx, cli, key, t)
+    delete(ctx, cli, key, t)
+
+    put(ctx, cli, key, t)
+    get(ctx, cli, key, t)
+    put(ctx, cli, key, t)
+    get(ctx, cli, key, t)
+}
+
+func put(ctx context.Context, cli *v3.Client, key string, t *testing.T) {
+    fmt.Println(&quot;Put&quot;)
+    response, err := cli.Put(ctx, key, &quot;one&quot;, v3.WithPrevKV())
+    if err != nil {
+        t.Fatal(err)
+    }
+    fmt.Printf(&quot;put revision: %d\n&quot;, response.Header.Revision)
+    fmt.Printf(&quot;prev_kv: %v\n\n&quot;, response.PrevKv)
+}
+
+func get(ctx context.Context, cli *v3.Client, key string, t *testing.T) {
+    fmt.Println(&quot;Get&quot;)
+    response, err := cli.Get(ctx, key, v3.WithPrevKV())
+    if err != nil {
+        t.Fatal(err)
+    }
+    fmt.Printf(&quot;get revision: %d\n&quot;, response.Header.Revision)
+    fmt.Printf(&quot;kvs: %v\n\n&quot;, response.Kvs)
+}
+
+func delete(ctx context.Context, cli *v3.Client, key string, t *testing.T) {
+    fmt.Println(&quot;Delete&quot;)
+    response, err := cli.Delete(ctx, key, v3.WithPrevKV())
+    if err != nil {
+        t.Fatal(err)
+    }
+    fmt.Printf(&quot;delete revision: %d\n&quot;, response.Header.Revision)
+    fmt.Printf(&quot;deleted: %d\n&quot;, response.Deleted)
+    fmt.Printf(&quot;prev_kvs: %v\n\n&quot;, response.PrevKvs)
+}
+</code></pre>
+
+<h4>分布式队列</h4>
+
+<ul>
+<li><img src="media/15708463915098/15708535657472.jpg" alt="" style="width:1605px;"/></li>
+</ul>
+
+<h4>分布式锁</h4>
+
+<ul>
+<li><img src="media/15708463915098/15708538122564.jpg" alt="" style="width:1471px;"/></li>
+<li><img src="media/15708463915098/15708538552096.jpg" alt="" style="width:1418px;"/></li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/10/12 10:13 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Zookeeper.html'>Zookeeper</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15708454108646.html">
                 
                   <h1>Raft</h1>
@@ -1023,76 +1403,6 @@ int main(void)
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15702631234763.html">
-                
-                  <h1>范围赋值</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<ul>
-<li>通过数组索引，我们可以直接给指定的数组元素赋值。除此之外，一个结构体变量的初始化，也可以通过指定某个结构体域直接赋值。</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-c">#include &lt;stdlib.h&gt;
-#include &lt;stdio.h&gt;
-
-
-int main(void)
-{
-  int b[100] = { [10 ... 30] = 1, [50 ... 60] = 2 };
-  for(int i = 0; i &lt; 100; i++)
-  {
-    printf(&quot;%d  &quot;, b[i]);
-    if( i % 10 == 0)
-      printf(&quot;\n&quot;);
-  }
-
-  int j = 5;
-  switch(j)
-  {
-    case 1:
-      printf(&quot;1\n&quot;);
-      break;
-    case 2 ... 8:
-      printf(&quot;%d\n&quot;,j);
-      break;
-    case 9:
-      printf(&quot;9\n&quot;);
-      break;
-    default:
-      printf(&quot;default!\n&quot;);
-      break;
-  }
-
-  return 0;
-}
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/05 16:12 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C%E8%AF%AD%E8%A8%80%E8%BF%9B%E9%98%B6.html'>C语言进阶</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1234,6 +1544,12 @@ int main(void)
 	      
 		      
 			      <li class="post">
+			        <a href="15817610843879.html">编译期</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15814649492497.html">Simple Factory</a>
 			      </li>
 		     
@@ -1253,12 +1569,6 @@ int main(void)
 		      
 			      <li class="post">
 			        <a href="15813811739408.html">tuple 使用</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

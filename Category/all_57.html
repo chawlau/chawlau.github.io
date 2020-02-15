@@ -172,6 +172,181 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15430293574294.html">
+                
+                  <h1>sync.Map</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>并发安全字典对键的类型有要求吗</h4>
+
+<ul>
+<li>有要求。键的实际类型不能是函数类型、字典类型和切片类型</li>
+<li>由于这些键值的实际类型只有在程序运行期间才能够确定，所以 Go 语言编译器是无法在编译期对它们进行检查的，不正确的键值实际类型肯定会引发 panic</li>
+<li>应该在每次操作并发安全字典的时候，都去显式地检查键值的实际类型。无论是存、取还是删，都应该如此。</li>
+</ul>
+
+<h4>使用sync.map</h4>
+
+<pre class="line-numbers"><code class="language-text">type IntStrMap struct {
+ m sync.Map
+}
+func (iMap *IntStrMap) Range(f func(key int, value string) bool) {
+ f1 := func(key, value interface{}) bool {
+  return f(key.(int), value.(string))
+ }
+ iMap.m.Range(f1)
+}
+</code></pre>
+
+<h4>怎样保证并发安全字典中的键和值的类型正确性？</h4>
+
+<ul>
+<li>通过封装sync.map，添加reflect.Type来判断key和value来使用</li>
+</ul>
+
+<h4>并发字典如何做到尽量避免安全锁</h4>
+
+<ul>
+<li>使用大量原子操作来读取键和值</li>
+<li>这两个字典在存储键和值的时候都只会存入它们的某个指针，而不是基本值。</li>
+<li>只读字典和脏字典之间是会互相转换的。在脏字典中查找键值对次数足够多的时候，sync.Map会把脏字典直接作为只读字典，保存在它的read字段中，然后把代表脏字典的dirty字段的值置为nil。</li>
+<li>读操作有很多但写操作却很少的情况下，并发安全字典的性能往往会更好。</li>
+<li>性能影响 新增键值对 &gt; 删除 &gt; 修改</li>
+</ul>
+
+<h4>sync.Map修改value</h4>
+
+<ul>
+<li>只读字典虽然不会增减其中的键，但却允许变更其中的键所对应的值。所以，它并不是传统意义上的快照，它的只读特性只是对于其中键的集合而言的。</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/11/24 11:15 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15429594950026.html">
+                
+                  <h1>mysql index</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>索引常见数据结构</h4>
+
+<ul>
+<li>哈希表 适用于等值查询的场景</li>
+<li>有序数据</li>
+<li>搜索树</li>
+</ul>
+
+<h4>主键索引和非主键索引</h4>
+
+<ul>
+<li>从图中不难看出，根据叶子节点的内容，索引类型分为主键索引和非主键索引。</li>
+<li>主键索引的叶子节点存的是整行数据。在 InnoDB 里，主键索引也被称为聚簇索引（clustered index）。</li>
+<li>非主键索引的叶子节点内容是主键的值。在 InnoDB 里，非主键索引也被称为二级索引（secondary index）。</li>
+<li>先索引非主键索树，得到主键的值，在根据主键索引树搜索一次，这个过程叫回表</li>
+</ul>
+
+<h4>AutoIncrement</h4>
+
+<ul>
+<li>自增主键的插入数据模式，正符合了我们前面提到的递增插入的场景。每次插入一条新记录，都是追加操作，都不涉及到挪动其他记录，也不会触发叶子节点的分裂。</li>
+<li>由于每个非主键索引的叶子节点上都是主键的值。如果用身份证号做主键，那么每个二级索引的叶子节点占用约 20 个字节，而如果用整型做主键，则只要 4 个字节，如果是长整型（bigint）则是 8 个字节。</li>
+<li>显然，主键长度越小，普通索引的叶子节点就越小，普通索引占用的空间也就越小。</li>
+</ul>
+
+<h4>适合业务字段直接做主键</h4>
+
+<ul>
+<li>只有一个索引</li>
+<li>该索引必须是唯一索引</li>
+</ul>
+
+<h4>重建索引</h4>
+
+<ul>
+<li>如果删除，新建主键索引，会同时去修改普通索引对应的主键索引，性能消耗比较大。<br/>
+删除重建普通索引貌似影响不大，不过要注意在业务低谷期操作，避免影响业务。</li>
+<li>二级索引重建应该新建索引再做删除，如果有查询用到这个索引，此时索引已被删除，会导致业务抖动.主键重建不能采用drop这种方式去按操作，因为所有数据都是以主键组织的，删了主键后，InnoDB会自己找一个主键组织数据，再次添加主键又会重新组织数据，重建表的次已达二次，我们可以直接Optimiz这个表</li>
+</ul>
+
+<h4>mysql语句</h4>
+
+<pre class="line-numbers"><code class="language-text">select * from T where k between 3 and 5
+select ID from T where k between 3 and 5 覆盖索引，无须回表
+</code></pre>
+
+<h4>优化语句</h4>
+
+<pre class="line-numbers"><code class="language-text"> CREATE TABLE `geek` (
+  `a` int(11) NOT NULL,
+  `b` int(11) NOT NULL,
+  `c` int(11) NOT NULL,
+  `d` int(11) NOT NULL,
+  PRIMARY KEY (`a`,`b`),
+  KEY `c` (`c`),
+  KEY `ca` (`c`,`a`),
+  KEY `cb` (`c`,`b`)
+) ENGINE=InnoDB;
+select * from geek where c=N order by a limit 1;
+select * from geek where c=N order by b limit 1;
+</code></pre>
+
+<h4>案例</h4>
+
+<ul>
+<li>表实际内容的大小才10G, 而他的索引却有30G. 在阿里云控制面板上看,就是占了40G空间. 后来了解到是 InnoDB 这种引擎导致的,虽然删除了表的部分记录,但是它的索引还在, 并未释放.只能是重新建表才能重建索引.</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/11/23 15:51 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15429441476069.html">
                 
                   <h1>索引</h1>
@@ -621,159 +796,6 @@ func TestCancel(t *testing.T) {
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15427052201715.html">
-                
-                  <h1>sync.WaitGroup&sync.Once</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>sync.Once类型值的Do方法是怎么保证只执行参数函数一次的？</h4>
-
-<ul>
-<li>atomic.LoadUint32函数来获取该字段的值，并且一旦发现该值为1就会直接返回</li>
-<li>通过单例模式来实现</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">func (o *Once) Do(f func()) {
-  if atomic.LoadUint32(&amp;o.done) == 1 {
-    return
-  }
-  // Slow-path.
-  o.m.Lock()
-  defer o.m.Unlock()
-  if o.done == 0 {
-    defer atomic.StoreUint32(&amp;o.done, 1)
-    f()
-  }
-}
-</code></pre>
-
-<h4>Do的特点</h4>
-
-<ul>
-<li>第一个特点，由于Do方法只会在参数函数执行结束之后把done字段的值变为1，因此，如果参数函数的执行需要很长时间或者根本就不会结束（比如执行一些守护任务），那么就有可能会导致相关 goroutine 的同时阻塞。</li>
-<li>第二个特点，Do方法在参数函数执行结束后，对done字段的赋值用的是原子操作，并且，这一操作是被挂在defer语句中的。因此，不论参数函数的执行会以怎样的方式结束，done字段的值都会变为1。</li>
-</ul>
-
-<h4>案例</h4>
-
-<pre class="line-numbers"><code class="language-go">type Singleton struct {
-    data string
-}
-
-var singleInstance *Singleton
-var once sync.Once
-
-func GetSingletonObj() *Singleton {
-    once.Do(func() {
-        fmt.Println(&quot;Create Obj&quot;)
-        singleInstance = new(Singleton)
-    })
-    return singleInstance
-}
-
-func TestGetSingletonObj(t *testing.T) {
-    var wg sync.WaitGroup
-    for i := 0; i &lt; 10; i++ {
-        wg.Add(1)
-        go func() {
-            obj := GetSingletonObj()
-            fmt.Printf(&quot;%X\n&quot;, unsafe.Pointer(obj))
-            wg.Done()
-        }()
-    }
-    wg.Wait()
-}
-
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/11/20 17:13 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15427038364970.html">
-                
-                  <h1>原子操作</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>CAS的使用场景</h4>
-
-<ul>
-<li>共享资源状态的改变并不频繁，或者，它的状态总会变成期望的那样。这是一种更加乐观，或者说更加宽松的做法。</li>
-</ul>
-
-<h4>原子锁和互斥锁的三个决策条件</h4>
-
-<ul>
-<li>变量类型 原子值中不要存储引用的类型，容易造成安全漏洞</li>
-<li>操作频率</li>
-<li>操作时间</li>
-</ul>
-
-<h4>atomic.Value</h4>
-
-<ul>
-<li>复制该类型的值会产生一个完全分离的新值。这个新值相当于被复制的那个值的一个快照。</li>
-<li>它的动态值是nil，但动态类型却不是nil，那么它的值就不等于nil,可以被存储原子值</li>
-<li>我们向原子值存储的第一个值，决定了它今后能且只能存储哪一个类型的值。</li>
-</ul>
-
-<h4>使用注意事项</h4>
-
-<ul>
-<li>不要把内部使用的原子值暴露给外界。比如，声明一个全局的原子变量并不是一个正确的做法。这个变量的访问权限最起码也应该是包级私有的。</li>
-<li>如果不得不让包外，或模块外的代码使用你的原子值，那么可以声明一个包级私有的原子变量，然后再通过一个或多个公开的函数，让外界间接地使用到它。注意，这种情况下不要把原子值传递到外界，不论是传递原子值本身还是它的指针值。</li>
-<li>如果通过某个函数可以向内部的原子值存储值的话，那么就应该在这个函数中先判断被存储值类型的合法性。若不合法，则应该直接返回对应的错误值，从而避免 panic 的发生。</li>
-<li>如果可能的话，我们可以把原子值封装到一个数据类型中，比如一个结构体类型。这样，我们既可以通过该类型的方法更加安全地存储值，又可以在该类型中包含可存储值的合法类型信息。</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/11/20 16:50 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -915,6 +937,12 @@ func TestGetSingletonObj(t *testing.T) {
 	      
 		      
 			      <li class="post">
+			        <a href="15817610843879.html">编译期</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15814649492497.html">Simple Factory</a>
 			      </li>
 		     
@@ -934,12 +962,6 @@ func TestGetSingletonObj(t *testing.T) {
 		      
 			      <li class="post">
 			        <a href="15813811739408.html">tuple 使用</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

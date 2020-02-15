@@ -172,6 +172,276 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15365701104822.html">
+                
+                  <h1>Pod控制器应用进阶</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>容器探测</h4>
+
+<ul>
+<li>livenessProbe</li>
+<li>readinessProbe</li>
+</ul>
+
+<h4>探针类型</h4>
+
+<ul>
+<li>ExecAction exec 嵌套command</li>
+<li>TCPSocketAction tcpSocket</li>
+<li>HTTPGetAction  httpGet</li>
+<li>必须做就绪性探测</li>
+</ul>
+
+<h4>Pod控制器</h4>
+
+<ul>
+<li>ReplicaSet: 新一代(ReplicationController)</li>
+<li>Deployment: 建构在ReplicaSet,管理无状态应用</li>
+<li>DaemonSet：系统级的后台任务，守护进程类</li>
+<li>Job: 完成就退出</li>
+<li>Cronjob:不需要持续后台运行</li>
+<li>StatefulSet 封装控制器</li>
+<li>TPR: Third Party Resources 1.2+</li>
+<li>CDR: Custom Defined Resources, 1.8+</li>
+<li>Operator:</li>
+<li>Helm: 类似yum</li>
+<li>kubectl explain rs</li>
+</ul>
+
+<h4>通过Pod template</h4>
+
+<ul>
+<li> kubectl edit rs myapp</li>
+<li> kubectl get rs -o wide 修改镜像版本</li>
+</ul>
+
+<h4>版本升级</h4>
+
+<ul>
+<li> <img src="media/15365701104822/15366443003667.jpg" alt="" style="width:1071px;"/></li>
+<li>更新策略</li>
+<li>rollingUpdate</li>
+<li>maxSurge</li>
+<li>maxUnavailable</li>
+<li>层级关系</li>
+<li><img src="media/15365701104822/15366456380843.jpg" alt="" style="width:576px;"/></li>
+<li>kubectl apply -f deploy-demo.yaml</li>
+<li>apply可以声明多次</li>
+<li>patch打补丁</li>
+<li>kubectl rollout history deployment myapp-deploy 查看滚动历史</li>
+<li>kubectl rollout status deployment myapp-deploy 查看更新状态</li>
+<li>kubectl rollout undo deployment myapp-deploy --to-revision=1</li>
+</ul>
+
+<h4>Daemenset</h4>
+
+<ul>
+<li>hostNetWork</li>
+<li>hostIPC</li>
+<li>hostPID</li>
+<li><img src="media/15365701104822/15366580951940.jpg" alt=""/></li>
+<li><img src="media/15365701104822/15366580475906.jpg" alt=""/></li>
+<li>工作模式: userspace iptables ipvs</li>
+</ul>
+
+<h4>类型</h4>
+
+<ul>
+<li>ExternalName</li>
+<li>ClusterIP</li>
+<li>NodePort</li>
+<li>LoadBalancer</li>
+</ul>
+
+<h4>资源记录</h4>
+
+<ul>
+<li>SVC_NAME.NS_NAME.DOMAIN.LTD</li>
+<li>svc.cluster.local</li>
+<li>redis.test.svc</li>
+</ul>
+
+<h4>节点标签选择器</h4>
+
+<ul>
+<li>nodeSeletor</li>
+<li>oc label nodes 10.68.1.101 logType=collector --overwrite=true</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">  nodeSelector:
+        logType: collector 
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/09/10 17:01 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15363042633543.html">
+                
+                  <h1>k8s资源清单</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>常用资源</h4>
+
+<ul>
+<li>RESTful</li>
+<li>GET PUT DELETE POST</li>
+<li>kubectl run,get,edit</li>
+<li>workload: Pod,ReplicaSet,Deployment,StatefulSet,DaemonSet,Job,Cronjob</li>
+<li>服务发现与均衡: Service, Ingress</li>
+<li>配置与存储: Volume，CSI //TODO</li>
+<li>ConfigMap, Secret</li>
+<li>DownwardAPI</li>
+<li>集群级别资源</li>
+<li>Namespace,Node,Role,ClusterRole,RoleBinding,ClusterRoleBinding</li>
+<li>元数据型资源</li>
+<li>HPA,PodTemplate,LimitRange</li>
+<li>group/version core</li>
+</ul>
+
+<h4>创建资源</h4>
+
+<ul>
+<li>apiserver仅接收json格式的资源定义</li>
+<li>yml格式来提供配置清单,apiserver可自动转为json格式，而后再提交</li>
+</ul>
+
+<h4>大部分资源的配置清单</h4>
+
+<ul>
+<li>apiVersion</li>
+<li>kubectl api-versions</li>
+</ul>
+
+<h5>metadata</h5>
+
+<ul>
+<li>name</li>
+<li>namespace</li>
+<li>lablels</li>
+<li>annotations</li>
+<li>每个资源的引用PATH</li>
+<li>/api/GROUP/VERSION/namespaces/NAMESPACE/TYPE/NAME</li>
+<li>spec: 期望的状态 desired state</li>
+<li>status: 当前状态 current state本字段由集群维护</li>
+</ul>
+
+<h4>Pod资源</h4>
+
+<ul>
+<li>spec.containers</li>
+<li>name </li>
+<li>image</li>
+<li>imagePullPolicy  Always Never IfNotPresent</li>
+<li>修改镜像中的操作</li>
+</ul>
+
+<h4>标签选择器</h4>
+
+<ul>
+<li>等值关系： = ,！= </li>
+<li>集合关系： KEY in (val1,val2)</li>
+<li>Key not in (val1,val2)</li>
+<li>KEY</li>
+</ul>
+
+<h4>许多资源支持内嵌字段</h4>
+
+<ul>
+<li>matchLabels: 直接给定键值</li>
+<li>matchExperssions: 基于给定的表达式来定义使用标签选择器, {key:&quot;KEY&quot;, operator:&quot;OPERATOR&quot;, values:[VAL1,VAL2,...]}</li>
+<li>操作符</li>
+<li>In NotIn: values字段必须为非空列表</li>
+<li>Exists, NotExists: values字段必须为空列表</li>
+</ul>
+
+<h4>nodeSelector</h4>
+
+<ul>
+<li>节点标签选择器</li>
+<li>影响调度算法的指标</li>
+</ul>
+
+<h4>annotations</h4>
+
+<ul>
+<li>与label不同在于，不能用于挑选资源对象，仅用于为对象提供元数据</li>
+</ul>
+
+<h4>Pods生命周期</h4>
+
+<ul>
+<li>状态: Pending, Running, Failed, Succeeded, Unkown</li>
+<li>创建Pod: ApiServer Etcd kubelet</li>
+<li><img src="media/15363042633543/15364876918339.jpg" alt="" style="width:473px;"/></li>
+</ul>
+
+<h5>Pod生命周期的重要行为</h5>
+
+<ul>
+<li>初始化容器</li>
+<li>容器探测</li>
+<li>liveness</li>
+<li>readiness</li>
+</ul>
+
+<h5>restartPolicy</h5>
+
+<ul>
+<li>Always </li>
+<li>OnFailure</li>
+<li>Never 不再重启</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/09/07 15:11 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15362028339277.html">
                 
                   <h1>K8S集群初始化</h1>
@@ -786,301 +1056,6 @@
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15354190834336.html">
-                
-                  <h1>Docker 基础使用</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>LXC</h4>
-
-<ul>
-<li>主机级虚拟化</li>
-<li>Type-I</li>
-<li>Type-II</li>
-<li>Jail Vserver(chroot) </li>
-</ul>
-
-<h4>隔离</h4>
-
-<ul>
-<li>UTS,Mount,IPC，PID，User，Net</li>
-<li>进程树,文件树</li>
-<li>名称空间 NameSpace</li>
-<li><p><img src="media/15354190834336/15354215091445.jpg" alt="" style="width:622px;"/></p></li>
-<li><p>clone() setns() </p></li>
-<li><p>压缩型资源</p></li>
-<li><p><img src="media/15354190834336/15354223497650.jpg" alt="" style="width:619px;"/></p></li>
-</ul>
-
-<h4>容器核心技术</h4>
-
-<ul>
-<li>NameSpace</li>
-<li>Chroot</li>
-<li>Cgroup</li>
-</ul>
-
-<h4>方案</h4>
-
-<ul>
-<li>Control Groups， CGroups</li>
-<li>LinuxX Container</li>
-<li>lxc-create template</li>
-</ul>
-
-<h4>Docker</h4>
-
-<ul>
-<li>利用lxc作为容器引擎</li>
-<li>分层构建，联合挂载</li>
-<li><img src="media/15354190834336/15354248546973.jpg" alt="" style="width:499px;"/></li>
-<li>nmp 容器编排工具</li>
-<li>machine+swarm+composer</li>
-<li>mesos+marathon统一资源调度和分配</li>
-<li>kubernetes-&gt;k8s</li>
-<li>Moby CNCF</li>
-<li><p><img src="media/15354190834336/15354257791981.jpg" alt="" style="width:634px;"/></p></li>
-<li><p>libcontainer--&gt;runc</p></li>
-<li><p>OCI</p></li>
-</ul>
-
-<h4>docker架构</h4>
-
-<ul>
-<li><img src="media/15354190834336/15354263451948.jpg" alt="" style="width:1009px;"/></li>
-<li>unix sock套接字</li>
-<li>container--&gt;image</li>
-</ul>
-
-<h4>Docker对象</h4>
-
-<ul>
-<li>images</li>
-<li>containers</li>
-<li>network</li>
-<li>volumes</li>
-<li>plugins</li>
-</ul>
-
-<h4>安装和使用</h4>
-
-<ul>
-<li>配置文件</li>
-<li>/etc/docker/daemon.json</li>
-<li>docker info</li>
-<li>overplay2</li>
-<li>alpine 构建容器小镜像的工具</li>
-<li>busybox 基本工具应用</li>
-</ul>
-
-<h4>docker run命令</h4>
-
-<ul>
-<li>-i 交互式访问</li>
-<li>-t 终端</li>
-<li>-d 自动运行在后台</li>
-<li>不能让容器中程序运行在后台</li>
-<li>--exec 绕过容器看内部运行机制</li>
-<li>docker run --name kvstore -d redis:4-alpine</li>
-<li>docker run --name t1 -it shawliu/web</li>
-<li>docker ps -a</li>
-<li>docker exec -it image_id /bin/sh</li>
-<li><img src="media/15354190834336/15354368427576.jpg" alt="" style="width:1118px;"/></li>
-</ul>
-
-<h4>Docker镜像管理</h4>
-
-<ul>
-<li><img src="media/15354190834336/15354374897154.jpg" alt="" style="width:634px;"/></li>
-<li>Docker镜像原理</li>
-<li><img src="media/15354190834336/15354375869764.jpg" alt="" style="width:1080px;"/></li>
-<li><img src="media/15354190834336/15354378908073.jpg" alt="" style="width:484px;"/></li>
-<li>aufs--&gt;layerfs</li>
-<li>存储位置</li>
-<li><img src="media/15354190834336/15354385520975.jpg" alt="" style="width:752px;"/></li>
-</ul>
-
-<h4>Registry</h4>
-
-<ul>
-<li>Repository</li>
-<li>Index</li>
-<li>云原生</li>
-<li>quay</li>
-</ul>
-
-<h4>镜像制作</h4>
-
-<ul>
-<li><img src="media/15354190834336/15354402486496.jpg" alt="" style="width:963px;"/></li>
-<li>docker build</li>
-<li>dockerfile</li>
-<li>docker hub automated builds</li>
-<li>docker commit -p b1</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/08/28 09:18 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15698817657509.html">
-                
-                  <h1>Mysql监控</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<ul>
-<li>MySQL 数据库我们都要监控什么</li>
-<li>怎么对这些要监控的资源进行监控</li>
-</ul>
-
-<h4>监控可用性</h4>
-
-<ul>
-<li>对数据库服务可用性进行监控</li>
-</ul>
-
-<h5>如何确认数据库是否可以通过网络连接</h5>
-
-<pre class="line-numbers"><code class="language-text">mysqladmin-umonitor_user-p h ping
-telnet ip port
-应用程序通过网络建立数据库连接
-</code></pre>
-
-<ul>
-<li>可以连接到数据库不代表可用</li>
-</ul>
-
-<h5>如何确认数据库是否可读写</h5>
-
-<ul>
-<li>检査数据库的 read_only 参数是否为 off </li>
-<li>建立监控表并对表中数据进行更行执行简单的查询</li>
-<li>select@@ version</li>
-</ul>
-
-<h5>如何监控数据库的连接数</h5>
-
-<ul>
-<li>时刻关注数据库连接数量的变化</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">show variables like &#39;max connections 
-show global status like &#39;Threads_connected&#39;
-threads connected/max connections 0.8
-</code></pre>
-
-<h4>对数据库性能进行监控</h4>
-
-<ul>
-<li>记录性能监控过程中所采集到的数据库的状态</li>
-</ul>
-
-<h5>如何计算QPS和TPS</h5>
-
-<pre class="line-numbers"><code class="language-text">* QPS=(Queries2-Queries1)(差值)/
-(Uptime_since_flush_status2- Uptime_since_flush_status1）(时间间隔)
-* TPS=((Com_insert+Com_update2+Com_delete
- (Com_insert1+Com_update1+Com_deletel))/
- (Uptimesince_flushStatus2-uptime_since_flush_statusi)
-</code></pre>
-
-<h5>如何监控数据库的并发请求数量</h5>
-
-<pre class="line-numbers"><code class="language-text">show global status like &#39;Threads_running&#39;
-</code></pre>
-
-<ul>
-<li>数据库系统的性能会随着并发处理请求数量的增加而下降</li>
-</ul>
-
-<h5>如何监控Innodb阻塞</h5>
-
-<p><img src="media/15698817657509/15698831966537.jpg" alt="" style="width:1183px;"/></p>
-
-<ul>
-<li>information_schema.innodb_lock_waits</li>
-<li>information_schema.innodb_trx</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">select connection_id() 查看连接ID
-</code></pre>
-
-<h4>对主从复制进行监控</h4>
-
-<h5>主从复制链路状态的监控</h5>
-
-<ul>
-<li>Slave_IO_Running: Yes</li>
-<li>Slave_SQL_Running: Yes</li>
-</ul>
-
-<h5>主从复制延迟的监控</h5>
-
-<ul>
-<li>show slave status</li>
-<li>Seconds_Behind_Master 0</li>
-<li>这个方法需要使用多线程的程序同时对于主从服务器的状态来进行检查</li>
-</ul>
-
-<h5>定期的确认主从复制的数据是否一致</h5>
-
-<p><img src="media/15698817657509/15698839274583.jpg" alt="" style="width:1065px;"/></p>
-
-<h4>服务器资源的监控</h4>
-
-<ul>
-<li>磁盘空间</li>
-<li>CPU 的使用情况，内存的使用情况，Swap 分区的使用情况以及网络 IO 的情况等</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/01 06:16 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E6%80%A7%E8%83%BD%E7%AE%A1%E7%90%86%E5%92%8C%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1.html'>Mysql性能管理和架构设计</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1222,6 +1197,12 @@ threads connected/max connections 0.8
 	      
 		      
 			      <li class="post">
+			        <a href="15817610843879.html">编译期</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15814649492497.html">Simple Factory</a>
 			      </li>
 		     
@@ -1241,12 +1222,6 @@ threads connected/max connections 0.8
 		      
 			      <li class="post">
 			        <a href="15813811739408.html">tuple 使用</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

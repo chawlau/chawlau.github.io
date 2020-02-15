@@ -172,6 +172,178 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15744656731481.html">
+                
+                  <h1>静态方法&类方法&对象方法</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>三种方法对比</h4>
+
+<ul>
+<li>对象方法，定义中，传入的第一个参数必须是 self，表示实例本身，在其中可使用 self.attr 获取实例的属性。</li>
+<li>class_method 无需实例化，但与实例方法第一个参数必须是 self 类似，类方法第一个参数表示类自身的 cls 参数，可以来调用类的属性、类的方法、类的实例化对象等</li>
+<li>static_method无需 self 参数，无需 cls 参数，直接声明一个静态方法，可无需实例化，直接由类调用，也可实例化后调用</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">class Date:
+    def __init__(self, year, month, day):
+        self.year = year
+        self.month = month
+        self.day = day
+
+    def tomorrow(self):
+        self.day += 1
+
+    @staticmethod
+    def parse_from_string(data_str):
+        year, month, day = tuple(data_str.split(&#39;-&#39;))
+        return Date(int(year), int(month), int(day))
+
+    @staticmethod
+    def valid_str(date_str):
+        year, month, day = tuple(date_str.split(&#39;-&#39;))
+        if int(year) &gt; 0 and (int(month) &gt; 0 and int(month) &lt;=12) and (int(day) &gt; 0 and int(day) &lt;=31):
+            return True
+        else:
+            return False
+
+    @classmethod
+    def from_string(cls, date_str):
+        year, month, day = tuple(date_str.split(&#39;-&#39;))
+        return cls(int(year), int(month), int(day))
+
+    def __str__(self):
+        return &quot;{year}/{month}/{day}&quot;.format(year=self.year, month=self.month, day=self.day)
+
+if __name__ == &#39;__main__&#39;:
+    new_day = Date(2018, 12, 31)
+    new_day.tomorrow()
+    print(new_day)
+
+    date_str = &#39;2018-12-31&#39;
+    year, month, day = tuple(date_str.split(&#39;-&#39;))
+    new_day = Date(int(year), int(month), int(day))
+    print (new_day)
+
+    new_day = Date.parse_from_string(date_str)
+    print (new_day)
+
+    new_day = Date.from_string(date_str)
+    print (new_day)
+    
+    print(Date.valid_str(&quot;2018-12-32&quot;))
+</code></pre>
+
+<h4>私有属性</h4>
+
+<ul>
+<li>双下划线将私有变量进行变形</li>
+<li>通过反射机制也可以拿到这个数值</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">from method import Date
+
+class User:
+    def __init__(self, birthday):
+        self.__birthday = birthday
+    def get_age(self):
+        return 2019 - self.__birthday.year
+
+
+if __name__ == &#39;__main__&#39;:
+    user = User(Date(2018, 10, 1))
+    print(user.get_age())
+</code></pre>
+
+<h4>dict和dir查询属性·</h4>
+
+<pre class="line-numbers"><code class="language-python">from method import Date
+
+class Person:
+    name = &#39;user&#39;
+
+class Student(Person):
+    def __init__(self, school_name):
+        self.school_name = school_name
+
+if __name__ == &#39;__main__&#39;:
+    user = Student(&#39;IMooc&#39;)
+    print(user.__dict__)
+    user.__dict__[&quot;school_addr&quot;] = &quot;Beijing&quot;
+    print(user.school_addr)
+    print(Person.__dict__)
+    print(user.name)
+    a = [1, 2]
+    print(dir(a))
+</code></pre>
+
+<ul>
+<li>dict获取属性</li>
+</ul>
+
+<h4>上下文管理器协议</h4>
+
+<ul>
+<li><img src="media/15744656731481/15744763032317.jpg" alt="" style="width:324px;"/></li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">class Sample:
+    def __enter__(self):
+        #获取资源
+        print(&#39;enter&#39;)
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        #释放资源
+        print(&quot;exit&quot;)
+
+    def do_something(self):
+        print(&quot;doing something&quot;)
+
+with Sample() as sample:
+    sample.do_something()
+</code></pre>
+
+<h4>contextlib协议</h4>
+
+<pre class="line-numbers"><code class="language-python">import contextlib
+
+@contextlib.contextmanager
+def file_open(file_name):
+    print (&quot;file open&quot;)
+    yield {}
+    print (&quot;file end&quot;)
+
+with file_open(&quot;bobby.txt&quot;) as f_opened:
+    print (&quot;file processing&quot;)
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/23 07:34 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15742917885791.html">
                 
                   <h1>中介模式</h1>
@@ -1563,103 +1735,6 @@ if __name__ == &#39;__main__&#39;:
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15735993111373.html">
-                
-                  <h1>命令行</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>函数使用</h4>
-
-<h5>rate</h5>
-
-<ul>
-<li>rate(go_goroutines[1m])</li>
-<li>counter类型的数据必须使用rate和increase函数</li>
-<li>在我们的工作中 取1m 还是取5m<br/>
-这个取决于 我们对于监控数据的敏感性程度来挑选</li>
-<li>rate(1m) 是取一段时间增量的平均每秒数量</li>
-<li>rate() -&gt; CPU 内存 硬盘 IO 网络流量</li>
-</ul>
-
-<h5>increase</h5>
-
-<ul>
-<li>increase(1m) 则是 取一段时间增量的总量</li>
-<li>对比rate,曲线基本一致，但是纵坐标单位不一样</li>
-<li><img src="media/15725061245362/15725074004046.jpg" alt="" style="width:1631px;"/></li>
-<li>如果采样点比较少，rate函数容易断链，采用increase比较平缓</li>
-</ul>
-
-<h5>sum</h5>
-
-<ul>
-<li>sum 会把结果集的输出进行总加合</li>
-<li>sum() by (cluster_name)</li>
-<li>sum() by (instance)</li>
-</ul>
-
-<h5>topk</h5>
-
-<ul>
-<li>topk(4,rate(node_network_receive_packets_total[20m]))</li>
-<li>根据给定的数字 取数值最高 &gt;=x 的数值</li>
-<li>Topk因为对于每一个时间点 都只取前三高的数值 那么必然会造成 单个机器的采集数据不连贯,实际使用的时候 一般用topk()函数进行瞬时报警 而不是为了观察曲线图</li>
-</ul>
-
-<h5>count</h5>
-
-<ul>
-<li>count进行一些模糊的监控判断</li>
-<li>比如说 企业中有100台服务器，那么当只有10台服务器CPU高 于80%的时候 这个时候不需要报警但是 当符合80%CPU的服务器数量 超过 30台的时候 那么就 会触发报警 count()</li>
-</ul>
-
-<h5>promethus</h5>
-
-<ul>
-<li>daemonize启动</li>
-<li>--web.read-timeout=5m 链接最大等待时间</li>
-<li>--web-max-connections=512 最大链接数目</li>
-<li>--storage.tsdb.retention=15d 开始采集监控数据后 会存在内存中和硬盘中 对于保留期限的设置</li>
-<li>--storage.tsdb.path=&quot;data/&quot; 存储数据路径</li>
-<li>--query.timeout=2m</li>
-<li>--query.max-concurrency=20</li>
-</ul>
-
-<h4>配置文件</h4>
-
-<ul>
-<li>node_cpu</li>
-<li>node_memory</li>
-<li>node_disk</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/13 06:55 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Prometheus.html'>Prometheus</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1801,6 +1876,12 @@ if __name__ == &#39;__main__&#39;:
 	      
 		      
 			      <li class="post">
+			        <a href="15817610843879.html">编译期</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15814649492497.html">Simple Factory</a>
 			      </li>
 		     
@@ -1820,12 +1901,6 @@ if __name__ == &#39;__main__&#39;:
 		      
 			      <li class="post">
 			        <a href="15813811739408.html">tuple 使用</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

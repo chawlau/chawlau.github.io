@@ -172,6 +172,45 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15682443156541.html">
+                
+                  <h1>UDP连接</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>作用</h4>
+
+<ul>
+<li>让应用程序接收异步错误信息</li>
+<li>UDP 套接字进行 connect 操作，将 UDP 套接字建立了”上下文“，该套接字和服务器端的地址和端口产生了联系，正是这种绑定关系给了操作系统内核必要的信息，能够将操作系统内核收到的信息和对应的套接字进行关联、</li>
+<li>帮助操作系统内核从容建立了（UDP 套接字——目的地址 + 端口）之间的映射关系，当收到一个 ICMP 不可达报文时，操作系统内核可以从映射表中找出是哪个 UDP 套接字拥有该目的地址和端口</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/09/12 07:25 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98.html'>网络编程实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15682425776152.html">
                 
                   <h1>MVCC机制</h1>
@@ -1196,83 +1235,6 @@ $node2:6380 $node2:6381
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15678080784552.html">
-                
-                  <h1>Hash索引和索引使用原则</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>Hash区别</h4>
-
-<ul>
-<li>Hash 索引不能进行范围查询，而 B+ 树可以。这是因为 Hash 索引指向的数据是无序的，而 B+ 树的叶子节点是个有序的链表。</li>
-<li>Hash 索引不支持联合索引的最左侧原则</li>
-<li>Hash 索引不支持 ORDER BY 排序和模糊搜索</li>
-</ul>
-
-<h4>索引使用原则</h4>
-
-<ul>
-<li>字段有唯一性的限制</li>
-<li>频繁使用where查询</li>
-<li>需要使用group by 和 order by</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">SELECT user_id, count(*) as num FROM product_comment group by user_id order by comment_time desc limit 100
-</code></pre>
-
-<ul>
-<li>UPDATE、DELETE 的 WHERE 条件列</li>
-<li>DISTINCT 字段需要创建索引 索引会对数据按照某种顺序进行排序，所以在去重的时候也会快很多</li>
-<li>多表 JOIN 连接操作时, 表不要超过3张</li>
-</ul>
-
-<h4>不实用索引</h4>
-
-<ul>
-<li>WHERE 条件（包括 GROUP BY、ORDER BY）里用不到的字段不需要创建索引</li>
-<li>表记录太少</li>
-<li>字段中有大量重复数据</li>
-<li>频繁更新的字段不一定要创建索引</li>
-</ul>
-
-<h4>索引失效</h4>
-
-<ul>
-<li>如果索引进行了表达式计算，则会失效</li>
-<li>如果对索引使用函数，也会造成失效</li>
-<li>WHERE 子句中，如果在 OR 前的条件列进行了索引，而在 OR 后的条件列没有进行索引，那么索引会失效</li>
-<li>当我们使用 LIKE 进行模糊查询的时候，前面不能是 %</li>
-<li>索引列尽量设置为 NOT NULL 约束</li>
-<li>我们在使用联合索引的时候要注意最左原则， 一条 SQL 语句可以只使用联合索引的一部分，但是需要从最左侧开始，否则就会失效，联合索引如果语句都使用的话就不会失效</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/07 06:14 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='SQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>SQL必知必会</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1414,6 +1376,12 @@ $node2:6380 $node2:6381
 	      
 		      
 			      <li class="post">
+			        <a href="15817610843879.html">编译期</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15814649492497.html">Simple Factory</a>
 			      </li>
 		     
@@ -1433,12 +1401,6 @@ $node2:6380 $node2:6381
 		      
 			      <li class="post">
 			        <a href="15813811739408.html">tuple 使用</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

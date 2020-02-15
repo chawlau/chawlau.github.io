@@ -172,6 +172,74 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15817610843879.html">
+                
+                  <h1>编译期</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>fmap实现</h4>
+
+<ul>
+<li>用 decltype 来获得用 f 来调用 inputs 元素的类型（参考第 8 讲）；</li>
+<li>用 decay_t 来把获得的类型变成一个普通的值类型；</li>
+<li>缺省使用 vector 作为返回值的容器，但可以通过模板参数改为其他容器；</li>
+<li>使用基于范围的 for 循环来遍历 inputs，对其类型不作其他要求（参考第 7 讲）；</li>
+<li>存放结果的容器需要支持 push_back 成员函数（参考第 4 讲）。</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">template &lt;template &lt;typename, typename&gt;
+class OutContainer = vector, typename F, class R&gt;
+auto fmap(F&amp;&amp; f, R&amp;&amp; inputs) {
+    typedef decay_t&lt;decltype(f(*inputs.begin()))&gt; result_type;
+    OutContainer&lt;result_type, allocator&lt;result_type&gt;&gt; result;
+
+    for (auto&amp;&amp; item : inputs) {
+        result.push_back(f(item));
+    }
+    return result;
+}
+
+int add_1(int x)
+{
+    return x + 1;
+}
+
+int main()
+{
+    vector&lt;int&gt; v{1, 2, 3, 4, 5};
+    auto result = fmap(add_1, v);
+    for (auto it : result) {
+        cout &lt;&lt; it &lt;&lt; &#39;\n&#39;;
+    }
+}
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2020/02/15 18:04 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15814649492497.html">
                 
                   <h1>Simple Factory</h1>
@@ -919,165 +987,6 @@ int main() {
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15810700712722.html">
-                
-                  <h1>collections</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>namedtuple</h4>
-
-<pre class="line-numbers"><code class="language-python">from collections import namedtuple
-
-User = namedtuple(&#39;User&#39;, [&#39;name&#39;, &#39;age&#39;, &#39;height&#39;, &#39;edu&#39;])
-user = User(name = &#39;bobby&#39;, age = 29, height=175, edu=&#39;master&#39;)
-
-user_tuple = (&#39;bobby&#39;, 29, 175, &#39;super master&#39;)
-user_list = (&#39;bobby&#39;, 29, 175)
-user = User(*user_tuple)
-user_dict = {
-    &#39;name&#39;: &#39;bobby&#39;,
-    &#39;age&#39;: 29,
-    &#39;height&#39;: 175,
-    &#39;edu&#39;: &#39;pre master&#39;
-}
-user = User(**user_dict)
-# user = User._make(user_list, &#39;pre master&#39;)
-
-# namedtuple 直接转换成dict
-user_info_dict = user._asdict()
-
-#拆包功能
-name, age, *other = user
-name
-age
-other
-</code></pre>
-
-<ul>
-<li>属性少，没有成员函数的类</li>
-</ul>
-
-<h5>defaultdict</h5>
-
-<pre class="line-numbers"><code class="language-python">from collections import defaultdict
-user_dict = {}
-users = [&#39;bobby1&#39;, &#39;bobby2&#39;, &#39;bobby3&#39;]
-for user in users:
-    if user not in user_dict:
-        user_dict[user] = 1
-    else:
-        user_dict[user] += 1
-user_dict
-
-for user in users:
-    user_dict.setdefault(user, 0)
-    user_dict[user] += 1
-user_dict
-
-user_dict = defaultdict(int)
-for user in users:
-    user_dict[user] += 1
-user_dict
-
-def gen_default():
-    return {
-        &quot;name&quot;: &quot;&quot;,
-        &quot;nums&quot;: 0
-    }
-
-user_dict = defaultdict(gen_default)
-user_dict[&#39;group1&#39;]
-user_dict
-</code></pre>
-
-<h5>deque</h5>
-
-<pre class="line-numbers"><code class="language-python">from collections import deque
-
-user_deque = deque((&#39;bobby1&#39;, &#39;bobby2&#39;))
-user_deque = deque([&#39;bobby1&#39;, &#39;bobby2&#39;, &#39;bobby3&#39;])
-user_deque.appendleft(&#39;9&#39;)
-user_deque.append(&#39;10&#39;)
-user_deque.insert(0, &#39;bobby3&#39;)
-user_deque
-user_deque2 = user_deque.copy()
-user_deque2.appendleft(&#39;7&#39;)
-</code></pre>
-
-<h4>Counter</h4>
-
-<pre class="line-numbers"><code class="language-python">from collections import Counter
-users = [&#39;bobby1&#39;, &#39;bobby2&#39;, &#39;bobby3&#39;, &#39;bobby4&#39;, &#39;bobby5&#39;, &#39;bobby6&#39;,]
-users2 = [&#39;bobby1&#39;, &#39;bobby2&#39;, &#39;bobby1&#39;, &#39;bobby2&#39;, &#39;bobby1&#39;, &#39;bobby2&#39;,]
-user_counter = Counter(users)
-user_counter.update(users2)
-# 统计前N个字符串的
-ret = user_counter.most_common(2)
-user_counter
-ret
-</code></pre>
-
-<h4>Orderdict</h4>
-
-<pre class="line-numbers"><code class="language-python">from collections import OrderedDict
-user_dict = dict()
-user_dict = OrderedDict()
-user_dict[&#39;b&#39;] = &#39;bobby2&#39;
-user_dict[&#39;a&#39;] = &#39;bobby1&#39;
-user_dict[&#39;c&#39;] = &#39;bobby3&#39;
-user_dict.pop(&#39;a&#39;)
-user_dict.move_to_end(&#39;b&#39;)
-user_dict
-# 保证python2和3使用都是一样的
-</code></pre>
-
-<h4>ChainMap</h4>
-
-<pre class="line-numbers"><code class="language-python">from collections import ChainMap
-
-user_dict1 = {&#39;a&#39;:&#39;bobby1&#39;, &#39;b&#39;:&#39;bobby2&#39;}
-user_dict2 = {&#39;c&#39;:&#39;bobby1&#39;, &#39;d&#39;:&#39;bobby2&#39;}
-new_dict = ChainMap(user_dict1, user_dict2)
-new_dict.new_child({&#39;aa&#39;:&#39;aa&#39;, &#39;bb&#39;:&#39;bb&#39;})
-
-#如果有重复元素，就不会再出现第二次
-for k, v in new_dict.items():
-    print(k, v)
-new_dict.maps
-new_dict.maps[0][&#39;a&#39;] = &#39;bobby&#39;
-new_dict.maps
-</code></pre>
-
-<ul>
-<li>访问多个map， 合并访问</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2020/02/07 18:07 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1219,6 +1128,12 @@ new_dict.maps
 	      
 		      
 			      <li class="post">
+			        <a href="15817610843879.html">编译期</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15814649492497.html">Simple Factory</a>
 			      </li>
 		     
@@ -1238,12 +1153,6 @@ new_dict.maps
 		      
 			      <li class="post">
 			        <a href="15813811739408.html">tuple 使用</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

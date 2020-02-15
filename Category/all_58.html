@@ -172,6 +172,159 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15427052201715.html">
+                
+                  <h1>sync.WaitGroup&sync.Once</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>sync.Once类型值的Do方法是怎么保证只执行参数函数一次的？</h4>
+
+<ul>
+<li>atomic.LoadUint32函数来获取该字段的值，并且一旦发现该值为1就会直接返回</li>
+<li>通过单例模式来实现</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">func (o *Once) Do(f func()) {
+  if atomic.LoadUint32(&amp;o.done) == 1 {
+    return
+  }
+  // Slow-path.
+  o.m.Lock()
+  defer o.m.Unlock()
+  if o.done == 0 {
+    defer atomic.StoreUint32(&amp;o.done, 1)
+    f()
+  }
+}
+</code></pre>
+
+<h4>Do的特点</h4>
+
+<ul>
+<li>第一个特点，由于Do方法只会在参数函数执行结束之后把done字段的值变为1，因此，如果参数函数的执行需要很长时间或者根本就不会结束（比如执行一些守护任务），那么就有可能会导致相关 goroutine 的同时阻塞。</li>
+<li>第二个特点，Do方法在参数函数执行结束后，对done字段的赋值用的是原子操作，并且，这一操作是被挂在defer语句中的。因此，不论参数函数的执行会以怎样的方式结束，done字段的值都会变为1。</li>
+</ul>
+
+<h4>案例</h4>
+
+<pre class="line-numbers"><code class="language-go">type Singleton struct {
+    data string
+}
+
+var singleInstance *Singleton
+var once sync.Once
+
+func GetSingletonObj() *Singleton {
+    once.Do(func() {
+        fmt.Println(&quot;Create Obj&quot;)
+        singleInstance = new(Singleton)
+    })
+    return singleInstance
+}
+
+func TestGetSingletonObj(t *testing.T) {
+    var wg sync.WaitGroup
+    for i := 0; i &lt; 10; i++ {
+        wg.Add(1)
+        go func() {
+            obj := GetSingletonObj()
+            fmt.Printf(&quot;%X\n&quot;, unsafe.Pointer(obj))
+            wg.Done()
+        }()
+    }
+    wg.Wait()
+}
+
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/11/20 17:13 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15427038364970.html">
+                
+                  <h1>原子操作</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>CAS的使用场景</h4>
+
+<ul>
+<li>共享资源状态的改变并不频繁，或者，它的状态总会变成期望的那样。这是一种更加乐观，或者说更加宽松的做法。</li>
+</ul>
+
+<h4>原子锁和互斥锁的三个决策条件</h4>
+
+<ul>
+<li>变量类型 原子值中不要存储引用的类型，容易造成安全漏洞</li>
+<li>操作频率</li>
+<li>操作时间</li>
+</ul>
+
+<h4>atomic.Value</h4>
+
+<ul>
+<li>复制该类型的值会产生一个完全分离的新值。这个新值相当于被复制的那个值的一个快照。</li>
+<li>它的动态值是nil，但动态类型却不是nil，那么它的值就不等于nil,可以被存储原子值</li>
+<li>我们向原子值存储的第一个值，决定了它今后能且只能存储哪一个类型的值。</li>
+</ul>
+
+<h4>使用注意事项</h4>
+
+<ul>
+<li>不要把内部使用的原子值暴露给外界。比如，声明一个全局的原子变量并不是一个正确的做法。这个变量的访问权限最起码也应该是包级私有的。</li>
+<li>如果不得不让包外，或模块外的代码使用你的原子值，那么可以声明一个包级私有的原子变量，然后再通过一个或多个公开的函数，让外界间接地使用到它。注意，这种情况下不要把原子值传递到外界，不论是传递原子值本身还是它的指针值。</li>
+<li>如果通过某个函数可以向内部的原子值存储值的话，那么就应该在这个函数中先判断被存储值类型的合法性。若不合法，则应该直接返回对应的错误值，从而避免 panic 的发生。</li>
+<li>如果可能的话，我们可以把原子值封装到一个数据类型中，比如一个结构体类型。这样，我们既可以通过该类型的方法更加安全地存储值，又可以在该类型中包含可存储值的合法类型信息。</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/11/20 16:50 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15420788724296.html">
                 
                   <h1>sync.Cond</h1>
@@ -777,90 +930,6 @@ Switch：<br/>
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15401977187536.html">
-                
-                  <h1>panic&recover&defer</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>panic</h4>
-
-<ul>
-<li>panic一旦发生，控制权就会迅速的沿着调用栈的反方向传播</li>
-<li>panic后面的代码根本没有执行的机会</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/10/22 16:41 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15401943381467.html">
-                
-                  <h1>if&for&switch</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>range</h4>
-
-<ul>
-<li>range表达式只会在for语句开始执行时被求值一次</li>
-<li>range表达式的求值结果会被复制，被迭代的对象是range表达式结果值的副本</li>
-</ul>
-
-<h4>switch和case关系</h4>
-
-<ul>
-<li>switch 的case语句在case子句上的选择是唯一的，不允许有case中子表达式和其他case子表达式值想等的情况</li>
-<li>只要switch表达式的结果值与某个case表达式中的任意一个子表达式的结果值相等，该case表达式所属的case子句就会被选中</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/10/22 15:45 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1002,6 +1071,12 @@ Switch：<br/>
 	      
 		      
 			      <li class="post">
+			        <a href="15817610843879.html">编译期</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15814649492497.html">Simple Factory</a>
 			      </li>
 		     
@@ -1021,12 +1096,6 @@ Switch：<br/>
 		      
 			      <li class="post">
 			        <a href="15813811739408.html">tuple 使用</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

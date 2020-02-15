@@ -172,6 +172,63 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15661792809222.html">
+                
+                  <h1>B+树</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>常见数据结构优缺点</h4>
+
+<ul>
+<li>散列表的查询性能很好，时间复杂度是 O(1)。但是，散列表不能支持按照区间快速查找数据。所以，散列表不能满足我们的需求</li>
+<li>平衡二叉查找树。尽管平衡二叉查找树查询的性能也很高，时间复杂度是 O(logn)。而且，对树进行中序遍历，我们还可以得到一个从小到大有序的数据序列，但这仍然不足以支持按照区间快速查找数据</li>
+<li>跳表是在链表之上加上多层索引构成的。它支持快速地插入、查找、删除数据，对应的时间复杂度是 O(logn)。并且，跳表也支持按照区间快速地查找数据。我们只需要定位到区间起点值对应在链表中的结点，然后从这个结点开始，顺序遍历链表，直到区间终点对应的结点为止，这期间遍历得到的数据就是满足区间值的数据</li>
+</ul>
+
+<h4>改造二叉树</h4>
+
+<ul>
+<li>树中的节点并不存储数据本身，而是只是作为索引。除此之外，我们把每个叶子节点串在一条链表上，链表中的数据是从小到大有序的</li>
+<li>磁盘 IO 操作非常耗时，所以我们优化的重点就是尽量减少磁盘 IO 操作，也就是，尽量降低树的高度</li>
+<li>内存和磁盘的数据读取都是按页来的</li>
+<li>选择m的时候，尽量让每个节点等于一个页的大小，如果超过m的话，就要将页面进行分裂</li>
+<li>每个节点的子节点都比较少，势必会影响索引的效率， B+ 树中，这个阈值等于 m/2。如果某个节点的子节点个数小于 m/2，我们就将它跟相邻的兄弟节点合并</li>
+</ul>
+
+<h4>B树木</h4>
+
+<ul>
+<li>B 树只是一个每个节点的子节点个数不能小于 m/2 的 m 叉树</li>
+<li>B+ 树中，将叶子节点串起来的链表，是双向链表方便asc和desc</li>
+<li>B+ 树查询效率更稳定。因为 B+ 树每次只有访问到叶子节点才能找到对应的数据，而在 B 树中，非叶子节点也会存储数据，这样就会造成查询效率不稳定的情况，有时候访问到了非叶子节点就可以找到关键字，而有时需要访问到叶子节点才能找到关键字</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/08/19 09:48 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15660869706932.html">
                 
                   <h1>聚集函数</h1>
@@ -1624,71 +1681,6 @@ bs2指向的是bs2子对象的指针
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15658312584569.html">
-                
-                  <h1>位图</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>位图</h4>
-
-<ul>
-<li>要求数字的范围不是很大</li>
-</ul>
-
-<h4>布隆过滤器</h4>
-
-<ul>
-<li>我们使用 K 个哈希函数，对同一个数字进行求哈希值，那会得到 K 个不同的哈希值</li>
-<li>将对应的BitMap设置为true，用K个二进制位来表示一个数字的存在</li>
-</ul>
-
-<h4>布隆过滤器和三列表对比</h4>
-
-<ul>
-<li>布隆过滤器用多个哈希函数对同一个网页链接进行处理，CPU 只需要将网页链接从内存中读取一次，进行多次哈希计算，理论上讲这组操作是 CPU 密集型的。而在散列表的处理方式中，需要读取散列冲突拉链的多个网页链接，分别跟待判重的网页链接，进行字符串匹配。这个操作涉及很多内存数据的读取，所以是内存密集型的。我们知道 CPU 计算可能是要比内存访问更快速的，所以，理论上讲，布隆过滤器的判重方式，更加快速</li>
-</ul>
-
-<h4>扩容</h4>
-
-<ul>
-<li>布隆过滤器的误判率，主要跟哈希函数的个数、位图的大小有关。当我们往布隆过滤器中不停地加入数据之后，位图中不是 true 的位置就越来越少了，误判率就越来越高了</li>
-<li>当布隆过滤器中，数据个数与位图大小的比例超过某个阈值的时候，我们就重新申请一个新的位图 </li>
-</ul>
-
-<h4>拓展</h4>
-
-<ul>
-<li>Java BitSet</li>
-<li>Guava工具包</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/15 09:07 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1830,6 +1822,12 @@ bs2指向的是bs2子对象的指针
 	      
 		      
 			      <li class="post">
+			        <a href="15817610843879.html">编译期</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15814649492497.html">Simple Factory</a>
 			      </li>
 		     
@@ -1849,12 +1847,6 @@ bs2指向的是bs2子对象的指针
 		      
 			      <li class="post">
 			        <a href="15813811739408.html">tuple 使用</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

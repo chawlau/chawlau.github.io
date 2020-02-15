@@ -172,6 +172,165 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15810700712722.html">
+                
+                  <h1>collections</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>namedtuple</h4>
+
+<pre class="line-numbers"><code class="language-python">from collections import namedtuple
+
+User = namedtuple(&#39;User&#39;, [&#39;name&#39;, &#39;age&#39;, &#39;height&#39;, &#39;edu&#39;])
+user = User(name = &#39;bobby&#39;, age = 29, height=175, edu=&#39;master&#39;)
+
+user_tuple = (&#39;bobby&#39;, 29, 175, &#39;super master&#39;)
+user_list = (&#39;bobby&#39;, 29, 175)
+user = User(*user_tuple)
+user_dict = {
+    &#39;name&#39;: &#39;bobby&#39;,
+    &#39;age&#39;: 29,
+    &#39;height&#39;: 175,
+    &#39;edu&#39;: &#39;pre master&#39;
+}
+user = User(**user_dict)
+# user = User._make(user_list, &#39;pre master&#39;)
+
+# namedtuple 直接转换成dict
+user_info_dict = user._asdict()
+
+#拆包功能
+name, age, *other = user
+name
+age
+other
+</code></pre>
+
+<ul>
+<li>属性少，没有成员函数的类</li>
+</ul>
+
+<h5>defaultdict</h5>
+
+<pre class="line-numbers"><code class="language-python">from collections import defaultdict
+user_dict = {}
+users = [&#39;bobby1&#39;, &#39;bobby2&#39;, &#39;bobby3&#39;]
+for user in users:
+    if user not in user_dict:
+        user_dict[user] = 1
+    else:
+        user_dict[user] += 1
+user_dict
+
+for user in users:
+    user_dict.setdefault(user, 0)
+    user_dict[user] += 1
+user_dict
+
+user_dict = defaultdict(int)
+for user in users:
+    user_dict[user] += 1
+user_dict
+
+def gen_default():
+    return {
+        &quot;name&quot;: &quot;&quot;,
+        &quot;nums&quot;: 0
+    }
+
+user_dict = defaultdict(gen_default)
+user_dict[&#39;group1&#39;]
+user_dict
+</code></pre>
+
+<h5>deque</h5>
+
+<pre class="line-numbers"><code class="language-python">from collections import deque
+
+user_deque = deque((&#39;bobby1&#39;, &#39;bobby2&#39;))
+user_deque = deque([&#39;bobby1&#39;, &#39;bobby2&#39;, &#39;bobby3&#39;])
+user_deque.appendleft(&#39;9&#39;)
+user_deque.append(&#39;10&#39;)
+user_deque.insert(0, &#39;bobby3&#39;)
+user_deque
+user_deque2 = user_deque.copy()
+user_deque2.appendleft(&#39;7&#39;)
+</code></pre>
+
+<h4>Counter</h4>
+
+<pre class="line-numbers"><code class="language-python">from collections import Counter
+users = [&#39;bobby1&#39;, &#39;bobby2&#39;, &#39;bobby3&#39;, &#39;bobby4&#39;, &#39;bobby5&#39;, &#39;bobby6&#39;,]
+users2 = [&#39;bobby1&#39;, &#39;bobby2&#39;, &#39;bobby1&#39;, &#39;bobby2&#39;, &#39;bobby1&#39;, &#39;bobby2&#39;,]
+user_counter = Counter(users)
+user_counter.update(users2)
+# 统计前N个字符串的
+ret = user_counter.most_common(2)
+user_counter
+ret
+</code></pre>
+
+<h4>Orderdict</h4>
+
+<pre class="line-numbers"><code class="language-python">from collections import OrderedDict
+user_dict = dict()
+user_dict = OrderedDict()
+user_dict[&#39;b&#39;] = &#39;bobby2&#39;
+user_dict[&#39;a&#39;] = &#39;bobby1&#39;
+user_dict[&#39;c&#39;] = &#39;bobby3&#39;
+user_dict.pop(&#39;a&#39;)
+user_dict.move_to_end(&#39;b&#39;)
+user_dict
+# 保证python2和3使用都是一样的
+</code></pre>
+
+<h4>ChainMap</h4>
+
+<pre class="line-numbers"><code class="language-python">from collections import ChainMap
+
+user_dict1 = {&#39;a&#39;:&#39;bobby1&#39;, &#39;b&#39;:&#39;bobby2&#39;}
+user_dict2 = {&#39;c&#39;:&#39;bobby1&#39;, &#39;d&#39;:&#39;bobby2&#39;}
+new_dict = ChainMap(user_dict1, user_dict2)
+new_dict.new_child({&#39;aa&#39;:&#39;aa&#39;, &#39;bb&#39;:&#39;bb&#39;})
+
+#如果有重复元素，就不会再出现第二次
+for k, v in new_dict.items():
+    print(k, v)
+new_dict.maps
+new_dict.maps[0][&#39;a&#39;] = &#39;bobby&#39;
+new_dict.maps
+</code></pre>
+
+<ul>
+<li>访问多个map， 合并访问</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2020/02/07 18:07 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15810442440467.html">
                 
                   <h1>decltype</h1>
@@ -1807,56 +1966,6 @@ func TestConfig(t *testing.T) {
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15782208339837.html">
-                
-                  <h1>里式替换</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>原则</h4>
-
-<ul>
-<li>子类对象（object of subtype/derived class）能够替换程序（program）中父类对象（object of base/parent class）出现的任何地方，并且保证原来程序的逻辑行为（behavior）不变及正确性不被破坏。</li>
-</ul>
-
-<h4>违背里式替换原则</h4>
-
-<ul>
-<li>子类违背父类声明要实现的功能</li>
-<li>子类违背父类对输入、输出、异常的约定</li>
-</ul>
-
-<h4>里氏替换原则</h4>
-
-<ul>
-<li>多态是面向对象编程的一大特性，也是面向对象编程语言的一种语法。它是一种代码实现的思路。而里式替换是一种设计原则，是用来指导继承关系中子类该如何设计的，子类的设计要保证在替换父类的时候，不改变原有程序的逻辑以及不破坏原有程序的正确性。</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2020/01/05 18:40 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html'>设计模式之美</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1998,6 +2107,12 @@ func TestConfig(t *testing.T) {
 	      
 		      
 			      <li class="post">
+			        <a href="15817610843879.html">编译期</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15814649492497.html">Simple Factory</a>
 			      </li>
 		     
@@ -2017,12 +2132,6 @@ func TestConfig(t *testing.T) {
 		      
 			      <li class="post">
 			        <a href="15813811739408.html">tuple 使用</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

@@ -172,6 +172,47 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15715277688744.html">
+                
+                  <h1>容错机制&选举和数据恢复</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>容错</h4>
+
+<ul>
+<li><img src="media/15715277688744/15715279093019.jpg" alt="" style="width:1065px;"/></li>
+<li>（1）9 shard，3 node</li>
+<li>（2）master node宕机，自动master选举，red</li>
+<li>（3）replica容错：新master将replica提升为primary shard，yellow</li>
+<li>（4）重启宕机node，master copy replica到该node，使用原有的shard并同步宕机后的修改，green</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/10/20 07:29 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='ElasticSearch.html'>ElasticSearch</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15715254261625.html">
                 
                   <h1>基础架构图</h1>
@@ -1058,84 +1099,6 @@ type，日化商品type，电器商品type，生鲜商品type
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15713868524964.html">
-                
-                  <h1>CSP并发机制</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>协程泄漏</h4>
-
-<ul>
-<li>channel--&gt;buffer channel协程泄漏</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-go">package concurrency
-
-import (
-    &quot;fmt&quot;
-    &quot;runtime&quot;
-    &quot;testing&quot;
-    &quot;time&quot;
-)
-
-func runTask(id int) string {
-    time.Sleep(10 * time.Millisecond)
-    return fmt.Sprintf(&quot;The result is from %d&quot;, id)
-}
-
-func FirstResponse() string {
-    numOfRunner := 10
-    ch := make(chan string, numOfRunner)
-    ch := make(chan string) //会有协程泄漏
-    for i := 0; i &lt; numOfRunner; i++ {
-        go func(i int) {
-            ret := runTask(i)
-            ch &lt;- ret
-        }(i)
-    }
-    return &lt;-ch
-}
-
-func TestFirstResponse(t *testing.T) {
-    t.Log(&quot;Before:&quot;, runtime.NumGoroutine())
-    t.Log(FirstResponse())
-    time.Sleep(time.Second * 1)
-    t.Log(&quot;After:&quot;, runtime.NumGoroutine())
-}
-</code></pre>
-
-<h4>所有任务完成</h4>
-
-<ul>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/18 16:20 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1277,6 +1240,12 @@ func TestFirstResponse(t *testing.T) {
 	      
 		      
 			      <li class="post">
+			        <a href="15817610843879.html">编译期</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15814649492497.html">Simple Factory</a>
 			      </li>
 		     
@@ -1296,12 +1265,6 @@ func TestFirstResponse(t *testing.T) {
 		      
 			      <li class="post">
 			        <a href="15813811739408.html">tuple 使用</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

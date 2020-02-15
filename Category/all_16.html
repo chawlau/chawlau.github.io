@@ -172,6 +172,76 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15702631234763.html">
+                
+                  <h1>范围赋值</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<ul>
+<li>通过数组索引，我们可以直接给指定的数组元素赋值。除此之外，一个结构体变量的初始化，也可以通过指定某个结构体域直接赋值。</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-c">#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+
+
+int main(void)
+{
+  int b[100] = { [10 ... 30] = 1, [50 ... 60] = 2 };
+  for(int i = 0; i &lt; 100; i++)
+  {
+    printf(&quot;%d  &quot;, b[i]);
+    if( i % 10 == 0)
+      printf(&quot;\n&quot;);
+  }
+
+  int j = 5;
+  switch(j)
+  {
+    case 1:
+      printf(&quot;1\n&quot;);
+      break;
+    case 2 ... 8:
+      printf(&quot;%d\n&quot;,j);
+      break;
+    case 9:
+      printf(&quot;9\n&quot;);
+      break;
+    default:
+      printf(&quot;default!\n&quot;);
+      break;
+  }
+
+  return 0;
+}
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/10/05 16:12 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C%E8%AF%AD%E8%A8%80%E8%BF%9B%E9%98%B6.html'>C语言进阶</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15701550034103.html">
                 
                   <h1>延时队列</h1>
@@ -975,54 +1045,6 @@ int main() {
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15699709788203.html">
-                
-                  <h1>读写分离高可用</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>旧版本复制</h4>
-
-<ul>
-<li>SYNC是一个非常耗费资源的操作</li>
-<li>主服务器需要执行BGSAVE命令来生成RDB文件，这个生成操作会耗费主服务器大量的的 CPU、内存和磁盘读写资源 主服务器将RDB文件发送给从服务器，这个发送操作会耗费主从服务器大量的网络带宽和流 量，并对主服务器响应命令 请求的时间产生影响:接收到RDB文件的从服务器在载入文件的过程是阻塞的，无法处理命令 请求</li>
-</ul>
-
-<h4>新版本复制</h4>
-
-<p><img src="media/15699709788203/15699714704625.jpg" alt="" style="width:1002px;"/><br/>
-<img src="media/15699709788203/15699717831453.jpg" alt="" style="width:1039px;"/></p>
-
-<ul>
-<li>主服务的复制偏移量(replication offset)和从服务器的复制偏移量 主服务器的复制积压缓冲区(replication backlog),默认大小为1M</li>
-<li>服务器的运行ID(run ID),用于存储服务器标识，如从服务器断线重新连接，取到主服务器 的运行ID与重接后的主服务器运行ID进行对比，从而判断是执行部分重同步还是执行完 整重同步</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/02 07:02 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html'>Redis高并发缓存</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1164,6 +1186,12 @@ int main() {
 	      
 		      
 			      <li class="post">
+			        <a href="15817610843879.html">编译期</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15814649492497.html">Simple Factory</a>
 			      </li>
 		     
@@ -1183,12 +1211,6 @@ int main() {
 		      
 			      <li class="post">
 			        <a href="15813811739408.html">tuple 使用</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

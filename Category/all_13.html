@@ -172,6 +172,84 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15713868524964.html">
+                
+                  <h1>CSP并发机制</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>协程泄漏</h4>
+
+<ul>
+<li>channel--&gt;buffer channel协程泄漏</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-go">package concurrency
+
+import (
+    &quot;fmt&quot;
+    &quot;runtime&quot;
+    &quot;testing&quot;
+    &quot;time&quot;
+)
+
+func runTask(id int) string {
+    time.Sleep(10 * time.Millisecond)
+    return fmt.Sprintf(&quot;The result is from %d&quot;, id)
+}
+
+func FirstResponse() string {
+    numOfRunner := 10
+    ch := make(chan string, numOfRunner)
+    ch := make(chan string) //会有协程泄漏
+    for i := 0; i &lt; numOfRunner; i++ {
+        go func(i int) {
+            ret := runTask(i)
+            ch &lt;- ret
+        }(i)
+    }
+    return &lt;-ch
+}
+
+func TestFirstResponse(t *testing.T) {
+    t.Log(&quot;Before:&quot;, runtime.NumGoroutine())
+    t.Log(FirstResponse())
+    time.Sleep(time.Second * 1)
+    t.Log(&quot;After:&quot;, runtime.NumGoroutine())
+}
+</code></pre>
+
+<h4>所有任务完成</h4>
+
+<ul>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/10/18 16:20 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15713463097375.html">
                 
                   <h1>消费者消息</h1>
@@ -695,120 +773,6 @@ p必须传指针才能实现多态
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15710898154881.html">
-                
-                  <h1>微信红包</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>开发流程</h4>
-
-<p><img src="media/15710898154881/15710899833084.jpg" alt="" style="width:1193px;"/></p>
-
-<h4>业务功能点</h4>
-
-<ul>
-<li>新建红包:在DB、cache各新增一条记录</li>
-<li>抢红包:请求访问cache，剩余红包个数大于0则可拆开红包</li>
-<li>key:1，value:20 string decr原子减，每次减1 ， 而decreby减指定数量2</li>
-<li>拆红包: 20个红包里面有500块，key:1,value:50000(以分为单位) decreby 548，decreby 1055 ，decreby 2329</li>
-<li>请求访问cache，剩余红包个数大于0则继续，同时获取可抢红包数与金额 计算金额(从1分到剩余平均值2倍之间随机数，如果不是最后一个红包，剩余金额预留 最少1分给cas更新失败，最后一位拿红包的人) cas更新数据库(更新红包计数表记录【剩余红包个数、剩余红包金额】、插入领取记 录)</li>
-<li>查看红包记录:用户进来直接查DB即可</li>
-</ul>
-
-<h4>红包的库表设计</h4>
-
-<pre class="line-numbers"><code class="language-mysql">
-CREATE TABLE `red_packet_info` (
-`id` int(11) NOT NULL AUTO_INCREMENT,
-`red_packet_id` bigint(11) NOT NULL DEFAULT 0 COMMENT &#39;红包id，采用timestamp+5位随机数&#39;, `total_amount` int(11) NOT NULL DEFAULT 0 COMMENT &#39;红包总金额，单位分&#39;,
-`total_packet` int(11) NOT NULL DEFAULT 0 COMMENT &#39;红包总个数&#39;,
-`remaining_amount` int(11) NOT NULL DEFAULT 0 COMMENT &#39;剩余红包金额，单位分&#39;, `remaining_packet` int(11) NOT NULL DEFAULT 0 COMMENT &#39;剩余红包个数&#39;,
-`uid` int(20) NOT NULL DEFAULT 0 COMMENT &#39;新建红包用户的用户标识&#39;,
-`create_time` timestamp COMMENT &#39;创建时间&#39;,
-`update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-COMMENT &#39;更新时间&#39;, PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT=&#39;红包信息表，新建一个红包插 入一条记录&#39;;
-
-CREATE TABLE `red_packet_record` (
-`id` int(11) NOT NULL AUTO_INCREMENT,
-`amount` int(11) NOT NULL DEFAULT &#39;0&#39; COMMENT &#39;抢到红包的金额&#39;,
-`nick_name` varchar(32) NOT NULL DEFAULT &#39;0&#39; COMMENT &#39;抢到红包的用户的用户名&#39;,
-`img_url` varchar(255) NOT NULL DEFAULT &#39;0&#39; COMMENT &#39;抢到红包的用户的头像&#39;,
-`uid` int(20) NOT NULL DEFAULT &#39;0&#39; COMMENT &#39;抢到红包用户的用户标识&#39;,
-`red_packet_id` bigint(11) NOT NULL DEFAULT &#39;0&#39; COMMENT &#39;红包id，采用timestamp+5位随机
-数&#39;,
-`create_time` timestamp COMMENT &#39;创建时间&#39;,
-`update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-COMMENT &#39;更新时间&#39;, PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT=&#39;抢红包记录表，抢一个红包插 入一条记录&#39;;
-</code></pre>
-
-<h4>发红包接口实现</h4>
-
-<ul>
-<li>发红包功能接口开发</li>
-<li>新增一条红包记录 往mysql里面添加一条红包记录 往redis里面添加一条红包数量记录 decr 往redis里面添加一条红包金额记录 decreby</li>
-<li>抢红包功能接口开发</li>
-<li>抢红包功能属于原子减操作</li>
-<li>当大小小于0时原子减失败 当红包个数为0时后面进来的用户全部抢红包失败，并不会进入拆红包环节</li>
-<li>抢红包功能扩展设计</li>
-<li>将红包ID的请求放入请求队列中，如果发现超过红包的个数，直接返回</li>
-<li>类推出token令牌和秒杀设计原理 注意点</li>
-<li>抢到红包不到能拆成功</li>
-<li>2014年的红包一点开就知道金额，分两次操作，先抢到金额，然后再转账。 2015年后的红包的拆和抢 是分离的，需要点两次，因此会出现抢到红包了，但点开后告知红包已经被领完的状况。进入到第一个 页面不代表抢到，只表示当时红包还有。</li>
-</ul>
-
-<h4>抢红包接口实现</h4>
-
-<p><img src="media/15710898154881/15710924219795.jpg" alt="" style="width:1157px;"/><br/>
-<img src="media/15710898154881/15710924361303.jpg" alt="" style="width:1127px;"/></p>
-
-<ul>
-<li>抢红包功能接口开发</li>
-<li>在抢红包这里并不能保证用户已经能领到这个红包 抢红包只是做了一个判断，判断当前是否还有红包 有红包则返回可以领</li>
-<li>没红包则返回不可以领</li>
-<li>拆红包功能接口开发</li>
-<li>拆红包才是用户能领导红包 这时候要先减redis里面的金额和红包数量 减完金额再入库</li>
-</ul>
-
-<h4>红包业务思考</h4>
-
-<ul>
-<li>take all操作 入库转账时需要保证红包个数和红包剩余金额正确</li>
-<li>高并发处理:红包如何计算被抢完?</li>
-<li>cache会抵抗无效请求，将无效的请求过滤掉，实际进入到后台的量不大。cache记录红包个数，原子操作进行个数递减，到0表示被抢光</li>
-<li>lua原子操作减红包个数和金额</li>
-<li>性能扩展</li>
-<li>多主sharding，水平扩展机器 数据库层面sharding分片 redis层面sharding分片技术</li>
-<li>业务能动性，从发展的角度来看待业务 观察总结，技术赋能业务</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/15 05:50 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html'>Redis高并发缓存</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -950,6 +914,12 @@ COMMENT &#39;更新时间&#39;, PRIMARY KEY (`id`)
 	      
 		      
 			      <li class="post">
+			        <a href="15817610843879.html">编译期</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15814649492497.html">Simple Factory</a>
 			      </li>
 		     
@@ -969,12 +939,6 @@ COMMENT &#39;更新时间&#39;, PRIMARY KEY (`id`)
 		      
 			      <li class="post">
 			        <a href="15813811739408.html">tuple 使用</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

@@ -172,6 +172,167 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15464093479091.html">
+                
+                  <h1>内存泄露实战</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>导致内存泄露的内存段</h4>
+
+<ul>
+<li>堆内存</li>
+<li>内存映射段，包括动态连接库和共享内存，其中共享内存由程序动态分配和管理，如果忘了回收也会导致内存泄露</li>
+</ul>
+
+<h4>使用memleak</h4>
+
+<ul>
+<li>/usr/share/bcc/tools/memleak -p $(pidof main) -a</li>
+<li>显示如下</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">  [22:44:58] Top 10 stacks with outstanding allocations:
+</code></pre>
+
+<ul>
+<li>表示没有内存泄露</li>
+</ul>
+
+<h4>脏页回收</h4>
+
+<ul>
+<li>fsync</li>
+<li>pdflush</li>
+</ul>
+
+<h4>堆内存</h4>
+
+<ul>
+<li>就是应用程序动态分配的堆内存，也就是匿名页</li>
+</ul>
+
+<h4>内存回收</h4>
+
+<ul>
+<li>直接内存回收</li>
+<li>定期内存回收 kswapd0</li>
+</ul>
+
+<h4>定期内存回收</h4>
+
+<ul>
+<li>页最小阈值（pages_min）</li>
+<li>页低阈值（pages_low）</li>
+<li>页高阈值（pages_high）</li>
+<li>剩余内存 pages_free 表示。</li>
+</ul>
+
+<h4>匿名页和文件页</h4>
+
+<ul>
+<li>对文件页的回收，当然就是直接回收缓存，或者把脏页写回磁盘后再回收。</li>
+<li>而对匿名页的回收，其实就是通过 Swap 机制，把它们写入磁盘后再释放内存。</li>
+<li>swappiness来控制匿名页和文件页的回收，数值越大，越积极使用Swap</li>
+</ul>
+
+<h4>内存指标动态监控</h4>
+
+<ul>
+<li>perf record -e kmem:* -p 27027 -g -- sleep 100</li>
+<li>perf script -i perf.data &amp;&gt; perf.unfold</li>
+<li>./stackcollapse-perf.pl perf.unfold &amp;&gt; perf.folded</li>
+<li>./flamegraph.pl perf.folded &gt; perf.svg</li>
+<li>perf script | ./stackcollapse-perf.pl | ./flamegraph.pl &gt; process.svg</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/01/02 14:09 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15460488614529.html">
+                
+                  <h1>幻读</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>概念</h4>
+
+<ul>
+<li>幻读仅仅指新插入的行</li>
+<li>幻读指的是一个事务在前后两次查询同一个范围的时候，后一次查询看到了前一次查询没有看到的行。</li>
+</ul>
+
+<h4>当前读</h4>
+
+<ul>
+<li>for update</li>
+</ul>
+
+<h4>幻读引发的问题</h4>
+
+<ul>
+<li>数据一致性是数据库内部数据状态在此刻的一致性，还包含了数据和日志在逻辑上的一致性</li>
+</ul>
+
+<h4>间隙锁</h4>
+
+<ul>
+<li>保护两个值之间的空隙不允许插入新的值</li>
+<li>在可重复读的级别下生效，读提交的情况下间隙锁不会生效</li>
+<li>读提交下操作数据的锁范围更小，这个选择是合理的</li>
+<li>binlog_format=row配合间隙锁解决数据和日志不一致</li>
+<li>binlog和实际操作的结果数据不一致</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/12/29 10:01 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15458821339264.html">
                 
                   <h1>排序算法考量</h1>
@@ -719,139 +880,6 @@ select d.* from tradelog l , trade_detail d where d.tradeid=CONVERT(l.tradeid US
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15453606137574.html">
-                
-                  <h1>如何正确的显示随机信息</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>原始算法</h4>
-
-<pre class="line-numbers"><code class="language-text">mysql&gt; select word from words order by rand() limit 3;
-</code></pre>
-
-<h4>优化算法1</h4>
-
-<pre class="line-numbers"><code class="language-text">mysql&gt; select max(id),min(id) into @M,@N from t ;
-set @X= floor((@M-@N+1)*rand() + @N);
-select * from t where id &gt;= @X limit 1;
-</code></pre>
-
-<ul>
-<li>有概率不均匀的问题</li>
-</ul>
-
-<h4>算法2</h4>
-
-<pre class="line-numbers"><code class="language-text">mysql&gt; select count(*) into @C from t;
-set @Y = floor(@C * rand());
-set @sql = concat(&quot;select * from t limit &quot;, @Y, &quot;,1&quot;);
-prepare stmt from @sql;
-execute stmt;
-DEALLOCATE prepare stmt;
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/21 10:50 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15453542683157.html">
-                
-                  <h1>Order by工作机制</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>插入数据函数</h4>
-
-<pre class="line-numbers"><code class="language-text">* delimiter ;;
-create procedure icity()
-begin
-  declare i int;
-  set i=1;
-  while(i&lt;=100000)do
-    if i &lt;= 4000 then
-      insert into t values(i, &quot;杭州&quot;, substring(MD5(RAND()),1,10), ROUND(RAND()*(100-1)+1), &quot;杭州中路&quot;);
-    else
-      insert into t values(i, &quot;深圳&quot;, substring(MD5(RAND()),1,10), ROUND(RAND()*(100-1)+1), &quot;深南大道&quot;);
-    end if;
-    set i=i+1;
-  end while;
-end;;
-delimiter ;
-</code></pre>
-
-<h4>全字段排序</h4>
-
-<ul>
-<li>select city,name,age from t where city=&#39;杭州&#39; order by name limit 1000;</li>
-<li><p>初始化 sort_buffer，确定放入 name、city、age 这三个字段；</p></li>
-<li><p>从索引 city 找到第一个满足 city=&#39;杭州’条件的主键 id，也就是图中的 ID_X；</p></li>
-<li><p>到主键 id 索引取出整行，取 name、city、age 三个字段的值，存入 sort_buffer 中；</p></li>
-<li><p>从索引 city 取下一个记录的主键 id；</p></li>
-<li><p>重复步骤 3、4 直到 city 的值不满足查询条件为止，对应的主键 id 也就是图中的 ID_Y；</p></li>
-<li><p>对 sort_buffer 中的数据按照字段 name 做快速排序；</p></li>
-<li><p>按照排序结果取前 1000 行返回给客户端</p></li>
-</ul>
-
-<h4>row_id排序</h4>
-
-<ul>
-<li>相对全字段排序遍历排序结果，取前 1000 行，并按照 id 的值回到原表中取出 city、name 和 age 三个字段返回给客户端。</li>
-</ul>
-
-<h4>覆盖索引</h4>
-
-<ul>
-<li>覆盖索引是指，索引上的信息足够满足查询请求，不需要再回到主键索引上去取数据。</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/21 09:04 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -993,6 +1021,12 @@ delimiter ;
 	      
 		      
 			      <li class="post">
+			        <a href="15817610843879.html">编译期</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15814649492497.html">Simple Factory</a>
 			      </li>
 		     
@@ -1012,12 +1046,6 @@ delimiter ;
 		      
 			      <li class="post">
 			        <a href="15813811739408.html">tuple 使用</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  
