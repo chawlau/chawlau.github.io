@@ -172,6 +172,84 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15817697569868.html">
+                
+                  <h1>字符串分割</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>demo</h4>
+
+<pre class="line-numbers"><code class="language-python">ret = [ss.split(&#39;|&#39;) for ss in s.split(&#39;;&#39;)]
+list(map(lambda ss : ss.split(&#39;|&#39;), s.split(&#39;;&#39;)))
+t = []
+list(map(t.extend, [ss.split(&#39;|&#39;) for ss in s.split(&#39;;&#39;)]))
+t = sum([ss.split(&#39;|&#39;) for ss in s.split(&#39;;&#39;)], [])
+
+def my_slit(s, seps):
+    res = [s]
+    for sep in seps:
+        t = []
+        list(map(lambda ss: t.extend(ss.split(sep)), res))
+        res = t
+    return res
+
+my_slit(s, &#39;,;|\t&#39;)
+</code></pre>
+
+<h4>判断字符串开头或者结尾</h4>
+
+<ul>
+<li><img src="media/15817697569868/15817724455352.jpg" alt="" style="width:774px;"/></li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">import os
+
+d = os.listdir(&#39;./&#39;)
+st = os.stat(&#39;save.pkl&#39;)
+
+import stat
+
+for fn in os.listdir(&#39;./&#39;):
+    if fn.endswith((&#39;.ipynb&#39;, &#39;.pkl&#39;)):
+        fs = os.stat(fn)
+        os.chmod(fn, fs.st_mode | stat.S_IXUSR)
+</code></pre>
+
+<h4>调整文本格式</h4>
+
+<ul>
+<li><img src="media/15817697569868/15817735220897.jpg" alt="" style="width:800px;"/></li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2020/02/15 20:29 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15813101435484.html">
                 
                   <h1>列表&字典&集合进阶用法</h1>
@@ -1470,265 +1548,6 @@ if __name__ == &#39;__main__&#39;:
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15758501024510.html">
-                
-                  <h1>多线程同步</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>死锁情况</h4>
-
-<pre class="line-numbers"><code class="language-python">#2. 锁会引起死锁
-#死锁的情况 A（a，b）
-A(a、b)
-acquire (a)
-acquire (b)
-
-B(a、b)
-acquire (a)
-acquire (b)
-</code></pre>
-
-<h4>可重入的锁</h4>
-
-<ul>
-<li>同一个线程里面，可以连续调用多次acquire,一定要注意acquire的次数</li>
-<li>RLock可重入锁</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-python">from threading import Lock, RLock, Condition
-
-total = 0
-lock = RLock()
-
-def add():
-    global lock
-    global total
-    for i in range(10000):
-        lock.acquire()
-        lock.acquire()
-        total += 1
-        lock.release()
-        lock.release()
-
-def desc():
-    global total
-    global lock
-    for i in range(10000):
-        # lock.acquire()
-        lock.acquire()
-        total -= 1
-        lock.release()
-        # lock.release()
-
-import threading
-
-thread1 = threading.Thread(target=add)
-thread2 = threading.Thread(target=desc)
-
-thread1.start()
-thread2.start()
-thread2.join()
-thread2.join()
-print(&quot;total {}&quot;.format(total))
-</code></pre>
-
-<h4>协同</h4>
-
-<pre class="line-numbers"><code class="language-python">import threading
-
-class XiaoAi(threading.Thread):
-    def __init__(self, lock):
-        super().__init__(name=&quot;xiaoai&quot;)
-        self.lock = lock
-
-    def run(self):
-        self.lock.acquire()
-        print(&quot;{}. at &quot;.format(self.name))
-        self.lock.release()
-
-        self.lock.acquire()
-        print(&quot;{}. ok &quot;.format(self.name))
-        self.lock.release()
-
-class TianMao(threading.Thread):
-    def __init__(self, lock):
-        super().__init__(name=&quot;tiaomao&quot;)
-        self.lock = lock
-
-    def run(self):
-        self.lock.acquire()
-        print(&quot;{} : xiaoai roomate&quot;.format(self.name))
-        self.lock.release()
-
-        self.lock.acquire()
-        print(&quot;{} : let&#39;s talk&quot;.format(self.name))
-        self.lock.release()
-
-if __name__ == &#39;__main__&#39;:
-    lock = threading.Lock()
-    thread1 = XiaoAi(lock)
-    thread2 = TianMao(lock)
-    thread1.start()
-    thread2.start()
-    thread1.join()
-    thread2.join()
-</code></pre>
-
-<ul>
-<li>condition启动顺序很重要,在调用with cond之后才能调用wait或者notify方法</li>
-<li>condition有两层锁， 一把底层锁会在线程调用了wait方法的时候释放， 上面的锁会在每次调用wait的时候分配一把并放入到cond的等待队列中，等到notify方法的唤醒<br/>
-xiaoai.start()</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-python">import threading
-
-class XiaoAi(threading.Thread):
-    def __init__(self, cond):
-        super().__init__(name=&quot;xiaoai&quot;)
-        self.cond = cond
-
-    def run(self):
-        with self.cond:
-            self.cond.wait()
-            print(&#39;{}: 在 &#39;.format(self.name))
-            self.cond.notify()
-
-            self.cond.wait()
-            print(&#39;{}: 好阿 &#39;.format(self.name))
-            self.cond.notify()
-
-            self.cond.wait()
-            print(&#39;{}: 君住长江尾 &#39;.format(self.name))
-            self.cond.notify()
-
-            self.cond.wait()
-            print(&#39;{}: 共饮长江水 &#39;.format(self.name))
-            self.cond.notify()
-
-            self.cond.wait()
-            print(&#39;{}: 此恨何时已 &#39;.format(self.name))
-            self.cond.notify()
-
-            self.cond.wait()
-            print(&#39;{}: 定不负相思意 &#39;.format(self.name))
-            self.cond.notify()
-
-class TianMao(threading.Thread):
-    def __init__(self, cond):
-        super().__init__(name=&quot;天猫精灵&quot;)
-        self.cond = cond
-
-    def run(self):
-        with self.cond:
-            print(&#39;{}: 小爱同学 &#39;.format(self.name))
-            self.cond.notify()
-            self.cond.wait()
-
-            print(&#39;{}: 我们来对古诗吧 &#39;.format(self.name))
-            self.cond.notify()
-            self.cond.wait()
-
-            print(&#39;{}: 我住长江头 &#39;.format(self.name))
-            self.cond.notify()
-            self.cond.wait()
-
-            print(&#39;{}: 日日思君不见君 &#39;.format(self.name))
-            self.cond.notify()
-            self.cond.wait()
-
-            print(&#39;{}: 此水几时休 &#39;.format(self.name))
-            self.cond.notify()
-            self.cond.wait()
-
-            print(&#39;{}: 只愿君心似我心 &#39;.format(self.name))
-            self.cond.notify()
-            self.cond.wait()
-
-if __name__ == &#39;__main__&#39;:
-    from concurrent import futures
-    cond = threading.Condition()
-    xiaoai = XiaoAi(cond)
-    tianmao = TianMao(cond)
-
-    xiaoai.start()
-    tianmao.start()
-</code></pre>
-
-<h4>ThreadPoolExcutor</h4>
-
-<pre class="line-numbers"><code class="language-python">from concurrent.futures import ThreadPoolExecutor, as_completed, wait, FIRST_COMPLETED
-from concurrent.futures import Future
-from multiprocessing import Pool
-
-
-import time
-
-def get_html(times):
-    time.sleep(times)
-    print(&#39;get page {} process&#39;.format(times))
-    return times
-
-executor = ThreadPoolExecutor(max_workers=2)
-</code></pre>
-
-<h5>执行任务获取结果</h5>
-
-<pre class="line-numbers"><code class="language-python">task1 = executor.submit(get_html, (3))
-task2 = executor.submit(get_html, (2))
-#
-print(task1.result())
-print(task2.cancel()) //取消结果
-</code></pre>
-
-<h5>多任务</h5>
-
-<pre class="line-numbers"><code class="language-python">urls = [3, 2, 4]
-
-all_task = [executor.submit(get_html, (url)) for url in urls]
-
-for future in as_completed(all_task):
-    data = future.result()
-    print(&#39;get {} page&#39;.format(data))
-
-
-#通过excutor获取已经完成的task
-for data in executor.map(get_html, urls):
-    print(&#39;get {} page&#39;.format(data))
-</code></pre>
-
-<h5>wait获取结果</h5>
-
-<pre class="line-numbers"><code class="language-python">#wait
-wait(all_task, return_when=FIRST_COMPLETED)
-print(&#39;main&#39;)
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/12/09 08:08 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1870,6 +1689,12 @@ print(&#39;main&#39;)
 	      
 		      
 			      <li class="post">
+			        <a href="15817697569868.html">字符串分割</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817610843879.html">编译期</a>
 			      </li>
 		     
@@ -1889,12 +1714,6 @@ print(&#39;main&#39;)
 		      
 			      <li class="post">
 			        <a href="15814188057978.html">重构</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813811739408.html">tuple 使用</a>
 			      </li>
 		     
 		  

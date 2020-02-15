@@ -172,6 +172,326 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15729049211046.html">
+                
+                  <h1>Factory</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>典型模式</h4>
+
+<ul>
+<li>通过“对象创建”模式绕开 new，来避免对象创建（new）过程中所导致的紧耦合（依赖具体类），从而支持对象创建的稳定。它是接口抽象之后的第一步工作。</li>
+</ul>
+
+<h4>典型模式</h4>
+
+<ul>
+<li>Factory Method</li>
+<li>Abstract Factory</li>
+<li>Prototype</li>
+<li>Builder</li>
+</ul>
+
+<h4>定义</h4>
+
+<ul>
+<li>定义ー个用于创建对象的接口，让子类决定实例化哪一个类 Factory Method 使得一个类的实例化延迟（目的：解耦，手段：虚函数）到子类。</li>
+</ul>
+
+<h4>结构图</h4>
+
+<p><img src="media/15729049211046/15809845877086.jpg" alt="" style="width:728px;"/></p>
+
+<h4>总结</h4>
+
+<ul>
+<li>Factory Method 模式用于隔离类对象的使用者和具体类型之间的耦合关系。面对一个经常变化的具体类型，紧耦合关系（new）会导致软件的脆弱。</li>
+<li>Factory Methodi 模式通过面向对象的手法，将所要创建的具体对象工作延迟到子类，从而实现一种扩展（而非更改）的策略，较好地解决了这种紧耦合关系。</li>
+<li>Factory Method 模式解决“单个对象”的需求变化。缺点在于要求创 建方法/参数相同。</li>
+</ul>
+
+<h4>cpp_demo</h4>
+
+<pre class="line-numbers"><code class="language-cpp">class Video {
+ public:
+  virtual void produce() = 0;
+};
+
+class VideoFactory {
+ public:
+  virtual Video* getVideo() = 0;
+};
+
+class FEVideo : public Video {
+ public:
+  void produce() {
+    std::cout &lt;&lt; &quot; FE video &quot; &lt;&lt; std::endl;
+  }
+};
+
+class FEVideoFactory : public VideoFactory {
+ public:
+  Video* getVideo() {
+    return new FEVideo();
+  }
+};
+
+class JavaVideo : public Video {
+ public:
+  void produce() {
+    std::cout &lt;&lt; &quot; Java video &quot; &lt;&lt; std::endl;
+  }
+};
+class JavaVideoFactory : public VideoFactory {
+ public:
+  Video* getVideo() {
+    return new JavaVideo();
+  }
+};
+
+class PythonVideo : public Video {
+ public:
+  void produce() {
+    std::cout &lt;&lt; &quot; Python video &quot; &lt;&lt; std::endl;
+  }
+};
+
+class PythonVideoFactory : public VideoFactory {
+ public:
+  Video* getVideo() {
+    return new PythonVideo();
+  }
+};
+
+int main() {
+  VideoFactory* f1 = new PythonVideoFactory();
+  VideoFactory* f2 = new JavaVideoFactory();
+  VideoFactory* f3 = new FEVideoFactory();
+  Video* v1 = f1-&gt;getVideo();
+  Video* v2 = f2-&gt;getVideo();
+  Video* v3 = f3-&gt;getVideo();
+  v1-&gt;produce();
+  v2-&gt;produce();
+  v3-&gt;produce();
+}
+</code></pre>
+
+<h4>golang_demo</h4>
+
+<pre class="line-numbers"><code class="language-go">package desian_pattern_practise
+
+import &quot;reflect&quot;
+
+type Video interface {
+    Produce()
+}
+
+type VideoFactory interface {
+    GetVideo() Video
+}
+
+type CppVideo struct {
+}
+
+func (c *CppVideo) Produce() {
+    println(reflect.TypeOf(c).String(), &quot;Produce&quot;)
+}
+
+type CppFactory struct {
+}
+
+func (c *CppFactory) GetVideo() Video {
+    return &amp;CppVideo{}
+}
+
+type JavaVideo struct {
+}
+
+func (c *JavaVideo) Produce() {
+    println(reflect.TypeOf(c).String(), &quot;Produce&quot;)
+}
+
+type JavaFactory struct {
+}
+
+func (c *JavaFactory) GetVideo() Video {
+    return &amp;JavaVideo{}
+}
+
+type PythonVideo struct {
+}
+
+func (c *PythonVideo) Produce() {
+    println(reflect.TypeOf(c).String(), &quot;Produce&quot;)
+}
+
+type PythonFactory struct {
+}
+
+func (c *PythonFactory) GetVideo() Video {
+    return &amp;PythonVideo{}
+}
+
+func TestCppFactory_GetVideo(t *testing.T) {
+    py := &amp;PythonFactory{}
+    py.GetVideo().Produce()
+
+    cpp := &amp;CppFactory{}
+    cpp.GetVideo().Produce()
+
+    java := &amp;JavaFactory{}
+    java.GetVideo().Produce()
+}
+</code></pre>
+
+<h4>python_demo</h4>
+
+<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
+
+class Video(metaclass=ABCMeta):
+    def produce(self):
+        pass
+
+class VideoFactory(metaclass=ABCMeta):
+
+    def get_video(self):
+        pass
+
+class CppVideo(Video):
+
+    def produce(self):
+        print(type(self).__name__, &quot; produce&quot;)
+        
+class CppFactory(VideoFactory):
+    
+    def get_video(self):
+        return CppVideo()
+
+
+class JavaVideo(Video):
+
+    def produce(self):
+        print(type(self).__name__, &quot; produce&quot;)
+
+
+class JavaFactory(VideoFactory):
+
+    def get_video(self):
+        return JavaVideo()
+
+
+class PythonVideo(Video):
+
+    def produce(self):
+        print(type(self).__name__, &quot; produce&quot;)
+
+
+class PythonFactory(VideoFactory):
+
+    def get_video(self):
+        return PythonVideo()
+
+if __name__ == &#39;__main__&#39;:
+    cpp = CppFactory()
+    cpp.get_video().produce()
+
+    java = JavaFactory()
+    java.get_video().produce()
+
+    python = PythonFactory()
+    python.get_video().produce()
+</code></pre>
+
+<h4>golang_demo</h4>
+
+<pre class="line-numbers"><code class="language-go">import &quot;fmt&quot;
+type ICar interface {
+    Name()
+}
+
+type Factory interface {
+    CreateCar() ICar
+}
+
+type BenzCar struct {
+}
+
+func (bc *BenzCar) Name() {
+    fmt.Println(&quot;BenzCar Create&quot;)
+}
+
+type BenzFactory struct{}
+
+func (b *BenzFactory) CreateCar() ICar {
+    return &amp;BenzCar{}
+}
+
+type BmwCar struct {
+    ICar
+}
+
+func (bc *BmwCar) Name() {
+    fmt.Println(&quot;BmwCar Create&quot;)
+}
+
+type BmwFactory struct{}
+
+func (b *BmwFactory) CreateCar() ICar {
+    return &amp;BmwCar{}
+}
+
+type AudiCar struct {
+    ICar
+}
+
+func (bc *AudiCar) Name() {
+    fmt.Println(&quot;AudiCar Create&quot;)
+}
+
+type AudiFactory struct{}
+
+func (b *AudiFactory) CreateCar() ICar {
+    return &amp;AudiCar{}
+}
+
+func TestAudiFactory_CreateCar(t *testing.T) {
+    audi := &amp;AudiFactory{}
+    audi.CreateCar().Name()
+
+    bmw := &amp;BmwFactory{}
+    bmw.CreateCar().Name()
+
+    benz := &amp;BenzFactory{}
+    benz.CreateCar().Name()
+}
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/05 06:02 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15728255199604.html">
                 
                   <h1>自定义函数和匿名函数</h1>
@@ -2711,103 +3031,6 @@ func ExampleFTPDownloader() {
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15724781541212.html">
-                
-                  <h1>面向对象设计原则</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>面向对象设计</h4>
-
-<ul>
-<li>变化是复用的</li>
-<li>抵御变化</li>
-</ul>
-
-<h4>认知</h4>
-
-<ul>
-<li>从语言实现层面来看，对象封装了代码和数据。</li>
-<li>从规格层面讲，对象是一系列可被使用的公共接口</li>
-<li>从概念层面讲，对象是某种拥有责任的抽象。</li>
-</ul>
-
-<h4>设计原则</h4>
-
-<h5>依赖倒置原则（DIP)</h5>
-
-<ul>
-<li>高层模块（稳定不应该依赖于低层模块（变化） 二者都依赖于抽象（稳定）</li>
-<li>抽象不应该依赖于实现细节，实现细节应该依赖于抽象</li>
-<li><img src="media/15724781541212/15724788990425.jpg" alt="" style="width:714px;"/></li>
-</ul>
-
-<h5>开放封闭原则</h5>
-
-<ul>
-<li>对扩展开放，对更改封闭。</li>
-<li>类模块应该是可扩展的，但是不可修改。</li>
-</ul>
-
-<h5>单一职责原则（SRP)</h5>
-
-<ul>
-<li>一个类应该仅有一个引起它变化的原因</li>
-<li>变化的方向隐含着类的责任。</li>
-</ul>
-
-<h5>Liskov 替换原则（LSP)</h5>
-
-<ul>
-<li>子类必须能够替換它们的基类（IS-A）。继承表达类型抽象。</li>
-</ul>
-
-<h4>接口隔离原则（ISP)</h4>
-
-<p>・不应该强迫客户程序依赖它们不用的方法。・接口应该小而完备</p>
-
-<h5>优先使用组合</h5>
-
-<ul>
-<li>继承破坏了封装性，子类父类耦合高</li>
-</ul>
-
-<h5>封装变化点</h5>
-
-<h5>针对接口编程</h5>
-
-<ul>
-<li>针对接口编程，而不是针对实现编程</li>
-<li>不将变量类型声明为某个特定的具体类，而是声明为某个接口。</li>
-<li>客户程序无需获知对象的具体类型，只需要知道对象所具有的接口。</li>
-<li>減少系统中各部分的依赖关系，从而实现“高内聚、松耦合的类型设计方案。</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/31 07:29 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -2949,6 +3172,12 @@ func ExampleFTPDownloader() {
 	      
 		      
 			      <li class="post">
+			        <a href="15817697569868.html">字符串分割</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817610843879.html">编译期</a>
 			      </li>
 		     
@@ -2968,12 +3197,6 @@ func ExampleFTPDownloader() {
 		      
 			      <li class="post">
 			        <a href="15814188057978.html">重构</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813811739408.html">tuple 使用</a>
 			      </li>
 		     
 		  

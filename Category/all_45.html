@@ -172,6 +172,51 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15500274588408.html">
+                
+                  <h1>insert语句的锁</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>insert循环写入</h4>
+
+<ul>
+<li>导致在表 t 上做全表扫描，并且会给索引 c 上的所有间隙都加上共享的 next-key lock。所以，这个语句执行期间，其他事务不能在这个表上插入数据</li>
+<li>一边遍历数据，一边更新数据的情况，如果读出来的数据直接写回原表，就可能在遍历过程中，读到刚刚插入的记录，新插入的记录如果参与计算逻辑，就跟语义不符</li>
+</ul>
+
+<h4>insert唯一键冲突</h4>
+
+<ul>
+<li>冲突后主键和唯一健索引冲突加的都是next-key lock</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/02/13 11:10 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15500241034354.html">
                 
                   <h1>评估系统的网络性能</h1>
@@ -869,86 +914,6 @@
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15497784144204.html">
-                
-                  <h1>高性能数据库集群</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>读写分离的复杂度</h4>
-
-<ul>
-<li>复制延迟</li>
-<li>写操作后的读操作指定发给数据库主服务器</li>
-<li>读从库失败后再读一次主机</li>
-<li>关键业务读写操作全部指向主机，非关键业务采取读写分离</li>
-<li>读写分离分散了数据库读写压力，没有分散存储压力</li>
-</ul>
-
-<h4>分配机制</h4>
-
-<ul>
-<li>程序代码封装</li>
-<li>中间件封装</li>
-<li>淘宝TDDL</li>
-<li>Mysql Proxy</li>
-<li>Mysql Router</li>
-<li>Mysql Atlas</li>
-</ul>
-
-<h4>分库分表</h4>
-
-<ul>
-<li>用来分散存储压力</li>
-</ul>
-
-<h4>业务分库</h4>
-
-<ul>
-<li>join操作问题</li>
-<li>事物问题</li>
-<li>成本问题</li>
-</ul>
-
-<h4>分表</h4>
-
-<ul>
-<li>分散存储压力和性能提升</li>
-<li>垂直拆分 垂直分表适合将表中某些不常用且占了大量空间的列拆分出去，主要是是表操作数目要增加</li>
-<li>水平拆分适合表行数特别大的表，一般以5000万为准</li>
-<li>复杂性 </li>
-<li>路由</li>
-<li>范围路由</li>
-<li>Hash路由</li>
-<li>配置路由 配置路由就是路由表，用一张独立的表来记录路由信息</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/10 14:00 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%9E%B6%E6%9E%84.html'>架构</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1090,6 +1055,12 @@
 	      
 		      
 			      <li class="post">
+			        <a href="15817697569868.html">字符串分割</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817610843879.html">编译期</a>
 			      </li>
 		     
@@ -1109,12 +1080,6 @@
 		      
 			      <li class="post">
 			        <a href="15814188057978.html">重构</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813811739408.html">tuple 使用</a>
 			      </li>
 		     
 		  

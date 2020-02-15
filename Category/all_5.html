@@ -172,6 +172,119 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15745422969850.html">
+                
+                  <h1>自定义序列类</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>序列协议</h4>
+
+<ul>
+<li><img src="media/15745422969850/15745424374141.jpg" alt="" style="width:663px;"/></li>
+</ul>
+
+<h4>add</h4>
+
+<pre class="line-numbers"><code class="language-python">a += (3, 4)
+a += [3, 4]
+通过魔法函数__iadd__来实现，内部通过extends实现
+a = [1, 2]
+c = a + [3, 4]
+print(c)
+
+a += (3, 4)
+a.extend(range(3))//迭代相加每个元素
+a.append((1, 2)) //直接加上整个元组
+a.append([1, 2]) //直接加上整个列表
+print(a)
+</code></pre>
+
+<h4>可切片的对象</h4>
+
+<pre class="line-numbers"><code class="language-python">import numbers
+
+class Group:
+    def __init__(self, group_name, company_name, staffs):
+        self.group_name = group_name
+        self.company_name = company_name
+        self.staffs = staffs
+
+    def __reversed__(self):
+        self.staffs.reverse()
+
+    def __getitem__(self, item):
+        cls = type(self)
+        if isinstance(item, slice):
+            return cls(group_name=self.group_name, company_name=self.company_name, staffs=self.staffs[item])
+        elif isinstance(item, slice):
+            return cls(group_name=self.group_name, company_name=self.company_name, staffs=[self.staffs[item]])
+
+    def __len__(self):
+        return len(self.staffs)
+
+    def __iter__(self):
+        return iter(self.staffs)
+
+    def __contains__(self, item):
+        if item in self.staffs:
+            return True
+        else:
+            return False
+
+staffs = [&quot;bobby1&quot;, &quot;imooc&quot;, &quot;bobby2&quot;, &quot;bobby3&quot;]
+
+group = Group(company_name=&quot;imooc&quot;, group_name=&quot;user&quot;, staffs=staffs)
+reversed(group)
+
+for user in group:
+    print(user)
+</code></pre>
+
+<h4>维持升序排列</h4>
+
+<pre class="line-numbers"><code class="language-python">#用来处理已排序的序列，用来维持已排序的序列， 升序
+import bisect
+
+from  collections import deque
+
+inter_list = deque()
+bisect.insort(inter_list, 3)
+bisect.insort(inter_list, 2)
+bisect.insort(inter_list, 5)
+bisect.insort(inter_list, 1)
+bisect.insort(inter_list, 6)
+
+print(bisect.bisect_left(inter_list, 3))
+
+print(inter_list)
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/24 04:51 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15744656731481.html">
                 
                   <h1>静态方法&类方法&对象方法</h1>
@@ -1687,54 +1800,6 @@ if __name__ == &#39;__main__&#39;:
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15735993394297.html">
-                
-                  <h1>Grafna</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>监控案例</h4>
-
-<ul>
-<li>CPU使用率</li>
-<li>除去IO等待造成的CPU高之外，大部 分情况 就是 user%造成<br/>
-另外， </li>
-<li>system% 内核态的CPU 使用率 偶尔也会出现高的情况</li>
-<li>当服务器硬盘IO占用过大时，CPU会等待IO的返回进入interuptable 类型的CPU等待时间</li>
-</ul>
-
-<h4>硬盘监控</h4>
-
-<ul>
-<li>predict_linear()</li>
-<li>磁盘读写((rate(node_disk_read_bytes_total[1m] )+ rate(node_disk_written_bytes_total[1m])) / 1024 /1024) &gt; 0</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/13 06:55 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1876,6 +1941,12 @@ if __name__ == &#39;__main__&#39;:
 	      
 		      
 			      <li class="post">
+			        <a href="15817697569868.html">字符串分割</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817610843879.html">编译期</a>
 			      </li>
 		     
@@ -1895,12 +1966,6 @@ if __name__ == &#39;__main__&#39;:
 		      
 			      <li class="post">
 			        <a href="15814188057978.html">重构</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813811739408.html">tuple 使用</a>
 			      </li>
 		     
 		  

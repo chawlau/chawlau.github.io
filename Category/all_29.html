@@ -172,6 +172,95 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15655109586523.html">
+                
+                  <h1>内存管理</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>接口</h4>
+
+<ul>
+<li>brk</li>
+<li>mmap</li>
+<li>munmap</li>
+</ul>
+
+<h4>内存碎片原因</h4>
+
+<ul>
+<li>brk分配的地址需要等到高地址内存释放以后才能释放，mmap分配的内存可以单独释放</li>
+</ul>
+
+<h4>libc是如何管理内存</h4>
+
+<ul>
+<li>ptmalloc</li>
+<li>fast bins</li>
+<li>unsorted bins</li>
+<li>大内存 large bins-&gt;mmaped chunk-&gt;main area-&gt;top chunk</li>
+</ul>
+
+<h4>ptmalloc分配</h4>
+
+<ol>
+<li>获取分配区的锁，防止多线程冲突。</li>
+<li>计算出需要分配的内存的chunk实际大小。</li>
+<li>判断chunk的大小，如果小于max_fast（64b），则取fast bins上去查询是否有适合的chunk，如果有则分配结束。</li>
+<li>chunk大小是否小于512B，如果是，则从small bins上去查找chunk，如果有合适的，则分配结束。</li>
+<li>继续从 unsorted bins上查找。如果unsorted bins上只有一个chunk并且大于待分配的chunk，则进行切割，并且剩余的chunk继续扔回unsorted bins；如果unsorted bins上有大小和待分配chunk相等的，则返回，并从unsorted bins删除；如果unsorted bins中的某一chunk大小 属于small bins的范围，则放入small bins的头部；如果unsorted bins中的某一chunk大小 属于large bins的范围，则找到合适的位置放入。</li>
+<li>从large bins中查找，找到链表头后，反向遍历此链表，直到找到第一个大小 大于待分配的chunk，然后进行切割，如果有余下的，则放入unsorted bin中去，分配则结束。</li>
+<li>如果搜索fast bins和bins都没有找到合适的chunk，那么就需要操作top chunk来进行分配了（top chunk相当于分配区的剩余内存空间）。判断top chunk大小是否满足所需chunk的大小，如果是，则从top chunk中分出一块来。</li>
+<li>如果top chunk也不能满足需求，则需要扩大top chunk。主分区上，如果分配的内存小于分配阀值（默认128k），则直接使用brk()分配一块内存；如果分配的内存大于分配阀值，则需要mmap来分配；非主分区上，则直接使用mmap来分配一块内存。通过mmap分配的内存，就会放入mmap chunk上，mmap chunk上的内存会直接回收给操作系统。</li>
+</ol>
+
+<h4>ptmalloc释放</h4>
+
+<ol>
+<li>获取分配区的锁，保证线程安全。</li>
+<li>如果free的是空指针，则返回，什么都不做。</li>
+<li>判断当前chunk是否是mmap映射区域映射的内存，如果是，则直接munmap()释放这块内存。前面的已使用chunk的数据结构中，我们可以看到有M来标识是否是mmap映射的内存。</li>
+<li>判断chunk是否与top chunk相邻，如果相邻，则直接和top chunk合并（和top chunk相邻相当于和分配区中的空闲内存块相邻）。转到步骤8</li>
+<li>如果chunk的大小大于max_fast（64b），则放入unsorted bin，并且检查是否有合并，有合并情况并且和top chunk相邻，则转到步骤8；没有合并情况则free。</li>
+<li>如果chunk的大小小于 max_fast（64b），则直接放入fast bin，fast bin并没有改变chunk的状态。没有合并情况，则free；有合并情况，转到步骤7</li>
+<li>在fast bin，如果当前chunk的下一个chunk也是空闲的，则将这两个chunk合并，放入unsorted bin上面。合并后的大小如果大于64KB，会触发进行fast bins的合并操作，fast bins中的chunk将被遍历，并与相邻的空闲chunk进行合并，合并后的chunk会被放到unsorted bin中，fast bin会变为空。合并后的chunk和topchunk相邻，则会合并到topchunk中。转到步骤8</li>
+<li>判断top chunk的大小是否大于mmap收缩阈值（默认为128KB），如果是的话，对于主分配区，则会试图归还top chunk中的一部分给操作系统。free结束。</li>
+</ol>
+
+<h4>内存池</h4>
+
+<ul>
+<li>单线程内存池</li>
+<li>多线程内存池</li>
+<li>固定内存池和可变内存池</li>
+<li>boost::pool</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/08/11 16:09 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15654308309759.html">
                 
                   <h1>C程序内存管理和main函数前生今世</h1>
@@ -726,193 +815,6 @@ int kvm_cpu_exec(CPUState *cpu)
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15651732645009.html">
-                
-                  <h1>C++11</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>标准</h4>
-
-<ul>
-<li>C++标准库</li>
-<li>新功能，新写法，取代C语言的功能和写法，积极学习新写法</li>
-<li>语法和标准程序库的学习</li>
-</ul>
-
-<h4>引用</h4>
-
-<ul>
-<li>引用和原变量占用同一块内存</li>
-<li>引用必须绑定到变量</li>
-</ul>
-
-<h4>常量</h4>
-
-<ul>
-<li>const可以修改</li>
-<li>constexpr编译的时候求值提升性能</li>
-<li>const 变量的初始化可以延迟到运行时，而 constexpr 变量必须在编译时进行初始化</li>
-</ul>
-
-<h4>内存分配问题</h4>
-
-<ul>
-<li>new</li>
-<li>delete</li>
-</ul>
-
-<h4>nullptr</h4>
-
-<ul>
-<li>C++11新关键字</li>
-<li>nullptr避免指针和整数的混淆</li>
-<li>NULL是0</li>
-</ul>
-
-<h4>最大最小</h4>
-
-<ul>
-<li>std::min_element</li>
-<li>std::max_element</li>
-</ul>
-
-<h4>C++11新特性</h4>
-
-<ul>
-<li><a href="http://www.stroustrup.com/C++11FAQ.html#">http://www.stroustrup.com/C++11FAQ.html#</a></li>
-</ul>
-
-<h4>隐式拷贝函数</h4>
-
-<ul>
-<li>拷贝函数 + 析构函数 自动生成拷贝赋值运算符</li>
-<li>赋值运算符 + 析构函数 </li>
-</ul>
-
-<h4>auto_ptr被unique_ptr代替</h4>
-
-<ul>
-<li>auto_ptr发生所有权转移</li>
-<li>unique_ptr不会</li>
-</ul>
-
-<h4>bind替换bind1st,bind2nd</h4>
-
-<h4>函数适配器</h4>
-
-<ul>
-<li>bind</li>
-<li>not1</li>
-<li>not2</li>
-<li>ref</li>
-<li>cref</li>
-<li>mem_fun()</li>
-</ul>
-
-<h4>动态异常声明</h4>
-
-<ul>
-<li>throw 被 noexcept</li>
-</ul>
-
-<h4>nullptr&amp;nullptr_t</h4>
-
-<ul>
-<li>能够隐式的转换任何类型的指针</li>
-</ul>
-
-<h4>constexpr</h4>
-
-<ul>
-<li>编译期间把它当成一个常量</li>
-<li>可以用于函数，数据声明， 以及类的构造函数</li>
-<li>常量表达式函数</li>
-<li>常量构造函数也有约束</li>
-</ul>
-
-<h4>auto</h4>
-
-<ul>
-<li>静态的成员编译的时候必须初始化</li>
-</ul>
-
-<h4>decltype</h4>
-
-<pre class="line-numbers"><code class="language-text">template&lt;typename T1, typename T2&gt;
-decltype(a + b) add(T1 a, T2b) {
-  auto s = a + b;
-  return s;
-}
-</code></pre>
-
-<p>1）  如果e是一个没有带括号的标记符表达式或者类成员访问表达式，那么decltype(e)就是e所命名的实体的类型。此外，如果e是一个被重载的函数，则会导致编译时错误；<br/>
-2）  否则，假设e的类型是T，如果e是一个将亡值(xvalue)，那么decltype(e)为T&amp;&amp;；<br/>
-3）  否则，假设e的类型是T，如果e是一个左值，则decltype(e)为T&amp;；<br/>
-4）  否则，假设e的类型是T，则decltype(e)为T。</p>
-
-<h4>左值和右值</h4>
-
-<ul>
-<li>分配了内存的就是左值，可以取地址</li>
-<li>右值和将亡值</li>
-<li>T&amp;&amp;右值引用</li>
-<li>所有的右值引用叠加到右值引用还是右值引用</li>
-<li>所有的其他引用类型迭代都会变成左值引用</li>
-</ul>
-
-<h4>std::move&amp;&amp;std::forward</h4>
-
-<ul>
-<li>move左值转成右值引用</li>
-<li>forward关闭引用折叠</li>
-</ul>
-
-<h4>final&amp;&amp;override</h4>
-
-<ul>
-<li>final表示虚函数不可以重写</li>
-<li>override必须重写</li>
-</ul>
-
-<h4>delete&amp;&amp;default</h4>
-
-<ul>
-<li>default显式声明使用编译器生成的默认构造函数</li>
-<li>delete 阻止编译器生成赋值拷贝构造函数</li>
-</ul>
-
-<h4>移动语义</h4>
-
-<ul>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/07 18:21 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1054,6 +956,12 @@ decltype(a + b) add(T1 a, T2b) {
 	      
 		      
 			      <li class="post">
+			        <a href="15817697569868.html">字符串分割</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817610843879.html">编译期</a>
 			      </li>
 		     
@@ -1073,12 +981,6 @@ decltype(a + b) add(T1 a, T2b) {
 		      
 			      <li class="post">
 			        <a href="15814188057978.html">重构</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813811739408.html">tuple 使用</a>
 			      </li>
 		     
 		  

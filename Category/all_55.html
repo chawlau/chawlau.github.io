@@ -172,6 +172,80 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15441451175680.html">
+                
+                  <h1>不可中断进程和僵尸进程</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>概念</h4>
+
+<ul>
+<li>不可中断状态，一般表示进程正在跟硬件交互，为了保护进程数据与硬件一致，系统不允许其他进程或中断打断该进程。</li>
+<li>僵尸进程表示进程已经退出，但它的父进程没有回收该进程所占用的资源</li>
+</ul>
+
+<h4>进程状态</h4>
+
+<ul>
+<li>R 是 Running 或 Runnable 的缩写，表示进程在 CPU 的就绪队列中，正在运行或者正在等待运行。</li>
+<li>D 是 Disk Sleep 的缩写，也就是不可中断状态睡眠（Uninterruptible Sleep），一般表示进程正在跟硬件交互，并且交互过程不允许被其他进程或中断打断。</li>
+<li>Z 是 Zombie 的缩写，如果你玩过“植物大战僵尸”这款游戏，应该知道它的意思。它表示僵尸进程，也就是进程实际上已经结束了，但是父进程还没有回收它的资源（比如进程的描述符、PID 等）。</li>
+<li>S 是 Interruptible Sleep 的缩写，也就是可中断状态睡眠，表示进程因为等待某个事件而被系统挂起。当进程等待的事件发生时，它会被唤醒并进入 R 状态。</li>
+<li>I 是 Idle 的缩写，也就是空闲状态，用在不可中断睡眠的内核线程上。前面说了，硬件交互导致的不可中断进程用 D 表示，但对某些内核线程来说，它们有可能实际上并没有任何负载，用 Idle 正是为了区分这种情况。要注意，D 状态的进程会导致平均负载升高， I 状态的进程却不会。</li>
+</ul>
+
+<h4>下面问题分析</h4>
+
+<p><img src="media/15441451175680/15441459602016.jpg" alt=""/></p>
+
+<ul>
+<li>iowait太高，导致系统的平均负载升高，甚至达到了系统CPU的个数</li>
+<li>僵尸进程正在不断增多，说明程序没能正确清理进程的资源
+<img src="media/15441451175680/15441462091525.jpg" alt=""/></li>
+<li>dstat 1 10
+<img src="media/15441451175680/15441465462749.jpg" alt=""/></li>
+<li> iowait 升高（wai）时，磁盘的读请求（read）都会很大。这说明 iowait 的升高跟磁盘的读请求有关，很可能就是磁盘读导致的。</li>
+<li>查看一个进程的资源使用情况pidstat</li>
+<li>利用perf record -g &amp; perf report 来查看结果
+<img src="media/15441451175680/15441491197686.jpg" alt=""/></li>
+</ul>
+
+<h4>僵尸进程太多</h4>
+
+<pre class="line-numbers"><code class="language-text">ps -A -o stat,ppid,pid,cmd | grep -e &#39;^[Zz]&#39;
+</code></pre>
+
+<ul>
+<li>通过上述命令找到僵尸进程，然后执行pstree -aps zombine-id找出父进程</li>
+<li>僵尸进程主要是找父进程</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/12/07 09:11 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15440884806626.html">
                 
                   <h1>数据中心</h1>
@@ -1025,66 +1099,6 @@ docker push docker_image_name:version
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15435675098509.html">
-                
-                  <h1>事物隔离</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>Mysql视图</h4>
-
-<ul>
-<li>一个是 view。它是一个用查询语句定义的虚拟表，在调用的时候执行查询语句并生成结果。创建视图的语法是 create view，而它的查询方法与表一样。</li>
-<li>InnoDB 在实现 MVCC 时用到的一致性读视图，即 consistent read view，用于支持 RC（Read Committed，读提交）和 RR（Repeatable Read，可重复度）隔离级别的实现。</li>
-</ul>
-
-<h4>事物更新数据规则</h4>
-
-<ul>
-<li>更新数据都是先读后写的，而这个读，只能读当前的值，称为“当前读（current read）”。</li>
-</ul>
-
-<h4>可重复读和读提交</h4>
-
-<ul>
-<li>可重复读的核心就是一致性读（consistent read）；而事务更新数据的时候，只能用当前读。如果当前的记录的行锁被其他事务占用的话，就需要进入锁等待。</li>
-<li>在读提交隔离级别下，每一个语句执行前都会重新算一次 up_limit_id 的值</li>
-<li>对于可重复读，查询只承认在事务启动前就已经提交完成的数据；</li>
-<li>对于读提交，查询只承认在语句启动前就已经提交完成的数据；</li>
-</ul>
-
-<h4>事物启动</h4>
-
-<ul>
-<li>begin/start transaction 命令并不是一个事务的起点，在执行到它们之后的第一个操作 InnoDB 表的语句，事务才真正启动。如果你想要马上启动一个事务，可以使用 start transaction with consistent snapshot 这个命令。</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/11/30 16:45 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1226,6 +1240,12 @@ docker push docker_image_name:version
 	      
 		      
 			      <li class="post">
+			        <a href="15817697569868.html">字符串分割</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817610843879.html">编译期</a>
 			      </li>
 		     
@@ -1245,12 +1265,6 @@ docker push docker_image_name:version
 		      
 			      <li class="post">
 			        <a href="15814188057978.html">重构</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813811739408.html">tuple 使用</a>
 			      </li>
 		     
 		  

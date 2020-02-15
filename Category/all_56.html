@@ -172,6 +172,66 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15435675098509.html">
+                
+                  <h1>事物隔离</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>Mysql视图</h4>
+
+<ul>
+<li>一个是 view。它是一个用查询语句定义的虚拟表，在调用的时候执行查询语句并生成结果。创建视图的语法是 create view，而它的查询方法与表一样。</li>
+<li>InnoDB 在实现 MVCC 时用到的一致性读视图，即 consistent read view，用于支持 RC（Read Committed，读提交）和 RR（Repeatable Read，可重复度）隔离级别的实现。</li>
+</ul>
+
+<h4>事物更新数据规则</h4>
+
+<ul>
+<li>更新数据都是先读后写的，而这个读，只能读当前的值，称为“当前读（current read）”。</li>
+</ul>
+
+<h4>可重复读和读提交</h4>
+
+<ul>
+<li>可重复读的核心就是一致性读（consistent read）；而事务更新数据的时候，只能用当前读。如果当前的记录的行锁被其他事务占用的话，就需要进入锁等待。</li>
+<li>在读提交隔离级别下，每一个语句执行前都会重新算一次 up_limit_id 的值</li>
+<li>对于可重复读，查询只承认在事务启动前就已经提交完成的数据；</li>
+<li>对于读提交，查询只承认在语句启动前就已经提交完成的数据；</li>
+</ul>
+
+<h4>事物启动</h4>
+
+<ul>
+<li>begin/start transaction 命令并不是一个事务的起点，在执行到它们之后的第一个操作 InnoDB 表的语句，事务才真正启动。如果你想要马上启动一个事务，可以使用 start transaction with consistent snapshot 这个命令。</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/11/30 16:45 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15435593108560.html">
                 
                   <h1>CPU使用率</h1>
@@ -1127,146 +1187,6 @@ ALTER TABLE tbl_name WAIT N add column ...
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15432005577683.html">
-                
-                  <h1>strings&byte op</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>与string值相比，strings.Builder类型的值有哪些优势？</h4>
-
-<ul>
-<li>已经存在的内容不变，但是可以拼接更多的内容</li>
-<li>减少了内存分配和内容拷贝的次数</li>
-<li>可将内容重置，可重用值</li>
-</ul>
-
-<h4>string.Builder</h4>
-
-<ul>
-<li>Write</li>
-<li>WriteByte</li>
-<li>WriteRune</li>
-<li>WriteString</li>
-</ul>
-
-<h4>string.Builder约束</h4>
-
-<ul>
-<li>绝不共享Builder值以及它的指针值。</li>
-</ul>
-
-<h4>为什么说strings.Reader类型的值可以高效地读取字符串？</h4>
-
-<ul>
-<li>Reader值可以让我们很方便地读取一个字符串中的内容。它的高效主要体现在它对字符串的读取机制上。在读取的过程中，Reader值会保存已读取的字节的计数，也称已读计数。</li>
-</ul>
-
-<h4>byte.Buffer</h4>
-
-<ul>
-<li>使用字节切片作为内容机器</li>
-<li>int类型代表已读字节的计数</li>
-<li>Buffer值的长度是未读内容的长度，而不是已存内容的总长度。它与在当前值之上的读操作和写操作都有关系</li>
-<li>Buffer值的容量指的是它的内容容器（也就是那个字节切片）的容量，它只与在当前值之上的写操作有关，并会随着内容的写入而不断增长。</li>
-</ul>
-
-<h4>byte.Buffer已读计数的作用</h4>
-
-<ul>
-<li>读取内容时，相应方法会依据已读计数找到未读部分，并在读取后更新计数。</li>
-<li>写入内容时，如需扩容，相应方法会根据已读计数实现扩容策略。</li>
-<li>截断内容时，相应方法截掉的是已读计数代表索引之后的未读部分。</li>
-<li>读回退时，相应方法需要用已读计数记录回退点。</li>
-<li>重置内容时，相应方法会把已读计数置为0。</li>
-<li>导出内容时，相应方法只会导出已读计数代表的索引之后的未读部分。</li>
-<li>获取长度时，相应方法会依据已读计数和内容容器的长度，计算未读部分的长度并返回。</li>
-</ul>
-
-<h4>对比strings.Builder和bytes.Buffer的String方法，并判断哪一个更高效？原因是什么？</h4>
-
-<ul>
-<li>strings.Builder String方法中*(*string)(unsafe.Pointer(&amp;b.buf)) 是直接取得buf的地址然后转换成string返回。而bytes.Buffer的String方法是 string(b.buf[b.off:])然后对buf进行操作</li>
-</ul>
-
-<h4>案例</h4>
-
-<pre class="line-numbers"><code class="language-go">const numbers = 100
-
-func BenchmarkSprintf(b *testing.B) {
-    b.ResetTimer()
-    for idx := 0; idx &lt; b.N; idx++ {
-        var s string
-        for i := 0; i &lt; numbers; i++ {
-            s = fmt.Sprintf(&quot;%v%v&quot;, s, i)
-        }
-    }
-    b.StopTimer()
-}
-
-func BenchmarkStringBuilder(b *testing.B) {
-    b.ResetTimer()
-    for idx := 0; idx &lt; b.N; idx++ {
-        var builder strings.Builder
-        for i := 0; i &lt; numbers; i++ {
-            builder.WriteString(strconv.Itoa(i))
-
-        }
-        _ = builder.String()
-    }
-    b.StopTimer()
-}
-
-func BenchmarkBytesBuf(b *testing.B) {
-    b.ResetTimer()
-    for idx := 0; idx &lt; b.N; idx++ {
-        var buf bytes.Buffer
-        for i := 0; i &lt; numbers; i++ {
-            buf.WriteString(strconv.Itoa(i))
-        }
-        _ = buf.String()
-    }
-    b.StopTimer()
-}
-
-func BenchmarkStringAdd(b *testing.B) {
-    b.ResetTimer()
-    for idx := 0; idx &lt; b.N; idx++ {
-        var s string
-        for i := 0; i &lt; numbers; i++ {
-            s += strconv.Itoa(i)
-        }
-
-    }
-    b.StopTimer()
-}
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/11/26 10:49 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1408,6 +1328,12 @@ func BenchmarkStringAdd(b *testing.B) {
 	      
 		      
 			      <li class="post">
+			        <a href="15817697569868.html">字符串分割</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817610843879.html">编译期</a>
 			      </li>
 		     
@@ -1427,12 +1353,6 @@ func BenchmarkStringAdd(b *testing.B) {
 		      
 			      <li class="post">
 			        <a href="15814188057978.html">重构</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813811739408.html">tuple 使用</a>
 			      </li>
 		     
 		  

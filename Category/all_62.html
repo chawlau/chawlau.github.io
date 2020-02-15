@@ -172,6 +172,136 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15355101690564.html">
+                
+                  <h1>Docker NetWorking</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<ul>
+<li>net实现协议栈和网络设备的隔离</li>
+<li><img src="media/15354190834336/15354475552616.jpg" alt="" style="width:636px;"/></li>
+<li>OVS OpenVSwitch</li>
+<li>SDN软件驱动网络</li>
+<li><img src="media/15354190834336/15355069668262.jpg" alt=""/></li>
+<li>Overlay Network</li>
+<li>隧道转发 两级三层封装 //TODO</li>
+<li>LVS IPtable //TODO</li>
+<li>docker0 交换机和网卡 默认是NAT桥</li>
+<li><img src="media/15354190834336/15355091021145.jpg" alt="" style="width:567px;"/></li>
+<li><img src="media/15354190834336/15355093838771.jpg" alt="" style="width:446px;"/></li>
+<li>容器使用宿主机的网络名称空间</li>
+<li><img src="media/15354190834336/15355096534238.jpg" alt="" style="width:826px;"/></li>
+</ul>
+
+<h4>网络名称空间</h4>
+
+<ul>
+<li>ip netns exec r1 ifconfig -a 查看网络名称空间</li>
+<li>ip netns add r1  添加网络名称空间</li>
+<li>ip link add name veth1.1 type veth peer name veth1.2</li>
+<li>ip link set dev veth1.2 netns r1 移动到网络名称空间</li>
+<li>ip netns exec r1 ip link set dev vrth1.2 name veth1.2 改名</li>
+<li>ifconfig veth1.1 10.1.0.1/24 up 激活</li>
+<li>ip netns exec r2 ping 10.1.0.2</li>
+<li></li>
+</ul>
+
+<h4>docker 四种网络模型</h4>
+
+<ul>
+<li> 封闭式网络</li>
+<li> 桥接式网络</li>
+<li> 联盟式网络</li>
+<li> 开放式</li>
+</ul>
+
+<h4>docker查看容器网络</h4>
+
+<ul>
+<li>docker network inspect bridge</li>
+<li>docker network ls</li>
+<li>ip netns 查看网络名称空间</li>
+<li>网卡分配给名称空间</li>
+<li>网络名称空间//TODO</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text"> docker run --name t1 -it --rm busybox:latest 创建容器推出就删除
+ docker run --name t4 -it --network none --rm busybox:latest
+ docker run --name t4 -it --network bridge --rm busybox:latest
+ docker run --name t4 --hostname chawlau --dns 8.8.8.8 -it --network none --rm busybox:latest //给容器分配主机名
+ docker run --name t4 --hostname chawlau --dns 8.8.8.8 -it --network bridge --dns-search ilinux.io --add-hosts www.magedu.com:1.1.1.1  --rm busybox:latest //给容器分配主机名
+</code></pre>
+
+<h4>Opening inbound communication</h4>
+
+<ul>
+<li>查看映射端口</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">  iptables -t nat -vnL
+  docker port web2 显示指定容器的映射
+</code></pre>
+
+<ul>
+<li><img src="media/15355101690564/15355229419041.jpg" alt="" style="width:618px;"/></li>
+<li>联盟式容器</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">  docker run --name b2 --network container:b1 -it --rm busybox 共享b1容器名称空间
+  docker run --name b2 --network host -it --rm busybox
+  配置文件可以远程启动&quot;hosts&quot;: [&quot;tcp://0.0.0.0:2375&quot;, &quot;unix:///var/run/docker.sock&quot;]
+  docker exec -it tinyweb2 /bin/sh
+</code></pre>
+
+<ul>
+<li>nohub command &amp; 剥离出去sh进程</li>
+<li>主进程ID为1</li>
+<li>RUN和CMD运行的时间点和行为不同</li>
+<li>CMD 收不到信号，容器中接收信号为1的进程</li>
+<li>CMD在把制作的镜像运行为容器时运行</li>
+<li>ENTRYPOINT的命令在启动时不会被覆盖</li>
+<li>CMD给ENTRYPOINT提供参数</li>
+<li>json数组中要使用双引号</li>
+</ul>
+
+<h4>HEALTHCHECK</h4>
+
+<ul>
+<li>interval</li>
+<li>timeout</li>
+<li>start-period 起进程等待时间</li>
+<li>retries</li>
+<li>ARG传输环境变量</li>
+<li>ONBUILD</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/08/29 10:36 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15354190834336.html">
                 
                   <h1>Docker 基础使用</h1>
@@ -1985,6 +2115,12 @@ sysbench --test-fileio --num-thread=8 --init-rng=on --file-total-size=5G \
 	      
 		      
 			      <li class="post">
+			        <a href="15817697569868.html">字符串分割</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817610843879.html">编译期</a>
 			      </li>
 		     
@@ -2004,12 +2140,6 @@ sysbench --test-fileio --num-thread=8 --init-rng=on --file-total-size=5G \
 		      
 			      <li class="post">
 			        <a href="15814188057978.html">重构</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813811739408.html">tuple 使用</a>
 			      </li>
 		     
 		  

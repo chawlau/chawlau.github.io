@@ -172,6 +172,54 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15735993394297.html">
+                
+                  <h1>Grafna</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>监控案例</h4>
+
+<ul>
+<li>CPU使用率</li>
+<li>除去IO等待造成的CPU高之外，大部 分情况 就是 user%造成<br/>
+另外， </li>
+<li>system% 内核态的CPU 使用率 偶尔也会出现高的情况</li>
+<li>当服务器硬盘IO占用过大时，CPU会等待IO的返回进入interuptable 类型的CPU等待时间</li>
+</ul>
+
+<h4>硬盘监控</h4>
+
+<ul>
+<li>predict_linear()</li>
+<li>磁盘读写((rate(node_disk_read_bytes_total[1m] )+ rate(node_disk_written_bytes_total[1m])) / 1024 /1024) &gt; 0</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/13 06:55 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15735993111373.html">
                 
                   <h1>命令行</h1>
@@ -913,93 +961,6 @@ if __name__ == &#39;__main__&#39;:
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15733711698710.html">
-                
-                  <h1>Future</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>并发执行</h4>
-
-<pre class="line-numbers"><code class="language-python">import requests
-import time
-import threading
-import concurrent.futures
-
-def download_one(url):
-    resp = requests.get(url)
-    print(&#39;Read {} from {}&#39;.format(len(resp.content), url))
-//串行执行
-def download_all(sites):
-    for site in sites:
-        download_one(site)
-//多线程版本
-def download_all_t(sites):
-     with concurrent.futures.ThreadPoolExecutor(max_workers=5) as excutor:
-            excutor.map(download_one, sites)
-//多进程版本
-def download_all_p(sites):
-   with concurrent.futures.ProcessPoolExecutor() as excutor:
-        excutor.map(download_one, sites)
-//futures
-def download_all_f(sites):
-    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
-        to_do = []
-        for site in sites:
-            future = executor.submit(download_one, site)
-            to_do.append(future)
-        for future in concurrent.futures.as_completed(to_do):
-            future.result()
-
-def main():
-    sites = [
-        &#39;https://www.baidu.com&#39;,
-        &#39;https://www.taobao.com&#39;,
-        &#39;https://www.jd.com&#39;,
-        &#39;https://www.tencent.com/zh-cn/index.html&#39;,
-    ]
-    start_time = time.perf_counter()
-    download_all_f(sites)
-    end_time = time.perf_counter()
-    print(&#39;Download {} sites in {} seconds&#39;.format(len(sites), end_time - start_time))
-
-
-if __name__ == &#39;__main__&#39;:
-    main()
-</code></pre>
-
-<h4>为什么多线程每次只能有一个线程执行</h4>
-
-<ul>
-<li>Python 的解释器并不是线程安全的，为了解决由此带来的 race condition 等问题，Python 便引入了全局解释器锁，也就是同一时刻，只允许一个线程执行。当然，在执行 I/O 操作时，如果一个线程被 block 了，全局解释器锁便会被释放，从而让另一个线程能够继续执行。</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/10 15:32 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1141,6 +1102,12 @@ if __name__ == &#39;__main__&#39;:
 	      
 		      
 			      <li class="post">
+			        <a href="15817697569868.html">字符串分割</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817610843879.html">编译期</a>
 			      </li>
 		     
@@ -1160,12 +1127,6 @@ if __name__ == &#39;__main__&#39;:
 		      
 			      <li class="post">
 			        <a href="15814188057978.html">重构</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813811739408.html">tuple 使用</a>
 			      </li>
 		     
 		  

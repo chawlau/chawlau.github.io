@@ -172,6 +172,83 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15605900327847.html">
+                
+                  <h1>数据类型</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>内存</h4>
+
+<ul>
+<li>内存是线性的，按字节为单位进行编址的</li>
+</ul>
+
+<h4>补码</h4>
+
+<ul>
+<li>0的补码是0</li>
+<li>符号位和普通位一并参与运算</li>
+<li>补码可以使加减乘除，全部变加法</li>
+<li>127 -128</li>
+</ul>
+
+<h4>数据类型</h4>
+
+<ul>
+<li>数据类型提供了申请内存单元的大小和访问规则，数据类型是假设在线性内存上的一种逻辑关系</li>
+<li>unsigned扩充前面应该补0</li>
+<li>-1转换成补码存在计算机中</li>
+<li>计算机只识别 0 1，计算机要表达的东西是认为追加的</li>
+</ul>
+
+<h4>面试题</h4>
+
+<pre class="line-numbers"><code class="language-text">int main() {
+  char a[1000];
+  int i;
+  for (i = 0; i &lt; 1000; i++)
+     a[i] = -1 - i;
+  printf(&quot;%d \n&quot;, strlen(a));
+}
+</code></pre>
+
+<h4>命令行</h4>
+
+<ul>
+<li><img src="media/15605900327847/20180128225803107.png" alt="20180128225803107"/></li>
+<li>argv1 argv2 NULL</li>
+<li>命令行和环境变量</li>
+<li>全局变量和静态变量不需要执行变量就存在，不需要压栈</li>
+<li>全局变量和静态变量通过initialized to zero by exec来初始化</li>
+<li>常量在text段中的指令中</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/06/15 17:13 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C%E8%AF%AD%E8%A8%80%E8%BF%9B%E9%98%B6.html'>C语言进阶</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15603928522183.html">
                 
                   <h1>拓展阅读</h1>
@@ -855,91 +932,6 @@ void *memset(void*, int, size_t);
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15595632940014.html">
-                
-                  <h1>虚拟文件系统</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>文件系统结构</h4>
-
-<ul>
-<li><img src="media/15595632940014/3c506edf93b15341da3db658e9970773.jpg" alt="3c506edf93b15341da3db658e9970773"/></li>
-</ul>
-
-<h4>挂载文件系统</h4>
-
-<ul>
-<li>do_mount-&gt;do_new_mount-&gt;vfs_kern_mount</li>
-<li>mnt_parent 是装载点所在的父文件系统，mnt_mountpoint 是装载点在父文件系统中的 dentry；struct dentry 表示目录，并和目录的 inode 关联；mnt_root 是当前文件系统根目录的 dentry，mnt_sb 是指向超级块的指针</li>
-</ul>
-
-<h4>打开文件</h4>
-
-<ul>
-<li>task_struct 中，有一个指针 files，类型是 files_struct</li>
-<li>文件描述符列表的每一项都是一个指向 struct file 的指针，也就是说，每打开一个文件，都会有一个 struct file 对应</li>
-<li>do_sys_open 中调用 do_filp_open，就是创建这个 struct file 结构，然后 fd_install(fd, f) 是将文件描述符和这个结构关联起来
-<img src="media/15595632940014/15596071070507.jpg" alt="" style="width:706px;"/></li>
-</ul>
-
-<h4>path_openat</h4>
-
-<ul>
-<li>get_empty_filp 生成一个 struct file 结构；</li>
-<li>path_init 初始化 nameidata，准备开始节点路径查找；</li>
-<li>link_path_walk 对于路径名逐层进行节点路径查找，这里面有一个大的循环，用“/”分隔逐层处理；</li>
-<li>do_last 获取文件对应的 inode 对象，并且初始化 file 对象。</li>
-</ul>
-
-<h4>总结</h4>
-
-<p><img src="media/15595632940014/8070294bacd74e0ac5ccc5ac88be1bb9.png" alt="8070294bacd74e0ac5ccc5ac88be1bb9"/></p>
-
-<h4>strace 追踪</h4>
-
-<pre class="line-numbers"><code class="language-text">execve(&quot;/bin/mount&quot;, [&quot;mount&quot;, &quot;/dev/sdc&quot;, &quot;/test_flash&quot;], [/* 26 vars */]) = 0
-open(&quot;/lib64/libmount.so.1&quot;, O_RDONLY|O_CLOEXEC) = 3
-lstat(&quot;/run/mount/utab&quot;, 0x7ffebb0a8130) = -1 ENOENT (No such file or directory)
-mkdir(&quot;/run/mount&quot;, 0755)               = -1 EEXIST (File exists)
-stat(&quot;/run/mount/utab&quot;, 0x7ffebb0a8020) = -1 ENOENT (No such file or directory)
-stat(&quot;/run/mount&quot;, {st_mode=S_IFDIR|0755, st_size=40, ...}) = 0
-access(&quot;/run/mount&quot;, R_OK|W_OK)         = 0
-stat(&quot;/sbin/mount.ext4&quot;, 0x7ffebb0a6fc0) = -1 ENOENT (No such file or directory)
-stat(&quot;/sbin/fs.d/mount.ext4&quot;, 0x7ffebb0a6fc0) = -1 ENOENT (No such file or directory)
-stat(&quot;/sbin/fs/mount.ext4&quot;, 0x7ffebb0a6fc0) = -1 ENOENT (No such file or directory)
-mount(&quot;/dev/sdc&quot;, &quot;/test_flash&quot;, &quot;ext4&quot;, MS_MGC_VAL, NULL) = 0
-</code></pre>
-
-<ul>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/06/03 20:01 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1081,6 +1073,12 @@ mount(&quot;/dev/sdc&quot;, &quot;/test_flash&quot;, &quot;ext4&quot;, MS_MGC_VA
 	      
 		      
 			      <li class="post">
+			        <a href="15817697569868.html">字符串分割</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817610843879.html">编译期</a>
 			      </li>
 		     
@@ -1100,12 +1098,6 @@ mount(&quot;/dev/sdc&quot;, &quot;/test_flash&quot;, &quot;ext4&quot;, MS_MGC_VA
 		      
 			      <li class="post">
 			        <a href="15814188057978.html">重构</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813811739408.html">tuple 使用</a>
 			      </li>
 		     
 		  

@@ -172,6 +172,91 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15595632940014.html">
+                
+                  <h1>虚拟文件系统</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>文件系统结构</h4>
+
+<ul>
+<li><img src="media/15595632940014/3c506edf93b15341da3db658e9970773.jpg" alt="3c506edf93b15341da3db658e9970773"/></li>
+</ul>
+
+<h4>挂载文件系统</h4>
+
+<ul>
+<li>do_mount-&gt;do_new_mount-&gt;vfs_kern_mount</li>
+<li>mnt_parent 是装载点所在的父文件系统，mnt_mountpoint 是装载点在父文件系统中的 dentry；struct dentry 表示目录，并和目录的 inode 关联；mnt_root 是当前文件系统根目录的 dentry，mnt_sb 是指向超级块的指针</li>
+</ul>
+
+<h4>打开文件</h4>
+
+<ul>
+<li>task_struct 中，有一个指针 files，类型是 files_struct</li>
+<li>文件描述符列表的每一项都是一个指向 struct file 的指针，也就是说，每打开一个文件，都会有一个 struct file 对应</li>
+<li>do_sys_open 中调用 do_filp_open，就是创建这个 struct file 结构，然后 fd_install(fd, f) 是将文件描述符和这个结构关联起来
+<img src="media/15595632940014/15596071070507.jpg" alt="" style="width:706px;"/></li>
+</ul>
+
+<h4>path_openat</h4>
+
+<ul>
+<li>get_empty_filp 生成一个 struct file 结构；</li>
+<li>path_init 初始化 nameidata，准备开始节点路径查找；</li>
+<li>link_path_walk 对于路径名逐层进行节点路径查找，这里面有一个大的循环，用“/”分隔逐层处理；</li>
+<li>do_last 获取文件对应的 inode 对象，并且初始化 file 对象。</li>
+</ul>
+
+<h4>总结</h4>
+
+<p><img src="media/15595632940014/8070294bacd74e0ac5ccc5ac88be1bb9.png" alt="8070294bacd74e0ac5ccc5ac88be1bb9"/></p>
+
+<h4>strace 追踪</h4>
+
+<pre class="line-numbers"><code class="language-text">execve(&quot;/bin/mount&quot;, [&quot;mount&quot;, &quot;/dev/sdc&quot;, &quot;/test_flash&quot;], [/* 26 vars */]) = 0
+open(&quot;/lib64/libmount.so.1&quot;, O_RDONLY|O_CLOEXEC) = 3
+lstat(&quot;/run/mount/utab&quot;, 0x7ffebb0a8130) = -1 ENOENT (No such file or directory)
+mkdir(&quot;/run/mount&quot;, 0755)               = -1 EEXIST (File exists)
+stat(&quot;/run/mount/utab&quot;, 0x7ffebb0a8020) = -1 ENOENT (No such file or directory)
+stat(&quot;/run/mount&quot;, {st_mode=S_IFDIR|0755, st_size=40, ...}) = 0
+access(&quot;/run/mount&quot;, R_OK|W_OK)         = 0
+stat(&quot;/sbin/mount.ext4&quot;, 0x7ffebb0a6fc0) = -1 ENOENT (No such file or directory)
+stat(&quot;/sbin/fs.d/mount.ext4&quot;, 0x7ffebb0a6fc0) = -1 ENOENT (No such file or directory)
+stat(&quot;/sbin/fs/mount.ext4&quot;, 0x7ffebb0a6fc0) = -1 ENOENT (No such file or directory)
+mount(&quot;/dev/sdc&quot;, &quot;/test_flash&quot;, &quot;ext4&quot;, MS_MGC_VAL, NULL) = 0
+</code></pre>
+
+<ul>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/06/03 20:01 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15594450051359.html">
                 
                   <h1>编译和连接</h1>
@@ -903,93 +988,6 @@ unsigned long arg_start, arg_end, env_start, env_end;
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15577065945094.html">
-                
-                  <h1>ELF和静态连接</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>编译，链接和装载</h4>
-
-<ul>
-<li>第一个部分由编译（Compile）、汇编（Assemble）以及链接（Link）三个阶段组成。在这三个阶段完成之后，我们就生成了一个可执行文件。</li>
-<li>第二部分，我们通过装载器（Loader）把可执行文件装载（Load）到内存中。CPU 从内存中读取指令和数据，来开始真正执行程序。
-<img src="media/15577065945094/997341ed0fa9018561c7120c19cfa2a7.jpg" alt="997341ed0fa9018561c7120c19cfa2a7"/></li>
-</ul>
-
-<h4>ELF格式和链接</h4>
-
-<ul>
-<li>程序最终是通过装载器变成指令和数据的</li>
-<li>gcc -g -c add_lib.c link_example.c</li>
-<li>objdump -d -M intel -S add_lib.o</li>
-<li>objdump -d -M intel -S link_example.o</li>
-<li>gcc -o link-example add_lib.o link_example.o</li>
-<li>objdump -d -M intel -S link-example</li>
-</ul>
-
-<h4>ELF文件</h4>
-
-<ul>
-<li>首先是.text Section，也叫作代码段或者指令段（Code Section），用来保存程序的代码和指令；</li>
-<li>接着是.data Section，也叫作数据段（Data Section），用来保存程序里面设置好的初始化数据信息；</li>
-<li>然后就是.rel.text Secion，叫作重定位表（Relocation Table）。重定位表里，保留的是当前的文件里面，哪些跳转地址其实是我们不知道的。比如上面的 link_example.o 里面，我们在 main 函数里面调用了 add 和 printf 这两个函数，但是在链接发生之前，我们并不知道该跳转到哪里，这些信息就会存储在重定位表里；</li>
-<li>最后是.symtab Section，叫作符号表（Symbol Table）。符号表保留了我们所说的当前文件里面定义的函数名称和对应地址的地址簿。
-<img src="media/15577065945094/276a740d0eabf5f4be905fe7326d9fb3-2.jpg" alt="276a740d0eabf5f4be905fe7326d9fb3-2"/></li>
-</ul>
-
-<h4>链接器</h4>
-
-<ul>
-<li>把所有符号表里的信息收集起来，构成一个全局的符号表</li>
-<li>根据重定位表，把所有不确定要跳转地址的代码，根据符号表里面存储的地址，进行一次修正</li>
-<li>把所有的目标文件的对应段进行一次合并，变成了最终的可执行代码</li>
-</ul>
-
-<h4>装载器</h4>
-
-<ul>
-<li>解析 ELF 文件，把对应的指令和数据，加载到内存里面供 CPU 执行</li>
-</ul>
-
-<h4>linux程序不能在win执行</h4>
-
-<ul>
-<li>两个操作系统下可执行文件的格式不一样</li>
-<li> Linux 下的 ELF 文件格式，而 Windows 的可执行文件格式是一种叫作PE（Portable Executable Format）的文件格式。Linux 下的装载器只能解析 ELF 格式而不能解析 PE 格式</li>
-</ul>
-
-<h4>扩展阅读</h4>
-
-<ul>
-<li>《程序员的自我修养——链接、装载和库》</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/05/13 08:16 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86.html'>计算机组成原理</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1131,6 +1129,12 @@ unsigned long arg_start, arg_end, env_start, env_end;
 	      
 		      
 			      <li class="post">
+			        <a href="15817697569868.html">字符串分割</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817610843879.html">编译期</a>
 			      </li>
 		     
@@ -1150,12 +1154,6 @@ unsigned long arg_start, arg_end, env_start, env_end;
 		      
 			      <li class="post">
 			        <a href="15814188057978.html">重构</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813811739408.html">tuple 使用</a>
 			      </li>
 		     
 		  

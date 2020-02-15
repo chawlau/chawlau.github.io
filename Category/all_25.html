@@ -172,6 +172,49 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15669782449531.html">
+                
+                  <h1>对象模型之巅</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>函数模板</h4>
+
+<ul>
+<li>针对T的类型推断，是编译器在编译的时候，根据针对funcadd的调用来确定的</li>
+</ul>
+
+<h4>成员函数实例化</h4>
+
+<ul>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/08/28 15:44 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B.html'>C++对象模型</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15669507058461.html">
                 
                   <h1>SQL99连接</h1>
@@ -813,165 +856,6 @@ SELECT * FROM A WHERE EXIST (SELECT cc FROM B WHERE B.cc=A.cc)
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15666360771756.html">
-                
-                  <h1>对象构造语义学</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>对象构造</h4>
-
-<ul>
-<li>构造函数中你自己的代码中使用诸如memcpy或者直接操作等手段，来修改虚函数表指针的值，否则，调用虚函数时就可能造成系统崩溃；</li>
-</ul>
-
-<h4>构造函数对虚函数的调用</h4>
-
-<ul>
-<li>某个类的构造函数 中 调用一个虚函数，那么走的不是虚函数表，而是直接调用。</li>
-<li>从类中开始找，然后在父类中找</li>
-</ul>
-
-<h4>对象复制语义学，析构函数语义学</h4>
-
-<ul>
-<li>默认的对象赋值行为</li>
-</ul>
-
-<h4>析构函数语义</h4>
-
-<ul>
-<li>析构函数被合成</li>
-</ul>
-
-<h5>合成情况</h5>
-
-<ul>
-<li>继承一个基类，基类带析构函数，编译器会帮忙合成</li>
-<li>如果类成员是一个类类型成员，成员带析构函数，编译器会合成一个析构函数</li>
-</ul>
-
-<h5>析构函数被扩展</h5>
-
-<ul>
-<li>如果我们有自己的析构函数，编译器会扩展析构函数</li>
-<li>如果类成员是一个类类型成员，并且自带析构函数，编译器会扩展类A的析构函数代码</li>
-<li>先执行类A的析构函数，再执行成员函数析构函数</li>
-<li>如果继承一个基类，基类中带析构函数，编译器会扩展A类的析构函数来调用基类的析构函数</li>
-<li>虚基类扩展</li>
-</ul>
-
-<h4>局部对象和全局对象的构造和析构</h4>
-
-<ul>
-<li>全局对象构造和析构的步骤：<br/>
-a)全局对象g_aobj获得地址（编译时确定好的，内存也是编译时分配好的，内存时运行期间一直存在）<br/>
-b)把全局对象g_aobj的内存内容清0的能力（也叫静态初始化）<br/>
-c)调用全局对象g_aobj所对应的类A的构造函数</li>
-<li>如何保证静态局部对象只被构造一次</li>
-<li>编译器通过设置标记的方式</li>
-<li>如何来析构局部对象</li>
-<li>局部静态对象只会被构造一次，在调用的时候构造；在main函数执行完毕后析构</li>
-</ul>
-
-<h4>malloc</h4>
-
-<ul>
-<li>分配0个字节</li>
-</ul>
-
-<h4>new和delete进一步认识</h4>
-
-<ul>
-<li>A *pa = new A()会清零部分内存，如果有构造函数则不会清零</li>
-<li>A *pa = new A不会清零</li>
-</ul>
-
-<h4>new干了啥</h4>
-
-<ul>
-<li>operator new</li>
-<li>malloc</li>
-<li>A::A()</li>
-</ul>
-
-<h4>delete</h4>
-
-<ul>
-<li>A::~A()</li>
-<li>operator delete()</li>
-<li>free</li>
-</ul>
-
-<h4>嵌入式指针</h4>
-
-<ul>
-<li>一般应用在内存池代码</li>
-<li>成功使用有个前提条件</li>
-<li>借用了A对象占用的内存空间的前四个字节，4个字节用来链住空闲的内存块，一旦被分配</li>
-<li>出去，这个块的前四个字节就不再需要，四个字节就可以使用</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">struct obj {
-  struct obj* next; //next就是个嵌入式指针
-}
-</code></pre>
-
-<h4>placement new</h4>
-
-<ul>
-<li>只有new没有delete</li>
-<li>在已经分配的原始内存中初始化一个对象</li>
-<li>定位new不分配内存</li>
-<li>初始化对象</li>
-<li>在预先分配号的内存中分配一个对象</li>
-<li>new (address) 类类型</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">void *memPtr = (void*)new char[sizeof(A)];
-  A* obj = new (memPtr) A();
-
-  void *memPtr2 = (void*)new char[sizeof(A)];
-  A* obj2 = new (memPtr2) A();
-
-  obj-&gt;~A();
-  obj2-&gt;~A();
-
-  delete[](void*)obj;
-  delete[](void*)obj2;
-</code></pre>
-
-<h4>多版本的operator new</h4>
-
-<ul>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/24 16:41 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B.html'>C++对象模型</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1113,6 +997,12 @@ c)调用全局对象g_aobj所对应的类A的构造函数</li>
 	      
 		      
 			      <li class="post">
+			        <a href="15817697569868.html">字符串分割</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817610843879.html">编译期</a>
 			      </li>
 		     
@@ -1132,12 +1022,6 @@ c)调用全局对象g_aobj所对应的类A的构造函数</li>
 		      
 			      <li class="post">
 			        <a href="15814188057978.html">重构</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813811739408.html">tuple 使用</a>
 			      </li>
 		     
 		  

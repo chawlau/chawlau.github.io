@@ -172,6 +172,155 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15700073181059.html">
+                
+                  <h1>function&& bind</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>可调用对象</h4>
+
+<ul>
+<li>函数</li>
+<li>重载()对象</li>
+</ul>
+
+<h4>可被转换的函数指针的类对象</h4>
+
+<pre class="line-numbers"><code class="language-cpp">class CT {
+ public:
+  using tfptr = void(*)(int);
+
+  static void st_func(int t) {
+    cout &lt;&lt; &quot;static function &quot; &lt;&lt; t &lt;&lt; endl;
+  }
+
+  operator tfptr() {return st_func;}
+};
+int main() {
+  using ptr = void(*)(int);
+  CT ct;
+  ct(5);
+}
+</code></pre>
+
+<h4>function</h4>
+
+<ul>
+<li><p>能够通过给它指定模版参数，能够以统一的方式来处理函数</p>
+<pre class="line-numbers"><code class="language-cpp">function&lt;void(int)&gt; ptr = func;
+ptr(3);<br/>
+function&lt;void(int)&gt; ptr2 = TC::st_func;<br/>
+ptr2(12);<br/>
+TC tc;<br/>
+function&lt;void(int)&gt; ptr3 = tc;<br/>
+ptr3(12);
+</code></pre></li>
+</ul>
+
+<h4>bind</h4>
+
+<ul>
+<li>可调用对象和参数绑定到一起， 构成防函数</li>
+<li>如果是多个参数，可以部分绑定</li>
+<li>bind对预先绑定的参数是通过值传递的</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">void func(int t) {
+  cout &lt;&lt; &quot; t &quot; &lt;&lt; t &lt;&lt; endl;
+}
+
+class CT {
+ public:
+  using tfptr = void(*)(int);
+
+  static void st_func(int t) {
+    cout &lt;&lt; &quot;static function &quot; &lt;&lt; t &lt;&lt; endl;
+
+  }
+
+  operator tfptr() {return st_func;}
+
+  void func(int x, int y) {
+    m_a++;
+    cout &lt;&lt; &quot;x &quot; &lt;&lt; x &lt;&lt; &quot; y &quot; &lt;&lt; y &lt;&lt; &quot; m_a &quot;&lt;&lt; m_a &lt;&lt; endl;
+  }
+
+  ~CT() { std::cout &lt;&lt; &quot; destory &quot; &lt;&lt; endl;}
+  CT() { std::cout &lt;&lt; &quot; construct &quot; &lt;&lt; endl;}
+  int m_a;
+};
+
+void bfunc(int x, int y, int z) {
+  cout &lt;&lt; &quot;x &quot; &lt;&lt; x &lt;&lt; &quot; y &quot; &lt;&lt; y &lt;&lt; &quot; z &quot; &lt;&lt; z &lt;&lt; endl;
+}
+void bfunc2(int&amp; x, int&amp; y) {
+  x++;
+  y++;
+}
+
+int main() {
+  //绑定函数bfunc的参数30，placeholders::_1表示需要f1来参数
+  auto f1 = bind(bfunc, placeholders::_1, placeholders::_1, 30);
+  bind(bfunc, placeholders::_1, placeholders::_2, 30)(5, 15);
+  f1(1);
+
+  auto f3 = bind(bfunc, placeholders::_2, placeholders::_1, 30);
+  f3(5,15);
+
+
+  int a = 2, b = 3;
+  //bind对预先绑定的参数是通过值传递的,所以a值是值传递的, 没有事先绑定的是引用传
+  //递
+  auto f4 = bind(bfunc2, a, placeholders::_1);
+  f4(b);
+  cout &lt;&lt; &quot;a &quot; &lt;&lt; a &lt;&lt; &quot; b &quot; &lt;&lt; b &lt;&lt; endl;
+
+  CT ct;
+  ct.m_a = 1;
+  //生成了防函数的临时对象，后续的func修改的是临时对象的m_a;
+  //如果传的是对象引用，则不生成临时对象
+  auto f5 = bind(&amp;CT::func, ct, placeholders::_1, placeholders::_2);
+  f5(10, 20);
+  cout &lt;&lt; &quot;ct m_a = &quot; &lt;&lt; ct.m_a &lt;&lt; endl;
+
+  function&lt;void(int,int)&gt; f6 = bind(&amp;CT::func, ct, placeholders::_1, placeholders::_2);
+  f6(10, 223);
+
+  cout &lt;&lt; &quot;=================&quot; &lt;&lt; endl;
+  CT ct1;
+  //第一次拷贝系统需要ct1产生临时对象，第二次是bind本身要返回临时对象，但是bind
+  //执行完毕后，临时对象会被释放
+  function&lt;int &amp;()&gt; f7 = bind(&amp;CT::m_a, &amp;ct1);
+  f7() = 60;
+}
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/10/02 17:08 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15699709788203.html">
                 
                   <h1>读写分离高可用</h1>
@@ -1134,99 +1283,6 @@ void func(T&amp;  tmp){} // T void(void) tmp = void(&amp;)void
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15695358138525.html">
-                
-                  <h1>Docker安装部署</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<pre class="line-numbers"><code class="language-text">docker run \
---name node1-namesrv \
--p 9876:9876 \
- -d rocketmqinc/rocketmq sh mqnamesrv
-
-docker run \
---name node1-broker-master \
--p 10911:10911 \
--p 10909:10909 \
--v /root/download/rocketmq/logs/broker-master:/root/logs \
--v /root/download/rocketmq/store/broker-master:/root/store \
--v /root/download/rocketmq/conf/2m-2s-sync/broker-master:/opt/rocketmq/conf \
--e &quot;NAMESRV_ADDR=$master:9876;$node1:9876&quot; \
--d rocketmqinc/rocketmq sh mqbroker -c /opt/rocketmq/conf/broker.conf
-
-docker run \
---name node1-broker-slave \
--p 11011:10911 \
--p 11009:10909 \
--v /root/download/rocketmq/logs/broker-slave:/root/logs \
--v /root/download/rocketmq/store/broker-slave:/root/store \
--v /root/download/rocketmq/conf/2m-2s-sync/broker-slave:/opt/rocketmq/conf \
--e &quot;NAMESRV_ADDR=$master:9876;$node1:9876&quot; \
--d rocketmqinc/rocketmq sh mqbroker -c /opt/rocketmq/conf/broker.conf
-
-
-docker run \
---name rocketmq-console \
--p 8081:8080 \
--v /root/download/rocketmq/logs/rocketmq-console:/root/logs \
--v /tmp/rocketmq-console:/tmp \
--e &quot;NAMESRV_ADDR=$master:9876;$node1:9876&quot; \
--d  styletang/rocketmq-console-ng
-
- docker run \
---name node2-namesrv \
--p 9876:9876 \
- -d rocketmqinc/rocketmq sh mqnamesrv
-
-docker run \
---name node2-broker-master \
--p 10911:10911 \
--p 10909:10909 \
--v /root/download/rocketmq/logs/broker-master:/root/logs \
--v /root/download/rocketmq/store/broker-master:/root/store \
--v /root/download/rocketmq/conf/2m-2s-sync/broker-master:/opt/rocketmq/conf \
--e &quot;NAMESRV_ADDR=$master:9876;$node1:9876&quot; \
--d rocketmqinc/rocketmq sh mqbroker -c /opt/rocketmq/conf/broker.conf
-
-
-docker run \
---name node2-broker-slave \
--p 11011:10911 \
--p 11009:10909 \
--v /root/download/rocketmq/logs/broker-slave:/root/logs \
--v /root/download/rocketmq/store/broker-slave:/root/store \
--v /root/download/rocketmq/conf/2m-2s-sync/broker-slave:/opt/rocketmq/conf \
--e &quot;NAMESRV_ADDR=$master:9876;$node1:9876&quot; \
--d rocketmqinc/rocketmq sh mqbroker -c /opt/rocketmq/conf/broker.conf
-
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/27 06:10 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='RocketMQ.html'>RocketMQ</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1368,6 +1424,12 @@ docker run \
 	      
 		      
 			      <li class="post">
+			        <a href="15817697569868.html">字符串分割</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817610843879.html">编译期</a>
 			      </li>
 		     
@@ -1387,12 +1449,6 @@ docker run \
 		      
 			      <li class="post">
 			        <a href="15814188057978.html">重构</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813811739408.html">tuple 使用</a>
 			      </li>
 		     
 		  

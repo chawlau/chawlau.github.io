@@ -172,6 +172,267 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15658570800232.html">
+                
+                  <h1>数据语义学</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>变量绑定</h4>
+
+<ul>
+<li>编译器对成员函数的解析，是在类定义完毕以后开始，对类成员变量的解析和绑定，是在类定义完成之后发生的，只有类定义完毕后，编译器才能看到类A中的成员变量</li>
+<li>::引用全局的myvar的变量</li>
+</ul>
+
+<h4>成员函数</h4>
+
+<ul>
+<li>成员函数参数类型在编译器第一个遇到类型的时候绑定的</li>
+<li>为了尽早的看到类型type，类型定义typedef一定要挪到类中的最早定义</li>
+</ul>
+
+<h4>进程内存空间布局</h4>
+
+<ul>
+<li>nm查看</li>
+<li>类的静态成员变量也存在数据段</li>
+</ul>
+
+<h4>字节对齐</h4>
+
+<pre class="line-numbers"><code class="language-text">#pragma pack(1) 不对齐
+#pragma pack() 取消不对齐，继续对齐
+</code></pre>
+
+<h4>成员变量偏移值</h4>
+
+<ul>
+<li>&amp;class::m_val</li>
+</ul>
+
+<h4>静态成员变量存取</h4>
+
+<ul>
+<li>静态成员变量地址始终不变，写入了可执行文件</li>
+</ul>
+
+<h4>非静态成员变量</h4>
+
+<ul>
+<li>类对象的首地址加上成员变量的偏移值</li>
+</ul>
+
+<h4>数据成员布局</h4>
+
+<ul>
+<li>成员边界填充</li>
+<li>引入继承关系，会带来额外的内存空间的开销</li>
+<li>对象中会产生虚函数表指针vptr</li>
+<li>增加或者扩展构造函数，增加给虚函数表指针的vptr赋值的代码</li>
+<li>多重继续，子类继续2个父类，如果子类还有自己的虚函数的话和第一个基类共用vptr</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">class Base {
+ public:
+  int m_bi;
+  char m_b;
+  char m_c;
+  char m_d;
+};
+sizeof(Base)=8字节，填充一个字节
+
+class Base {
+ public:
+  int m_bi;
+  char m_b;
+};
+
+class Base2 : public Base {
+ public:
+  char m_c;
+};
+
+class Base3 : public Base2 {
+ public:
+  char m_d;
+};
+</code></pre>
+
+<ul>
+<li><img src="media/15658570800232/15659459670117.jpg" alt="" style="width:1206px;"/></li>
+<li>内存拷贝要谨慎Base2拷贝到Base3，会产生内存拷贝</li>
+</ul>
+
+<h5>单一继承父类不带虚函数的成员布局</h5>
+
+<ul>
+<li><img src="media/15658570800232/15659491477127.jpg" alt="" style="width:337px;"/>、</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">(gdb) p  obj
+$1 = (Base3) {
+  &lt;Base&gt; = {
+    m_bi = 1
+  },
+  members of Base3:
+  _vptr.Base3 = 0x400a80 &lt;vtable for Base3+16&gt;,
+  m_i = 2,
+  m_j = 3
+}
+(gdb) x/12x  &amp;obj
+0x7fffffffdee0: 0x00400a80      0x00000000      0x00000001      0x00000002
+0x7fffffffdef0: 0x00000003      0x00000000      0x00400740      0x00000000
+0x7fffffffdf00: 0xffffdff0      0x00007fff      0x00000000      0x00000000
+</code></pre>
+
+<ul>
+<li>依靠偏移值不能绘制真正的数据布局</li>
+<li>vptr一直置顶</li>
+</ul>
+
+<h4>多重继承</h4>
+
+<ul>
+<li><img src="media/15658570800232/15660333053268.jpg" alt="" style="width:473px;"/></li>
+<li>访问Base1不用跳，访问Base2变量this指针要偏移</li>
+<li>先继承就顶格</li>
+<li>this指针的调整都是编译器自动调整和偏移</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">(gdb) x/20d bs2
+0x7fffffffdee0: 4197896 0       12      3
+0x7fffffffdef0: 6       0       -8480   32767
+0x7fffffffdf00: -8208   32767   0       0
+0x7fffffffdf10: 0       0       -148827179      32767
+0x7fffffffdf20: 0       32      -8200   32767
+(gdb) x/20d &amp;obj
+0x7fffffffded0: 4197864 0       9       0
+0x7fffffffdee0: 4197896 0       12      3
+0x7fffffffdef0: 6       0       -8480   32767
+0x7fffffffdf00: -8208   32767   0       0
+0x7fffffffdf10: 0       0       -148827179      32767
+Derived obj;
+Base2* bs2 = &amp;obj;
+Base2* bs2 = (Base2*)(((char*)&amp;obj) + sizeof(Base1))
+Base1* bs1 = &amp;obj;
+bs1和bs2的地址并不相同
+bs2指向的是bs2子对象的指针
+</code></pre>
+
+<h4>虚基类中</h4>
+
+<ul>
+<li>传统多重继承，空间问题，效率问题，二义性</li>
+<li>让grand只被继承一次，在孙子类中只有一份</li>
+</ul>
+
+<h4>虚基类</h4>
+
+<ul>
+<li>虚基类表</li>
+<li>虚基类表指针</li>
+<li>虚继承后，A1,A2会被插入一个虚基类表指针，C1会继承两个表指针</li>
+<li><img src="media/15658570800232/15661179666970.jpg" alt="" style="width:725px;"/></li>
+<li><img src="media/15658570800232/15661193718967.jpg" alt="" style="width:427px;"/></li>
+<li>虚基类表记录偏移来找到虚基类子对象</li>
+<li>虚基类表指针成员变量的首地址 + 偏移量 = 虚基类对象首地址</li>
+</ul>
+
+<h4>观察各种继承</h4>
+
+<ul>
+<li>虚基类表的偏移值</li>
+<li>虚基类表中的偏移量按照继承顺序来存放</li>
+<li>虚基类子对象一直放在最下面</li>
+</ul>
+
+<h4>虚基类1-4字节分析</h4>
+
+<ul>
+<li>虚基类表指针成员变量的首地址，和本对象A1首地址的偏移量，也就是虚基类表指针 - A1的对象的首地址</li>
+<li>只有对虚基类成员进行赋值的时候，才会用到虚基类</li>
+</ul>
+
+<h4>三层结构虚基类表内容分析</h4>
+
+<ul>
+<li><img src="media/15658570800232/15662039845414.jpg" alt="" style="width:743px;"/></li>
+<li>虚基类在编译的时候已经固定了</li>
+<li>vptr2基本没用到只用到vptr1</li>
+<li>访问虚基类的成员变量要比普通成员变量慢</li>
+</ul>
+
+<h4>成员变量地址，偏移和指针</h4>
+
+<h4>成员变量偏移值和偏移指针</h4>
+
+<ul>
+<li>和具体对象没有关系</li>
+<li>成员变量指针保存的是一个偏移值，不是实际内存地址</li>
+<li>没有指向任何数据成员的指针</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">int main() {
+  Obj obj;
+  obj.m_i = obj.m_j = obj.m_k = 0;
+  printf(&quot;mi = %p \n&quot;, &amp;obj.m_i);
+
+  Obj* p = &amp;obj;
+  printf(&quot;mi = %p \n&quot;, p-&gt;m_i);
+  printf(&quot;mj = %p \n&quot;, p-&gt;m_j);
+
+  int* p1 = &amp;obj.m_i;
+  int* p2 = &amp;obj.m_j;
+
+  *p1 = 15;
+  *p2 = 30;
+  printf(&quot;p1 = %p  p1 val %d \n&quot;, p1, *p1);
+  printf(&quot;p2 = %p  p2 val %d \n&quot;, p2, *p2);
+
+  printf(&quot;m_i offset %d \n&quot;, &amp;Obj::m_i);
+  printf(&quot;m_j offset %d \n&quot;, &amp;Obj::m_j);
+  printf(&quot;m_k offset %d \n&quot;, &amp;Obj::m_k);
+
+
+  int Obj::*ptr = &amp;Obj::m_i;
+  printf(&quot;m_k offset %d \n&quot;, ptr);
+  obj.*ptr = 13;
+  p-&gt;*ptr = 20;
+  ptr = nullptr; 编译器会把ptr设置为-1
+  ptr += 1//不允许
+}
+</code></pre>
+
+<ul>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/08/15 16:18 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B.html'>C++对象模型</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15658312584569.html">
                 
                   <h1>位图</h1>
@@ -734,95 +995,6 @@ Derived (0x0x7fd61ba60380) 0
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15655109586523.html">
-                
-                  <h1>内存管理</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>接口</h4>
-
-<ul>
-<li>brk</li>
-<li>mmap</li>
-<li>munmap</li>
-</ul>
-
-<h4>内存碎片原因</h4>
-
-<ul>
-<li>brk分配的地址需要等到高地址内存释放以后才能释放，mmap分配的内存可以单独释放</li>
-</ul>
-
-<h4>libc是如何管理内存</h4>
-
-<ul>
-<li>ptmalloc</li>
-<li>fast bins</li>
-<li>unsorted bins</li>
-<li>大内存 large bins-&gt;mmaped chunk-&gt;main area-&gt;top chunk</li>
-</ul>
-
-<h4>ptmalloc分配</h4>
-
-<ol>
-<li>获取分配区的锁，防止多线程冲突。</li>
-<li>计算出需要分配的内存的chunk实际大小。</li>
-<li>判断chunk的大小，如果小于max_fast（64b），则取fast bins上去查询是否有适合的chunk，如果有则分配结束。</li>
-<li>chunk大小是否小于512B，如果是，则从small bins上去查找chunk，如果有合适的，则分配结束。</li>
-<li>继续从 unsorted bins上查找。如果unsorted bins上只有一个chunk并且大于待分配的chunk，则进行切割，并且剩余的chunk继续扔回unsorted bins；如果unsorted bins上有大小和待分配chunk相等的，则返回，并从unsorted bins删除；如果unsorted bins中的某一chunk大小 属于small bins的范围，则放入small bins的头部；如果unsorted bins中的某一chunk大小 属于large bins的范围，则找到合适的位置放入。</li>
-<li>从large bins中查找，找到链表头后，反向遍历此链表，直到找到第一个大小 大于待分配的chunk，然后进行切割，如果有余下的，则放入unsorted bin中去，分配则结束。</li>
-<li>如果搜索fast bins和bins都没有找到合适的chunk，那么就需要操作top chunk来进行分配了（top chunk相当于分配区的剩余内存空间）。判断top chunk大小是否满足所需chunk的大小，如果是，则从top chunk中分出一块来。</li>
-<li>如果top chunk也不能满足需求，则需要扩大top chunk。主分区上，如果分配的内存小于分配阀值（默认128k），则直接使用brk()分配一块内存；如果分配的内存大于分配阀值，则需要mmap来分配；非主分区上，则直接使用mmap来分配一块内存。通过mmap分配的内存，就会放入mmap chunk上，mmap chunk上的内存会直接回收给操作系统。</li>
-</ol>
-
-<h4>ptmalloc释放</h4>
-
-<ol>
-<li>获取分配区的锁，保证线程安全。</li>
-<li>如果free的是空指针，则返回，什么都不做。</li>
-<li>判断当前chunk是否是mmap映射区域映射的内存，如果是，则直接munmap()释放这块内存。前面的已使用chunk的数据结构中，我们可以看到有M来标识是否是mmap映射的内存。</li>
-<li>判断chunk是否与top chunk相邻，如果相邻，则直接和top chunk合并（和top chunk相邻相当于和分配区中的空闲内存块相邻）。转到步骤8</li>
-<li>如果chunk的大小大于max_fast（64b），则放入unsorted bin，并且检查是否有合并，有合并情况并且和top chunk相邻，则转到步骤8；没有合并情况则free。</li>
-<li>如果chunk的大小小于 max_fast（64b），则直接放入fast bin，fast bin并没有改变chunk的状态。没有合并情况，则free；有合并情况，转到步骤7</li>
-<li>在fast bin，如果当前chunk的下一个chunk也是空闲的，则将这两个chunk合并，放入unsorted bin上面。合并后的大小如果大于64KB，会触发进行fast bins的合并操作，fast bins中的chunk将被遍历，并与相邻的空闲chunk进行合并，合并后的chunk会被放到unsorted bin中，fast bin会变为空。合并后的chunk和topchunk相邻，则会合并到topchunk中。转到步骤8</li>
-<li>判断top chunk的大小是否大于mmap收缩阈值（默认为128KB），如果是的话，对于主分配区，则会试图归还top chunk中的一部分给操作系统。free结束。</li>
-</ol>
-
-<h4>内存池</h4>
-
-<ul>
-<li>单线程内存池</li>
-<li>多线程内存池</li>
-<li>固定内存池和可变内存池</li>
-<li>boost::pool</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/11 16:09 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -964,6 +1136,12 @@ Derived (0x0x7fd61ba60380) 0
 	      
 		      
 			      <li class="post">
+			        <a href="15817697569868.html">字符串分割</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817610843879.html">编译期</a>
 			      </li>
 		     
@@ -983,12 +1161,6 @@ Derived (0x0x7fd61ba60380) 0
 		      
 			      <li class="post">
 			        <a href="15814188057978.html">重构</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813811739408.html">tuple 使用</a>
 			      </li>
 		     
 		  

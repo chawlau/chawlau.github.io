@@ -172,6 +172,62 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15811508963305.html">
+                
+                  <h1>constexpr</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>使用</h4>
+
+<pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;array&gt;
+
+using namespace std;
+constexpr int sqr(int n) {return n * n;}
+
+int main() {
+    constexpr int n = sqr(3);
+    int b[n];
+
+    constexpr string_view sv {&quot;vi&quot;};
+    constexpr pair pr{sv[0], sv[1]};
+    constexpr array a{pr.first, pr.second};
+    constexpr int n1 = a[0];
+    constexpr int n2 = a[1];
+    cout &lt;&lt; n1 &lt;&lt; &#39; &#39; &lt;&lt; n2 &lt;&lt; &quot;\n&quot;;
+}
+</code></pre>
+
+<ul>
+<li>如果一个类的构造函数里面只包含常量表达式、满足对 constexpr 函数的限制的话（这也意味着，里面不可以有任何动态内存分配），并且类的析构函数是平凡的，那这个类就可以被称为是一个字面类型。换一个角度想，对 constexpr 函数——包括字面类型构造函数——的要求是，得让编译器能在编译期进行计算，而不会产生任何“副作用”，比如内存分配、输入、输出等等</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2020/02/08 16:34 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15810700712722.html">
                 
                   <h1>collections</h1>
@@ -1605,367 +1661,6 @@ if __name__ == &#39;__main__&#39;:
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15782298377426.html">
-                
-                  <h1>接口隔离原则</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>概念</h4>
-
-<ul>
-<li>客户端不应该强迫依赖它不需要的接口。其中的“客户端”，可以理解为接口的调用者或者使用者</li>
-<li>接口理解</li>
-<li>一组API接口集合</li>
-<li>单个API接口或函数</li>
-<li>OOP中的接口概念</li>
-</ul>
-
-<h4>demo</h4>
-
-<pre class="line-numbers"><code class="language-go">package design_pattern
-
-import (
-    &quot;fmt&quot;
-    &quot;reflect&quot;
-    &quot;time&quot;
-)
-
-type Updater interface {
-    updater()
-}
-
-type ConfigSource struct {
-    address string
-    timeOut, maxTotal int64
-}
-
-
-type RedisConfig struct {
-    configSource *ConfigSource
-    address string
-    timeOut, maxTotal int64
-}
-
-
-func (r *RedisConfig) getAddress() string {
-    return r.address
-}
-
-func (r *RedisConfig) updater() {
-    //r.address = r.configSource.address
-    //r.timeOut, r.maxTotal = r.configSource.timeOut, r.configSource.timeOut
-    fmt.Println(&quot;Time to update config &quot;, reflect.TypeOf(r).String())
-}
-
-type KafkaConfig struct {
-    configSource *ConfigSource
-    address string
-    timeOut, maxTotal int64
-}
-
-func (k *KafkaConfig) updater() {
-    //k.address = k.configSource.address
-    //k.timeOut, k.maxTotal = k.configSource.timeOut, k.configSource.timeOut
-    fmt.Println(&quot;Time to update config &quot;, reflect.TypeOf(k).String())
-}
-
-type MysqlConfig struct {
-    configSource *ConfigSource
-    address string
-    timeOut, maxTotal int64
-}
-
-type Executor struct {
-    t *time.Ticker
-}
-
-func (e *Executor) run(updater Updater) {
-    for {
-        select {
-          case &lt;- e.t.C:
-            updater.updater()
-        }
-    }
-}
-
-type ScheduleUpdater struct {
-    Updater
-    delayTime int64
-    executor *Executor
-}
-
-func (s *ScheduleUpdater) run() {
-    s.executor.run(s.Updater)
-}
-
-func NewScheduleUpdater(updater Updater, delayTime int64) *ScheduleUpdater {
-    return &amp;ScheduleUpdater {
-        Updater: updater,
-        delayTime: delayTime,
-        executor: &amp;Executor{
-            t: time.NewTicker(time.Duration(delayTime)),
-        },
-    }
-}
-
-import &quot;testing&quot;
-
-func TestConfig(t *testing.T) {
-    configSource := &amp;ConfigSource{&quot;localhost&quot;, 2, 3}
-    redisConfig := &amp;RedisConfig{configSource: configSource}
-    kafkaConfig := &amp;KafkaConfig{configSource: configSource}
-    //mysqlConfig := &amp;MysqlConfig{configSource: configSource}
-
-    var updaterList []*ScheduleUpdater
-    redisUpdater := NewScheduleUpdater(redisConfig, 10000)
-    updaterList = append(updaterList, redisUpdater)
-
-    kafkaUpdater := NewScheduleUpdater(kafkaConfig, 10000)
-    updaterList = append(updaterList, kafkaUpdater)
-
-    for _, v := range updaterList {
-        go v.run()
-    }
-    select {}
-}
-</code></pre>
-
-<h4>添加接口查看</h4>
-
-<pre class="line-numbers"><code class="language-go">package design_pattern
-
-import (
-    &quot;container/list&quot;
-    &quot;fmt&quot;
-    &quot;github.com/luci/go-render/render&quot;
-    &quot;reflect&quot;
-    &quot;time&quot;
-)
-
-type Updater interface {
-    updater()
-}
-
-type Viewer interface {
-    outPutInPlainText() string
-    output() map[string]string
-    containsKey(string) bool
-}
-
-type ConfigSource interface {
-    add()
-}
-
-type ZookeeperConfigSource struct {
-    address string
-    timeOut, maxTotal int64
-}
-
-func (z *ZookeeperConfigSource) add() {
-}
-
-
-type RedisConfig struct {
-    configSource ConfigSource
-    address string
-    timeOut, maxTotal int64
-}
-
-
-func (r *RedisConfig) getAddress() string {
-    return r.address
-}
-
-func (r *RedisConfig) updater() {
-    //r.address = r.configSource.address
-    //r.timeOut, r.maxTotal = r.configSource.timeOut, r.configSource.timeOut
-    fmt.Println(&quot;Time to update config &quot;, reflect.TypeOf(r).String())
-}
-
-func (r *RedisConfig) outPutInPlainText() string {
-    fmt.Println(&quot;outPutInPlainText &quot;, reflect.TypeOf(r).String())
-    return &quot;outPutInPlainText &quot; + reflect.TypeOf(r).String()
-}
-
-func (r *RedisConfig) output() map[string]string {
-    ret := make(map[string]string)
-    ret[&quot;outPut&quot;] = reflect.TypeOf(r).String()
-    fmt.Println(&quot;output &quot;, render.Render(ret))
-    return ret
-}
-
-
-func (r *RedisConfig) containsKey(key string) bool {
-    return false
-}
-
-type KafkaConfig struct {
-    configSource ConfigSource
-    address string
-    timeOut, maxTotal int64
-}
-
-func (k *KafkaConfig) updater() {
-    //k.address = k.configSource.address
-    //k.timeOut, k.maxTotal = k.configSource.timeOut, k.configSource.timeOut
-    fmt.Println(&quot;Time to update config &quot;, reflect.TypeOf(k).String())
-}
-
-func (k *KafkaConfig) outPutInPlainText() string {
-    fmt.Println(&quot;outPutInPlainText &quot;, reflect.TypeOf(k).String())
-    return &quot;outPutInPlainText &quot; + reflect.TypeOf(k).String()
-}
-
-func (k *KafkaConfig) output() map[string]string {
-    ret := make(map[string]string)
-    ret[&quot;outPut&quot;] = reflect.TypeOf(k).String()
-    fmt.Println(&quot;output &quot;, render.Render(ret))
-    return ret
-}
-
-type MysqlConfig struct {
-    configSource ConfigSource
-    address string
-    timeOut, maxTotal int64
-}
-
-func (m *MysqlConfig) outPutInPlainText() string {
-    fmt.Println(&quot;outPutInPlainText &quot;, reflect.TypeOf(m).String())
-    return &quot;outPutInPlainText &quot; + reflect.TypeOf(m).String()
-}
-
-func (m *MysqlConfig) output() map[string]string {
-    ret := make(map[string]string)
-    ret[&quot;outPut&quot;] = reflect.TypeOf(m).String()
-    fmt.Println(&quot;output &quot;, render.Render(ret))
-    return ret
-}
-
-func (r *MysqlConfig) containsKey(key string) bool {
-    return false
-}
-
-type Executor struct {
-    t *time.Timer
-    d time.Duration
-}
-
-func (e *Executor) run(updater Updater) {
-    for {
-        select {
-          case &lt;- e.t.C:
-            updater.updater()
-                e.t.Reset(e.d)
-        }
-    }
-}
-
-type ScheduleUpdater struct {
-    Updater
-    delayTime int64
-    executor *Executor
-}
-
-func (s *ScheduleUpdater) run() {
-    s.executor.run(s.Updater)
-}
-
-func NewScheduleUpdater(updater Updater, delayTime int64) *ScheduleUpdater {
-    dur :=  time.Duration(delayTime) * time.Second
-    return &amp;ScheduleUpdater {
-        Updater: updater,
-        delayTime: delayTime,
-        executor: &amp;Executor{
-            d: dur,
-            t: time.NewTimer(dur),
-        },
-    }
-}
-
-type HttpServer struct {
-    host string
-    port int
-    viewers map[string]*list.List
-}
-
-func (h *HttpServer) addViewers(urlDic string, viewer Viewer) {
-    if !viewer.containsKey(urlDic) {
-        viewList := list.New()
-        h.viewers[urlDic] = viewList
-
-        h.viewers[urlDic].PushBack(viewer)
-    }
-}
-
-func (h *HttpServer) run() {
-    fmt.Println(&quot;HttpServer viewer &quot;, render.Render(h.viewers))
-}
-
-func TestConfig(t *testing.T) {
-    configSource := &amp;ZookeeperConfigSource{&quot;localhost&quot;, 2, 3}
-    redisConfig := &amp;RedisConfig{configSource: configSource}
-    kafkaConfig := &amp;KafkaConfig{configSource: configSource}
-    mysqlConfig := &amp;MysqlConfig{configSource: configSource}
-
-    updaterList := list.New()
-    redisUpdater := NewScheduleUpdater(redisConfig, 2)
-    updaterList.PushBack(redisUpdater)
-
-    kafkaUpdater := NewScheduleUpdater(kafkaConfig, 2)
-    updaterList.PushBack(kafkaUpdater)
-
-    for e := updaterList.Front(); e != nil; e = e.Next() {
-        go e.Value.(*ScheduleUpdater).run()
-    }
-
-    httpServer := &amp;HttpServer{
-        host: &quot;127.0.0.1&quot;,
-        port: 2389,
-        viewers: make(map[string]*list.List),
-    }
-
-    httpServer.addViewers(&quot;/config&quot;, redisConfig)
-    httpServer.addViewers(&quot;/config&quot;, mysqlConfig)
-    httpServer.run()
-    select {}
-}
-</code></pre>
-
-<h4>接口隔离原则</h4>
-
-<ul>
-<li>理解“接口隔离原则”的重点是理解其中的“接口”二字。这里有三种不同的理解。</li>
-<li>如果把“接口”理解为一组接口集合，可以是某个微服务的接口，也可以是某个类库的接口等。如果部分接口只被部分调用者使用，我们就需要将这部分接口隔离出来，单独给这部分调用者使用，而不强迫其他调用者也依赖这部分不会被用到的接口。</li>
-<li>如果把“接口”理解为单个 API 接口或函数，部分调用者只需要函数中的部分功能，那我们就需要把函数拆分成粒度更细的多个函数，让调用者只依赖它需要的那个细粒度函数</li>
-<li>如果把“接口”理解为 OOP 中的接口，也可以理解为面向对象编程语言中的接口语法。那接口的设计要尽量单一，不要让接口的实现类和调用者，依赖不需要的接口函数。</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2020/01/05 21:10 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html'>设计模式之美</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -2107,6 +1802,12 @@ func TestConfig(t *testing.T) {
 	      
 		      
 			      <li class="post">
+			        <a href="15817697569868.html">字符串分割</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817610843879.html">编译期</a>
 			      </li>
 		     
@@ -2126,12 +1827,6 @@ func TestConfig(t *testing.T) {
 		      
 			      <li class="post">
 			        <a href="15814188057978.html">重构</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813811739408.html">tuple 使用</a>
 			      </li>
 		     
 		  

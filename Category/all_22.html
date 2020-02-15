@@ -172,6 +172,45 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15679012406438.html">
+                
+                  <h1>动态配置</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>操作</h4>
+
+<ul>
+<li>addauth digest super:chawlau</li>
+<li>reconfig -remove 3</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/09/08 08:07 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Zookeeper.html'>Zookeeper</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15678080784552.html">
                 
                   <h1>Hash索引和索引使用原则</h1>
@@ -1136,156 +1175,6 @@ ptr返回的引用计数没有增加
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15676343759084.html">
-                
-                  <h1>持久化</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>作用</h4>
-
-<ul>
-<li>数据落盘</li>
-</ul>
-
-<h4>持久化</h4>
-
-<ul>
-<li>快照</li>
-<li>写日志</li>
-</ul>
-
-<h4>RDB</h4>
-
-<ul>
-<li>触发机制 save 同步阻塞</li>
-<li>bgsave 异步</li>
-<li>自动 </li>
-</ul>
-
-<h4>save</h4>
-
-<ul>
-<li>文件策略 存在老的RDB文件，新替换老的 O(n)</li>
-</ul>
-
-<h4>bgsave</h4>
-
-<ul>
-<li><img src="media/15676343759084/15676348508243.jpg" alt="" style="width:992px;"/></li>
-<li>fork 会阻塞redis</li>
-<li><img src="media/15676343759084/15676348836006.jpg" alt="" style="width:679px;"/></li>
-<li>对比</li>
-<li><img src="media/15676343759084/15676349032928.jpg" alt="" style="width:835px;"/></li>
-</ul>
-
-<h4>自动生成RDB</h4>
-
-<ul>
-<li><img src="media/15676343759084/15676350374860.jpg" alt="" style="width:1000px;"/></li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">stop-writes-on-bgsave-error yes
-rdbcompression yes
-rdbchecksum yes
-save 900 1
-save 300 10
-save 60 10000 关闭
-dbfilename dump-${port}.rdb
-dir /bigdiskpath
-</code></pre>
-
-<h4>触发机制</h4>
-
-<ul>
-<li>全量复制</li>
-<li>debug reload</li>
-<li>shutdown</li>
-<li>info memory</li>
-</ul>
-
-<h4>总结</h4>
-
-<ul>
-<li><img src="media/15676343759084/15676366419362.jpg" alt="" style="width:770px;"/></li>
-</ul>
-
-<h4>RDB不足</h4>
-
-<ul>
-<li><img src="media/15676343759084/15676366801557.jpg" alt="" style="width:651px;"/></li>
-<li><img src="media/15676343759084/15676367423139.jpg" alt="" style="width:496px;"/></li>
-<li></li>
-</ul>
-
-<h4>AOF</h4>
-
-<ul>
-<li>always 每条命令</li>
-<li>everysec 每秒</li>
-<li>no OS决定刷盘</li>
-<li><img src="media/15676343759084/15676370952837.jpg" alt="" style="width:866px;"/></li>
-<li>重写</li>
-<li>过期重复命令优化</li>
-<li>减少磁盘占用</li>
-<li>加速恢复速度</li>
-<li>bgrewriteaof 内存中操作</li>
-<li><img src="media/15676343759084/15676373872232.jpg" alt="" style="width:986px;"/></li>
-<li>auto-aof-rewrite-min-size</li>
-<li>auto-aof-rewrite-percentage</li>
-<li><img src="media/15676343759084/15676374645536.jpg" alt="" style="width:859px;"/></li>
-<li>重写流程</li>
-<li><img src="media/15676343759084/15676375084556.jpg" alt="" style="width:486px;"/></li>
-<li><img src="media/15676343759084/15676377478770.jpg" alt="" style="width:738px;"/></li>
-<li>no-appendfsync-on-rewrite重写的时候不要进行aof操作</li>
-<li>aof-load-truncated yes是否忽略错误</li>
-</ul>
-
-<h4>RDB和AOF</h4>
-
-<ul>
-<li>RDB 关</li>
-<li>集中管理</li>
-<li>主从 从开</li>
-<li>AOF 开 缓存和存储</li>
-<li>AOF重写集中管理</li>
-<li>everysec</li>
-</ul>
-
-<h4>最佳策略</h4>
-
-<ul>
-<li>小分片</li>
-<li>缓存和存储</li>
-<li>监控 磁盘 内存 负载 网络</li>
-<li>足够的内存</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/05 05:59 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Redis%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A.html'>Redis从入门到精通</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1427,6 +1316,12 @@ dir /bigdiskpath
 	      
 		      
 			      <li class="post">
+			        <a href="15817697569868.html">字符串分割</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817610843879.html">编译期</a>
 			      </li>
 		     
@@ -1446,12 +1341,6 @@ dir /bigdiskpath
 		      
 			      <li class="post">
 			        <a href="15814188057978.html">重构</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813811739408.html">tuple 使用</a>
 			      </li>
 		     
 		  

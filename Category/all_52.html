@@ -172,6 +172,76 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15464129500537.html">
+                
+                  <h1>mysql修改语句</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>加锁规则</h4>
+
+<ul>
+<li>原则 1：加锁的基本单位是 next-key lock</li>
+<li>原则 2：查找过程中访问到的对象才会加锁。</li>
+<li>优化1 索引上的等值查询，给唯一索引加锁的时候，next-key lock 退化为行锁。</li>
+<li>优化2 索引上的等值查询，向右遍历时且最后一个值不满足等值条件的时候，next-key lock 退化为间隙锁。</li>
+<li>bug：唯一索引上的范围查询会访问到不满足条件的第一个值为止。<br/>
+#### 覆盖索引的注意事项</li>
+<li>select选择的字段中含有不在索引中的字段 ，即索引没有覆盖全部的列。</li>
+<li>where条件中不能含有对索引进行like的操作。</li>
+</ul>
+
+<h4>删除数据</h4>
+
+<ul>
+<li>在删除数据的时候尽量加 limit。这样不仅可以控制删除数据的条数，让操作更安全，还可以减小加锁的范围。</li>
+</ul>
+
+<h4>非唯一索引等值锁</h4>
+
+<ul>
+<li>lock in share mode 只锁覆盖索引，但是如果是 for update 就不一样了。 执行 for update 时，系统会认为你接下来要更新数据，因此会顺便给主键索引上满足条件的行加上行锁。</li>
+<li>如果你要用 lock in share mode 来给行加读锁避免数据被更新的话，就必须得绕过覆盖索引的优化，在查询字段中加入索引中不存在的字段。</li>
+</ul>
+
+<h4>next-key lock</h4>
+
+<ul>
+<li> next-key lock具体执行的时候，是要分成间隙锁和行锁两段来执行的</li>
+</ul>
+
+<h4>读提交</h4>
+
+<ul>
+<li>读提交隔离级别下，锁的范围更小，锁的时间更短，这也是不少业务都默认使用读提交隔离级别的原因。</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/01/02 15:09 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15464093479091.html">
                 
                   <h1>内存泄露实战</h1>
@@ -838,48 +908,6 @@ select d.* from tradelog l , trade_detail d where d.tradeid=CONVERT(l.tradeid US
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15454692860520.html">
-                
-                  <h1>队列</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>循环队列</h4>
-
-<ul>
-<li>在数组实现队列的时候，会有数据搬移操作，要想解决数据搬移的问题，我们就需要像环一样的循环队列<br/>
-#### 阻塞队列</li>
-<li><br/>
-#### 并发队列</li>
-<li>无所队列</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/22 17:01 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1021,6 +1049,12 @@ select d.* from tradelog l , trade_detail d where d.tradeid=CONVERT(l.tradeid US
 	      
 		      
 			      <li class="post">
+			        <a href="15817697569868.html">字符串分割</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817610843879.html">编译期</a>
 			      </li>
 		     
@@ -1040,12 +1074,6 @@ select d.* from tradelog l , trade_detail d where d.tradeid=CONVERT(l.tradeid US
 		      
 			      <li class="post">
 			        <a href="15814188057978.html">重构</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813811739408.html">tuple 使用</a>
 			      </li>
 		     
 		  

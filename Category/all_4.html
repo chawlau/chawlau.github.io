@@ -172,6 +172,75 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15765509892543.html">
+                
+                  <h1>尾部递归调用</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>优化</h4>
+
+<ul>
+<li>C 语言默认情况下是不考虑并发的，因为并发是自己处理的，那么 GCC 编译器尽可能在指令上做到性能优先，这是 GCC 目标。Go 语言是指令尽可能优化，前提是 runtime 机制优先，runtime 机制优先于算法优化，所以避免把多次函数调用优化成时间非常长的循环。</li>
+<li>GCC 考虑的是 CPU 密集型。Go 考虑的是多任务的公平性</li>
+</ul>
+
+<h4>defer工作机制</h4>
+
+<ul>
+<li>第一个是函数，第二个是所有参数，它会立即求值，把参数和函数一起打包放在一个地方，等着后面去执行</li>
+<li>derfer 语句实际上形成两个函数调用，第一个是 derferproc 注册，把函数和参数打包放在一个地方不执行，然后在 RET 之前通过 deferreturn 函数来调用注册的函数</li>
+<li><img src="media/15765509892543/15765517178849.jpg" alt="" style="width:1274px;"/></li>
+</ul>
+
+<h4>延迟函数一定被执行</h4>
+
+<pre class="line-numbers"><code class="language-go">func main() {
+    defer println(&quot;exit&quot;)
+    //os.Exit(0)
+    panic(&quot;abc&quot;)
+}
+</code></pre>
+
+<ul>
+<li>引发 panic，延迟函数也会被执行。</li>
+<li>用 runtime.Goexit 终止当前 goroutine，延迟函数会被执行。</li>
+<li>但os.Exit 会立即终止进程，不执行任何延迟函数。</li>
+</ul>
+
+<h4>闭包</h4>
+
+<ul>
+<li>在堆上创建数据结构，这个数据结构有两个字段组成的，接下来把匿名函数的地址填到第一个字段里面，把环境变量的值拷贝到第二个字段里面。这个结构体包含闭包执行需要的数据，所以匿名函数加上所需要的环境变量叫做闭包。</li>
+<li>main 函数怎么执行这个匿名函数呢，首先通过 SP 拿到返回值，赋值给 DX，DX 赋值给局部变量 f，所以 f 严格意义上来说不是一个简单的函数，是闭包的第一个字段。DX 读出一个值放到 AX 内，接下来直接 call AX 相当于调用匿名函数，这个匿名函数通过 DX+8 取到第二个字段，就构成了一套的完整的闭包调用</li>
+<li>包装对象只有匿名函数地址，没有环境变量指针，因为匿名函数地址是固定的，所以这个包装对象不需要每次生成，编译器把它写到 rodata 里面。如果有闭包的话，环境变量的地址在堆上分配的，那么这个地址肯定是在运行期动态生成的，那么包装对象就没有办法在编译期确定，所以这个包装对象就不能生成到 rodata 里面。</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/12/17 10:49 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15765398211231.html">
                 
                   <h1>迭代器模式</h1>
@@ -2453,119 +2522,6 @@ int main() {
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15745422969850.html">
-                
-                  <h1>自定义序列类</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>序列协议</h4>
-
-<ul>
-<li><img src="media/15745422969850/15745424374141.jpg" alt="" style="width:663px;"/></li>
-</ul>
-
-<h4>add</h4>
-
-<pre class="line-numbers"><code class="language-python">a += (3, 4)
-a += [3, 4]
-通过魔法函数__iadd__来实现，内部通过extends实现
-a = [1, 2]
-c = a + [3, 4]
-print(c)
-
-a += (3, 4)
-a.extend(range(3))//迭代相加每个元素
-a.append((1, 2)) //直接加上整个元组
-a.append([1, 2]) //直接加上整个列表
-print(a)
-</code></pre>
-
-<h4>可切片的对象</h4>
-
-<pre class="line-numbers"><code class="language-python">import numbers
-
-class Group:
-    def __init__(self, group_name, company_name, staffs):
-        self.group_name = group_name
-        self.company_name = company_name
-        self.staffs = staffs
-
-    def __reversed__(self):
-        self.staffs.reverse()
-
-    def __getitem__(self, item):
-        cls = type(self)
-        if isinstance(item, slice):
-            return cls(group_name=self.group_name, company_name=self.company_name, staffs=self.staffs[item])
-        elif isinstance(item, slice):
-            return cls(group_name=self.group_name, company_name=self.company_name, staffs=[self.staffs[item]])
-
-    def __len__(self):
-        return len(self.staffs)
-
-    def __iter__(self):
-        return iter(self.staffs)
-
-    def __contains__(self, item):
-        if item in self.staffs:
-            return True
-        else:
-            return False
-
-staffs = [&quot;bobby1&quot;, &quot;imooc&quot;, &quot;bobby2&quot;, &quot;bobby3&quot;]
-
-group = Group(company_name=&quot;imooc&quot;, group_name=&quot;user&quot;, staffs=staffs)
-reversed(group)
-
-for user in group:
-    print(user)
-</code></pre>
-
-<h4>维持升序排列</h4>
-
-<pre class="line-numbers"><code class="language-python">#用来处理已排序的序列，用来维持已排序的序列， 升序
-import bisect
-
-from  collections import deque
-
-inter_list = deque()
-bisect.insort(inter_list, 3)
-bisect.insort(inter_list, 2)
-bisect.insort(inter_list, 5)
-bisect.insort(inter_list, 1)
-bisect.insort(inter_list, 6)
-
-print(bisect.bisect_left(inter_list, 3))
-
-print(inter_list)
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/24 04:51 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -2707,6 +2663,12 @@ print(inter_list)
 	      
 		      
 			      <li class="post">
+			        <a href="15817697569868.html">字符串分割</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817610843879.html">编译期</a>
 			      </li>
 		     
@@ -2726,12 +2688,6 @@ print(inter_list)
 		      
 			      <li class="post">
 			        <a href="15814188057978.html">重构</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813811739408.html">tuple 使用</a>
 			      </li>
 		     
 		  

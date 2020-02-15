@@ -172,6 +172,84 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15735992285022.html">
+                
+                  <h1>元组和列表</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>内部实现</h4>
+
+<pre class="line-numbers"><code class="language-c">#ifndef Py_LIMITED_API
+typedef struct {
+    PyObject_VAR_HEAD
+    PyObject **ob_item;
+    Py_ssize_t allocated;
+} PyListObject;
+typedef struct {
+    PyObject_VAR_HEAD
+    PyObject *ob_item[1];
+} PyTupleObject;
+</code></pre>
+
+<h4>hash表</h4>
+
+<pre class="line-numbers"><code class="language-c">Indices
+----------------------------------------------------
+None | index | None | None | index | None | index ...
+----------------------------------------------------
+Entries
+--------------------
+hash0   key0  value0
+---------------------
+hash1   key1  value1
+---------------------
+hash2   key2  value2
+---------------------
+        ...
+---------------------
+
+</code></pre>
+
+<ul>
+<li>旧的Hash表越来越稀疏</li>
+</ul>
+
+<h4>全局变量修改</h4>
+
+<pre class="line-numbers"><code class="language-python">x = [1]
+
+def func2():
+    x.append(2)
+func2()
+print(x)
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/13 06:53 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15735109140523.html">
                 
                   <h1>python对象</h1>
@@ -979,89 +1057,6 @@ calculate_similarity(&#39;hello world&#39;)
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15730828183314.html">
-                
-                  <h1>值传递和引用传递</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>赋值</h4>
-
-<ul>
-<li>Python 的数据类型，例如整型（int）、字符串（string）等等，是不可变的</li>
-</ul>
-
-<h4>变量删除</h4>
-
-<pre class="line-numbers"><code class="language-python">l = [1, 2, 3]
-del l
-</code></pre>
-
-<ul>
-<li>Python 里的变量可以被删除，但是对象无法被删除</li>
-<li>del l 删除了 l 这个变量，从此以后你无法访问 l，但是对象 [1, 2, 3] 仍然存在。Python 程序运行时，其自带的垃圾回收系统会跟踪每个对象的引用。如果 [1, 2, 3] 除了 l 外，还在其他地方被引用，那就不会被回收，反之则会被回收</li>
-</ul>
-
-<h4>变量总结</h4>
-
-<ul>
-<li>变量的赋值，只是表示让变量指向了某个对象，并不表示拷贝对象给变量；而一个对象，可以被多个变量所指向。</li>
-<li>可变对象（列表，字典，集合等等）的改变，会影响所有指向该对象的变量。</li>
-<li>对于不可变对象（字符串，整型，元祖等等），所有指向该对象的变量的值总是一样的，也不会改变。但是通过某些操作（+= 等等）更新不可变对象的值时，会返回一个新的对象。</li>
-<li>变量可以被删除，但是对象无法被删</li>
-<li>如果对象是可变的，当其改变时，所有指向这个对象的变量都会改变。如果对象不可变，简单的赋值只能改变其中一个变量的值，其余变量则不受影响。</li>
-</ul>
-
-<h4>函数传参</h4>
-
-<pre class="line-numbers"><code class="language-python">def my_func5(l2):
- l2 = l2 + [4]
- return l2
-</code></pre>
-
-<h4>思考</h4>
-
-<pre class="line-numbers"><code class="language-python">l1 = [1, 2, 3]
-l2 = [1, 2, 3]
-l3 = l2
-</code></pre>
-
-<ul>
-<li>列表是可变对象，每创建一个列表，都会重新分配内存，因此 1 和 12 并不是同个对象，由于 I3=12 表明 13 指向 12 的对象。</li>
-</ul>
-
-<h5>整型数组问题</h5>
-
-<ul>
-<li>出于对性能优化的考虑，Python 内部会对 -5 到 256 的整型维持一个数组，起到一个缓存的作用。这样，每次你试图创建一个 -5 到 256 范围内的整型数字时，Python 都会从这个数组中返回相对应的引用，而不是重新开辟一块新的内存空间</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/07 07:26 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1203,6 +1198,12 @@ l3 = l2
 	      
 		      
 			      <li class="post">
+			        <a href="15817697569868.html">字符串分割</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817610843879.html">编译期</a>
 			      </li>
 		     
@@ -1222,12 +1223,6 @@ l3 = l2
 		      
 			      <li class="post">
 			        <a href="15814188057978.html">重构</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813811739408.html">tuple 使用</a>
 			      </li>
 		     
 		  
