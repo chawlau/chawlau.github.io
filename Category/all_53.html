@@ -170,61 +170,6 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15489819871248.html">
-                
-                  <h1>Linux问题答疑</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>阻塞、非阻塞 I/O 与同步、异步 I/O 的区别和联系</h4>
-
-<ul>
-<li>所谓阻塞 I/O，是指应用程序在执行 I/O 操作后，如果没有获得响应，就会阻塞当前线程，不能执行其他任务。</li>
-<li>所谓非阻塞 I/O，是指应用程序在执行 I/O 操作后，不会阻塞当前的线程，可以继续执行其他的任务。</li>
-<li>所谓同步 I/O，是指收到 I/O 请求后，系统不会立刻响应应用程序；等到处理完成，系统才会通过<strong><em>系统调用</em></strong>的方式，告诉应用程序 I/O 结果。</li>
-<li>所谓异步 I/O，是指收到 I/O 请求后，系统会先告诉应用程序 I/O 请求已经收到，随后再去异步处理；等处理完成后，系统再通<strong><em>过事件通知</em></strong>的方式，告诉应用程序结果。</li>
-</ul>
-
-<h4>执行 find 命令时，会不会导致系统的缓存升高呢？如果会导致，升高的又是哪种类型的缓存呢</h4>
-
-<ul>
-<li>会导致系统缓存升高</li>
-<li>文件名以及文件之间的目录关系，都放在目录项缓存中。而这是一个基于内存的数据结构，会根据需要动态构建。所以，查找文件时，Linux 就会动态构建不在缓存中的目录项结构，导致 dentry 缓存升高。</li>
-<li>inode cacahe&amp;dentry&amp;proc inode cache</li>
-</ul>
-
-<h4>磁盘IO延迟</h4>
-
-<ul>
-<li>MySQL 的 MyISAM 引擎，本身并不缓存数据，而要依赖系统缓存来加速磁盘 I/O 的访问。一旦系统中还有其他应用同时运行，MyISAM 引擎就很难充分利用系统缓存。因为系统缓存可能被其他应用程序占用，甚至直接被清理掉。InnoDB同时缓存索引和数据</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/01 08:46 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
                 <a class="clearlink" href="15488381890610.html">
                 
                   <h1>容器网络</h1>
@@ -921,6 +866,83 @@ locks gap before rec 只有间隙锁；
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15486417501301.html">
+                
+                  <h1>系统IO瓶颈</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>IO性能指标</h4>
+
+<p><img src="media/15486417501301/9e42aaf53ff4a544b9a7b03b6ce63f38.png" alt="9e42aaf53ff4a544b9a7b03b6ce63f38"/></p>
+
+<h4>文件系统I/O性能指标</h4>
+
+<ul>
+<li>存储空间的使用情况，包括容量、使用量以及剩余空间</li>
+<li>索引节点使用情况</li>
+<li>页缓存、目录项缓存、索引节点缓存以及各个具体文件系统（如 ext4、XFS 等）的缓存</li>
+<li>IOPS</li>
+<li>响应时间</li>
+<li>吞吐量 B/s</li>
+</ul>
+
+<h4>磁盘I/O性能指标</h4>
+
+<ul>
+<li>使用率，是指磁盘忙处理 I/O 请求的百分比。过高的使用率（比如超过 60%）通常意味着磁盘 I/O 存在性能瓶颈。</li>
+<li>IOPS（Input/Output Per Second），是指每秒的 I/O 请求数。</li>
+<li>吞吐量，是指每秒的 I/O 请求大小。</li>
+<li>响应时间，是指从发出 I/O 请求到收到响应的间隔时间。
+<img src="media/15486417501301/b6d67150e471e1340a6f3c3dc3ba0120.png" alt="b6d67150e471e1340a6f3c3dc3ba0120"/></li>
+</ul>
+
+<h4>性能工具</h4>
+
+<ul>
+<li>文件系统缓存 /proc/meminfo、/proc/slabinfo 以及 slabtop</li>
+<li>磁盘 iostat pidstat filetop opensnoop</li>
+</ul>
+
+<h4>工具和性能指标图</h4>
+
+<p><img src="media/15486417501301/6f26fa18a73458764fcda00212006698.png" alt="6f26fa18a73458764fcda00212006698"/><br/>
+<img src="media/15486417501301/c48b6664c6d334695ed881d5047446e9.png" alt="c48b6664c6d334695ed881d5047446e9"/></p>
+
+<h4>IO性能指标分析套路</h4>
+
+<ul>
+<li>先用 iostat 发现磁盘 I/O 性能瓶颈；</li>
+<li>再借助 pidstat ，定位出导致瓶颈的进程；</li>
+<li>随后分析进程的 I/O 行为；</li>
+<li>最后，结合应用程序的原理，分析这些 I/O 的来源。<img src="media/15486417501301/1802a35475ee2755fb45aec55ed2d98a.png" alt="1802a35475ee2755fb45aec55ed2d98a"/></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/01/28 10:15 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
           				   
                   </div>
                   <div class="more-right right">

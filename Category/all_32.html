@@ -170,210 +170,6 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15646523320655.html">
-                
-                  <h1>zmq为什么高效</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>性能</h4>
-
-<ul>
-<li>RTT</li>
-<li>TPS</li>
-<li>关闭Nagle算法，关闭网卡中断汇聚在一个cpu，提高IO吞吐能力上，开启网络接口的多队列功能，这样，每个队列就可以用不同的中断号，调度到不同 CPU 上执行</li>
-<li>区别大小消息，零拷贝 92字节为临界点</li>
-<li>批量发送和接收消息</li>
-<li>非同步零数据CPU迁移的并发编程 通过管道</li>
-<li>无锁算法</li>
-</ul>
-
-<h4>线程间共享数据</h4>
-
-<ul>
-<li>send(cmd)</li>
-<li>socket</li>
-<li>socketpair</li>
-<li>信号 pipe</li>
-<li>eventfd</li>
-</ul>
-
-<h5>架构</h5>
-
-<ul>
-<li><img src="media/15646523320655/15646568568348.jpg" alt=""/></li>
-<li>engine负责对底层事件发送和接收解码和内核打交道，依赖poller</li>
-<li>poller 对epoll进行封装</li>
-<li>pipes inbound 和 outbound 读写两个管道</li>
-<li>mailbox就是对pipe的封装，两个线程之间发送数据</li>
-<li>session 管理每个连接，管理客户端连接</li>
-<li>session和engine绑定到每个io thread</li>
-<li>zmq_socket可以对应多个客户端，通过算法将session和engine绑定到io_thread</li>
-<li>poller监听到数据会把socketfd发给listener处理，listener会创建engine和session</li>
-<li>读事件发生poller-&gt;engine-&gt;内核拷贝数据-&gt;session-&gt;inbound-&gt;api接口读取数据</li>
-<li>写事件是engine从session中读取消息</li>
-</ul>
-
-<h4>消息内存管理</h4>
-
-<ul>
-<li>短消息vsm直接初始化在栈上</li>
-<li>zmq_msg_t-&gt;msg_t</li>
-<li>move 就是删除引用计数</li>
-<li></li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">   union {
-    struct {
-      metadata_t *metadata;
-      unsigned char unused [msg_t_size - (8 + sizeof (metadata_t *) + 2)];
-      unsigned char type;
-      unsigned char flags;
-    } base;
-    struct {
-      metadata_t *metadata;
-      unsigned char data [max_vsm_size];
-      unsigned char size;
-      unsigned char type;
-      unsigned char flags;
-    } vsm;
-    struct {
-      metadata_t *metadata;
-      content_t *content;
-      unsigned char unused [msg_t_size - (8 + sizeof (metadata_t *) + sizeof (content_t*) + 2)];
-      unsigned char type;
-      unsigned char flags;
-    } lmsg;
-    struct {
-      metadata_t *metadata;
-      void* data;
-      size_t size;
-      unsigned char unused
-          [msg_t_size - (8 + sizeof (metadata_t *) + sizeof (void*) + sizeof (size_t) + 2)];
-      unsigned char type;
-      unsigned char flags;
-    } cmsg;
-    struct {
-      metadata_t *metadata;
-      unsigned char unused [msg_t_size - (8 + sizeof (metadata_t *) + 2)];
-      unsigned char type;
-      unsigned char flags;
-    } delimiter;
-  } u;
-</code></pre>
-
-<p><img src="media/15646523320655/15646582517066.jpg" alt="" style="width:705px;"/></p>
-
-<ul>
-<li>zmq_msg_move 做了一个引用计数</li>
-</ul>
-
-<h4>multipart message</h4>
-
-<ul>
-<li>小消息第一个字节是长度</li>
-<li>大消息分多帧发送，最后一个帧发送空</li>
-<li>超过一个字节的长度，帧第一个字节是0xffff，然后扩充到8个字节</li>
-<li>ZMQ_SNDMORE</li>
-<li></li>
-<li><img src="media/15646523320655/15646590611577.jpg" alt="" style="width:936px;"/></li>
-</ul>
-
-<h4>动态调整批量发送</h4>
-
-<ul>
-<li>outbound和inbound是收发队列</li>
-<li>out_batch_size = 8192 bytes</li>
-<li>有多条消息就合并，没有也立即发送</li>
-<li>8192让tcp尽量有数据发送</li>
-<li>stream_engine</li>
-</ul>
-
-<h4>高效线程的IO</h4>
-
-<ul>
-<li>IO密集型一般线程数目是CPU数目的两倍</li>
-<li>计算密集型跟cpu数目一样
-<img src="media/15646523320655/15649055233553.jpg" alt="" style="width:586px;"/></li>
-<li>统计流量的事情丢给用户</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">zmq::io_thread_t *zmq::ctx_t::choose_io_thread (uint64_t affinity_)
-{
-  if (_io_threads.empty ())
-    return NULL;
-
-  //  Find the I/O thread with minimum load.
-  int min_load = -1;
-  io_thread_t *selected_io_thread = NULL;
-  for (io_threads_t::size_type i = 0; i != _io_threads.size (); i++) {
-    if (!affinity_ || (affinity_ &amp; (uint64_t (1) &lt;&lt; i))) {
-      int load = _io_threads[i]-&gt;get_load ();
-      if (selected_io_thread == NULL || load &lt; min_load) {
-        min_load = load;
-        selected_io_thread = _io_threads[i];
-      }
-    }
-  }
-  return selected_io_thread;
-}
-</code></pre>
-
-<h4>Mailbox</h4>
-
-<ul>
-<li>eventfd 事件fd效果等同于socketpair,可以添加到epoll中来</li>
-<li>slot(mailbox)-&gt;io_thread对应数组某个位置</li>
-<li>socket线程和io_thread交换数据</li>
-<li>通过mailbox命令让io_thread绑定poller,session,engine</li>
-<li>signaler_t make_fdpair -&gt; eventfdj</li>
-<li>socket的mailbox和iothread中一一对应</li>
-<li>mailbox第一次send 1激活邮箱</li>
-<li>io_thread中的poller有处理mailbox中的signaler_t信号</li>
-<li>然后poller中收到1后从管道中读数据</li>
-<li>signaler封装一个socketpair对</li>
-</ul>
-
-<h4>Mailbox发送消息流程</h4>
-
-<ul>
-<li><img src="media/15646523320655/15660010884535.jpg" alt="" style="width:628px;"/></li>
-<li></li>
-</ul>
-
-<h4>高效IO编程</h4>
-
-<ul>
-<li>高低水位HWM过载落盘 低水位从磁盘载入</li>
-<li>大师级的线程池的设计</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/01 17:38 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
                 <a class="clearlink" href="15659185120492.html">
                 
                   <h1>垃圾短信过滤</h1>
@@ -1055,6 +851,68 @@ struct vring vring;<br/>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Kafka.html'>Kafka</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15656152109472.html">
+                
+                  <h1>HTTP2</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>头部压缩</h4>
+
+<ul>
+<li>HPACK算法 在客户端和服务器两端建立“字典”，用索引号表示重复的字符串，还釆用哈夫曼编码来压缩整数和字符串，可以达到 50%~90% 的高压缩率</li>
+<li>有状态的压缩算法</li>
+</ul>
+
+<h4>二进制格式</h4>
+
+<ul>
+<li>数据帧 HEADERS DATA</li>
+<li>控制帧 SETTINGS PINg PRIORITY</li>
+</ul>
+
+<h4>虚拟的流</h4>
+
+<ul>
+<li>一个连接多路复用</li>
+<li>多个请求 / 响应之间没有了顺序关系，不需要排队等待，也就不会再出现“队头阻塞”问题，降低了延迟，大幅度提高了连接的利用率</li>
+<li>流是可并发的，一个 HTTP/2 连接上可以同时发出多个流传输数据，也就是并发多请求，实现“多路复用”</li>
+<li>流是双向的，一个流里面客户端和服务器都可以发送或接收数据帧，也就是一个“请求 - 应答”来回</li>
+<li>流 ID 不能重用，只能顺序递增，客户端发起的 ID 是奇数，服务器端发起的 ID 是偶数</li>
+</ul>
+
+<h4>流状态切换</h4>
+
+<ul>
+<li></li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/08/12 21:06 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='http_study.html'>http_study</a></span>
           				   
                   </div>
                   <div class="more-right right">

@@ -170,54 +170,6 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15479545783109.html">
-                
-                  <h1>控制器模型</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>Deployment</h4>
-
-<ul>
-<li>Deployment 控制器从 Etcd 中获取到所有携带了“app: nginx”标签的 Pod，然后统计它们的数量，这就是实际状态；</li>
-<li>Deployment 对象的 Replicas 字段的值就是期望状态；</li>
-<li>Deployment 控制器将两个状态做比较，然后根据比较结果，确定是创建 Pod，还是删除已有的 Pod</li>
-</ul>
-
-<h4>控制器和被控制对象</h4>
-
-<p><img src="media/15479545783109/72cc68d82237071898a1d149c8354b26.png" alt="72cc68d82237071898a1d149c8354b26"/></p>
-
-<ul>
-<li>控制器模式”，对于控制器来说是主动的，自身在不断地获取信息，起到事后“监控”作用，知道同步完成，实际状态与期望状态一致</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/01/20 11:22 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
                 <a class="clearlink" href="15470893891809.html">
                 
                   <h1>Pod</h1>
@@ -961,6 +913,79 @@
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15458801627823.html">
+                
+                  <h1>递归算法</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>条件</h4>
+
+<ul>
+<li>问题分解为几个子问题</li>
+<li>存在递归子条件</li>
+</ul>
+
+<h4>解决重复计算</h4>
+
+<pre class="line-numbers"><code class="language-text">public int f(int n) {
+  if (n == 1) return 1;
+  if (n == 2) return 2;
+  
+  // hasSolvedList 可以理解成一个 Map，key 是 n，value 是 f(n)
+  if (hasSolvedList.containsKey(n)) {
+    return hasSovledList.get(n);
+  }
+  
+  int ret = f(n-1) + f(n-2);
+  hasSovledList.put(n, ret);
+  return ret;
+}
+</code></pre>
+
+<h4>递归改成非递归</h4>
+
+<pre class="line-numbers"><code class="language-text">int f(int n) {
+  if (n == 1) return 1;
+  if (n == 2) return 2;
+  
+  int ret = 0;
+  int pre = 2;
+  int prepre = 1;
+  for (int i = 3; i &lt;= n; ++i) {
+    ret = pre + prepre;
+    prepre = pre;
+    pre = ret;
+  }
+  return ret;
+}
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/12/27 11:09 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
           				   
                   </div>
                   <div class="more-right right">

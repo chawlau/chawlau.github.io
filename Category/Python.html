@@ -970,43 +970,6 @@ with file_open(&quot;bobby.txt&quot;) as f_opened:
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15788217163304.html">
-                
-                  <h1>单例模式</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>案例</h4>
-
-<ul>
-<li><a href="https://zhuanlan.zhihu.com/p/37534850">https://zhuanlan.zhihu.com/p/37534850</a></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2020/01/12 17:35 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
                 <a class="clearlink" href="15732667564981.html">
                 
                   <h1>MetaClass</h1>
@@ -1485,6 +1448,141 @@ loop.close()
                   <div class="more-left left">
                   
                     <span class="date">2020/01/03 11:00 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15776263556217.html">
+                
+                  <h1>协程和异步</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>同步</h4>
+
+<ul>
+<li>指代码调用IO操作时，必须等待IO操作完成后才返回的调用方式</li>
+<li>异步是指代码调用IO操作时，不必等IO操作完成就返回的调用方式</li>
+</ul>
+
+<h4>阻塞和非阻塞</h4>
+
+<ul>
+<li>阻塞是指调用函数时候当前线程被挂起。</li>
+<li>阻塞是指调用函数时候当前线程不会被挂起，而是立即返回</li>
+</ul>
+
+<h4>回调函数</h4>
+
+<ul>
+<li>如果回调函数执行不正常该如何？</li>
+<li>如如果回调里面还要嵌套回调怎么办？</li>
+<li>要嵌套很多层怎么か？</li>
+<li>如果嵌套了多层，其中某个环节出错了会造成什么后果？</li>
+<li>如果有个数据需要被每个回调都处理怎么办？</li>
+<li>怎么使用当前函数中的局部变量？</li>
+</ul>
+
+<h4>需求</h4>
+
+<ul>
+<li>采用同步的方式去编写异步的代码</li>
+<li>使用单线程去切换任务：</li>
+<li>线程是由操作系统切换的，单线程切换意味着我们需要程序员自己去调度任务</li>
+<li>不在需要锁，并发性高，如果单线程内切换函数，性能远高于线程切换，并发性更高</li>
+</ul>
+
+<h4>生成器</h4>
+
+<ul>
+<li> next 和 send</li>
+<li> send可以传递值进入生成器内部,同时还可以重启生成器进入到下一个yield位置</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">def gen_func():
+    html = yield &quot;http://projectedu.com&quot;
+    print(html)
+    yield 2
+    yield 3
+    return &#39;bobby&#39;
+
+if __name__ == &#39;__main__&#39;:
+    gen = gen_func()
+    url = next(gen)
+    html = &quot;bobby&quot;
+    gen.send(html)
+</code></pre>
+
+<ul>
+<li>第一次调用send的时候不能调用一个非None值，因为生成器还没有执行到那一行代码</li>
+<li>next则可以</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">def gen_func():
+    html = yield &quot;http://projectedu.com&quot;
+    print(html)
+    yield 2
+    yield 3
+    return &#39;bobby&#39;
+
+if __name__ == &#39;__main__&#39;:
+    gen = gen_func()
+    # url = next(gen)
+    gen.send(None)
+    html = &quot;bobby&quot;
+    print(gen.send(html))
+</code></pre>
+
+<ul>
+<li>GeneratorExit是继承BaseException, Exception</li>
+</ul>
+
+<h4>throw</h4>
+
+<pre class="line-numbers"><code class="language-python">def gen_func():
+    try:
+        html = yield &quot;http://projectedu.com&quot;
+    except Exception as e:
+        pass
+    yield 2
+    yield 3
+    return &#39;bobby&#39;
+
+if __name__ == &#39;__main__&#39;:
+    gen = gen_func()
+    print(next(gen))
+    gen.throw(Exception, &#39;download error&#39;)
+    print(next(gen))
+    gen.throw(Exception, &#39;download error&#39;)
+</code></pre>
+
+<h4>yield from</h4>
+
+<ul>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/12/29 21:32 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Python.html'>Python</a></span>

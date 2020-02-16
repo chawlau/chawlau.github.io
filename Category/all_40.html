@@ -170,83 +170,6 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15619632498634.html">
-                
-                  <h1>信号处理</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>处理方式</h4>
-
-<ul>
-<li>执行默认操作</li>
-<li>捕捉信号</li>
-<li>忽略信号</li>
-</ul>
-
-<h4>信号参数</h4>
-
-<ul>
-<li>SA_ONESHOT 只执行一次</li>
-<li>SA_NOMASK 信号会被打断</li>
-<li>SA_INTERRUPT 系统调用被信号中断就不再执行</li>
-<li>SA_RESTAT 系统调用被中断后重新启动</li>
-</ul>
-
-<h4>信号处理流程</h4>
-
-<ul>
-<li><img src="media/15619632498634/7cb86c73b9e73893e6b0e0433d476928.png" alt="7cb86c73b9e73893e6b0e0433d476928"/></li>
-</ul>
-
-<h4>信号发送</h4>
-
-<ul>
-<li>kill-&gt;kill_something_info-&gt;kill_pid_info-&gt;group_send_sig_info-&gt;do_send_sig_info</li>
-<li>tkill-&gt;do_tkill-&gt;do_send_specific-&gt;do_send_sig_info</li>
-<li>tgkill-&gt;do_tkill-&gt;do_send_specific-&gt;do_send_sig_info</li>
-<li>rt_sigqueueinfo-&gt;do_rt_sigqueueinfo-&gt;kill_proc_info-&gt;kill_pid_info-&gt;group_send_sig_info-&gt;do_send_sig_info</li>
-</ul>
-
-<h4>可靠信号和不可靠信号</h4>
-
-<ul>
-<li>小于32的为不可靠信号 放入集合</li>
-<li>大于32的为可靠信号 挂在struct sigpending链表上</li>
-</ul>
-
-<h4>信号发送和处理流程</h4>
-
-<ul>
-<li><img src="media/15619632498634/3dcb3366b11a3594b00805896b7731fb.png" alt="3dcb3366b11a3594b00805896b7731fb"/></li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/07/01 14:40 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
                 <a class="clearlink" href="15615915044903.html">
                 
                   <h1>归并排序和快速排序</h1>
@@ -813,6 +736,72 @@ public:
                   <div class="more-left left">
                   
                     <span class="date">2019/06/12 07:37 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15601222553386.html">
+                
+                  <h1>字符设备上</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>内核模块组成</h4>
+
+<ul>
+<li>头文件部分</li>
+<li>处理内核模块的主要逻辑,打开、关闭、读取、写入设备的函数或者响应中断的函数</li>
+<li>定义一个 file_operations 结构</li>
+<li>模块的初始化和退出函数</li>
+<li>调用module_init 和 module_exit</li>
+<li>lisense</li>
+</ul>
+
+<h4>字符设备</h4>
+
+<ul>
+<li>insmod加载字符模块进内核</li>
+<li>注册字符设备， 主设备号和从设备号</li>
+<li>/dev的devtmpfs文件系统中创建文件</li>
+<li>打开字符文件设备</li>
+<li>写入字符文件设备 vfs_write-&gt;write-&gt;lp_write</li>
+</ul>
+
+<h4>写入函数流程</h4>
+
+<ul>
+<li>copy_from_user 将数据从用户态拷贝到内核态的缓存</li>
+<li>调用 parport_write 写入外部设备</li>
+</ul>
+
+<h4>总结</h4>
+
+<ul>
+<li><img src="media/15601222553386/fba61fe95e0d2746235b1070eb4c18cd.jpeg" alt="fba61fe95e0d2746235b1070eb4c18cd"/></li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/06/10 07:17 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>

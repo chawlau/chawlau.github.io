@@ -170,113 +170,6 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15710601189403.html">
-                
-                  <h1>常量&数据类型</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>常量</h4>
-
-<p><img src="media/15710601189403/15710601502836.jpg" alt="" style="width:1229px;"/></p>
-
-<ul>
-<li>位操作</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-go">const (
-  Readable = 1 &lt;&lt; iota
-  Writable
-  Executable
-)
-</code></pre>
-
-<h4>禁止类型转换</h4>
-
-<ul>
-<li>别名都不可以</li>
-</ul>
-
-<h4>类型预定义的值</h4>
-
-<ul>
-<li>math.MaxInt64</li>
-<li>math.MaxFloat64</li>
-</ul>
-
-<h4>字符串string</h4>
-
-<ul>
-<li>string == 0 来判断</li>
-</ul>
-
-<h4>数组</h4>
-
-<pre class="line-numbers"><code class="language-go">a := [...]int{1,2,3,4}
-b := [...]int{1,2,3,4}
-</code></pre>
-
-<ul>
-<li>要求数组长度，顺序，和类型一致</li>
-</ul>
-
-<h4>位操作</h4>
-
-<pre class="line-numbers"><code class="language-go">1 &amp;^ 0  -- 1
-1 &amp;^ 1  -- 0
-0 &amp;^ 1  -- 0
-0 &amp;^ 0  -- 0
-</code></pre>
-
-<h4>循环</h4>
-
-<p><img src="media/15710601189403/15710612828833.jpg" alt="" style="width:508px;"/></p>
-
-<h4>if条件</h4>
-
-<p><img src="media/15710601189403/15710613636218.jpg" alt="" style="width:1024px;"/></p>
-
-<h4>switch</h4>
-
-<pre class="line-numbers"><code class="language-go">func TestSwitchCaseCondition(t *testing.T) {
-    for i := 0; i &lt; 5; i++ {
-        switch {
-        case i%2 == 0:
-            t.Log(&quot;Even&quot;)
-        case i%2 == 1:
-            t.Log(&quot;Odd&quot;)
-        default:
-            t.Log(&quot;unknow&quot;)
-        }
-    }
-}
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/14 21:35 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
                 <a class="clearlink" href="15710092044608.html">
                 
                   <h1>分配器</h1>
@@ -864,6 +757,115 @@ sudo vi /etc/security/limits.conf<br/>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Zookeeper.html'>Zookeeper</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15606472792037.html">
+                
+                  <h1>协程调度器</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>协程调度器</h4>
+
+<ul>
+<li>libevent维护fd状态</li>
+<li>每个线程需要维护epollfd的状态</li>
+</ul>
+
+<h4>惊群</h4>
+
+<ul>
+<li>accept</li>
+<li>epoll_wait惊群</li>
+</ul>
+
+<h4>流程</h4>
+
+<ul>
+<li>create</li>
+<li>free</li>
+<li>yield</li>
+<li>resume</li>
+</ul>
+
+<h4>Poll_inner实现</h4>
+
+<ul>
+<li>将Pollfd添加到Epoll中</li>
+<li>让出CPU，切换上下文--&gt;upper 切换给schduel来统一执行</li>
+<li>将Epoll删除Pollfd--&gt;lower</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Int nSend(int sockfd, char *buffer, int length) {
+
+    int result = poll(&amp;pfd, 1, 1);
+    if (pfd.revents &amp; POLLRDHUP) {
+        return idx;
+    }
+    
+    return send(sockfd, buffer, length, 0);
+}
+
+Int nRecv(int sockfd, char *buffer, int length) {
+
+    int result = poll(&amp;pfd, 1, 1);
+    if (pfd.revents &amp; POLLRDHUP) {
+        return idx;
+    }
+    
+    return recv(sockfd, buffer, length, 0);
+}
+</code></pre>
+
+<h4>调度器</h4>
+
+<pre class="line-numbers"><code class="language-cpp">Int nSend(int sockfd, char *buffer, int length) {
+
+    int result = poll(&amp;pfd, 1, 1);
+    if (pfd.revents &amp; POLLRDHUP) {
+        return idx;
+    }
+    
+    return send(sockfd, buffer, length, 0);
+}
+
+Int nSend(int sockfd, char *buffer, int length) {
+
+    int result = poll_inner(&amp;pfd, 1, 1);
+    if (pfd.revents &amp; POLLRDHUP) {
+        return idx;
+    }
+    
+    return send(sockfd, buffer, length, 0);
+}
+
+</code></pre>
+
+<p><img src="media/15606472792037/15706767381701.jpg" alt="" style="width:676px;"/></p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/06/16 09:07 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
           				   
                   </div>
                   <div class="more-right right">

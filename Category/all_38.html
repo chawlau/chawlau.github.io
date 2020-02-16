@@ -170,59 +170,6 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15635886844365.html">
-                
-                  <h1>红黑树</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>特点</h4>
-
-<ul>
-<li>根节点是黑色的；</li>
-<li>每个叶子节点都是黑色的空节点（NIL），也就是说，叶子节点不存储数据；</li>
-<li>任何相邻的节点都不能同时为红色，也就是说，红色节点是被黑色节点隔开的；</li>
-<li>每个节点，从该节点到达其可达叶子节点的所有路径，都包含相同数目的黑色节点</li>
-</ul>
-
-<h4>红黑树的高度</h4>
-
-<ul>
-<li>2logn</li>
-<li>红黑树的高度只比高度平衡的 AVL 树的高度（log2n）仅仅大了一倍</li>
-</ul>
-
-<h4>AVL树</h4>
-
-<ul>
-<li>AVL 树是一种高度平衡的二叉树，所以查找的效率非常高，但是，有利就有弊，AVL 树为了维持这种高度的平衡，就要付出更多的代价。每次插入、删除都要做调整，就比较复杂、耗时。所以，对于有频繁的插入、删除操作的数据集合，使用 AVL 树的代价就有点高了。</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/07/20 10:11 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
                 <a class="clearlink" href="15634168691362.html">
                 
                   <h1>Epoll实现</h1>
@@ -727,6 +674,114 @@
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Kafka.html'>Kafka</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15630648340094.html">
+                
+                  <h1>发送网络包</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>socket write</h4>
+
+<ul>
+<li>struct file-&gt;struct socket-&gt;sock_sendmsg-&gt;sock_sendmsg_nosec</li>
+<li>msg-&gt;struct sk_buff-&gt;tcp写入队列-&gt;mss-&gt;数据拷贝到连续数据区域-&gt;发送网络包</li>
+</ul>
+
+<h4>分散聚合</h4>
+
+<ul>
+<li>IP层通过内存拷贝进行聚合，让散的数据零散的放在原处，在设备层进行聚合。如果使用这种模式，网络包的数据就不会放在连续的数据区域</li>
+<li><img src="media/15630648340094/9ad34c3c748978f915027d5085a858b8-2.png" alt="9ad34c3c748978f915027d5085a858b8-2"/></li>
+</ul>
+
+<h4>tcp_write_xmit</h4>
+
+<ul>
+<li>TSO 分段-&gt;硬件网卡去做</li>
+<li>拥塞窗口</li>
+<li>tcp_transmit_skb-&gt;ip_queue_xmit</li>
+</ul>
+
+<h4>总结</h4>
+
+<p><img src="media/15630648340094/dc66535fa7e1a10fd6d728865f6c9344.png" alt="dc66535fa7e1a10fd6d728865f6"/></p>
+
+<ul>
+<li>VFS 层：write 系统调用找到 struct file，根据里面的 file_operations 的定义，调用 sock_write_iter 函数。sock_write_iter 函数调用 sock_sendmsg 函数。</li>
+<li>Socket 层：从 struct file 里面的 private_data 得到 struct socket，根据里面 ops 的定义，调用 inet_sendmsg 函数。</li>
+<li>Sock 层：从 struct socket 里面的 sk 得到 struct sock，根据里面 sk_prot 的定义，调用 tcp_sendmsg 函数。</li>
+<li>TCP 层：tcp_sendmsg 函数会调用 tcp_write_xmit 函数，tcp_write_xmit 函数会调用 tcp_transmit_skb，在这里实现了 TCP 层面向连接的逻辑。</li>
+<li>IP 层：扩展 struct sock，得到 struct inet_connection_sock，根据里面 icsk_af_ops 的定义，调用 ip_queue_xmit 函数。</li>
+</ul>
+
+<h4>ip层发送</h4>
+
+<ul>
+<li>第一部分，选取路由，也即我要发送这个包应该从哪个网卡出去。</li>
+<li>路由规则Trie树进行匹配</li>
+<li>就是准备 IP 层的头，往里面填充内容。这就要对着 IP 层的头的格式进行理解。</li>
+<li>第三部分，就是调用 ip_local_out 发送 IP 包。__ip_local_out是决定转发规则 
+<ul>
+<li>dst_output是真正的发送数据</li>
+</ul></li>
+</ul>
+
+<h4>mac层发送</h4>
+
+<ul>
+<li>dev_queue_xmit</li>
+<li>网络设备发送队列 struct netdev_queue *txq</li>
+<li>qdisc pfifo_fast 内核如果需要通过某个网络接口发送数据包，都需要按照为这个接口配置的 qdisc（排队规则）把数据包加入队列</li>
+<li> __dev_xmit_skb -&gt; <strong>qdisc_run-&gt;</strong>netif_schedule-&gt; __netif_reschedule</li>
+<li>NET_TX_SOFTIRQ</li>
+<li>NET_RX_SOFTIRQ</li>
+<li>net_tx_action-&gt;qdisc_run-&gt;qdisc_restart-&gt;sch_direct_xmit-&gt;dev_hard_start_xmit-&gt;xmit_one-&gt;netdev_start_xmit-&gt;__netdev_start_xmit-&gt;ixgb_xmit_frame</li>
+</ul>
+
+<h4>发送总流程</h4>
+
+<ul>
+<li>VFS 层：write 系统调用找到 struct file，根据里面的 file_operations 的定义，调用 sock_write_iter 函数。sock_write_iter 函数调用 sock_sendmsg 函数。</li>
+<li>Socket 层：从 struct file 里面的 private_data 得到 struct socket，根据里面 ops 的定义，调用 inet_sendmsg 函数。</li>
+<li>Sock 层：从 struct socket 里面的 sk 得到 struct sock，根据里面 sk_prot 的定义，调用 tcp_sendmsg 函数。</li>
+<li>TCP 层：tcp_sendmsg 函数会调用 tcp_write_xmit 函数，tcp_write_xmit 函数会调用 tcp_transmit_skb，在这里实现了 TCP 层面向连接的逻辑。</li>
+<li>IP 层：扩展 struct sock，得到 struct inet_connection_sock，根据里面 icsk_af_ops 的定义，调用 ip_queue_xmit 函数。</li>
+<li>IP 层：ip_route_output_ports 函数里面会调用 fib_lookup 查找路由表。FIB 全称是 Forwarding Information Base，转发信息表，也就是路由表。</li>
+<li>在 IP 层里面要做的另一个事情是填写 IP 层的头。</li>
+<li>在 IP 层还要做的一件事情就是通过 iptables 规则。</li>
+<li>MAC 层：IP 层调用 ip_finish_output 进行 MAC 层。</li>
+<li>MAC 层需要 ARP 获得 MAC 地址，因而要调用 ___neigh_lookup_noref 查找属于同一个网段的邻居，他会调用 neigh_probe 发送 ARP。</li>
+<li>有了 MAC 地址，就可以调用 dev_queue_xmit 发送二层网络包了，它会调用 __dev_xmit_skb 会将请求放入队列。</li>
+<li>设备层：网络包的发送回触发一个软中断 NET_TX_SOFTIRQ 来处理队列中的数据。这个软中断的处理函数是 net_tx_action。</li>
+<li>在软中断处理函数中，会将网络包从队列上拿下来，调用网络设备的传输函数 ixgb_xmit_frame，将网络包发的设备的队列上去。</li>
+<li><img src="media/15630648340094/79cc42f3163d159a66e163c006d9f36f-2.png" alt="79cc42f3163d159a66e163c006d9f36f-2"/></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/07/14 08:40 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
           				   
                   </div>
                   <div class="more-right right">

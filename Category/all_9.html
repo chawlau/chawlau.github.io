@@ -170,93 +170,6 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15733711698710.html">
-                
-                  <h1>Future</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>并发执行</h4>
-
-<pre class="line-numbers"><code class="language-python">import requests
-import time
-import threading
-import concurrent.futures
-
-def download_one(url):
-    resp = requests.get(url)
-    print(&#39;Read {} from {}&#39;.format(len(resp.content), url))
-//串行执行
-def download_all(sites):
-    for site in sites:
-        download_one(site)
-//多线程版本
-def download_all_t(sites):
-     with concurrent.futures.ThreadPoolExecutor(max_workers=5) as excutor:
-            excutor.map(download_one, sites)
-//多进程版本
-def download_all_p(sites):
-   with concurrent.futures.ProcessPoolExecutor() as excutor:
-        excutor.map(download_one, sites)
-//futures
-def download_all_f(sites):
-    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
-        to_do = []
-        for site in sites:
-            future = executor.submit(download_one, site)
-            to_do.append(future)
-        for future in concurrent.futures.as_completed(to_do):
-            future.result()
-
-def main():
-    sites = [
-        &#39;https://www.baidu.com&#39;,
-        &#39;https://www.taobao.com&#39;,
-        &#39;https://www.jd.com&#39;,
-        &#39;https://www.tencent.com/zh-cn/index.html&#39;,
-    ]
-    start_time = time.perf_counter()
-    download_all_f(sites)
-    end_time = time.perf_counter()
-    print(&#39;Download {} sites in {} seconds&#39;.format(len(sites), end_time - start_time))
-
-
-if __name__ == &#39;__main__&#39;:
-    main()
-</code></pre>
-
-<h4>为什么多线程每次只能有一个线程执行</h4>
-
-<ul>
-<li>Python 的解释器并不是线程安全的，为了解决由此带来的 race condition 等问题，Python 便引入了全局解释器锁，也就是同一时刻，只允许一个线程执行。当然，在执行 I/O 操作时，如果一个线程被 block 了，全局解释器锁便会被释放，从而让另一个线程能够继续执行。</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/10 15:32 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
                 <a class="clearlink" href="15733419433426.html">
                 
                   <h1>Python协程</h1>
@@ -1155,6 +1068,139 @@ except (DBConnectionError, DBQueryDataError) err:
                   <div class="more-left left">
                   
                     <span class="date">2019/11/04 07:43 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15727842506087.html">
+                
+                  <h1>输入输出&json</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>输入输出</h4>
+
+<pre class="line-numbers"><code class="language-python">import re
+
+def parse(text):
+    text = re.sub(r&#39;[^\w]&#39;, &#39; &#39;, text)
+
+    text = text.lower()
+
+    word_list = text.split(&#39; &#39;)
+
+    word_list = filter(None, word_list)
+
+    word_cnt = {}
+
+    for word in word_list:
+        if word not in word_cnt:
+            word_cnt[word] = 0
+        word_cnt[word] += 1
+
+    sorted_word_cnt = sorted(word_cnt.items(), key=lambda kv : kv[1], reverse=True)
+
+    return sorted_word_cnt
+
+def main():
+  with open(&#39;./demo.txt&#39;, &#39;r&#39;) as fin:
+    text = fin.read()
+
+  word_and_freq = parse(text)
+
+  print(word_and_freq)
+
+  with open(&#39;./out.txt&#39;, &#39;w&#39;) as fout:
+      for word, freq in word_and_freq:
+          fout.write(&#39;{}{}\n&#39;.format(word, freq))
+
+
+if __name__ == &#39;__main__&#39;:
+    main()
+</code></pre>
+
+<h4>json</h4>
+
+<ul>
+<li>json.dumps() 这个函数，接受 Python 的基本数据类型，然后将其序列化为 string</li>
+<li>json.loads() 这个函数，接受一个合法字符串，然后将其反序列化为 Python 的基本数据类型。</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">import json
+
+params = {
+    &#39;symbol&#39; : &#39;123456&#39;,
+    &#39;type&#39;: &#39;limit&#39;,
+    &#39;price&#39;: 123.4,
+    &#39;amount&#39;: 23
+}
+
+json_str = json.dumps(params)
+
+print(json_str)
+
+print(&#39;json_str {} params {}&#39;.format(type(json_str), params))
+
+origin_params = json.loads(json_str)
+
+print(&#39;type origin={}, origin={}&#39;.format(type(origin_params), origin_params))
+</code></pre>
+
+<h4>for&amp;while</h4>
+
+<ul>
+<li>range() 函数是直接由 C 语言写的，调用它速度非常快。而 while 循环中的“i += 1”这个操作，得通过 Python 的解释器间接调用底层的 C 语言；并且这个简单的操作，又涉及到了对象的创建和删除（因为 i 是整型，是 immutable，i += 1 相当于 i = new int(i + 1)）。所以，显然，for 循环的效率更胜一筹</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">
+i = 0
+while i &lt; 1000000:
+    i += 1
+
+for i in range(0, 1000000):
+    pass
+</code></pre>
+
+<h4>条件与循环的复用</h4>
+
+<pre class="line-numbers"><code class="language-python">expression for item in iterable if condition
+
+[(xx, yy) for xx in x for yy in y if xx != yy]
+</code></pre>
+
+<h4>demo</h4>
+
+<pre class="line-numbers"><code class="language-python">attributes = [&#39;name&#39;, &#39;dob&#39;, &#39;gender&#39;]
+values = [[&#39;jason&#39;, &#39;2000-01-01&#39;, &#39;male&#39;],
+[&#39;mike&#39;, &#39;1999-01-01&#39;, &#39;male&#39;],
+[&#39;nancy&#39;, &#39;2001-02-01&#39;, &#39;female&#39;]
+]
+
+res = [dict(zip(attributes, value)) for value in values]
+print(res)
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/03 20:30 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Python.html'>Python</a></span>

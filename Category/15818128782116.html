@@ -323,6 +323,134 @@ int main() {
 <li>为了保证任何时刻，在进程间都只有一份对象存在，一个进程在获取到对象之后，需要对对象加锁，避免其他进程再将其获取。在进程使用完这个对象之后，还需要显式地将对象从内存中删除，并且释放对对象的加锁，这里需要分布式锁，需要lua配合redis实现比较好</li>
 </ul>
 
+<h4>C++11 call_once</h4>
+
+<ul>
+<li>能够保证函数只能被调用一次</li>
+<li>call_once效率上比互斥量消耗的更少</li>
+<li>call_once需要与一个标记结合使用, std::once_flag</li>
+<li>调用call_once成功后，就把once_flag设置为已经调用状态</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">std::once_flag g_flag;
+static MyCAS* get_instance() {
+  std::call_once(g_flag, create_instance);
+  return m_instance;
+}
+static void create_instance() {
+    cout &lt;&lt; &quot;CreateInstance &quot; &lt;&lt; endl;
+    m_instance = new MyCAS();
+}
+</code></pre>
+
+<h4>go的官方实现使用</h4>
+
+<pre class="line-numbers"><code class="language-go">type Singleton struct {
+    data string
+}
+
+var singleInstance *Singleton
+var once sync.Once
+
+func GetSingletonObj() *Singleton {
+    once.Do(func() {
+        fmt.Println(&quot;Create Obj&quot;)
+        singleInstance = new(Singleton)
+    })
+    return singleInstance
+}
+
+func TestGetSingletonObj(t *testing.T) {
+    var wg sync.WaitGroup
+    for i := 0; i &lt; 10; i++ {
+        wg.Add(1)
+        go func() {
+            obj := GetSingletonObj()
+            fmt.Printf(&quot;%X\n&quot;, unsafe.Pointer(obj))
+            wg.Done()
+        }()
+    }
+    wg.Wait()
+}
+</code></pre>
+
+<h4>Python实现</h4>
+
+<h5>使用函数装饰器实现单例</h5>
+
+<pre class="line-numbers"><code class="language-python">def singleton(cls):
+    _instance = {}
+
+    def inner():
+        if cls not in _instance:
+            _instance[cls] = cls()
+        return _instance[cls]
+    return inner
+    
+@singleton
+class Cls(object):
+    def __init__(self):
+        pass
+
+cls1 = Cls()
+cls2 = Cls()
+print(id(cls1) == id(cls2))
+</code></pre>
+
+<h5>使用类装饰器实现单例</h5>
+
+<pre class="line-numbers"><code class="language-python">class Singleton(object):
+    def __init__(self, cls):
+        self._cls = cls
+        self._instance = {}
+    def __call__(self):
+        if self._cls not in self._instance:
+            self._instance[self._cls] = self._cls()
+        return self._instance[self._cls]
+
+@Singleton
+class Cls2(object):
+    def __init__(self):
+        pass
+
+cls1 = Cls2()
+cls2 = Cls2()
+print(id(cls1) == id(cls2))
+</code></pre>
+
+<h5>使用 __new__ 关键字实现单例</h5>
+
+<pre class="line-numbers"><code class="language-python">class Single(object):
+    _instance = None
+    def __new__(cls, *args, **kw):
+        if cls._instance is None:
+            cls._instance = object.__new__(cls, *args, **kw)
+        return cls._instance
+    def __init__(self):
+        pass
+
+single1 = Single()
+single2 = Single()
+print(id(single1) == id(single2))
+</code></pre>
+
+<h5>使用 metaclass 实现单例</h5>
+
+<pre class="line-numbers"><code class="language-python">class Singleton(type):
+    _instances = {}
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+        return cls._instances[cls]
+
+class Cls4(metaclass=Singleton):
+    pass
+
+cls1 = Cls4()
+cls2 = Cls4()
+print(id(cls1) == id(cls2))
+</code></pre>
+
 
     
 

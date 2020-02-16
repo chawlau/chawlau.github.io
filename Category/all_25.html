@@ -170,75 +170,6 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15355258133696.html">
-                
-                  <h1>Docker存储卷</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>写实复制</h4>
-
-<ul>
-<li><img src="media/15355258133696/15355259487972.jpg" alt=""/></li>
-<li>mount --bind</li>
-<li><img src="m%5Bweb%E7%AB%99%E7%82%B9%E5%92%8Cnginx%5D(media/15355258133696/web%E7%AB%99%E7%82%B9%E5%92%8Cnginx.md)edia/15355258133696/15355271868297.jpg" alt=""/></li>
-</ul>
-
-<h4>存储机制</h4>
-
-<p><img src="media/15355258133696/15355282809804.jpg" alt=""/></p>
-
-<ul>
-<li>联合挂载文件系统</li>
-</ul>
-
-<h4>两种卷</h4>
-
-<ul>
-<li> Bind mount volume</li>
-<li> Docker-managed volume</li>
-<li> docker run -it -name bbox1 -v /data busybox</li>
-<li><img src="media/15355258133696/15355329411052.jpg" alt="" style="width:374px;"/></li>
-<li></li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">docker run --name nginx --network container:infracon --volumes-from infracon -it --rm busybox
-</code></pre>
-
-<ul>
-<li>docker容器编排compose</li>
-</ul>
-
-<h4>挂载本地配置文件</h4>
-
-<pre class="line-numbers"><code class="language-text">docker run --name prometheus -d   -p 9090:9090   -v /home/liuchao/Downloads/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml   prom/prometheus   --config.file=/etc/prometheus/prometheus.yml
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/08/29 14:56 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
                 <a class="clearlink" href="15683306595324.html">
                 
                   <h1>Redis开发规范</h1>
@@ -814,6 +745,72 @@ rename-command KEYS &quot;&quot;
                   <div class="more-left left">
                   
                     <span class="date">2019/09/12 06:49 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='SQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>SQL必知必会</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15682405698391.html">
+                
+                  <h1>数据页的角度理解B+树</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>存储结构</h4>
+
+<ul>
+<li><img src="media/15682405698391/112d7669450e3968e63e9de524ab13b7.jpg" alt="112d7669450e3968e63e9de524ab13b7"/></li>
+<li>一个表空间包括了一个或多个段，一个段包括了一个或多个区，一个区包括了多个页，而一个页中可以有多行记录</li>
+<li>区大小是64*16KB</li>
+<li>创建一张表时会创建一个表段，创建一个索引时会创建一个索引段</li>
+<li>表空间从管理上可以划分为系统表空间、用户表空间、撤销表空间、临时表空间等</li>
+</ul>
+
+<h4>数据页结构</h4>
+
+<p><img src="media/15682405698391/9490bd9641f6a9be208a6d6b2d1b1353.jpg" alt="9490bd9641f6a9be208a6d6b2d1b1353"/></p>
+
+<ul>
+<li>文件头中有两个字段，分别是 FIL_PAGE_PREV 和 FIL_PAGE_NEXT，它们的作用相当于指针，分别指向上一个数据页和下一个数据页。连接起来的页相当于一个双向的链表</li>
+<li>数据页之间不需要是物理上的连续，而是逻辑上的连续</li>
+<li>数据页内数据的物理存放顺序与索引顺序是一致的</li>
+</ul>
+
+<h4>数据页检索</h4>
+
+<p><img src="media/15682405698391/ccfaffc92b9414db3fe68d2ad9df2577.jpg" alt="ccfaffc92b9414db3fe68d2ad9df2577"/></p>
+
+<ul>
+<li>页目录，它起到了记录的索引作用，因为在页中，记录是以单向链表的形式进行存储的。单向链表的特点就是插入、删除非常方便，但是检索效率不高，最差的情况下需要遍历链表上的所有节点才能完成检索，因此在页目录中提供了二分查找的方式，用来提高记录的检索效率</li>
+</ul>
+
+<h4>查询成本</h4>
+
+<ul>
+<li>last_query_cost 需要的数据页面</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/09/12 06:22 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='SQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>SQL必知必会</a></span>

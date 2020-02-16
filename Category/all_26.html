@@ -170,72 +170,6 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15682405698391.html">
-                
-                  <h1>数据页的角度理解B+树</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>存储结构</h4>
-
-<ul>
-<li><img src="media/15682405698391/112d7669450e3968e63e9de524ab13b7.jpg" alt="112d7669450e3968e63e9de524ab13b7"/></li>
-<li>一个表空间包括了一个或多个段，一个段包括了一个或多个区，一个区包括了多个页，而一个页中可以有多行记录</li>
-<li>区大小是64*16KB</li>
-<li>创建一张表时会创建一个表段，创建一个索引时会创建一个索引段</li>
-<li>表空间从管理上可以划分为系统表空间、用户表空间、撤销表空间、临时表空间等</li>
-</ul>
-
-<h4>数据页结构</h4>
-
-<p><img src="media/15682405698391/9490bd9641f6a9be208a6d6b2d1b1353.jpg" alt="9490bd9641f6a9be208a6d6b2d1b1353"/></p>
-
-<ul>
-<li>文件头中有两个字段，分别是 FIL_PAGE_PREV 和 FIL_PAGE_NEXT，它们的作用相当于指针，分别指向上一个数据页和下一个数据页。连接起来的页相当于一个双向的链表</li>
-<li>数据页之间不需要是物理上的连续，而是逻辑上的连续</li>
-<li>数据页内数据的物理存放顺序与索引顺序是一致的</li>
-</ul>
-
-<h4>数据页检索</h4>
-
-<p><img src="media/15682405698391/ccfaffc92b9414db3fe68d2ad9df2577.jpg" alt="ccfaffc92b9414db3fe68d2ad9df2577"/></p>
-
-<ul>
-<li>页目录，它起到了记录的索引作用，因为在页中，记录是以单向链表的形式进行存储的。单向链表的特点就是插入、删除非常方便，但是检索效率不高，最差的情况下需要遍历链表上的所有节点才能完成检索，因此在页目录中提供了二分查找的方式，用来提高记录的检索效率</li>
-</ul>
-
-<h4>查询成本</h4>
-
-<ul>
-<li>last_query_cost 需要的数据页面</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/12 06:22 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='SQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>SQL必知必会</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
                 <a class="clearlink" href="15682366934995.html">
                 
                   <h1>缓存的使用和设计</h1>
@@ -1112,6 +1046,129 @@ shared_ptr&lt;int&gt; p11(new int(12345), myDelete);
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='SQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>SQL必知必会</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15676787915607.html">
+                
+                  <h1>Shared_ptr使用场景，陷阱和性能分析</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>使用场景</h4>
+
+<ul>
+<li>临时局部变量返回</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">shared_ptr&lt;int&gt; create(int val) {
+  return make_shared&lt;int&gt;(val);
+}
+
+shared_ptr&lt;int&gt;func(int val) {
+  shared_ptr&lt;int&gt; ptr = create(5);
+  return ptr;
+}
+ptr返回的引用计数没有增加
+</code></pre>
+
+<ul>
+<li>不允许隐式转换</li>
+<li>裸指针绑定到shared_ptr后，管理权限就交给智能指针了，不能再操作裸指针</li>
+</ul>
+
+<h4>注意</h4>
+
+<ul>
+<li>不要delete get()返回的指针</li>
+<li>不能随便释放get返回的指针</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">  shared_ptr&lt;int&gt; p1(p);
+  shared_ptr&lt;int&gt; p2(p); //p2p1无关联，导致p1p2内存被释放两次
+  shared_ptr&lt;int&gt; p1(new int);
+  shared_ptr&lt;int&gt; p2(p1); //这种写法p1p2互通，使用同一个控制块kkk
+</code></pre>
+
+<h4>this返回</h4>
+
+<ul>
+<li>不要把this作为shared_ptr返回</li>
+<li>裸指针初始化多个智能指针会导致指向同一内存，但是不是同一控制块</li>
+<li>enable_shared_from_this</li>
+<li>shared_from_this</li>
+<li>enable_shared_from_this中又个weak_ptr监视this，shared_from_this,嗲用了lock方法，让引用计数+1，同时返回shared_ptr</li>
+</ul>
+
+<h4>性能说明</h4>
+
+<ul>
+<li>shared_ptr weak_ptr是裸指针的两倍</li>
+<li>第一个指针指向智能指针所指向的对象</li>
+<li>第二个指针指向的是控制块</li>
+<li>1）指向对象的强引用计数shared_ptr</li>
+<li>2) 指向对象的弱引用计数weak_ptr</li>
+<li>3) 删除器指针 内存分配器</li>
+<li>控制块是由第一个指向对象的shared_ptr创建的</li>
+</ul>
+
+<h4>控制块创建时机</h4>
+
+<ul>
+<li>make_shared 分配并且初始化一个对象，返回对象的shared_ptr</li>
+</ul>
+
+<h4>裸指针初始化shared_ptr</h4>
+
+<ul>
+<li>int* p = new  int;</li>
+<li>shared_ptr<int> p1(p)</li>
+<li>shared_ptr<int> p2(p)</li>
+<li>不允许，会产生多个控制块，就有多个引用计数，导致析构多次</li>
+</ul>
+
+<h4>移动语义</h4>
+
+<ul>
+<li>shared_ptr<int> p1(new int(100))</li>
+<li>shared_ptr<int> p2(std::move(p1))</li>
+<li>移动构造一个新的智能指针对象p2,p1就不再指向该对象，引用计数依旧是一</li>
+<li>shared_ptr<int> p3</li>
+<li>p3 = std::move(p2)</li>
+<li>移动赋值运算符比拷贝构造函数快</li>
+</ul>
+
+<h4>使用建议</h4>
+
+<ul>
+<li>分配器解决内存分配</li>
+<li>优先使用make_shared</li>
+<li>shared_ptr<string> s1(new string(&quot;new&quot;)) 分配两次内存</li>
+<li>auto ps2 = make_shared<string>(&quot;new&quot;) 分配一次内存 </li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/09/05 18:19 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
           				   
                   </div>
                   <div class="more-right right">

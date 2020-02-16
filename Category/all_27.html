@@ -170,129 +170,6 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15676787915607.html">
-                
-                  <h1>Shared_ptr使用场景，陷阱和性能分析</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>使用场景</h4>
-
-<ul>
-<li>临时局部变量返回</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">shared_ptr&lt;int&gt; create(int val) {
-  return make_shared&lt;int&gt;(val);
-}
-
-shared_ptr&lt;int&gt;func(int val) {
-  shared_ptr&lt;int&gt; ptr = create(5);
-  return ptr;
-}
-ptr返回的引用计数没有增加
-</code></pre>
-
-<ul>
-<li>不允许隐式转换</li>
-<li>裸指针绑定到shared_ptr后，管理权限就交给智能指针了，不能再操作裸指针</li>
-</ul>
-
-<h4>注意</h4>
-
-<ul>
-<li>不要delete get()返回的指针</li>
-<li>不能随便释放get返回的指针</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  shared_ptr&lt;int&gt; p1(p);
-  shared_ptr&lt;int&gt; p2(p); //p2p1无关联，导致p1p2内存被释放两次
-  shared_ptr&lt;int&gt; p1(new int);
-  shared_ptr&lt;int&gt; p2(p1); //这种写法p1p2互通，使用同一个控制块kkk
-</code></pre>
-
-<h4>this返回</h4>
-
-<ul>
-<li>不要把this作为shared_ptr返回</li>
-<li>裸指针初始化多个智能指针会导致指向同一内存，但是不是同一控制块</li>
-<li>enable_shared_from_this</li>
-<li>shared_from_this</li>
-<li>enable_shared_from_this中又个weak_ptr监视this，shared_from_this,嗲用了lock方法，让引用计数+1，同时返回shared_ptr</li>
-</ul>
-
-<h4>性能说明</h4>
-
-<ul>
-<li>shared_ptr weak_ptr是裸指针的两倍</li>
-<li>第一个指针指向智能指针所指向的对象</li>
-<li>第二个指针指向的是控制块</li>
-<li>1）指向对象的强引用计数shared_ptr</li>
-<li>2) 指向对象的弱引用计数weak_ptr</li>
-<li>3) 删除器指针 内存分配器</li>
-<li>控制块是由第一个指向对象的shared_ptr创建的</li>
-</ul>
-
-<h4>控制块创建时机</h4>
-
-<ul>
-<li>make_shared 分配并且初始化一个对象，返回对象的shared_ptr</li>
-</ul>
-
-<h4>裸指针初始化shared_ptr</h4>
-
-<ul>
-<li>int* p = new  int;</li>
-<li>shared_ptr<int> p1(p)</li>
-<li>shared_ptr<int> p2(p)</li>
-<li>不允许，会产生多个控制块，就有多个引用计数，导致析构多次</li>
-</ul>
-
-<h4>移动语义</h4>
-
-<ul>
-<li>shared_ptr<int> p1(new int(100))</li>
-<li>shared_ptr<int> p2(std::move(p1))</li>
-<li>移动构造一个新的智能指针对象p2,p1就不再指向该对象，引用计数依旧是一</li>
-<li>shared_ptr<int> p3</li>
-<li>p3 = std::move(p2)</li>
-<li>移动赋值运算符比拷贝构造函数快</li>
-</ul>
-
-<h4>使用建议</h4>
-
-<ul>
-<li>分配器解决内存分配</li>
-<li>优先使用make_shared</li>
-<li>shared_ptr<string> s1(new string(&quot;new&quot;)) 分配两次内存</li>
-<li>auto ps2 = make_shared<string>(&quot;new&quot;) 分配一次内存 </li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/05 18:19 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
                 <a class="clearlink" href="15677204712236.html">
                 
                   <h1>Redis复制的原理和优化</h1>
@@ -1252,6 +1129,69 @@ dir /bigdiskpath
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15488164275301.html">
+                
+                  <h1>查询和内存</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>取发数据流程</h4>
+
+<ul>
+<li>获取一行，写到 net_buffer 中。这块内存的大小是由参数 net_buffer_length 定义的，默认是 16k。</li>
+<li>重复获取行，直到 net_buffer 写满，调用网络接口发出去。</li>
+<li>如果发送成功，就清空 net_buffer，然后继续取下一行，并写入 net_buffer。</li>
+<li>如果发送函数返回 EAGAIN 或 WSAEWOULDBLOCK，就表示本地网络栈（socket send buffer）写满了，进入等待。直到网络栈重新可写，再继续发送。
+<img src="media/15488164275301/a027c300d7dde8cea4fad8f34b670ebd.jpg" alt="a027c300d7dde8cea4fad8f34b670ebd"/></li>
+</ul>
+
+<h4>Buffer Pool的内存改进版LRU算法</h4>
+
+<ul>
+<li><img src="media/15488164275301/25e18920dd204cf99eec2d62755fe99e.png" alt="25e18920dd204cf99eec2d62755fe99e"/></li>
+</ul>
+
+<h4>查询区别</h4>
+
+<ul>
+<li> mysql_use_result 方法。这个方法是读一行处理一行</li>
+<li> mysql_store_result 这个接口，直接把查询结果保存到本地内存</li>
+</ul>
+
+<h4>查询语句的状态变化</h4>
+
+<ul>
+<li>MySQL 查询语句进入执行阶段后，首先把状态设置成“Sending data”；</li>
+<li>发送执行结果的列相关的信息（meta data) 给客户端；</li>
+<li>再继续执行语句的流程；</li>
+<li>执行完成后，把状态设置成空字符串</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/01/30 10:47 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
           				   
                   </div>
                   <div class="more-right right">

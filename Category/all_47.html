@@ -170,70 +170,6 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15524767407466.html">
-                
-                  <h1>微服务多机房部署</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>多机房负载均衡</h4>
-
-<p><img src="media/15524767407466/75c4ef7b74fa445515c9150a0c353d5d.png" alt="75c4ef7b74fa445515c9150a0c353d5d"/></p>
-
-<h4>多机房数据同步</h4>
-
-<h5>主从机房架构</h5>
-
-<h5>独立机房架构</h5>
-
-<ul>
-<li>通过一个叫 WMB 的消息同步组件把各自机房的写请求同步一份给对方机房，每个机房的处理机接收到写请求后更新各自机房的缓存，只有一个机房会更新数据库，其他机房的数据库通过 MySQL 的 binlog 同步机制实现数据同步</li>
-</ul>
-
-<h4>WMB消息同步组件</h4>
-
-<ul>
-<li>reship，负责把本机房的写请求分发一份给别的机房。</li>
-<li>collector，负责从别的机房读取写请求，然后再把请求转发给本机房的处理机。<img src="media/15524767407466/e9147143867af6c73ff72d68e284c211.png" alt="e9147143867af6c73ff72d68e284"/></li>
-<li>MCQ消息队列</li>
-<li>RPC调用</li>
-</ul>
-
-<h4>多机房数据的一致性</h4>
-
-<ul>
-<li>系统会给每一次写请求生成一个全局唯一的 requestId</li>
-<li>是处理成功或者失败都记录一条包含 requestId 和机房标记的处理日志，并写到 Elasticsearch 集群上去</li>
-<li>通过一个定时线程，每隔 1 分钟去扫描 Elasticsearch 集群上的日志，找出包含同一个 requestId 的不同机房的处理日志</li>
-<li>如果有的机房某一阶段处理失败，则可以根据日志信息重试该阶段直到成功，从而保证数据的最终一致性</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/03/13 19:32 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E5%BE%AE%E6%9C%8D%E5%8A%A1.html'>微服务</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
                 <a class="clearlink" href="15522686446802.html">
                 
                   <h1>容器应用启动慢</h1>
@@ -872,6 +808,73 @@
                   <div class="more-left left">
                   
                     <span class="date">2019/02/25 13:59 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%9E%B6%E6%9E%84.html'>架构</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15510052060203.html">
+                
+                  <h1>双机架构</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>高可用本质</h4>
+
+<ul>
+<li>存储高可用方案的本质都是通过将数据复制到多个存储设备，通过数据冗余的方式来实现高可用，其复杂性主要体现在如何应对复制延迟和中断导致的数据不一致问题</li>
+</ul>
+
+<h4>常见方案</h4>
+
+<ul>
+<li>主备</li>
+<li>主从</li>
+<li>主主</li>
+<li>集群</li>
+<li>分区</li>
+</ul>
+
+<h4>双机切换</h4>
+
+<ul>
+<li>主备状态判断</li>
+<li>状态传递的渠道：是相互间互相连接，还是第三方仲裁？</li>
+<li>状态检测的内容：例如机器是否掉电、进程是否存在、响应是否缓慢等。</li>
+<li>切换策略</li>
+<li>切换时机 切换策略 自动程序</li>
+<li>数据冲突解决</li>
+</ul>
+
+<h4>常见架构</h4>
+
+<ul>
+<li>互连式</li>
+<li>中介式 zookeeper和keeplived</li>
+<li>模拟式 模拟式指主备机之间并不传递任何状态数据，而是备机模拟成一个客户端，向主机发起模拟的读写操作，根据读写操作的响应情况来判断主机的状态</li>
+<li>主主复制  临时性、可丢失、可覆盖的数据场景 用户登录产生的 session 数据（可以重新登录生成）、用户行为的日志数据（可以丢失）、论坛的草稿数据（可以丢失）</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/02/24 18:46 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E6%9E%B6%E6%9E%84.html'>架构</a></span>

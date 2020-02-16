@@ -170,139 +170,6 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15727842506087.html">
-                
-                  <h1>输入输出&json</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>输入输出</h4>
-
-<pre class="line-numbers"><code class="language-python">import re
-
-def parse(text):
-    text = re.sub(r&#39;[^\w]&#39;, &#39; &#39;, text)
-
-    text = text.lower()
-
-    word_list = text.split(&#39; &#39;)
-
-    word_list = filter(None, word_list)
-
-    word_cnt = {}
-
-    for word in word_list:
-        if word not in word_cnt:
-            word_cnt[word] = 0
-        word_cnt[word] += 1
-
-    sorted_word_cnt = sorted(word_cnt.items(), key=lambda kv : kv[1], reverse=True)
-
-    return sorted_word_cnt
-
-def main():
-  with open(&#39;./demo.txt&#39;, &#39;r&#39;) as fin:
-    text = fin.read()
-
-  word_and_freq = parse(text)
-
-  print(word_and_freq)
-
-  with open(&#39;./out.txt&#39;, &#39;w&#39;) as fout:
-      for word, freq in word_and_freq:
-          fout.write(&#39;{}{}\n&#39;.format(word, freq))
-
-
-if __name__ == &#39;__main__&#39;:
-    main()
-</code></pre>
-
-<h4>json</h4>
-
-<ul>
-<li>json.dumps() 这个函数，接受 Python 的基本数据类型，然后将其序列化为 string</li>
-<li>json.loads() 这个函数，接受一个合法字符串，然后将其反序列化为 Python 的基本数据类型。</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-python">import json
-
-params = {
-    &#39;symbol&#39; : &#39;123456&#39;,
-    &#39;type&#39;: &#39;limit&#39;,
-    &#39;price&#39;: 123.4,
-    &#39;amount&#39;: 23
-}
-
-json_str = json.dumps(params)
-
-print(json_str)
-
-print(&#39;json_str {} params {}&#39;.format(type(json_str), params))
-
-origin_params = json.loads(json_str)
-
-print(&#39;type origin={}, origin={}&#39;.format(type(origin_params), origin_params))
-</code></pre>
-
-<h4>for&amp;while</h4>
-
-<ul>
-<li>range() 函数是直接由 C 语言写的，调用它速度非常快。而 while 循环中的“i += 1”这个操作，得通过 Python 的解释器间接调用底层的 C 语言；并且这个简单的操作，又涉及到了对象的创建和删除（因为 i 是整型，是 immutable，i += 1 相当于 i = new int(i + 1)）。所以，显然，for 循环的效率更胜一筹</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-python">
-i = 0
-while i &lt; 1000000:
-    i += 1
-
-for i in range(0, 1000000):
-    pass
-</code></pre>
-
-<h4>条件与循环的复用</h4>
-
-<pre class="line-numbers"><code class="language-python">expression for item in iterable if condition
-
-[(xx, yy) for xx in x for yy in y if xx != yy]
-</code></pre>
-
-<h4>demo</h4>
-
-<pre class="line-numbers"><code class="language-python">attributes = [&#39;name&#39;, &#39;dob&#39;, &#39;gender&#39;]
-values = [[&#39;jason&#39;, &#39;2000-01-01&#39;, &#39;male&#39;],
-[&#39;mike&#39;, &#39;1999-01-01&#39;, &#39;male&#39;],
-[&#39;nancy&#39;, &#39;2001-02-01&#39;, &#39;female&#39;]
-]
-
-res = [dict(zip(attributes, value)) for value in values]
-print(res)
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/03 20:30 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
                 <a class="clearlink" href="15726839005959.html">
                 
                   <h1>基础数据类型</h1>
@@ -969,6 +836,69 @@ sum(increase(node_cpu_seconds_total{mode=&quot;iowait&quot;}[1m]))
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E5%80%99%E6%8D%B7STL.html'>候捷STL</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15721446385015.html">
+                
+                  <h1>Query String</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>搜索</h4>
+
+<ul>
+<li>GET /test_index/_search?q=-producer:gaolujie</li>
+<li>GET /test_index/_search?q=+producer:gaolujie</li>
+</ul>
+
+<h4>_all metadata</h4>
+
+<ul>
+<li>2、_all metadata的原理和作用</li>
+</ul>
+
+<p>GET /test_index/test_type/_search?q=test</p>
+
+<p>直接可以搜索所有的field，任意一个field包含指定的关键字就可以搜索出来。我们在进行中搜索的时候，难道是对document中的每一个field都进行一次搜索吗？不是的</p>
+
+<p>es中的_all元数据，在建立索引的时候，我们插入一条document，它里面包含了多个field，此时，es会自动将多个field的值，全部用字符串的方式串联起来，变成一个长的字符串，作为_all field的值，同时建立索引</p>
+
+<p>后面如果在搜索的时候，没有对某个field指定搜索，就默认搜索_all field，其中是包含了所有field的值的</p>
+
+<p>举个例子</p>
+
+<p>{<br/>
+  &quot;name&quot;: &quot;jack&quot;,<br/>
+  &quot;age&quot;: 26,<br/>
+  &quot;email&quot;: &quot;<a href="mailto:jack@sina.com">jack@sina.com</a>&quot;,<br/>
+  &quot;address&quot;: &quot;guamgzhou&quot;<br/>
+}</p>
+
+<p>&quot;jack 26 <a href="mailto:jack@sina.com">jack@sina.com</a> guangzhou&quot;，作为这一条document的_all field的值，同时进行分词后建立对应的倒排索引</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/10/27 10:50 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='ElasticSearch.html'>ElasticSearch</a></span>
           				   
                   </div>
                   <div class="more-right right">

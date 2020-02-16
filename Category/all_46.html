@@ -170,85 +170,6 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15546836172099.html">
-                
-                  <h1>学习路径</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>阶段</h4>
-
-<ul>
-<li>熟练使用linux</li>
-<li>使用glibc</li>
-<li>了解linux内核机制</li>
-<li>阅读linux内核代码，聚焦核心逻辑和场景</li>
-<li>实验定制化linux组件
-<img src="media/15546836172099/bcf70b988e59522de732bc1b01b45a5b.jpeg" alt="bcf70b988e59522de732bc1b01b45a5b"/></li>
-</ul>
-
-<h4>操作系统内核结构</h4>
-
-<p><img src="media/15546836172099/21a9afd64b05cf1ffc87b74515d1d4f5.jpeg" alt="21a9afd64b05cf1ffc87b74515d1d4f5"/></p>
-
-<h4>内存分配策略</h4>
-
-<ul>
-<li>brk</li>
-<li>mmap</li>
-</ul>
-
-<h4>消息队列</h4>
-
-<ul>
-<li>msgget</li>
-<li>msgsnd</li>
-<li>msgrcv</li>
-</ul>
-
-<h4>共享内存</h4>
-
-<ul>
-<li>shmget</li>
-<li>shmat</li>
-</ul>
-
-<h4>信号量</h4>
-
-<ul>
-<li>sem_post</li>
-<li>sem_wait</li>
-</ul>
-
-<h4>系统调用</h4>
-
-<p><img src="media/15546836172099/ffb6847b94cb0fd086095ac263ac4ff0.jpg" alt="ffb6847b94cb0fd086095ac263ac4ff0"/></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/04/08 08:33 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
                 <a class="clearlink" href="15546833958881.html">
                 
                   <h1>操作系统</h1>
@@ -957,6 +878,70 @@ inet_hash_connect()分配临时端口的函数
                   <div class="more-left left">
                   
                     <span class="date">2019/03/13 19:45 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E5%BE%AE%E6%9C%8D%E5%8A%A1.html'>微服务</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15524767407466.html">
+                
+                  <h1>微服务多机房部署</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>多机房负载均衡</h4>
+
+<p><img src="media/15524767407466/75c4ef7b74fa445515c9150a0c353d5d.png" alt="75c4ef7b74fa445515c9150a0c353d5d"/></p>
+
+<h4>多机房数据同步</h4>
+
+<h5>主从机房架构</h5>
+
+<h5>独立机房架构</h5>
+
+<ul>
+<li>通过一个叫 WMB 的消息同步组件把各自机房的写请求同步一份给对方机房，每个机房的处理机接收到写请求后更新各自机房的缓存，只有一个机房会更新数据库，其他机房的数据库通过 MySQL 的 binlog 同步机制实现数据同步</li>
+</ul>
+
+<h4>WMB消息同步组件</h4>
+
+<ul>
+<li>reship，负责把本机房的写请求分发一份给别的机房。</li>
+<li>collector，负责从别的机房读取写请求，然后再把请求转发给本机房的处理机。<img src="media/15524767407466/e9147143867af6c73ff72d68e284c211.png" alt="e9147143867af6c73ff72d68e284"/></li>
+<li>MCQ消息队列</li>
+<li>RPC调用</li>
+</ul>
+
+<h4>多机房数据的一致性</h4>
+
+<ul>
+<li>系统会给每一次写请求生成一个全局唯一的 requestId</li>
+<li>是处理成功或者失败都记录一条包含 requestId 和机房标记的处理日志，并写到 Elasticsearch 集群上去</li>
+<li>通过一个定时线程，每隔 1 分钟去扫描 Elasticsearch 集群上的日志，找出包含同一个 requestId 的不同机房的处理日志</li>
+<li>如果有的机房某一阶段处理失败，则可以根据日志信息重试该阶段直到成功，从而保证数据的最终一致性</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/03/13 19:32 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E5%BE%AE%E6%9C%8D%E5%8A%A1.html'>微服务</a></span>
