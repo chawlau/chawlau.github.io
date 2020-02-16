@@ -87,8 +87,6 @@
         
             <li><a href="Django.html">Django</a></li>
         
-            <li><a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html">C++设计模式实战</a></li>
-        
             <li><a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html">深入剖析Kubernetes</a></li>
         
             <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html">数据结构和算法</a></li>
@@ -196,6 +194,641 @@
                   <div class="more-left left">
                   
                     <span class="date">2019/10/17 18:08 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Redis%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A.html'>Redis从入门到精通</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15680680837389.html">
+                
+                  <h1>Redis集群深入</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>伸缩原理</h4>
+
+<ul>
+<li><img src="media/15680680837389/15680681507398.jpg" alt="" style="width:940px;"/></li>
+<li>槽和数据在节点之间移动</li>
+</ul>
+
+<h4>集群扩容</h4>
+
+<ul>
+<li>准备新节点</li>
+<li>加入集群</li>
+<li>迁移槽和数据</li>
+</ul>
+
+<h4>加入集群</h4>
+
+<ul>
+<li>为它迁移槽和数据实现扩容</li>
+<li>作为从节点负责故障转移</li>
+</ul>
+
+<h4>迁移槽数据</h4>
+
+<ul>
+<li>槽迁移计算</li>
+<li>迁移数据</li>
+<li>添加从节点</li>
+<li><img src="media/15680680837389/15680687611415.jpg" alt="" style="width:876px;"/></li>
+</ul>
+
+<h4>数据迁移</h4>
+
+<ul>
+<li>对目标节点发送：cluster setslot{ slot) importing{ source Nodeld}命令，让目标节点准备导入槽的数据。</li>
+<li>对源节点发送：cluster setslot{slot} migrating{ target Nodelc아命令，让源节点准备迁出槽的数据。</li>
+<li>源节点循环执行 cluster getkeysinslot{slot{ count}命令，每次获取 count 个属于槽的健</li>
+<li>在源节点上执行 migrate  (ftargetlp)  (targetport) key0{ timeout 命令把指定 key 迁移重复执行步骤 3~4 直到槽下所有的键数据迁移到目标节点。</li>
+<li>向集群内所有主节点发送 cluster setslot{ slot) node ftargetnodeld}命令，通知槽分配给目标节点。</li>
+<li><img src="media/15680680837389/15680691770164.jpg" alt="" style="width:596px;"/></li>
+<li>pipeline migrate</li>
+<li><img src="media/15680680837389/15680692695123.jpg" alt="" style="width:833px;"/></li>
+</ul>
+
+<h4>集群收缩</h4>
+
+<ul>
+<li><img src="media/15680680837389/15680704949393.jpg" alt="" style="width:711px;"/></li>
+<li>cluster forget</li>
+<li>redis-trib reshard --from nodeid --to nodeid --slots nums ip port</li>
+<li>redis-trib del-node ip:port nodeid</li>
+<li>先主后从</li>
+</ul>
+
+<h4>客户端</h4>
+
+<ul>
+<li><img src="media/15680680837389/15680710106807.jpg" alt="" style="width:264px;"/></li>
+</ul>
+
+<h4>重定向</h4>
+
+<ul>
+<li>move重定向</li>
+<li><img src="media/15680680837389/15680711361230.jpg" alt="" style="width:822px;"/></li>
+<li>ask重定向</li>
+<li><img src="media/15680680837389/15680721661878.jpg" alt="" style="width:424px;"/></li>
+<li><img src="media/15680680837389/15680722142345.jpg" alt="" style="width:874px;"/></li>
+<li>对比</li>
+<li><img src="media/15680680837389/15680722554912.jpg" alt="" style="width:450px;"/></li>
+<li>随机访问和性能</li>
+</ul>
+
+<h4>smart客户端</h4>
+
+<ul>
+<li><img src="media/15680680837389/15680724129947.jpg" alt="" style="width:785px;"/></li>
+<li><img src="media/15680680837389/15680724793536.jpg" alt="" style="width:857px;"/></li>
+</ul>
+
+<h4>批量操作</h4>
+
+<ul>
+<li>mget mset必须在同一个槽</li>
+<li>串行mget</li>
+<li>串行IO</li>
+<li><img src="media/15680680837389/15680733968971.jpg" alt="" style="width:1458px;"/></li>
+<li>并行IO</li>
+<li><img src="media/15680680837389/15680734290342.jpg" alt="" style="width:1469px;"/></li>
+<li>hash_tag</li>
+<li><img src="media/15680680837389/15680734688574.jpg" alt="" style="width:1360px;"/></li>
+<li><img src="media/15680680837389/15680734909089.jpg" alt="" style="width:1457px;"/></li>
+<li>hash_tag Redis中引入了HashTag的概念，可以让算法只对key的某一部分进行计算，让key落到相同数据分片。</li>
+</ul>
+
+<h4>故障转移</h4>
+
+<ul>
+<li>故障发现</li>
+<li>ping/pong消息实现故障发现</li>
+<li>主观下线</li>
+<li><img src="media/15680680837389/15680737537823.jpg" alt="" style="width:1091px;"/></li>
+<li>客观下线</li>
+<li><img src="media/15680680837389/15680739618953.jpg" alt="" style="width:1212px;"/></li>
+<li><img src="media/15680680837389/15680740159698.jpg" alt="" style="width:1344px;"/></li>
+</ul>
+
+<h4>故障恢复</h4>
+
+<ul>
+<li>资格检查</li>
+<li><img src="media/15680680837389/15680741572842.jpg" alt="" style="width:1308px;"/></li>
+<li>准备选举时间</li>
+<li><img src="media/15680680837389/15680741882554.jpg" alt="" style="width:966px;"/></li>
+<li>选举投票</li>
+<li><img src="media/15680680837389/15680742011334.jpg" alt="" style="width:786px;"/></li>
+<li>替换主节点</li>
+<li><img src="media/15680680837389/15680742546123.jpg" alt="" style="width:1164px;"/></li>
+</ul>
+
+<h4>集群完整性</h4>
+
+<ul>
+<li>Cluster-require- full-coverages 默认为 yes</li>
+<li>集群中 16384 个槽全部可用：保证集群完整性 17680648932 正在看</li>
+<li>节点故障或者正在故障转移 (error) CLUSTERDOWN The cluster is down</li>
+<li>大多数业务无法容忍，cluster-require- full-coverages 建议设置为 no</li>
+</ul>
+
+<h4>带宽消耗</h4>
+
+<ul>
+<li><img src="media/15680680837389/15681614212661.jpg" alt="" style="width:1370px;"/></li>
+<li>消息发送频率：节点发现与其它节点最后通信时间超过 cluster node- timeout,/2时会直接发送ping消息 0463941</li>
+<li>消息数据量：slots槽数组(2KB空间)和整个集群1/10的状态数据（10 个节点状态数据约 1 KB)</li>
+<li>节点部署的机器规模：集群分布的机器越多且每台机器划分的节点数越均匀，则集群内整体的可用带宽越高。</li>
+</ul>
+
+<h5>优化</h5>
+
+<ul>
+<li>避免多业务使用一个集群，大业务可以多集群</li>
+<li>cluster-node-timeout 带宽和故障转移速度的均衡。尽量均匀分配到多机器上</li>
+<li>保证高可用和带宽</li>
+</ul>
+
+<h4>Pub/Sub 广播</h4>
+
+<ul>
+<li><img src="media/15680680837389/15681616136157.jpg" alt="" style="width:925px;"/></li>
+<li>问题：publish 在集群每个节点广播：加重带宽</li>
+<li>解决：单独“走”一套 Redis Sentinel</li>
+</ul>
+
+<h4>数据倾斜</h4>
+
+<h5>内存不均</h5>
+
+<ul>
+<li>节点和槽分配不均</li>
+<li>redis-cli info ip:port</li>
+<li>redis-cli reshard ip:port</li>
+</ul>
+
+<h5>不同槽对应键值数量差异较大</h5>
+
+<ul>
+<li>CRC16 正常情况下比较均匀</li>
+<li>可能存在 hash_tag</li>
+<li>cluster countkeysinslot{slt}获取槽对应键值个数</li>
+</ul>
+
+<h5>包含bigkey</h5>
+
+<ul>
+<li>Bigley：例如大字符串、几百万的元素的 hash、set 等从节点：</li>
+<li>redis-cli- bigkeys</li>
+<li>优化：优化数据结构。</li>
+</ul>
+
+<h5>内存相关配置不一致</h5>
+
+<ul>
+<li>Hash-max-ziplist-value, set-max-intset-entriess </li>
+<li>优化：定期“检查”配置一致性</li>
+</ul>
+
+<h5>请求倾斜</h5>
+
+<ul>
+<li>热点 key：重要的 key 或者 bigley </li>
+<li>优化避免 bigley 热键</li>
+<li>不要用 hash_tag</li>
+<li>当一致性不高时，可以用本地缓存+MQ</li>
+</ul>
+
+<h4>集群读写分离</h4>
+
+<h5>只读连接：集群模式的从节点不接受任何读写请求</h5>
+
+<ul>
+<li>重定向到负责槽的主节点</li>
+<li>readonly 命令可以读：连接级别命令</li>
+</ul>
+
+<h5>读写分离：更加复杂</h5>
+
+<ul>
+<li>同样的问题：复制延退、读取过期数据、从节点故障</li>
+<li>修改客户端：cluster slaves{ nodeld}</li>
+</ul>
+
+<h4>数据迁移</h4>
+
+<h5>redis-trib.rb import</h5>
+
+<ul>
+<li>只能从单机迁移到集群不支持在线迁移：</li>
+<li>source 需要停写</li>
+<li>不支持断点续传</li>
+<li>单线程迁移：影响速度</li>
+</ul>
+
+<h5>在线迁移</h5>
+
+<ul>
+<li>唯品会 redis- migrate-tool </li>
+<li>豌豆英：redis-port</li>
+</ul>
+
+<h4>集群限制</h4>
+
+<ul>
+<li>Key 批量操作支持有限：例如 mget、mset 必须在一个 slot </li>
+<li>Key 事务和 Lua 支持有限：操作的 key 必须在一个节点 </li>
+<li>Key 是数据分区的最小粒度：不支持 bigkey 分区</li>
+<li>不支持多个数据库：集群模式下只有一个 db0</li>
+<li>复制只支持一层。不支持树形复制</li>
+</ul>
+
+<h4>分布式Redis</h4>
+
+<ul>
+<li>Redis Cluster：满足容量和性能的扩展性，很多业务”不需要”</li>
+<li>大多数时客户端性能会”降低”。</li>
+<li>命令无法跨节点使用：mget、keys、scan、flush、sintera 等。Lua 和事务无法跨节点使用。</li>
+<li>客户端维护更复杂：SDK 和应用本身消耗（例如更多的连接池）。</li>
+<li>很多场景 Redis Sentinel 已经足够好。</li>
+</ul>
+
+<h4>集群总结</h4>
+
+<ul>
+<li>使用 smart 客户端操作集群达到通信效率最大化，客户端内部负责计算维护键-》槽-》节点的映射，用于快速定位到目标节点。</li>
+<li>集群自动故障转移过程分为故障发现和节点恢复。节点下线分为主观下线和客观下线，当超过半数主节点认为故障节点为主观下线时标记它为客观下线状态。从节点负责对客观下线的主节点触发故障恢复流程，保证集群的可用性。</li>
+<li>开发运维常见问题包括: 超大规模集群带宽消耗,pub/sub 广播问题，集</li>
+<li>群倾斜问题，单机和集群对比等</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/09/10 06:28 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Redis%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A.html'>Redis从入门到精通</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15677236146527.html">
+                
+                  <h1>Sentinel</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>主从复制高可用</h4>
+
+<ul>
+<li>手动故障转移</li>
+<li>写能力和存储能力受限制</li>
+</ul>
+
+<h4>主要任务</h4>
+
+<ul>
+<li>监控(Monitoring): Sentinel 会不断地检查你的主服务器和从服务器是否运作正常。<br/></li>
+<li>提醒(Notification): 当被监控的某个 Redis 服务器出现问题时， Sentinel 可以通过 API 向管理员或 者其他应用程序发送通知。</li>
+<li>自动故障迁移(Automatic failover): 当一个主服务器不能正常工作时， Sentinel 会开始一次自动故 障迁移操作， 它会将失效主服务器的其中一个从服务器升级为新的主服务器， 并让失效主服务器的其 他从服务器改为复制新的主服务器; 当客户端试图连接失效的主服务器时， 集群也会向客户端返回新 主服务器的地址， 使得集群可以使用新主服务器代替失效服务器</li>
+</ul>
+
+<h4>基本架构</h4>
+
+<ul>
+<li><img src="media/15677236146527/15677238406646.jpg" alt="" style="width:1048px;"/></li>
+<li><img src="media/15677236146527/15677240210056.jpg" alt="" style="width:1267px;"/></li>
+</ul>
+
+<h4>sentinel配置</h4>
+
+<ul>
+<li><img src="media/15677236146527/15677245915239.jpg" alt="" style="width:1044px;"/></li>
+<li>sentinel monitor mymaster 127.0.0.1 6379 1 名称为mymaster的主节点名，1表示将这个主服务器判断 为失效至少需要 1个 Sentinel 同意 (只要同意 Sentinel 的数量不达标，自动故障迁移就不会执行)</li>
+<li>down-after-milliseconds 选项指定了 Sentinel 认为服务器已经断线所需的毫秒数</li>
+<li>failover过期时间，当failover开始后，在此时间内仍然没有触发任何failover操作，当前sentinel 将会认 为此次failoer失败</li>
+<li>parallel-syncs 选项指定了在执行故障转移时， 最多可以有多少个从服务器同时对新的主服务器进行同 步， 这个数字越小， 完成故障转移所需的时间就越长。 如果从服务器被设置为允许使用过期数据集， 那么你可能不希望所有从服务器都在同一时间向新的主 服务器发送同步请求， 因为尽管复制过程的绝大部分步骤都不会阻塞从服务器， 但从服务器在载入主 服务器发来的 RDB 文件时， 仍然会造成从服务器在一段时间内不能处理命令请求: 如果全部从服务 器一起对新的主服务器进行同步， 那么就可能会造成所有从服务器在短时间内全部不可用的情况出 现。</li>
+</ul>
+
+<h4>客户端</h4>
+
+<ul>
+<li>连接sentinel</li>
+<li><img src="media/15677236146527/15677260391092.jpg" alt="" style="width:911px;"/></li>
+<li><img src="media/15677236146527/15677260637461.jpg" alt="" style="width:844px;"/></li>
+</ul>
+
+<h4>三个定时任务</h4>
+
+<ul>
+<li>每10秒每个sentinel对master和slave指向info</li>
+<li>发现slave节点</li>
+<li>确定主从关系</li>
+<li><img src="media/15677236146527/15678968542743.jpg" alt="" style="width:733px;"/></li>
+<li>每2秒每个sentinel通过master的channel频道交互信息(pub/sub)</li>
+<li><strong>sentinel</strong>:hello</li>
+<li>交互对节点的看法和自身信息</li>
+<li><img src="media/15677236146527/15678970065504.jpg" alt="" style="width:683px;"/></li>
+<li>每1s每个sentinel对其他sentinel进行ping访问</li>
+<li>心跳检测，失败判定依据</li>
+<li><img src="media/15677236146527/15678973156445.jpg" alt="" style="width:613px;"/></li>
+</ul>
+
+<h4>主观下线和客观下线</h4>
+
+<ul>
+<li>sentinel monitor mymaster 192.168.31.191 6379 2主观下限法定人数</li>
+<li>sentinel down-after-milliseconds mymaster 30000 主观超时下线判断</li>
+<li>主观下线：每个 sentinel 节点对 Redis 节点失败的“偏见</li>
+<li>客观下线：所有 sentinel 节点对 Redis 节点失败“达成共识“（超过 quorum 个统一）</li>
+<li>sentinel is-master-down-by-addr</li>
+</ul>
+
+<h4>领导者选举</h4>
+
+<ul>
+<li>原因：只有一个 sentinel 节点完成故障转移</li>
+<li>选举：通过 sentinel is- master-down-by-addr 命令都希望成为领导者</li>
+<li>每个做主观下线的 Sentinel 节点向其他 Sentinel 节点发送命令，要求将它设置为领导者收到命令的 Sentinel 节点如果没有同意通过其他 Sentinel 节点发送的命令，那么将同意该请求，否则拒绝</li>
+<li>如果该 Sentinel 节点发现自己的票数已经超过 Sentinel 集合半数且超过 quorum，那么它将成为领导者</li>
+<li>如果此过程有多个 Sentinel 节点成为了领导者，那么将等待一段时间重新进行选举。</li>
+<li><img src="media/15677236146527/15678976923488.jpg" alt="" style="width:539px;"/></li>
+</ul>
+
+<h4>故障转移</h4>
+
+<ul>
+<li>从 slave 节点中选出一个“合适的”节点作为新的 master 节点 </li>
+<li>对上面的 slave 节点执行 slaveof no oner 命令让其成为 master 节点。</li>
+<li>向剩余的 Slave 节点发送命令，让它们成为新 master 节点的 slave 节点，复制规则和 parallel- syncs 参数有关。</li>
+<li>更新对原来 master-节点配置为 slave，并保持着对其“关注“，当其恢复后命令它去复制新的 master 节点</li>
+</ul>
+
+<h4>选择合适的slave节点</h4>
+
+<ul>
+<li>选择 slave- priority (slave 节点优先级）最高的』ave 节点，如果存在则返回，不存在则继续。</li>
+<li>选择复制偏移量最大的 slave 节点（复制的最完整），如果存在则返回，不存在则继续</li>
+<li>选择 runed 最小的 slave 节点。</li>
+</ul>
+
+<h4>节点运维</h4>
+
+<ul>
+<li>主节点 </li>
+<li>从节点</li>
+<li>sentinel节点</li>
+</ul>
+
+<h4>手动故障转移</h4>
+
+<ul>
+<li><img src="media/15677236146527/15678979994184.jpg" alt="" style="width:1165px;"/></li>
+</ul>
+
+<h4>节点上线</h4>
+
+<ul>
+<li>主节点：sentinel failover 进行替换。</li>
+<li>从节点：slaveofe 即可，sentinel 节点可以感知。</li>
+<li>sentinel 节点：参考其他 sentinel 节点启动即可。</li>
+</ul>
+
+<h4>从节点的作用</h4>
+
+<ul>
+<li>副本 高可用的基础</li>
+<li>扩展 读能力</li>
+</ul>
+
+<h4>三个消息</h4>
+
+<ul>
+<li>+ switch- master：切换主节点（从节点晋升主节点</li>
+<li>+ convert-to- slave：切换从节点（原主节点降为从节点）</li>
+<li>+ sdown：主观下线。</li>
+</ul>
+
+<h4>高可用读写分离</h4>
+
+<ul>
+<li><img src="media/15677236146527/15678982480394.jpg" alt="" style="width:951px;"/></li>
+</ul>
+
+<h4>总结</h4>
+
+<ul>
+<li>故障发现、故障自动转移、配置中心、客户端通知。</li>
+<li>Redis Sentinel 中的 Sentinel=节点个数应该为大于等于 3 且最好为奇数。</li>
+<li>Redis Sentinel 中的数据节点与普通数据节点没有区别</li>
+<li>客户端初始化时连接的是 Sentinel 节点集合，不再是具体的 Redis 节点，但 Sentinel 只是配置中心不是代理</li>
+<li>Redis Sentinel 通过三个定时任务实现了 Sentinel 节点对于主节点、从节点其余 Sentinel 节点的监控。</li>
+<li>Redis Sentinel 在对节点做失败判定时分为主观下线和客观下线。</li>
+<li>看懂 Redis Sentine 故障转移日志对于 Redis Sentinel 以及问题排查非常有帮助</li>
+<li>Redis Sentinels 实现读写分离高可用可以依赖 Sentinel 节点的消息通知，获取 Redis 数据节点的状态变化</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/09/06 06:46 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Redis%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A.html'>Redis从入门到精通</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15679831945510.html">
+                
+                  <h1>Redis集群</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>多倍扩容</h4>
+
+<ul>
+<li><img src="media/15679831945510/15679833006813.jpg" alt="" style="width:1109px;"/></li>
+<li>引起50%的数据迁移</li>
+<li>客户端分片：哈希+取余</li>
+<li>节点伸缩：数据节点关系变化，导致数据迁移</li>
+<li>迁移数量和添加节点数量有关：建议翻倍扩容</li>
+</ul>
+
+<h4>一致性hash</h4>
+
+<ul>
+<li><img src="media/15679831945510/15679834230784.jpg" alt="" style="width:580px;"/></li>
+<li><img src="media/15679831945510/15679835069065.jpg" alt="" style="width:503px;"/></li>
+</ul>
+
+<h4>虚拟槽分区</h4>
+
+<ul>
+<li><img src="media/15679831945510/15679835629071.jpg" alt="" style="width:573px;"/></li>
+<li><img src="media/15679831945510/15679835845450.jpg" alt="" style="width:611px;"/></li>
+</ul>
+
+<h4>集群架构</h4>
+
+<ul>
+<li><img src="media/15679831945510/15679836123386.jpg" alt="" style="width:347px;"/></li>
+</ul>
+
+<h4>Redis集群架构</h4>
+
+<ul>
+<li><img src="media/15679831945510/15679836334837.jpg" alt="" style="width:439px;"/></li>
+<li>节点</li>
+<li><img src="media/15679831945510/15679836848903.jpg" alt="" style="width:544px;"/></li>
+<li>meet</li>
+<li><img src="media/15679831945510/15679837417762.jpg" alt="" style="width:801px;"/></li>
+<li>槽</li>
+<li><img src="media/15679831945510/15679837878069.jpg" alt="" style="width:895px;"/></li>
+</ul>
+
+<h4>客户端与槽</h4>
+
+<ul>
+<li><img src="media/15679831945510/15679838224134.jpg" alt="" style="width:927px;"/></li>
+</ul>
+
+<h4>cluser特性</h4>
+
+<ul>
+<li>复制</li>
+<li>高可用</li>
+<li>分片</li>
+</ul>
+
+<h4>安装</h4>
+
+<ul>
+<li>开启节点配置</li>
+<li>meet</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">redis-cli -h $master -p 6379 cluster meet $master 6380
+redis-cli -h $master -p 6379 cluster meet $node1 6379
+redis-cli -h $master -p 6379 cluster meet $node1 6380
+redis-cli -h $master -p 6379 cluster meet $node2 6379
+redis-cli -h $master -p 6379 cluster meet $node2 6380
+</code></pre>
+
+<ul>
+<li>指派槽</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">#!/bin/bash
+master=192.168.31.186
+node1=192.168.31.224
+node2=192.168.31.125
+start=$1
+last=$2
+port=$4
+h=$3
+ip=&quot;&quot;
+case $h in
+  &quot;master&quot;) ip=$master;;
+  &quot;node1&quot;) ip=$node1;;
+  &quot;node2&quot;) ip=$node2;;
+esac
+
+for slot in `seq ${start} ${last}`
+do
+  echo &quot;slot:${slot}}&quot;
+  redis-cli -h ${ip} -p ${port} cluster addslots ${slot}
+done
+./slot.sh 0 5461 master 6379 &amp;&amp; ./slot.sh 5462 10922 node1 6379  &amp;&amp; ./slot.sh 10923 10683 node2 6379
+</code></pre>
+
+<ul>
+<li>主从</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">redis-cli -p 6379 cluster replicate 1da43f4f45d110b849bdfbc0fc55dc311fa69a76
+redis-cli -p 6380 cluster replicate 261b726a6cafacddbf8f23596c738bdf4a30f085
+</code></pre>
+
+<ul>
+<li>访问</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">redis-cli -c -p 6379
+Redirected to slot [4554] located at 192.168.31.186:6379
+查看节点 redis-cli -p 6380 cluster nodes
+查看槽 redis-cli -p 6380 cluster slots
+查看信息 redis-cli -p 6380 cluster info
+
+</code></pre>
+
+<h4>一键创建集群</h4>
+
+<pre class="line-numbers"><code class="language-text">//启动节点
+master redis-server ./redis-master_6379.conf \
+&amp;&amp; redis-server ./redis-master_6380.conf
+node1 redis-server ./redis-master_6379.conf \
+&amp;&amp; redis-server ./redis-master_6380.conf
+node2 redis-server ./redis-master_6380.conf \
+&amp;&amp; redis-server ./redis-master_6381.conf
+//创建集群
+redis-cli --cluster create --cluster-replicas 1 \
+$master:6379 $master:6380 \
+$node1:6379 $node1:6380 \ 
+$node2:6380 $node2:6381
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/09/09 06:53 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Redis%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A.html'>Redis从入门到精通</a></span>
@@ -841,641 +1474,6 @@ rename-command KEYS &quot;&quot;
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15680680837389.html">
-                
-                  <h1>Redis集群深入</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>伸缩原理</h4>
-
-<ul>
-<li><img src="media/15680680837389/15680681507398.jpg" alt="" style="width:940px;"/></li>
-<li>槽和数据在节点之间移动</li>
-</ul>
-
-<h4>集群扩容</h4>
-
-<ul>
-<li>准备新节点</li>
-<li>加入集群</li>
-<li>迁移槽和数据</li>
-</ul>
-
-<h4>加入集群</h4>
-
-<ul>
-<li>为它迁移槽和数据实现扩容</li>
-<li>作为从节点负责故障转移</li>
-</ul>
-
-<h4>迁移槽数据</h4>
-
-<ul>
-<li>槽迁移计算</li>
-<li>迁移数据</li>
-<li>添加从节点</li>
-<li><img src="media/15680680837389/15680687611415.jpg" alt="" style="width:876px;"/></li>
-</ul>
-
-<h4>数据迁移</h4>
-
-<ul>
-<li>对目标节点发送：cluster setslot{ slot) importing{ source Nodeld}命令，让目标节点准备导入槽的数据。</li>
-<li>对源节点发送：cluster setslot{slot} migrating{ target Nodelc아命令，让源节点准备迁出槽的数据。</li>
-<li>源节点循环执行 cluster getkeysinslot{slot{ count}命令，每次获取 count 个属于槽的健</li>
-<li>在源节点上执行 migrate  (ftargetlp)  (targetport) key0{ timeout 命令把指定 key 迁移重复执行步骤 3~4 直到槽下所有的键数据迁移到目标节点。</li>
-<li>向集群内所有主节点发送 cluster setslot{ slot) node ftargetnodeld}命令，通知槽分配给目标节点。</li>
-<li><img src="media/15680680837389/15680691770164.jpg" alt="" style="width:596px;"/></li>
-<li>pipeline migrate</li>
-<li><img src="media/15680680837389/15680692695123.jpg" alt="" style="width:833px;"/></li>
-</ul>
-
-<h4>集群收缩</h4>
-
-<ul>
-<li><img src="media/15680680837389/15680704949393.jpg" alt="" style="width:711px;"/></li>
-<li>cluster forget</li>
-<li>redis-trib reshard --from nodeid --to nodeid --slots nums ip port</li>
-<li>redis-trib del-node ip:port nodeid</li>
-<li>先主后从</li>
-</ul>
-
-<h4>客户端</h4>
-
-<ul>
-<li><img src="media/15680680837389/15680710106807.jpg" alt="" style="width:264px;"/></li>
-</ul>
-
-<h4>重定向</h4>
-
-<ul>
-<li>move重定向</li>
-<li><img src="media/15680680837389/15680711361230.jpg" alt="" style="width:822px;"/></li>
-<li>ask重定向</li>
-<li><img src="media/15680680837389/15680721661878.jpg" alt="" style="width:424px;"/></li>
-<li><img src="media/15680680837389/15680722142345.jpg" alt="" style="width:874px;"/></li>
-<li>对比</li>
-<li><img src="media/15680680837389/15680722554912.jpg" alt="" style="width:450px;"/></li>
-<li>随机访问和性能</li>
-</ul>
-
-<h4>smart客户端</h4>
-
-<ul>
-<li><img src="media/15680680837389/15680724129947.jpg" alt="" style="width:785px;"/></li>
-<li><img src="media/15680680837389/15680724793536.jpg" alt="" style="width:857px;"/></li>
-</ul>
-
-<h4>批量操作</h4>
-
-<ul>
-<li>mget mset必须在同一个槽</li>
-<li>串行mget</li>
-<li>串行IO</li>
-<li><img src="media/15680680837389/15680733968971.jpg" alt="" style="width:1458px;"/></li>
-<li>并行IO</li>
-<li><img src="media/15680680837389/15680734290342.jpg" alt="" style="width:1469px;"/></li>
-<li>hash_tag</li>
-<li><img src="media/15680680837389/15680734688574.jpg" alt="" style="width:1360px;"/></li>
-<li><img src="media/15680680837389/15680734909089.jpg" alt="" style="width:1457px;"/></li>
-<li>hash_tag Redis中引入了HashTag的概念，可以让算法只对key的某一部分进行计算，让key落到相同数据分片。</li>
-</ul>
-
-<h4>故障转移</h4>
-
-<ul>
-<li>故障发现</li>
-<li>ping/pong消息实现故障发现</li>
-<li>主观下线</li>
-<li><img src="media/15680680837389/15680737537823.jpg" alt="" style="width:1091px;"/></li>
-<li>客观下线</li>
-<li><img src="media/15680680837389/15680739618953.jpg" alt="" style="width:1212px;"/></li>
-<li><img src="media/15680680837389/15680740159698.jpg" alt="" style="width:1344px;"/></li>
-</ul>
-
-<h4>故障恢复</h4>
-
-<ul>
-<li>资格检查</li>
-<li><img src="media/15680680837389/15680741572842.jpg" alt="" style="width:1308px;"/></li>
-<li>准备选举时间</li>
-<li><img src="media/15680680837389/15680741882554.jpg" alt="" style="width:966px;"/></li>
-<li>选举投票</li>
-<li><img src="media/15680680837389/15680742011334.jpg" alt="" style="width:786px;"/></li>
-<li>替换主节点</li>
-<li><img src="media/15680680837389/15680742546123.jpg" alt="" style="width:1164px;"/></li>
-</ul>
-
-<h4>集群完整性</h4>
-
-<ul>
-<li>Cluster-require- full-coverages 默认为 yes</li>
-<li>集群中 16384 个槽全部可用：保证集群完整性 17680648932 正在看</li>
-<li>节点故障或者正在故障转移 (error) CLUSTERDOWN The cluster is down</li>
-<li>大多数业务无法容忍，cluster-require- full-coverages 建议设置为 no</li>
-</ul>
-
-<h4>带宽消耗</h4>
-
-<ul>
-<li><img src="media/15680680837389/15681614212661.jpg" alt="" style="width:1370px;"/></li>
-<li>消息发送频率：节点发现与其它节点最后通信时间超过 cluster node- timeout,/2时会直接发送ping消息 0463941</li>
-<li>消息数据量：slots槽数组(2KB空间)和整个集群1/10的状态数据（10 个节点状态数据约 1 KB)</li>
-<li>节点部署的机器规模：集群分布的机器越多且每台机器划分的节点数越均匀，则集群内整体的可用带宽越高。</li>
-</ul>
-
-<h5>优化</h5>
-
-<ul>
-<li>避免多业务使用一个集群，大业务可以多集群</li>
-<li>cluster-node-timeout 带宽和故障转移速度的均衡。尽量均匀分配到多机器上</li>
-<li>保证高可用和带宽</li>
-</ul>
-
-<h4>Pub/Sub 广播</h4>
-
-<ul>
-<li><img src="media/15680680837389/15681616136157.jpg" alt="" style="width:925px;"/></li>
-<li>问题：publish 在集群每个节点广播：加重带宽</li>
-<li>解决：单独“走”一套 Redis Sentinel</li>
-</ul>
-
-<h4>数据倾斜</h4>
-
-<h5>内存不均</h5>
-
-<ul>
-<li>节点和槽分配不均</li>
-<li>redis-cli info ip:port</li>
-<li>redis-cli reshard ip:port</li>
-</ul>
-
-<h5>不同槽对应键值数量差异较大</h5>
-
-<ul>
-<li>CRC16 正常情况下比较均匀</li>
-<li>可能存在 hash_tag</li>
-<li>cluster countkeysinslot{slt}获取槽对应键值个数</li>
-</ul>
-
-<h5>包含bigkey</h5>
-
-<ul>
-<li>Bigley：例如大字符串、几百万的元素的 hash、set 等从节点：</li>
-<li>redis-cli- bigkeys</li>
-<li>优化：优化数据结构。</li>
-</ul>
-
-<h5>内存相关配置不一致</h5>
-
-<ul>
-<li>Hash-max-ziplist-value, set-max-intset-entriess </li>
-<li>优化：定期“检查”配置一致性</li>
-</ul>
-
-<h5>请求倾斜</h5>
-
-<ul>
-<li>热点 key：重要的 key 或者 bigley </li>
-<li>优化避免 bigley 热键</li>
-<li>不要用 hash_tag</li>
-<li>当一致性不高时，可以用本地缓存+MQ</li>
-</ul>
-
-<h4>集群读写分离</h4>
-
-<h5>只读连接：集群模式的从节点不接受任何读写请求</h5>
-
-<ul>
-<li>重定向到负责槽的主节点</li>
-<li>readonly 命令可以读：连接级别命令</li>
-</ul>
-
-<h5>读写分离：更加复杂</h5>
-
-<ul>
-<li>同样的问题：复制延退、读取过期数据、从节点故障</li>
-<li>修改客户端：cluster slaves{ nodeld}</li>
-</ul>
-
-<h4>数据迁移</h4>
-
-<h5>redis-trib.rb import</h5>
-
-<ul>
-<li>只能从单机迁移到集群不支持在线迁移：</li>
-<li>source 需要停写</li>
-<li>不支持断点续传</li>
-<li>单线程迁移：影响速度</li>
-</ul>
-
-<h5>在线迁移</h5>
-
-<ul>
-<li>唯品会 redis- migrate-tool </li>
-<li>豌豆英：redis-port</li>
-</ul>
-
-<h4>集群限制</h4>
-
-<ul>
-<li>Key 批量操作支持有限：例如 mget、mset 必须在一个 slot </li>
-<li>Key 事务和 Lua 支持有限：操作的 key 必须在一个节点 </li>
-<li>Key 是数据分区的最小粒度：不支持 bigkey 分区</li>
-<li>不支持多个数据库：集群模式下只有一个 db0</li>
-<li>复制只支持一层。不支持树形复制</li>
-</ul>
-
-<h4>分布式Redis</h4>
-
-<ul>
-<li>Redis Cluster：满足容量和性能的扩展性，很多业务”不需要”</li>
-<li>大多数时客户端性能会”降低”。</li>
-<li>命令无法跨节点使用：mget、keys、scan、flush、sintera 等。Lua 和事务无法跨节点使用。</li>
-<li>客户端维护更复杂：SDK 和应用本身消耗（例如更多的连接池）。</li>
-<li>很多场景 Redis Sentinel 已经足够好。</li>
-</ul>
-
-<h4>集群总结</h4>
-
-<ul>
-<li>使用 smart 客户端操作集群达到通信效率最大化，客户端内部负责计算维护键-》槽-》节点的映射，用于快速定位到目标节点。</li>
-<li>集群自动故障转移过程分为故障发现和节点恢复。节点下线分为主观下线和客观下线，当超过半数主节点认为故障节点为主观下线时标记它为客观下线状态。从节点负责对客观下线的主节点触发故障恢复流程，保证集群的可用性。</li>
-<li>开发运维常见问题包括: 超大规模集群带宽消耗,pub/sub 广播问题，集</li>
-<li>群倾斜问题，单机和集群对比等</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/10 06:28 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Redis%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A.html'>Redis从入门到精通</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15679831945510.html">
-                
-                  <h1>Redis集群</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>多倍扩容</h4>
-
-<ul>
-<li><img src="media/15679831945510/15679833006813.jpg" alt="" style="width:1109px;"/></li>
-<li>引起50%的数据迁移</li>
-<li>客户端分片：哈希+取余</li>
-<li>节点伸缩：数据节点关系变化，导致数据迁移</li>
-<li>迁移数量和添加节点数量有关：建议翻倍扩容</li>
-</ul>
-
-<h4>一致性hash</h4>
-
-<ul>
-<li><img src="media/15679831945510/15679834230784.jpg" alt="" style="width:580px;"/></li>
-<li><img src="media/15679831945510/15679835069065.jpg" alt="" style="width:503px;"/></li>
-</ul>
-
-<h4>虚拟槽分区</h4>
-
-<ul>
-<li><img src="media/15679831945510/15679835629071.jpg" alt="" style="width:573px;"/></li>
-<li><img src="media/15679831945510/15679835845450.jpg" alt="" style="width:611px;"/></li>
-</ul>
-
-<h4>集群架构</h4>
-
-<ul>
-<li><img src="media/15679831945510/15679836123386.jpg" alt="" style="width:347px;"/></li>
-</ul>
-
-<h4>Redis集群架构</h4>
-
-<ul>
-<li><img src="media/15679831945510/15679836334837.jpg" alt="" style="width:439px;"/></li>
-<li>节点</li>
-<li><img src="media/15679831945510/15679836848903.jpg" alt="" style="width:544px;"/></li>
-<li>meet</li>
-<li><img src="media/15679831945510/15679837417762.jpg" alt="" style="width:801px;"/></li>
-<li>槽</li>
-<li><img src="media/15679831945510/15679837878069.jpg" alt="" style="width:895px;"/></li>
-</ul>
-
-<h4>客户端与槽</h4>
-
-<ul>
-<li><img src="media/15679831945510/15679838224134.jpg" alt="" style="width:927px;"/></li>
-</ul>
-
-<h4>cluser特性</h4>
-
-<ul>
-<li>复制</li>
-<li>高可用</li>
-<li>分片</li>
-</ul>
-
-<h4>安装</h4>
-
-<ul>
-<li>开启节点配置</li>
-<li>meet</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">redis-cli -h $master -p 6379 cluster meet $master 6380
-redis-cli -h $master -p 6379 cluster meet $node1 6379
-redis-cli -h $master -p 6379 cluster meet $node1 6380
-redis-cli -h $master -p 6379 cluster meet $node2 6379
-redis-cli -h $master -p 6379 cluster meet $node2 6380
-</code></pre>
-
-<ul>
-<li>指派槽</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">#!/bin/bash
-master=192.168.31.186
-node1=192.168.31.224
-node2=192.168.31.125
-start=$1
-last=$2
-port=$4
-h=$3
-ip=&quot;&quot;
-case $h in
-  &quot;master&quot;) ip=$master;;
-  &quot;node1&quot;) ip=$node1;;
-  &quot;node2&quot;) ip=$node2;;
-esac
-
-for slot in `seq ${start} ${last}`
-do
-  echo &quot;slot:${slot}}&quot;
-  redis-cli -h ${ip} -p ${port} cluster addslots ${slot}
-done
-./slot.sh 0 5461 master 6379 &amp;&amp; ./slot.sh 5462 10922 node1 6379  &amp;&amp; ./slot.sh 10923 10683 node2 6379
-</code></pre>
-
-<ul>
-<li>主从</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">redis-cli -p 6379 cluster replicate 1da43f4f45d110b849bdfbc0fc55dc311fa69a76
-redis-cli -p 6380 cluster replicate 261b726a6cafacddbf8f23596c738bdf4a30f085
-</code></pre>
-
-<ul>
-<li>访问</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">redis-cli -c -p 6379
-Redirected to slot [4554] located at 192.168.31.186:6379
-查看节点 redis-cli -p 6380 cluster nodes
-查看槽 redis-cli -p 6380 cluster slots
-查看信息 redis-cli -p 6380 cluster info
-
-</code></pre>
-
-<h4>一键创建集群</h4>
-
-<pre class="line-numbers"><code class="language-text">//启动节点
-master redis-server ./redis-master_6379.conf \
-&amp;&amp; redis-server ./redis-master_6380.conf
-node1 redis-server ./redis-master_6379.conf \
-&amp;&amp; redis-server ./redis-master_6380.conf
-node2 redis-server ./redis-master_6380.conf \
-&amp;&amp; redis-server ./redis-master_6381.conf
-//创建集群
-redis-cli --cluster create --cluster-replicas 1 \
-$master:6379 $master:6380 \
-$node1:6379 $node1:6380 \ 
-$node2:6380 $node2:6381
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/09 06:53 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Redis%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A.html'>Redis从入门到精通</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15677236146527.html">
-                
-                  <h1>Sentinel</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>主从复制高可用</h4>
-
-<ul>
-<li>手动故障转移</li>
-<li>写能力和存储能力受限制</li>
-</ul>
-
-<h4>主要任务</h4>
-
-<ul>
-<li>监控(Monitoring): Sentinel 会不断地检查你的主服务器和从服务器是否运作正常。<br/></li>
-<li>提醒(Notification): 当被监控的某个 Redis 服务器出现问题时， Sentinel 可以通过 API 向管理员或 者其他应用程序发送通知。</li>
-<li>自动故障迁移(Automatic failover): 当一个主服务器不能正常工作时， Sentinel 会开始一次自动故 障迁移操作， 它会将失效主服务器的其中一个从服务器升级为新的主服务器， 并让失效主服务器的其 他从服务器改为复制新的主服务器; 当客户端试图连接失效的主服务器时， 集群也会向客户端返回新 主服务器的地址， 使得集群可以使用新主服务器代替失效服务器</li>
-</ul>
-
-<h4>基本架构</h4>
-
-<ul>
-<li><img src="media/15677236146527/15677238406646.jpg" alt="" style="width:1048px;"/></li>
-<li><img src="media/15677236146527/15677240210056.jpg" alt="" style="width:1267px;"/></li>
-</ul>
-
-<h4>sentinel配置</h4>
-
-<ul>
-<li><img src="media/15677236146527/15677245915239.jpg" alt="" style="width:1044px;"/></li>
-<li>sentinel monitor mymaster 127.0.0.1 6379 1 名称为mymaster的主节点名，1表示将这个主服务器判断 为失效至少需要 1个 Sentinel 同意 (只要同意 Sentinel 的数量不达标，自动故障迁移就不会执行)</li>
-<li>down-after-milliseconds 选项指定了 Sentinel 认为服务器已经断线所需的毫秒数</li>
-<li>failover过期时间，当failover开始后，在此时间内仍然没有触发任何failover操作，当前sentinel 将会认 为此次failoer失败</li>
-<li>parallel-syncs 选项指定了在执行故障转移时， 最多可以有多少个从服务器同时对新的主服务器进行同 步， 这个数字越小， 完成故障转移所需的时间就越长。 如果从服务器被设置为允许使用过期数据集， 那么你可能不希望所有从服务器都在同一时间向新的主 服务器发送同步请求， 因为尽管复制过程的绝大部分步骤都不会阻塞从服务器， 但从服务器在载入主 服务器发来的 RDB 文件时， 仍然会造成从服务器在一段时间内不能处理命令请求: 如果全部从服务 器一起对新的主服务器进行同步， 那么就可能会造成所有从服务器在短时间内全部不可用的情况出 现。</li>
-</ul>
-
-<h4>客户端</h4>
-
-<ul>
-<li>连接sentinel</li>
-<li><img src="media/15677236146527/15677260391092.jpg" alt="" style="width:911px;"/></li>
-<li><img src="media/15677236146527/15677260637461.jpg" alt="" style="width:844px;"/></li>
-</ul>
-
-<h4>三个定时任务</h4>
-
-<ul>
-<li>每10秒每个sentinel对master和slave指向info</li>
-<li>发现slave节点</li>
-<li>确定主从关系</li>
-<li><img src="media/15677236146527/15678968542743.jpg" alt="" style="width:733px;"/></li>
-<li>每2秒每个sentinel通过master的channel频道交互信息(pub/sub)</li>
-<li><strong>sentinel</strong>:hello</li>
-<li>交互对节点的看法和自身信息</li>
-<li><img src="media/15677236146527/15678970065504.jpg" alt="" style="width:683px;"/></li>
-<li>每1s每个sentinel对其他sentinel进行ping访问</li>
-<li>心跳检测，失败判定依据</li>
-<li><img src="media/15677236146527/15678973156445.jpg" alt="" style="width:613px;"/></li>
-</ul>
-
-<h4>主观下线和客观下线</h4>
-
-<ul>
-<li>sentinel monitor mymaster 192.168.31.191 6379 2主观下限法定人数</li>
-<li>sentinel down-after-milliseconds mymaster 30000 主观超时下线判断</li>
-<li>主观下线：每个 sentinel 节点对 Redis 节点失败的“偏见</li>
-<li>客观下线：所有 sentinel 节点对 Redis 节点失败“达成共识“（超过 quorum 个统一）</li>
-<li>sentinel is-master-down-by-addr</li>
-</ul>
-
-<h4>领导者选举</h4>
-
-<ul>
-<li>原因：只有一个 sentinel 节点完成故障转移</li>
-<li>选举：通过 sentinel is- master-down-by-addr 命令都希望成为领导者</li>
-<li>每个做主观下线的 Sentinel 节点向其他 Sentinel 节点发送命令，要求将它设置为领导者收到命令的 Sentinel 节点如果没有同意通过其他 Sentinel 节点发送的命令，那么将同意该请求，否则拒绝</li>
-<li>如果该 Sentinel 节点发现自己的票数已经超过 Sentinel 集合半数且超过 quorum，那么它将成为领导者</li>
-<li>如果此过程有多个 Sentinel 节点成为了领导者，那么将等待一段时间重新进行选举。</li>
-<li><img src="media/15677236146527/15678976923488.jpg" alt="" style="width:539px;"/></li>
-</ul>
-
-<h4>故障转移</h4>
-
-<ul>
-<li>从 slave 节点中选出一个“合适的”节点作为新的 master 节点 </li>
-<li>对上面的 slave 节点执行 slaveof no oner 命令让其成为 master 节点。</li>
-<li>向剩余的 Slave 节点发送命令，让它们成为新 master 节点的 slave 节点，复制规则和 parallel- syncs 参数有关。</li>
-<li>更新对原来 master-节点配置为 slave，并保持着对其“关注“，当其恢复后命令它去复制新的 master 节点</li>
-</ul>
-
-<h4>选择合适的slave节点</h4>
-
-<ul>
-<li>选择 slave- priority (slave 节点优先级）最高的』ave 节点，如果存在则返回，不存在则继续。</li>
-<li>选择复制偏移量最大的 slave 节点（复制的最完整），如果存在则返回，不存在则继续</li>
-<li>选择 runed 最小的 slave 节点。</li>
-</ul>
-
-<h4>节点运维</h4>
-
-<ul>
-<li>主节点 </li>
-<li>从节点</li>
-<li>sentinel节点</li>
-</ul>
-
-<h4>手动故障转移</h4>
-
-<ul>
-<li><img src="media/15677236146527/15678979994184.jpg" alt="" style="width:1165px;"/></li>
-</ul>
-
-<h4>节点上线</h4>
-
-<ul>
-<li>主节点：sentinel failover 进行替换。</li>
-<li>从节点：slaveofe 即可，sentinel 节点可以感知。</li>
-<li>sentinel 节点：参考其他 sentinel 节点启动即可。</li>
-</ul>
-
-<h4>从节点的作用</h4>
-
-<ul>
-<li>副本 高可用的基础</li>
-<li>扩展 读能力</li>
-</ul>
-
-<h4>三个消息</h4>
-
-<ul>
-<li>+ switch- master：切换主节点（从节点晋升主节点</li>
-<li>+ convert-to- slave：切换从节点（原主节点降为从节点）</li>
-<li>+ sdown：主观下线。</li>
-</ul>
-
-<h4>高可用读写分离</h4>
-
-<ul>
-<li><img src="media/15677236146527/15678982480394.jpg" alt="" style="width:951px;"/></li>
-</ul>
-
-<h4>总结</h4>
-
-<ul>
-<li>故障发现、故障自动转移、配置中心、客户端通知。</li>
-<li>Redis Sentinel 中的 Sentinel=节点个数应该为大于等于 3 且最好为奇数。</li>
-<li>Redis Sentinel 中的数据节点与普通数据节点没有区别</li>
-<li>客户端初始化时连接的是 Sentinel 节点集合，不再是具体的 Redis 节点，但 Sentinel 只是配置中心不是代理</li>
-<li>Redis Sentinel 通过三个定时任务实现了 Sentinel 节点对于主节点、从节点其余 Sentinel 节点的监控。</li>
-<li>Redis Sentinel 在对节点做失败判定时分为主观下线和客观下线。</li>
-<li>看懂 Redis Sentine 故障转移日志对于 Redis Sentinel 以及问题排查非常有帮助</li>
-<li>Redis Sentinels 实现读写分离高可用可以依赖 Sentinel 节点的消息通知，获取 Redis 数据节点的状态变化</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/06 06:46 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Redis%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A.html'>Redis从入门到精通</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
                 <a class="clearlink" href="15677204712236.html">
                 
                   <h1>Redis复制的原理和优化</h1>
@@ -1743,8 +1741,6 @@ $node2:6380 $node2:6381
         
             <a href="Django.html"><strong>Django</strong></a>
         
-            <a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html"><strong>C++设计模式实战</strong></a>
-        
             <a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html"><strong>深入剖析Kubernetes</strong></a>
         
             <a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html"><strong>数据结构和算法</strong></a>
@@ -1822,6 +1818,18 @@ $node2:6380 $node2:6381
 	      
 		      
 			      <li class="post">
+			        <a href="15818128782116.html">Singleton</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15748977610569.html">State</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817697569868.html">字符串分割</a>
 			      </li>
 		     
@@ -1834,19 +1842,7 @@ $node2:6380 $node2:6381
 		  
 		      
 			      <li class="post">
-			        <a href="15814649492497.html">Simple Factory</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814189410719.html">代码的可测试性</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814188057978.html">重构</a>
+			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

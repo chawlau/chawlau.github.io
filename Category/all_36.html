@@ -87,8 +87,6 @@
         
             <li><a href="Django.html">Django</a></li>
         
-            <li><a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html">C++设计模式实战</a></li>
-        
             <li><a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html">深入剖析Kubernetes</a></li>
         
             <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html">数据结构和算法</a></li>
@@ -172,278 +170,6 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15619632498634.html">
-                
-                  <h1>信号处理</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>处理方式</h4>
-
-<ul>
-<li>执行默认操作</li>
-<li>捕捉信号</li>
-<li>忽略信号</li>
-</ul>
-
-<h4>信号参数</h4>
-
-<ul>
-<li>SA_ONESHOT 只执行一次</li>
-<li>SA_NOMASK 信号会被打断</li>
-<li>SA_INTERRUPT 系统调用被信号中断就不再执行</li>
-<li>SA_RESTAT 系统调用被中断后重新启动</li>
-</ul>
-
-<h4>信号处理流程</h4>
-
-<ul>
-<li><img src="media/15619632498634/7cb86c73b9e73893e6b0e0433d476928.png" alt="7cb86c73b9e73893e6b0e0433d476928"/></li>
-</ul>
-
-<h4>信号发送</h4>
-
-<ul>
-<li>kill-&gt;kill_something_info-&gt;kill_pid_info-&gt;group_send_sig_info-&gt;do_send_sig_info</li>
-<li>tkill-&gt;do_tkill-&gt;do_send_specific-&gt;do_send_sig_info</li>
-<li>tgkill-&gt;do_tkill-&gt;do_send_specific-&gt;do_send_sig_info</li>
-<li>rt_sigqueueinfo-&gt;do_rt_sigqueueinfo-&gt;kill_proc_info-&gt;kill_pid_info-&gt;group_send_sig_info-&gt;do_send_sig_info</li>
-</ul>
-
-<h4>可靠信号和不可靠信号</h4>
-
-<ul>
-<li>小于32的为不可靠信号 放入集合</li>
-<li>大于32的为可靠信号 挂在struct sigpending链表上</li>
-</ul>
-
-<h4>信号发送和处理流程</h4>
-
-<ul>
-<li><img src="media/15619632498634/3dcb3366b11a3594b00805896b7731fb.png" alt="3dcb3366b11a3594b00805896b7731fb"/></li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/07/01 14:40 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15615969107866.html">
-                
-                  <h1>TCP/IP 定时器</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>种类</h4>
-
-<ul>
-<li> 重传定时器</li>
-<li> 坚持定时器</li>
-<li> 保活定时器</li>
-<li> 2MSL定时器</li>
-</ul>
-
-<h4>问题</h4>
-
-<ul>
-<li>多少个定时器</li>
-<li>tcp协议栈已经有保活机制，为什么在应用层还需要keeplive</li>
-<li>重传的超时如何设置</li>
-</ul>
-
-<h4>重传定时器</h4>
-
-<ul>
-<li>重传多少合适</li>
-<li>mtu=mss+tcphdr + iphdr</li>
-</ul>
-
-<h4>保活定时器</h4>
-
-<ul>
-<li>内核协议栈的keeplive回主动释放连接</li>
-<li>应用层做一层心跳包</li>
-</ul>
-
-<h4>timewait</h4>
-
-<ul>
-<li>保证对端释放掉fd</li>
-<li>保证发起方的ACK必须到达对端</li>
-</ul>
-
-<h4>单位</h4>
-
-<ul>
-<li>cwind， ssthresh, mss 单位统一</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/06/27 08:55 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15615915044903.html">
-                
-                  <h1>归并排序和快速排序</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>归并排序</h4>
-
-<pre class="line-numbers"><code class="language-text">void merge(vector&lt;int&gt;&amp; nums1, int m, vector&lt;int&gt;&amp; nums2, int n) {
-   for(int i=m-1, j=n-1, k=m+n-1; j&gt;=0; )
-       nums1[k--] = i&gt;=0 &amp;&amp; nums1[i]&gt;nums2[j]? nums1[i--]: nums2[j--];
-}
-</code></pre>
-
-<h4>快速排序</h4>
-
-<ul>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/06/27 07:25 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15613334266263.html">
-                
-                  <h1>TCP/IP的设计</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>TCP/IP问题</h4>
-
-<ul>
-<li>滑动窗口如何实现</li>
-<li>sk_buff是什么</li>
-<li>TCP_NODELAY设置,针对的是对端收到包的时候的ACK发送回来是立即发送还是延迟发送，</li>
-<li>epoll检测网络IO的时候，ET和LT如何判断</li>
-<li>服务器端出现大量close wait如何解决， 客户端大量close</li>
-<li><p>DDOS攻击 </p>
-<ul>
-<li>半连接队列越来越长，创建一些字节流结构体，导致内核协议栈数据不断变大，IO无法约束</li>
-<li>防火墙是等三次连接建立后才进行转发</li>
-<li>防火墙工作在ip层</li>
-<li>DDOS攻击tcp层</li>
-</ul></li>
-<li><p>发送和接收缓冲区设置为0会怎么样</p></li>
-<li><p>如何发送syn包 raw socket</p></li>
-<li><p>buffer一般设置多大比较合适 流数据2MB, 字节数据KB字节</p></li>
-</ul>
-
-<h4>C10M</h4>
-
-<ul>
-<li>10M连接</li>
-<li>响应时间</li>
-<li>10M增长速度</li>
-<li>吞吐量-&gt; 10M</li>
-</ul>
-
-<h4>网卡作用</h4>
-
-<ul>
-<li>模拟信号转数字信号</li>
-<li>数字信号送入内核网络协议栈</li>
-</ul>
-
-<h4>软件中断和硬中断</h4>
-
-<ul>
-<li>软中断由操作系统发起</li>
-<li>硬中断没有操作系统参与</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/06/24 07:43 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
                 <a class="clearlink" href="15612570572532.html">
                 
                   <h1>集群参数配置</h1>
@@ -490,33 +216,45 @@ zk1:2181/kafka1,zk2:2181/kafka2,zk3:2181/kafka3 error
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15612568475513.html">
+                <a class="clearlink" href="15621991352916.html">
                 
-                  <h1>kafka线上集群方案部署</h1>
+                  <h1>二分查找</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>磁盘容量</h4>
+                        	<h4>注意点</h4>
 
 <ul>
-<li>新增消息数</li>
-<li>消息留存时间</li>
-<li>平均消息大小</li>
-<li>备份数</li>
-<li>是否启用压缩</li>
+<li>循环退出条件  low &lt;= high</li>
+<li>mid的取值 low + (high - low) / 2 --&gt; low + ((high - low) &gt;&gt; 1) </li>
+<li>low 和 high的更新 low = mid + 1; high = mid -1</li>
 </ul>
 
-<h4>带宽</h4>
+<h4>查找第一个值等于给定值的元素</h4>
 
 <ul>
-<li>利用率70%</li>
-<li>留出2/3的资源</li>
+<li>边界处理好</li>
+<li>idx = 0 和 idx - 1 关系</li>
 </ul>
 
-<h4>参考</h4>
+<h4>查找最后一个值等于给定值的元素</h4>
 
-<p><img src="media/15612568475513/d2a926bc8f448f58bda0d21b7ed39f55.jpeg" alt="d2a926bc8f448f58bda0d21b7ed39f55"/></p>
+<ul>
+<li>idx = n - 1 和 idx + 1</li>
+</ul>
+
+<h4>查找第一个大于等于给定值</h4>
+
+<h4>通过IP定位归属地</h4>
+
+<ul>
+<li>预处理这 12 万条数据，让其按照起始 IP 从小到大排序</li>
+<li>查找最后一个小于等于给定元素的值</li>
+<li>循环不变量//TODO</li>
+<li>思路上做简单记忆</li>
+<li>整型溢出问题</li>
+</ul>
 
                         
                       </div>
@@ -525,7 +263,343 @@ zk1:2181/kafka1,zk2:2181/kafka2,zk3:2181/kafka3 error
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/06/23 10:27 上午</span>
+                    <span class="date">2019/07/04 08:12 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15638490173383.html">
+                
+                  <h1>算法思路</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>题目中的条件</h4>
+
+<ul>
+<li>设计O(nlogn)的算法 百万级和千万级</li>
+<li>无需考虑额外的空间</li>
+<li>数据规模大概是10000</li>
+</ul>
+
+<h4>没有思路</h4>
+
+<ul>
+<li>给几个简单的测试用例</li>
+<li>不要忽视暴力解法，暴力解法通常是思考的起点</li>
+<li>lecode3</li>
+<li>遍历常见的算法思路</li>
+<li>遍历常见的数据结构</li>
+<li>空间和时间的交换(哈希表)</li>
+<li>预处理信息</li>
+</ul>
+
+<h4>极端条件</h4>
+
+<ul>
+<li>数组为空</li>
+<li>字符串为空</li>
+<li>数量为0</li>
+<li>指针为NULL</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/07/23 10:30 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E7%8E%A9%E8%BD%AC%E7%AE%97%E6%B3%95.html'>玩转算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15638416239371.html">
+                
+                  <h1>项目经历</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>梳理</h4>
+
+<ul>
+<li>项目经历和项目中遇到的实际问题</li>
+<li>遇到的印象最深的bug是什么</li>
+<li>面向对象</li>
+<li>设计模式</li>
+<li>网络相关，安全相关，内存相关，并发相关</li>
+<li>系统设计 scalability</li>
+<li>参与项目至关重要</li>
+</ul>
+
+<h4>如何找到项目</h4>
+
+<ul>
+<li>自己做小应用: 计划表，备忘录，播放器</li>
+<li>自己解决问题： 爬虫, 数据分析，词频统计</li>
+<li>一本技术书籍的代码管理</li>
+<li>技术博客</li>
+</ul>
+
+<h4>思考方式</h4>
+
+<ul>
+<li>遇到的最大的挑战？犯过的错误？遭遇的失败？最享受的工作内容？遇到冲突的处理方式？做的最与众不同的事儿？</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/07/23 08:27 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E7%8E%A9%E8%BD%AC%E7%AE%97%E6%B3%95.html'>玩转算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15638402863944.html">
+                
+                  <h1>算法面试本质</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>本质</h4>
+
+<ul>
+<li>不代表能够“正确”回答每一个算法问题，但是合理的思考方向其实更重要</li>
+<li>正确完成算法面试问题的前提算法面试优秀不意味着技术面试优秀</li>
+<li>技术面试优秀不意味着能够拿到Offer</li>
+</ul>
+
+<h4>给出合理的思考路径</h4>
+
+<ul>
+<li>展示出思考问题的方式</li>
+<li>和面试官一起探讨一个问题的解决方案</li>
+<li>问题的细节和应用环境</li>
+<li>沟通本身很重要，暗示思考问题的方式</li>
+</ul>
+
+<h4>对一组数据进行排序</h4>
+
+<ul>
+<li>这组数据的具体的特征
+<ul>
+<li>是否包含大量重复的元素</li>
+<li>三路快排是更好的选择</li>
+</ul></li>
+<li>是否大部分数据距离离他正确的位置很近？是否近乎排序
+<ul>
+<li>插入排序</li>
+</ul></li>
+<li>取值范围非常有限，比如对学生成绩排序
+<ul>
+<li>计数排序</li>
+</ul></li>
+<li>额外排序
+<ul>
+<li>稳定排序</li>
+<li>归并排序</li>
+</ul></li>
+<li>数据的存储状况是怎样的
+<ul>
+<li>链标存储</li>
+<li>是否可以装载在内存中</li>
+</ul></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/07/23 08:04 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E7%8E%A9%E8%BD%AC%E7%AE%97%E6%B3%95.html'>玩转算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15637648287186.html">
+                
+                  <h1>堆排序</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>建立堆</h4>
+
+<ul>
+<li>后往前处理数组，并且每个数据都是从上往下堆化，非叶子结点每个元素都安置到应有的位置</li>
+<li>节点下标是i, 左子节点的下标是2<em>i+1,右子节点的下标是2</em>i+2, 父节点的下标就是(i-1)/2;<br/>
+#### 堆化</li>
+<li>下标从n/2到1的数据进行堆化，下表是n/2+1到n的节点是叶子结点，不需要堆化</li>
+</ul>
+
+<h4>堆排序和快速排序对比</h4>
+
+<ul>
+<li>第一点，堆排序数据访问的方式没有快速排序友好。</li>
+<li>第二点，对于同样的数据，在排序过程中，堆排序算法的数据交换次数要多于快速排序。</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/07/22 11:07 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15637624256812.html">
+                
+                  <h1>递归树</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/07/22 10:27 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15637018763027.html">
+                
+                  <h1>kafka无消息丢失配置</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>可靠性</h4>
+
+<ul>
+<li>Kafka 只对“已提交”的消息（committed message）做有限度的持久化保证</li>
+</ul>
+
+<h4>生产者</h4>
+
+<ul>
+<li>Producer 永远要使用带有回调通知的发送 API，也就是说不要使用 producer.send(msg)，而要使用 producer.send(msg, callback)</li>
+</ul>
+
+<h4>消费者</h4>
+
+<ul>
+<li>如果是多线程异步处理消费消息，Consumer 程序不要开启自动提交位移，而是要应用程序手动提交位移，需要消费未消费Consumer 程序自动地向前更新位移</li>
+</ul>
+
+<h4>配置</h4>
+
+<ul>
+<li>不要使用 producer.send(msg)，而要使用 producer.send(msg, callback)。记住，一定要使用带有回调通知的 send 方法。</li>
+<li>设置 acks = all。acks 是 Producer 的一个参数，代表了你对“已提交”消息的定义。如果设置成 all，则表明所有副本 Broker 都要接收到消息，该消息才算是“已提交”。这是最高等级的“已提交”定义。</li>
+<li>设置 retries 为一个较大的值。这里的 retries 同样是 Producer 的参数，对应前面提到的 Producer 自动重试。当出现网络的瞬时抖动时，消息发送可能会失败，此时配置了 retries &gt; 0 的 Producer 能够自动重试消息发送，避免消息丢失。</li>
+<li>设置 unclean.leader.election.enable = false。这是 Broker 端的参数，它控制的是哪些 Broker 有资格竞选分区的 Leader。如果一个 Broker 落后原先的 Leader 太多，那么它一旦成为新的 Leader，必然会造成消息的丢失。故一般都要将该参数设置成 false，即不允许这种情况的发生。</li>
+<li>设置 replication.factor &gt;= 3。这也是 Broker 端的参数。其实这里想表述的是，最好将消息多保存几份，毕竟目前防止消息丢失的主要机制就是冗余。</li>
+<li>设置 min.insync.replicas &gt; 1。这依然是 Broker 端参数，控制的是消息至少要被写入到多少个副本才算是提交”。设置成大于 1 可以提升消息持久性。在实际环境中千万不要使用默认值 1。</li>
+<li>确保 replication.factor &gt; min.insync.replicas。如果两者相等，那么只要有一个副本挂机，整个分区就无法正常工作了。我们不仅要改善消息的持久性，防止数据丢失，还要在不降低可用性的基础上完成。推荐设置成 replication.factor = min.insync.replicas + 1。</li>
+<li>确保消息消费完成再提交。Consumer 端有个参数 enable.auto.commit，最好把它设置成 false，并采用手动提交位移的方式。就像前面说的，这对于单 Consumer 多线程处理的场景而言是至关重要的。</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/07/21 17:37 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Kafka.html'>Kafka</a></span>
@@ -542,41 +616,155 @@ zk1:2181/kafka1,zk2:2181/kafka2,zk3:2181/kafka3 error
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15611602604286.html">
+                <a class="clearlink" href="15473472500656.html">
                 
-                  <h1>块设备</h1>
+                  <h1>mysql数据可靠性</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>块设备操作的内核组件</h4>
+                        	<h4>binlog写入机制</h4>
 
 <ul>
-<li><img src="media/15611602604286/15611610923345.jpg" alt=""/></li>
+<li>binlog cache 内存 --&gt; write page cache --&gt; fsync --&gt; binlog 磁盘</li>
+<li>sync_binlog=0, 只write, 不fsync</li>
+<li>sync_binlog=1, 每次提交事务都会fsync</li>
+<li>sync_binlog 累积N个事务才fsync, 会丢失N个事务的binlog日志</li>
 </ul>
 
-<h4>磁盘数据的典型构造</h4>
-
-<p><img src="media/15611602604286/15611614778298.jpg" alt="" style="width:846px;"/></p>
+<h4>redo log写入机制</h4>
 
 <ul>
-<li>硬件设备采用扇区管理数据</li>
-<li>虚拟文件系统和映射层和文件系统将数据放在块的逻辑单元，块对应文件系统的最小的磁盘存储单元</li>
-<li>块设备驱动程序能够处理数据的段，一个段就是一个内存页或者内存页的一部分</li>
-<li>磁盘高速度缓存位于数据的页中</li>
-<li>通用块层将所有的上层和下层的组件组合在一起，需要了解数据的扇区，块和页面</li>
+<li>三种状态</li>
+<li>redo log buffer 内存</li>
+<li>write--&gt;page cache</li>
+<li>hard disk 持久化到磁盘</li>
+<li>innodb_flush_log_at_trx_commit 0 buffer 1 磁盘 2 page_cache</li>
 </ul>
 
-<h4>设备</h4>
-
-<p><img src="media/15611602604286/3c473d163b6e90985d7301f115ab660e.jpeg" alt="3c473d163b6e90985d7301f115ab660e"/></p>
-
-<p><img src="media/15611602604286/c9f6a08075ba4eae3314523fa258363c.png" alt="c9f6a08075ba4eae3314523fa258363"/></p>
-
-<h4>段</h4>
+<h4>Mysql双一配置</h4>
 
 <ul>
-<li>不同的段在ram中对应的页框正好是连续的并且磁盘对应的数据块也是连续的，通用块层可以合并他们</li>
+<li> sync_binlog 和 innodb_flush_log_at_trx_commit 都设置成 1。也就是说，一个事务完整提交前，需要等待两次刷盘，一次是 redo log（prepare 阶段），一次是 binlog。</li>
+</ul>
+
+<h4>日志逻辑序列号</h4>
+
+<ul>
+<li>LSN</li>
+<li>多个事务刷盘采用组提交策略
+<img src="media/15473472500656/933fdc052c6339de2aa3bf3f65b188cc.png" alt="933fdc052c6339de2aa3bf3f65b188c"/></li>
+</ul>
+
+<h4>binlog 组提交</h4>
+
+<ul>
+<li>binlog_group_commit_sync_delay 参数，表示延迟多少微秒后才调用 fsync;</li>
+<li>binlog_group_commit_sync_no_delay_count 参数，表示累积多少次以后才调用 fsync。</li>
+</ul>
+
+<h4>WAL机制的优点</h4>
+
+<ul>
+<li>redo log和 binlog都是顺序写</li>
+<li>组提交机制</li>
+</ul>
+
+<h4>mysql出现IO性能瓶颈</h4>
+
+<ul>
+<li>设置 binlog_group_commit_sync_delay 和 binlog_group_commit_sync_no_delay_count 参数，减少 binlog 的写盘次数。这个方法是基于“额外的故意等待”来实现的，因此可能会增加语句的响应时间，但没有丢失数据的风险。</li>
+<li>将 sync_binlog 设置为大于 1 的值（比较常见是 100~1000）。这样做的风险是，主机掉电时会丢 binlog 日志。</li>
+<li>将 innodb_flush_log_at_trx_commit 设置为 2。这样做的风险是，主机掉电的时候会丢数据。 </li>
+</ul>
+
+<h4>两阶段提交的本质</h4>
+
+<ul>
+<li> redo log 的写入拆成了两个步骤：prepare 和 commit，这就是&quot;两阶段提交&quot;。</li>
+</ul>
+
+<h4>Binlog两种模式</h4>
+
+<ul>
+<li>statement 格式的话是记sql语句</li>
+<li>row格式会记录行的内容，记两条，更新前和更新后都有。</li>
+</ul>
+
+<h4>writepos和checkpoint</h4>
+
+<ul>
+<li>“空着的部分”，就是write pos 到3号文件末尾，再加上0号文件开头到checkpoint 的部分。可以写入新的事物日志
+<img src="media/15473472500656/b075250cad8d9f6c791a52b6a600f69c.jpg" alt="b075250cad8d9f6c791a52b6a600f69"/></li>
+</ul>
+
+<h4>事务奔溃恢复原则</h4>
+
+<ul>
+<li>如果 redo log 里面的事务是完整的，也就是已经有了 commit 标识，则直接提交；</li>
+<li>如果 redo log 里面的事务只有完整的 prepare，则判断对应的事务 binlog 是否存在并完整：<br/>
+a. 如果是，则提交事务；<br/>
+b. 否则，回滚事务。</li>
+</ul>
+
+<h4>sync_binlog</h4>
+
+<ul>
+<li>sync_binlog-&gt;binlog_group_commit_sync_no_delay_count </li>
+</ul>
+
+<h4>binlog cache 是每个线程自己维护的，而 redo log buffer 是全局共用的？</h4>
+
+<ul>
+<li>MySQL 这么设计的主要原因是，binlog 是不能“被打断的”。一个事务的 binlog 必须连续写，因此要整个事务完成后，再一起写到文件里。</li>
+<li>而 redo log 并没有这个要求，中间有生成的日志可以写到 redo log buffer 中。redo log buffer 中的内容还能“搭便车”，其他事务提交的时候可以被一起写到磁盘中。</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/01/13 10:40 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15486383451378.html">
+                
+                  <h1>Redis延迟高</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>strace</h4>
+
+<ul>
+<li>strace -f -T -tt -p pid</li>
+<li>-f 表示跟踪子进程和子线程，-T 表示显示系统调用的时长，-tt 表示显示跟踪时间</li>
+<li>PID=$(docker inspect --format {{.State.Pid}} app)</li>
+</ul>
+
+<h4>nsenter</h4>
+
+<ul>
+<li>nsenter --target $PID --net -- lsof -i</li>
+<li>进程iowait高，磁盘iowait不高，说明是单个进程使用了一些blocking的磁盘打开方式，比如每次都fsync</li>
+<li>strace -f -e指定系统调用</li>
 <li></li>
 </ul>
 
@@ -587,286 +775,10 @@ zk1:2181/kafka1,zk2:2181/kafka2,zk3:2181/kafka3 error
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/06/22 07:37 上午</span>
+                    <span class="date">2019/01/28 09:19 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15606789387565.html">
-                
-                  <h1>协程切换</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>问题</h4>
-
-<ul>
-<li>共享栈</li>
-</ul>
-
-<h5>线程池与协程对比</h5>
-
-<ul>
-<li>共享栈如何实现 Libgo-&gt;ucontext</li>
-<li>性能差不多，线程处理业务逻辑，协程处理网络IO</li>
-<li>协程抛出异常怎么处理 schedule中有全局，然后随着协程切换而切换</li>
-<li>Ucontext,setjmp/longjmp,register</li>
-<li>协程如何与进程结合</li>
-</ul>
-
-<h4>线程池和协程</h4>
-
-<ul>
-<li>协程处理网络IO的问题</li>
-<li>异步IO处理磁盘文件IO的问题</li>
-<li>线程池处理业务逻辑的问题</li>
-</ul>
-
-<h4>协程</h4>
-
-<ul>
-<li>一个协程对应多个IO</li>
-</ul>
-
-<h4>Ucontext</h4>
-
-<ul>
-<li><a href="https://blog.csdn.net/qq910894904/article/details/41911175">https://blog.csdn.net/qq910894904/article/details/41911175</a></li>
-</ul>
-
-<h4>切换原语</h4>
-
-<ul>
-<li>Create</li>
-<li>Free</li>
-<li>Yield</li>
-<li>Resume</li>
-<li>sched_key_once</li>
-</ul>
-
-<h4>拓展阅读</h4>
-
-<ul>
-<li>libgo</li>
-<li>uconext</li>
-<li>函数栈帧的文章</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/06/16 17:55 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15606472792037.html">
-                
-                  <h1>协程调度器</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>协程调度器</h4>
-
-<ul>
-<li>libevent维护fd状态</li>
-<li>每个线程需要维护epollfd的状态</li>
-</ul>
-
-<h4>惊群</h4>
-
-<ul>
-<li>accept</li>
-<li>epoll_wait惊群</li>
-</ul>
-
-<h4>流程</h4>
-
-<ul>
-<li>create</li>
-<li>free</li>
-<li>yield</li>
-<li>resume</li>
-</ul>
-
-<h4>Poll_inner实现</h4>
-
-<ul>
-<li>将Pollfd添加到Epoll中</li>
-<li>让出CPU，切换上下文--&gt;upper 切换给schduel来统一执行</li>
-<li>将Epoll删除Pollfd--&gt;lower</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Int nSend(int sockfd, char *buffer, int length) {
-
-    int result = poll(&amp;pfd, 1, 1);
-    if (pfd.revents &amp; POLLRDHUP) {
-        return idx;
-    }
-    
-    return send(sockfd, buffer, length, 0);
-}
-
-Int nRecv(int sockfd, char *buffer, int length) {
-
-    int result = poll(&amp;pfd, 1, 1);
-    if (pfd.revents &amp; POLLRDHUP) {
-        return idx;
-    }
-    
-    return recv(sockfd, buffer, length, 0);
-}
-</code></pre>
-
-<h4>调度器</h4>
-
-<pre class="line-numbers"><code class="language-cpp">Int nSend(int sockfd, char *buffer, int length) {
-
-    int result = poll(&amp;pfd, 1, 1);
-    if (pfd.revents &amp; POLLRDHUP) {
-        return idx;
-    }
-    
-    return send(sockfd, buffer, length, 0);
-}
-
-Int nSend(int sockfd, char *buffer, int length) {
-
-    int result = poll_inner(&amp;pfd, 1, 1);
-    if (pfd.revents &amp; POLLRDHUP) {
-        return idx;
-    }
-    
-    return send(sockfd, buffer, length, 0);
-}
-
-</code></pre>
-
-<p><img src="media/15606472792037/15706767381701.jpg" alt="" style="width:676px;"/></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/06/16 09:07 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15605942368306.html">
-                
-                  <h1>协程</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>问题</h4>
-
-<ul>
-<li>libgo C++</li>
-<li>异步哪些调用复杂</li>
-<li>为什么要做成上下文保存的方式</li>
-<li>同步与异步的性能差？</li>
-<li>什么场景用协程好，什么场景用线程好</li>
-<li>协程相比对系统线程性能提升在哪里</li>
-</ul>
-
-<h4>新东西</h4>
-
-<ul>
-<li>是什么</li>
-<li>为什么</li>
-<li>怎么用</li>
-<li>什么时候用</li>
-<li>在哪里用</li>
-</ul>
-
-<h4>异步编程复杂性</h4>
-
-<ul>
-<li>需要时刻关注IO</li>
-<li>每个子线程需要维护ep_fd和sockfd的状态</li>
-<li>当子线程send或者recv的时候，对端发生关闭的操作，对send和recv要做相应的处理</li>
-<li>EPOLLONESHOT</li>
-<li>线程维护fd的状态集</li>
-</ul>
-
-<h4>协程</h4>
-
-<ul>
-<li>异步封装成同步的编程方式</li>
-<li>accept-&gt;async_accept</li>
-<li>recv-&gt;async_recv</li>
-<li>send-&gt;async_sned</li>
-<li>实现自己的网络接口</li>
-<li>send跟mtu没有关系</li>
-<li>需要自己定义堆栈，对内存消耗比较大</li>
-</ul>
-
-<h4>poll&amp;send</h4>
-
-<ul>
-<li>inner_poll保存上下文同时切换上下文</li>
-<li>accept/send/poll都用一个poll</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/06/15 18:23 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
+          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -940,8 +852,6 @@ Int nSend(int sockfd, char *buffer, int length) {
             <a href="Golang.html"><strong>Golang</strong></a>
         
             <a href="Django.html"><strong>Django</strong></a>
-        
-            <a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html"><strong>C++设计模式实战</strong></a>
         
             <a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html"><strong>深入剖析Kubernetes</strong></a>
         
@@ -1020,6 +930,18 @@ Int nSend(int sockfd, char *buffer, int length) {
 	      
 		      
 			      <li class="post">
+			        <a href="15818128782116.html">Singleton</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15748977610569.html">State</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817697569868.html">字符串分割</a>
 			      </li>
 		     
@@ -1032,19 +954,7 @@ Int nSend(int sockfd, char *buffer, int length) {
 		  
 		      
 			      <li class="post">
-			        <a href="15814649492497.html">Simple Factory</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814189410719.html">代码的可测试性</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814188057978.html">重构</a>
+			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

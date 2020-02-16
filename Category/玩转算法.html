@@ -87,8 +87,6 @@
         
             <li><a href="Django.html">Django</a></li>
         
-            <li><a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html">C++设计模式实战</a></li>
-        
             <li><a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html">深入剖析Kubernetes</a></li>
         
             <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html">数据结构和算法</a></li>
@@ -172,34 +170,392 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15682514641307.html">
+                <a class="clearlink" href="15638499426579.html">
                 
-                  <h1>贪心算法</h1>
+                  <h1>数组问题</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>实现</h4>
-
-<ul>
-<li>leet_455</li>
-<li><img src="media/15682514641307/15682518263627.jpg" alt="" style="width:614px;"/></li>
-<li>leet_392</li>
+                        	<ul>
+<li>排序: 选择排序 插入排序 归并排序 快速排序</li>
 </ul>
 
-<h4>贪心和动态规划</h4>
+<h4>题目</h4>
 
 <ul>
-<li>leet_435</li>
-<li><img src="media/15682514641307/15682540246962.jpg" alt="" style="width:939px;"/></li>
+<li>leetcode 283</li>
 </ul>
 
-<h4>贪心选择性质</h4>
+<pre class="line-numbers"><code class="language-cpp">Given an array nums, write a function to move all 0&#39;s to the end of it while maintaining the relative order of the non-zero elements.
+
+For example, given nums = [0, 1, 0, 3, 12], after calling your function, nums should be [1, 3, 12, 0, 0].
+
+Note:
+
+You must do this in-place without making a copy of the array.
+Minimize the total number of operations.
+class Solution {
+public:
+    void moveZeroes(vector&lt;int&gt;&amp; nums) {
+        for (int i = 0, j = 0; i &lt; nums.size(); ++i) {
+            if (nums[i]) {
+                swap(nums[i], nums[j++]);
+            }
+        }
+    }
+};
+</code></pre>
 
 <ul>
-<li>如果无法使用贪心算法，举出反例</li>
-<li>如何证明贪心算法的正确性</li>
-<li></li>
+<li>k [0,k) 保存所有遍历过的非0元素</li>
+</ul>
+
+<h4>code</h4>
+
+<ul>
+<li>给定一个数组nums和一个数组val，将数组中所有等于val的元素删除，返回剩余的元素个数</li>
+<li>leetcode26</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a sorted array  nums , remove the duplicates in-place such that each element appear only  once  and return the new length.
+
+Do not allocate extra space for another array, you must do this by modifying the input array in-place with O(1) extra memory.
+
+Example 1:
+
+Given _nums_ = [1,1,2],
+
+Your function should return length = 2, with the first two elements of _nums_ being 1 and 2 respectively.
+
+It doesn&#39;t matter what you leave beyond the returned length.
+class Solution {
+public:
+    int removeDuplicates(vector&lt;int&gt;&amp; nums) {
+        int j = 0, n = nums.size();
+        for (int i = 0; i &lt; n; ++i) {
+            if (nums[i] != nums[j]) nums[++j] = nums[i];
+        }
+        return nums.empty() ? 0 : (j + 1);
+    }
+};
+</code></pre>
+
+<ul>
+<li>leetcode27</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given an array  nums  and a value  val , remove all instances of that value in-place and return the new length.
+
+Do not allocate extra space for another array, you must do this by modifying the input array in-place with O(1) extra memory.
+
+The order of elements can be changed. It doesn&#39;t matter what you leave beyond the new length.
+
+Example 1:
+
+Given _nums_ = [3,2,2,3], _val_ = 3,
+
+Your function should return length = 2, with the first two elements of _nums_ being 2.
+
+It doesn&#39;t matter what you leave beyond the returned length.
+class Solution {
+public:
+    int removeElement(vector&lt;int&gt;&amp; nums, int val) {
+        int res = 0;
+        for (int i = 0; i &lt; nums.size(); ++i) {
+            if (nums[i] != val) nums[res++] = nums[i];
+        }
+        return res;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leetcode80</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a sorted array  nums , remove the duplicates in-place such that duplicates appeared at most  twice  and return the new length.
+
+Do not allocate extra space for another array, you must do this by modifying the input array in-place with O(1) extra memory.
+
+Example 1:
+
+Given _nums_ = [1,1,1,2,2,3],
+
+Your function should return length = 5, with the first five elements of _nums_ being 1, 1, 2, 2 and 3 respectively.
+
+It doesn&#39;t matter what you leave beyond the returned length.
+class Solution {
+public:
+    int removeDuplicates(vector&lt;int&gt;&amp; nums) {
+        int pre = 0, cur = 1, cnt = 1, n = nums.size();
+        while (cur &lt; n) {
+            if (nums[pre] == nums[cur] &amp;&amp; cnt == 0) ++cur;
+            else {
+                if (nums[pre] == nums[cur]) --cnt;
+                else cnt = 1;
+                nums[++pre] = nums[cur++];
+            }
+        }
+        return nums.empty() ? 0 : pre + 1;
+    }
+};
+class Solution {
+public:
+    int removeDuplicates(vector&lt;int&gt;&amp; nums) {
+        int i = 0;
+        for (int num : nums) {
+            if (i &lt; 2 || num &gt; nums[i - 2]) {
+                nums[i++] = num;
+            }
+        }
+        return i;
+    }
+};
+</code></pre>
+
+<h4>Sort Colors</h4>
+
+<ul>
+<li>leet_code75</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given an array with  n  objects colored red, white or blue, sort them in-place so that objects of the same color are adjacent, with the colors in the order red, white and blue.
+
+Here, we will use the integers 0, 1, and 2 to represent the color red, white, and blue respectively.
+
+Note: You are not suppose to use the library&#39;s sort function for this problem.
+
+Example:
+
+Input: [2,0,2,1,1,0]
+Output: [0,0,1,1,2,2]
+class Solution {
+public:
+    void sortColors(vector&lt;int&gt;&amp; nums) {
+        int red = 0, blue = (int)nums.size() - 1;
+        for (int i = 0; i &lt;= blue; ++i) {
+            if (nums[i] == 0) {
+                swap(nums[i], nums[red++]);
+            } else if (nums[i] == 2) {
+                swap(nums[i--], nums[blue--]);
+            } 
+        }
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_code88</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given two sorted integer arrays  nums1  and  nums2 , merge  nums2  into  nums1  as one sorted array.
+
+Note:
+
+The number of elements initialized in  nums1 and  nums2  are  m  and  n  respectively.
+You may assume that  nums1  has enough space (size that is greater or equal to  m  +  n ) to hold additional elements from  nums2.
+Example:
+
+Input:
+nums1 = [1,2,3,0,0,0], m = 3
+nums2 = [2,5,6],       n = 3
+
+Output: [1,2,2,3,5,6]
+class Solution {
+public:
+    void merge(vector&lt;int&gt;&amp; nums1, int m, vector&lt;int&gt;&amp; nums2, int n) {
+        int i = m - 1, j = n - 1, k = m + n - 1;
+        while (i &gt;= 0 &amp;&amp; j &gt;= 0) {
+            if (nums1[i] &gt; nums2[j]) nums1[k--] = nums1[i--];
+            else nums1[k--] = nums2[j--];
+        }
+        while (j &gt;= 0) nums1[k--] = nums2[j--];
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_code215</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Find the kth largest element in an unsorted array. Note that it is the kth largest element in the sorted order, not the kth distinct element.
+
+Example 1:
+
+Input: [3,2,1,5,6,4] and k = 2
+Output: 5
+class Solution {
+public:
+  int findKthLargest(vector&lt;int&gt;&amp; nums, int k) {
+    int left = 0, right = nums.size() - 1;
+    k = nums.size() - k;
+    while (left &lt;= right) {
+      int pos = partition(nums, left, right);
+      if (pos == k) return nums[pos];
+      else if (pos &gt; k) right = pos - 1;
+      else left = pos + 1;
+    }
+    return -1;
+  }
+
+  int partition(vector&lt;int&gt;&amp; nums, int left, int right) {
+    int val = nums[left], j = left;
+    for (int i = left + 1; i &lt;= right; i++) {
+      if (nums[i] &lt; val)  swap(nums[++j], nums[i]);
+    }
+    swap(nums[j], nums[left]);
+    return j;
+  }
+};
+</code></pre>
+
+<h4>two_sum</h4>
+
+<ul>
+<li>leet_125</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a string, determine if it is a palindrome, considering only alphanumeric characters and ignoring cases.
+
+For example,
+&quot;A man, a plan, a canal: Panama&quot; is a palindrome.
+&quot;race a car&quot; is not a palindrome
+//判断大小写等价if ((s[left] + 32 - &#39;a&#39;) %32 != (s[right] + 32 - &#39;a&#39;) % 32)
+class Solution {
+public:
+    bool isPalindrome(string s) {
+        int left = 0, right = s.size() - 1 ;
+        while (left &lt; right) {
+            if (!isAlphaNum(s[left])) ++left;
+            else if (!isAlphaNum(s[right])) --right;
+            else if ((s[left] + 32 - &#39;a&#39;) %32 != (s[right] + 32 - &#39;a&#39;) % 32) return false; 
+            else {
+                ++left; --right;
+            }
+        }
+        return true;
+    }
+    bool isAlphaNum(char &amp;ch) {
+        if (ch &gt;= &#39;a&#39; &amp;&amp; ch &lt;= &#39;z&#39;) return true;
+        if (ch &gt;= &#39;A&#39; &amp;&amp; ch &lt;= &#39;Z&#39;) return true;
+        if (ch &gt;= &#39;0&#39; &amp;&amp; ch &lt;= &#39;9&#39;) return true;
+        return false;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_344</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">字符串反转
+class Solution {
+public:
+    void reverseString(vector&lt;char&gt;&amp; s) {
+      int left = 0, right = s.size() - 1;
+      while (left &lt; right) {
+        swap(s[left++], s[right--]);
+      }
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_345</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Write a function that takes a string as input and reverse only the vowels of a string.
+
+Example 1:
+Given s = &quot;hello&quot;, return &quot;holle&quot;.
+
+Example 2:
+Given s = &quot;leetcode&quot;, return &quot;leotcede&quot;.
+class Solution {
+public:
+    string reverseVowels(string s) {
+        int left = 0, right= s.size() - 1;
+        while (left &lt; right) {
+            if (isVowel(s[left]) &amp;&amp; isVowel(s[right])) {
+                swap(s[left++], s[right--]);
+            } else if (isVowel(s[left])) {
+                --right;
+            } else {
+                ++left;
+            }
+        }
+        return s;
+    }
+    bool isVowel(char c) {
+        return c == &#39;a&#39; || c == &#39;e&#39; || c == &#39;i&#39; || c == &#39;o&#39; || c == &#39;u&#39; || c == &#39;A&#39; || c == &#39;E&#39; || c == &#39;I&#39; || c == &#39;O&#39; || c == &#39;U&#39;;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_11</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given n non-negative integers a1, a2, ..., an , where each represents a point at coordinate (i, ai). n vertical lines are drawn such that the two endpoints of line i is at (i, ai) and (i, 0). Find two lines, which together with x-axis forms a container, such that the container contains the most water.
+class Solution {
+public:
+    int maxArea(vector&lt;int&gt;&amp; height) {
+      int i = 0, j = height.size() - 1;
+      int res = 0;
+      while (i &lt; j) {
+        res = max(res, min(height[i], height[j]) * (j - i));
+        height[i] &lt; height[j] ? i++ : j--;
+      }
+      return res;
+    }
+};
+</code></pre>
+
+<h4>双索引技术</h4>
+
+<ul>
+<li>滑动窗口</li>
+<li>leet_209 暴力解法优化到O(n2) //TODO</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given an array of n positive integers and a positive integer s, find the minimal length of a contiguous subarray of which the sum ≥ s. If there isn&#39;t one, return 0 instead.
+
+Example: 
+
+Input: s = 7, nums = [2,3,1,2,4,3]
+Output: 2
+Explanation: the subarray [4,3] has the minimal length under the problem constraint.
+class Solution {
+  public:
+  int minSubArrayLen(int s, vector&lt;int&gt;&amp; nums) {
+    int l = 0, r = -1, sum = 0;
+
+    int  res = nums.size() + 1; //有可能是整个数组之和等于s
+
+    while (l &lt; nums.size()) {
+      if (r + 1 &lt; nums.size() &amp;&amp; sum &lt; s)
+        sum += nums[++r];
+      else
+        sum -= nums[l++];
+
+      if (sum &gt;= s)
+        res = min(res, r -l +1);
+    }
+
+    if (res == nums.size() + 1)
+      return 0;
+
+    return res;
+  }
+};
+</code></pre>
+
+<ul>
+<li>leet_3 字符集？ 只有字母?  字母 + 数字 ? ASCII 大小写是否敏感</li>
+<li>leet_438 字符集范围 英文小写字母 返回的解的顺序</li>
+<li>leet_76 字符范围 没有解 多个解 </li>
+<li>字符包含 Input: S = &quot;ADOBECODEBANC&quot;, T = &quot;ABC&quot; Output: &quot;BANC&quot;</li>
 </ul>
 
                         
@@ -209,7 +565,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/09/12 09:24 上午</span>
+                    <span class="date">2019/07/23 10:45 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E7%8E%A9%E8%BD%AC%E7%AE%97%E6%B3%95.html'>玩转算法</a></span>
@@ -226,109 +582,741 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15676462008800.html">
+                <a class="clearlink" href="15647133717861.html">
                 
-                  <h1>动态规划</h1>
+                  <h1>查找表</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>记忆化搜索</h4>
+                        	<h4>两类</h4>
 
 <ul>
-<li>递归是自上向下</li>
+<li>查找有无</li>
+<li>查找对应关系</li>
+<li>有序和查找是关联</li>
+<li>如果数组有序</li>
+<li>leet_349</li>
 </ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given two arrays, write a function to compute their intersection.
+class Solution {
+public:
+    vector&lt;int&gt; intersection(vector&lt;int&gt;&amp; nums1, vector&lt;int&gt;&amp; nums2) {
+        set&lt;int&gt; s(nums1.begin(), nums1.end()), res;
+        for (auto a : nums2) {
+            if (s.count(a)) res.insert(a);
+        }
+        return vector&lt;int&gt;(res.begin(), res.end());
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_350</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given two arrays, write a function to compute their intersection.
+
+Example 1:
+
+Input: nums1 = [1,2,2,1], nums2 = [2,2]
+Output: [2,2]
+class Solution {
+public:
+    vector&lt;int&gt; intersect(vector&lt;int&gt;&amp; nums1, vector&lt;int&gt;&amp; nums2) {
+        unordered_map&lt;int, int&gt; m;
+        vector&lt;int&gt; res;
+        for (auto a : nums1) ++m[a];
+        for (auto a : nums2) {
+            if (m[a]-- &gt; 0) res.push_back(a);
+        }
+        return res;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_242</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">For example,
+s = &quot;anagram&quot;, t = &quot;nagaram&quot;, return true.
+s = &quot;rat&quot;, t = &quot;car&quot;, return false.
+
+class Solution {
+public:
+    bool isAnagram(string s, string t) {
+        if (s.size() != t.size()) return false;
+        int m[26] = {0};
+        for (int i = 0; i &lt; s.size(); ++i) ++m[s[i] - &#39;a&#39;];
+        for (int i = 0; i &lt; t.size(); ++i) {
+            if (--m[t[i] - &#39;a&#39;] &lt; 0) return false;
+        }
+        return true;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_202</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Write an algorithm to determine if a number is &quot;happy&quot;.
+
+A happy number is a number defined by the following process: Starting with any positive integer, replace the number by the sum of the squares of its digits, and repeat the process until the number equals 1 (where it will stay), or it loops endlessly in a cycle which does not include 1. Those numbers for which this process ends in 1 are happy numbers.
+
+Example: 
+
+Input: 19
+Output: true
+Explanation: 
+1^2 + 9^2 = 82
+8^2 + 2^2 = 68
+6^2 + 8^2 = 100
+1^2 + 0^2 + 0^2 = 1
+class Solution {
+public:
+    bool isHappy(int n) {
+        while (n != 1 &amp;&amp; n != 4) {
+            int sum = 0;
+            while (n) {
+                sum += (n % 10) * (n % 10);
+                n /= 10;
+            }
+            n = sum;
+        }
+        return n == 1;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_290</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a pattern and a string str, find if str follows the same pattern.
+
+Here follow means a full match, such that there is a bijection between a letter in pattern and a non-empty word in str.
+
+Example 1:
+
+Input: pattern = &quot;abba&quot;, str = &quot;dog cat cat dog&quot;
+Output: true
+Example 2:
+
+Input:pattern = &quot;abba&quot;, str = &quot;dog cat cat fish&quot;
+Output: false
+class Solution {
+public:
+    bool wordPattern(string pattern, string str) {
+        unordered_map&lt;char, int&gt; m1;
+        unordered_map&lt;string, int&gt; m2;
+        istringstream in(str);
+        int i = 0, n = pattern.size();
+        for (string word; in &gt;&gt; word; ++i) {
+            if (i == n || m1[pattern[i]] != m2[word]) return false;
+            m1[pattern[i]] = m2[word] = i + 1;
+        }
+        return i == n;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_205</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given two strings  s  and  t , determine if they are isomorphic.
+
+Two strings are isomorphic if the characters in  s  can be replaced to get  t.
+
+All occurrences of a character must be replaced with another character while preserving the order of characters. No two characters may map to the same character but a character may map to itself.
+
+Example 1:
+
+Input: _s_ = &quot;egg&quot;, _t =_&quot;add&quot;
+Output: true
+class Solution {
+public:
+    bool isIsomorphic(string s, string t) {
+        int m1[256] = {0}, m2[256] = {0}, n = s.size();
+        for (int i = 0; i &lt; n; ++i) {
+            if (m1[s[i]] != m2[t[i]]) return false;
+            m1[s[i]] = i + 1;
+            m2[t[i]] = i + 1;
+        }
+        return true;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_451</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Input:
+&quot;tree&quot;
+
+Output:
+&quot;eert&quot;
+
+Explanation:
+&#39;e&#39; appears twice while &#39;r&#39; and &#39;t&#39; both appear once.
+So &#39;e&#39; must appear before both &#39;r&#39; and &#39;t&#39;. Therefore &quot;eetr&quot; is also a valid answer.
+class Solution {
+public:
+    string frequencySort(string s) {
+        string res;
+        vector&lt;string&gt; v(s.size() + 1);
+        unordered_map&lt;char, int&gt; m;
+        for (char c : s) ++m[c];
+        for (auto &amp;a : m) {
+            v[a.second].append(a.second, a.first);
+        }
+        for (int i = s.size(); i &gt; 0; --i) {
+            if (!v[i].empty()) res.append(v[i]);
+        }
+        return res;
+    }
+};
+</code></pre>
+
+<h4>两数求和</h4>
+
+<ul>
+<li>leet_1 排序后,双索引对撞</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">class Solution {
+public:
+    vector&lt;int&gt; twoSum(vector&lt;int&gt;&amp; nums, int target) {
+        unordered_map&lt;int, int&gt; m;
+        for (int i = 0; i &lt; nums.size(); ++i) {
+            if (m.count(target - nums[i])) {
+                return {i, m[target - nums[i]]};
+            }
+            m[nums[i]] = i;
+        }
+        return {};
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_15</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given an array  S  of  n  integers, are there elements  a ,  b ,  c  in  S  such that  a  +  b  +  c  = 0? Find all unique triplets in the array which gives the sum of zero.
+
+Note:
+
+Elements in a triplet ( a , b , c ) must be in non-descending order. (ie,  a  ≤  b  ≤  c )
+The solution set must not contain duplicate triplets.
+ 
+
+    For example, given array S = {-1 0 1 2 -1 -4},
+
+    A solution set is:
+    (-1, 0, 1)
+    (-1, -1, 2)
+class Solution {
+public:
+    vector&lt;vector&lt;int&gt;&gt; threeSum(vector&lt;int&gt;&amp; nums) {
+        vector&lt;vector&lt;int&gt;&gt; res;
+        sort(nums.begin(), nums.end());
+        if (nums.empty() || nums.back() &lt; 0 || nums.front() &gt; 0) return {};
+        for (int k = 0; k &lt; (int)nums.size() - 2; ++k) {
+            if (nums[k] &gt; 0) break;
+            if (k &gt; 0 &amp;&amp; nums[k] == nums[k - 1]) continue;
+            int target = 0 - nums[k], i = k + 1, j = (int)nums.size() - 1;
+            while (i &lt; j) {
+                if (nums[i] + nums[j] == target) {
+                    res.push_back({nums[k], nums[i], nums[j]});
+                    while (i &lt; j &amp;&amp; nums[i] == nums[i + 1]) ++i;
+                    while (i &lt; j &amp;&amp; nums[j] == nums[j - 1]) --j;
+                    ++i; --j;
+                } else if (nums[i] + nums[j] &lt; target) ++i;
+                else --j;
+            }
+        }
+        return res;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_18</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given an array S of n integers, are there elements a , b , c , and d in S such that a + b + c + d = target? Find all unique quadruplets in the array which gives the sum of target.
+
+Note:
+
+Elements in a quadruplet ( a , b , c , d ) must be in non-descending order. (ie, a ≤ b ≤ c ≤ d )
+
+The solution set must not contain duplicate quadruplets.
+
+For example, given array S = {1 0 -1 0 -2 2}, and target = 0.
+
+A solution set is:
+(-1,  0, 0, 1)
+(-2, -1, 1, 2)
+(-2,  0, 0, 2)
+class Solution {
+public:
+    vector&lt;vector&lt;int&gt;&gt; fourSum(vector&lt;int&gt; &amp;nums, int target) {
+        vector&lt;vector&lt;int&gt;&gt; res;
+        int n = nums.size();
+        sort(nums.begin(), nums.end());
+        for (int i = 0; i &lt; n - 3; ++i) {
+            if (i &gt; 0 &amp;&amp; nums[i] == nums[i - 1]) continue;
+            for (int j = i + 1; j &lt; n - 2; ++j) {
+                if (j &gt; i + 1 &amp;&amp; nums[j] == nums[j - 1]) continue;
+                int left = j + 1, right = n - 1;
+                while (left &lt; right) {
+                    int sum = nums[i] + nums[j] + nums[left] + nums[right];
+                    if (sum == target) {
+                        vector&lt;int&gt; out{nums[i], nums[j], nums[left], nums[right]};
+                        res.push_back(out);
+                        while (left &lt; right &amp;&amp; nums[left] == nums[left + 1]) ++left;
+                        while (left &lt; right &amp;&amp; nums[right] == nums[right - 1]) --right;
+                        ++left; --right;
+                    } else if (sum &lt; target) ++left;
+                    else --right;
+                }
+            }
+        }
+        return res;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_16</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given array nums = [-1, 2, 1, -4], and target = 1.
+The sum that is closest to the target is 2. (-1 + 2 + 1 = 2).
+class Solution {
+public:
+    int threeSumClosest(vector&lt;int&gt;&amp; nums, int target) {
+        int closest = nums[0] + nums[1] + nums[2];
+        int diff = abs(closest - target);
+        sort(nums.begin(), nums.end());
+        for (int i = 0; i &lt; nums.size() - 2; ++i) {
+            int left = i + 1, right = nums.size() - 1;
+            while (left &lt; right) {
+                int sum = nums[i] + nums[left] + nums[right];
+                int newDiff = abs(sum - target);
+                if (diff &gt; newDiff) {
+                    diff = newDiff;
+                    closest = sum;
+                }
+                if (sum &lt; target) ++left;
+                else --right;
+            }
+        }
+        return closest;
+    }
+};
+</code></pre>
 
 <h4>动态规划</h4>
 
 <ul>
-<li>自下而上的解决问题</li>
-<li>将原问题拆解成若干子问题，保存子问题的答案，使得每个子问题都只求解一次</li>
-<li>递归问题-&gt;重叠子问题-&gt;</li>
-<li>leet_120</li>
-<li>leet_64 没有非负整数， 没有限制条件</li>
-<li>leet_343 回溯</li>
-<li><img src="media/15676462008800/15680798276938.jpg" alt="" style="width:1006px;"/></li>
-<li><img src="media/15676462008800/15680799034216.jpg" alt="" style="width:996px;"/></li>
-<li>leet_279</li>
-<li><img src="media/15676462008800/15680822078106.jpg" alt="" style="width:1149px;"/></li>
-<li>leet_79</li>
-<li>leet_62</li>
-<li>leet_63</li>
+<li>leet120 Triangle</li>
 </ul>
 
-<h4>leet_198</h4>
+<pre class="line-numbers"><code class="language-cpp">class Solution {
+public:
+    int minimumTotal(vector&lt;vector&lt;int&gt;&gt;&amp; triangle) {
+        vector&lt;int&gt; dp(triangle.back());
+        for (int i = (int)triangle.size() - 2; i &gt;= 0; --i) {
+            for (int j = 0; j &lt;= i; ++j) {
+                dp[j] = min(dp[j], dp[j + 1]) + triangle[i][j];
+            }
+        }
+        return dp[0];
+    }
+};
+</code></pre>
 
 <ul>
-<li><img src="media/15676462008800/15676509845611.jpg" alt="" style="width:1066px;"/></li>
-<li><img src="media/15676462008800/15676510940203.jpg" alt="" style="width:1166px;"/></li>
-<li>状态定义和状态转移一定要搞懂</li>
-<li><img src="media/15676462008800/15676523958822.jpg" alt="" style="width:922px;"/></li>
-<li>使用新的状态定义</li>
-<li>leet_213</li>
-<li>leet_337</li>
-<li>leet_309</li>
+<li>leet64 minium path sum</li>
 </ul>
 
-<h4>0-1背包问题</h4>
+<pre class="line-numbers"><code class="language-cpp">Given a m x n grid filled with non-negative numbers, find a path from top left to bottom right which minimizes the sum of all numbers along its path.
+
+Note: You can only move either down or right at any point in time.
+
+Example:
+
+Input:
+[
+  [1,3,1],
+  [1,5,1],
+  [4,2,1]
+]
+Output: 7
+Explanation: Because the path 1→3→1→1→1 minimizes the sum.
+class Solution {
+public:
+    int minPathSum(vector&lt;vector&lt;int&gt; &gt; &amp;grid) {
+        int m = grid.size(), n = grid[0].size();
+        int dp[m][n];
+        dp[0][0] = grid[0][0];
+        for (int i = 1; i &lt; m; ++i) dp[i][0] = grid[i][0] + dp[i - 1][0];
+        for (int i = 1; i &lt; n; ++i) dp[0][i] = grid[0][i] + dp[0][i - 1];
+        for (int i = 1; i &lt; m; ++i) {
+            for (int j = 1; j &lt; n; ++j) {
+                dp[i][j] = grid[i][j] + min(dp[i - 1][j], dp[i][j - 1]);
+            }
+        }
+        return dp[m - 1][n - 1];
+    }
+};
+</code></pre>
 
 <ul>
-<li>O(2<sup>n*n)</sup></li>
-<li>贪心算法</li>
-<li><img src="media/15676462008800/15679064880244.jpg" alt="" style="width:976px;"/></li>
-<li>自顶向下 递归</li>
-<li>自底向上 动态规划</li>
-<li>背包问题优化</li>
-<li><img src="media/15676462008800/15679083241737.jpg" alt="" style="width:1001px;"/></li>
+<li>leet343 integer break</li>
 </ul>
 
-<h4>背包问题</h4>
+<pre class="line-numbers"><code class="language-cpp">Given a positive integer  n , break it into the sum of at least two positive integers and maximize the product of those integers. Return the maximum product you can get.
+
+Example 1:
+
+Input: 2
+Output: 1
+Explanation: 2 = 1 + 1, 1 × 1 = 1.
+class Solution {
+public:
+    int integerBreak(int n) {
+        vector&lt;int&gt; dp(n + 1, 1);
+        for (int i = 3; i &lt;= n; ++i) {
+            for (int j = 1; j &lt; i; ++j) {
+                dp[i] = max(dp[i], max(j * (i - j), j * dp[i - j]));
+            }
+        }
+        return dp[n];
+    }
+};
+</code></pre>
 
 <ul>
-<li>每个物品可以无限使用</li>
-<li>多重背包问题</li>
-<li>物品之间加入更多约束</li>
+<li>leet279 perfect squares</li>
 </ul>
 
-<h4>leetcode</h4>
+<pre class="line-numbers"><code class="language-cpp">Given a positive integer  n , find the least number of perfect square numbers (for example, 1, 4, 9, 16, ...) which sum to  n.
+
+Example 1:
+
+Input: _n_ = 12
+Output: 3 
+Explanation: 12 = 4 + 4 + 4.
+Example 2:
+
+Input: _n_ = 13
+Output: 2
+Explanation: 13 = 4 + 9.
+class Solution {
+public:
+    int numSquares(int n) {
+        vector&lt;int&gt; dp(n + 1, INT_MAX);
+        dp[0] = 0;
+        for (int i = 0; i &lt;= n; ++i) {
+            for (int j = 1; i + j * j &lt;= n; ++j) {
+                dp[i + j * j] = min(dp[i + j * j], dp[i] + 1);
+            }
+        }
+        return dp.back();
+    }
+};
+</code></pre>
 
 <ul>
-<li>leet_416</li>
-<li><img src="media/15676462008800/15679109143760.jpg" alt="" style="width:1002px;"/></li>
-<li>leet_300</li>
-<li><img src="media/15676462008800/15679095425409.jpg" alt="" style="width:989px;"/></li>
-<li><img src="media/15676462008800/15679098812535.jpg" alt="" style="width:1012px;"/></li>
-<li><img src="media/15676462008800/15679103037974.jpg" alt="" style="width:821px;"/></li>
-<li>没有递增的特性</li>
-<li>LIS问题的O(nlogn)解法</li>
-<li>leet_376</li>
-<li>leet_322</li>
-<li>leet_377</li>
-<li>leet_474</li>
-<li>leet_139</li>
-<li>leet_494</li>
+<li>leet91 decode ways</li>
 </ul>
 
-<h4>more</h4>
+<pre class="line-numbers"><code class="language-cpp">A message containing letters from A-Z is being encoded to numbers using the following mapping:
+
+&#39;A&#39; -&gt; 1
+&#39;B&#39; -&gt; 2
+...
+&#39;Z&#39; -&gt; 26
+Given a non-empty string containing only digits, determine the total number of ways to decode it.
+
+Example 1:
+
+Input: &quot;12&quot;
+Output: 2
+Explanation: It could be decoded as &quot;AB&quot; (1 2) or &quot;L&quot; (12).
+，在遍历的过程中，对每个数字首先判断其是否为0，若是则将 dp[i] 赋为0，若不是，赋上 dp[i-1] 的值，然后看数组前一位是否存在，如果存在且满足前一位是1，或者和当前位一起组成的两位数不大于 26，则当前 dp[i] 值加上 dp[i - 2]。最终返回 dp 数组的最后一个值即可
+dp[i] = dp[i-1] + dp[i-2]
+class Solution {
+public:
+    int numDecodings(string s) {
+        if (s.empty() || s[0] == &#39;0&#39;) return 0;
+        vector&lt;int&gt; dp(s.size() + 1, 0);
+        dp[0] = 1;
+        for (int i = 1; i &lt; dp.size(); ++i) {
+            if (s[i - 1] != &#39;0&#39;) dp[i] += dp[i - 1];
+            if (i &gt;= 2 &amp;&amp; s.substr(i - 2, 2) &lt;= &quot;26&quot; &amp;&amp; s.substr(i - 2, 2) &gt;= &quot;10&quot;) {
+                dp[i] += dp[i - 2];
+            }
+        }
+        return dp.back();
+    }
+};
+</code></pre>
 
 <ul>
-<li>最长公共子序列</li>
-<li><img src="media/15676462008800/15679159466365.jpg" alt="" style="width:972px;"/></li>
-<li><img src="media/15676462008800/15679161027984.jpg" alt="" style="width:1023px;"/></li>
+<li>leet62 unique path</li>
 </ul>
 
-<h4>dijkstra</h4>
+<pre class="line-numbers"><code class="language-cpp">A robot is located at the top-left corner of a  m  x  n  grid (marked &#39;Start&#39; in the diagram below).
+
+The robot can only move either down or right at any point in time. The robot is trying to reach the bottom-right corner of the grid (marked &#39;Finish&#39; in the diagram below).
+
+How many possible unique paths are there?
+class Solution {
+public:
+    int uniquePaths(int m, int n) {
+        vector&lt;int&gt; dp(n, 1);
+        for (int i = 1; i &lt; m; ++i) {
+            for (int j = 1; j &lt; n; ++j) {
+                dp[j] += dp[j - 1]; 
+            }
+        }
+        return dp[n - 1];
+    }
+};
+````
+* leet63 unique path
+
+```C++
+这里还需要初始化 dp 数组的某个值，使得其能正常累加。当起点不是障碍物时，其 dp 值应该为1，即dp[1][1] = 1，由于其是由 dp[0][1] + dp[1][0] 更新而来，所以二者中任意一个初始化为1即可。由于之后 LeetCode 更新了这道题的 test case，使得使用 int 型的 dp 数组会有溢出的错误，所以改为使用 long 型的数组来避免 overflow，代码如下
+class Solution {
+public:
+    int uniquePathsWithObstacles(vector&lt;vector&lt;int&gt;&gt;&amp; obstacleGrid) {
+        if (obstacleGrid.empty() || obstacleGrid[0].empty() || obstacleGrid[0][0] == 1) return 0;
+        int m = obstacleGrid.size(), n = obstacleGrid[0].size();
+        vector&lt;vector&lt;long&gt;&gt; dp(m + 1, vector&lt;long&gt;(n + 1, 0));
+        dp[0][1] = 1;
+        for (int i = 1; i &lt;= m; ++i) {
+            for (int j = 1; j &lt;= n; ++j) {
+                if (obstacleGrid[i - 1][j - 1] != 0) continue;
+                dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+            }
+        }
+        return dp[m][n];
+    }
+};
+class Solution {
+public:
+    int uniquePathsWithObstacles(vector&lt;vector&lt;int&gt;&gt;&amp; obstacleGrid) {
+        if (obstacleGrid.empty() || obstacleGrid[0].empty() || obstacleGrid[0][0] == 1) return 0;
+        int m = obstacleGrid.size(), n = obstacleGrid[0].size();
+        vector&lt;long&gt; dp(n, 0);
+        dp[0] = 1;
+        for (int i = 0; i &lt; m; ++i) {
+            for (int j = 0; j &lt; n; ++j) {
+                if (obstacleGrid[i][j] == 1) dp[j] = 0;
+                else if (j &gt; 0) dp[j] += dp[j - 1];
+            }
+        }
+        return dp[n - 1];
+    }
+};
+</code></pre>
 
 <ul>
-<li>单源最短路径算法</li>
-<li><img src="media/15676462008800/15679162036286.jpg" alt="" style="width:815px;"/></li>
+<li>leet673</li>
 </ul>
 
-<h4>动态规划子问题</h4>
+<h4>查找</h4>
 
 <ul>
-<li><img src="media/15676462008800/15679164823964.jpg" alt="" style="width:1028px;"/></li>
+<li>leet_350</li>
+<li>leet_49</li>
 </ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given an array of strings, group anagrams together.
+
+Example:
+
+Input: [&quot;eat&quot;, &quot;tea&quot;, &quot;tan&quot;, &quot;ate&quot;, &quot;nat&quot;, &quot;bat&quot;],
+Output:
+[
+  [&quot;ate&quot;,&quot;eat&quot;,&quot;tea&quot;],
+  [&quot;nat&quot;,&quot;tan&quot;],
+  [&quot;bat&quot;]
+]
+class Solution {
+public:
+    vector&lt;vector&lt;string&gt;&gt; groupAnagrams(vector&lt;string&gt;&amp; strs) {
+        vector&lt;vector&lt;string&gt;&gt; res;
+        unordered_map&lt;string, vector&lt;string&gt;&gt; m;
+        for (string str : strs) {
+            vector&lt;int&gt; cnt(26, 0);
+            string t = &quot;&quot;;
+            for (char c : str) ++cnt[c - &#39;a&#39;];
+            for (int d : cnt) t += to_string(d) + &quot;/&quot;;
+            m[t].push_back(str);
+        }
+        for (auto a : m) {
+            res.push_back(a.second);
+        }
+        return res;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_447 </li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given n points in the plane that are all pairwise distinct, a &quot;boomerang&quot; is a tuple of points (i, j, k) such that the distance between i and j equals the distance between i and k ( the order of the tuple matters ).
+
+Find the number of boomerangs. You may assume that n will be at most 500 and coordinates of points are all in the range [-10000, 10000] (inclusive).
+
+Example:
+
+**Input:**
+[[0,0],[1,0],[2,0]]
+
+**Output:**
+2
+
+**Explanation:**
+The two boomerangs are **[[1,0],[0,0],[2,0]]** and **[[1,0],[2,0],[0,0]]**
+class Solution {
+public:
+    int numberOfBoomerangs(vector&lt;pair&lt;int, int&gt;&gt;&amp; points) {
+        int res = 0;
+        for (int i = 0; i &lt; points.size(); ++i) {
+            unordered_map&lt;int, int&gt; m;
+            for (int j = 0; j &lt; points.size(); ++j) {
+                int a = points[i].first - points[j].first;
+                int b = points[i].second - points[j].second;
+                ++m[a * a + b * b];
+            }
+            for (auto it = m.begin(); it != m.end(); ++it) {
+                res += it-&gt;second * (it-&gt;second - 1);
+            }
+        }
+        return res;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_149 点坐标的表示 整数 浮点数 </li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given  n  points on a 2D plane, find the maximum number of points that lie on the same straight line.
+
+Example 1:
+
+Input: [[1,1],[2,2],[3,3]]
+Output: 3
+Explanation:
+^
+|
+|        o
+|     o
+|  o  
++-------------&gt;
+0  1  2  3  4
+class Solution {
+public:
+    int maxPoints(vector&lt;Point&gt;&amp; points) {
+        int res = 0;
+        for (int i = 0; i &lt; points.size(); ++i) {
+            map&lt;pair&lt;int, int&gt;, int&gt; m;
+            int duplicate = 1;
+            for (int j = i + 1; j &lt; points.size(); ++j) {
+                if (points[i].x == points[j].x &amp;&amp; points[i].y == points[j].y) {
+                    ++duplicate; continue;
+                } 
+                int dx = points[j].x - points[i].x;
+                int dy = points[j].y - points[i].y;
+                int d = gcd(dx, dy);
+                ++m[{dx / d, dy / d}];
+            }
+            res = max(res, duplicate);
+            for (auto it = m.begin(); it != m.end(); ++it) {
+                res = max(res, it-&gt;second + duplicate);
+            }
+        }
+        return res;
+    }
+    int gcd(int a, int b) {
+        return (b == 0) ? a : gcd(b, a % b);
+    }
+};
+</code></pre>
+
+<h4>滑动窗口和查找</h4>
+
+<ul>
+<li>leet_217</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given an array of integers, find if the array contains any duplicates. Your function should return true if any value appears at least twice in the array, and it should return false if every element is distinct.
+class Solution {
+public:
+    bool containsDuplicate(vector&lt;int&gt;&amp; nums) {
+        unordered_map&lt;int, int&gt; m;
+        for (int i = 0; i &lt; nums.size(); ++i) {
+            if (m.find(nums[i]) != m.end()) return true;
+            ++m[nums[i]];
+        }
+        return false;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_219</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given an array of integers and an integer k, return true if and only if there are two distinct indices i and j in the array such that nums[i] = nums[j] and the difference between i and j is at most k. (Old Version)
+
+Given an array of integers and an integer k , find out whether there are two distinct indices i and j in the array such that nums[i] = nums[j] and the difference between i and j is at most k. (New Version)
+class Solution {
+public:
+    bool containsNearbyDuplicate(vector&lt;int&gt;&amp; nums, int k) {
+        unordered_map&lt;int, int&gt; m;
+        for (int i = 0; i &lt; nums.size(); ++i) {
+            if (m.find(nums[i]) != m.end() &amp;&amp; i - m[nums[i]] &lt;= k) return true;
+            else m[nums[i]] = i;
+        }
+        return false;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_220</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given an array of integers, find out whether there are two distinct indices i and j in the array such that the difference between nums[i] and nums[j] is at most t and the difference between i and j is at most k.
+class Solution {
+public:
+    bool containsNearbyAlmostDuplicate(vector&lt;int&gt;&amp; nums, int k, int t) {
+      map&lt;long long, int&gt; m;
+      int j = 0;
+      for (int i = 0; i &lt; nums.size(); i++) {
+        if (i - j &gt; k) m.erase(nums[j++]);
+        auto a = m.lower_bound((long long)nums[i] - t);
+        if (a != m.end() &amp;&amp; abs(a-&gt;first - nums[i]) &lt;= t) return true;
+        m[nums[i]] = i;
+      }
+      return false;
+    }
+};
+</code></pre>
 
                         
                       </div>
@@ -337,7 +1325,1834 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/09/05 09:16 上午</span>
+                    <span class="date">2019/08/02 10:36 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E7%8E%A9%E8%BD%AC%E7%AE%97%E6%B3%95.html'>玩转算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15659210764719.html">
+                
+                  <h1>链表</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>反转</h4>
+
+<ul>
+<li>leet_206</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Reverse a singly linked list.
+
+Example:
+
+Input: 1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;NULL
+Output: 5-&gt;4-&gt;3-&gt;2-&gt;1-&gt;NULL
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+      ListNode* pre = nullptr;
+      while (head) {
+        ListNode* next = head-&gt;next;
+        head-&gt;next= pre;
+        pre = head;
+        head = next;
+      }
+      return pre;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_92</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Reverse a linked list from position m to n. Do it in one-pass.
+
+Note: 1 ≤ m ≤ n ≤ length of list.
+
+Example:
+
+Input: 1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;NULL, m = 2, n = 4
+Output: 1-&gt;4-&gt;3-&gt;2-&gt;5-&gt;NULL
+class Solution {
+public:
+  ListNode* reverseBetween(ListNode* head, int m, int n) {
+    ListNode dumy(0);
+    dumy.next = head;
+    ListNode* pre = &amp;dumy;
+    for (int i = 0; i &lt; m - 1; i++) pre = pre-&gt;next;
+
+    ListNode* cur = pre-&gt;next;
+    for (int i = m; i &lt; n; i++) {
+      ListNode* p = cur-&gt;next;
+      cur-&gt;next = p-&gt;next;
+      p-&gt;next = pre-&gt;next;
+      pre-&gt;next = p;
+    }
+    
+    return dumy.next;
+  }
+};
+</code></pre>
+
+<ul>
+<li>leet_83</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a sorted linked list, delete all duplicates such that each element appear only  once.
+
+Example 1:
+
+Input: 1-&gt;1-&gt;2
+Output: 1-&gt;2
+class Solution {
+public:
+    ListNode* deleteDuplicates(ListNode* head) {
+        ListNode *cur = head;
+        while (cur &amp;&amp; cur-&gt;next) {
+            if (cur-&gt;val == cur-&gt;next-&gt;val) {
+                cur-&gt;next = cur-&gt;next-&gt;next;
+            } else {
+                cur = cur-&gt;next;
+            }
+        }
+        return head;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_86 </li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a linked list and a value  x , partition it such that all nodes less than  x  come before nodes greater than or equal to  x.
+
+You should preserve the original relative order of the nodes in each of the two partitions.
+
+For example,
+Given 1-&gt;4-&gt;3-&gt;2-&gt;5-&gt;2 and  x  = 3,
+return 1-&gt;2-&gt;2-&gt;4-&gt;3-&gt;5.
+就是将所有小于给定值的节点取出组成一个新的链表，此时原链表中剩余的节点的值都大于或等于给定值，只要将原链表直接接在新链表后即可
+class Solution {
+public:
+    ListNode* partition(ListNode* head, int x) {
+      ListNode node1(0);
+      ListNode node2(0);
+      ListNode* p1 = &amp;node1;
+      ListNode* p2 = &amp;node2;
+      while (head) {
+        if (head-&gt;val &lt; x) {
+          p1-&gt;next = head;
+          p1 = p1-&gt;next;
+        } else {
+          p2-&gt;next = head;
+          p2 = p2-&gt;next;
+        }
+        head = head-&gt;next;
+      }
+      p2-&gt;next = nullptr;
+      p1-&gt;next = node2.next;
+      return node1.next;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_328</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a singly linked list, group all odd nodes together followed by the even nodes. Please note here we are talking about the node number and not the value in the nodes.
+
+You should try to do it in place. The program should run in O(1) space complexity and O(nodes) time complexity.
+
+Example 1:
+
+Input: 1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;NULL
+Output: 1-&gt;3-&gt;5-&gt;2-&gt;4-&gt;NULL
+class Solution {
+public:
+    ListNode* oddEvenList(ListNode* head) {
+      ListNode node1(0), node2(0);
+      ListNode* p1 = &amp;node1;
+      ListNode* p2 = &amp;node2;
+      int cnt = 1;
+      while (head) {
+        if (cnt++ % 2 == 1) {
+          p1-&gt;next = head;
+          p1 = p1-&gt;next;
+        } else {
+          p2-&gt;next = head;
+          p2 = p2-&gt;next;
+        }
+        head = head-&gt;next;
+      }
+      p2-&gt;next = nullptr;
+      p1-&gt;next = node2.next;
+      return node1.next;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_2</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Input: (2 -&gt; 4 -&gt; 3) + (5 -&gt; 6 -&gt; 4)
+Output: 7 -&gt; 0 -&gt; 8
+Explanation: 342 + 465 = 807.
+class Solution {
+public:
+  ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+    ListNode node(0), *p = &amp;node;
+    int extra = 0;
+    while (l1 || l2 || extra) {
+      if (l1) extra += l1-&gt;val, l1 = l1-&gt;next;
+      if (l2) extra += l2-&gt;val, l2 = l2-&gt;next;
+      p-&gt;next = new ListNode(extra % 10);
+      extra /= 10;
+      p = p-&gt;next;
+    }
+    return node.next;
+
+  }
+};
+</code></pre>
+
+<ul>
+<li>leet_445</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Follow up:
+What if you cannot modify the input lists? In other words, reversing the lists is not allowed.
+
+Example:
+
+Input: (7 -&gt; 2 -&gt; 4 -&gt; 3) + (5 -&gt; 6 -&gt; 4)
+Output: 7 -&gt; 8 -&gt; 0 -&gt; 7
+class Solution {
+public:
+  ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+    ListNode node(0), *p = &amp;node;
+    std::vector&lt;int&gt; num1, num2;
+    while (l1) {
+      num1.push_back(l1-&gt;val);
+      l1 = l1-&gt;next;
+    }
+    while (l2) {
+      num2.push_back(l2-&gt;val);
+      l2 = l2-&gt;next;
+    }
+
+    int extra = 0;
+    int i = num1.size();
+    int j = num2.size();
+    ListNode* pre = nullptr;
+    while (i &gt; 0|| j &gt; 0|| extra) {
+      if (--i &gt;= 0) extra += num1[i];
+      if (--j &gt;= 0) extra += num2[j];
+      ListNode* node = new ListNode(extra % 10);
+      node-&gt;next = pre;
+      pre = node;
+      p-&gt;next = pre;
+      extra /= 10;
+    }
+    return node.next;
+  }
+};
+</code></pre>
+
+<h4>设立虚拟头节点</h4>
+
+<ul>
+<li>leet_203</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Remove all elements from a linked list of integers that have value val.
+
+Example
+Given: 1 -- &gt; 2 --&gt; 6 --&gt; 3 --&gt; 4 --&gt; 5 --&gt; 6, val = 6
+Return: 1 -- &gt; 2 --&gt; 3 --&gt; 4 --&gt; 5
+class Solution {
+public:
+  ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+    ListNode node(0), *p = &amp;node;
+    int extra = 0;
+    while (l1 || l2 || extra) {
+      if (l1) extra += l1-&gt;val, l1 = l1-&gt;next;
+      if (l2) extra += l2-&gt;val, l2 = l2-&gt;next;
+      p-&gt;next = new ListNode(extra % 10);
+      extra /= 10;
+      p = p-&gt;next;
+    }
+    return node.next;
+
+  }
+};
+</code></pre>
+
+<ul>
+<li>leet_82</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">class Solution {
+public:
+    ListNode* deleteDuplicates(ListNode* head) {
+        if (!head || !head-&gt;next) return head;
+        ListNode *dummy = new ListNode(-1), *pre = dummy;
+        dummy-&gt;next = head;
+        while (pre-&gt;next) {
+            ListNode *cur = pre-&gt;next;
+            while (cur-&gt;next &amp;&amp; cur-&gt;next-&gt;val == cur-&gt;val) {
+                cur = cur-&gt;next;
+            }
+            if (cur != pre-&gt;next) pre-&gt;next = cur-&gt;next;
+            else pre = pre-&gt;next;
+        }
+        return dummy-&gt;next;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_21</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Input: 1-&gt;2-&gt;4, 1-&gt;3-&gt;4
+Output: 1-&gt;1-&gt;2-&gt;3-&gt;4-&gt;4
+class Solution {
+public:
+  ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
+
+    ListNode node(0), *p = &amp;node;
+    while (l1 &amp;&amp; l2) {
+      if (l1-&gt;val &lt; l2-&gt;val) {
+        p-&gt;next = l1;
+        l1 = l1-&gt;next;
+      } else {
+        p-&gt;next = l2;
+        l2 = l2-&gt;next;
+      }
+      p = p-&gt;next;
+    }
+
+    p-&gt;next = l1 ? l1 : l2;
+    return node.next;
+  }
+};
+</code></pre>
+
+<ul>
+<li>leet_25</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Example:
+
+Given this linked list: 1-&gt;2-&gt;3-&gt;4-&gt;5
+
+For k = 2, you should return: 2-&gt;1-&gt;4-&gt;3-&gt;5
+
+For k = 3, you should return: 3-&gt;2-&gt;1-&gt;4-&gt;5
+class Solution {
+public:
+    ListNode* reverseKGroup(ListNode* head, int k) {
+      ListNode dumy(0), *pre = &amp;dumy, *cur = &amp;dumy;
+      dumy.next = head;
+      int num = 0;
+      while (cur = cur-&gt;next)  num++;
+      while (num &gt;= k) {
+        cur = pre-&gt;next;
+        for (int i = 1; i &lt; k; i++) {
+          ListNode* t = cur-&gt;next;
+          cur-&gt;next = t-&gt;next;
+          t-&gt;next = pre-&gt;next;
+          pre-&gt;next = t;
+        }
+        pre = cur;
+        num -= k;
+      }
+      return dumy.next;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_147</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Sort a linked list using insertion sort.
+Input: 4-&gt;2-&gt;1-&gt;3
+Output: 1-&gt;2-&gt;3-&gt;4
+class Solution {
+public:
+    ListNode* insertionSortList(ListNode* head) {
+        ListNode* dummy = new ListNode(0);
+        dummy -&gt; next = head;
+        ListNode *pre = dummy, *cur = head;
+        while (cur) {
+            if ((cur -&gt; next) &amp;&amp; (cur -&gt; next -&gt; val &lt; cur -&gt; val)) {
+                while ((pre -&gt; next) &amp;&amp; (pre -&gt; next -&gt; val &lt; cur -&gt; next -&gt; val)) {
+                    pre = pre -&gt; next;
+                }
+                ListNode* temp = pre -&gt; next;
+                pre -&gt; next = cur -&gt; next;
+                cur -&gt; next = cur -&gt; next -&gt; next;
+                pre -&gt; next -&gt; next = temp;
+                pre = dummy;
+            }
+            else {
+                cur = cur -&gt; next;
+            }
+        }
+        return dummy -&gt; next;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_148</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Sort a linked list in  O ( n  log  n ) time using constant space complexity.
+
+Example 1:
+
+Input: 4-&gt;2-&gt;1-&gt;3
+Output: 1-&gt;2-&gt;3-&gt;4
+Example 2:
+
+Input: -1-&gt;5-&gt;3-&gt;4-&gt;0
+Output: -1-&gt;0-&gt;3-&gt;4-&gt;5
+class Solution {
+public:
+    ListNode* sortList(ListNode* head) {
+        if (!head || !head-&gt;next) return head;
+        ListNode *slow = head, *fast = head, *pre = head;
+        while (fast &amp;&amp; fast-&gt;next) {
+            pre = slow;
+            slow = slow-&gt;next;
+            fast = fast-&gt;next-&gt;next;
+        }
+        pre-&gt;next = NULL;
+        return merge(sortList(head), sortList(slow));
+    }
+    ListNode* merge(ListNode* l1, ListNode* l2) {
+        ListNode *dummy = new ListNode(-1);
+        ListNode *cur = dummy;
+        while (l1 &amp;&amp; l2) {
+            if (l1-&gt;val &lt; l2-&gt;val) {
+                cur-&gt;next = l1;
+                l1 = l1-&gt;next;
+            } else {
+                cur-&gt;next = l2;
+                l2 = l2-&gt;next;
+            }
+            cur = cur-&gt;next;
+        }
+        if (l1) cur-&gt;next = l1;
+        if (l2) cur-&gt;next = l2;
+        return dummy-&gt;next;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_237</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Supposed the linked list is 1 -&gt; 2 -&gt; 3 -&gt; 4 and you are given the third node with value 3, the linked list should become 1 -&gt; 2 -&gt; 4 after calling your function.
+class Solution {
+public:
+    void deleteNode(ListNode* node) {
+        node-&gt;val = node-&gt;next-&gt;val;
+        ListNode *tmp = node-&gt;next;
+        node-&gt;next = tmp-&gt;next;
+        delete tmp;
+    }
+};
+</code></pre>
+
+<h4>双节点</h4>
+
+<ul>
+<li>leet_61</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a list, rotate the list to the right by  k  places, where  k  is non-negative.
+
+For example:
+Given 1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;NULL and  k  = 2,
+return 4-&gt;5-&gt;1-&gt;2-&gt;3-&gt;NULL.
+class Solution {
+public:
+    ListNode *rotateRight(ListNode *head, int k) {
+        if (!head) return NULL;
+        int n = 0;
+        ListNode *cur = head;
+        while (cur) {
+            ++n;
+            cur = cur-&gt;next;
+        }
+        k %= n;
+        ListNode *fast = head, *slow = head;
+        for (int i = 0; i &lt; k; ++i) {
+            if (fast) fast = fast-&gt;next;
+        }
+        if (!fast) return head;
+        while (fast-&gt;next) {
+            fast = fast-&gt;next;
+            slow = slow-&gt;next;
+        }
+        fast-&gt;next = head;
+        fast = slow-&gt;next;
+        slow-&gt;next = NULL;
+        return fast;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_143</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a singly linked list  L :  L 0→ L 1→…→ L n -1→ L n,
+reorder it to:  L 0→ L n → L 1→ L n -1→ L 2→ L n -2→…
+
+You may not modify the values in the list&#39;s nodes, only nodes itself may be changed.
+
+Example 1:
+
+Given 1-&gt;2-&gt;3-&gt;4, reorder it to 1-&gt;4-&gt;2-&gt;3.
+Example 2:
+
+Given 1-&gt;2-&gt;3-&gt;4-&gt;5, reorder it to 1-&gt;5-&gt;2-&gt;4-&gt;3.
+class Solution {
+public:
+  
+    ListNode* reverse(ListNode* head) {
+      ListNode *pre = nullptr, *next = nullptr;
+      while (head) {
+        next = head-&gt;next;
+        head-&gt;next = pre;
+        pre = head;
+        head = next;
+      }
+      return pre;
+    }
+  
+    void reorderList(ListNode* head) {
+      if (!head || !head-&gt;next || !head-&gt;next-&gt;next) return;
+      ListNode *slow = head, *fast = head;
+      while (fast-&gt;next &amp;&amp; fast-&gt;next-&gt;next) {
+        slow = slow-&gt;next;
+        fast = fast-&gt;next-&gt;next;
+      }
+      
+      ListNode* mid = slow-&gt;next;
+      slow-&gt;next = nullptr;
+      ListNode* rhead = reverse(mid);
+      
+      while (head &amp;&amp; rhead) {
+        ListNode* next = head-&gt;next;
+        head-&gt;next = rhead;
+        rhead = rhead-&gt;next;
+        head-&gt;next-&gt;next = next;
+        head = next;
+      }
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_234</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a singly linked list, determine if it is a palindrome.
+
+Example 1:
+
+Input: 1-&gt;2
+Output: false
+Example 2:
+
+Input: 1-&gt;2-&gt;2-&gt;1
+Output: true
+class Solution {
+  public:
+  ListNode* reverse(ListNode* head) {
+    ListNode* pre = nullptr, *next = nullptr;
+
+    while (head) {
+      next = head-&gt;next;
+      head-&gt;next = pre;
+      pre = head;
+      head = next;
+    }
+
+    return pre;
+  }
+
+  bool isPalindrome(ListNode* head) {
+    if (!head || !head-&gt;next) return true;
+    
+    ListNode* fast = head, *slow = head;
+    while (fast-&gt;next &amp;&amp; fast-&gt;next-&gt;next) {
+      slow = slow-&gt;next;
+      fast = fast-&gt;next-&gt;next;
+    }
+
+    ListNode* mid = slow-&gt;next;
+    ListNode* rhead = reverse(mid);
+    while (rhead) {
+      if (rhead-&gt;val != head-&gt;val) return false;
+      rhead = rhead-&gt;next;
+      head = head-&gt;next;
+    }
+    return true;
+  }
+};
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/08/16 10:04 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E7%8E%A9%E8%BD%AC%E7%AE%97%E6%B3%95.html'>玩转算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15662646498238.html">
+                
+                  <h1>队列</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>栈</h4>
+
+<ul>
+<li>leet_20</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a string containing just the characters &#39;(&#39;, &#39;)&#39;, &#39;{&#39;, &#39;}&#39;, &#39;[&#39; and &#39;]&#39;, determine if the input string is valid.
+class Solution {
+public:
+    bool isValid(string s) {
+        stack&lt;char&gt; parentheses;
+        for (int i = 0; i &lt; s.size(); ++i) {
+            if (s[i] == &#39;(&#39; || s[i] == &#39;[&#39; || s[i] == &#39;{&#39;) parentheses.push(s[i]);
+            else {
+                if (parentheses.empty()) return false;
+                if (s[i] == &#39;)&#39; &amp;&amp; parentheses.top() != &#39;(&#39;) return false;
+                if (s[i] == &#39;]&#39; &amp;&amp; parentheses.top() != &#39;[&#39;) return false;
+                if (s[i] == &#39;}&#39; &amp;&amp; parentheses.top() != &#39;{&#39;) return false;
+                parentheses.pop();
+            }
+        }
+        return parentheses.empty();
+    }
+}; 
+</code></pre>
+
+<ul>
+<li>leet_150</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Input: [&quot;2&quot;, &quot;1&quot;, &quot;+&quot;, &quot;3&quot;, &quot;*&quot;]
+Output: 9
+Explanation: ((2 + 1) * 3) = 9
+class Solution {
+public:
+    int evalRPN(vector&lt;string&gt;&amp; tokens) {
+        if (tokens.size() == 1) return stoi(tokens[0]);
+        stack&lt;int&gt; st;
+        for (int i = 0; i &lt; tokens.size(); ++i) {
+            if (tokens[i] != &quot;+&quot; &amp;&amp; tokens[i] != &quot;-&quot; &amp;&amp; tokens[i] != &quot;*&quot; &amp;&amp; tokens[i] != &quot;/&quot;) {
+                st.push(stoi(tokens[i]));
+            } else {
+                int num1 = st.top(); st.pop();
+                int num2 = st.top(); st.pop();
+                if (tokens[i] == &quot;+&quot;) st.push(num2 + num1);
+                if (tokens[i] == &quot;-&quot;) st.push(num2 - num1);
+                if (tokens[i] == &quot;*&quot;) st.push(num2 * num1);
+                if (tokens[i] == &quot;/&quot;) st.push(num2 / num1);
+            }
+        }
+        return st.top();
+    }
+};
+
+class Solution {
+public:
+    int evalRPN(vector&lt;string&gt;&amp; tokens) {
+        int op = (int)tokens.size() - 1;
+        return helper(tokens, op);
+    }
+    int helper(vector&lt;string&gt;&amp; tokens, int&amp; op) {
+        string str = tokens[op];
+        if (str != &quot;+&quot; &amp;&amp; str != &quot;-&quot; &amp;&amp; str != &quot;*&quot; &amp;&amp; str != &quot;/&quot;) return stoi(str);
+        int num1 = helper(tokens, --op);
+        int num2 = helper(tokens, --op);
+        if (str == &quot;+&quot;) return num2 + num1;
+        if (str == &quot;-&quot;) return num2 - num1;
+        if (str == &quot;*&quot;) return num2 * num1;
+        return num2 / num1;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_71</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">For example,
+path = &quot;/home/&quot;, =&gt; &quot;/home&quot;
+path = &quot;/a/./b/../../c/&quot;, =&gt; &quot;/c&quot;
+class Solution {
+public:
+    string simplifyPath(string path) {
+        vector&lt;string&gt; v;
+        int i = 0;
+        while (i &lt; path.size()) {
+            while (path[i] == &#39;/&#39; &amp;&amp; i &lt; path.size()) ++i;
+            if (i == path.size()) break;
+            int start = i;
+            while (path[i] != &#39;/&#39; &amp;&amp; i &lt; path.size()) ++i;
+            int end = i - 1;
+            string s = path.substr(start, end - start + 1);
+            if (s == &quot;..&quot;) {
+                if (!v.empty()) v.pop_back(); 
+            } else if (s != &quot;.&quot;) {
+                v.push_back(s);
+            }
+        }
+        if (v.empty()) return &quot;/&quot;;
+        string res;
+        for (int i = 0; i &lt; v.size(); ++i) {
+            res += &#39;/&#39; + v[i];
+        }
+        return res;
+    }
+};
+</code></pre>
+
+<h4>栈和递归的紧密关系</h4>
+
+<ul>
+<li>leet_144 </li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">For example:
+Given binary tree {1,#,2,3},
+
+   1
+    \
+     2
+    /
+   3
+ 
+return [1,2,3].
+class Solution {
+public:
+    vector&lt;int&gt; preorderTraversal(TreeNode* root) {
+        vector&lt;int&gt; res;
+        stack&lt;TreeNode*&gt; s;
+        TreeNode *p = root;
+        while (!s.empty() || p) {
+            if (p) {
+                s.push(p);
+                res.push_back(p-&gt;val);
+                p = p-&gt;left;
+            } else {
+                TreeNode *t = s.top(); s.pop();
+                p = t-&gt;right;
+            }
+        }
+        return res;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_94 middle</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a binary tree, return the  inorder  traversal of its nodes&#39; values.
+Example:
+Input: [1,null,2,3]
+   1
+    \
+     2
+    /
+   3
+Output: [1,3,2]
+
+class Solution {
+public:
+    vector&lt;int&gt; inorderTraversal(TreeNode* root) {
+        vector&lt;int&gt; res;
+        stack&lt;TreeNode*&gt; s;
+        TreeNode *p = root;
+        while (!s.empty() || p) {
+            if (p) {
+                s.push(p);
+                p = p-&gt;left;
+            } else {
+               TreeNode* t = s.top(); s.pop();
+                res.push_back(t-&gt;val);
+                p = t-&gt;right;
+            }
+        }
+        return res;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_145</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a binary tree, return the postorder traversal of its nodes&#39; values.
+
+For example:
+Given binary tree {1,#,2,3},
+   1
+    \
+     2
+    /
+   3
+return [3,2,1].
+
+class Solution {
+public:
+    vector&lt;int&gt; postorderTraversal(TreeNode* root) {
+        vector&lt;int&gt; res;
+        stack&lt;TreeNode*&gt; s;
+        TreeNode *p = root;
+        while (!s.empty() || p) {
+            if (p) {
+                s.push(p);
+                res.insert(res.begin(), p-&gt;val);
+                p = p-&gt;right;
+            } else {
+                TreeNode *t = s.top(); s.pop();
+                p = t-&gt;left;
+            }
+        }
+        return res;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_341 </li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">class NestedIterator {
+public:
+    NestedIterator(vector&lt;NestedInteger&gt; &amp;nestedList) {
+        for (int i = nestedList.size() - 1; i &gt;= 0; --i) {
+            s.push(nestedList[i]);
+        }
+    }
+
+    int next() {
+        NestedInteger t = s.top(); s.pop();
+        return t.getInteger();
+    }
+
+    bool hasNext() {
+        while (!s.empty()) {
+            NestedInteger t = s.top(); 
+            if (t.isInteger()) return true;
+            s.pop();
+            for (int i = t.getList().size() - 1; i &gt;= 0; --i) {
+                s.push(t.getList()[i]);
+            }
+        }
+        return false;
+    }  
+
+private:
+    stack&lt;NestedInteger&gt; s;
+};
+</code></pre>
+
+<h4>队列</h4>
+
+<ul>
+<li>广度优先遍历</li>
+<li>树 层序遍历</li>
+<li>图 无权图的最短路径</li>
+<li>leet_102</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">Given a binary tree, return the  level order  traversal of its nodes&#39; values. (ie, from left to right, level by level).
+
+For example:
+Given binary tree {3,9,20,#,#,15,7},
+
+    3
+   / \
+  9  20
+    /  \
+   15   7
+class Solution {
+public:
+    vector&lt;vector&lt;int&gt;&gt; levelOrder(TreeNode* root) {
+        if (!root) return {};
+        vector&lt;vector&lt;int&gt;&gt; res;
+        queue&lt;TreeNode*&gt; q{{root}};
+        while (!q.empty()) {
+            vector&lt;int&gt; oneLevel;
+            for (int i = q.size(); i &gt; 0; --i) {
+                TreeNode *t = q.front(); q.pop();
+                oneLevel.push_back(t-&gt;val);
+                if (t-&gt;left) q.push(t-&gt;left);
+                if (t-&gt;right) q.push(t-&gt;right);
+            }
+            res.push_back(oneLevel);
+        }
+        return res;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_107</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">For example:
+Given binary tree {3,9,20,#,#,15,7},
+    3
+   / \
+  9  20
+    /  \
+   15   7 
+return its bottom-up level order traversal as:
+[
+  [15,7],
+  [9,20],
+  [3]
+]
+class Solution {
+public:
+    vector&lt;vector&lt;int&gt; &gt; levelOrderBottom(TreeNode* root) {
+        if (!root) return {};
+        vector&lt;vector&lt;int&gt;&gt; res;
+        queue&lt;TreeNode*&gt; q{{root}};
+        while (!q.empty()) {
+            vector&lt;int&gt; oneLevel;
+            for (int i = q.size(); i &gt; 0; --i) {
+                TreeNode *t = q.front(); q.pop();
+                oneLevel.push_back(t-&gt;val);
+                if (t-&gt;left) q.push(t-&gt;left);
+                if (t-&gt;right) q.push(t-&gt;right);
+            }
+            res.insert(res.begin(), oneLevel);
+        }
+        return res;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_103</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">For example:
+Given binary tree [3,9,20,null,null,15,7],
+    3
+   / \
+  9  20
+    /  \
+   15   7
+return its zigzag level order traversal as:
+[
+  [3],
+  [20,9],
+  [15,7]
+]
+class Solution {
+public:
+    vector&lt;vector&lt;int&gt;&gt; zigzagLevelOrder(TreeNode* root) {
+        if (!root) return {};
+        vector&lt;vector&lt;int&gt;&gt; res;
+        queue&lt;TreeNode*&gt; q{{root}};
+        bool leftToRight = true;
+        while (!q.empty()) {
+            int size = q.size();
+            vector&lt;int&gt; oneLevel(size);
+            for (int i = 0; i &lt; size; ++i) {
+                TreeNode *t = q.front(); q.pop();
+                int idx = leftToRight ? i : (size - 1 - i);
+                oneLevel[idx] = t-&gt;val;
+                if (t-&gt;left) q.push(t-&gt;left);
+                if (t-&gt;right) q.push(t-&gt;right);
+            }
+            leftToRight = !leftToRight;
+            res.push_back(oneLevel);
+        }
+        return res;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_199</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a binary tree, imagine yourself standing on the  right  side of it, return the values of the nodes you can see ordered from top to bottom.
+
+For example:
+Given the following binary tree,
+
+   1            &lt;---
+ /   \
+2     3         &lt;---
+ \     \
+  5     4       &lt;---
+
+class Solution {
+public:
+    vector&lt;int&gt; rightSideView(TreeNode *root) {
+        vector&lt;int&gt; res;
+        if (!root) return res;
+        queue&lt;TreeNode*&gt; q{{root}};
+        while (!q.empty()) {
+            res.push_back(q.back()-&gt;val);
+            int size = q.size();
+            for (int i = 0; i &lt; size; ++i) {
+                TreeNode *node = q.front();
+                q.pop();
+                if (node-&gt;left) q.push(node-&gt;left);
+                if (node-&gt;right) q.push(node-&gt;right);
+            }
+        }
+        return res;
+    }
+};
+</code></pre>
+
+<h4>BFS</h4>
+
+<ul>
+<li>leet_279</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a positive integer  n , find the least number of perfect square numbers (for example, 1, 4, 9, 16, ...) which sum to  n.
+
+Example 1:
+
+Input: _n_ = 12
+Output: 3 
+Explanation: 12 = 4 + 4 + 4.
+
+class Solution {
+public:
+    int numSquares(int n) {
+        vector&lt;int&gt; dp(n + 1, INT_MAX);
+        dp[0] = 0;
+        for (int i = 0; i &lt;= n; ++i) {
+            for (int j = 1; i + j * j &lt;= n; ++j) {
+                dp[i + j * j] = min(dp[i + j * j], dp[i] + 1);
+            }
+        }
+        return dp.back();
+    }
+};
+
+class Solution {
+public:
+    int numSquares(int n) {
+        
+      int ret;
+      assert(n &gt; 0);
+      vector&lt;bool&gt; visited(n+1, false);
+      visited[n] = true;
+      queue&lt;pair&lt;int, int&gt;&gt; q;
+
+      q.push(make_pair(n, 0));
+
+      while (!q.empty()) {
+        int num = q.front().first;
+        int step = q.front().second;
+        q.pop();
+
+        for (int i = 1; ; i++) {
+          int a = num - i * i;
+
+          if (a &lt; 0) break;
+
+          if (a == 0) return ret = step + 1;
+
+          if (!visited[a]) {
+            visited[a] = true;
+            q.push(make_pair(a, step + 1));
+          }
+        }
+      }
+      return ret;
+    }
+};
+
+</code></pre>
+
+<ul>
+<li>leet_127</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Input:
+beginWord = &quot;hit&quot;,
+endWord = &quot;cog&quot;,
+wordList = [&quot;hot&quot;,&quot;dot&quot;,&quot;dog&quot;,&quot;lot&quot;,&quot;log&quot;,&quot;cog&quot;]
+
+Output: 5
+
+Explanation: As one shortest transformation is &quot;hit&quot; -&gt; &quot;hot&quot; -&gt; &quot;dot&quot; -&gt; &quot;dog&quot; -&gt; &quot;cog&quot;,
+return its length 5.
+class Solution {
+  public:
+  int ladderLength(string beginWord, string endWord, vector&lt;string&gt;&amp; wordList) {
+    unordered_set&lt;string&gt; wordSet(wordList.begin(), wordList.end());
+    if (!wordSet.count(endWord)) return 0;
+    queue&lt;string&gt; q{{beginWord}};
+    int res = 0;
+    while (!q.empty()) {
+      for (int k = q.size(); k &gt; 0; --k) {
+        string word = q.front(); q.pop();
+        if (word == endWord) return res + 1;
+        for (int i = 0; i &lt; word.size(); ++i) {
+          string newWord = word;
+          for (char ch = &#39;a&#39;; ch &lt;= &#39;z&#39;; ++ch) {
+            newWord[i] = ch;
+            if (wordSet.count(newWord) &amp;&amp; newWord != word) {
+              q.push(newWord);
+              wordSet.erase(newWord);
+            }   
+          }
+        }
+      }
+      ++res;
+    }
+    return 0;
+  }
+};
+</code></pre>
+
+<ul>
+<li>leet_126</li>
+</ul>
+
+<h4>优先级队列</h4>
+
+<ul>
+<li>底层实现,堆</li>
+<li>堆的底层实现, 白板编程</li>
+<li>priority_queue</li>
+<li>leet_347 O(nlog(n-k)) O(nlog(n-k))</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a non-empty array of integers, return the  k  most frequent elements.
+
+Example 1:
+
+Input: nums = [1,1,1,2,2,3], k = 2
+Output: [1,2]
+class Solution {
+public:
+    vector&lt;int&gt; topKFrequent(vector&lt;int&gt;&amp; nums, int k) {
+        unordered_map&lt;int, int&gt; m;
+        priority_queue&lt;pair&lt;int, int&gt;&gt; q;
+        vector&lt;int&gt; res;
+        for (auto a : nums) ++m[a];
+        for (auto it : m) q.push({it.second, it.first});
+        for (int i = 0; i &lt; k; ++i) {
+            res.push_back(q.top().second); q.pop();
+        }
+        return res;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_23 </li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Merge  k  sorted linked lists and return it as one sorted list. Analyze and describe its complexity.
+
+Example:
+
+Input:
+[
+  1-&gt;4-&gt;5,
+  1-&gt;3-&gt;4,
+  2-&gt;6
+]
+Output: 1-&gt;1-&gt;2-&gt;3-&gt;4-&gt;4-&gt;5-&gt;6
+class Solution {
+  public:
+  ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
+    ListNode node(0), *p = &amp;node;
+
+    while (l1 &amp;&amp; l2) {
+      if (l1-&gt;val &lt; l2-&gt;val) {
+        p-&gt;next = l1;
+        l1 = l1-&gt;next;
+      } else {
+        p-&gt;next = l2;
+        l2 = l2-&gt;next;
+      }
+      p = p-&gt;next;
+    }
+
+    p-&gt;next = l1 ? l1 : l2;
+    return node.next;
+  }
+  
+  ListNode* mergeKLists(vector&lt;ListNode*&gt;&amp; lists) {
+
+    if (lists.empty()) return nullptr;
+    
+    while (lists.size() &gt; 1) {
+      lists.push_back(mergeTwoLists(lists[0], lists[1]));
+      lists.erase(lists.begin());
+      lists.erase(lists.begin());
+    }
+    
+    return lists[0];
+  }
+};
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/08/20 09:30 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E7%8E%A9%E8%BD%AC%E7%AE%97%E6%B3%95.html'>玩转算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15665280444092.html">
+                
+                  <h1>二叉树和递归</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>天然递归结构</h4>
+
+<ul>
+<li>空也是一棵二叉树</li>
+<li>是否存在键值</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">bool contain(Node8 node, Key key) {
+  if (!node) return false;
+  
+  if (key == node-&gt;key) return true;
+  
+  if(contain(node-&gt;left, key) ||
+     contain(node-&gt;right, key)) return true;
+  return false;
+}
+</code></pre>
+
+<ul>
+<li>leet_104</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">class Solution {
+public:
+    int maxDepth(TreeNode* root) {
+        if (!root) return 0;
+        return 1 + max(maxDepth(root-&gt;left), maxDepth(root-&gt;right));
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_111</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a binary tree, find its minimum depth.
+class Solution {
+public:
+    int minDepth(TreeNode* root) {
+        if (!root) return 0;
+        if (!root-&gt;left) return 1 + minDepth(root-&gt;right);
+        if (!root-&gt;right) return 1 + minDepth(root-&gt;left);
+        return 1 + min(minDepth(root-&gt;left), minDepth(root-&gt;right));
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_226</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Invert a binary tree.
+
+     4
+   /   \
+  2     7
+ / \   / \
+1   3 6   9
+
+to
+     4
+   /   \
+  7     2
+ / \   / \
+9   6 3   1
+
+// Recursion
+class Solution {
+public:
+    TreeNode* invertTree(TreeNode* root) {
+        if (!root) return NULL;
+        TreeNode *tmp = root-&gt;left;
+        root-&gt;left = invertTree(root-&gt;right);
+        root-&gt;right = invertTree(tmp);
+        return root;
+    }
+};
+
+// Non-Recursion
+class Solution {
+public:
+    TreeNode* invertTree(TreeNode* root) {
+        if (!root) return NULL;
+        queue&lt;TreeNode*&gt; q;
+        q.push(root);
+        while (!q.empty()) {
+            TreeNode *node = q.front(); q.pop();
+            TreeNode *tmp = node-&gt;left;
+            node-&gt;left = node-&gt;right;
+            node-&gt;right = tmp;
+            if (node-&gt;left) q.push(node-&gt;left);
+            if (node-&gt;right) q.push(node-&gt;right);
+        }
+        return root;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_100</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">判断两棵树是否相同
+class Solution {
+public:
+    bool isSameTree(TreeNode *p, TreeNode *q) {
+        if (!p &amp;&amp; !q) return true;
+        if ((p &amp;&amp; !q) || (!p &amp;&amp; q) || (p-&gt;val != q-&gt;val)) return false;
+        return isSameTree(p-&gt;left, q-&gt;left) &amp;&amp; isSameTree(p-&gt;right, q-&gt;right);
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_101</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a binary tree, check whether it is a mirror of itself (ie, symmetric around its center).
+
+For example, this binary tree is symmetric:
+
+    1
+   / \
+  2   2
+ / \ / \
+3  4 4  3
+
+class Solution {
+public:
+    bool isSymmetric(TreeNode *root) {
+        if (!root) return true;
+        return isSymmetric(root-&gt;left, root-&gt;right);
+    }
+    bool isSymmetric(TreeNode *left, TreeNode *right) {
+        if (!left &amp;&amp; !right) return true;
+        if (left &amp;&amp; !right || !left &amp;&amp; right || left-&gt;val != right-&gt;val) return false;
+        return isSymmetric(left-&gt;left, right-&gt;right) &amp;&amp; isSymmetric(left-&gt;right, right-&gt;left);
+    }
+    
+};
+</code></pre>
+
+<ul>
+<li>leet_222</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a complete binary tree, count the number of nodes.
+Input: 
+    1
+   / \
+  2   3
+ / \  /
+4  5 6
+
+Output: 6
+由 root 根结点往下，分别找最靠左边和最靠右边的路径长度，如果长度相等，则证明二叉树最后一层节点是满的，是满二叉树，直接返回节点个数，如果不相等，则节点个数为左子树的节点个数加上右子树的节点个数再加1(根节点)，
+
+class Solution {
+public:
+    int countNodes(TreeNode* root) {
+        int hLeft = leftHeight(root);
+        int hRight = rightHeight(root);
+        if (hLeft == hRight) return pow(2, hLeft) - 1;
+        return countNodes(root-&gt;left) + countNodes(root-&gt;right) + 1;
+    }
+    int leftHeight(TreeNode* root) {
+        if (!root) return 0;
+        return 1 + leftHeight(root-&gt;left);
+    }
+    int rightHeight(TreeNode* root) {
+        if (!root) return 0;
+        return 1 + rightHeight(root-&gt;right);
+    }
+};
+
+class Solution {
+public:
+    int countNodes(TreeNode* root) {
+        int res = 0, h = getHeight(root);
+        if (h &lt; 0) return 0;
+        if (getHeight(root-&gt;right) == h - 1) return (1 &lt;&lt; h) + countNodes(root-&gt;right);
+        return (1 &lt;&lt; (h - 1)) + countNodes(root-&gt;left);
+    }
+    int getHeight(TreeNode* node) {
+        return node ? (1 + getHeight(node-&gt;left)) : -1;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_110</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a binary tree, determine if it is height-balanced.
+class Solution {
+public:    
+    bool isBalanced(TreeNode *root) {
+        if (checkDepth(root) == -1) return false;
+        else return true;
+    }
+    int checkDepth(TreeNode *root) {
+        if (!root) return 0;
+        int left = checkDepth(root-&gt;left);
+        if (left == -1) return -1;
+        int right = checkDepth(root-&gt;right);
+        if (right == -1) return -1;
+        int diff = abs(left - right);
+        if (diff &gt; 1) return -1;
+        else return 1 + max(left, right);
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_112</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given the below binary tree and sum = 22,
+
+      5
+     / \
+    4   8
+   /   / \
+  11  13  4
+ /  \      \
+7    2      1
+
+class Solution {
+public:
+    bool hasPathSum(TreeNode* root, int sum) {
+        if (!root) return false;
+        if (!root-&gt;left &amp;&amp; !root-&gt;right &amp;&amp; root-&gt;val == sum ) return true;
+        return hasPathSum(root-&gt;left, sum - root-&gt;val) || hasPathSum(root-&gt;right, sum - root-&gt;val);
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_111</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a binary tree, find its minimum depth.
+class Solution {
+public:
+    int minDepth(TreeNode* root) {
+        if (!root) return 0;
+        if (!root-&gt;left) return 1 + minDepth(root-&gt;right);
+        if (!root-&gt;right) return 1 + minDepth(root-&gt;left);
+        return 1 + min(minDepth(root-&gt;left), minDepth(root-&gt;right));
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_404</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Find the sum of all left leaves in a given binary tree.
+class Solution {
+public:
+    int sumOfLeftLeaves(TreeNode* root) {
+        if (!root || (!root-&gt;left &amp;&amp; !root-&gt;right)) return 0;
+        int res = 0;
+        helper(root-&gt;left, true, res);
+        helper(root-&gt;right, false, res);
+        return res;
+    }
+    void helper(TreeNode* node, bool left, int&amp; res) {
+        if (!node) return;
+        if (!node-&gt;left &amp;&amp; !node-&gt;right &amp;&amp; left) res += node-&gt;val;
+        helper(node-&gt;left, true, res);
+        helper(node-&gt;right, false, res);
+    }
+};
+
+class Solution {
+public:
+    int sumOfLeftLeaves(TreeNode* root) {
+        if (!root || (!root-&gt;left &amp;&amp; !root-&gt;right)) return 0;
+        int res = 0;
+        queue&lt;TreeNode*&gt; q;
+        q.push(root);
+        while (!q.empty()) {
+            TreeNode *t = q.front(); q.pop();
+            if (t-&gt;left &amp;&amp; !t-&gt;left-&gt;left &amp;&amp; !t-&gt;left-&gt;right) res += t-&gt;left-&gt;val;
+            if (t-&gt;left) q.push(t-&gt;left);
+            if (t-&gt;right) q.push(t-&gt;right);
+        }
+        return res;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_257</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">For example, given the following binary tree:
+   1
+ /   \
+2     3
+ \
+  5
+All root-to-leaf paths are:
+[&quot;1-&gt;2-&gt;5&quot;, &quot;1-&gt;3&quot;]
+
+class Solution {
+public:
+    vector&lt;string&gt; binaryTreePaths(TreeNode* root) {
+        vector&lt;string&gt; res;
+        if (root) helper(root, &quot;&quot;, res);
+        return res;
+    }
+    void helper(TreeNode* node, string out, vector&lt;string&gt;&amp; res) {
+        if (!node-&gt;left &amp;&amp; !node-&gt;right) res.push_back(out + to_string(node-&gt;val));
+        if (node-&gt;left) helper(node-&gt;left, out + to_string(node-&gt;val) + &quot;-&gt;&quot;, res);
+        if (node-&gt;right) helper(node-&gt;right, out + to_string(node-&gt;val) + &quot;-&gt;&quot;, res);
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_113</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">For example:
+Given the below binary tree and sum = 22,
+
+              5
+             / \
+            4   8
+           /   / \
+          11  13  4
+         /  \    / \
+        7    2  5   1
+return
+[
+   [5,4,11,2],
+   [5,8,4,5]
+]
+
+class Solution {
+public:
+    vector&lt;vector&lt;int&gt;&gt; pathSum(TreeNode* root, int sum) {
+        vector&lt;vector&lt;int&gt;&gt; res;
+        vector&lt;int&gt; out;
+        helper(root, sum, out, res);
+        return res;
+    }
+    void helper(TreeNode* node, int sum, vector&lt;int&gt;&amp; out, vector&lt;vector&lt;int&gt;&gt;&amp; res) {
+        if (!node) return;
+        out.push_back(node-&gt;val);
+        if (sum == node-&gt;val &amp;&amp; !node-&gt;left &amp;&amp; !node-&gt;right) {
+            res.push_back(out);
+        }
+        helper(node-&gt;left, sum - node-&gt;val, out, res);
+        helper(node-&gt;right, sum - node-&gt;val, out, res);
+        out.pop_back();
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_129</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Input: [1,2,3]
+    1
+   / \
+  2   3
+Output: 25
+Explanation:
+The root-to-leaf path 1-&gt;2 represents the number 12.
+The root-to-leaf path 1-&gt;3 represents the number 13.
+Therefore, sum = 12 + 13 = 25.
+
+class Solution {
+public:
+    int sumNumbers(TreeNode* root) {
+        return sumNumbersDFS(root, 0);
+    }
+    int sumNumbersDFS(TreeNode* root, int sum) {
+        if (!root) return 0;
+        sum = sum * 10 + root-&gt;val;
+        if (!root-&gt;left &amp;&amp; !root-&gt;right) return sum;
+        return sumNumbersDFS(root-&gt;left, sum) + sumNumbersDFS(root-&gt;right, sum);
+    }
+};
+</code></pre>
+
+<h4>二分搜索树</h4>
+
+<ul>
+<li>leet_235</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        if (!root) return NULL;
+        if (root-&gt;val &gt; max(p-&gt;val, q-&gt;val)) 
+            return lowestCommonAncestor(root-&gt;left, p, q);
+        else if (root-&gt;val &lt; min(p-&gt;val, q-&gt;val)) 
+            return lowestCommonAncestor(root-&gt;right, p, q);
+        else return root;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_98</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a binary tree, determine if it is a valid binary search tree (BST).
+
+class Solution {
+public:
+  bool isValidBST(TreeNode* root) {
+    return isValidBST(root, nullptr, nullptr);
+  }
+
+  bool isValidBST(TreeNode* root, TreeNode* min, TreeNode* max) {
+    if (!root) return true;
+
+    if (min &amp;&amp; min-&gt;val &gt;= root-&gt;val || max &amp;&amp; max-&gt;val &lt;= root-&gt;val)
+      return false;
+
+    return isValidBST(root-&gt;left, min, root) &amp;&amp; isValidBST(root-&gt;right, root, max);
+  } 
+};
+</code></pre>
+
+<ul>
+<li>leet_450</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">root = [5,3,6,2,4,null,7]
+key = 3
+
+    5
+   / \
+  3   6
+ / \   \
+2   4   7
+
+Given key to delete is 3. So we find the node with value 3 and delete it.
+
+One valid answer is [5,4,6,2,null,null,7], shown in the following BST.
+
+    5
+   / \
+  4   6
+ /     \
+2       7
+
+class Solution {
+public:
+    TreeNode* deleteNode(TreeNode* root, int key) {
+        if (!root) return NULL;
+        if (root-&gt;val &gt; key) {
+            root-&gt;left = deleteNode(root-&gt;left, key);
+        } else if (root-&gt;val &lt; key) {
+            root-&gt;right = deleteNode(root-&gt;right, key);
+        } else {
+            if (!root-&gt;left || !root-&gt;right) {
+                root = (root-&gt;left) ? root-&gt;left : root-&gt;right;
+            } else {
+                TreeNode *cur = root-&gt;right;
+                while (cur-&gt;left) cur = cur-&gt;left;
+                root-&gt;val = cur-&gt;val;
+                root-&gt;right = deleteNode(root-&gt;right, cur-&gt;val);
+            }
+        }
+        return root;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_108</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given the sorted array: [-10,-3,0,5,9],
+
+One possible answer is: [0,-3,9,-10,null,5], which represents the following height balanced BST:
+
+      0
+     / \
+   -3   9
+   /   /
+ -10  5
+class Solution {
+public:
+    TreeNode* sortedArrayToBST(vector&lt;int&gt;&amp; nums) {
+        return helper(nums, 0 , (int)nums.size() - 1);
+    }
+    TreeNode* helper(vector&lt;int&gt;&amp; nums, int left, int right) {
+        if (left &gt; right) return NULL;
+        int mid = left + (right - left) / 2;
+        TreeNode *cur = new TreeNode(nums[mid]);
+        cur-&gt;left = helper(nums, left, mid - 1);
+        cur-&gt;right = helper(nums, mid + 1, right);
+        return cur;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_230</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Input: root = [5,3,6,2,4,null,null,1], k = 3
+       5
+      / \
+     3   6
+    / \
+   2   4
+  /
+ 1
+Output: 3
+class Solution {
+public:
+    int kthSmallest(TreeNode* root, int k) {
+        int cnt = 0;
+        stack&lt;TreeNode*&gt; s;
+        TreeNode *p = root;
+        while (p || !s.empty()) {
+            while (p) {
+                s.push(p);
+                p = p-&gt;left;
+            }
+            p = s.top(); s.pop();
+            ++cnt;
+            if (cnt == k) return p-&gt;val;
+            p = p-&gt;right;
+        }
+        return 0;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_236</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Input: root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1
+Output: 3
+Explanation: The LCA of nodes 5 and 1 is 3.
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+       if (!root || p == root || q == root) return root;
+       TreeNode *left = lowestCommonAncestor(root-&gt;left, p, q);
+       TreeNode *right = lowestCommonAncestor(root-&gt;right, p , q);
+       if (left &amp;&amp; right) return root;
+       return left ? left : right;
+    }
+};
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/08/23 10:40 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E7%8E%A9%E8%BD%AC%E7%AE%97%E6%B3%95.html'>玩转算法</a></span>
@@ -1130,572 +3945,35 @@ public:
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15665280444092.html">
+                <a class="clearlink" href="15682514641307.html">
                 
-                  <h1>二叉树和递归</h1>
+                  <h1>贪心算法</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>天然递归结构</h4>
+                        	<h4>实现</h4>
 
 <ul>
-<li>空也是一棵二叉树</li>
-<li>是否存在键值</li>
+<li>leet_455</li>
+<li><img src="media/15682514641307/15682518263627.jpg" alt="" style="width:614px;"/></li>
+<li>leet_392</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-cpp">bool contain(Node8 node, Key key) {
-  if (!node) return false;
-  
-  if (key == node-&gt;key) return true;
-  
-  if(contain(node-&gt;left, key) ||
-     contain(node-&gt;right, key)) return true;
-  return false;
-}
-</code></pre>
+<h4>贪心和动态规划</h4>
 
 <ul>
-<li>leet_104</li>
+<li>leet_435</li>
+<li><img src="media/15682514641307/15682540246962.jpg" alt="" style="width:939px;"/></li>
 </ul>
 
-<pre class="line-numbers"><code class="language-cpp">class Solution {
-public:
-    int maxDepth(TreeNode* root) {
-        if (!root) return 0;
-        return 1 + max(maxDepth(root-&gt;left), maxDepth(root-&gt;right));
-    }
-};
-</code></pre>
+<h4>贪心选择性质</h4>
 
 <ul>
-<li>leet_111</li>
+<li>如果无法使用贪心算法，举出反例</li>
+<li>如何证明贪心算法的正确性</li>
+<li></li>
 </ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given a binary tree, find its minimum depth.
-class Solution {
-public:
-    int minDepth(TreeNode* root) {
-        if (!root) return 0;
-        if (!root-&gt;left) return 1 + minDepth(root-&gt;right);
-        if (!root-&gt;right) return 1 + minDepth(root-&gt;left);
-        return 1 + min(minDepth(root-&gt;left), minDepth(root-&gt;right));
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_226</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Invert a binary tree.
-
-     4
-   /   \
-  2     7
- / \   / \
-1   3 6   9
-
-to
-     4
-   /   \
-  7     2
- / \   / \
-9   6 3   1
-
-// Recursion
-class Solution {
-public:
-    TreeNode* invertTree(TreeNode* root) {
-        if (!root) return NULL;
-        TreeNode *tmp = root-&gt;left;
-        root-&gt;left = invertTree(root-&gt;right);
-        root-&gt;right = invertTree(tmp);
-        return root;
-    }
-};
-
-// Non-Recursion
-class Solution {
-public:
-    TreeNode* invertTree(TreeNode* root) {
-        if (!root) return NULL;
-        queue&lt;TreeNode*&gt; q;
-        q.push(root);
-        while (!q.empty()) {
-            TreeNode *node = q.front(); q.pop();
-            TreeNode *tmp = node-&gt;left;
-            node-&gt;left = node-&gt;right;
-            node-&gt;right = tmp;
-            if (node-&gt;left) q.push(node-&gt;left);
-            if (node-&gt;right) q.push(node-&gt;right);
-        }
-        return root;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_100</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">判断两棵树是否相同
-class Solution {
-public:
-    bool isSameTree(TreeNode *p, TreeNode *q) {
-        if (!p &amp;&amp; !q) return true;
-        if ((p &amp;&amp; !q) || (!p &amp;&amp; q) || (p-&gt;val != q-&gt;val)) return false;
-        return isSameTree(p-&gt;left, q-&gt;left) &amp;&amp; isSameTree(p-&gt;right, q-&gt;right);
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_101</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given a binary tree, check whether it is a mirror of itself (ie, symmetric around its center).
-
-For example, this binary tree is symmetric:
-
-    1
-   / \
-  2   2
- / \ / \
-3  4 4  3
-
-class Solution {
-public:
-    bool isSymmetric(TreeNode *root) {
-        if (!root) return true;
-        return isSymmetric(root-&gt;left, root-&gt;right);
-    }
-    bool isSymmetric(TreeNode *left, TreeNode *right) {
-        if (!left &amp;&amp; !right) return true;
-        if (left &amp;&amp; !right || !left &amp;&amp; right || left-&gt;val != right-&gt;val) return false;
-        return isSymmetric(left-&gt;left, right-&gt;right) &amp;&amp; isSymmetric(left-&gt;right, right-&gt;left);
-    }
-    
-};
-</code></pre>
-
-<ul>
-<li>leet_222</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given a complete binary tree, count the number of nodes.
-Input: 
-    1
-   / \
-  2   3
- / \  /
-4  5 6
-
-Output: 6
-由 root 根结点往下，分别找最靠左边和最靠右边的路径长度，如果长度相等，则证明二叉树最后一层节点是满的，是满二叉树，直接返回节点个数，如果不相等，则节点个数为左子树的节点个数加上右子树的节点个数再加1(根节点)，
-
-class Solution {
-public:
-    int countNodes(TreeNode* root) {
-        int hLeft = leftHeight(root);
-        int hRight = rightHeight(root);
-        if (hLeft == hRight) return pow(2, hLeft) - 1;
-        return countNodes(root-&gt;left) + countNodes(root-&gt;right) + 1;
-    }
-    int leftHeight(TreeNode* root) {
-        if (!root) return 0;
-        return 1 + leftHeight(root-&gt;left);
-    }
-    int rightHeight(TreeNode* root) {
-        if (!root) return 0;
-        return 1 + rightHeight(root-&gt;right);
-    }
-};
-
-class Solution {
-public:
-    int countNodes(TreeNode* root) {
-        int res = 0, h = getHeight(root);
-        if (h &lt; 0) return 0;
-        if (getHeight(root-&gt;right) == h - 1) return (1 &lt;&lt; h) + countNodes(root-&gt;right);
-        return (1 &lt;&lt; (h - 1)) + countNodes(root-&gt;left);
-    }
-    int getHeight(TreeNode* node) {
-        return node ? (1 + getHeight(node-&gt;left)) : -1;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_110</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given a binary tree, determine if it is height-balanced.
-class Solution {
-public:    
-    bool isBalanced(TreeNode *root) {
-        if (checkDepth(root) == -1) return false;
-        else return true;
-    }
-    int checkDepth(TreeNode *root) {
-        if (!root) return 0;
-        int left = checkDepth(root-&gt;left);
-        if (left == -1) return -1;
-        int right = checkDepth(root-&gt;right);
-        if (right == -1) return -1;
-        int diff = abs(left - right);
-        if (diff &gt; 1) return -1;
-        else return 1 + max(left, right);
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_112</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given the below binary tree and sum = 22,
-
-      5
-     / \
-    4   8
-   /   / \
-  11  13  4
- /  \      \
-7    2      1
-
-class Solution {
-public:
-    bool hasPathSum(TreeNode* root, int sum) {
-        if (!root) return false;
-        if (!root-&gt;left &amp;&amp; !root-&gt;right &amp;&amp; root-&gt;val == sum ) return true;
-        return hasPathSum(root-&gt;left, sum - root-&gt;val) || hasPathSum(root-&gt;right, sum - root-&gt;val);
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_111</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given a binary tree, find its minimum depth.
-class Solution {
-public:
-    int minDepth(TreeNode* root) {
-        if (!root) return 0;
-        if (!root-&gt;left) return 1 + minDepth(root-&gt;right);
-        if (!root-&gt;right) return 1 + minDepth(root-&gt;left);
-        return 1 + min(minDepth(root-&gt;left), minDepth(root-&gt;right));
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_404</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Find the sum of all left leaves in a given binary tree.
-class Solution {
-public:
-    int sumOfLeftLeaves(TreeNode* root) {
-        if (!root || (!root-&gt;left &amp;&amp; !root-&gt;right)) return 0;
-        int res = 0;
-        helper(root-&gt;left, true, res);
-        helper(root-&gt;right, false, res);
-        return res;
-    }
-    void helper(TreeNode* node, bool left, int&amp; res) {
-        if (!node) return;
-        if (!node-&gt;left &amp;&amp; !node-&gt;right &amp;&amp; left) res += node-&gt;val;
-        helper(node-&gt;left, true, res);
-        helper(node-&gt;right, false, res);
-    }
-};
-
-class Solution {
-public:
-    int sumOfLeftLeaves(TreeNode* root) {
-        if (!root || (!root-&gt;left &amp;&amp; !root-&gt;right)) return 0;
-        int res = 0;
-        queue&lt;TreeNode*&gt; q;
-        q.push(root);
-        while (!q.empty()) {
-            TreeNode *t = q.front(); q.pop();
-            if (t-&gt;left &amp;&amp; !t-&gt;left-&gt;left &amp;&amp; !t-&gt;left-&gt;right) res += t-&gt;left-&gt;val;
-            if (t-&gt;left) q.push(t-&gt;left);
-            if (t-&gt;right) q.push(t-&gt;right);
-        }
-        return res;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_257</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">For example, given the following binary tree:
-   1
- /   \
-2     3
- \
-  5
-All root-to-leaf paths are:
-[&quot;1-&gt;2-&gt;5&quot;, &quot;1-&gt;3&quot;]
-
-class Solution {
-public:
-    vector&lt;string&gt; binaryTreePaths(TreeNode* root) {
-        vector&lt;string&gt; res;
-        if (root) helper(root, &quot;&quot;, res);
-        return res;
-    }
-    void helper(TreeNode* node, string out, vector&lt;string&gt;&amp; res) {
-        if (!node-&gt;left &amp;&amp; !node-&gt;right) res.push_back(out + to_string(node-&gt;val));
-        if (node-&gt;left) helper(node-&gt;left, out + to_string(node-&gt;val) + &quot;-&gt;&quot;, res);
-        if (node-&gt;right) helper(node-&gt;right, out + to_string(node-&gt;val) + &quot;-&gt;&quot;, res);
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_113</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">For example:
-Given the below binary tree and sum = 22,
-
-              5
-             / \
-            4   8
-           /   / \
-          11  13  4
-         /  \    / \
-        7    2  5   1
-return
-[
-   [5,4,11,2],
-   [5,8,4,5]
-]
-
-class Solution {
-public:
-    vector&lt;vector&lt;int&gt;&gt; pathSum(TreeNode* root, int sum) {
-        vector&lt;vector&lt;int&gt;&gt; res;
-        vector&lt;int&gt; out;
-        helper(root, sum, out, res);
-        return res;
-    }
-    void helper(TreeNode* node, int sum, vector&lt;int&gt;&amp; out, vector&lt;vector&lt;int&gt;&gt;&amp; res) {
-        if (!node) return;
-        out.push_back(node-&gt;val);
-        if (sum == node-&gt;val &amp;&amp; !node-&gt;left &amp;&amp; !node-&gt;right) {
-            res.push_back(out);
-        }
-        helper(node-&gt;left, sum - node-&gt;val, out, res);
-        helper(node-&gt;right, sum - node-&gt;val, out, res);
-        out.pop_back();
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_129</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Input: [1,2,3]
-    1
-   / \
-  2   3
-Output: 25
-Explanation:
-The root-to-leaf path 1-&gt;2 represents the number 12.
-The root-to-leaf path 1-&gt;3 represents the number 13.
-Therefore, sum = 12 + 13 = 25.
-
-class Solution {
-public:
-    int sumNumbers(TreeNode* root) {
-        return sumNumbersDFS(root, 0);
-    }
-    int sumNumbersDFS(TreeNode* root, int sum) {
-        if (!root) return 0;
-        sum = sum * 10 + root-&gt;val;
-        if (!root-&gt;left &amp;&amp; !root-&gt;right) return sum;
-        return sumNumbersDFS(root-&gt;left, sum) + sumNumbersDFS(root-&gt;right, sum);
-    }
-};
-</code></pre>
-
-<h4>二分搜索树</h4>
-
-<ul>
-<li>leet_235</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">class Solution {
-public:
-    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
-        if (!root) return NULL;
-        if (root-&gt;val &gt; max(p-&gt;val, q-&gt;val)) 
-            return lowestCommonAncestor(root-&gt;left, p, q);
-        else if (root-&gt;val &lt; min(p-&gt;val, q-&gt;val)) 
-            return lowestCommonAncestor(root-&gt;right, p, q);
-        else return root;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_98</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given a binary tree, determine if it is a valid binary search tree (BST).
-
-class Solution {
-public:
-  bool isValidBST(TreeNode* root) {
-    return isValidBST(root, nullptr, nullptr);
-  }
-
-  bool isValidBST(TreeNode* root, TreeNode* min, TreeNode* max) {
-    if (!root) return true;
-
-    if (min &amp;&amp; min-&gt;val &gt;= root-&gt;val || max &amp;&amp; max-&gt;val &lt;= root-&gt;val)
-      return false;
-
-    return isValidBST(root-&gt;left, min, root) &amp;&amp; isValidBST(root-&gt;right, root, max);
-  } 
-};
-</code></pre>
-
-<ul>
-<li>leet_450</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">root = [5,3,6,2,4,null,7]
-key = 3
-
-    5
-   / \
-  3   6
- / \   \
-2   4   7
-
-Given key to delete is 3. So we find the node with value 3 and delete it.
-
-One valid answer is [5,4,6,2,null,null,7], shown in the following BST.
-
-    5
-   / \
-  4   6
- /     \
-2       7
-
-class Solution {
-public:
-    TreeNode* deleteNode(TreeNode* root, int key) {
-        if (!root) return NULL;
-        if (root-&gt;val &gt; key) {
-            root-&gt;left = deleteNode(root-&gt;left, key);
-        } else if (root-&gt;val &lt; key) {
-            root-&gt;right = deleteNode(root-&gt;right, key);
-        } else {
-            if (!root-&gt;left || !root-&gt;right) {
-                root = (root-&gt;left) ? root-&gt;left : root-&gt;right;
-            } else {
-                TreeNode *cur = root-&gt;right;
-                while (cur-&gt;left) cur = cur-&gt;left;
-                root-&gt;val = cur-&gt;val;
-                root-&gt;right = deleteNode(root-&gt;right, cur-&gt;val);
-            }
-        }
-        return root;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_108</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given the sorted array: [-10,-3,0,5,9],
-
-One possible answer is: [0,-3,9,-10,null,5], which represents the following height balanced BST:
-
-      0
-     / \
-   -3   9
-   /   /
- -10  5
-class Solution {
-public:
-    TreeNode* sortedArrayToBST(vector&lt;int&gt;&amp; nums) {
-        return helper(nums, 0 , (int)nums.size() - 1);
-    }
-    TreeNode* helper(vector&lt;int&gt;&amp; nums, int left, int right) {
-        if (left &gt; right) return NULL;
-        int mid = left + (right - left) / 2;
-        TreeNode *cur = new TreeNode(nums[mid]);
-        cur-&gt;left = helper(nums, left, mid - 1);
-        cur-&gt;right = helper(nums, mid + 1, right);
-        return cur;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_230</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Input: root = [5,3,6,2,4,null,null,1], k = 3
-       5
-      / \
-     3   6
-    / \
-   2   4
-  /
- 1
-Output: 3
-class Solution {
-public:
-    int kthSmallest(TreeNode* root, int k) {
-        int cnt = 0;
-        stack&lt;TreeNode*&gt; s;
-        TreeNode *p = root;
-        while (p || !s.empty()) {
-            while (p) {
-                s.push(p);
-                p = p-&gt;left;
-            }
-            p = s.top(); s.pop();
-            ++cnt;
-            if (cnt == k) return p-&gt;val;
-            p = p-&gt;right;
-        }
-        return 0;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_236</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Input: root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1
-Output: 3
-Explanation: The LCA of nodes 5 and 1 is 3.
-class Solution {
-public:
-    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
-       if (!root || p == root || q == root) return root;
-       TreeNode *left = lowestCommonAncestor(root-&gt;left, p, q);
-       TreeNode *right = lowestCommonAncestor(root-&gt;right, p , q);
-       if (left &amp;&amp; right) return root;
-       return left ? left : right;
-    }
-};
-</code></pre>
 
                         
                       </div>
@@ -1704,7 +3982,7 @@ public:
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/08/23 10:40 上午</span>
+                    <span class="date">2019/09/12 09:24 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E7%8E%A9%E8%BD%AC%E7%AE%97%E6%B3%95.html'>玩转算法</a></span>
@@ -1721,2388 +3999,108 @@ public:
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15662646498238.html">
+                <a class="clearlink" href="15676462008800.html">
                 
-                  <h1>队列</h1>
+                  <h1>动态规划</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>栈</h4>
+                        	<h4>记忆化搜索</h4>
 
 <ul>
-<li>leet_20</li>
+<li>递归是自上向下</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given a string containing just the characters &#39;(&#39;, &#39;)&#39;, &#39;{&#39;, &#39;}&#39;, &#39;[&#39; and &#39;]&#39;, determine if the input string is valid.
-class Solution {
-public:
-    bool isValid(string s) {
-        stack&lt;char&gt; parentheses;
-        for (int i = 0; i &lt; s.size(); ++i) {
-            if (s[i] == &#39;(&#39; || s[i] == &#39;[&#39; || s[i] == &#39;{&#39;) parentheses.push(s[i]);
-            else {
-                if (parentheses.empty()) return false;
-                if (s[i] == &#39;)&#39; &amp;&amp; parentheses.top() != &#39;(&#39;) return false;
-                if (s[i] == &#39;]&#39; &amp;&amp; parentheses.top() != &#39;[&#39;) return false;
-                if (s[i] == &#39;}&#39; &amp;&amp; parentheses.top() != &#39;{&#39;) return false;
-                parentheses.pop();
-            }
-        }
-        return parentheses.empty();
-    }
-}; 
-</code></pre>
-
-<ul>
-<li>leet_150</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Input: [&quot;2&quot;, &quot;1&quot;, &quot;+&quot;, &quot;3&quot;, &quot;*&quot;]
-Output: 9
-Explanation: ((2 + 1) * 3) = 9
-class Solution {
-public:
-    int evalRPN(vector&lt;string&gt;&amp; tokens) {
-        if (tokens.size() == 1) return stoi(tokens[0]);
-        stack&lt;int&gt; st;
-        for (int i = 0; i &lt; tokens.size(); ++i) {
-            if (tokens[i] != &quot;+&quot; &amp;&amp; tokens[i] != &quot;-&quot; &amp;&amp; tokens[i] != &quot;*&quot; &amp;&amp; tokens[i] != &quot;/&quot;) {
-                st.push(stoi(tokens[i]));
-            } else {
-                int num1 = st.top(); st.pop();
-                int num2 = st.top(); st.pop();
-                if (tokens[i] == &quot;+&quot;) st.push(num2 + num1);
-                if (tokens[i] == &quot;-&quot;) st.push(num2 - num1);
-                if (tokens[i] == &quot;*&quot;) st.push(num2 * num1);
-                if (tokens[i] == &quot;/&quot;) st.push(num2 / num1);
-            }
-        }
-        return st.top();
-    }
-};
-
-class Solution {
-public:
-    int evalRPN(vector&lt;string&gt;&amp; tokens) {
-        int op = (int)tokens.size() - 1;
-        return helper(tokens, op);
-    }
-    int helper(vector&lt;string&gt;&amp; tokens, int&amp; op) {
-        string str = tokens[op];
-        if (str != &quot;+&quot; &amp;&amp; str != &quot;-&quot; &amp;&amp; str != &quot;*&quot; &amp;&amp; str != &quot;/&quot;) return stoi(str);
-        int num1 = helper(tokens, --op);
-        int num2 = helper(tokens, --op);
-        if (str == &quot;+&quot;) return num2 + num1;
-        if (str == &quot;-&quot;) return num2 - num1;
-        if (str == &quot;*&quot;) return num2 * num1;
-        return num2 / num1;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_71</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">For example,
-path = &quot;/home/&quot;, =&gt; &quot;/home&quot;
-path = &quot;/a/./b/../../c/&quot;, =&gt; &quot;/c&quot;
-class Solution {
-public:
-    string simplifyPath(string path) {
-        vector&lt;string&gt; v;
-        int i = 0;
-        while (i &lt; path.size()) {
-            while (path[i] == &#39;/&#39; &amp;&amp; i &lt; path.size()) ++i;
-            if (i == path.size()) break;
-            int start = i;
-            while (path[i] != &#39;/&#39; &amp;&amp; i &lt; path.size()) ++i;
-            int end = i - 1;
-            string s = path.substr(start, end - start + 1);
-            if (s == &quot;..&quot;) {
-                if (!v.empty()) v.pop_back(); 
-            } else if (s != &quot;.&quot;) {
-                v.push_back(s);
-            }
-        }
-        if (v.empty()) return &quot;/&quot;;
-        string res;
-        for (int i = 0; i &lt; v.size(); ++i) {
-            res += &#39;/&#39; + v[i];
-        }
-        return res;
-    }
-};
-</code></pre>
-
-<h4>栈和递归的紧密关系</h4>
-
-<ul>
-<li>leet_144 </li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">For example:
-Given binary tree {1,#,2,3},
-
-   1
-    \
-     2
-    /
-   3
- 
-return [1,2,3].
-class Solution {
-public:
-    vector&lt;int&gt; preorderTraversal(TreeNode* root) {
-        vector&lt;int&gt; res;
-        stack&lt;TreeNode*&gt; s;
-        TreeNode *p = root;
-        while (!s.empty() || p) {
-            if (p) {
-                s.push(p);
-                res.push_back(p-&gt;val);
-                p = p-&gt;left;
-            } else {
-                TreeNode *t = s.top(); s.pop();
-                p = t-&gt;right;
-            }
-        }
-        return res;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_94 middle</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given a binary tree, return the  inorder  traversal of its nodes&#39; values.
-Example:
-Input: [1,null,2,3]
-   1
-    \
-     2
-    /
-   3
-Output: [1,3,2]
-
-class Solution {
-public:
-    vector&lt;int&gt; inorderTraversal(TreeNode* root) {
-        vector&lt;int&gt; res;
-        stack&lt;TreeNode*&gt; s;
-        TreeNode *p = root;
-        while (!s.empty() || p) {
-            if (p) {
-                s.push(p);
-                p = p-&gt;left;
-            } else {
-               TreeNode* t = s.top(); s.pop();
-                res.push_back(t-&gt;val);
-                p = t-&gt;right;
-            }
-        }
-        return res;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_145</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given a binary tree, return the postorder traversal of its nodes&#39; values.
-
-For example:
-Given binary tree {1,#,2,3},
-   1
-    \
-     2
-    /
-   3
-return [3,2,1].
-
-class Solution {
-public:
-    vector&lt;int&gt; postorderTraversal(TreeNode* root) {
-        vector&lt;int&gt; res;
-        stack&lt;TreeNode*&gt; s;
-        TreeNode *p = root;
-        while (!s.empty() || p) {
-            if (p) {
-                s.push(p);
-                res.insert(res.begin(), p-&gt;val);
-                p = p-&gt;right;
-            } else {
-                TreeNode *t = s.top(); s.pop();
-                p = t-&gt;left;
-            }
-        }
-        return res;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_341 </li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">class NestedIterator {
-public:
-    NestedIterator(vector&lt;NestedInteger&gt; &amp;nestedList) {
-        for (int i = nestedList.size() - 1; i &gt;= 0; --i) {
-            s.push(nestedList[i]);
-        }
-    }
-
-    int next() {
-        NestedInteger t = s.top(); s.pop();
-        return t.getInteger();
-    }
-
-    bool hasNext() {
-        while (!s.empty()) {
-            NestedInteger t = s.top(); 
-            if (t.isInteger()) return true;
-            s.pop();
-            for (int i = t.getList().size() - 1; i &gt;= 0; --i) {
-                s.push(t.getList()[i]);
-            }
-        }
-        return false;
-    }  
-
-private:
-    stack&lt;NestedInteger&gt; s;
-};
-</code></pre>
-
-<h4>队列</h4>
-
-<ul>
-<li>广度优先遍历</li>
-<li>树 层序遍历</li>
-<li>图 无权图的最短路径</li>
-<li>leet_102</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">Given a binary tree, return the  level order  traversal of its nodes&#39; values. (ie, from left to right, level by level).
-
-For example:
-Given binary tree {3,9,20,#,#,15,7},
-
-    3
-   / \
-  9  20
-    /  \
-   15   7
-class Solution {
-public:
-    vector&lt;vector&lt;int&gt;&gt; levelOrder(TreeNode* root) {
-        if (!root) return {};
-        vector&lt;vector&lt;int&gt;&gt; res;
-        queue&lt;TreeNode*&gt; q{{root}};
-        while (!q.empty()) {
-            vector&lt;int&gt; oneLevel;
-            for (int i = q.size(); i &gt; 0; --i) {
-                TreeNode *t = q.front(); q.pop();
-                oneLevel.push_back(t-&gt;val);
-                if (t-&gt;left) q.push(t-&gt;left);
-                if (t-&gt;right) q.push(t-&gt;right);
-            }
-            res.push_back(oneLevel);
-        }
-        return res;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_107</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">For example:
-Given binary tree {3,9,20,#,#,15,7},
-    3
-   / \
-  9  20
-    /  \
-   15   7 
-return its bottom-up level order traversal as:
-[
-  [15,7],
-  [9,20],
-  [3]
-]
-class Solution {
-public:
-    vector&lt;vector&lt;int&gt; &gt; levelOrderBottom(TreeNode* root) {
-        if (!root) return {};
-        vector&lt;vector&lt;int&gt;&gt; res;
-        queue&lt;TreeNode*&gt; q{{root}};
-        while (!q.empty()) {
-            vector&lt;int&gt; oneLevel;
-            for (int i = q.size(); i &gt; 0; --i) {
-                TreeNode *t = q.front(); q.pop();
-                oneLevel.push_back(t-&gt;val);
-                if (t-&gt;left) q.push(t-&gt;left);
-                if (t-&gt;right) q.push(t-&gt;right);
-            }
-            res.insert(res.begin(), oneLevel);
-        }
-        return res;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_103</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">For example:
-Given binary tree [3,9,20,null,null,15,7],
-    3
-   / \
-  9  20
-    /  \
-   15   7
-return its zigzag level order traversal as:
-[
-  [3],
-  [20,9],
-  [15,7]
-]
-class Solution {
-public:
-    vector&lt;vector&lt;int&gt;&gt; zigzagLevelOrder(TreeNode* root) {
-        if (!root) return {};
-        vector&lt;vector&lt;int&gt;&gt; res;
-        queue&lt;TreeNode*&gt; q{{root}};
-        bool leftToRight = true;
-        while (!q.empty()) {
-            int size = q.size();
-            vector&lt;int&gt; oneLevel(size);
-            for (int i = 0; i &lt; size; ++i) {
-                TreeNode *t = q.front(); q.pop();
-                int idx = leftToRight ? i : (size - 1 - i);
-                oneLevel[idx] = t-&gt;val;
-                if (t-&gt;left) q.push(t-&gt;left);
-                if (t-&gt;right) q.push(t-&gt;right);
-            }
-            leftToRight = !leftToRight;
-            res.push_back(oneLevel);
-        }
-        return res;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_199</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given a binary tree, imagine yourself standing on the  right  side of it, return the values of the nodes you can see ordered from top to bottom.
-
-For example:
-Given the following binary tree,
-
-   1            &lt;---
- /   \
-2     3         &lt;---
- \     \
-  5     4       &lt;---
-
-class Solution {
-public:
-    vector&lt;int&gt; rightSideView(TreeNode *root) {
-        vector&lt;int&gt; res;
-        if (!root) return res;
-        queue&lt;TreeNode*&gt; q{{root}};
-        while (!q.empty()) {
-            res.push_back(q.back()-&gt;val);
-            int size = q.size();
-            for (int i = 0; i &lt; size; ++i) {
-                TreeNode *node = q.front();
-                q.pop();
-                if (node-&gt;left) q.push(node-&gt;left);
-                if (node-&gt;right) q.push(node-&gt;right);
-            }
-        }
-        return res;
-    }
-};
-</code></pre>
-
-<h4>BFS</h4>
-
-<ul>
-<li>leet_279</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given a positive integer  n , find the least number of perfect square numbers (for example, 1, 4, 9, 16, ...) which sum to  n.
-
-Example 1:
-
-Input: _n_ = 12
-Output: 3 
-Explanation: 12 = 4 + 4 + 4.
-
-class Solution {
-public:
-    int numSquares(int n) {
-        vector&lt;int&gt; dp(n + 1, INT_MAX);
-        dp[0] = 0;
-        for (int i = 0; i &lt;= n; ++i) {
-            for (int j = 1; i + j * j &lt;= n; ++j) {
-                dp[i + j * j] = min(dp[i + j * j], dp[i] + 1);
-            }
-        }
-        return dp.back();
-    }
-};
-
-class Solution {
-public:
-    int numSquares(int n) {
-        
-      int ret;
-      assert(n &gt; 0);
-      vector&lt;bool&gt; visited(n+1, false);
-      visited[n] = true;
-      queue&lt;pair&lt;int, int&gt;&gt; q;
-
-      q.push(make_pair(n, 0));
-
-      while (!q.empty()) {
-        int num = q.front().first;
-        int step = q.front().second;
-        q.pop();
-
-        for (int i = 1; ; i++) {
-          int a = num - i * i;
-
-          if (a &lt; 0) break;
-
-          if (a == 0) return ret = step + 1;
-
-          if (!visited[a]) {
-            visited[a] = true;
-            q.push(make_pair(a, step + 1));
-          }
-        }
-      }
-      return ret;
-    }
-};
-
-</code></pre>
-
-<ul>
-<li>leet_127</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Input:
-beginWord = &quot;hit&quot;,
-endWord = &quot;cog&quot;,
-wordList = [&quot;hot&quot;,&quot;dot&quot;,&quot;dog&quot;,&quot;lot&quot;,&quot;log&quot;,&quot;cog&quot;]
-
-Output: 5
-
-Explanation: As one shortest transformation is &quot;hit&quot; -&gt; &quot;hot&quot; -&gt; &quot;dot&quot; -&gt; &quot;dog&quot; -&gt; &quot;cog&quot;,
-return its length 5.
-class Solution {
-  public:
-  int ladderLength(string beginWord, string endWord, vector&lt;string&gt;&amp; wordList) {
-    unordered_set&lt;string&gt; wordSet(wordList.begin(), wordList.end());
-    if (!wordSet.count(endWord)) return 0;
-    queue&lt;string&gt; q{{beginWord}};
-    int res = 0;
-    while (!q.empty()) {
-      for (int k = q.size(); k &gt; 0; --k) {
-        string word = q.front(); q.pop();
-        if (word == endWord) return res + 1;
-        for (int i = 0; i &lt; word.size(); ++i) {
-          string newWord = word;
-          for (char ch = &#39;a&#39;; ch &lt;= &#39;z&#39;; ++ch) {
-            newWord[i] = ch;
-            if (wordSet.count(newWord) &amp;&amp; newWord != word) {
-              q.push(newWord);
-              wordSet.erase(newWord);
-            }   
-          }
-        }
-      }
-      ++res;
-    }
-    return 0;
-  }
-};
-</code></pre>
-
-<ul>
-<li>leet_126</li>
-</ul>
-
-<h4>优先级队列</h4>
-
-<ul>
-<li>底层实现,堆</li>
-<li>堆的底层实现, 白板编程</li>
-<li>priority_queue</li>
-<li>leet_347 O(nlog(n-k)) O(nlog(n-k))</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given a non-empty array of integers, return the  k  most frequent elements.
-
-Example 1:
-
-Input: nums = [1,1,1,2,2,3], k = 2
-Output: [1,2]
-class Solution {
-public:
-    vector&lt;int&gt; topKFrequent(vector&lt;int&gt;&amp; nums, int k) {
-        unordered_map&lt;int, int&gt; m;
-        priority_queue&lt;pair&lt;int, int&gt;&gt; q;
-        vector&lt;int&gt; res;
-        for (auto a : nums) ++m[a];
-        for (auto it : m) q.push({it.second, it.first});
-        for (int i = 0; i &lt; k; ++i) {
-            res.push_back(q.top().second); q.pop();
-        }
-        return res;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_23 </li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Merge  k  sorted linked lists and return it as one sorted list. Analyze and describe its complexity.
-
-Example:
-
-Input:
-[
-  1-&gt;4-&gt;5,
-  1-&gt;3-&gt;4,
-  2-&gt;6
-]
-Output: 1-&gt;1-&gt;2-&gt;3-&gt;4-&gt;4-&gt;5-&gt;6
-class Solution {
-  public:
-  ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
-    ListNode node(0), *p = &amp;node;
-
-    while (l1 &amp;&amp; l2) {
-      if (l1-&gt;val &lt; l2-&gt;val) {
-        p-&gt;next = l1;
-        l1 = l1-&gt;next;
-      } else {
-        p-&gt;next = l2;
-        l2 = l2-&gt;next;
-      }
-      p = p-&gt;next;
-    }
-
-    p-&gt;next = l1 ? l1 : l2;
-    return node.next;
-  }
-  
-  ListNode* mergeKLists(vector&lt;ListNode*&gt;&amp; lists) {
-
-    if (lists.empty()) return nullptr;
-    
-    while (lists.size() &gt; 1) {
-      lists.push_back(mergeTwoLists(lists[0], lists[1]));
-      lists.erase(lists.begin());
-      lists.erase(lists.begin());
-    }
-    
-    return lists[0];
-  }
-};
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/20 09:30 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E7%8E%A9%E8%BD%AC%E7%AE%97%E6%B3%95.html'>玩转算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15659210764719.html">
-                
-                  <h1>链表</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>反转</h4>
-
-<ul>
-<li>leet_206</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Reverse a singly linked list.
-
-Example:
-
-Input: 1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;NULL
-Output: 5-&gt;4-&gt;3-&gt;2-&gt;1-&gt;NULL
-class Solution {
-public:
-    ListNode* reverseList(ListNode* head) {
-      ListNode* pre = nullptr;
-      while (head) {
-        ListNode* next = head-&gt;next;
-        head-&gt;next= pre;
-        pre = head;
-        head = next;
-      }
-      return pre;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_92</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Reverse a linked list from position m to n. Do it in one-pass.
-
-Note: 1 ≤ m ≤ n ≤ length of list.
-
-Example:
-
-Input: 1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;NULL, m = 2, n = 4
-Output: 1-&gt;4-&gt;3-&gt;2-&gt;5-&gt;NULL
-class Solution {
-public:
-  ListNode* reverseBetween(ListNode* head, int m, int n) {
-    ListNode dumy(0);
-    dumy.next = head;
-    ListNode* pre = &amp;dumy;
-    for (int i = 0; i &lt; m - 1; i++) pre = pre-&gt;next;
-
-    ListNode* cur = pre-&gt;next;
-    for (int i = m; i &lt; n; i++) {
-      ListNode* p = cur-&gt;next;
-      cur-&gt;next = p-&gt;next;
-      p-&gt;next = pre-&gt;next;
-      pre-&gt;next = p;
-    }
-    
-    return dumy.next;
-  }
-};
-</code></pre>
-
-<ul>
-<li>leet_83</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given a sorted linked list, delete all duplicates such that each element appear only  once.
-
-Example 1:
-
-Input: 1-&gt;1-&gt;2
-Output: 1-&gt;2
-class Solution {
-public:
-    ListNode* deleteDuplicates(ListNode* head) {
-        ListNode *cur = head;
-        while (cur &amp;&amp; cur-&gt;next) {
-            if (cur-&gt;val == cur-&gt;next-&gt;val) {
-                cur-&gt;next = cur-&gt;next-&gt;next;
-            } else {
-                cur = cur-&gt;next;
-            }
-        }
-        return head;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_86 </li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given a linked list and a value  x , partition it such that all nodes less than  x  come before nodes greater than or equal to  x.
-
-You should preserve the original relative order of the nodes in each of the two partitions.
-
-For example,
-Given 1-&gt;4-&gt;3-&gt;2-&gt;5-&gt;2 and  x  = 3,
-return 1-&gt;2-&gt;2-&gt;4-&gt;3-&gt;5.
-就是将所有小于给定值的节点取出组成一个新的链表，此时原链表中剩余的节点的值都大于或等于给定值，只要将原链表直接接在新链表后即可
-class Solution {
-public:
-    ListNode* partition(ListNode* head, int x) {
-      ListNode node1(0);
-      ListNode node2(0);
-      ListNode* p1 = &amp;node1;
-      ListNode* p2 = &amp;node2;
-      while (head) {
-        if (head-&gt;val &lt; x) {
-          p1-&gt;next = head;
-          p1 = p1-&gt;next;
-        } else {
-          p2-&gt;next = head;
-          p2 = p2-&gt;next;
-        }
-        head = head-&gt;next;
-      }
-      p2-&gt;next = nullptr;
-      p1-&gt;next = node2.next;
-      return node1.next;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_328</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given a singly linked list, group all odd nodes together followed by the even nodes. Please note here we are talking about the node number and not the value in the nodes.
-
-You should try to do it in place. The program should run in O(1) space complexity and O(nodes) time complexity.
-
-Example 1:
-
-Input: 1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;NULL
-Output: 1-&gt;3-&gt;5-&gt;2-&gt;4-&gt;NULL
-class Solution {
-public:
-    ListNode* oddEvenList(ListNode* head) {
-      ListNode node1(0), node2(0);
-      ListNode* p1 = &amp;node1;
-      ListNode* p2 = &amp;node2;
-      int cnt = 1;
-      while (head) {
-        if (cnt++ % 2 == 1) {
-          p1-&gt;next = head;
-          p1 = p1-&gt;next;
-        } else {
-          p2-&gt;next = head;
-          p2 = p2-&gt;next;
-        }
-        head = head-&gt;next;
-      }
-      p2-&gt;next = nullptr;
-      p1-&gt;next = node2.next;
-      return node1.next;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_2</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Input: (2 -&gt; 4 -&gt; 3) + (5 -&gt; 6 -&gt; 4)
-Output: 7 -&gt; 0 -&gt; 8
-Explanation: 342 + 465 = 807.
-class Solution {
-public:
-  ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
-    ListNode node(0), *p = &amp;node;
-    int extra = 0;
-    while (l1 || l2 || extra) {
-      if (l1) extra += l1-&gt;val, l1 = l1-&gt;next;
-      if (l2) extra += l2-&gt;val, l2 = l2-&gt;next;
-      p-&gt;next = new ListNode(extra % 10);
-      extra /= 10;
-      p = p-&gt;next;
-    }
-    return node.next;
-
-  }
-};
-</code></pre>
-
-<ul>
-<li>leet_445</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Follow up:
-What if you cannot modify the input lists? In other words, reversing the lists is not allowed.
-
-Example:
-
-Input: (7 -&gt; 2 -&gt; 4 -&gt; 3) + (5 -&gt; 6 -&gt; 4)
-Output: 7 -&gt; 8 -&gt; 0 -&gt; 7
-class Solution {
-public:
-  ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
-    ListNode node(0), *p = &amp;node;
-    std::vector&lt;int&gt; num1, num2;
-    while (l1) {
-      num1.push_back(l1-&gt;val);
-      l1 = l1-&gt;next;
-    }
-    while (l2) {
-      num2.push_back(l2-&gt;val);
-      l2 = l2-&gt;next;
-    }
-
-    int extra = 0;
-    int i = num1.size();
-    int j = num2.size();
-    ListNode* pre = nullptr;
-    while (i &gt; 0|| j &gt; 0|| extra) {
-      if (--i &gt;= 0) extra += num1[i];
-      if (--j &gt;= 0) extra += num2[j];
-      ListNode* node = new ListNode(extra % 10);
-      node-&gt;next = pre;
-      pre = node;
-      p-&gt;next = pre;
-      extra /= 10;
-    }
-    return node.next;
-  }
-};
-</code></pre>
-
-<h4>设立虚拟头节点</h4>
-
-<ul>
-<li>leet_203</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Remove all elements from a linked list of integers that have value val.
-
-Example
-Given: 1 -- &gt; 2 --&gt; 6 --&gt; 3 --&gt; 4 --&gt; 5 --&gt; 6, val = 6
-Return: 1 -- &gt; 2 --&gt; 3 --&gt; 4 --&gt; 5
-class Solution {
-public:
-  ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
-    ListNode node(0), *p = &amp;node;
-    int extra = 0;
-    while (l1 || l2 || extra) {
-      if (l1) extra += l1-&gt;val, l1 = l1-&gt;next;
-      if (l2) extra += l2-&gt;val, l2 = l2-&gt;next;
-      p-&gt;next = new ListNode(extra % 10);
-      extra /= 10;
-      p = p-&gt;next;
-    }
-    return node.next;
-
-  }
-};
-</code></pre>
-
-<ul>
-<li>leet_82</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">class Solution {
-public:
-    ListNode* deleteDuplicates(ListNode* head) {
-        if (!head || !head-&gt;next) return head;
-        ListNode *dummy = new ListNode(-1), *pre = dummy;
-        dummy-&gt;next = head;
-        while (pre-&gt;next) {
-            ListNode *cur = pre-&gt;next;
-            while (cur-&gt;next &amp;&amp; cur-&gt;next-&gt;val == cur-&gt;val) {
-                cur = cur-&gt;next;
-            }
-            if (cur != pre-&gt;next) pre-&gt;next = cur-&gt;next;
-            else pre = pre-&gt;next;
-        }
-        return dummy-&gt;next;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_21</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Input: 1-&gt;2-&gt;4, 1-&gt;3-&gt;4
-Output: 1-&gt;1-&gt;2-&gt;3-&gt;4-&gt;4
-class Solution {
-public:
-  ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
-
-    ListNode node(0), *p = &amp;node;
-    while (l1 &amp;&amp; l2) {
-      if (l1-&gt;val &lt; l2-&gt;val) {
-        p-&gt;next = l1;
-        l1 = l1-&gt;next;
-      } else {
-        p-&gt;next = l2;
-        l2 = l2-&gt;next;
-      }
-      p = p-&gt;next;
-    }
-
-    p-&gt;next = l1 ? l1 : l2;
-    return node.next;
-  }
-};
-</code></pre>
-
-<ul>
-<li>leet_25</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Example:
-
-Given this linked list: 1-&gt;2-&gt;3-&gt;4-&gt;5
-
-For k = 2, you should return: 2-&gt;1-&gt;4-&gt;3-&gt;5
-
-For k = 3, you should return: 3-&gt;2-&gt;1-&gt;4-&gt;5
-class Solution {
-public:
-    ListNode* reverseKGroup(ListNode* head, int k) {
-      ListNode dumy(0), *pre = &amp;dumy, *cur = &amp;dumy;
-      dumy.next = head;
-      int num = 0;
-      while (cur = cur-&gt;next)  num++;
-      while (num &gt;= k) {
-        cur = pre-&gt;next;
-        for (int i = 1; i &lt; k; i++) {
-          ListNode* t = cur-&gt;next;
-          cur-&gt;next = t-&gt;next;
-          t-&gt;next = pre-&gt;next;
-          pre-&gt;next = t;
-        }
-        pre = cur;
-        num -= k;
-      }
-      return dumy.next;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_147</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Sort a linked list using insertion sort.
-Input: 4-&gt;2-&gt;1-&gt;3
-Output: 1-&gt;2-&gt;3-&gt;4
-class Solution {
-public:
-    ListNode* insertionSortList(ListNode* head) {
-        ListNode* dummy = new ListNode(0);
-        dummy -&gt; next = head;
-        ListNode *pre = dummy, *cur = head;
-        while (cur) {
-            if ((cur -&gt; next) &amp;&amp; (cur -&gt; next -&gt; val &lt; cur -&gt; val)) {
-                while ((pre -&gt; next) &amp;&amp; (pre -&gt; next -&gt; val &lt; cur -&gt; next -&gt; val)) {
-                    pre = pre -&gt; next;
-                }
-                ListNode* temp = pre -&gt; next;
-                pre -&gt; next = cur -&gt; next;
-                cur -&gt; next = cur -&gt; next -&gt; next;
-                pre -&gt; next -&gt; next = temp;
-                pre = dummy;
-            }
-            else {
-                cur = cur -&gt; next;
-            }
-        }
-        return dummy -&gt; next;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_148</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Sort a linked list in  O ( n  log  n ) time using constant space complexity.
-
-Example 1:
-
-Input: 4-&gt;2-&gt;1-&gt;3
-Output: 1-&gt;2-&gt;3-&gt;4
-Example 2:
-
-Input: -1-&gt;5-&gt;3-&gt;4-&gt;0
-Output: -1-&gt;0-&gt;3-&gt;4-&gt;5
-class Solution {
-public:
-    ListNode* sortList(ListNode* head) {
-        if (!head || !head-&gt;next) return head;
-        ListNode *slow = head, *fast = head, *pre = head;
-        while (fast &amp;&amp; fast-&gt;next) {
-            pre = slow;
-            slow = slow-&gt;next;
-            fast = fast-&gt;next-&gt;next;
-        }
-        pre-&gt;next = NULL;
-        return merge(sortList(head), sortList(slow));
-    }
-    ListNode* merge(ListNode* l1, ListNode* l2) {
-        ListNode *dummy = new ListNode(-1);
-        ListNode *cur = dummy;
-        while (l1 &amp;&amp; l2) {
-            if (l1-&gt;val &lt; l2-&gt;val) {
-                cur-&gt;next = l1;
-                l1 = l1-&gt;next;
-            } else {
-                cur-&gt;next = l2;
-                l2 = l2-&gt;next;
-            }
-            cur = cur-&gt;next;
-        }
-        if (l1) cur-&gt;next = l1;
-        if (l2) cur-&gt;next = l2;
-        return dummy-&gt;next;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_237</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Supposed the linked list is 1 -&gt; 2 -&gt; 3 -&gt; 4 and you are given the third node with value 3, the linked list should become 1 -&gt; 2 -&gt; 4 after calling your function.
-class Solution {
-public:
-    void deleteNode(ListNode* node) {
-        node-&gt;val = node-&gt;next-&gt;val;
-        ListNode *tmp = node-&gt;next;
-        node-&gt;next = tmp-&gt;next;
-        delete tmp;
-    }
-};
-</code></pre>
-
-<h4>双节点</h4>
-
-<ul>
-<li>leet_61</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given a list, rotate the list to the right by  k  places, where  k  is non-negative.
-
-For example:
-Given 1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;NULL and  k  = 2,
-return 4-&gt;5-&gt;1-&gt;2-&gt;3-&gt;NULL.
-class Solution {
-public:
-    ListNode *rotateRight(ListNode *head, int k) {
-        if (!head) return NULL;
-        int n = 0;
-        ListNode *cur = head;
-        while (cur) {
-            ++n;
-            cur = cur-&gt;next;
-        }
-        k %= n;
-        ListNode *fast = head, *slow = head;
-        for (int i = 0; i &lt; k; ++i) {
-            if (fast) fast = fast-&gt;next;
-        }
-        if (!fast) return head;
-        while (fast-&gt;next) {
-            fast = fast-&gt;next;
-            slow = slow-&gt;next;
-        }
-        fast-&gt;next = head;
-        fast = slow-&gt;next;
-        slow-&gt;next = NULL;
-        return fast;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_143</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given a singly linked list  L :  L 0→ L 1→…→ L n -1→ L n,
-reorder it to:  L 0→ L n → L 1→ L n -1→ L 2→ L n -2→…
-
-You may not modify the values in the list&#39;s nodes, only nodes itself may be changed.
-
-Example 1:
-
-Given 1-&gt;2-&gt;3-&gt;4, reorder it to 1-&gt;4-&gt;2-&gt;3.
-Example 2:
-
-Given 1-&gt;2-&gt;3-&gt;4-&gt;5, reorder it to 1-&gt;5-&gt;2-&gt;4-&gt;3.
-class Solution {
-public:
-  
-    ListNode* reverse(ListNode* head) {
-      ListNode *pre = nullptr, *next = nullptr;
-      while (head) {
-        next = head-&gt;next;
-        head-&gt;next = pre;
-        pre = head;
-        head = next;
-      }
-      return pre;
-    }
-  
-    void reorderList(ListNode* head) {
-      if (!head || !head-&gt;next || !head-&gt;next-&gt;next) return;
-      ListNode *slow = head, *fast = head;
-      while (fast-&gt;next &amp;&amp; fast-&gt;next-&gt;next) {
-        slow = slow-&gt;next;
-        fast = fast-&gt;next-&gt;next;
-      }
-      
-      ListNode* mid = slow-&gt;next;
-      slow-&gt;next = nullptr;
-      ListNode* rhead = reverse(mid);
-      
-      while (head &amp;&amp; rhead) {
-        ListNode* next = head-&gt;next;
-        head-&gt;next = rhead;
-        rhead = rhead-&gt;next;
-        head-&gt;next-&gt;next = next;
-        head = next;
-      }
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_234</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given a singly linked list, determine if it is a palindrome.
-
-Example 1:
-
-Input: 1-&gt;2
-Output: false
-Example 2:
-
-Input: 1-&gt;2-&gt;2-&gt;1
-Output: true
-class Solution {
-  public:
-  ListNode* reverse(ListNode* head) {
-    ListNode* pre = nullptr, *next = nullptr;
-
-    while (head) {
-      next = head-&gt;next;
-      head-&gt;next = pre;
-      pre = head;
-      head = next;
-    }
-
-    return pre;
-  }
-
-  bool isPalindrome(ListNode* head) {
-    if (!head || !head-&gt;next) return true;
-    
-    ListNode* fast = head, *slow = head;
-    while (fast-&gt;next &amp;&amp; fast-&gt;next-&gt;next) {
-      slow = slow-&gt;next;
-      fast = fast-&gt;next-&gt;next;
-    }
-
-    ListNode* mid = slow-&gt;next;
-    ListNode* rhead = reverse(mid);
-    while (rhead) {
-      if (rhead-&gt;val != head-&gt;val) return false;
-      rhead = rhead-&gt;next;
-      head = head-&gt;next;
-    }
-    return true;
-  }
-};
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/16 10:04 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E7%8E%A9%E8%BD%AC%E7%AE%97%E6%B3%95.html'>玩转算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15647133717861.html">
-                
-                  <h1>查找表</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>两类</h4>
-
-<ul>
-<li>查找有无</li>
-<li>查找对应关系</li>
-<li>有序和查找是关联</li>
-<li>如果数组有序</li>
-<li>leet_349</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given two arrays, write a function to compute their intersection.
-class Solution {
-public:
-    vector&lt;int&gt; intersection(vector&lt;int&gt;&amp; nums1, vector&lt;int&gt;&amp; nums2) {
-        set&lt;int&gt; s(nums1.begin(), nums1.end()), res;
-        for (auto a : nums2) {
-            if (s.count(a)) res.insert(a);
-        }
-        return vector&lt;int&gt;(res.begin(), res.end());
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_350</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given two arrays, write a function to compute their intersection.
-
-Example 1:
-
-Input: nums1 = [1,2,2,1], nums2 = [2,2]
-Output: [2,2]
-class Solution {
-public:
-    vector&lt;int&gt; intersect(vector&lt;int&gt;&amp; nums1, vector&lt;int&gt;&amp; nums2) {
-        unordered_map&lt;int, int&gt; m;
-        vector&lt;int&gt; res;
-        for (auto a : nums1) ++m[a];
-        for (auto a : nums2) {
-            if (m[a]-- &gt; 0) res.push_back(a);
-        }
-        return res;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_242</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">For example,
-s = &quot;anagram&quot;, t = &quot;nagaram&quot;, return true.
-s = &quot;rat&quot;, t = &quot;car&quot;, return false.
-
-class Solution {
-public:
-    bool isAnagram(string s, string t) {
-        if (s.size() != t.size()) return false;
-        int m[26] = {0};
-        for (int i = 0; i &lt; s.size(); ++i) ++m[s[i] - &#39;a&#39;];
-        for (int i = 0; i &lt; t.size(); ++i) {
-            if (--m[t[i] - &#39;a&#39;] &lt; 0) return false;
-        }
-        return true;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_202</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Write an algorithm to determine if a number is &quot;happy&quot;.
-
-A happy number is a number defined by the following process: Starting with any positive integer, replace the number by the sum of the squares of its digits, and repeat the process until the number equals 1 (where it will stay), or it loops endlessly in a cycle which does not include 1. Those numbers for which this process ends in 1 are happy numbers.
-
-Example: 
-
-Input: 19
-Output: true
-Explanation: 
-1^2 + 9^2 = 82
-8^2 + 2^2 = 68
-6^2 + 8^2 = 100
-1^2 + 0^2 + 0^2 = 1
-class Solution {
-public:
-    bool isHappy(int n) {
-        while (n != 1 &amp;&amp; n != 4) {
-            int sum = 0;
-            while (n) {
-                sum += (n % 10) * (n % 10);
-                n /= 10;
-            }
-            n = sum;
-        }
-        return n == 1;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_290</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given a pattern and a string str, find if str follows the same pattern.
-
-Here follow means a full match, such that there is a bijection between a letter in pattern and a non-empty word in str.
-
-Example 1:
-
-Input: pattern = &quot;abba&quot;, str = &quot;dog cat cat dog&quot;
-Output: true
-Example 2:
-
-Input:pattern = &quot;abba&quot;, str = &quot;dog cat cat fish&quot;
-Output: false
-class Solution {
-public:
-    bool wordPattern(string pattern, string str) {
-        unordered_map&lt;char, int&gt; m1;
-        unordered_map&lt;string, int&gt; m2;
-        istringstream in(str);
-        int i = 0, n = pattern.size();
-        for (string word; in &gt;&gt; word; ++i) {
-            if (i == n || m1[pattern[i]] != m2[word]) return false;
-            m1[pattern[i]] = m2[word] = i + 1;
-        }
-        return i == n;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_205</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given two strings  s  and  t , determine if they are isomorphic.
-
-Two strings are isomorphic if the characters in  s  can be replaced to get  t.
-
-All occurrences of a character must be replaced with another character while preserving the order of characters. No two characters may map to the same character but a character may map to itself.
-
-Example 1:
-
-Input: _s_ = &quot;egg&quot;, _t =_&quot;add&quot;
-Output: true
-class Solution {
-public:
-    bool isIsomorphic(string s, string t) {
-        int m1[256] = {0}, m2[256] = {0}, n = s.size();
-        for (int i = 0; i &lt; n; ++i) {
-            if (m1[s[i]] != m2[t[i]]) return false;
-            m1[s[i]] = i + 1;
-            m2[t[i]] = i + 1;
-        }
-        return true;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_451</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Input:
-&quot;tree&quot;
-
-Output:
-&quot;eert&quot;
-
-Explanation:
-&#39;e&#39; appears twice while &#39;r&#39; and &#39;t&#39; both appear once.
-So &#39;e&#39; must appear before both &#39;r&#39; and &#39;t&#39;. Therefore &quot;eetr&quot; is also a valid answer.
-class Solution {
-public:
-    string frequencySort(string s) {
-        string res;
-        vector&lt;string&gt; v(s.size() + 1);
-        unordered_map&lt;char, int&gt; m;
-        for (char c : s) ++m[c];
-        for (auto &amp;a : m) {
-            v[a.second].append(a.second, a.first);
-        }
-        for (int i = s.size(); i &gt; 0; --i) {
-            if (!v[i].empty()) res.append(v[i]);
-        }
-        return res;
-    }
-};
-</code></pre>
-
-<h4>两数求和</h4>
-
-<ul>
-<li>leet_1 排序后,双索引对撞</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">class Solution {
-public:
-    vector&lt;int&gt; twoSum(vector&lt;int&gt;&amp; nums, int target) {
-        unordered_map&lt;int, int&gt; m;
-        for (int i = 0; i &lt; nums.size(); ++i) {
-            if (m.count(target - nums[i])) {
-                return {i, m[target - nums[i]]};
-            }
-            m[nums[i]] = i;
-        }
-        return {};
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_15</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given an array  S  of  n  integers, are there elements  a ,  b ,  c  in  S  such that  a  +  b  +  c  = 0? Find all unique triplets in the array which gives the sum of zero.
-
-Note:
-
-Elements in a triplet ( a , b , c ) must be in non-descending order. (ie,  a  ≤  b  ≤  c )
-The solution set must not contain duplicate triplets.
- 
-
-    For example, given array S = {-1 0 1 2 -1 -4},
-
-    A solution set is:
-    (-1, 0, 1)
-    (-1, -1, 2)
-class Solution {
-public:
-    vector&lt;vector&lt;int&gt;&gt; threeSum(vector&lt;int&gt;&amp; nums) {
-        vector&lt;vector&lt;int&gt;&gt; res;
-        sort(nums.begin(), nums.end());
-        if (nums.empty() || nums.back() &lt; 0 || nums.front() &gt; 0) return {};
-        for (int k = 0; k &lt; (int)nums.size() - 2; ++k) {
-            if (nums[k] &gt; 0) break;
-            if (k &gt; 0 &amp;&amp; nums[k] == nums[k - 1]) continue;
-            int target = 0 - nums[k], i = k + 1, j = (int)nums.size() - 1;
-            while (i &lt; j) {
-                if (nums[i] + nums[j] == target) {
-                    res.push_back({nums[k], nums[i], nums[j]});
-                    while (i &lt; j &amp;&amp; nums[i] == nums[i + 1]) ++i;
-                    while (i &lt; j &amp;&amp; nums[j] == nums[j - 1]) --j;
-                    ++i; --j;
-                } else if (nums[i] + nums[j] &lt; target) ++i;
-                else --j;
-            }
-        }
-        return res;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_18</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given an array S of n integers, are there elements a , b , c , and d in S such that a + b + c + d = target? Find all unique quadruplets in the array which gives the sum of target.
-
-Note:
-
-Elements in a quadruplet ( a , b , c , d ) must be in non-descending order. (ie, a ≤ b ≤ c ≤ d )
-
-The solution set must not contain duplicate quadruplets.
-
-For example, given array S = {1 0 -1 0 -2 2}, and target = 0.
-
-A solution set is:
-(-1,  0, 0, 1)
-(-2, -1, 1, 2)
-(-2,  0, 0, 2)
-class Solution {
-public:
-    vector&lt;vector&lt;int&gt;&gt; fourSum(vector&lt;int&gt; &amp;nums, int target) {
-        vector&lt;vector&lt;int&gt;&gt; res;
-        int n = nums.size();
-        sort(nums.begin(), nums.end());
-        for (int i = 0; i &lt; n - 3; ++i) {
-            if (i &gt; 0 &amp;&amp; nums[i] == nums[i - 1]) continue;
-            for (int j = i + 1; j &lt; n - 2; ++j) {
-                if (j &gt; i + 1 &amp;&amp; nums[j] == nums[j - 1]) continue;
-                int left = j + 1, right = n - 1;
-                while (left &lt; right) {
-                    int sum = nums[i] + nums[j] + nums[left] + nums[right];
-                    if (sum == target) {
-                        vector&lt;int&gt; out{nums[i], nums[j], nums[left], nums[right]};
-                        res.push_back(out);
-                        while (left &lt; right &amp;&amp; nums[left] == nums[left + 1]) ++left;
-                        while (left &lt; right &amp;&amp; nums[right] == nums[right - 1]) --right;
-                        ++left; --right;
-                    } else if (sum &lt; target) ++left;
-                    else --right;
-                }
-            }
-        }
-        return res;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_16</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given array nums = [-1, 2, 1, -4], and target = 1.
-The sum that is closest to the target is 2. (-1 + 2 + 1 = 2).
-class Solution {
-public:
-    int threeSumClosest(vector&lt;int&gt;&amp; nums, int target) {
-        int closest = nums[0] + nums[1] + nums[2];
-        int diff = abs(closest - target);
-        sort(nums.begin(), nums.end());
-        for (int i = 0; i &lt; nums.size() - 2; ++i) {
-            int left = i + 1, right = nums.size() - 1;
-            while (left &lt; right) {
-                int sum = nums[i] + nums[left] + nums[right];
-                int newDiff = abs(sum - target);
-                if (diff &gt; newDiff) {
-                    diff = newDiff;
-                    closest = sum;
-                }
-                if (sum &lt; target) ++left;
-                else --right;
-            }
-        }
-        return closest;
-    }
-};
-</code></pre>
 
 <h4>动态规划</h4>
 
 <ul>
-<li>leet120 Triangle</li>
+<li>自下而上的解决问题</li>
+<li>将原问题拆解成若干子问题，保存子问题的答案，使得每个子问题都只求解一次</li>
+<li>递归问题-&gt;重叠子问题-&gt;</li>
+<li>leet_120</li>
+<li>leet_64 没有非负整数， 没有限制条件</li>
+<li>leet_343 回溯</li>
+<li><img src="media/15676462008800/15680798276938.jpg" alt="" style="width:1006px;"/></li>
+<li><img src="media/15676462008800/15680799034216.jpg" alt="" style="width:996px;"/></li>
+<li>leet_279</li>
+<li><img src="media/15676462008800/15680822078106.jpg" alt="" style="width:1149px;"/></li>
+<li>leet_79</li>
+<li>leet_62</li>
+<li>leet_63</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-cpp">class Solution {
-public:
-    int minimumTotal(vector&lt;vector&lt;int&gt;&gt;&amp; triangle) {
-        vector&lt;int&gt; dp(triangle.back());
-        for (int i = (int)triangle.size() - 2; i &gt;= 0; --i) {
-            for (int j = 0; j &lt;= i; ++j) {
-                dp[j] = min(dp[j], dp[j + 1]) + triangle[i][j];
-            }
-        }
-        return dp[0];
-    }
-};
-</code></pre>
+<h4>leet_198</h4>
 
 <ul>
-<li>leet64 minium path sum</li>
+<li><img src="media/15676462008800/15676509845611.jpg" alt="" style="width:1066px;"/></li>
+<li><img src="media/15676462008800/15676510940203.jpg" alt="" style="width:1166px;"/></li>
+<li>状态定义和状态转移一定要搞懂</li>
+<li><img src="media/15676462008800/15676523958822.jpg" alt="" style="width:922px;"/></li>
+<li>使用新的状态定义</li>
+<li>leet_213</li>
+<li>leet_337</li>
+<li>leet_309</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-cpp">Given a m x n grid filled with non-negative numbers, find a path from top left to bottom right which minimizes the sum of all numbers along its path.
-
-Note: You can only move either down or right at any point in time.
-
-Example:
-
-Input:
-[
-  [1,3,1],
-  [1,5,1],
-  [4,2,1]
-]
-Output: 7
-Explanation: Because the path 1→3→1→1→1 minimizes the sum.
-class Solution {
-public:
-    int minPathSum(vector&lt;vector&lt;int&gt; &gt; &amp;grid) {
-        int m = grid.size(), n = grid[0].size();
-        int dp[m][n];
-        dp[0][0] = grid[0][0];
-        for (int i = 1; i &lt; m; ++i) dp[i][0] = grid[i][0] + dp[i - 1][0];
-        for (int i = 1; i &lt; n; ++i) dp[0][i] = grid[0][i] + dp[0][i - 1];
-        for (int i = 1; i &lt; m; ++i) {
-            for (int j = 1; j &lt; n; ++j) {
-                dp[i][j] = grid[i][j] + min(dp[i - 1][j], dp[i][j - 1]);
-            }
-        }
-        return dp[m - 1][n - 1];
-    }
-};
-</code></pre>
+<h4>0-1背包问题</h4>
 
 <ul>
-<li>leet343 integer break</li>
+<li>O(2<sup>n*n)</sup></li>
+<li>贪心算法</li>
+<li><img src="media/15676462008800/15679064880244.jpg" alt="" style="width:976px;"/></li>
+<li>自顶向下 递归</li>
+<li>自底向上 动态规划</li>
+<li>背包问题优化</li>
+<li><img src="media/15676462008800/15679083241737.jpg" alt="" style="width:1001px;"/></li>
 </ul>
 
-<pre class="line-numbers"><code class="language-cpp">Given a positive integer  n , break it into the sum of at least two positive integers and maximize the product of those integers. Return the maximum product you can get.
-
-Example 1:
-
-Input: 2
-Output: 1
-Explanation: 2 = 1 + 1, 1 × 1 = 1.
-class Solution {
-public:
-    int integerBreak(int n) {
-        vector&lt;int&gt; dp(n + 1, 1);
-        for (int i = 3; i &lt;= n; ++i) {
-            for (int j = 1; j &lt; i; ++j) {
-                dp[i] = max(dp[i], max(j * (i - j), j * dp[i - j]));
-            }
-        }
-        return dp[n];
-    }
-};
-</code></pre>
+<h4>背包问题</h4>
 
 <ul>
-<li>leet279 perfect squares</li>
+<li>每个物品可以无限使用</li>
+<li>多重背包问题</li>
+<li>物品之间加入更多约束</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-cpp">Given a positive integer  n , find the least number of perfect square numbers (for example, 1, 4, 9, 16, ...) which sum to  n.
-
-Example 1:
-
-Input: _n_ = 12
-Output: 3 
-Explanation: 12 = 4 + 4 + 4.
-Example 2:
-
-Input: _n_ = 13
-Output: 2
-Explanation: 13 = 4 + 9.
-class Solution {
-public:
-    int numSquares(int n) {
-        vector&lt;int&gt; dp(n + 1, INT_MAX);
-        dp[0] = 0;
-        for (int i = 0; i &lt;= n; ++i) {
-            for (int j = 1; i + j * j &lt;= n; ++j) {
-                dp[i + j * j] = min(dp[i + j * j], dp[i] + 1);
-            }
-        }
-        return dp.back();
-    }
-};
-</code></pre>
+<h4>leetcode</h4>
 
 <ul>
-<li>leet91 decode ways</li>
+<li>leet_416</li>
+<li><img src="media/15676462008800/15679109143760.jpg" alt="" style="width:1002px;"/></li>
+<li>leet_300</li>
+<li><img src="media/15676462008800/15679095425409.jpg" alt="" style="width:989px;"/></li>
+<li><img src="media/15676462008800/15679098812535.jpg" alt="" style="width:1012px;"/></li>
+<li><img src="media/15676462008800/15679103037974.jpg" alt="" style="width:821px;"/></li>
+<li>没有递增的特性</li>
+<li>LIS问题的O(nlogn)解法</li>
+<li>leet_376</li>
+<li>leet_322</li>
+<li>leet_377</li>
+<li>leet_474</li>
+<li>leet_139</li>
+<li>leet_494</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-cpp">A message containing letters from A-Z is being encoded to numbers using the following mapping:
-
-&#39;A&#39; -&gt; 1
-&#39;B&#39; -&gt; 2
-...
-&#39;Z&#39; -&gt; 26
-Given a non-empty string containing only digits, determine the total number of ways to decode it.
-
-Example 1:
-
-Input: &quot;12&quot;
-Output: 2
-Explanation: It could be decoded as &quot;AB&quot; (1 2) or &quot;L&quot; (12).
-，在遍历的过程中，对每个数字首先判断其是否为0，若是则将 dp[i] 赋为0，若不是，赋上 dp[i-1] 的值，然后看数组前一位是否存在，如果存在且满足前一位是1，或者和当前位一起组成的两位数不大于 26，则当前 dp[i] 值加上 dp[i - 2]。最终返回 dp 数组的最后一个值即可
-dp[i] = dp[i-1] + dp[i-2]
-class Solution {
-public:
-    int numDecodings(string s) {
-        if (s.empty() || s[0] == &#39;0&#39;) return 0;
-        vector&lt;int&gt; dp(s.size() + 1, 0);
-        dp[0] = 1;
-        for (int i = 1; i &lt; dp.size(); ++i) {
-            if (s[i - 1] != &#39;0&#39;) dp[i] += dp[i - 1];
-            if (i &gt;= 2 &amp;&amp; s.substr(i - 2, 2) &lt;= &quot;26&quot; &amp;&amp; s.substr(i - 2, 2) &gt;= &quot;10&quot;) {
-                dp[i] += dp[i - 2];
-            }
-        }
-        return dp.back();
-    }
-};
-</code></pre>
+<h4>more</h4>
 
 <ul>
-<li>leet62 unique path</li>
+<li>最长公共子序列</li>
+<li><img src="media/15676462008800/15679159466365.jpg" alt="" style="width:972px;"/></li>
+<li><img src="media/15676462008800/15679161027984.jpg" alt="" style="width:1023px;"/></li>
 </ul>
 
-<pre class="line-numbers"><code class="language-cpp">A robot is located at the top-left corner of a  m  x  n  grid (marked &#39;Start&#39; in the diagram below).
-
-The robot can only move either down or right at any point in time. The robot is trying to reach the bottom-right corner of the grid (marked &#39;Finish&#39; in the diagram below).
-
-How many possible unique paths are there?
-class Solution {
-public:
-    int uniquePaths(int m, int n) {
-        vector&lt;int&gt; dp(n, 1);
-        for (int i = 1; i &lt; m; ++i) {
-            for (int j = 1; j &lt; n; ++j) {
-                dp[j] += dp[j - 1]; 
-            }
-        }
-        return dp[n - 1];
-    }
-};
-````
-* leet63 unique path
-
-```C++
-这里还需要初始化 dp 数组的某个值，使得其能正常累加。当起点不是障碍物时，其 dp 值应该为1，即dp[1][1] = 1，由于其是由 dp[0][1] + dp[1][0] 更新而来，所以二者中任意一个初始化为1即可。由于之后 LeetCode 更新了这道题的 test case，使得使用 int 型的 dp 数组会有溢出的错误，所以改为使用 long 型的数组来避免 overflow，代码如下
-class Solution {
-public:
-    int uniquePathsWithObstacles(vector&lt;vector&lt;int&gt;&gt;&amp; obstacleGrid) {
-        if (obstacleGrid.empty() || obstacleGrid[0].empty() || obstacleGrid[0][0] == 1) return 0;
-        int m = obstacleGrid.size(), n = obstacleGrid[0].size();
-        vector&lt;vector&lt;long&gt;&gt; dp(m + 1, vector&lt;long&gt;(n + 1, 0));
-        dp[0][1] = 1;
-        for (int i = 1; i &lt;= m; ++i) {
-            for (int j = 1; j &lt;= n; ++j) {
-                if (obstacleGrid[i - 1][j - 1] != 0) continue;
-                dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
-            }
-        }
-        return dp[m][n];
-    }
-};
-class Solution {
-public:
-    int uniquePathsWithObstacles(vector&lt;vector&lt;int&gt;&gt;&amp; obstacleGrid) {
-        if (obstacleGrid.empty() || obstacleGrid[0].empty() || obstacleGrid[0][0] == 1) return 0;
-        int m = obstacleGrid.size(), n = obstacleGrid[0].size();
-        vector&lt;long&gt; dp(n, 0);
-        dp[0] = 1;
-        for (int i = 0; i &lt; m; ++i) {
-            for (int j = 0; j &lt; n; ++j) {
-                if (obstacleGrid[i][j] == 1) dp[j] = 0;
-                else if (j &gt; 0) dp[j] += dp[j - 1];
-            }
-        }
-        return dp[n - 1];
-    }
-};
-</code></pre>
+<h4>dijkstra</h4>
 
 <ul>
-<li>leet673</li>
+<li>单源最短路径算法</li>
+<li><img src="media/15676462008800/15679162036286.jpg" alt="" style="width:815px;"/></li>
 </ul>
 
-<h4>查找</h4>
+<h4>动态规划子问题</h4>
 
 <ul>
-<li>leet_350</li>
-<li>leet_49</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given an array of strings, group anagrams together.
-
-Example:
-
-Input: [&quot;eat&quot;, &quot;tea&quot;, &quot;tan&quot;, &quot;ate&quot;, &quot;nat&quot;, &quot;bat&quot;],
-Output:
-[
-  [&quot;ate&quot;,&quot;eat&quot;,&quot;tea&quot;],
-  [&quot;nat&quot;,&quot;tan&quot;],
-  [&quot;bat&quot;]
-]
-class Solution {
-public:
-    vector&lt;vector&lt;string&gt;&gt; groupAnagrams(vector&lt;string&gt;&amp; strs) {
-        vector&lt;vector&lt;string&gt;&gt; res;
-        unordered_map&lt;string, vector&lt;string&gt;&gt; m;
-        for (string str : strs) {
-            vector&lt;int&gt; cnt(26, 0);
-            string t = &quot;&quot;;
-            for (char c : str) ++cnt[c - &#39;a&#39;];
-            for (int d : cnt) t += to_string(d) + &quot;/&quot;;
-            m[t].push_back(str);
-        }
-        for (auto a : m) {
-            res.push_back(a.second);
-        }
-        return res;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_447 </li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given n points in the plane that are all pairwise distinct, a &quot;boomerang&quot; is a tuple of points (i, j, k) such that the distance between i and j equals the distance between i and k ( the order of the tuple matters ).
-
-Find the number of boomerangs. You may assume that n will be at most 500 and coordinates of points are all in the range [-10000, 10000] (inclusive).
-
-Example:
-
-**Input:**
-[[0,0],[1,0],[2,0]]
-
-**Output:**
-2
-
-**Explanation:**
-The two boomerangs are **[[1,0],[0,0],[2,0]]** and **[[1,0],[2,0],[0,0]]**
-class Solution {
-public:
-    int numberOfBoomerangs(vector&lt;pair&lt;int, int&gt;&gt;&amp; points) {
-        int res = 0;
-        for (int i = 0; i &lt; points.size(); ++i) {
-            unordered_map&lt;int, int&gt; m;
-            for (int j = 0; j &lt; points.size(); ++j) {
-                int a = points[i].first - points[j].first;
-                int b = points[i].second - points[j].second;
-                ++m[a * a + b * b];
-            }
-            for (auto it = m.begin(); it != m.end(); ++it) {
-                res += it-&gt;second * (it-&gt;second - 1);
-            }
-        }
-        return res;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_149 点坐标的表示 整数 浮点数 </li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given  n  points on a 2D plane, find the maximum number of points that lie on the same straight line.
-
-Example 1:
-
-Input: [[1,1],[2,2],[3,3]]
-Output: 3
-Explanation:
-^
-|
-|        o
-|     o
-|  o  
-+-------------&gt;
-0  1  2  3  4
-class Solution {
-public:
-    int maxPoints(vector&lt;Point&gt;&amp; points) {
-        int res = 0;
-        for (int i = 0; i &lt; points.size(); ++i) {
-            map&lt;pair&lt;int, int&gt;, int&gt; m;
-            int duplicate = 1;
-            for (int j = i + 1; j &lt; points.size(); ++j) {
-                if (points[i].x == points[j].x &amp;&amp; points[i].y == points[j].y) {
-                    ++duplicate; continue;
-                } 
-                int dx = points[j].x - points[i].x;
-                int dy = points[j].y - points[i].y;
-                int d = gcd(dx, dy);
-                ++m[{dx / d, dy / d}];
-            }
-            res = max(res, duplicate);
-            for (auto it = m.begin(); it != m.end(); ++it) {
-                res = max(res, it-&gt;second + duplicate);
-            }
-        }
-        return res;
-    }
-    int gcd(int a, int b) {
-        return (b == 0) ? a : gcd(b, a % b);
-    }
-};
-</code></pre>
-
-<h4>滑动窗口和查找</h4>
-
-<ul>
-<li>leet_217</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given an array of integers, find if the array contains any duplicates. Your function should return true if any value appears at least twice in the array, and it should return false if every element is distinct.
-class Solution {
-public:
-    bool containsDuplicate(vector&lt;int&gt;&amp; nums) {
-        unordered_map&lt;int, int&gt; m;
-        for (int i = 0; i &lt; nums.size(); ++i) {
-            if (m.find(nums[i]) != m.end()) return true;
-            ++m[nums[i]];
-        }
-        return false;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_219</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given an array of integers and an integer k, return true if and only if there are two distinct indices i and j in the array such that nums[i] = nums[j] and the difference between i and j is at most k. (Old Version)
-
-Given an array of integers and an integer k , find out whether there are two distinct indices i and j in the array such that nums[i] = nums[j] and the difference between i and j is at most k. (New Version)
-class Solution {
-public:
-    bool containsNearbyDuplicate(vector&lt;int&gt;&amp; nums, int k) {
-        unordered_map&lt;int, int&gt; m;
-        for (int i = 0; i &lt; nums.size(); ++i) {
-            if (m.find(nums[i]) != m.end() &amp;&amp; i - m[nums[i]] &lt;= k) return true;
-            else m[nums[i]] = i;
-        }
-        return false;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_220</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given an array of integers, find out whether there are two distinct indices i and j in the array such that the difference between nums[i] and nums[j] is at most t and the difference between i and j is at most k.
-class Solution {
-public:
-    bool containsNearbyAlmostDuplicate(vector&lt;int&gt;&amp; nums, int k, int t) {
-      map&lt;long long, int&gt; m;
-      int j = 0;
-      for (int i = 0; i &lt; nums.size(); i++) {
-        if (i - j &gt; k) m.erase(nums[j++]);
-        auto a = m.lower_bound((long long)nums[i] - t);
-        if (a != m.end() &amp;&amp; abs(a-&gt;first - nums[i]) &lt;= t) return true;
-        m[nums[i]] = i;
-      }
-      return false;
-    }
-};
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/02 10:36 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E7%8E%A9%E8%BD%AC%E7%AE%97%E6%B3%95.html'>玩转算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15638499426579.html">
-                
-                  <h1>数组问题</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<ul>
-<li>排序: 选择排序 插入排序 归并排序 快速排序</li>
-</ul>
-
-<h4>题目</h4>
-
-<ul>
-<li>leetcode 283</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given an array nums, write a function to move all 0&#39;s to the end of it while maintaining the relative order of the non-zero elements.
-
-For example, given nums = [0, 1, 0, 3, 12], after calling your function, nums should be [1, 3, 12, 0, 0].
-
-Note:
-
-You must do this in-place without making a copy of the array.
-Minimize the total number of operations.
-class Solution {
-public:
-    void moveZeroes(vector&lt;int&gt;&amp; nums) {
-        for (int i = 0, j = 0; i &lt; nums.size(); ++i) {
-            if (nums[i]) {
-                swap(nums[i], nums[j++]);
-            }
-        }
-    }
-};
-</code></pre>
-
-<ul>
-<li>k [0,k) 保存所有遍历过的非0元素</li>
-</ul>
-
-<h4>code</h4>
-
-<ul>
-<li>给定一个数组nums和一个数组val，将数组中所有等于val的元素删除，返回剩余的元素个数</li>
-<li>leetcode26</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given a sorted array  nums , remove the duplicates in-place such that each element appear only  once  and return the new length.
-
-Do not allocate extra space for another array, you must do this by modifying the input array in-place with O(1) extra memory.
-
-Example 1:
-
-Given _nums_ = [1,1,2],
-
-Your function should return length = 2, with the first two elements of _nums_ being 1 and 2 respectively.
-
-It doesn&#39;t matter what you leave beyond the returned length.
-class Solution {
-public:
-    int removeDuplicates(vector&lt;int&gt;&amp; nums) {
-        int j = 0, n = nums.size();
-        for (int i = 0; i &lt; n; ++i) {
-            if (nums[i] != nums[j]) nums[++j] = nums[i];
-        }
-        return nums.empty() ? 0 : (j + 1);
-    }
-};
-</code></pre>
-
-<ul>
-<li>leetcode27</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given an array  nums  and a value  val , remove all instances of that value in-place and return the new length.
-
-Do not allocate extra space for another array, you must do this by modifying the input array in-place with O(1) extra memory.
-
-The order of elements can be changed. It doesn&#39;t matter what you leave beyond the new length.
-
-Example 1:
-
-Given _nums_ = [3,2,2,3], _val_ = 3,
-
-Your function should return length = 2, with the first two elements of _nums_ being 2.
-
-It doesn&#39;t matter what you leave beyond the returned length.
-class Solution {
-public:
-    int removeElement(vector&lt;int&gt;&amp; nums, int val) {
-        int res = 0;
-        for (int i = 0; i &lt; nums.size(); ++i) {
-            if (nums[i] != val) nums[res++] = nums[i];
-        }
-        return res;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leetcode80</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given a sorted array  nums , remove the duplicates in-place such that duplicates appeared at most  twice  and return the new length.
-
-Do not allocate extra space for another array, you must do this by modifying the input array in-place with O(1) extra memory.
-
-Example 1:
-
-Given _nums_ = [1,1,1,2,2,3],
-
-Your function should return length = 5, with the first five elements of _nums_ being 1, 1, 2, 2 and 3 respectively.
-
-It doesn&#39;t matter what you leave beyond the returned length.
-class Solution {
-public:
-    int removeDuplicates(vector&lt;int&gt;&amp; nums) {
-        int pre = 0, cur = 1, cnt = 1, n = nums.size();
-        while (cur &lt; n) {
-            if (nums[pre] == nums[cur] &amp;&amp; cnt == 0) ++cur;
-            else {
-                if (nums[pre] == nums[cur]) --cnt;
-                else cnt = 1;
-                nums[++pre] = nums[cur++];
-            }
-        }
-        return nums.empty() ? 0 : pre + 1;
-    }
-};
-class Solution {
-public:
-    int removeDuplicates(vector&lt;int&gt;&amp; nums) {
-        int i = 0;
-        for (int num : nums) {
-            if (i &lt; 2 || num &gt; nums[i - 2]) {
-                nums[i++] = num;
-            }
-        }
-        return i;
-    }
-};
-</code></pre>
-
-<h4>Sort Colors</h4>
-
-<ul>
-<li>leet_code75</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given an array with  n  objects colored red, white or blue, sort them in-place so that objects of the same color are adjacent, with the colors in the order red, white and blue.
-
-Here, we will use the integers 0, 1, and 2 to represent the color red, white, and blue respectively.
-
-Note: You are not suppose to use the library&#39;s sort function for this problem.
-
-Example:
-
-Input: [2,0,2,1,1,0]
-Output: [0,0,1,1,2,2]
-class Solution {
-public:
-    void sortColors(vector&lt;int&gt;&amp; nums) {
-        int red = 0, blue = (int)nums.size() - 1;
-        for (int i = 0; i &lt;= blue; ++i) {
-            if (nums[i] == 0) {
-                swap(nums[i], nums[red++]);
-            } else if (nums[i] == 2) {
-                swap(nums[i--], nums[blue--]);
-            } 
-        }
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_code88</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given two sorted integer arrays  nums1  and  nums2 , merge  nums2  into  nums1  as one sorted array.
-
-Note:
-
-The number of elements initialized in  nums1 and  nums2  are  m  and  n  respectively.
-You may assume that  nums1  has enough space (size that is greater or equal to  m  +  n ) to hold additional elements from  nums2.
-Example:
-
-Input:
-nums1 = [1,2,3,0,0,0], m = 3
-nums2 = [2,5,6],       n = 3
-
-Output: [1,2,2,3,5,6]
-class Solution {
-public:
-    void merge(vector&lt;int&gt;&amp; nums1, int m, vector&lt;int&gt;&amp; nums2, int n) {
-        int i = m - 1, j = n - 1, k = m + n - 1;
-        while (i &gt;= 0 &amp;&amp; j &gt;= 0) {
-            if (nums1[i] &gt; nums2[j]) nums1[k--] = nums1[i--];
-            else nums1[k--] = nums2[j--];
-        }
-        while (j &gt;= 0) nums1[k--] = nums2[j--];
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_code215</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Find the kth largest element in an unsorted array. Note that it is the kth largest element in the sorted order, not the kth distinct element.
-
-Example 1:
-
-Input: [3,2,1,5,6,4] and k = 2
-Output: 5
-class Solution {
-public:
-  int findKthLargest(vector&lt;int&gt;&amp; nums, int k) {
-    int left = 0, right = nums.size() - 1;
-    k = nums.size() - k;
-    while (left &lt;= right) {
-      int pos = partition(nums, left, right);
-      if (pos == k) return nums[pos];
-      else if (pos &gt; k) right = pos - 1;
-      else left = pos + 1;
-    }
-    return -1;
-  }
-
-  int partition(vector&lt;int&gt;&amp; nums, int left, int right) {
-    int val = nums[left], j = left;
-    for (int i = left + 1; i &lt;= right; i++) {
-      if (nums[i] &lt; val)  swap(nums[++j], nums[i]);
-    }
-    swap(nums[j], nums[left]);
-    return j;
-  }
-};
-</code></pre>
-
-<h4>two_sum</h4>
-
-<ul>
-<li>leet_125</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given a string, determine if it is a palindrome, considering only alphanumeric characters and ignoring cases.
-
-For example,
-&quot;A man, a plan, a canal: Panama&quot; is a palindrome.
-&quot;race a car&quot; is not a palindrome
-//判断大小写等价if ((s[left] + 32 - &#39;a&#39;) %32 != (s[right] + 32 - &#39;a&#39;) % 32)
-class Solution {
-public:
-    bool isPalindrome(string s) {
-        int left = 0, right = s.size() - 1 ;
-        while (left &lt; right) {
-            if (!isAlphaNum(s[left])) ++left;
-            else if (!isAlphaNum(s[right])) --right;
-            else if ((s[left] + 32 - &#39;a&#39;) %32 != (s[right] + 32 - &#39;a&#39;) % 32) return false; 
-            else {
-                ++left; --right;
-            }
-        }
-        return true;
-    }
-    bool isAlphaNum(char &amp;ch) {
-        if (ch &gt;= &#39;a&#39; &amp;&amp; ch &lt;= &#39;z&#39;) return true;
-        if (ch &gt;= &#39;A&#39; &amp;&amp; ch &lt;= &#39;Z&#39;) return true;
-        if (ch &gt;= &#39;0&#39; &amp;&amp; ch &lt;= &#39;9&#39;) return true;
-        return false;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_344</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">字符串反转
-class Solution {
-public:
-    void reverseString(vector&lt;char&gt;&amp; s) {
-      int left = 0, right = s.size() - 1;
-      while (left &lt; right) {
-        swap(s[left++], s[right--]);
-      }
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_345</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Write a function that takes a string as input and reverse only the vowels of a string.
-
-Example 1:
-Given s = &quot;hello&quot;, return &quot;holle&quot;.
-
-Example 2:
-Given s = &quot;leetcode&quot;, return &quot;leotcede&quot;.
-class Solution {
-public:
-    string reverseVowels(string s) {
-        int left = 0, right= s.size() - 1;
-        while (left &lt; right) {
-            if (isVowel(s[left]) &amp;&amp; isVowel(s[right])) {
-                swap(s[left++], s[right--]);
-            } else if (isVowel(s[left])) {
-                --right;
-            } else {
-                ++left;
-            }
-        }
-        return s;
-    }
-    bool isVowel(char c) {
-        return c == &#39;a&#39; || c == &#39;e&#39; || c == &#39;i&#39; || c == &#39;o&#39; || c == &#39;u&#39; || c == &#39;A&#39; || c == &#39;E&#39; || c == &#39;I&#39; || c == &#39;O&#39; || c == &#39;U&#39;;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_11</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given n non-negative integers a1, a2, ..., an , where each represents a point at coordinate (i, ai). n vertical lines are drawn such that the two endpoints of line i is at (i, ai) and (i, 0). Find two lines, which together with x-axis forms a container, such that the container contains the most water.
-class Solution {
-public:
-    int maxArea(vector&lt;int&gt;&amp; height) {
-      int i = 0, j = height.size() - 1;
-      int res = 0;
-      while (i &lt; j) {
-        res = max(res, min(height[i], height[j]) * (j - i));
-        height[i] &lt; height[j] ? i++ : j--;
-      }
-      return res;
-    }
-};
-</code></pre>
-
-<h4>双索引技术</h4>
-
-<ul>
-<li>滑动窗口</li>
-<li>leet_209 暴力解法优化到O(n2) //TODO</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given an array of n positive integers and a positive integer s, find the minimal length of a contiguous subarray of which the sum ≥ s. If there isn&#39;t one, return 0 instead.
-
-Example: 
-
-Input: s = 7, nums = [2,3,1,2,4,3]
-Output: 2
-Explanation: the subarray [4,3] has the minimal length under the problem constraint.
-class Solution {
-  public:
-  int minSubArrayLen(int s, vector&lt;int&gt;&amp; nums) {
-    int l = 0, r = -1, sum = 0;
-
-    int  res = nums.size() + 1; //有可能是整个数组之和等于s
-
-    while (l &lt; nums.size()) {
-      if (r + 1 &lt; nums.size() &amp;&amp; sum &lt; s)
-        sum += nums[++r];
-      else
-        sum -= nums[l++];
-
-      if (sum &gt;= s)
-        res = min(res, r -l +1);
-    }
-
-    if (res == nums.size() + 1)
-      return 0;
-
-    return res;
-  }
-};
-</code></pre>
-
-<ul>
-<li>leet_3 字符集？ 只有字母?  字母 + 数字 ? ASCII 大小写是否敏感</li>
-<li>leet_438 字符集范围 英文小写字母 返回的解的顺序</li>
-<li>leet_76 字符范围 没有解 多个解 </li>
-<li>字符包含 Input: S = &quot;ADOBECODEBANC&quot;, T = &quot;ABC&quot; Output: &quot;BANC&quot;</li>
+<li><img src="media/15676462008800/15679164823964.jpg" alt="" style="width:1028px;"/></li>
 </ul>
 
                         
@@ -4112,7 +4110,7 @@ class Solution {
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/07/23 10:45 上午</span>
+                    <span class="date">2019/09/05 09:16 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E7%8E%A9%E8%BD%AC%E7%AE%97%E6%B3%95.html'>玩转算法</a></span>
@@ -4309,8 +4307,6 @@ class Solution {
         
             <a href="Django.html"><strong>Django</strong></a>
         
-            <a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html"><strong>C++设计模式实战</strong></a>
-        
             <a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html"><strong>深入剖析Kubernetes</strong></a>
         
             <a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html"><strong>数据结构和算法</strong></a>
@@ -4388,6 +4384,18 @@ class Solution {
 	      
 		      
 			      <li class="post">
+			        <a href="15818128782116.html">Singleton</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15748977610569.html">State</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817697569868.html">字符串分割</a>
 			      </li>
 		     
@@ -4400,19 +4408,7 @@ class Solution {
 		  
 		      
 			      <li class="post">
-			        <a href="15814649492497.html">Simple Factory</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814189410719.html">代码的可测试性</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814188057978.html">重构</a>
+			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

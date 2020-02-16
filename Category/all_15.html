@@ -87,8 +87,6 @@
         
             <li><a href="Django.html">Django</a></li>
         
-            <li><a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html">C++设计模式实战</a></li>
-        
             <li><a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html">深入剖析Kubernetes</a></li>
         
             <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html">数据结构和算法</a></li>
@@ -172,14 +170,84 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15708541774439.html">
+                <a class="clearlink" href="15710105177530.html">
                 
-                  <h1>LSM分布式结构</h1>
+                  <h1>容器分类</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	
+                        	<h4>结构和内存</h4>
+
+<p><img src="media/15710105177530/15710105448587.jpg" alt="" style="width:1070px;"/><br/>
+<img src="media/15710105177530/15710105565347.jpg" alt="" style="width:924px;"/></p>
+
+<h4>List</h4>
+
+<ul>
+<li><img src="media/15710105177530/15710124730986.jpg" alt="" style="width:1050px;"/></li>
+<li>前闭后关</li>
+<li>_List_node_base&lt;_Tp&gt; 中有两个指针</li>
+<li><img src="media/15710105177530/15710128449885.jpg" alt="" style="width:1036px;"/></li>
+</ul>
+
+<h4>vector</h4>
+
+<ul>
+<li><img src="media/15710105177530/15710136833376.jpg" alt="" style="width:590px;"/></li>
+</ul>
+
+<h4>array</h4>
+
+<ul>
+<li>TR版本
+<img src="media/15710105177530/15710141832315.jpg" alt="" style="width:1051px;"/></li>
+</ul>
+
+<h4>deque</h4>
+
+<p><img src="media/15710105177530/15710481449352.jpg" alt="" style="width:1006px;"/></p>
+
+<ul>
+<li>通过buffer串起来</li>
+<li>cur是当前位置，first,last是buffer的起始位置，node 控制iterator访问到边界之后，跳到下一个缓冲区</li>
+<li>map是中控制，数据结构是vector</li>
+<li><img src="media/15710105177530/15710488082434.jpg" alt="" style="width:207px;"/></li>
+<li>dequeue和stack是封装的deque对象，并且调用部分成员函数</li>
+<li>可以选择list和dequeue</li>
+<li>不可以选择set或者map做底部支撑</li>
+</ul>
+
+<h4>容器</h4>
+
+<ul>
+<li>set 和 queue不算容器</li>
+</ul>
+
+<h4>红黑树</h4>
+
+<p><img src="media/15710105177530/15712320954756.jpg" alt="" style="width:952px;"/></p>
+
+<ul>
+<li>handle and body</li>
+<li>set调用的是insert_unique()</li>
+<li>multiset调用的是insert_equal()</li>
+<li>set不能修改元素借用的是const_iterator</li>
+</ul>
+
+<h4>map</h4>
+
+<ul>
+<li>将key改成const</li>
+</ul>
+
+<h4>hash_table</h4>
+
+<ul>
+<li><img src="media/15710105177530/15713937832348.jpg" alt="" style="width:1078px;"/></li>
+<li><img src="media/15710105177530/15713937669703.jpg" alt="" style="width:1098px;"/></li>
+</ul>
+
                         
                       </div>
                   </div>
@@ -187,10 +255,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/10/12 12:22 下午</span>
+                    <span class="date">2019/10/14 07:48 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Zookeeper.html'>Zookeeper</a></span>
+          					    <span class="posted-in"><a href='%E5%80%99%E6%8D%B7STL.html'>候捷STL</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -204,362 +272,1128 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15708463915098.html">
+                <a class="clearlink" href="15395867898497.html">
                 
-                  <h1>Etcd</h1>
+                  <h1>channel&&select</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>对比</h4>
-
-<p><img src="media/15708463915098/15708464367950.jpg" alt="" style="width:1479px;"/></p>
+                        	<h4>特性</h4>
 
 <ul>
-<li><img src="media/15708463915098/15719107081661.jpg" alt="" style="width:1708px;"/></li>
+<li>唯一一个可以满足并发安全性的类型</li>
+<li>发送操作互斥，接收操作也是</li>
+<li>有类型</li>
 </ul>
 
-<h4>MVCC</h4>
+<h4>特点</h4>
 
 <ul>
-<li><img src="media/15708463915098/15708465094763.jpg" alt="" style="width:1492px;"/></li>
+<li>元素从外界进入通道是副本</li>
+<li>发送包括复制元素值，放置副本到通道内部</li>
 </ul>
 
-<h4>数据存储</h4>
+<h4>通道阻塞</h4>
 
-<p><img src="media/15708463915098/15708466612817.jpg" alt="" style="width:1417px;"/></p>
+<ul>
+<li>满时写</li>
+<li>空时收</li>
+<li>nil 读写会永久阻塞</li>
+</ul>
+
+<h4>panic</h4>
+
+<ul>
+<li>关闭的通道发送操作会引起，接收操作不会引起，仍然可以读取数据</li>
+<li>通道是浅拷贝</li>
+<li>通道底层数据是环形链表</li>
+<li>通道的长度表示当前的元素个数，容量是初始化的</li>
+</ul>
+
+<h4>单向通道</h4>
+
+<ul>
+<li>函数调用方的约束</li>
+</ul>
+
+<h4>select语句的分支选择规则</h4>
+
+<ul>
+<li>从左到右执行</li>
+<li>分支case表达式从上到下执行</li>
+<li>case语句操作正在阻塞的话，跳过该分支</li>
+<li>所有候选语句的表达式都执行完毕后，才会挑选分支</li>
+<li>如果select语句发现同时有多个候选分支满足选择条件，那么它就会用一种伪随机的算法在这些分支中选择一个并执行。注意，即使select语句是在被唤醒时发现的这种情况，也会这样做。</li>
+</ul>
+
+<h5>select并发执行</h5>
+
+<ul>
+<li>goto </li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">func BreakForSelect2() {
+  intChan := make(chan int, 1)
+  intChan2 := make(chan int, 1)
+  intChan3 := make(chan int, 1)
+  countChan := 0
+  go SetValue(intChan, 1)
+  go SetValue(intChan2, 2)
+  go SetValue(intChan3, 3)
+
+loop:
+  for {
+    select {
+    case val, ok := &lt;-intChan:
+      if ok {
+        fmt.Println(&quot;val &quot;, val)
+        countChan++
+        close(intChan)
+        intChan = nil
+      }
+
+    case val, ok := &lt;-intChan2:
+      if ok {
+        fmt.Println(&quot;val &quot;, val)
+        countChan++
+        close(intChan2)
+        intChan2 = nil
+      }
+
+    case val, ok := &lt;-intChan3:
+      if ok {
+        fmt.Println(&quot;val &quot;, val)
+        countChan++
+        close(intChan3)
+        intChan3 = nil
+      }
+
+    default:
+      fmt.Println(&quot;dealult&quot;)
+      if countChan == 3 {
+          break loop
+          //goto end
+      }
+      time.Sleep(1 * time.Second)
+    }
+  }
+  //end:
+  fmt.Println(&quot;End&quot;)
+}
+</code></pre>
+
+<ul>
+<li>跳过分支</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">  func SelectSkip() {
+  intChan := make(chan int, 1)
+  intChan2 := make(chan int, 1)
+  intChan3 := make(chan int, 1)
+  intChan2 &lt;- 2
+  close(intChan)
+  for {
+    select {
+    case val, ok := &lt;-intChan:
+      if ok {
+        fmt.Println(&quot;val &quot;, val)
+      } else {
+        fmt.Println(&quot;change chan to nil&quot;)
+        intChan = nil
+      }
+    case val, ok := &lt;-intChan2:
+      if ok {
+        fmt.Println(&quot;val&quot;, val)
+      } else {
+        fmt.Println(&quot;no val&quot;)
+      }
+    case &lt;-intChan3:
+      fmt.Println(&quot;case 3&quot;)
+      intChan3 = nil
+    default:
+      fmt.Println(&quot;continue&quot;)
+    }
+    time.Sleep(1 * time.Second)
+  }
+}
+</code></pre>
+
+<h4>监测管道关闭</h4>
+
+<pre class="line-numbers"><code class="language-text">  for {
+    b, ok := &lt;-ch
+    if ok == false {
+      fmt.Println(&quot;channel is closed&quot;)
+      break
+    }
+    fmt.Println(b)
+  }
+  或者直接关闭channel
+</code></pre>
+
+<ul>
+<li>向关闭的 channel 发送数据，会导致 panic</li>
+<li>v, ok &lt;-ch; ok 为 bool 值，true 表示正常接受，false 表示通道关闭</li>
+<li>所有的 channel 接收者都会在 channel 关闭时，⽴立刻从阻塞等待中返回且上 述 ok 值为 false。这个⼴广播机制常被利利⽤用，进⾏行行向多个订阅者同时发送信号。 如:退出信号。</li>
+</ul>
+
+<h4>多任务并发执行等待完全结束</h4>
+
+<pre class="line-numbers"><code class="language-text">func test1(boolChan chan bool) {
+  time.Sleep(time.Second * 1)
+  fmt.Println(&quot;test1&quot;)
+  boolChan &lt;- true
+}
+
+func test2(boolChan chan bool) {
+  time.Sleep(time.Second * 2)
+  fmt.Println(&quot;test2&quot;)
+  boolChan &lt;- true
+}
+
+func test3(boolChan chan bool) {
+  time.Sleep(time.Second * 3)
+  fmt.Println(&quot;test3&quot;)
+  boolChan &lt;- true
+}
+
+func main() {
+  boolChan := make(chan bool, 3)
+
+  go test1(boolChan)
+  go test2(boolChan)
+  go test3(boolChan)
+  for i := 0; i &lt; 3; i++ {
+    &lt;-boolChan
+  }
+}
+</code></pre>
+
+<h4>routine之间通讯同步</h4>
+
+<pre class="line-numbers"><code class="language-text">  func send(ch chan int, exitChan chan struct{}) {
+  for i := 0; i &lt; 10; i++ {
+    ch &lt;- i
+  }
+
+  close(ch)
+
+  var a struct{}
+  //exitChan &lt;- true
+  exitChan &lt;- a
+}
+
+func recv(ch chan int, exitChan chan struct{}) {
+  for {
+    v, ok := &lt;-ch
+    if !ok {
+      break
+    }
+    fmt.Println(v)
+  }
+
+  var a struct{}
+  exitChan &lt;- a
+  //exitChan &lt;- true
+}
+
+func main() {
+  ch := make(chan int, 10)
+  exitChan := make(chan struct{}, 2)
+  go send(ch, exitChan)
+  go recv(ch, exitChan)
+
+  for i := 0; i &lt; 2; i++ {
+    &lt;-exitChan
+  }
+}
+</code></pre>
+
+<h4>超时控制</h4>
+
+<pre class="line-numbers"><code class="language-go">func TestSelect(t *testing.T) {
+    select {
+    case ret := &lt;-AsyncService():
+        t.Log(ret)
+    case &lt;-time.After(time.Millisecond * 100):
+        t.Error(&quot;time out&quot;)
+    }
+}
+</code></pre>
+
+<h4>select 控制</h4>
+
+<pre class="line-numbers"><code class="language-go">func isCancelled(cancelChan chan struct{}) bool {
+    select {
+    case &lt;-cancelChan:
+        return true
+    default:
+        return false
+    }
+}
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/10/15 14:59 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15401943381467.html">
+                
+                  <h1>if&for&switch</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>range</h4>
+
+<ul>
+<li>range表达式只会在for语句开始执行时被求值一次</li>
+<li>range表达式的求值结果会被复制，被迭代的对象是range表达式结果值的副本</li>
+</ul>
+
+<h4>switch和case关系</h4>
+
+<ul>
+<li>switch 的case语句在case子句上的选择是唯一的，不允许有case中子表达式和其他case子表达式值想等的情况</li>
+<li>只要switch表达式的结果值与某个case表达式中的任意一个子表达式的结果值相等，该case表达式所属的case子句就会被选中</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/10/22 15:45 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15427081419392.html">
+                
+                  <h1>context.Context</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>任务取消</h4>
+
+<ul>
+<li>根 Context:通过 context.Background () 创建</li>
+<li>⼦子 Context:context.WithCancel(parentContext) 创建</li>
+<li>ctx, cancel := context.WithCancel(context.Background()) 当前 Context 被取消时，基于他的⼦子 context 都会被取消</li>
+<li>接收取消通知 &lt;-ctx.Done()</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-go">func isCancelled(ctx context.Context) bool {
+    select {
+    case &lt;-ctx.Done():
+        return true
+    default:
+        return false
+    }
+}
+
+func TestCancel(t *testing.T) {
+    ctx, cancel := context.WithCancel(context.Background())
+    for i := 0; i &lt; 5; i++ {
+        go func(i int, ctx context.Context) {
+            for {
+                if isCancelled(ctx) {
+                    break
+                }
+                time.Sleep(time.Millisecond * 5)
+            }
+            fmt.Println(i, &quot;Cancelled&quot;)
+        }(i, ctx)
+    }
+    cancel()
+    time.Sleep(time.Second * 1)
+}
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/11/20 18:02 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15396794002878.html">
+                
+                  <h1>指针和Go语句执行规则</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>指针不可寻址</h4>
+
+<ul>
+<li>不可变的值不可寻址</li>
+<li>临时结果的值不可寻址</li>
+<li>拿到某值的指针可能会破坏程序的一致性，不安全</li>
+<li>基本类型的值上调用指针方法，Go语言会自动转译</li>
+</ul>
+
+<h4>调度器</h4>
+
+<ul>
+<li>G goroutine</li>
+<li>P Processor</li>
+<li>M machine</li>
+</ul>
+
+<h4>Goroutine机制</h4>
+
+<ul>
+<li>从空闲的存放的G队列中获取一个G，用G包装当前的go函数，然后再把G追加到某个可允许的G队列中</li>
+<li>go函数的执行时间总是明显滞后于所属的go语句的执行时间</li>
+</ul>
+
+<h4>限制gorutine的启动数量</h4>
+
+<pre class="line-numbers"><code class="language-text">func handle(i int, ch chan struct{}) {
+  _ = i
+  &lt;-ch
+}
+
+func main() {
+  var maxRoutine = 10
+  ch := make(chan struct{}, maxRoutine)
+  total := 100
+
+  for i := 0; i &lt; total; i++ {
+    ch &lt;- struct{}{}
+    go handle(i, ch)
+  }
+}
+</code></pre>
+
+<h4>顺序串行执行goroutine</h4>
+
+<pre class="line-numbers"><code class="language-text">func main() {
+  var count uint32 = 0
+  trigger := func(i uint32, fn func()) {
+    for {
+      if n := atomic.LoadUint32(&amp;count); n == i {
+        fn()
+        atomic.AddUint32(&amp;count, 1)
+        break
+      }
+      time.Sleep(time.Nanosecond)
+    }
+  }
+  for i := uint32(0); i &lt; 10; i++ {
+    go func(i uint32) {
+      fn := func() {
+        fmt.Println(i)
+      }
+      trigger(i, fn)
+    }(i)
+  }
+  trigger(10, func() {})
+}
+
+func TestGroutine(t *testing.T) {
+ var w sync.WaitGroup
+ w.Add(10)
+ for i := 0; i &lt; 10; i++ {
+  go func(i int) {
+   //time.Sleep(time.Second * 1)
+   fmt.Println(i)
+   w.Done()
+  }(i) //值传递
+ }
+ w.Wait()//等待
+ time.Sleep(time.Millisecond * 50)
+}
+</code></pre>
+
+<h4>并发和并行</h4>
+
+<ul>
+<li>多线程程序在一个核的cpu上运行就是并发</li>
+<li>多线程程序在多个核的cpu运行就是并行</li>
+</ul>
+
+<h4>协程和线程</h4>
+
+<ul>
+<li>独立的栈空间，共享堆空间，调度由用户自己控制，本质有点类似于用户级线程，这些用户级线程的调度也是自己实现的</li>
+<li>一个线程上可以跑多个协程，协程是轻量级的线程</li>
+</ul>
+
+<h4>GPM调度模型</h4>
+
+<p><img src="media/15396794002878/15409557915358.jpg" alt="" style="width:247px;"/></p>
+
+<h4>不同goroutine之间如何通讯</h4>
+
+<ul>
+<li>全局变量和锁同步</li>
+<li>Channel</li>
+<li>go build -race 可以查看程序是否有线程竞争</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/10/16 16:43 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15638499426579.html">
+                
+                  <h1>数组问题</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<ul>
+<li>排序: 选择排序 插入排序 归并排序 快速排序</li>
+</ul>
+
+<h4>题目</h4>
+
+<ul>
+<li>leetcode 283</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given an array nums, write a function to move all 0&#39;s to the end of it while maintaining the relative order of the non-zero elements.
+
+For example, given nums = [0, 1, 0, 3, 12], after calling your function, nums should be [1, 3, 12, 0, 0].
+
+Note:
+
+You must do this in-place without making a copy of the array.
+Minimize the total number of operations.
+class Solution {
+public:
+    void moveZeroes(vector&lt;int&gt;&amp; nums) {
+        for (int i = 0, j = 0; i &lt; nums.size(); ++i) {
+            if (nums[i]) {
+                swap(nums[i], nums[j++]);
+            }
+        }
+    }
+};
+</code></pre>
+
+<ul>
+<li>k [0,k) 保存所有遍历过的非0元素</li>
+</ul>
+
+<h4>code</h4>
+
+<ul>
+<li>给定一个数组nums和一个数组val，将数组中所有等于val的元素删除，返回剩余的元素个数</li>
+<li>leetcode26</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a sorted array  nums , remove the duplicates in-place such that each element appear only  once  and return the new length.
+
+Do not allocate extra space for another array, you must do this by modifying the input array in-place with O(1) extra memory.
+
+Example 1:
+
+Given _nums_ = [1,1,2],
+
+Your function should return length = 2, with the first two elements of _nums_ being 1 and 2 respectively.
+
+It doesn&#39;t matter what you leave beyond the returned length.
+class Solution {
+public:
+    int removeDuplicates(vector&lt;int&gt;&amp; nums) {
+        int j = 0, n = nums.size();
+        for (int i = 0; i &lt; n; ++i) {
+            if (nums[i] != nums[j]) nums[++j] = nums[i];
+        }
+        return nums.empty() ? 0 : (j + 1);
+    }
+};
+</code></pre>
+
+<ul>
+<li>leetcode27</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given an array  nums  and a value  val , remove all instances of that value in-place and return the new length.
+
+Do not allocate extra space for another array, you must do this by modifying the input array in-place with O(1) extra memory.
+
+The order of elements can be changed. It doesn&#39;t matter what you leave beyond the new length.
+
+Example 1:
+
+Given _nums_ = [3,2,2,3], _val_ = 3,
+
+Your function should return length = 2, with the first two elements of _nums_ being 2.
+
+It doesn&#39;t matter what you leave beyond the returned length.
+class Solution {
+public:
+    int removeElement(vector&lt;int&gt;&amp; nums, int val) {
+        int res = 0;
+        for (int i = 0; i &lt; nums.size(); ++i) {
+            if (nums[i] != val) nums[res++] = nums[i];
+        }
+        return res;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leetcode80</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a sorted array  nums , remove the duplicates in-place such that duplicates appeared at most  twice  and return the new length.
+
+Do not allocate extra space for another array, you must do this by modifying the input array in-place with O(1) extra memory.
+
+Example 1:
+
+Given _nums_ = [1,1,1,2,2,3],
+
+Your function should return length = 5, with the first five elements of _nums_ being 1, 1, 2, 2 and 3 respectively.
+
+It doesn&#39;t matter what you leave beyond the returned length.
+class Solution {
+public:
+    int removeDuplicates(vector&lt;int&gt;&amp; nums) {
+        int pre = 0, cur = 1, cnt = 1, n = nums.size();
+        while (cur &lt; n) {
+            if (nums[pre] == nums[cur] &amp;&amp; cnt == 0) ++cur;
+            else {
+                if (nums[pre] == nums[cur]) --cnt;
+                else cnt = 1;
+                nums[++pre] = nums[cur++];
+            }
+        }
+        return nums.empty() ? 0 : pre + 1;
+    }
+};
+class Solution {
+public:
+    int removeDuplicates(vector&lt;int&gt;&amp; nums) {
+        int i = 0;
+        for (int num : nums) {
+            if (i &lt; 2 || num &gt; nums[i - 2]) {
+                nums[i++] = num;
+            }
+        }
+        return i;
+    }
+};
+</code></pre>
+
+<h4>Sort Colors</h4>
+
+<ul>
+<li>leet_code75</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given an array with  n  objects colored red, white or blue, sort them in-place so that objects of the same color are adjacent, with the colors in the order red, white and blue.
+
+Here, we will use the integers 0, 1, and 2 to represent the color red, white, and blue respectively.
+
+Note: You are not suppose to use the library&#39;s sort function for this problem.
+
+Example:
+
+Input: [2,0,2,1,1,0]
+Output: [0,0,1,1,2,2]
+class Solution {
+public:
+    void sortColors(vector&lt;int&gt;&amp; nums) {
+        int red = 0, blue = (int)nums.size() - 1;
+        for (int i = 0; i &lt;= blue; ++i) {
+            if (nums[i] == 0) {
+                swap(nums[i], nums[red++]);
+            } else if (nums[i] == 2) {
+                swap(nums[i--], nums[blue--]);
+            } 
+        }
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_code88</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given two sorted integer arrays  nums1  and  nums2 , merge  nums2  into  nums1  as one sorted array.
+
+Note:
+
+The number of elements initialized in  nums1 and  nums2  are  m  and  n  respectively.
+You may assume that  nums1  has enough space (size that is greater or equal to  m  +  n ) to hold additional elements from  nums2.
+Example:
+
+Input:
+nums1 = [1,2,3,0,0,0], m = 3
+nums2 = [2,5,6],       n = 3
+
+Output: [1,2,2,3,5,6]
+class Solution {
+public:
+    void merge(vector&lt;int&gt;&amp; nums1, int m, vector&lt;int&gt;&amp; nums2, int n) {
+        int i = m - 1, j = n - 1, k = m + n - 1;
+        while (i &gt;= 0 &amp;&amp; j &gt;= 0) {
+            if (nums1[i] &gt; nums2[j]) nums1[k--] = nums1[i--];
+            else nums1[k--] = nums2[j--];
+        }
+        while (j &gt;= 0) nums1[k--] = nums2[j--];
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_code215</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Find the kth largest element in an unsorted array. Note that it is the kth largest element in the sorted order, not the kth distinct element.
+
+Example 1:
+
+Input: [3,2,1,5,6,4] and k = 2
+Output: 5
+class Solution {
+public:
+  int findKthLargest(vector&lt;int&gt;&amp; nums, int k) {
+    int left = 0, right = nums.size() - 1;
+    k = nums.size() - k;
+    while (left &lt;= right) {
+      int pos = partition(nums, left, right);
+      if (pos == k) return nums[pos];
+      else if (pos &gt; k) right = pos - 1;
+      else left = pos + 1;
+    }
+    return -1;
+  }
+
+  int partition(vector&lt;int&gt;&amp; nums, int left, int right) {
+    int val = nums[left], j = left;
+    for (int i = left + 1; i &lt;= right; i++) {
+      if (nums[i] &lt; val)  swap(nums[++j], nums[i]);
+    }
+    swap(nums[j], nums[left]);
+    return j;
+  }
+};
+</code></pre>
+
+<h4>two_sum</h4>
+
+<ul>
+<li>leet_125</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a string, determine if it is a palindrome, considering only alphanumeric characters and ignoring cases.
+
+For example,
+&quot;A man, a plan, a canal: Panama&quot; is a palindrome.
+&quot;race a car&quot; is not a palindrome
+//判断大小写等价if ((s[left] + 32 - &#39;a&#39;) %32 != (s[right] + 32 - &#39;a&#39;) % 32)
+class Solution {
+public:
+    bool isPalindrome(string s) {
+        int left = 0, right = s.size() - 1 ;
+        while (left &lt; right) {
+            if (!isAlphaNum(s[left])) ++left;
+            else if (!isAlphaNum(s[right])) --right;
+            else if ((s[left] + 32 - &#39;a&#39;) %32 != (s[right] + 32 - &#39;a&#39;) % 32) return false; 
+            else {
+                ++left; --right;
+            }
+        }
+        return true;
+    }
+    bool isAlphaNum(char &amp;ch) {
+        if (ch &gt;= &#39;a&#39; &amp;&amp; ch &lt;= &#39;z&#39;) return true;
+        if (ch &gt;= &#39;A&#39; &amp;&amp; ch &lt;= &#39;Z&#39;) return true;
+        if (ch &gt;= &#39;0&#39; &amp;&amp; ch &lt;= &#39;9&#39;) return true;
+        return false;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_344</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">字符串反转
+class Solution {
+public:
+    void reverseString(vector&lt;char&gt;&amp; s) {
+      int left = 0, right = s.size() - 1;
+      while (left &lt; right) {
+        swap(s[left++], s[right--]);
+      }
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_345</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Write a function that takes a string as input and reverse only the vowels of a string.
+
+Example 1:
+Given s = &quot;hello&quot;, return &quot;holle&quot;.
+
+Example 2:
+Given s = &quot;leetcode&quot;, return &quot;leotcede&quot;.
+class Solution {
+public:
+    string reverseVowels(string s) {
+        int left = 0, right= s.size() - 1;
+        while (left &lt; right) {
+            if (isVowel(s[left]) &amp;&amp; isVowel(s[right])) {
+                swap(s[left++], s[right--]);
+            } else if (isVowel(s[left])) {
+                --right;
+            } else {
+                ++left;
+            }
+        }
+        return s;
+    }
+    bool isVowel(char c) {
+        return c == &#39;a&#39; || c == &#39;e&#39; || c == &#39;i&#39; || c == &#39;o&#39; || c == &#39;u&#39; || c == &#39;A&#39; || c == &#39;E&#39; || c == &#39;I&#39; || c == &#39;O&#39; || c == &#39;U&#39;;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_11</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given n non-negative integers a1, a2, ..., an , where each represents a point at coordinate (i, ai). n vertical lines are drawn such that the two endpoints of line i is at (i, ai) and (i, 0). Find two lines, which together with x-axis forms a container, such that the container contains the most water.
+class Solution {
+public:
+    int maxArea(vector&lt;int&gt;&amp; height) {
+      int i = 0, j = height.size() - 1;
+      int res = 0;
+      while (i &lt; j) {
+        res = max(res, min(height[i], height[j]) * (j - i));
+        height[i] &lt; height[j] ? i++ : j--;
+      }
+      return res;
+    }
+};
+</code></pre>
+
+<h4>双索引技术</h4>
+
+<ul>
+<li>滑动窗口</li>
+<li>leet_209 暴力解法优化到O(n2) //TODO</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given an array of n positive integers and a positive integer s, find the minimal length of a contiguous subarray of which the sum ≥ s. If there isn&#39;t one, return 0 instead.
+
+Example: 
+
+Input: s = 7, nums = [2,3,1,2,4,3]
+Output: 2
+Explanation: the subarray [4,3] has the minimal length under the problem constraint.
+class Solution {
+  public:
+  int minSubArrayLen(int s, vector&lt;int&gt;&amp; nums) {
+    int l = 0, r = -1, sum = 0;
+
+    int  res = nums.size() + 1; //有可能是整个数组之和等于s
+
+    while (l &lt; nums.size()) {
+      if (r + 1 &lt; nums.size() &amp;&amp; sum &lt; s)
+        sum += nums[++r];
+      else
+        sum -= nums[l++];
+
+      if (sum &gt;= s)
+        res = min(res, r -l +1);
+    }
+
+    if (res == nums.size() + 1)
+      return 0;
+
+    return res;
+  }
+};
+</code></pre>
+
+<ul>
+<li>leet_3 字符集？ 只有字母?  字母 + 数字 ? ASCII 大小写是否敏感</li>
+<li>leet_438 字符集范围 英文小写字母 返回的解的顺序</li>
+<li>leet_76 字符范围 没有解 多个解 </li>
+<li>字符包含 Input: S = &quot;ADOBECODEBANC&quot;, T = &quot;ABC&quot; Output: &quot;BANC&quot;</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/07/23 10:45 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E7%8E%A9%E8%BD%AC%E7%AE%97%E6%B3%95.html'>玩转算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15685018644152.html">
+                
+                  <h1>RabbitMQ和AMQP协议</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<ul>
+<li>导航
+<img src="media/15685018644152/15685019251376.jpg" alt="" style="width:788px;"/>
+<img src="media/15685018644152/15685019353551.jpg" alt="" style="width:864px;"/>
+<img src="media/15685018644152/15685019742034.jpg" alt="" style="width:912px;"/></li>
+</ul>
+
+<h4>初始</h4>
+
+<ul>
+<li>优点</li>
+<li>集群模式丰富，表达式配置，HA 模式，镜像队列模型 √保证数据不丟失的前提做到高可靠性、可用性</li>
+</ul>
+
+<h4>高性能原因</h4>
+
+<ul>
+<li>Erlang 语言最初在于交换机领域的架构模式，这样使得 Rabbitmq 在 Broker 之间进行数据交互的性能是非常优秀的</li>
+<li>Erlang 的优点：Erlang 有着和原生 Socket-样的延迟</li>
+</ul>
+
+<h4>AMQP</h4>
+
+<ul>
+<li><img src="media/15685018644152/15685025982263.jpg" alt="" style="width:1087px;"/></li>
+<li>Server：又称 Broker，接受客户端的连接，实现 AMQP 实体服务</li>
+<li>Connection：连接，应用程序与 Broker 的网络连接</li>
+<li>Channel：网络信道，几乎所有的操作都在 Channels 中进行，Channel 是进行消息读写的通道。客户端可建立多个 hannel，每个 Channel 代表一个会话任务。</li>
+<li>Message：消息、服务器和应用程序之间传送的数据，由 Properties 和 Body 组成。Properties 可以对消息进行修饰，比如消息的优先级延迟等高级特性；Body 则就是消息体内容。</li>
+<li>Virtual host：虚拟地址，用于进行逻辑隔离，最上层的消息路由。一个Virtual Host里面可以有若干个Exchange和Queue，同一个 Virtual Host 里面不能有相同名称的 Exchange 或 Queue</li>
+<li>Exchange 交换机，接收消息，根据路由键转发消息到绑定的队列</li>
+<li>Binding: Exchange 和 Queue 之间的虚拟连接，binding 中可以包含 routing key</li>
+<li>Routing Key 路由规则，虚拟机可用它来确定如何路由一个特定消息</li>
+<li>Queue：也称为 Message Queue，消息队列，保存消息并将它们转发给消费者</li>
+</ul>
+
+<h4>整体架构</h4>
+
+<ul>
+<li><img src="media/15685018644152/2018-12-12%2017-01-57%20%E7%9A%84%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE.png" alt="2018-12-12 17-01-57 的屏幕截图"/></li>
+<li><img src="media/15685018644152/15685032427468.jpg" alt="" style="width:1095px;"/></li>
+<li><img src="media/15685018644152/15685033008191.jpg" alt="" style="width:1125px;"/></li>
+<li>生产者无需关系消息投递到哪个队列，消费者无须知道消息从哪个exchange来</li>
+<li></li>
+</ul>
+
+<h4>安装rabbitmq</h4>
+
+<ul>
+<li><img src="media/15685018644152/15685094890042.jpg" alt="" style="width:477px;"/></li>
+</ul>
 
 <h4>命令行</h4>
 
 <ul>
-<li>etcdctl get &quot;&quot; --prefix=true</li>
-<li>etcdctl del &quot;&quot; --prefix=true</li>
-</ul>
-
-<h4>etcdAPI</h4>
-
-<p><img src="media/15708463915098/15708480943917.jpg" alt="" style="width:469px;"/></p>
-
-<ul>
-<li>header
-<img src="media/15708463915098/15708481882498.jpg" alt="" style="width:773px;"/></li>
-<li>keyvalue
-<img src="media/15708463915098/15708482182058.jpg" alt="" style="width:788px;"/></li>
-<li>keyrange
-<img src="media/15708463915098/15708487068511.jpg" alt="" style="width:841px;"/></li>
-<li>kv
-<img src="media/15708463915098/15708486683352.jpg" alt="" style="width:896px;"/></li>
-<li>TXn API
-<img src="media/15708463915098/15708527202806.jpg" alt="" style="width:860px;"/>
-<img src="media/15708463915098/15708527736250.jpg" alt="" style="width:878px;"/></li>
-<li>Watch API
-<img src="media/15708463915098/15708530972955.jpg" alt="" style="width:898px;"/></li>
-<li>Lease API
-<img src="media/15708463915098/15708533513999.jpg" alt="" style="width:842px;"/></li>
-</ul>
-
-<pre class="line-numbers"><code class="language-go">package etcd_code
-
-import (
-    &quot;context&quot;
-    &quot;fmt&quot;
-    v3 &quot;go.etcd.io/etcd/clientv3&quot;
-    &quot;testing&quot;
-)
-
-func printGetResponse(r *v3.GetResponse) {
-    fmt.Printf(&quot;response header: %q\n&quot;, r.Header)
-    fmt.Printf(&quot;kvs: %v\n&quot;, r.Kvs)
-    fmt.Printf(&quot;more: %t\n&quot;, r.More)
-    fmt.Printf(&quot;count: %d\n&quot;, r.Count)
-}
-
-// Run beforehand:
-//  etcdctl put TestGet 1
-func TestGet(t *testing.T) {
-    cli := newClient(t)
-    defer cli.Close()
-
-    key := &quot;TestGet&quot;
-
-    response, err := cli.Get(context.Background(), key)
-    if err != nil {
-        t.Fatal(err)
-    }
-    printGetResponse(response)
-}
-
-// Run beforehand:
-//  etcdctl put TestGetWithPrefix 1
-//  etcdctl put TestGetWithPrefix2 2
-func TestGetWithPrefix(t *testing.T) {
-    cli := newClient(t)
-    defer cli.Close()
-
-    keyPrefix := &quot;TestGetWithPrefix&quot;
-    response, err := cli.Get(context.Background(), keyPrefix, v3.WithPrefix())
-    if err != nil {
-        t.Fatal(err)
-    }
-    printGetResponse(response)
-}
-
-// Run beforehand:
-//  etcdctl put TestGetWithRange 1
-//  etcdctl put TestGetWithRange2 2
-func TestGetWithRange(t *testing.T) {
-    cli := newClient(t)
-    defer cli.Close()
-
-    response, err := cli.Get(context.Background(), &quot;TestGetWithRange&quot;, v3.WithRange(&quot;TestGetWithRange2\x00&quot;))
-    if err != nil {
-        t.Fatal(err)
-    }
-    printGetResponse(response)
-}
-
-// Run beforehand:
-//  etcdctl put TestGetWithSerializable 1
-func TestGetWithSerializable(t *testing.T) {
-    cli := newClient(t)
-    defer cli.Close()
-
-    key := &quot;TestGetWithSerializable&quot;
-    response, err := cli.Get(context.Background(), key, v3.WithSerializable())
-    if err != nil {
-        t.Fatal(err)
-    }
-    printGetResponse(response)
-}
-
-func TestPut(t *testing.T) {
-    cli := newClient(t)
-    defer cli.Close()
-
-    key := &quot;TestPut&quot;
-    response, err := cli.Put(context.Background(), key, &quot;1&quot;, v3.WithPrevKV())
-    if err != nil {
-        t.Fatal(err)
-    }
-    fmt.Printf(&quot;header: %q\n&quot;, response.Header)
-    fmt.Printf(&quot;prev_kv: %q\n&quot;, response.PrevKv)
-}
-
-// Run beforehand:
-//  etcdctl put TestDelete 1
-func TestDelete(t *testing.T) {
-    cli := newClient(t)
-    defer cli.Close()
-
-    key := &quot;TestDelete&quot;
-    response, err := cli.Delete(context.Background(), key)
-    if err != nil {
-        t.Fatal(err)
-    }
-    fmt.Printf(&quot;header: %v\n&quot;, response.Header)
-    fmt.Printf(&quot;deleted: %d\n&quot;, response.Deleted)
-    fmt.Printf(&quot;pre_kvs: %v\n&quot;, response.PrevKvs)
-}
-
-// Run beforehand:
-//  etcdctl put TestTxn 1
-func TestTxn(t *testing.T) {
-    cli := newClient(t)
-    defer cli.Close()
-
-    key := &quot;TestTxn&quot;
-    thenValue := &quot;then&quot;
-
-    ctx := context.Background()
-    _, err := cli.Txn(ctx).
-        If(v3.Compare(v3.Value(key), &quot;&lt;&quot;, &quot;2&quot;)).
-        Then(v3.OpPut(key, thenValue)).
-        Else(v3.OpPut(key, &quot;else&quot;)).
-        Commit()
-    if err != nil {
-        t.Fatal(err)
-    }
-
-    // Return &quot;then&quot;
-    gresp, err := cli.Get(ctx, key)
-    if err != nil {
-        t.Fatal(err)
-    }
-
-    if l := len(gresp.Kvs); l != 1 {
-        t.Errorf(&quot;expeected 1 key-value, but got %d key-values\n&quot;, l)
-    }
-
-    if value := string(gresp.Kvs[0].Value); value != &quot;then&quot; {
-        t.Errorf(&quot;expected value %s, but got %s\n&quot;, thenValue, value)
-    }
-
-    for _, ev := range gresp.Kvs {
-        fmt.Printf(&quot;%s: %s\n&quot;, ev.Key, ev.Value)
-    }
-    //delete(cli, key, t)
-}
-
-func TestTxnOpOrder(t *testing.T) {
-    cli := newClient(t)
-    defer cli.Close()
-    key := &quot;TestTxnOpOrder&quot;
-
-    ctx := context.Background()
-    // If CreateRevision is 0, it means that the key does not exist.
-    cmp := v3.Compare(v3.CreateRevision(key), &quot;=&quot;, 0)
-    put := v3.OpPut(key, &quot;1&quot;)
-    get := v3.OpGet(key)
-
-    // Get Put
-    resp, err := cli.Txn(ctx).If(cmp).Then(get, put).Commit()
-    if err != nil {
-        t.Fatal(err)
-    }
-    printTxnResponse(resp)
-    if l := len(resp.Responses[0].GetResponseRange().Kvs); l != 0 {
-        t.Errorf(&quot;expeected 0 key-value, but got %d key-values\n&quot;, l)
-    }
-    delete(ctx, cli, key, t)
-
-    // Put Get
-    resp, err = cli.Txn(ctx).If(cmp).Then(put, get).Commit()
-    if err != nil {
-        t.Fatal(err)
-    }
-    printTxnResponse(resp)
-    if l := len(resp.Responses[1].GetResponseRange().Kvs); l != 1 {
-        t.Errorf(&quot;expeected 1 key-value, but got %d key-values\n&quot;, l)
-    }
-    delete(ctx, cli, key, t)
-}
-
-func TestTxnMultis(t *testing.T) {
-    cli := newClient(t)
-    defer cli.Close()
-    ctx := context.Background()
-
-    keyPrefix := &quot;TestTxnMultis&quot;
-    keys := []string{keyPrefix + &quot;1&quot;, keyPrefix + &quot;2&quot;}
-    var cmps [2]v3.Cmp
-    var puts [2]v3.Op
-    var gets [2]v3.Op
-    for i := 0; i &lt; 2; i++ {
-        val := string(i + 1)
-        cmps[i] = v3.Compare(v3.CreateRevision(keys[i]), &quot;=&quot;, 0)
-        puts[i] = v3.OpPut(keys[i], val)
-        gets[i] = v3.OpGet(keys[i])
-    }
-
-    // Executes two Puts
-    tresp, err := cli.Txn(ctx).If(cmps[:]...).Then(puts[:]...).Else(gets[:]...).Commit()
-    if err != nil {
-        t.Fatal(t)
-    }
-    if !tresp.Succeeded {
-        t.Fatal(&quot;Txn should succeed, but failed&quot;)
-    }
-
-    // Executes two Gets
-    tresp, err = cli.Txn(ctx).If(cmps[:]...).Then(puts[:]...).Else(gets[:]...).Commit()
-    if err != nil {
-        t.Fatal(t)
-    }
-    if tresp.Succeeded {
-        t.Fatal(&quot;Txn should fail, but succeeded&quot;)
-    }
-    for i := 0; i &lt; 2; i++ {
-        if count := tresp.Responses[i].GetResponseRange().Count; count != 1 {
-            t.Errorf(&quot;expected 1 value for key %s, but got %d value&quot;, keys[0], count)
-        }
-    }
-
-    // Execute two Deletes
-    tresp, err = cli.Txn(ctx).Then(v3.OpDelete(keys[0]), v3.OpDelete(keys[1])).Commit();
-    if err != nil {
-        t.Fatal(err)
-    }
-    for _, r := range tresp.Responses {
-        if deleted := r.GetResponseDeleteRange().Deleted; deleted != 1 {
-            t.Fatalf(&quot;expected to delete 1 key-value, but deleted %d key-value&quot;, deleted)
-        }
-    }
-    gresp, err := cli.Get(ctx, keyPrefix, v3.WithPrefix())
-    if gresp.Count != 0 {
-        t.Errorf(&quot;expected 0 key-values, bot got %d&quot;, gresp.Count)
-    }
-}
-
-func printTxnResponse(resp *v3.TxnResponse) {
-    fmt.Printf(&quot;response header: %q\n&quot;, resp.Header)
-    fmt.Printf(&quot;succeeded: %t\n&quot;, resp.Succeeded)
-}
-
-// version revision test
-func TestVersionAndRevision(t *testing.T) {
-    cli := newClient(t)
-    defer cli.Close()
-    key := &quot;TestVersionAndRevision&quot;
-    ctx := context.Background()
-
-    put(ctx, cli, key, t)
-    get(ctx, cli, key, t)
-    put(ctx, cli, key, t)
-    get(ctx, cli, key, t)
-    delete(ctx, cli, key, t)
-
-    put(ctx, cli, key, t)
-    get(ctx, cli, key, t)
-    put(ctx, cli, key, t)
-    get(ctx, cli, key, t)
-}
-
-func put(ctx context.Context, cli *v3.Client, key string, t *testing.T) {
-    fmt.Println(&quot;Put&quot;)
-    response, err := cli.Put(ctx, key, &quot;one&quot;, v3.WithPrevKV())
-    if err != nil {
-        t.Fatal(err)
-    }
-    fmt.Printf(&quot;put revision: %d\n&quot;, response.Header.Revision)
-    fmt.Printf(&quot;prev_kv: %v\n\n&quot;, response.PrevKv)
-}
-
-func get(ctx context.Context, cli *v3.Client, key string, t *testing.T) {
-    fmt.Println(&quot;Get&quot;)
-    response, err := cli.Get(ctx, key, v3.WithPrevKV())
-    if err != nil {
-        t.Fatal(err)
-    }
-    fmt.Printf(&quot;get revision: %d\n&quot;, response.Header.Revision)
-    fmt.Printf(&quot;kvs: %v\n\n&quot;, response.Kvs)
-}
-
-func delete(ctx context.Context, cli *v3.Client, key string, t *testing.T) {
-    fmt.Println(&quot;Delete&quot;)
-    response, err := cli.Delete(ctx, key, v3.WithPrevKV())
-    if err != nil {
-        t.Fatal(err)
-    }
-    fmt.Printf(&quot;delete revision: %d\n&quot;, response.Header.Revision)
-    fmt.Printf(&quot;deleted: %d\n&quot;, response.Deleted)
-    fmt.Printf(&quot;prev_kvs: %v\n\n&quot;, response.PrevKvs)
-}
-</code></pre>
-
-<h4>分布式队列</h4>
-
-<ul>
-<li><img src="media/15708463915098/15708535657472.jpg" alt="" style="width:1605px;"/></li>
-</ul>
-
-<h4>分布式锁</h4>
-
-<ul>
-<li><img src="media/15708463915098/15708538122564.jpg" alt="" style="width:1471px;"/></li>
-<li><img src="media/15708463915098/15708538552096.jpg" alt="" style="width:1418px;"/></li>
+<li><img src="media/15685018644152/15685919640494.jpg" alt="" style="width:1284px;"/></li>
+<li>rabbitmqctl list user permissions username：列出用户权限</li>
+<li>rabbitmqctl change_ password username newpassword：修改密码</li>
+<li>rabbitmqctl set permissions-p vhostpath username &quot;.<em>&quot; &quot;.</em>&quot; &quot;.*&quot; 设置用户权限</li>
+<li>Rabbitmqctl add vhost vhostpath：创建虚拟主机 </li>
+<li>rabbitmgctl list vhosts：列出所有虚拟主机</li>
+<li>rabbitmqctl list permissions- o vhostpath：列出虚拟主机上所有权限</li>
+<li>rabbitmqctl delete_ vhost vhostpath：删除虚拟主机</li>
+<li>rabbitmqctl reset</li>
+<li>Rabbitmactl join cluster <clusternode> [--ram][--disc]：组成集群命令</li>
+<li>rabbitmqctl cluster_status</li>
+<li>rabbitmactl change cluster node type disc ram</li>
+<li>rabbitmactl forget cluster node [-offline] 忘记节点（摘除节点)</li>
 <li></li>
 </ul>
 
+<h4>import&amp;export</h4>
+
+<ul>
+<li>批量导出配置文件</li>
+</ul>
+
+<h4>生产者和消费者</h4>
+
+<ul>
+<li>消费端一定要创建consumer,声明消费队列</li>
+<li>没有指定exchange,就会使用默认的路由规则</li>
+</ul>
+
+<h4>Exchange交换机</h4>
+
+<ul>
+<li><img src="media/15685018644152/15686780874004.jpg" alt="" style="width:1196px;"/></li>
+<li>蓝色表示SendMessage</li>
+<li>绿色表示RecvMessage</li>
+<li>黄色表示routing-key</li>
+</ul>
+
+<h5>交换机属性</h5>
+
+<ul>
+<li>Name：交换机名称</li>
+<li>Type：交换机类型 direct、topic、fanout、headers </li>
+<li>Durability 是否需要持久化，true 为持久</li>
+<li>Auto Delete：当最后一个绑定到 Exchange 上的队列删除后，自动删除该 Exchange </li>
+<li>Internal：当前 Exchange 是否用于 Rabbit MQP 内部使用，默认为 False</li>
+<li>Arguments：扩展参数，用于扩展 AMQP 协议自制定化使用</li>
+</ul>
+
+<h5>Direct Exchange</h5>
+
+<ul>
+<li>所有发送到 Direct Exchange 的消息被转发到 Routekey 中指定的 Queue</li>
+<li>注意：Directa 模式可以使用 Rabbitmq 自带的 Exchange: default Exchange，所以不需要将 Exchange 进行任何绑定（binding）操作，消息传递时，Routekey 必须完全匹配才会被队列接收，否则该消息会被抛弃</li>
+<li><img src="media/15685018644152/15686783728891.jpg" alt="" style="width:1301px;"/></li>
+<li><img src="media/15685018644152/15713502113780.jpg" alt="" style="width:1426px;"/></li>
+</ul>
+
+<h5>Topic Exchange</h5>
+
+<ul>
+<li>所有发送到 Topic Exchangee 的消息被转发到所有关心 Route Keyi 中指定 Topic 的 Queue 上</li>
+<li>Exchange 将 Routekey 和某 Topic 进行模糊匹配，此时队列需要绑定一个 Topic</li>
+<li><img src="media/15685018644152/15687601895357.jpg" alt="" style="width:984px;"/></li>
+<li><img src="media/15685018644152/15687602026259.jpg" alt="" style="width:1131px;"/></li>
+</ul>
+
+<h4>Fanout Exchange</h4>
+
+<ul>
+<li>不处理路由键，只需要简单的将队列绑定到交换机上</li>
+<li>发送到交换机的消息都会被转发到与该交换机绑定的所有队列上</li>
+<li>Fanout 交换机转发消息是最快的</li>
+<li><img src="media/15685018644152/15687618674083.jpg" alt="" style="width:1081px;"/></li>
+</ul>
+
+<h4>Binding</h4>
+
+<ul>
+<li>Exchange？和 Exchange、Queue 之间的连接关系 </li>
+<li>Binding 中可以包含 Routing keyi 或者参数</li>
+</ul>
+
+<h4>Queue</h4>
+
+<ul>
+<li>消息队列，实际存储消息数据</li>
+<li>Durability：是否持久化，Durable：是，Transient：否</li>
+<li>Auto delete：如选 yes，代表当最后一个监听被移除之后</li>
+<li>该 Queue 会自动被删除</li>
+</ul>
+
+<h4>Message</h4>
+
+<ul>
+<li>服务器和应用程序之间传送的数据</li>
+<li>本质上就是一段数据，由 Properties 和 Payload (Body）组成</li>
+<li>常用属性：delivery mode、headers（自定义属性</li>
+<li>Content type、content encoding、priority correlation id、reply to、expiration、message_id timestamp、type、user-id、app_id、cluster id</li>
+<li>correlation_id比较重要</li>
+</ul>
+
+<h4>Virtual host</h4>
+
+<ul>
+<li>虚拟地址，用于进行逻辑隔离，最上层的消息路由</li>
+<li>一个 Virtual Host 里面可以有若干个 Exchange 和 Queue </li>
+<li>同一个 Virtual Host 里面不能有相同名称的 Exchange 或 Queue</li>
+</ul>
+
                         
                       </div>
                   </div>
@@ -567,10 +1401,10 @@ func delete(ctx context.Context, cli *v3.Client, key string, t *testing.T) {
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/10/12 10:13 上午</span>
+                    <span class="date">2019/09/15 06:57 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Zookeeper.html'>Zookeeper</a></span>
+          					    <span class="posted-in"><a href='RabbitMQ.html'>RabbitMQ</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -584,50 +1418,53 @@ func delete(ctx context.Context, cli *v3.Client, key string, t *testing.T) {
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15708454108646.html">
+                <a class="clearlink" href="15713463097375.html">
                 
-                  <h1>Raft</h1>
+                  <h1>消费者消息</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>比较</h4>
-
-<p><img src="media/15708454108646/15708454332686.jpg" alt="" style="width:1547px;"/></p>
-
-<h4>复制状态机系统架构</h4>
-
-<p><img src="media/15708454108646/15708455976380.jpg" alt="" style="width:1005px;"/></p>
-
-<h4>日志复制</h4>
-
-<p><img src="media/15708454108646/15708456655889.jpg" alt="" style="width:1584px;"/></p>
+                        	<h4>direct模式</h4>
 
 <ul>
-<li>容错：在数量少于 Raft 服务器总数一半的 Follower 失败的情况下，Raf 集群仍然可以正常处理来自客户端的请求。、</li>
-<li>确保重叠：一旦 Raft leader 响应了一个客户端请求，即使出现 Raf 集群中少数服务器的失败，也会有一个服务器包含所有以前提交的日志条目。</li>
+<li>1、消费者 1 和消费者 2 获取到的消息鬥容是不同的，同一个消息只能被一个消费者获取。</li>
+<li>2、消费者 1 和消费者 2 获取到的消息的数量是相同的，一个是奇数一个是偶数。</li>
 </ul>
 
-<h4>选举算法</h4>
+<h4>work模式能者多劳</h4>
 
 <ul>
-<li><img src="media/15708454108646/15708460295671.jpg" alt="" style="width:1432px;"/></li>
+<li>Qos每次只发一条消息</li>
+<li>消费者从队列中获取消息，服务端如何宍道消息已经被消呢？</li>
+<li>模式 1: 自动确认只要消息从队列中获取，无论消费者获取到消息后是否成功消息，都认为是消息已经成功消费模式 </li>
+<li>2: 手动确认消费者从队列中获取消息后，服务器会将该消息标记为不可用状态，等待消费者的反馈，如果消费者一直没有反馈，那么该消息将一直处于不可用状态</li>
+<li>手动情况 </li>
 </ul>
 
-<h4>保证新term的leader保存了所有提交的日志项目</h4>
-
-<p><img src="media/15708454108646/15708462001028.jpg" alt="" style="width:1540px;"/></p>
-
-<h4>状态机命令</h4>
+<h4>订阅模式</h4>
 
 <ul>
-<li><img src="media/15708454108646/15708463049854.jpg" alt="" style="width:1523px;"/></li>
+<li><img src="media/15713463097375/15713470609557.jpg" alt="" style="width:517px;"/></li>
+<li>交换机只是转发，没有存储消息功能</li>
+<li>消息发送到没有队列绑定的交换机时，消息将丢失，因为，交换机没有存储消息的力，消息只能存在在队列中。</li>
+<li>同一个消息被多个消费者获取</li>
 </ul>
 
-<h4>集群成员更新</h4>
+<h4>订阅模式实现商品的同步</h4>
 
 <ul>
-<li></li>
+<li>可以的。</li>
+<li>后台系统就是消息的生产者。前台系统和搜索系统是消息的消费者。</li>
+<li>后台系统将消息发送到交换机中，前台系统和搜素系统都创建自己的队列，然后将队列绑定到交换机，即可实现。</li>
+<li>消息，新增商品、修改商品、删除商品。</li>
+<li>消费者有选择性的接收消息</li>
+</ul>
+
+<h4>持久化</h4>
+
+<ul>
+<li>非持久化性能高于持久化</li>
 </ul>
 
                         
@@ -637,10 +1474,10 @@ func delete(ctx context.Context, cli *v3.Client, key string, t *testing.T) {
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/10/12 09:56 上午</span>
+                    <span class="date">2019/10/18 05:05 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Zookeeper.html'>Zookeeper</a></span>
+          					    <span class="posted-in"><a href='RabbitMQ.html'>RabbitMQ</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -654,415 +1491,19 @@ func delete(ctx context.Context, cli *v3.Client, key string, t *testing.T) {
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15708431807650.html">
+                <a class="clearlink" href="15713068913485.html">
                 
-                  <h1>Paxos协议</h1>
+                  <h1>Redis内部结构</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>角色</h4>
+                        	<h4>字符串</h4>
 
-<p><img src="media/15708431807650/15708432020016.jpg" alt="" style="width:488px;"/></p>
-
-<h4>Chubby</h4>
-
-<ul>
-<li>分布式锁系统</li>
-<li><img src="media/15708431807650/15708436835898.jpg" alt="" style="width:878px;"/></li>
-<li><img src="media/15708431807650/15708436974240.jpg" alt="" style="width:866px;"/></li>
-<li><img src="media/15708431807650/15708440209187.jpg" alt="" style="width:781px;"/></li>
-</ul>
-
-<h4>Locking</h4>
-
-<p><img src="media/15708431807650/15708449864784.jpg" alt="" style="width:1522px;"/><br/>
-<img src="media/15708431807650/15708450716795.jpg" alt="" style="width:1576px;"/><br/>
-<img src="media/15708431807650/15708451735410.jpg" alt="" style="width:1520px;"/></p>
-
-<h4>Cache</h4>
-
-<p><img src="media/15708431807650/15708452349337.jpg" alt="" style="width:1599px;"/></p>
-
-<h4>与zk比较</h4>
-
-<p><img src="media/15708431807650/15708452904205.jpg" alt="" style="width:1574px;"/><br/>
-<img src="media/15708431807650/15708453780162.jpg" alt="" style="width:1508px;"/></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/12 09:19 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Zookeeper.html'>Zookeeper</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15706741933375.html">
-                
-                  <h1>调度器设计</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>调度器</h4>
-
-<p><img src="media/15706741933375/15706742581605.jpg" alt="" style="width:984px;"/></p>
-
-<ul>
-<li>sleep和wait是红黑树</li>
-<li>ready和defer是队列</li>
-<li>最难的是设计这四个状态</li>
-<li>defer是定时器</li>
-<li>wait是read write IO</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/10 10:23 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15705223687181.html">
-                
-                  <h1>ptmalloc和tcmalloc</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>ptmallic</h4>
-
-<h5>主分配区和非主分配区</h5>
-
-<ul>
-<li>ptmalloc的内存分配器中，为了解决多线程锁争夺问题，分为主分配main_area和非主分配区no_main_area。</li>
-<li>每个进程有一个主分配区，也可以允许有多个非主分配区。</li>
-<li>主分配区可以使用brk和mmap来分配，而非主分配区只能使用mmap来映射内存块</li>
-<li>非主分配区的数量一旦增加，则不会减少。</li>
-<li>主分配区和非主分配区形成一个环形链表进行管理。</li>
-</ul>
-
-<h5>bins</h5>
-
-<p><img src="media/15705223687181/15705232870790.jpg" alt="" style="width:696px;"/></p>
-
-<ul>
-<li>fast bins是bins的高速缓冲区，大约有10个定长队列。当用户释放一块不大于max_fast（默认值64 byte）的chunk（一般小内存）的时候，会默认会被放到fast bins上。当用户下次需要申请内存的时候首先会到fast bins上寻找是否有合适的chunk，然后才会到bins上空闲的chunk。ptmalloc会遍历fast bin，看是否有合适的chunk需要合并到bins上。</li>
-<li>unsorted bin。是bins的一个缓冲区。当用户释放的内存大于max_fast或者fast bins合并后的chunk都会进入unsorted bin上。当用户malloc的时候，先会到unsorted bin上查找是否有合适的bin，如果没有合适的bin，ptmalloc会将unsorted bin上的chunk放入bins上，然后到bins上查找合适的空闲chunk。</li>
-<li>small bins和large bins。small bins和large bins是真正用来放置chunk双向链表的。每个bin之间相差8个字节，并且通过上面的这个列表，可以快速定位到合适大小的空闲chunk。前64个为small bins，定长；后64个为large bins，非定长。</li>
-<li>Top chunk。并不是所有的chunk都会被放到bins上。top chunk相当于分配区的顶部空闲内存，当bins上都不能满足内存分配要求的时候，就会来top chunk上分配。</li>
-<li>mmaped chunk。当分配的内存非常大（大于分配阀值，默认128K）的时候，需要被mmap映射，则会放到mmaped chunk上，当释放mmaped chunk上的内存的时候会直接交还给操作系统。</li>
-</ul>
-
-<h4>分配流程</h4>
-
-<p><img src="media/15705223687181/15705236740408.jpg" alt="" style="width:571px;"/></p>
-
-<ol>
-<li>获取分配区的锁，防止多线程冲突。</li>
-<li>计算出需要分配的内存的chunk实际大小。</li>
-<li>判断chunk的大小，如果小于max_fast（64b），则取fast bins上去查询是否有适合的chunk，如果有则分配结束。</li>
-<li>chunk大小是否小于512B，如果是，则从small bins上去查找chunk，如果有合适的，则分配结束。</li>
-<li>继续从 unsorted bins上查找。如果unsorted bins上只有一个chunk并且大于待分配的chunk，则进行切割，并且剩余的chunk继续扔回unsorted bins；如果unsorted bins上有大小和待分配chunk相等的，则返回，并从unsorted bins删除；如果unsorted bins中的某一chunk大小 属于small bins的范围，则放入small bins的头部；如果unsorted bins中的某一chunk大小 属于large bins的范围，则找到合适的位置放入。</li>
-<li>从large bins中查找，找到链表头后，反向遍历此链表，直到找到第一个大小 大于待分配的chunk，然后进行切割，如果有余下的，则放入unsorted bin中去，分配则结束。</li>
-<li>如果搜索fast bins和bins都没有找到合适的chunk，那么就需要操作top chunk来进行分配了（top chunk相当于分配区的剩余内存空间）。判断top chunk大小是否满足所需chunk的大小，如果是，则从top chunk中分出一块来。</li>
-<li>如果top chunk也不能满足需求，则需要扩大top chunk。主分区上，如果分配的内存小于分配阀值（默认128k），则直接使用brk()分配一块内存；如果分配的内存大于分配阀值，则需要mmap来分配；非主分区上，则直接使用mmap来分配一块内存。通过mmap分配的内存，就会放入mmap chunk上，mmap chunk上的内存会直接回收给操作系统。</li>
-</ol>
-
-<h5>释放流程</h5>
-
-<ol>
-<li>获取分配区的锁，保证线程安全。</li>
-<li>如果free的是空指针，则返回，什么都不做。</li>
-<li>判断当前chunk是否是mmap映射区域映射的内存，如果是，则直接munmap()释放这块内存。前面的已使用chunk的数据结构中，我们可以看到有M来标识是否是mmap映射的内存。</li>
-<li>判断chunk是否与top chunk相邻，如果相邻，则直接和top chunk合并（和top chunk相邻相当于和分配区中的空闲内存块相邻）。转到步骤8</li>
-<li>如果chunk的大小大于max_fast（64b），则放入unsorted bin，并且检查是否有合并，有合并情况并且和top chunk相邻，则转到步骤8；没有合并情况则free。</li>
-<li>如果chunk的大小小于 max_fast（64b），则直接放入fast bin，fast bin并没有改变chunk的状态。没有合并情况，则free；有合并情况，转到步骤7</li>
-<li>在fast bin，如果当前chunk的下一个chunk也是空闲的，则将这两个chunk合并，放入unsorted bin上面。合并后的大小如果大于64KB，会触发进行fast bins的合并操作，fast bins中的chunk将被遍历，并与相邻的空闲chunk进行合并，合并后的chunk会被放到unsorted bin中，fast bin会变为空。合并后的chunk和topchunk相邻，则会合并到topchunk中。转到步骤8</li>
-<li>判断top chunk的大小是否大于mmap收缩阈值（默认为128KB），如果是的话，对于主分配区，则会试图归还top chunk中的一部分给操作系统。free结束。</li>
-</ol>
-
-<h4>缺陷</h4>
-
-<ol>
-<li>后分配的内存先释放,因为 ptmalloc 收缩内存是从 top chunk 开始,如果与 top chunk 相邻的 chunk 不能释放, top chunk 以下的 chunk 都无法释放。</li>
-<li>多线程锁开销大， 需要避免多线程频繁分配释放。</li>
-<li>内存从thread的分配区中分配， 内存不能从一个分配区移动到另一个分配区， 就是说如果多线程使用内存不均衡，容易导致内存的浪费。 比如说线程1使用了300M内存，完成任务后glibc没有释放给操作系统，线程2开始创建了一个新的arena， 但是线程1的300M却不能用了。</li>
-<li>每个chunk至少8字节的开销很大</li>
-</ol>
-
-<h4>tcmalloc</h4>
-
-<h5>小对象分配</h5>
-
-<ul>
-<li>tcmalloc为每个线程分配了一个线程本地ThreadCache，小内存从ThreadCache分配，此外还有个中央堆（CentralCache），ThreadCache不够用的时候，会从CentralCache中获取空间放到ThreadCache中。</li>
-<li>小对象（&lt;=32K）从ThreadCache分配，大对象从CentralCache分配。大对象分配的空间都是4k页面对齐的，多个pages也能切割成多个小对象划分到ThreadCache中。</li>
-<li>小对象有将近170个不同的大小分类(class)，每个class有个该大小内存块的FreeList单链表，分配的时候先找到best fit的class，然后无锁的获取该链表首元素返回。如果链表中无空间了，则到CentralCache中划分几个页面并切割成该class的大小，放入链表中。
-<img src="media/15705223687181/15705303959860.jpg" alt="" style="width:367px;"/></li>
-</ul>
-
-<h5>CentralCache分配管理</h5>
-
-<ul>
-<li>大对象(&gt;32K)先4k对齐后，从CentralCache中分配。 CentralCache的结构如下图所示， 数组中第256个元素是所有大于255个页面都挂到该链表中。
-<img src="media/15705223687181/15705304064238.jpg" alt="" style="width:532px;"/></li>
-</ul>
-
-<h5>PageHeap</h5>
-
-<ul>
-<li>在32位系统中，使用一个中央数组(central array)映射了页面和span对应关系， 数组索引号是页面号，数组元素是页面所在的span。 在64位系统中，使用一个3-level radix tree记录了该映射关系。</li>
-<li>如果是小对象，span会告诉我们他的size class，然后把该对象插入当前线程的ThreadCache中。如果此时ThreadCache超过一个预算的值（默认2MB），则会使用垃圾回收机制把未使用的object从ThreadCache移动到CentralCache的central free lists中。</li>
-<li>如果是大对象，span会告诉我们对象所在的页面号范围。 假设这个范围是[p,q]， 先查找页面p-1和q+1所在的span，如果这些临近的span也是free的，则合并到[p,q]所在的span， 然后把这个span回收到PageHeap中。</li>
-<li>CentralCache的central free lists类似ThreadCache的FreeList，不过它增加了一级结构，先根据size-class关联到spans的集合， 然后是对应span的object链表。如果span的链表中所有object已经free， 则span回收到PageHeap中。</li>
-</ul>
-
-<h5>改进</h5>
-
-<ol>
-<li>ThreadCache会阶段性的回收内存到CentralCache里。 解决了ptmalloc2中arena之间不能迁移的问题。</li>
-<li>Tcmalloc占用更少的额外空间。例如，分配N个8字节对象可能要使用大约8N * 1.01字节的空间。即，多用百分之一的空间。Ptmalloc2使用最少8字节描述一个chunk。</li>
-<li>更快，小对象几乎无锁， 大于32KB的对象从CentralCache中分配使用自旋锁。 并且&gt;32KB对象都是页面对齐分配，多线程的时候应尽量避免频繁分配，否则也会造成自旋锁的竞争和页面对齐造成的浪费。</li>
-</ol>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/08 16:12 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15703486295241.html">
-                
-                  <h1>思考题</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>案例、服务器端高并发IO的keep alive方案，满足一下几个需求</h4>
-
-<ul>
-<li>1. 每个IO都是自己的时间戳</li>
-<li>2. 每个IO收到自己的beat后，重置自己的定时器</li>
-<li>3. 若IO定时没有收到beat，则执行IO的回调函数，并重置定时器</li>
-<li>4. 若再次没有收到beat，销毁IO，注销定时器。</li>
-</ul>
-
-<h5>方案一</h5>
-
-<ul>
-<li>timerfd+epoll</li>
-<li>0. 时间精准度高</li>
-<li>小块代码逻辑清晰</li>
-<li>程序总体逻辑混乱</li>
-<li>代码是基于时间反应堆的</li>
-<li>回调函数中不易做较长时间操作，比如数椐库，第三方 HTP 请求中</li>
-</ul>
-
-<h5>方案三</h5>
-
-<ul>
-<li>红黑树</li>
-<li>key 时间戳 val 是 io</li>
-<li>期限到了直接删除节点</li>
-<li>如果key的值是一样的，从s扩充到ms</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/06 15:57 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15703439218598.html">
-                
-                  <h1>nginx线程池</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>线程池</h4>
-
-<pre class="line-numbers"><code class="language-c">struct thread_pool_s {
-    pthread_mutex_t        mtx; //互斥锁
-    thread_pool_queue_t   queue; //任务队列
-    int_t                 waiting; //等待任务的数量
-    pthread_cond_t         cond;
-
-    char                  *name; //线程池名称
-    uint_t                threads; //线程池数目
-    int_t                 max_queue;
-};
-</code></pre>
-
-<ul>
-<li>pthread_attr_setdetachstate(&amp;attr, PTHREAD_CREATE_DETACHED); 设置线程的分离状态，会释放所有资源</li>
-<li>pthread_join才会释放资源</li>
-<li>分配任务的时候把上下文的空间一块分配了</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">    thread_task_t  *task;
-
-    task = calloc(1,sizeof(thread_task_t) + size);
-    if (task == NULL) {
-        return NULL;
-    }
-
-    task-&gt;ctx = task + 1;
-
-    return task;
-</code></pre>
-
-<ul>
-<li>退出通过投递任务thread_pool_exit_handler</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/06 14:38 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15702724482478.html">
-                
-                  <h1>可变参数函数&&initializer_list</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>可变参数函数</h4>
-
-<ul>
-<li>这种能够接收非固定个数数的数就是可变参数还数</li>
-<li>initialiser_1 ist 标准库类型，该类型能够使用的前提条件是所有的实多类型相同</li>
-<li>参数类型一致，但是个数不可预知</li>
-</ul>
-
-<h4>拷贝和赋值</h4>
-
-<ul>
-<li>不会拷贝列表中元素，原来对象拷贝</li>
-</ul>
-
-<h4>省略号形参</h4>
-
-<ul>
-<li>这种省略形参式的可变参数函数虽然参数数量不固定，但是函数的所有参数是存储在线性连续的空间中的</li>
-<li>可变参数只能是字符串类型和int类型</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">double sum(int num, ...) {
-  va_list valist;
-  double sum = 0;
-  va_start(valist, num);
-  for (int i = 0; i &lt; num; i++) {
-    sum = sum + va_arg(valist, int);
-  }
-  va_end(valist);
-  return sum;
-}
-
-void funcTest(const char* msg...) {
-  va_list  valist;
-  int cnt = atoi(msg);
-  va_start(valist, msg);
-  int args = 0;
-  while (args &lt; cnt) {
-    char* p = va_arg(valist, char*);
-    printf(&quot;args %d %s \n&quot;, cnt, p);
-    args++;
-  }
-  va_end(valist);
+<pre class="line-numbers"><code class="language-c">struct SDS&lt;T&gt; {
+  T capacity;
+  T len;
+  byte
 }
 </code></pre>
 
@@ -1073,10 +1514,10 @@ void funcTest(const char* msg...) {
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/10/05 18:47 下午</span>
+                    <span class="date">2019/10/17 18:08 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          					    <span class="posted-in"><a href='Redis%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A.html'>Redis从入门到精通</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -1090,145 +1531,18 @@ void funcTest(const char* msg...) {
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15702694837901.html">
+                <a class="clearlink" href="15713033971664.html">
                 
-                  <h1>lamda陷阱</h1>
+                  <h1>可复用的模块</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>捕获异常</h4>
+                        	<h4>包管理</h4>
 
-<ul>
-<li>捕获列表中的：捕获外部作用域中所有变量，并作为引用在lambda 表达式中使用, 按照引用这种捕获方式，会导致 1 abda 表达式包含绑定到局部变量的引用</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">vector&lt;function&lt;bool(int)&gt;&gt; gv;
-
-void func() {
-  srand((int)time(NULL));
-
-  int tmp = rand() % 6;
-
-  gv.push_back([&amp;](int v) {
-                if (v % tmp == 0) {
-                  return true;
-                }
-                return false;
-               });
-}
-
-int main() {
-  func();
-
-  cout &lt;&lt; gv[0](10) &lt;&lt; endl;
-}
-</code></pre>
-
-<ul>
-<li>引用捕获超过范围的情形也叫引用悬空</li>
-<li>采用按值捕获可以解决引用悬空</li>
-</ul>
-
-<h4>成员变量</h4>
-
-<ul>
-<li>=是按值捕获的意思我们会认为这个[=]是按值捕获，使用我们能够访问成员变量tmp,所以我们顺理成量的认为，这里这个1ambda 表达式是所使用的tmp是按值捕获的</li>
-<li>lamda表达式的行正确与否，取決于pat対象是否存在,只有PAT对存在，这个lamda表达式行オ正确</li>
-<li>this指向对象本身，所以这里[=]捕获的是this指针值</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">vector&lt;function&lt;bool(int)&gt;&gt; gv;
-class AT {
- public:
-  vector&lt;function&lt;bool(int)&gt;&gt; gv;
-
-  int tmp = 5;
-  void addItem() {
-    gv.push_back([=](auto v) {
-                 if (v % tmp == 0) {
-                 return true;
-                 }
-                 return false;
-                 });
-  };
-};
-
-int main() {
-  func();
-
-
-  AT* pat = new AT();
-  pat-&gt;addItem();
-  delete pat;
-  cout &lt;&lt; gv[0](10) &lt;&lt; endl;
-}
-</code></pre>
-
-<ul>
-<li>使用临时变量来捕获</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">vector&lt;function&lt;bool(int)&gt;&gt; gv;
-class AT {
- public:
-  vector&lt;function&lt;bool(int)&gt;&gt; gv;
-
-  int tmp = 5;
-  void addItem() {
-    auto t_tmp = tmp;
-    gv.push_back([t_tmp](auto v) {
-                 if (v % t_tmp == 0) {
-                 return true;
-                 }
-                 return false;
-                 });
-  };
-};
-</code></pre>
-
-<h4>广义捕获</h4>
-
-<pre class="line-numbers"><code class="language-cpp">class AT {
- public:
-  vector&lt;function&lt;bool(int)&gt;&gt; gv;
-
-  int tmp = 5;
-  void addItem() {
-    gv.push_back([t_tmp = tmp](auto v) {
-                 if (v % t_tmp == 0) {
-                 return true;
-                 }
-                 return false;
-                 });
-  };
-};
-</code></pre>
-
-<h4>静态局部变量</h4>
-
-<ul>
-<li>捕获不包括静态局部变量，但是可以使用</li>
-<li>静态变量使用类似按引用捕获效果</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">vector&lt;function&lt;bool(int)&gt;&gt; gv;
-
-void func() {
-  srand((int)time(NULL));
-
-  static int tmp = 5;
-
-  gv.push_back([](auto v) {
-                cout &lt;&lt; &quot; static val &quot; &lt;&lt; tmp &lt;&lt; endl;
-                if (v % tmp == 0) {
-                  return true;
-                }
-                return false;
-               });
-  tmp++;
-}
-</code></pre>
+<p>以首字母大写来表明可被包外代码访问代码的<br/>
+package 可以和所在的目录不一致<br/>
+同一目录里的 Go 代码的 package 要保持一致</p>
 
                         
                       </div>
@@ -1237,10 +1551,10 @@ void func() {
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/10/05 17:58 下午</span>
+                    <span class="date">2019/10/17 17:09 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -1314,8 +1628,6 @@ void func() {
             <a href="Golang.html"><strong>Golang</strong></a>
         
             <a href="Django.html"><strong>Django</strong></a>
-        
-            <a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html"><strong>C++设计模式实战</strong></a>
         
             <a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html"><strong>深入剖析Kubernetes</strong></a>
         
@@ -1394,6 +1706,18 @@ void func() {
 	      
 		      
 			      <li class="post">
+			        <a href="15818128782116.html">Singleton</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15748977610569.html">State</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817697569868.html">字符串分割</a>
 			      </li>
 		     
@@ -1406,19 +1730,7 @@ void func() {
 		  
 		      
 			      <li class="post">
-			        <a href="15814649492497.html">Simple Factory</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814189410719.html">代码的可测试性</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814188057978.html">重构</a>
+			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

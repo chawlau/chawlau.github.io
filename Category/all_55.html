@@ -87,8 +87,6 @@
         
             <li><a href="Django.html">Django</a></li>
         
-            <li><a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html">C++设计模式实战</a></li>
-        
             <li><a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html">深入剖析Kubernetes</a></li>
         
             <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html">数据结构和算法</a></li>
@@ -172,133 +170,27 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15441451175680.html">
+                <a class="clearlink" href="15479545783109.html">
                 
-                  <h1>不可中断进程和僵尸进程</h1>
+                  <h1>控制器模型</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>概念</h4>
+                        	<h4>Deployment</h4>
 
 <ul>
-<li>不可中断状态，一般表示进程正在跟硬件交互，为了保护进程数据与硬件一致，系统不允许其他进程或中断打断该进程。</li>
-<li>僵尸进程表示进程已经退出，但它的父进程没有回收该进程所占用的资源</li>
+<li>Deployment 控制器从 Etcd 中获取到所有携带了“app: nginx”标签的 Pod，然后统计它们的数量，这就是实际状态；</li>
+<li>Deployment 对象的 Replicas 字段的值就是期望状态；</li>
+<li>Deployment 控制器将两个状态做比较，然后根据比较结果，确定是创建 Pod，还是删除已有的 Pod</li>
 </ul>
 
-<h4>进程状态</h4>
+<h4>控制器和被控制对象</h4>
+
+<p><img src="media/15479545783109/72cc68d82237071898a1d149c8354b26.png" alt="72cc68d82237071898a1d149c8354b26"/></p>
 
 <ul>
-<li>R 是 Running 或 Runnable 的缩写，表示进程在 CPU 的就绪队列中，正在运行或者正在等待运行。</li>
-<li>D 是 Disk Sleep 的缩写，也就是不可中断状态睡眠（Uninterruptible Sleep），一般表示进程正在跟硬件交互，并且交互过程不允许被其他进程或中断打断。</li>
-<li>Z 是 Zombie 的缩写，如果你玩过“植物大战僵尸”这款游戏，应该知道它的意思。它表示僵尸进程，也就是进程实际上已经结束了，但是父进程还没有回收它的资源（比如进程的描述符、PID 等）。</li>
-<li>S 是 Interruptible Sleep 的缩写，也就是可中断状态睡眠，表示进程因为等待某个事件而被系统挂起。当进程等待的事件发生时，它会被唤醒并进入 R 状态。</li>
-<li>I 是 Idle 的缩写，也就是空闲状态，用在不可中断睡眠的内核线程上。前面说了，硬件交互导致的不可中断进程用 D 表示，但对某些内核线程来说，它们有可能实际上并没有任何负载，用 Idle 正是为了区分这种情况。要注意，D 状态的进程会导致平均负载升高， I 状态的进程却不会。</li>
-</ul>
-
-<h4>下面问题分析</h4>
-
-<p><img src="media/15441451175680/15441459602016.jpg" alt=""/></p>
-
-<ul>
-<li>iowait太高，导致系统的平均负载升高，甚至达到了系统CPU的个数</li>
-<li>僵尸进程正在不断增多，说明程序没能正确清理进程的资源
-<img src="media/15441451175680/15441462091525.jpg" alt=""/></li>
-<li>dstat 1 10
-<img src="media/15441451175680/15441465462749.jpg" alt=""/></li>
-<li> iowait 升高（wai）时，磁盘的读请求（read）都会很大。这说明 iowait 的升高跟磁盘的读请求有关，很可能就是磁盘读导致的。</li>
-<li>查看一个进程的资源使用情况pidstat</li>
-<li>利用perf record -g &amp; perf report 来查看结果
-<img src="media/15441451175680/15441491197686.jpg" alt=""/></li>
-</ul>
-
-<h4>僵尸进程太多</h4>
-
-<pre class="line-numbers"><code class="language-text">ps -A -o stat,ppid,pid,cmd | grep -e &#39;^[Zz]&#39;
-</code></pre>
-
-<ul>
-<li>通过上述命令找到僵尸进程，然后执行pstree -aps zombine-id找出父进程</li>
-<li>僵尸进程主要是找父进程</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/07 09:11 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15440884806626.html">
-                
-                  <h1>数据中心</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>STP协议</h4>
-
-<h4>交换机高可用</h4>
-
-<ul>
-<li>部署两个接入交换机、两个汇聚交换机。服务器和两个接入交换机都连接，接入交换机和两个汇聚都连接，启用 STP 协议，去除环</li>
-<li>堆叠交换机，将多个交换机形成一个逻辑的交换机，服务器通过多根线分配连到多个接入层交换机上，而接入层交换机多根线分别连接到多个交换机上，并且通过堆叠的私有协议，形成双活的连接方式。</li>
-<li>OSPF,ECMP</li>
-</ul>
-
-<h4>TOR交换机&amp;汇聚层交换机</h4>
-
-<ul>
-<li>放在机架顶端的交换机，称为接入层</li>
-<li>将TOR交换机连接在一起叫汇聚层交换机</li>
-</ul>
-
-<h4>LACP协议</h4>
-
-<ul>
-<li>多个网卡聚合称为一个网卡，多个网线聚合成一个网线，在网线之间可以进行负载均衡，也可以为了高可用作准备</li>
-</ul>
-
-<h4>STP协议</h4>
-
-<ul>
-<li>去除网络中的环</li>
-</ul>
-
-<h4>交换机堆叠</h4>
-
-<ul>
-<li>将多个交换机形成一个逻辑的交换机，服务器通过多根线分配连到多个接入层交换机上，而接入层交换机多根线分别连接到多个交换机上，并且通过堆叠的私有协议，形成双活的连接方式。</li>
-</ul>
-
-<h4>TRILL协议</h4>
-
-<ul>
-<li>于是大二层就引入了TRILL（Transparent Interconnection of Lots of Link），即多链接透明互联协议。它的基本思想是，二层环有问题，三层环没有问题，那就把三层的路由能力模拟在二层实现。</li>
-<li>TRILL可以模拟三层的路由功能</li>
-</ul>
-
-<h4>SLB</h4>
-
-<ul>
-<li>负载均衡SLB支持HTTP强制跳转HTTPS功能</li>
+<li>控制器模式”，对于控制器来说是主动的，自身在不断地获取信息，起到事后“监控”作用，知道同步完成，实际状态与期望状态一致</li>
 <li></li>
 </ul>
 
@@ -309,446 +201,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/12/06 17:28 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE.html'>网络协议</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15440869353835.html">
-                
-                  <h1>CDN</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>CDN分发系统的架构</h4>
-
-<p><img src="media/15440869353835/15440870012687.jpg" alt=""/></p>
-
-<h4>客户端如何找到相应的边缘节点进行访问呢？</h4>
-
-<ul>
-<li>CDN权威DNS服务器</li>
-<li>CDN全局负载均衡</li>
-<li>根据用户 IP 地址，判断哪一台服务器距用户最近；</li>
-<li>用户所处的运营商；</li>
-<li>根据用户所请求的 URL 中携带的内容名称，判断哪一台服务器上有用户所需的内容；</li>
-<li>查询各个服务器当前的负载情况，判断哪一台服务器尚有服务能力。</li>
-<li>返回所需的边缘节点IP，如果没有这台服务器就要向它的上一级缓存服务器请求内容，直至追溯到网站的源服务器将内容拉到本地。</li>
-</ul>
-
-<h4>缓存</h4>
-
-<p><img src="media/15440869353835/15440876431440.jpg" alt=""/></p>
-
-<h4>动态CDN</h4>
-
-<ul>
-<li>一种为生鲜超市模式，也即边缘计算的模式。数据的逻辑计算和存储，也相应的放在边缘的节点。其中定时从源数据那里同步存储的数据，然后在边缘进行计算得到结果。</li>
-<li>另一种是冷链运输模式，也即路径优化的模式。数据不是在边缘计算生成的，而是在源站生成的，但是数据的下发则可以通过 CDN 的网络，对路径进行优化。</li>
-</ul>
-
-<h4>思考题</h4>
-
-<ul>
-<li>CDN 使用 DNS 进行全局负载均衡的例子，CDN 如何使用 HTTPDNS 呢？</li>
-<li>客户端请求服务URL:umc.danuoyi.alicdn.com xxx，参数是客户端ip地址和待解析的域名；然后返回多个ip地址，客户端轮训这些ip地址。</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/06 17:02 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE.html'>网络协议</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15439799166687.html">
-                
-                  <h1>Mysql选错索引</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>mysql选择索引依据</h4>
-
-<ul>
-<li>扫描行数</li>
-<li>是否使用临时表</li>
-<li>是否排序</li>
-</ul>
-
-<h4>Mysql获取索引基数</h4>
-
-<ul>
-<li>采样统计的时候，InnoDB 默认会选择 N 个数据页，统计这些页面上的不同值，得到一个平均值，然后乘以这个索引的页面数，就得到了这个索引的基数。</li>
-<li>而数据表是会持续更新的，索引统计信息也不会固定不变。所以，当变更的数据行数超过 1/M 的时候，会自动触发重新做一次索引统计。</li>
-<li>设置为 on 的时候，表示统计信息会持久化存储。这时，默认的 N 是 20，M 是 10。</li>
-<li>设置为 off 的时候，表示统计信息只存储在内存中。这时，默认的 N 是 8，M 是 16。</li>
-</ul>
-
-<h4>索引选择不准确矫正</h4>
-
-<ul>
-<li>索引统计信息不准确导致的问题，你可以用 analyze table 来解决。</li>
-<li>优化器误判的情况，你可以在应用端用force index来强行指定索引</li>
-<li>也可以通过修改语句来引导优化器</li>
-<li>还可以通过增加或者删除索引来绕过这个问题</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text"> CREATE TABLE `t` (
-  `id` int(11) NOT NULL,
-  `a` int(11) DEFAULT NULL,
-  `b` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `a` (`a`),
-  KEY `b` (`b`)
-) ENGINE=InnoDB
-</code></pre>
-
-<h4>开启慢查询日志</h4>
-
-<pre class="line-numbers"><code class="language-text">  show variables like &#39;log_%&#39;;
-  set sql_long_query=0;
-  set global long_query_time=0;
-  show variables like &quot;%slow%&quot;;
-  set slow_query_log=&#39;ON&#39;;
-  show variables like &quot;%slow%&quot;;
-</code></pre>
-
-<h4>查询优化</h4>
-
-<pre class="line-numbers"><code class="language-text">mysql&gt; select * from t where a between 10000 and 20000 and b between 50000 and 100000 order by b limit 1;
-Empty set (0.05 sec)
-
-mysql&gt; select * from t force index(a) where a between 10000 and 20000 and b between 50000 and 100000 order by b limit 1;
-Empty set (0.02 sec)
-</code></pre>
-
-<h4>清空查询缓存</h4>
-
-<pre class="line-numbers"><code class="language-text"> reset query cache;
-</code></pre>
-
-<h4>选择错误索引原因</h4>
-
-<ul>
-<li>每次从索引 a 上拿到一个值，都要回到主键索引上查出整行数据，这个代价优化器也要算进去的。如果选择扫描 10 万行，是直接在主键索引上扫描的，没有额外的代价。优化器会估算这两个选择的代价，从结果看来，优化器认为直接扫描主键索引更快。当然，从执行时间看来，这个选择并不是最优的。</li>
-</ul>
-
-<h4>优化错误索引</h4>
-
-<ul>
-<li>force index</li>
-<li>修改语句，引导mysql使用我们期望的索引</li>
-<li>新建合适的索引或者删掉误用的索引</li>
-<li>使用analze table 来解决</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/05 11:18 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15439151260869.html">
-                
-                  <h1>DockerFile编写</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>Docker简介</h4>
-
-<ul>
-<li>Docker是基于 Linux 内核的 cgroup，namespace，以及 AUFS 类的 Union FS 等技术，对进程进行封装隔离，属于操作系统层面的虚拟化技术</li>
-<li>相比传统的虚拟机，Docker没有自己的内核，无需硬件模拟，相对而言更加轻便，无需操作系统
-<img src="media/15439151260869/virtualization.png" alt="virtualization"/>
-<img src="media/15439151260869/docker.png" alt="docke"/></li>
-</ul>
-
-<h4>Docker的优势</h4>
-
-<ul>
-<li>更高效的利用系统资源，容器不需要进行硬件虚拟以及运行完整操作系统等额外开销</li>
-<li>更快速的启动时间，传统的虚拟机技术启动应用服务往往需要数分钟， Docker容器应用可以做到秒级、甚至毫秒级的启动时间</li>
-<li>更轻松的迁移，由于 Docker 确保了执行环境的一致性，使得应用的迁移更加容易</li>
-<li>更轻松的维护和扩展，Docker 使用的分层存储以及镜像的技术，使得应用重复部分的复用更为容易，也使得应用的维护更新更加简单，基于基础镜像进一步扩展镜像也变得非常简单。</li>
-</ul>
-
-<h4>对比传统虚拟机总结</h4>
-
-<table>
-<thead>
-<tr>
-<th style="text-align: center">特性</th>
-<th style="text-align: center">容器</th>
-<th style="text-align: center">虚拟机</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td style="text-align: center">启动</td>
-<td style="text-align: center">秒级</td>
-<td style="text-align: center">分钟级别</td>
-</tr>
-<tr>
-<td style="text-align: center">硬盘使用</td>
-<td style="text-align: center">一般以MB为单位</td>
-<td style="text-align: center">一般以GB为单位</td>
-</tr>
-<tr>
-<td style="text-align: center">性能</td>
-<td style="text-align: center">接近原生</td>
-<td style="text-align: center">弱于</td>
-</tr>
-<tr>
-<td style="text-align: center">系统支持量</td>
-<td style="text-align: center">单机支持上千个容器</td>
-<td style="text-align: center">一般几十个</td>
-</tr>
-</tbody>
-</table>
-
-<h4>容器&amp;镜像&amp;仓库&amp;Docker daemon &amp;Docker client</h4>
-
-<ul>
-<li>容器的实质是进程，相对于系统的普通进程，容器应用的文件系统，网络配置，进程空间都是运行在一个隔离的环境，如下图所示</li>
-</ul>
-
-<p><img src="media/15439151260869/v2-4c8aea533a4cd6c1939b66eb4cbf536a_hd.jpg" alt="v2-4c8aea533a4cd6c1939b66eb4cbf536a_hd"/></p>
-
-<ul>
-<li>镜像相对于容器就像二进制程序和二进制程序运行的进程类似，镜像是静态的定义，容器是运行的实体</li>
-<li>仓库就是存储一个软件不同版本的镜像，用标签来标签来标识，例如ubuntu这个镜像，有两个版本，分别就表示为ubuntu:14.04，ubuntu:16.04 ，：后面就是镜像的标签</li>
-<li>Docker daemon就是用来管理容器运行和镜像的平台，用来运行，停止，删除容器。更新升级容器的镜像</li>
-<li>Docker client就是用来操作Docker平台的入口，通过Docker client的pull start stop等指令来操作管理Docker平台的容器和镜像</li>
-<li>关系如下图
-<img src="media/15439151260869/high-level-overview-of-docker-architecture.png" alt="high-level-overview-of-docker-architecture"/></li>
-</ul>
-
-<h4>DockerFile</h4>
-
-<ul>
-<li>Dockerfile 是一个文本文件，其内包含了一条条的指令(Instruction)，每一条指令构建一层，因此每一条指令的内容，就是描述该层应当如何构建容器的镜像</li>
-<li>DockerFile和容器与镜像的关系如下图
-<img src="media/15439151260869/WechatIMG38.png" alt="WechatIMG38"/></li>
-</ul>
-
-<h4>制作镜像环境</h4>
-
-<ul>
-<li>创建一个文件夹专门用于制作镜像</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  mkdir docker_build
-</code></pre>
-
-<ul>
-<li>创建一个名为Dockerile的文件</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  touch Dcokerfile
-</code></pre>
-
-<h4>FROM</h4>
-
-<ul>
-<li>制作镜像基础镜像是必须指定的。而FROM 就是指定基础镜像，因此一个Dockerfile 中 FROM 是必备的指令，并且必须是第一条指令。</li>
-<li>FROM是构建应用程序的docker镜像的基础镜像，表示应用程序在此基础上构建</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  FROM centos:latest/debain/ubuntu/
-</code></pre>
-
-<h4>RUN</h4>
-
-<ul>
-<li>RUN 指令是用来执行命令行命令的,用于程序构建项目所需要的基础环境，应用程序依赖的第三方库和一些插件和运行环境</li>
-<li>Dockerfile 中每一指令都会建立一层，尽量缩减层数，减少构建部署时间，Union FS 是有最大层数限制的, docker的AUFS现在是不得超过127层。</li>
-<li>需要合并指令,简化指令</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">FROM debian:jessie
-
-RUN buildDeps=&#39;gcc libc6-dev make&#39; \
-    &amp;&amp; apt-get update \
-    &amp;&amp; apt-get install -y $buildDeps \
-    &amp;&amp; wget -O redis.tar.gz &quot;http://download.redis.io/releases/redis-3.2.5.tar.gz&quot; \
-    &amp;&amp; mkdir -p /usr/src/redis \
-    &amp;&amp; tar -xzf redis.tar.gz -C /usr/src/redis --strip-components=1 \
-    &amp;&amp; make -C /usr/src/redis \
-    &amp;&amp; make -C /usr/src/redis install \
-    &amp;&amp; rm -rf /var/lib/apt/lists/* \
-    &amp;&amp; rm redis.tar.gz \
-    &amp;&amp; rm -r /usr/src/redis \
-    &amp;&amp; apt-get purge -y --auto-remove $buildDeps
-</code></pre>
-
-<h4>COPY</h4>
-
-<ul>
-<li>将一些应用程序所需要的第三方程序和插件，拷贝进制作的docker镜像的容器中</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  COPY file /docker_image_dir
-</code></pre>
-
-<ul>
-<li>使用 COPY 指令，源文件的各种元数据都会保留。比如读、写、执行权限、文件变更时间等, 可以通过--chown来改变用户和属组属性</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">COPY --chown=55:mygroup files* /mydir/
-COPY --chown=bin files* /mydir/
-COPY --chown=1 files* /mydir/
-COPY --chown=10:11 files* /mydir/
-</code></pre>
-
-<h4>ADD</h4>
-
-<ul>
-<li>ADD 指令和 COPY 的格式和性质基本一致。但是在 COPY 基础上增加了一些功能。在 Docker 官方的 Dockerfile 最佳实践文档 中要求，尽可能的使用 COPY，因为 COPY 的语义很明确，就是复制文件而已，而 ADD 则包含了更复杂的功能，其行为也不一定很清晰。最适合使用 ADD 的场合，就是所提及的需要自动解压缩的场合。</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  ADD ubuntu-xenial-core-cloudimg-amd64-root.tar.gz /
-</code></pre>
-
-<h4>WORKDIR</h4>
-
-<ul>
-<li>使用 WORKDIR 指令可以来指定工作目录（或者称为当前目录），以后各层的当前目录就被改为指定的目录，如该目录不存在，WORKDIR 会帮你建立目录。一般就是应用程序二进制的运行目录/bin/</li>
-</ul>
-
-<h4>EXPOSE</h4>
-
-<ul>
-<li>EXPOSE 指令是声明运行时容器提供服务端口，这只是一个声明，在运行时并不会因为这个,声明应用就会开启这个端口的服务。这个端口是给调用方进行API调用通信使用</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  EXPOSE Port
-</code></pre>
-
-<h4>VOLUME</h4>
-
-<ul>
-<li>有些数据需要持久化数据的需要挂载卷，然后在容器外部将外部卷映射对应到容器内部的目录，这个目录给容器中运行的程序需要存储的数据提供存储</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  docker run -it -v outside_dir:docker_dir:read_write_privilege
-</code></pre>
-
-<h4>ENTRYPOINT&amp;CMD</h4>
-
-<ul>
-<li>ENTRYPOINT指令用于服务启动前的一些准备工作，比如配置一些变量，初始化运行环境</li>
-<li>CMD用于启动容器中二进制程序的命令</li>
-<li>ENTRYPOINT先执行，然后再执行CMD命令 </li>
-<li>例子中就会先执行docker-entrypoint.sh，然后执行服务启动命令</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  &lt;ENTRYPOINT&gt; &quot;&lt;CMD&gt;&quot;
-  ENTRYPOINT [&quot;docker-entrypoint.sh&quot;]
-  CMD [ &quot;sh&quot; &quot;-c&quot;, &quot;start.sh start&quot; ]
-</code></pre>
-
-<h4>ENV</h4>
-
-<ul>
-<li>设置容器内部的全局环境变量</li>
-<li>可以进行后期定制升级操作</li>
-<li>下面例子可以看出，后期如果需要升级和变动，只需要修改NODE_VERSION就可以了</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">ENV NODE_VERSION 7.2.0
-
-RUN curl -SLO &quot;https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.xz&quot; \
-  &amp;&amp; curl -SLO &quot;https://nodejs.org/dist/v$NODE_VERSION/
-</code></pre>
-
-<h4>build image</h4>
-
-<ul>
-<li>执行命令，用于构建应用程序的docker镜像</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text"> docker build -t image_name:version .
-</code></pre>
-
-<h4>build image from container</h4>
-
-<ul>
-<li>以当前容器id为参数制作镜像</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  docker commit container_id  docker_image_name:version
-</code></pre>
-
-<h4>push image</h4>
-
-<ul>
-<li>将制作的镜像推送到指定的镜像仓库</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">docker tag image_id docker_image_name:version
-docker push docker_image_name:version
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/04 17:18 下午</span>
+                    <span class="date">2019/01/20 11:22 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
@@ -765,276 +218,110 @@ docker push docker_image_name:version
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15439044826905.html">
+                <a class="clearlink" href="15470893891809.html">
                 
-                  <h1>bench performance</h1>
+                  <h1>Pod</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>tools</h4>
+                        	<h4>k8s本质</h4>
 
 <ul>
-<li>runtime/pprof；</li>
-<li>net/http/pprof；</li>
-<li>runtime/trace；</li>
+<li>就是操作系统</li>
+<li>pod的本质就是进程组共享了一些资源的容器</li>
 </ul>
 
-<h4>怎样让程序对 CPU 概要信息进行采样？</h4>
+<h4>容器进程模型</h4>
 
 <ul>
-<li>runtime/pprof中的StartCpuProfile和StopCPUProfile函数</li>
+<li>并不是指容器只能运行一个进程，而是指容器没有管理多个进程的能力</li>
 </ul>
 
-<h4>怎样设定CPU概要信息的采样频率</h4>
+<h4>Pod</h4>
 
 <ul>
-<li>WriteHeapProfile</li>
+<li>互相之间会发生直接的文件交换</li>
+<li>使用 localhost 或者 Socket 文件进行本地通信</li>
+<li>会发生非常频繁的远程调用</li>
+<li>需要共享某些 Linux Namespace（比如，一个容器要加入另一个容器的 Network Namespace）</li>
+<li>Pod里的所有容器共享一个NetWork NameSpace,可以声明共享同一个Volume</li>
+<li>通过infra中间容器来创建其他容器</li>
+<li><img src="media/15470893891809/8c016391b4b17923f38547c498e434cf.png" alt="8c016391b4b17923f38547c498e434cf"/></li>
+<li>infra使用k8s.gcr.io/pause镜像</li>
+<li>Init Container和 Container</li>
 </ul>
 
-<h4>调试样例</h4>
+<h4>sidecar设计模式</h4>
 
 <ul>
-<li><a href="https://blog.yeeef.com/post/golang-concurrency/">https://blog.yeeef.com/post/golang-concurrency/</a></li>
-<li></li>
+<li>sidecar 指的就是我们可以在一个 Pod 中，启动一个辅助容器，来完成一些独立于主进程（主容器）之外的工作</li>
+<li>微服务治理Istio</li>
 </ul>
 
-<h4>如何为基于 HTTP 协议的网络服务添加性能分析接口？</h4>
+<h4>Init Container</h4>
 
 <ul>
-<li>import _ &quot;net/http/pprof&quot;</li>
-<li>top -cum</li>
-<li>list main.main</li>
-<li></li>
+<li>Init Container 定义的容器，都会比 spec.containers 定义的用户容器先启动。并且，Init Container 容器会按顺序逐一启动，而直到它们都启动并且退出了，用户容器才会启动。</li>
+<li>Tomcat 容器是我们要使用的主容器，而 WAR 包容器的存在，只是为了给它提供一个 WAR 包而已。所以，我们用 Init Container 的方式优先运行 WAR 包容器，扮演了一个 sidecar 的角色。</li>
 </ul>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/04 14:21 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15438932482626.html">
-                
-                  <h1>HTTP web service</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>http.Client类型中的Transport字段代表着什么？</h4>
+<h4>Pod本质</h4>
 
 <ul>
-<li>http.Transport 是并发安全的</li>
-<li>MaxIdleConns 空闲连接总数</li>
-<li>MaxIdleConnsPerHost Transport值访问的每一个网络服务的最大空闲连接数。</li>
-<li>MaxConnsPerHost 针对某一个Transport值访问的每一个网络服务的最大连接数，不论这些连接是否是空闲的</li>
-<li>ResponseHeaderTimeout：含义是，从客户端把请求完全递交给操作系统到从操作系统那里接收到响应报文头的最大时长。DefaultTransport并没有设定该字段的值。</li>
-<li>ExpectContinueTimeout：含义是，在客户端递交了请求报文头之后，等待接收第一个响应报文头的最长时间</li>
+<li>Pod本质是在扮演传统基础设施的虚拟机角色</li>
+<li>Pod相当于传统环境的机器，容器是运行在这个机器的程序</li>
+<li>凡是调度,网络，存储和安全相关的，基本都是Pod级别的</li>
 </ul>
 
-<h4>ListenAndServe</h4>
+<h4>Lifecycle</h4>
 
-<h4>怎样优雅地停止基于 HTTP 协议的网络服务程序？</h4>
+<ul>
+<li>它定义的是 Container Lifecycle Hooks。顾名思义，Container Lifecycle Hooks 的作用，是在容器状态发生变化时触发一系列“钩子”</li>
+</ul>
 
-<pre class="line-numbers"><code class="language-text">quit := make(chan os.Signal, 1)                                                                                                                                       signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)                                                                                                  ctx, _ := context.WithTimeout(context.Background(), time.Second*2)
-  server := http.Server{
-    Addr: &quot;localhost:9099&quot;,
-  }
+<h4>Pod Status</h4>
 
-  go func() {
-    &lt;-quit
-    server.Close()
-    server.Shutdown(ctx)
-  }()
+<ul>
+<li>Pending。这个状态意味着，Pod 的 YAML 文件已经提交给了 Kubernetes，API 对象已经被创建并保存在 Etcd 当中。但是，这个 Pod 里有些容器因为某种原因而不能被顺利创建。比如，调度不成功。</li>
+<li>Running。这个状态下，Pod 已经调度成功，跟一个具体的节点绑定。它包含的容器都已经创建成功，并且至少有一个正在运行中。</li>
+<li>Succeeded。这个状态意味着，Pod 里的所有容器都正常运行完毕，并且已经退出了。这种情况在运行一次性任务时最为常见。</li>
+<li>Failed。这个状态下，Pod 里至少有一个容器以不正常的状态（非 0 的返回码）退出。这个状态的出现，意味着你得想办法 Debug 这个容器的应用，比如查看 Pod 的 Events 和日志。</li>
+<li>Unknown。这是一个异常状态，意味着 Pod 的状态不能持续地被 kubelet 汇报给 kube-apiserver，这很有可能是主从节点（Master 和 Kubelet）间的通信出现了问题。</li>
+</ul>
 
-  go server.ListenAndServe()
-  select {
-  case &lt;-ctx.Done():
-    fmt.Println(&quot;quit&quot;)
-  }
+<h4>Project Volume</h4>
+
+<ul>
+<li>Secret；</li>
+<li>ConfigMap；</li>
+<li>Downward API；</li>
+<li>ServiceAccountToken</li>
+</ul>
+
+<h4>Service Account</h4>
+
+<pre class="line-numbers"><code class="language-text"> Volumes:
+  default-token-2djhh:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  default-token-2djhh
+    Optional:    false
 </code></pre>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/04 11:14 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15438859299782.html">
-                
-                  <h1>Kafka架构</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>系统结构图</h4>
-
 <ul>
-<li>Producer</li>
-<li>Broker</li>
-<li>Consumer</li>
-<li>Zookeeper</li>
-<li><img src="media/15438859299782/15438861838653.jpg" alt=""/></li>
+<li>把 Kubernetes 客户端以容器的方式运行在集群里，然后使用 default Service Account 自动授权的方式，被称作“InClusterConfig”</li>
 </ul>
 
-<h4>Topic&amp;Partition</h4>
+<h4>容器健康检查和恢复机制</h4>
 
 <ul>
-<li>一个Topic包含一个或者多个Partition</li>
-<li>每个消息都只属于一个topic</li>
-<li>produer和consumer都要指定topic</li>
-</ul>
-
-<h4>Partition</h4>
-
-<ul>
-<li>一个Partion只分布于一个Broker</li>
-<li>一个Partion对应一个文件夹</li>
-<li>一个Partion包含多个Segment</li>
-<li>一个Segment对应一个文件</li>
-<li>Segment由一个个不可变记录组成</li>
-<li>记录只会append到Segment中，不会被单独删除或者修改</li>
-<li>清除过期日志时，直接删除一个或者多个Segment</li>
-<li>创建新topic</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text"> ./kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 3 --partitions 3 --topic docker-log
-</code></pre>
-
-<h4>Sync Produer</h4>
-
-<ul>
-<li>低延迟</li>
-<li>低吞吐率</li>
-<li>无数据丢失</li>
-</ul>
-
-<h4>Aync Produer</h4>
-
-<ul>
-<li>高延迟</li>
-<li>高吞吐率</li>
-<li>可能有数据丢失</li>
-</ul>
-
-<h4>kafka设计目的</h4>
-
-<ul>
-<li>提供一套 API 实现生产者和消费者；</li>
-<li>降低网络传输和磁盘存储开销；</li>
-<li>实现高伸缩性架构。</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/04 09:12 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Kafka.html'>Kafka</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15438265348573.html">
-                
-                  <h1>普通索引和唯一索引</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>InnoDB读取数据</h4>
-
-<ul>
-<li>InnoDB 的数据是按数据页为单位来读写的。也就是说，当需要读一条记录的时候，并不是将这个记录本身从磁盘读出来，而是以页为单位，将其整体读入内存。在 InnoDB 中，每个数据页的大小默认是 16KB。</li>
-<li>因为引擎是按页读写的，所以说，当找到 k=5 的记录的时候，它所在的数据页就都在内存里了。那么，对于普通索引来说，要多做的那一次“查找和判断下一条记录”的操作，就只需要一次指针寻找和一次计算。</li>
-<li>当然，如果 k=5 这个记录刚好是这个数据页的最后一个记录，那么要取下一个记录，必须读取下一个数据页，这个操作会稍微复杂一些。</li>
-</ul>
-
-<h4>change buffer</h4>
-
-<ul>
-<li>change buffer 在内存中有拷贝，也会被写入到磁盘上</li>
-<li>对于唯一索引来说，所有的更新操作都要先判断这个操作是否违反唯一性约束,必须要把数据页载入内存才能实现</li>
-<li>purge 的时候是真正进行数据更新的时刻，而 change buffer 的主要目的就是将记录的变更动作缓存下来，所以在一个数据页做 purge 之前，change buffer 记录的变更越多（也就是这个页面上要更新的次数越多），收益就越大。</li>
-<li>访问这个数据页会触发 purge 外，系统有后台线程会定期 purge。在数据库正常关闭（shutdown）的过程中，也会执行 purge 操作。</li>
-<li>更新后紧跟着这个记录的查询，change buffer应该关闭，其他情况下应该打开</li>
-<li>操作流程</li>
-</ul>
-
-<p><img src="media/15438265348573/15562408037391.jpg" alt="" style="width:583px;"/></p>
-
-<h4>redo log 和 binlog的区别</h4>
-
-<ul>
-<li>redo log 是 InnoDB 引擎特有的；binlog 是 MySQL 的 Server 层实现的，所有引擎都可以使用。</li>
-<li>redo log 是物理日志，记录的是修改；binlog 是逻辑日志，记录的是这个语句的原始操作逻辑</li>
-<li>redo log 是循环写的，空间固定会用完；binlog 是可以追加写入的。“追加写”是指 binlog 文件写到一定大小后会切换到下一个，并不会覆盖以前的日志。</li>
-</ul>
-
-<h4>redo log 和change buffer</h4>
-
-<ul>
-<li>redo log 主要节省的是随机写磁盘的 IO 消耗（转成顺序写）</li>
-<li>而 change buffer 主要节省的则是随机读磁盘的 IO 消耗。</li>
-</ul>
-
-<h4>change buffer的merge的流程</h4>
-
-<ul>
-<li>从磁盘读入数据页到内存（老版本的数据页）；</li>
-<li>从 change buffer 里找出这个数据页的 change buffer 记录 (可能有多个），依次应用，得到新版数据页；</li>
-<li>写 redo log。这个 redo log 包含了数据的变更和 change buffer 的变更。</li>
-<li>数据页和内存的数据需要线程定时刷新回磁盘</li>
+<li>livenessProbe</li>
+<li>exec</li>
+<li>http</li>
+<li>tcp</li>
+<li>readinessProbe</li>
+<li>只要 Pod 的 restartPolicy 指定的策略允许重启异常的容器（比如：Always），那么这个 Pod 就会保持 Running 状态，并进行容器重启。否则，Pod 就会进入 Failed 状态 。</li>
+<li>对于包含多个容器的 Pod，只有它里面所有的容器都进入异常状态后，Pod 才会进入 Failed 状态。在此之前，Pod 都是 Running 状态。此时，Pod 的 READY 字段会显示正常容器的个数</li>
 <li></li>
 </ul>
 
@@ -1045,7 +332,73 @@ docker push docker_image_name:version
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/12/03 16:42 下午</span>
+                    <span class="date">2019/01/10 11:03 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15477155524350.html">
+                
+                  <h1>Mysql高可用</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>seconds_behind_master</h4>
+
+<ul>
+<li>每个事务的 binlog 里面都有一个时间字段，用于记录主库上写入的时间；</li>
+<li>备库取出当前正在执行的事务的时间字段的值，计算它与当前系统时间的差值，得到 seconds_behind_master。</li>
+</ul>
+
+<h4>主备延迟</h4>
+
+<ul>
+<li>备库机器性能比较差</li>
+<li>备库压力大
+<ul>
+<li>一主多从</li>
+<li>通过binlog输出到外部系统如hadoop </li>
+</ul></li>
+<li>大事务 一次性删除太多历史数据 大表DDL</li>
+<li>备库的并行复制能力</li>
+</ul>
+
+<h4>可靠性优先策略</h4>
+
+<ul>
+<li>双M结构下主从切换，然后等切换成主库的备库的seconds_behind_master=0,把备库改成可读写状态</li>
+<li><img src="media/15477155524350/54f4c7c31e6f0f807c2ab77f78c8844a.png" alt="54f4c7c31e6f0f807c2ab77f78c8844a"/></li>
+</ul>
+
+<h4>可用性优先策略</h4>
+
+<ul>
+<li>双M主备的切换过程中，不等主备同步，直接把连接切到备库</li>
+<li>如果binglog是statement会导致主备不一致，如果是row则会抛出异常不会执行</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/01/17 16:59 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
@@ -1062,17 +415,54 @@ docker push docker_image_name:version
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15435716752866.html">
+                <a class="clearlink" href="15476249724855.html">
                 
-                  <h1>HTTPDNS</h1>
+                  <h1>Linux IO操作</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>工作模式</h4>
+                        	<h4>虚拟文件系统</h4>
 
 <ul>
-<li>HTTPNDS 其实就是，不走传统的 DNS 解析，而是自己搭建基于 HTTP 协议的 DNS 服务器集群，分布在多个地点和多个运营商。当客户端需要 DNS 解析的时候，直接通过 HTTP 协议进行请求这个服务器集群，得到就近的地址。</li>
+<li>目录项，记录了文件的名字，以及文件与其他目录项之间的目录关系。</li>
+<li>索引节点，记录了文件的元数据。</li>
+<li>逻辑块，是由连续磁盘扇区构成的最小读写单元，用来存储文件数据。</li>
+<li>超级块，用来记录文件系统整体的状态，如索引节点和逻辑块的使用情况等。</li>
+</ul>
+
+<h4>固态硬盘和机械磁盘</h4>
+
+<ul>
+<li>机械磁盘的最小读写单位是扇区，一般大小为 512 字节。</li>
+<li>而固态磁盘的最小读写单位是页，通常大小是 4KB、8KB 等。</li>
+</ul>
+
+<h4>通用块层</h4>
+
+<ul>
+<li>为文件系统和应用程序，提供访问块设备的标准接口；向下，把各种异构的磁盘设备抽象为统一的块设备，并提供统一框架来管理这些设备的驱动程序。</li>
+<li>通用块层还会给文件系统和应用程序发来的 I/O 请求排队，并通过重新排序、请求合并等方式，提高磁盘读写的效率。</li>
+</ul>
+
+<h4>磁盘性能指标</h4>
+
+<ul>
+<li>使用率，是指磁盘处理 I/O 的时间百分比。过高的使用率（比如超过 80%），通常意味着磁盘 I/O 存在性能瓶颈。</li>
+<li>饱和度，是指磁盘处理 I/O 的繁忙程度。过高的饱和度，意味着磁盘存在严重的性能瓶颈。当饱和度为 100% 时，磁盘无法接受新的 I/O 请求。</li>
+<li>IOPS（Input/Output Per Second），是指每秒的 I/O 请求数。</li>
+<li>吞吐量，是指每秒的 I/O 请求大小。</li>
+<li>响应时间，是指 I/O 请求从发出到收到响应的间隔时间。</li>
+<li>在数据库、大量小文件等这类随机读写比较多的场景中，IOPS 更能反映系统的整体性能；而在多媒体等顺序读写较多的场景中，吞吐量才更能反映系统的整体性能。</li>
+</ul>
+
+<h4>iostat指标</h4>
+
+<ul>
+<li>%util 磁盘IO使用率</li>
+<li>r/s + w/s 就是IOPS</li>
+<li>rkB/s+wkB/s 吞吐量</li>
+<li>r_await+w_await 响应时间</li>
 <li></li>
 </ul>
 
@@ -1083,10 +473,494 @@ docker push docker_image_name:version
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/11/30 17:54 下午</span>
+                    <span class="date">2019/01/16 15:49 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE.html'>网络协议</a></span>
+          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15429373418994.html">
+                
+                  <h1>平均负载</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>定义</h4>
+
+<ul>
+<li>单位时间内，系统处于可运行状态和不可中断状态的平均进程数，和cpu使用率没有直接关系</li>
+<li>包括了正在使用 CPU 的进程，还包括等待 CPU 和等待 I/O 的进程。</li>
+<li>本质上是平均活跃进程数</li>
+<li></li>
+</ul>
+
+<h4>过载</h4>
+
+<ul>
+<li>一旦1分钟的平均负载接近或超过了CPU的个数，就意味着系统正在发生过载的问题</li>
+<li>排查问题的阀门</li>
+<li><strong><em>当平均负载高于 CPU 数量 70% 的时候，你就应该分析排查负载高的问题了。</em></strong></li>
+</ul>
+
+<h4>cpu负载和cpu对应率的关系</h4>
+
+<ul>
+<li>CPU 密集型进程，使用大量 CPU 会导致平均负载升高，此时这两者是一致的。</li>
+<li>I/O 密集型进程，等待 I/O 也会导致平均负载升高，但 CPU 使用率不一定很高。</li>
+<li>大量等待 CPU 的进程调度也会导致平均负载升高，此时的 CPU 使用率也会比较高。</li>
+</ul>
+
+<h4>工具stress和sysstat</h4>
+
+<ul>
+<li>stress系统压力测试工具</li>
+<li>sysstat作为性能工具</li>
+<li>mpstat 是一个常用的多核 CPU 性能分析工具，用来实时查看每个 CPU 的性能指标，以及所有 CPU 的平均指标。</li>
+<li>pidstat 是一个常用的进程性能分析工具，用来实时查看进程的 CPU、内存、I/O 以及上下文切换等性能指标。</li>
+<li>pidstat wait就是进程等待CPU时间</li>
+<li>stress 缓冲区可能比较小，无法产生大的IO压力，这样大部分就都是系统调用的消耗了</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/11/23 09:42 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15470904831321.html">
+                
+                  <h1>Linux性能答疑</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>内存回收方式</h4>
+
+<ul>
+<li>基于 LRU（Least Recently Used）算法，回收缓存；</li>
+<li>基于 Swap 机制，回收不常访问的匿名页；</li>
+<li>基于 OOM（Out of Memory）机制，杀掉占用大量内存的进程。触发时机是进程在申请内存时，如果申请的虚拟内存加上服务器实际已用的内存之和，比总的物理内存还大，就会触发OOM</li>
+</ul>
+
+<h4>统计总内存</h4>
+
+<ul>
+<li>把共享内存平分到各个进程后，再加上进程本身的非共享内存大小的和。</li>
+<li>grep Pss /proc/[1-9]*/smaps | awk &#39;{total+=$2}; END {printf &quot;%d kB\n&quot;, total }&#39;</li>
+</ul>
+
+<h4>缓存和缓冲区的却别</h4>
+
+<ul>
+<li>缓存包括两部分，一部分是磁盘读取文件的页缓存，用来缓存从磁盘读取的数据，可以加快以后再次访问的速度。另一部分，则是 Slab 分配器中的可回收内存。</li>
+<li>缓冲区是对原始磁盘块的临时存储，用来缓存将要写入磁盘的数据。这样，内核就可以把分散的写集中起来，统一优化磁盘写入。</li>
+</ul>
+
+<h4>各种内存片段</h4>
+
+<ul>
+<li>虚拟内存，包括了进程代码段、数据段、共享内存、已经申请的堆内存和已经换出的内存等。这里要注意，已经申请的内存，即使还没有分配物理内存，也算作虚拟内存。</li>
+<li>常驻内存是进程实际使用的物理内存，不过，它不包括 Swap 和共享内存。</li>
+<li>共享内存，既包括与其他进程共同使用的真实的共享内存，还包括了加载的动态链接库以及程序的代码段等。</li>
+<li><img src="media/15470904831321/e28cf90f0b137574bca170984d1e6736.png" alt="e28cf90f0b137574bca170984d1e6736"/></li>
+</ul>
+
+<h4>内存性能工具</h4>
+
+<ul>
+<li>根据指标找工具</li>
+<li><img src="media/15470904831321/8f477035fc4348a1f80bde3117a7dfed.png" alt="8f477035fc4348a1f80bde3117a7dfed"/></li>
+<li>工具工具找指标
+<img src="media/15470904831321/52bb55fba133401889206d02c224769b.png" alt="52bb55fba133401889206d02c224769b"/></li>
+<li>分析流程图
+<img src="media/15470904831321/d79cd017f0c90b84a36e70a3c5dccffe.png" alt="d79cd017f0c90b84a36e70a3c5dccffe"/></li>
+</ul>
+
+<h4>内存优化思路</h4>
+
+<ul>
+<li>最好禁止 Swap。如果必须开启 Swap，降低 swappiness 的值，减少内存回收时 Swap 的使用倾向。</li>
+<li>减少内存的动态分配。比如，可以使用内存池、大页（HugePage）等。</li>
+<li>尽量使用缓存和缓冲区来访问数据。比如，可以使用堆栈明确声明内存空间，来存储需要缓存的数据；或者用 Redis 这类的外部缓存组件，优化数据的访问。</li>
+<li>使用 cgroups 等方式限制进程的内存使用情况。这样，可以确保系统内存不会被异常进程耗尽。</li>
+<li>通过 /proc/pid/oom_adj ，调整核心应用的 oom_score。这样，可以保证即使内存紧张，核心应用也不会被 OOM 杀死。</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/01/10 11:21 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15470858063747.html">
+                
+                  <h1>kubeadm部署</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>static pod</h4>
+
+<ul>
+<li>把要部署的 Pod 的 YAML 文件放在一个指定的目录里。这样，当这台机器上的 kubelet 启动时，它会自动检查这个目录，加载所有的 Pod YAML 文件，然后在这台机器上启动它们。</li>
+</ul>
+
+<h4>bootstrap token</h4>
+
+<ul>
+<li>安装了 kubelet 和 kubadm 的节点，都可以通过 kubeadm join 加入到这个集群当中</li>
+</ul>
+
+<h4>kube-proxy</h4>
+
+<ul>
+<li>服务发现功能</li>
+</ul>
+
+<h4>DNS</h4>
+
+<ul>
+<li>DNS功能</li>
+</ul>
+
+<h4>node节点加入集群</h4>
+
+<ul>
+<li>kubeadm访问kube-apiserver获取保存在configmap中的cluster-info</li>
+<li>cluster-info 里的 kube-apiserver 的地址、端口、证书</li>
+</ul>
+
+<h4>访问仓库</h4>
+
+<ul>
+<li>gcr.io</li>
+<li>quay.io</li>
+</ul>
+
+<h4>部署单机k8s集群</h4>
+
+<ul>
+<li><a href="https://www.datayang.com/article/45">https://www.datayang.com/article/45</a></li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/01/10 10:03 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15470844509355.html">
+                
+                  <h1>K8S的本质</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>k8s结构图</h4>
+
+<p><img src="media/15470844509355/8ee9f2fa987eccb490cfaa91c6484f67.png" alt="8ee9f2fa987eccb490cfaa91c6484f67"/></p>
+
+<h4>结构剖析</h4>
+
+<ul>
+<li>控制节点</li>
+<li>负责API服务的kube-apiserver</li>
+<li>负责调度的kube-scheduler</li>
+<li>负责容器编排的kube-controller-manager</li>
+<li>计算节点</li>
+</ul>
+
+<h4>kubelet组件</h4>
+
+<ul>
+<li>容器通过CRI接入Kuberbetes</li>
+<li>通过OCI翻译CRI的请求与底层的Linux操作系统交互</li>
+<li>CNI调用网络插件为容器配置网络</li>
+<li>CSI调用存储插件为容器配置持久存储</li>
+</ul>
+
+<h4>解决问题</h4>
+
+<ul>
+<li>运行在大规模集群中的各种任务之间，实际上存在着各种各样的关系。这些关系的处理，才是作业编排和管理系统最困难的地方。</li>
+<li><img src="media/15470844509355/16c095d6efb8d8c226ad9b098689f306.png" alt="16c095d6efb8d8c226ad9b098689f306"/></li>
+<li>deployment解决Pod的多实例管理器</li>
+<li>service解决固定IP地址访问的问题</li>
+<li>secret解决访问时的授权信息</li>
+<li>daemonset描述每个宿主机必须只能运行一个副本的守护任务</li>
+</ul>
+
+<h4>和过去集群管理的区别</h4>
+
+<ul>
+<li>过去很多的集群管理项目（比如 Yarn、Mesos，以及 Swarm）所擅长的，都是把一个容器，按照某种规则，放置在某个最佳节点上运行起来。这种功能，我们称为“调度”。</li>
+<li>而 Kubernetes 项目所擅长的，是按照用户的意愿和整个系统的规则，完全自动化地处理好容器之间的各种关系。这种功能，就是我们经常听到的一个概念：编排。</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/01/10 09:40 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15467443920316.html">
+                
+                  <h1>深入理解容器镜像</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>mount space</h4>
+
+<ul>
+<li>Mount Namepace修改的是容器进程对文件系统挂载点的认知</li>
+<li>tmpfs内存盘</li>
+</ul>
+
+<h4>挂载原理</h4>
+
+<pre class="line-numbers"><code class="language-text">  mount(“”, “/“, NULL, MS_PRIVATE, “”) 
+</code></pre>
+
+<h4>chroot</h4>
+
+<ul>
+<li>改变进程的根目录到指定的位置</li>
+<li>挂载在容器根目录上，用来为容器进程提供隔离后执行环境的文件系统就是容器镜像，也叫rootfs</li>
+</ul>
+
+<h4>Docker核心流程</h4>
+
+<ul>
+<li>启动linux namespace配置</li>
+<li>设置指定的cgroups参数</li>
+<li>切换进程的根目录</li>
+</ul>
+
+<h4>pivot_root和chroot的区别</h4>
+
+<h4>容器一致性</h4>
+
+<ul>
+<li>rootfs有层级概念</li>
+<li>每一层对应一个文件夹</li>
+<li>OverlayFS仅有两层，也就是说镜像中的每一层并不对应OverlayFS中的层，而是，镜像中的每一层对应/var/lib/docker/overlay中的一个文件夹，文件夹以该层的UUID命名。然后使用硬连接将下面层的文件引用到上层。这在一定程度上节省了磁盘空间。这样，OverlayFS中的lowerdir就对应镜像层的最上层，并且是只读的。在创建镜像时，Docker会新建一个文件夹作为OverlayFS的upperdir，它是可写的。</li>
+</ul>
+
+<h4>删除文件</h4>
+
+<ul>
+<li>通过可读写层创建一个whiteout文件，把只读层的文件遮挡起来</li>
+</ul>
+
+<h4>init层</h4>
+
+<ul>
+<li>Init 层是 Docker 项目单独生成的一个内部层，专门用来存放 /etc/hosts、/etc/resolv.conf 等信息。</li>
+</ul>
+
+<h4>容器修改文件的流程</h4>
+
+<ul>
+<li>修改一个文件的时候，首先会从上到下查找有没有这个文件，找到，就复制到容器层中，修改，修改的结果就会作用到下层的文件，这种方式也被称为copy-on-write。</li>
+</ul>
+
+<h4>katacontainers</h4>
+
+<ul>
+<li>新的容器技术//TODO</li>
+</ul>
+
+<h4>exec原理</h4>
+
+<ul>
+<li>docker inspect --format &#39;{{.State.Pid}}&#39; container-id</li>
+<li>通过加入一个进程的NameSpace中达到进入容器的目的</li>
+<li>通过调用sentns的系统调用实现</li>
+</ul>
+
+<h4>容器里进程新建的文件，怎么才能让宿主机获取到？</h4>
+
+<ul>
+<li>rootfs之后,chroot之前，宿主机的目录被联合挂载到/var/lib/docker/aufs/mnt/目录中的可读写层中，这个挂载工作就完成了</li>
+<li>容器进程是指docker创建的容器初始化进程，最后通过execv()系统调用，让应用进程取代自己，成为容器pid=1的进程</li>
+<li>绑定挂载允许将一个目录或者文件挂载到指定的目录上，该挂载点上进行的任何操作，只是发生在被挂载的目录或者文件上，而原挂载点的内容则会被隐藏起来且不受影响。</li>
+<li><img src="media/15467443920316/95c957b3c2813bb70eb784b8d1daedc6.png" alt="95c957b3c2813bb70eb784b8d1daed"/></li>
+<li>绑定挂载本质就是inode替换的过程</li>
+<li>新建目录不会被namespace隔离，会产生新的目录，但是对该目录的改变只会产生在宿主机，不会在容器中产生。</li>
+</ul>
+
+<h4>Docker copyData功能</h4>
+
+<h4>cgroup的NameSpace作用</h4>
+
+<ul>
+<li>容器中一旦挂载cgroup filesystem，可以修改整全局的cgroup配置</li>
+<li>cgroup namespace更加安全。</li>
+<li>namespace中的进程都有自己cgroupns root和cgroup filesystem视图</li>
+<li>会使容器迁移更加容易；在迁移时，/proc/self/cgroup需要复制到目标机器，这要求容器的cgroup路径是唯一的，否则可能会与目标机器冲突</li>
+<li></li>
+</ul>
+
+<h4>获取宿主机的ip</h4>
+
+<ul>
+<li>downwardapi</li>
+</ul>
+
+<h4>overlay</h4>
+
+<ul>
+<li>modprobe overlay</li>
+<li> mount -t overlay overlay -olowerdir=./lower,upperdir=./upper,workdir=./work ./merged</li>
+<li> </li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/01/06 11:13 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15465006494547.html">
+                
+                  <h1>IO多路复用，EPOLL原理</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>Epoll有没有数量的限制</h4>
+
+<h4>Websocket推送数据的时候，卡顿的问题</h4>
+
+<h4>AIO为什么不能做高性能的IO</h4>
+
+<h4>Epoll只拷贝一部分，拷贝那一部分</h4>
+
+<h4>用户态到内核态交互为什么性能低</h4>
+
+<h4>线程</h4>
+
+<ul>
+<li>一个线程8M空间</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/01/03 15:30 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -1160,8 +1034,6 @@ docker push docker_image_name:version
             <a href="Golang.html"><strong>Golang</strong></a>
         
             <a href="Django.html"><strong>Django</strong></a>
-        
-            <a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html"><strong>C++设计模式实战</strong></a>
         
             <a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html"><strong>深入剖析Kubernetes</strong></a>
         
@@ -1240,6 +1112,18 @@ docker push docker_image_name:version
 	      
 		      
 			      <li class="post">
+			        <a href="15818128782116.html">Singleton</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15748977610569.html">State</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817697569868.html">字符串分割</a>
 			      </li>
 		     
@@ -1252,19 +1136,7 @@ docker push docker_image_name:version
 		  
 		      
 			      <li class="post">
-			        <a href="15814649492497.html">Simple Factory</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814189410719.html">代码的可测试性</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814188057978.html">重构</a>
+			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

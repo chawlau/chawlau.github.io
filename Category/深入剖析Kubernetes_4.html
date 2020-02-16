@@ -87,8 +87,6 @@
         
             <li><a href="Django.html">Django</a></li>
         
-            <li><a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html">C++设计模式实战</a></li>
-        
             <li><a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html">深入剖析Kubernetes</a></li>
         
             <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html">数据结构和算法</a></li>
@@ -171,6 +169,132 @@
 	<div class="large-8 medium-8 columns">
 		<div class="markdown-body home-categories">
 		
+			<div class="article">
+                <a class="clearlink" href="15360244431288.html">
+                
+                  <h1>Iptable之内网访问互联网</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>NAT，proxy</h4>
+
+<ul>
+<li>nat 隐藏本地网络的IP地址 Network Address Translation 网络层+传输层</li>
+<li>proxy 代理 应用层</li>
+</ul>
+
+<h4>nat技术分类</h4>
+
+<ul>
+<li>SNAT 只修改请求报文的源地址</li>
+<li>DNAT 只修改请求报文的目标地址</li>
+<li>IPVS 基于10种方式来实现负载均衡LVS</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">  iptables -t nat -A PREROUTING -d gateway -p tcp --dport 80 -j DNAT --to-destination dest_ip:port
+  iptables -t nat -A PREROUTING -d gateway -p tcp --dport 22 -j DNAT --to-destination dest_ip:port 端口映射
+  iptables -t nat -A POSTROUTING -s 192.168.20.0/24 ! -d 192.168.20.0/24 -j MASQUERADE //地址伪装
+</code></pre>
+
+<h4>NAT表</h4>
+
+<ul>
+<li>PREROUTING: DNAT</li>
+<li>OUTPUT</li>
+<li>POSTROUTING: SNAT</li>
+<li>REDIRECT 端口重定向</li>
+<li>美国往事//TODO</li>
+</ul>
+
+<h4>nat的实现方式</h4>
+
+<ul>
+<li>源地址转化 iptables -t nat -A POSTROUTING -s LOCALNET ! -d LOCALNET  -j SNAT --to-source ExtIP</li>
+<li> iptables -t nat -A POSTROUTING -s LOCALNET ! -d LOCALNET  -j MASQUERADE  地址不固定</li>
+<li> iptables -t nat -L -n</li>
+<li> 目标地址转换 iptables -t nat -A PREROUTING -d ExtIP -p tcp --dport PORT -j DNAT --to-destination InterServerIP</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/09/04 09:27 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15356859617795.html">
+                
+                  <h1>Docker资源限制</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>资源限制</h4>
+
+<ul>
+<li>docker可以耗尽主机的全部资源</li>
+<li>Linux Capabilities</li>
+</ul>
+
+<h4>Memory</h4>
+
+<ul>
+<li>Docker daemon的OOM优先级</li>
+<li>定义 -16 到 15 之间的一个数值以便帮助决定某个进程的 oom_score。oom_score 值越高，被oom_killer 杀死的进程数就越多。将 oom_adj 值设定为 -17 则为该进程禁用 oom_killer。</li>
+</ul>
+
+<h4>CPU</h4>
+
+<ul>
+<li>CFS调度</li>
+<li>--cpu-shares</li>
+<li>--cpuset-cpus</li>
+<li>docker top container</li>
+<li>docker stats</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/08/31 11:26 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
 			<div class="article">
                 <a class="clearlink" href="15356194485834.html">
                 
@@ -276,205 +400,6 @@
                   <div class="more-left left">
                   
                     <span class="date">2018/08/30 10:10 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15355258133696.html">
-                
-                  <h1>Docker存储卷</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>写实复制</h4>
-
-<ul>
-<li><img src="media/15355258133696/15355259487972.jpg" alt=""/></li>
-<li>mount --bind</li>
-<li><img src="m%5Bweb%E7%AB%99%E7%82%B9%E5%92%8Cnginx%5D(media/15355258133696/web%E7%AB%99%E7%82%B9%E5%92%8Cnginx.md)edia/15355258133696/15355271868297.jpg" alt=""/></li>
-</ul>
-
-<h4>存储机制</h4>
-
-<p><img src="media/15355258133696/15355282809804.jpg" alt=""/></p>
-
-<ul>
-<li>联合挂载文件系统</li>
-</ul>
-
-<h4>两种卷</h4>
-
-<ul>
-<li> Bind mount volume</li>
-<li> Docker-managed volume</li>
-<li> docker run -it -name bbox1 -v /data busybox</li>
-<li><img src="media/15355258133696/15355329411052.jpg" alt="" style="width:374px;"/></li>
-<li></li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">docker run --name nginx --network container:infracon --volumes-from infracon -it --rm busybox
-</code></pre>
-
-<ul>
-<li>docker容器编排compose</li>
-</ul>
-
-<h4>挂载本地配置文件</h4>
-
-<pre class="line-numbers"><code class="language-text">docker run --name prometheus -d   -p 9090:9090   -v /home/liuchao/Downloads/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml   prom/prometheus   --config.file=/etc/prometheus/prometheus.yml
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/08/29 14:56 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15355101690564.html">
-                
-                  <h1>Docker NetWorking</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<ul>
-<li>net实现协议栈和网络设备的隔离</li>
-<li><img src="media/15354190834336/15354475552616.jpg" alt="" style="width:636px;"/></li>
-<li>OVS OpenVSwitch</li>
-<li>SDN软件驱动网络</li>
-<li><img src="media/15354190834336/15355069668262.jpg" alt=""/></li>
-<li>Overlay Network</li>
-<li>隧道转发 两级三层封装 //TODO</li>
-<li>LVS IPtable //TODO</li>
-<li>docker0 交换机和网卡 默认是NAT桥</li>
-<li><img src="media/15354190834336/15355091021145.jpg" alt="" style="width:567px;"/></li>
-<li><img src="media/15354190834336/15355093838771.jpg" alt="" style="width:446px;"/></li>
-<li>容器使用宿主机的网络名称空间</li>
-<li><img src="media/15354190834336/15355096534238.jpg" alt="" style="width:826px;"/></li>
-</ul>
-
-<h4>网络名称空间</h4>
-
-<ul>
-<li>ip netns exec r1 ifconfig -a 查看网络名称空间</li>
-<li>ip netns add r1  添加网络名称空间</li>
-<li>ip link add name veth1.1 type veth peer name veth1.2</li>
-<li>ip link set dev veth1.2 netns r1 移动到网络名称空间</li>
-<li>ip netns exec r1 ip link set dev vrth1.2 name veth1.2 改名</li>
-<li>ifconfig veth1.1 10.1.0.1/24 up 激活</li>
-<li>ip netns exec r2 ping 10.1.0.2</li>
-<li></li>
-</ul>
-
-<h4>docker 四种网络模型</h4>
-
-<ul>
-<li> 封闭式网络</li>
-<li> 桥接式网络</li>
-<li> 联盟式网络</li>
-<li> 开放式</li>
-</ul>
-
-<h4>docker查看容器网络</h4>
-
-<ul>
-<li>docker network inspect bridge</li>
-<li>docker network ls</li>
-<li>ip netns 查看网络名称空间</li>
-<li>网卡分配给名称空间</li>
-<li>网络名称空间//TODO</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text"> docker run --name t1 -it --rm busybox:latest 创建容器推出就删除
- docker run --name t4 -it --network none --rm busybox:latest
- docker run --name t4 -it --network bridge --rm busybox:latest
- docker run --name t4 --hostname chawlau --dns 8.8.8.8 -it --network none --rm busybox:latest //给容器分配主机名
- docker run --name t4 --hostname chawlau --dns 8.8.8.8 -it --network bridge --dns-search ilinux.io --add-hosts www.magedu.com:1.1.1.1  --rm busybox:latest //给容器分配主机名
-</code></pre>
-
-<h4>Opening inbound communication</h4>
-
-<ul>
-<li>查看映射端口</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  iptables -t nat -vnL
-  docker port web2 显示指定容器的映射
-</code></pre>
-
-<ul>
-<li><img src="media/15355101690564/15355229419041.jpg" alt="" style="width:618px;"/></li>
-<li>联盟式容器</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  docker run --name b2 --network container:b1 -it --rm busybox 共享b1容器名称空间
-  docker run --name b2 --network host -it --rm busybox
-  配置文件可以远程启动&quot;hosts&quot;: [&quot;tcp://0.0.0.0:2375&quot;, &quot;unix:///var/run/docker.sock&quot;]
-  docker exec -it tinyweb2 /bin/sh
-</code></pre>
-
-<ul>
-<li>nohub command &amp; 剥离出去sh进程</li>
-<li>主进程ID为1</li>
-<li>RUN和CMD运行的时间点和行为不同</li>
-<li>CMD 收不到信号，容器中接收信号为1的进程</li>
-<li>CMD在把制作的镜像运行为容器时运行</li>
-<li>ENTRYPOINT的命令在启动时不会被覆盖</li>
-<li>CMD给ENTRYPOINT提供参数</li>
-<li>json数组中要使用双引号</li>
-</ul>
-
-<h4>HEALTHCHECK</h4>
-
-<ul>
-<li>interval</li>
-<li>timeout</li>
-<li>start-period 起进程等待时间</li>
-<li>retries</li>
-<li>ARG传输环境变量</li>
-<li>ONBUILD</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/08/29 10:36 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
@@ -711,8 +636,6 @@
         
             <a href="Django.html"><strong>Django</strong></a>
         
-            <a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html"><strong>C++设计模式实战</strong></a>
-        
             <a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html"><strong>深入剖析Kubernetes</strong></a>
         
             <a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html"><strong>数据结构和算法</strong></a>
@@ -790,6 +713,18 @@
 	      
 		      
 			      <li class="post">
+			        <a href="15818128782116.html">Singleton</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15748977610569.html">State</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817697569868.html">字符串分割</a>
 			      </li>
 		     
@@ -802,19 +737,7 @@
 		  
 		      
 			      <li class="post">
-			        <a href="15814649492497.html">Simple Factory</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814189410719.html">代码的可测试性</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814188057978.html">重构</a>
+			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

@@ -87,8 +87,6 @@
         
             <li><a href="Django.html">Django</a></li>
         
-            <li><a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html">C++设计模式实战</a></li>
-        
             <li><a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html">深入剖析Kubernetes</a></li>
         
             <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html">数据结构和算法</a></li>
@@ -172,21 +170,34 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15454692860520.html">
+                <a class="clearlink" href="15489819871248.html">
                 
-                  <h1>队列</h1>
+                  <h1>Linux问题答疑</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>循环队列</h4>
+                        	<h4>阻塞、非阻塞 I/O 与同步、异步 I/O 的区别和联系</h4>
 
 <ul>
-<li>在数组实现队列的时候，会有数据搬移操作，要想解决数据搬移的问题，我们就需要像环一样的循环队列<br/>
-#### 阻塞队列</li>
-<li><br/>
-#### 并发队列</li>
-<li>无所队列</li>
+<li>所谓阻塞 I/O，是指应用程序在执行 I/O 操作后，如果没有获得响应，就会阻塞当前线程，不能执行其他任务。</li>
+<li>所谓非阻塞 I/O，是指应用程序在执行 I/O 操作后，不会阻塞当前的线程，可以继续执行其他的任务。</li>
+<li>所谓同步 I/O，是指收到 I/O 请求后，系统不会立刻响应应用程序；等到处理完成，系统才会通过<strong><em>系统调用</em></strong>的方式，告诉应用程序 I/O 结果。</li>
+<li>所谓异步 I/O，是指收到 I/O 请求后，系统会先告诉应用程序 I/O 请求已经收到，随后再去异步处理；等处理完成后，系统再通<strong><em>过事件通知</em></strong>的方式，告诉应用程序结果。</li>
+</ul>
+
+<h4>执行 find 命令时，会不会导致系统的缓存升高呢？如果会导致，升高的又是哪种类型的缓存呢</h4>
+
+<ul>
+<li>会导致系统缓存升高</li>
+<li>文件名以及文件之间的目录关系，都放在目录项缓存中。而这是一个基于内存的数据结构，会根据需要动态构建。所以，查找文件时，Linux 就会动态构建不在缓存中的目录项结构，导致 dentry 缓存升高。</li>
+<li>inode cacahe&amp;dentry&amp;proc inode cache</li>
+</ul>
+
+<h4>磁盘IO延迟</h4>
+
+<ul>
+<li>MySQL 的 MyISAM 引擎，本身并不缓存数据，而要依赖系统缓存来加速磁盘 I/O 的访问。一旦系统中还有其他应用同时运行，MyISAM 引擎就很难充分利用系统缓存。因为系统缓存可能被其他应用程序占用，甚至直接被清理掉。InnoDB同时缓存索引和数据</li>
 <li></li>
 </ul>
 
@@ -197,206 +208,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/12/22 17:01 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15453606137574.html">
-                
-                  <h1>如何正确的显示随机信息</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>原始算法</h4>
-
-<pre class="line-numbers"><code class="language-text">mysql&gt; select word from words order by rand() limit 3;
-</code></pre>
-
-<h4>优化算法1</h4>
-
-<pre class="line-numbers"><code class="language-text">mysql&gt; select max(id),min(id) into @M,@N from t ;
-set @X= floor((@M-@N+1)*rand() + @N);
-select * from t where id &gt;= @X limit 1;
-</code></pre>
-
-<ul>
-<li>有概率不均匀的问题</li>
-</ul>
-
-<h4>算法2</h4>
-
-<pre class="line-numbers"><code class="language-text">mysql&gt; select count(*) into @C from t;
-set @Y = floor(@C * rand());
-set @sql = concat(&quot;select * from t limit &quot;, @Y, &quot;,1&quot;);
-prepare stmt from @sql;
-execute stmt;
-DEALLOCATE prepare stmt;
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/21 10:50 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15453542683157.html">
-                
-                  <h1>Order by工作机制</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>插入数据函数</h4>
-
-<pre class="line-numbers"><code class="language-text">* delimiter ;;
-create procedure icity()
-begin
-  declare i int;
-  set i=1;
-  while(i&lt;=100000)do
-    if i &lt;= 4000 then
-      insert into t values(i, &quot;杭州&quot;, substring(MD5(RAND()),1,10), ROUND(RAND()*(100-1)+1), &quot;杭州中路&quot;);
-    else
-      insert into t values(i, &quot;深圳&quot;, substring(MD5(RAND()),1,10), ROUND(RAND()*(100-1)+1), &quot;深南大道&quot;);
-    end if;
-    set i=i+1;
-  end while;
-end;;
-delimiter ;
-</code></pre>
-
-<h4>全字段排序</h4>
-
-<ul>
-<li>select city,name,age from t where city=&#39;杭州&#39; order by name limit 1000;</li>
-<li><p>初始化 sort_buffer，确定放入 name、city、age 这三个字段；</p></li>
-<li><p>从索引 city 找到第一个满足 city=&#39;杭州’条件的主键 id，也就是图中的 ID_X；</p></li>
-<li><p>到主键 id 索引取出整行，取 name、city、age 三个字段的值，存入 sort_buffer 中；</p></li>
-<li><p>从索引 city 取下一个记录的主键 id；</p></li>
-<li><p>重复步骤 3、4 直到 city 的值不满足查询条件为止，对应的主键 id 也就是图中的 ID_Y；</p></li>
-<li><p>对 sort_buffer 中的数据按照字段 name 做快速排序；</p></li>
-<li><p>按照排序结果取前 1000 行返回给客户端</p></li>
-</ul>
-
-<h4>row_id排序</h4>
-
-<ul>
-<li>相对全字段排序遍历排序结果，取前 1000 行，并按照 id 的值回到原表中取出 city、name 和 age 三个字段返回给客户端。</li>
-</ul>
-
-<h4>覆盖索引</h4>
-
-<ul>
-<li>覆盖索引是指，索引上的信息足够满足查询请求，不需要再回到主键索引上去取数据。</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/21 09:04 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15450953397782.html">
-                
-                  <h1>CPU优化套路</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>应用程序优化</h4>
-
-<ul>
-<li>编译器优化</li>
-<li>算法优化</li>
-<li>异步处理</li>
-<li>多线程代替多进程 多线程上下文切换并不切换进程地址空间，可以降低上文文切换的成本</li>
-<li>善用缓存</li>
-</ul>
-
-<h4>系统进程优化</h4>
-
-<ul>
-<li>CPU绑定</li>
-<li>CPU分组进行CPU独占</li>
-<li>优先级调整</li>
-<li>进程设置资源限制</li>
-<li>NUMA优化 访问本地内存</li>
-<li>中断负载均衡 irqbalance和smp_affinity</li>
-</ul>
-
-<h4>wait区别</h4>
-
-<ul>
-<li>pidstat 中， %wait 表示进程等待 CPU 的时间百分比。</li>
-<li>top 中 ，iowait% 则表示等待 I/O 的 CPU 时间百分比。</li>
-</ul>
-
-<h4>指定容器文件系统的路径</h4>
-
-<ul>
-<li>bindfs</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/18 09:08 上午</span>
+                    <span class="date">2019/02/01 08:46 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
@@ -413,52 +225,179 @@ delimiter ;
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15450951587114.html">
+                <a class="clearlink" href="15488381890610.html">
                 
-                  <h1>索引和日志</h1>
+                  <h1>容器网络</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>mysql commit 两段式提交</h4>
+                        	<h4>网络栈</h4>
 
 <ul>
-<li>写redolog 处于prepare</li>
-<li>写binlog是阶段B
-<img src="media/15450951587114/ee9af616e05e4b853eba27048351f62a.jpg" alt="ee9af616e05e4b853eba27048351f62a"/></li>
+<li>网卡</li>
+<li>回环设备</li>
+<li>路由表</li>
+<li>iptables</li>
 </ul>
 
-<h4>奔溃恢复规则</h4>
+<h4>被隔离的容器进程，该如何跟其他 Network Namespace 里的容器进程进行交互呢？</h4>
 
 <ul>
-<li>如果redo log的事务是完整的，有了commit标识，则直接提交</li>
-<li>如果redo log的事务只有完整的preapre，则判断对应的事物binglog是否存在并完整</li>
-<li>如果是，则提交事务</li>
-<li>否则回滚事物</li>
-<li>redolog prepare --&gt; binlog --&gt;redolog commit</li>
+<li>docker创建虚拟网桥</li>
+<li><img src="media/15488381890610/e0d28e0371f93af619e91a86eda99a66.png" alt="e0d28e0371f93af619e91a86eda99a66"/></li>
+<li>被限制在 Network Namespace 里的容器进程，实际上是通过 Veth Pair 设备 + 宿主机网桥的方式，实现了跟同其他容器的数据交换</li>
 </ul>
 
-<h4>Mysql验证binlog完整性</h4>
+<h4>容器跨主机通讯</h4>
 
 <ul>
-<li>statement 的binlog会有commit</li>
-<li>row格式的binlog ，会有XID event</li>
-<li>redolog 和 bin log通过XID关联起来</li>
+<li>overlay网络</li>
+<li><img src="media/15488381890610/b4387a992352109398a66d1dbe6e413d.png" alt="b4387a992352109398a66d1dbe6e413d"/></li>
 </ul>
 
-<h4>设计事务的原因</h4>
+<h4>Flannel</h4>
 
 <ul>
-<li>主从复制的时候防止备库使用未提交的事物</li>
-<li>redo log是不能回滚的，如果binlog写入失败。就会导致数据和binlog不一致</li>
-<li>binlog没有能力回复数据页</li>
+<li>VXLAN</li>
+<li>host-gw</li>
+<li>UDP</li>
 </ul>
 
-<h4>更新记录和技术表顺序</h4>
+<h4>通讯原理</h4>
 
 <ul>
-<li>应该先插入操作记录，再更新计数表。</li>
-<li>因为更新计数表涉及到行锁的竞争，先插入再更新能最大程度地减少事务之间的锁等待，提升并发度。</li>
+<li><img src="media/15488381890610/e6827cecb75641d3c8838f2213543cf0.png" alt="e6827cecb75641d3c8838f2213543cf0"/></li>
+<li>VXLAN
+<img src="media/15488381890610/cefe6b99422fba768c53f0093947cd38.png" alt="cefe6b99422fba768c53f0093947cd38"/></li>
+<li>flannel VXLAN的外部帧
+<img src="media/15488381890610/43f5ebb001145ecd896fd10fb27c5c41.png" alt="43f5ebb001145ecd896fd10fb27c5"/></li>
+</ul>
+
+<h4>网络模型和CNI插件</h4>
+
+<ul>
+<li>一方面，Kubernetes 项目并没有使用 Docker 的网络模型（CNM），所以它并不希望、也不具备配置 docker0 网桥的能力；</li>
+<li>另一方面，这还与 Kubernetes 如何配置 Pod，也就是 Infra 容器的 Network Namespace 密切相关。</li>
+<li>Kubernetes 在启动 Infra 容器之后，就可以直接调用 CNI 网络插件，为这个 Infra 容器的 Network Namespace，配置符合预期的网络栈。</li>
+</ul>
+
+<h4>CNI基础可执行文件</h4>
+
+<ul>
+<li>Main 插件，它是用来创建具体网络设备的二进制文件,bridge（网桥设备）、ipvlan、loopback（lo 设备）、macvlan、ptp（Veth Pair 设备），以及 vlan。</li>
+<li>IPAM（IP Address Management）插件，它是负责分配 IP 地址的二进制文件。dhcp,hostlocal分配预先制定的IP地址</li>
+<li>CNI 社区维护的内置 CNI 插件,tuning，是一个通过 sysctl 调整网络设备参数的二进制文件；portmap，是一个通过 iptables 配置端口映射的二进制文件；bandwidth，是一个使用 Token Bucket Filter (TBF) 来进行限流的二进制文件。</li>
+</ul>
+
+<h4>容器网络方案</h4>
+
+<ul>
+<li>实现这个网络方案本身，配置宿主机路由、配置 ARP 和 FDB 表里的信息等等。</li>
+<li>实现该网络方案对应的 CNI 插件。这一部分主要需要做的，就是配置 Infra 容器里面的网络栈，并把它连接在 CNI 网桥上</li>
+</ul>
+
+<h4>host-gw</h4>
+
+<ul>
+<li>host-gw 模式的工作原理，其实就是将每个 Flannel 子网（Flannel Subnet，比如：10.244.1.0/24）的“下一跳”，设置成了该子网对应的宿主机的 IP 地址。</li>
+<li>Flannel host-gw 模式必须要求集群宿主机之间是二层连通的</li>
+</ul>
+
+<h4>Calico</h4>
+
+<ul>
+<li>BGP协议 在大规模网络中实现节点路由信息共享的一种协议</li>
+<li>在每个边界网关上都会运行着一个小程序，它们会将各自的路由表信息，通过 TCP 传输给其他的边界网关。而其他边界网关上的这个小程序，则会对收到的这些数据进行分析，然后将需要的信息添加到自己的路由表里。</li>
+<li>CNI插件 </li>
+<li>Felix 负责在宿主机上插入路由规则（即：写入 Linux 内核的 FIB 转发信息库），以及维护 Calico 所需的网络设备等工作。</li>
+<li>BIRD 专门负责在集群里分发路由规则信息</li>
+<li>Node to Node mesh模式</li>
+<li>Route reflector</li>
+</ul>
+
+<h4>IPIP模式</h4>
+
+<ul>
+<li>IP 包进入 IP 隧道设备之后，就会被 Linux 内核的 IPIP 驱动接管。IPIP 驱动会将这个 IP 包直接封装在一个宿主机网络的 IP 包中
+<img src="media/15488381890610/83c0dfa5fbac2b9854c6d8c57b404b15.png" alt="83c0dfa5fbac2b9854c6d8c57b404b15"/></li>
+<li>Node 2 的网络内核栈会使用 IPIP 驱动进行解包，从而拿到原始的 IP 包</li>
+</ul>
+
+<h4>Calio原理</h4>
+
+<ul>
+<li><a href="https://www.yangcs.net/posts/calico-rr/">https://www.yangcs.net/posts/calico-rr/</a></li>
+</ul>
+
+<h4>实验</h4>
+
+<ul>
+<li>Docker单机网络模型动手实验 <a href="https://github.com/mz1999/blog/blob/master/docs/docker-network-bridge.md">https://github.com/mz1999/blog/blob/master/docs/docker-network-bridge.md</a></li>
+<li>Docker跨主机Overlay网络动手实验 <a href="https://github.com/mz1999/blog/blob/master/docs/docker-overlay-networks.md">https://github.com/mz1999/blog/blob/master/docs/docker-overlay-networks.md</a></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/01/30 16:49 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15489242610954.html">
+                
+                  <h1>容器网络</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>Flannel</h4>
+
+<ul>
+<li><img src="media/15489242610954/01ee306698c7dd6207e80fea0a8238c8.jpg" alt="01ee306698c7dd6207e80fea0a8238"/></li>
+</ul>
+
+<h4>容器网络</h4>
+
+<ul>
+<li>基于 NAT 的容器网络模型在微服务架构下有两个问题，一个是 IP 重叠，一个是端口冲突，需要通过 Overlay 网络的机制保持跨节点的连通性。</li>
+<li>underlay</li>
+<li>Calico 网络的大概思路，即不走 Overlay 网络，不引入另外的网络性能损耗，而是将转发全部用三层网络的路由转发来实现</li>
+</ul>
+
+<h4>Calico</h4>
+
+<ul>
+<li><img src="media/15489242610954/c3e999c033a0417df98c0bcc34c9349c.jpg" alt="c3e999c033a0417df98c0bcc34c9349"/></li>
+<li><img src="media/15489242610954/e59559ad7b46b9811553b6b0a85e8e7d.jpg" alt="e59559ad7b46b9811553b6b0a85e8e7d"/></li>
+<li>Felix 物理机的agent，当创建和删除容器的时候，自动配置路由指向容器</li>
+<li>Bird 是BGP的客户端，将物理机和容器的IP访问路由广播出去</li>
+<li>NetWork Policy配置容器的联通策略</li>
+<li>BGP Router Reflector</li>
+</ul>
+
+<h4>BGP</h4>
+
+<ul>
+<li>数据中心内部协议iBGP</li>
+<li>BGP reflector之间使用的是eBGP</li>
 <li></li>
 </ul>
 
@@ -469,247 +408,7 @@ delimiter ;
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/12/18 09:05 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15447574413940.html">
-                
-                  <h1>可扩展性</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>可扩展的条件</h4>
-
-<ul>
-<li>正确预测变化</li>
-<li>完美封装变化</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/14 11:17 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%9E%B6%E6%9E%84.html'>架构</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15447533025677.html">
-                
-                  <h1>Mysql的count(*)</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>问题</h4>
-
-<ul>
-<li>MyISAM 表虽然 count(*) 很快，但是不支持事务；</li>
-<li>show table status 命令虽然返回很快，但是不准确；</li>
-<li>InnoDB 表直接 count(*) 会遍历全表，虽然结果准确，但会导致性能问题。</li>
-</ul>
-
-<h4>用一个表存储记录数目</h4>
-
-<ul>
-<li>在事物操作中修改这个表</li>
-<li>先增加表的计数</li>
-<li>commit时再插入数据</li>
-<li></li>
-</ul>
-
-<h4>各种count差别</h4>
-
-<ul>
-<li>count(*)</li>
-<li>count(primary key)</li>
-<li>count(字段)</li>
-<li>count(1)</li>
-<li>count(主键 id) 来说，InnoDB 引擎会遍历整张表，把每一行的 id 值都取出来，返回给 server 层。server 层拿到 id 后，判断是不可能为空的，就按行累加。</li>
-<li>对于 count(1) 来说，InnoDB 引擎遍历整张表，但不取值。server 层对于返回的每一行，放一个数字“1”进去，判断是不可能为空的，按行累加</li>
-<li>count(字段) 如果这个“字段”是定义为 not null 的话，一行行地从记录里面读出这个字段，判断不能为 null，按行累加；如果这个“字段”定义允许为 null，那么执行的时候，判断到有可能是 null，还要把值取出来再判断一下，不是 null 才累加。</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/14 10:08 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15447499262312.html">
-                
-                  <h1>快速分析CPU性能瓶颈</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>CPU性能指标</h4>
-
-<ul>
-<li>CPU使用率</li>
-<li>平均负载</li>
-<li>进程上下文切换</li>
-<li>CPU缓存命中率
-<img src="media/15447499262312/1e66612e0022cd6c17847f3ab6989007.png" alt="1e66612e0022cd6c17847f3ab6989007"/></li>
-</ul>
-
-<h4>可中断睡眠和不可中断睡眠</h4>
-
-<ul>
-<li>可中断的睡眠状态的进程会睡眠直到某个条件变为真，如产生一个硬件中断、释放进程正在等待的系统资源或是传递一个信号都可以是唤醒进程的条件。</li>
-<li>不可中断睡眠状态与可中断睡眠状态类似，但是它有一个例外，那就是把信号传递到这种睡眠状态的进程不能改变它的状态，也就是说它不响应信号的唤醒。</li>
-</ul>
-
-<h4>总结</h4>
-
-<p><img src="media/15447499262312/596397e1d6335d2990f70427ad4b14ec.png" alt="596397e1d6335d2990f70427ad4b14e"/><br/>
-<img src="media/15447499262312/b0c67a7196f5ca4cc58f14f959a364ca.png" alt="b0c67a7196f5ca4cc58f14f959a364ca"/><br/>
-<img src="media/15447499262312/7a445960a4bc0a58a02e1bc75648aa17.png" alt="7a445960a4bc0a58a02e1bc75648aa17"/></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/14 09:12 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15447000048936.html">
-                
-                  <h1>云中网络</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>注意事项</h4>
-
-<ul>
-<li>共享</li>
-<li>隔离 vconfig基于物理网卡创建带VLAN的虚拟网卡</li>
-<li>互通 </li>
-<li>灵活</li>
-</ul>
-
-<h4>访问外网</h4>
-
-<ul>
-<li>桥接</li>
-</ul>
-
-<h4>iptables功能</h4>
-
-<ul>
-<li>连接追踪</li>
-<li>数据包过滤</li>
-<li>网络地址转换</li>
-<li>数据包的修改</li>
-</ul>
-
-<h4>snat</h4>
-
-<ul>
-<li>Netfilter 的连接跟踪（conntrack）功能实现返回的请求还原成具体的私网IP</li>
-</ul>
-
-<h4>云中网络流量控制</h4>
-
-<ul>
-<li>云中的流量控制主要通过队列进行的，队列分为两大类：无类别队列规则和基于类别的队列规则。</li>
-<li>在云中网络 Openvswitch 中，主要使用的是分层令牌桶规则（HTB），将总的带宽在一棵树上按照配置的比例进行分配，并且在一个分支不用的时候，可以借给另外的分支，从而增强带宽利用率。</li>
-</ul>
-
-<h4>网络隔离</h4>
-
-<ul>
-<li>底层的物理网络设备组成的网络我们称为Underlay 网络</li>
-<li>虚拟机和云中的这些技术组成的网络称为Overlay 网络</li>
-</ul>
-
-<h4>GRE</h4>
-
-<ul>
-<li><img src="media/15447000048936/b189df0a6ee4b0462818bf2f154c9531.jpg" alt="b189df0a6ee4b0462818bf2f154"/></li>
-</ul>
-
-<h4>VXLAN</h4>
-
-<ul>
-<li><img src="media/15447000048936/3b02d54c9093e3de6d1a847dd0eb060f.jpg" alt="3b02d54c9093e3de6d1a847dd0eb060f"/></li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/13 19:20 下午</span>
+                    <span class="date">2019/01/31 16:44 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE.html'>网络协议</a></span>
@@ -726,41 +425,17 @@ delimiter ;
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15446973439362.html">
+                <a class="clearlink" href="15489056824394.html">
                 
-                  <h1>微服务架构</h1>
+                  <h1>Kubernetes三层网络方案</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>结构</h4>
+                        	<h4>host-gw</h4>
 
 <ul>
-<li><img src="media/15446973439362/15446973623824.jpg" alt=""/></li>
-</ul>
-
-<h4>服务监控</h4>
-
-<ul>
-<li>指标收集。就是要把每一次服务调用的请求耗时以及成功与否收集起来，并上传到集中的数据处理中心。</li>
-<li>数据处理。有了每次调用的请求耗时以及成功与否等信息，就可以计算每秒服务请求量、平均耗时以及成功率等指标。</li>
-<li>数据展示。数据收集起来，经过处理之后，还需要以友好的方式对外展示，才能发挥价值。通常都是将数据展示在 Dashboard 面板上，并且每隔 10s 等间隔自动刷新，用作业务监控和报警等。</li>
-</ul>
-
-<h4>服务追踪</h4>
-
-<ul>
-<li>工作原理</li>
-<li>服务消费者发起调用前，会在本地按照一定的规则生成一个 requestid，发起调用时，将 requestid 当作请求参数的一部分，传递给服务提供者。</li>
-<li>服务提供者接收到请求后，记录下这次请求的 requestid，然后处理请求。如果服务提供者继续请求其他服务，会在本地再生成一个自己的 requestid，然后把这两个 requestid 都当作请求参数继续往下传递。</li>
-</ul>
-
-<h4>服务治理</h4>
-
-<ul>
-<li>单机故障 依据策略自动摘除故障节点</li>
-<li>单IDC故障 自动切换故障IDC</li>
-<li>依赖服务不可用 通过熔断机制</li>
+<li></li>
 </ul>
 
                         
@@ -770,10 +445,482 @@ delimiter ;
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/12/13 18:35 下午</span>
+                    <span class="date">2019/01/31 11:34 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E5%BE%AE%E6%9C%8D%E5%8A%A1.html'>微服务</a></span>
+          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15487414039268.html">
+                
+                  <h1>FlexVolume&CSI</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>存储插件开发方式</h4>
+
+<ul>
+<li>FlexVolume</li>
+<li>CSI</li>
+</ul>
+
+<h4>CSI实现</h4>
+
+<ul>
+<li><img src="media/15487414039268/6a553321623f6b58f5494b25091592ef.png" alt="6a553321623f6b58f5494b25091592ef"/></li>
+<li>CSI 插件体系的设计思想，就是把这个 Provision 阶段，以及 Kubernetes 里的一部分存储管理功能，从主干代码里剥离出来，做成了几个单独的组件</li>
+<li><img src="media/15487414039268/d4bdc7035f1286e7a423da851eee89ad.png" alt="d4bdc7035f1286e7a423da851eee89ad"/></li>
+</ul>
+
+<h4>CSI插件</h4>
+
+<ul>
+<li>CSI identity 提供插件名和版本号还有插件能力</li>
+<li>CSI Controller 管理Provision和Attach</li>
+<li>CSI node attach 和 mount</li>
+<li>宿主机的 /var/lib/kubelet 以 Volume 的方式挂载进 CSI 插件容器的同名目录下，然后设置这个 Volume 的 mountPropagation=Bidirectional，即开启双向挂载传播，从而将容器在这个目录下进行的挂载操作“传播”给宿主机，反之亦然</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/01/29 13:56 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15488183158298.html">
+                
+                  <h1>Join语句</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>join</h4>
+
+<ul>
+<li> join 语句执行过程中，驱动表是走全表扫描，而被驱动表是走树搜索</li>
+</ul>
+
+<h4>join结论</h4>
+
+<ul>
+<li>使用 join 语句，性能比强行拆成多个单表执行 SQL 语句的性能要好；</li>
+<li>如果使用 join 语句的话，需要让小表做驱动表。</li>
+</ul>
+
+<h4>BNL</h4>
+
+<ul>
+<li>把表 t1 的数据读入线程内存 join_buffer 中，由于我们这个语句中写的是 select *，因此是把整个表 t1 放入了内存；<br/>
+扫描表 t2，把表 t2 中的每一行取出来，跟 join_buffer 中的数据做对比，满足 join 条件的，作为结果集的一部分返回。</li>
+<li><img src="media/15488183158298/15ae4f17c46bf71e8349a8f2ef70d573.jpg" alt="15ae4f17c46bf71e8349a8f2ef70d573"/></li>
+<li>join_buffer_szie设置大一些</li>
+</ul>
+
+<h4>join语句判断</h4>
+
+<ul>
+<li>如果可以使用 Index Nested-Loop Join 算法，也就是说可以用上被驱动表上的索引，其实是没问题的；</li>
+<li>如果使用 Block Nested-Loop Join 算法，扫描行数就会过多。尤其是在大表上的 join 操作，这样可能要扫描被驱动表很多次，会占用大量的系统资源。所以这种 join 尽量不要用</li>
+</ul>
+
+<h4>小表</h4>
+
+<ul>
+<li>在决定哪个表做驱动表的时候，应该是两个表按照各自的条件过滤，过滤完成之后，计算参与 join 的各个字段的总数据量，数据量小的那个表，就是“小表”，应该作为驱动表。</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/01/30 11:18 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15488096226324.html">
+                
+                  <h1>IO磁盘性能优化</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>IO基准测试</h4>
+
+<ul>
+<li>fio常用测试命令</li>
+<li>direct 表示跳过系统缓存</li>
+<li>iodepth使用异步IO发出的IO请求上限</li>
+<li>rw 表示IO模式 read/write randread/randwrite</li>
+<li>ioengine sync libaio mmap net</li>
+<li>bs 表示IO的大小</li>
+<li></li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">随机读
+fio -name=randread -direct=1 -iodepth=64 -rw=randread -ioengine=libaio -bs=4k -size=1G -numjobs=1 -runtime=1000 -group_reporting -filename=/dev/sdb
+# 随机写
+fio -name=randwrite -direct=1 -iodepth=64 -rw=randwrite -ioengine=libaio -bs=4k -size=1G -numjobs=1 -runtime=1000 -group_reporting -filename=/dev/sdb
+# 顺序读
+fio -name=read -direct=1 -iodepth=64 -rw=read -ioengine=libaio -bs=4k -size=1G -numjobs=1 -runtime=1000 -group_reporting -filename=/dev/sdb
+# 顺序写
+fio -name=write -direct=1 -iodepth=64 -rw=write -ioengine=libaio -bs=4k -size=1G -numjobs=1 -runtime=1000 -group_reporting -filename=/dev/sdb 
+</code></pre>
+
+<h4>结果分析</h4>
+
+<pre class="line-numbers"><code class="language-text">Starting 1 process
+Jobs: 1 (f=1): [r(1)][100.0%][r=80.2MiB/s,w=0KiB/s][r=20.5k,w=0 IOPS][eta 00m:00s]
+randread: (groupid=0, jobs=1): err= 0: pid=12928: Wed Jan 30 09:25:22 2019
+   read: IOPS=24.9k, BW=97.2MiB/s (102MB/s)(1024MiB/10535msec)
+    slat (nsec): min=1439, max=11451k, avg=29995.24, stdev=67723.36
+    clat (usec): min=2, max=18542, avg=2539.13, stdev=934.51
+     lat (usec): min=28, max=18656, avg=2569.61, stdev=948.27
+    clat percentiles (usec):
+     |  1.00th=[  938],  5.00th=[ 1156], 10.00th=[ 1385], 20.00th=[ 1811],
+     | 30.00th=[ 2180], 40.00th=[ 2474], 50.00th=[ 2671], 60.00th=[ 2802],
+     | 70.00th=[ 2966], 80.00th=[ 3130], 90.00th=[ 3326], 95.00th=[ 3458],
+     | 99.00th=[ 3982], 99.50th=[ 4948], 99.90th=[13566], 99.95th=[13829],
+     | 99.99th=[18482]
+   bw (  KiB/s): min=81304, max=137900, per=99.84%, avg=99371.14, stdev=17054.91, samples=21
+   iops        : min=20326, max=34475, avg=24842.67, stdev=4263.69, samples=21
+  lat (usec)   : 4=0.01%, 50=0.01%, 100=0.01%, 250=0.01%, 500=0.01%
+  lat (usec)   : 750=0.02%, 1000=1.95%
+  lat (msec)   : 2=22.61%, 4=74.44%, 10=0.70%, 20=0.27%
+  cpu          : usr=0.59%, sys=93.35%, ctx=73394, majf=0, minf=71
+  IO depths    : 1=0.1%, 2=0.1%, 4=0.1%, 8=0.1%, 16=0.1%, 32=0.1%, &gt;=64=100.0%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, &gt;=64=0.0%
+     complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.1%, &gt;=64=0.0%
+     issued rwt: total=262144,0,0, short=0,0,0, dropped=0,0,0
+     latency   : target=0, window=0, percentile=100.00%, depth=64
+
+Run status group 0 (all jobs):
+   READ: bw=97.2MiB/s (102MB/s), 97.2MiB/s-97.2MiB/s (102MB/s-102MB/s), io=1024MiB (1074MB), run=10535-10535msec
+
+Disk stats (read/write):
+  sdb: ios=257920/0, merge=109/0, ticks=173639/0, in_queue=173879, util=95.56%
+</code></pre>
+
+<ul>
+<li>slat ，是指从 I/O 提交到实际执行 I/O 的时长（Submission latency）；<br/>
+clat ，是指从 I/O 提交到 I/O 完成的时长（Completion latency）；<br/>
+而 lat ，指的是从 fio 创建 I/O 到 I/O 完成的总时长。</li>
+<li>bw是吞吐量</li>
+<li>iops每秒I/O的次数</li>
+<li>blktrace /dev/sdb查看磁盘访问设备的I/O情况</li>
+<li>blkparse sdb -d sdb.bin</li>
+</ul>
+
+<h4>应用程序优化</h4>
+
+<ul>
+<li>可以用追加写代替随机写，减少寻址开销，加快 I/O 写的速度。</li>
+<li>可以借助缓存 I/O ，充分利用系统缓存，降低实际 I/O 的次数。</li>
+<li>可以在应用程序内部构建自己的缓存，或者用 Redis 这类外部缓存系统</li>
+<li>在需要频繁读写同一块磁盘空间时，可以用 mmap 代替 read/write，减少内存的拷贝次数。</li>
+<li>在需要同步写的场景中，尽量将写请求合并，而不是让每个请求都同步写入磁盘，即可以用 fsync() 取代 O_SYNC</li>
+<li>在多个应用程序共享相同磁盘时，为了保证 I/O 不被某个应用完全占用，推荐你使用 cgroups 的 I/O 子系统，来限制进程 / 进程组的 IOPS 以及吞吐量。</li>
+</ul>
+
+<h4>CFQ调度器优化</h4>
+
+<ul>
+<li>ionice 来调整进程的 I/O 调度优先级</li>
+<li>Idle、Best-effort 和 Realtime</li>
+</ul>
+
+<h4>文件系统优化</h4>
+
+<ul>
+<li>xfs 支持更大的磁盘分区和更大的文件数量但是无法收缩</li>
+<li>文件系统特性，日志模式，挂载选项 tune2fs //TODO</li>
+<li>优化文件系统的缓存<br/>
+<ul>
+<li>pdflush脏页的刷新频率 脏页的限额</li>
+<li>优化内核回收目录项缓存和索引节点缓存的倾向</li>
+<li>内存文件系统 tmpfs</li>
+</ul></li>
+</ul>
+
+<h4>磁盘优化</h4>
+
+<ul>
+<li>使用RAID</li>
+<li>选择调度算法</li>
+<li>配置磁盘级别的隔离</li>
+<li>顺序读的场景，调整磁盘预读  /sys/block/sdb/queue/read_ahead_kb  blockdev --setra 8192 /dev/sdb</li>
+<li>优化内核块设备I/O的选项 /sys/block/sdb/queue/nr_requests</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/01/30 08:53 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15487307529364.html">
+                
+                  <h1>PV&PVC</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>概念</h4>
+
+<ul>
+<li>PVC 可以理解为持久化存储的“接口”，它提供了对某种持久化存储的描述，但不提供具体的实现；而这个持久化存储的实现部分则由 PV 负责完成。</li>
+<li>专门处理持久化存储的控制器，叫作 Volume Controller。</li>
+<li> PersistentVolumeController</li>
+</ul>
+
+<h4>两阶段处理</h4>
+
+<ul>
+<li>为虚拟机挂载远程磁盘的操作 Attach</li>
+<li>磁盘设备格式化并挂载到 Volume 宿主机目录的操作，对应的正是“两阶段处理”的第二个阶段，我们一般称为：Mount</li>
+<li>kubelet 需要作为 client，将远端 NFS 服务器的目录（比如：“/”目录），挂载到 Volume 的宿主机目录上</li>
+<li>区别两阶段</li>
+<li>对于“第一阶段”（Attach），Kubernetes 提供的可用参数是 nodeName，即宿主机的名字。</li>
+<li>而对于“第二阶段”（Mount），Kubernetes 提供的可用参数是 dir，即 Volume 的宿主机目录。</li>
+</ul>
+
+<h4>操作原理</h4>
+
+<ul>
+<li>第一阶段的 Attach（以及 Dettach）操作，是由 Volume Controller 负责维护的，这个控制循环的名字叫作：AttachDetachController。</li>
+<li>第二阶段的 Mount（以及 Unmount）操作，发生在 Pod 对应的宿主机上，是 kubelet 组件的一部分。这个控制循环的名字，叫作VolumeManagerReconciler</li>
+</ul>
+
+<h4>StorageClass</h4>
+
+<ul>
+<li>第一，PV 的属性。比如，存储类型、Volume 的大小等等。</li>
+<li>第二，创建这种 PV 需要用到的存储插件。比如，Ceph 等等。
+<img src="media/15487307529364/e8b2586e4e14eb54adf8ff95c5c18cd9.png" alt="e8b2586e4e14eb54adf8ff95c5c18cd9"/></li>
+</ul>
+
+<h4>PV和PVC绑定关系</h4>
+
+<p><img src="media/15487307529364/15487329114289.jpg" alt=""/><br/>
+<img src="media/15487307529364/15487329471814.jpg" alt=""/></p>
+
+<ul>
+<li>所谓将一个 PV 与 PVC 进行“绑定”，其实就是将这个 PV 对象的名字，填在了 PVC 对象的 spec.volumeName 字段上。</li>
+</ul>
+
+<h4>Local Persistent Volume</h4>
+
+<ul>
+<li>本地磁盘抽象成PV</li>
+<li>保证Pod始终正确的调度到所请求的Local Persistent Volume</li>
+<li>延迟绑定</li>
+<li>正是由于需要使用“延迟绑定”这个特性，Local Persistent Volume 目前还不能支持 Dynamic Provisioning</li>
+</ul>
+
+<h4>ETCD原理</h4>
+
+<ul>
+<li><a href="https://www.infoq.cn/article/etcd-interpretation-application-scenario-implement-principle">https://www.infoq.cn/article/etcd-interpretation-application-scenario-implement-principle</a></li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/01/29 10:59 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15487250739757.html">
+                
+                  <h1>Operator</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>Etcd Operator</h4>
+
+<ul>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/01/29 09:24 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15486425582591.html">
+                
+                  <h1>动态观点看待加锁</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>查询语句中 where 条件是大于号和小于号，这里的“等值查询”又是从哪里来的呢？</h4>
+
+<ul>
+<li>select * from t where id&gt;9 and id&lt;12 order by id desc for update;</li>
+<li>首先这个查询语句的语义是 order by id desc，要拿到满足条件的所有行，优化器必须先找到“第一个 id&lt;12 的值”。</li>
+<li>在执行过程中，通过树搜索的方式定位记录的时候，用的是“等值查询”的方法。</li>
+</ul>
+
+<h4>lock in share mode 和 for update</h4>
+
+<ul>
+<li>当前事务获取共享锁后，可以读写，其他事务是否可以进行读写操作和获取共享锁：可以读，可以获取共享锁，不可以写</li>
+<li>两个事务同时获取某行数据共享锁后，是否可以进行update操作：不可以</li>
+<li>当前事务获取某行数据排他锁后，其他事务是否可以对该行数据进行读写操作和获取共享锁：其他事务可以读，不可以获取共享锁，不可以写</li>
+</ul>
+
+<h4>行锁和索引的关系</h4>
+
+<ul>
+<li>未加索引时，两种行锁情况为（使用表锁）： 
+<ul>
+<li>事务1获取某行数据共享锁，其他事务可以获取不同行数据的共享锁，不可以获取不同行数据的排他锁 </li>
+<li>事务1获取某行数据排他锁，其他事务不可以获取不同行数据的共享锁、排他锁</li>
+</ul></li>
+<li>加索引后，两种行锁为（使用行锁）：</li>
+<li>事务1获取某行数据共享锁，其他事务可以获取不同行数据的排他锁</li>
+<li>事务1获取某行数据排他锁，其他事务可以获取不同行数据的共享锁、排他锁</li>
+</ul>
+
+<h4>死锁</h4>
+
+<ul>
+<li>select id from t where c in(5,20,10) lock in share mode;</li>
+<li>select id from t where c in(5,20,10) order by c desc for update;</li>
+</ul>
+
+<h4>日志锁类型</h4>
+
+<pre class="line-numbers"><code class="language-text">lock_mode X waiting表示next-key lock；
+lock_mode X locks rec but not gap是只有行锁；
+locks gap before rec 只有间隙锁；
+</code></pre>
+
+<h4>索引优化</h4>
+
+<ul>
+<li>lock in share mode 只锁覆盖索引，但是如果是 for update 就不一样了。 执行 for update 时，系统会认为你接下来要更新数据，因此会顺便给主键索引上满足条件的行加上行锁。</li>
+<li>索引上的等值查询，给唯一索引加锁的时候，next-key lock 退化为行锁</li>
+<li>limit 可以减少间隙锁的范围，只要从左到右满足limit就不在向右锁多余的锁</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/01/28 10:29 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -847,8 +994,6 @@ delimiter ;
             <a href="Golang.html"><strong>Golang</strong></a>
         
             <a href="Django.html"><strong>Django</strong></a>
-        
-            <a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html"><strong>C++设计模式实战</strong></a>
         
             <a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html"><strong>深入剖析Kubernetes</strong></a>
         
@@ -927,6 +1072,18 @@ delimiter ;
 	      
 		      
 			      <li class="post">
+			        <a href="15818128782116.html">Singleton</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15748977610569.html">State</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817697569868.html">字符串分割</a>
 			      </li>
 		     
@@ -939,19 +1096,7 @@ delimiter ;
 		  
 		      
 			      <li class="post">
-			        <a href="15814649492497.html">Simple Factory</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814189410719.html">代码的可测试性</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814188057978.html">重构</a>
+			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

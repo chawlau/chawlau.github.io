@@ -87,8 +87,6 @@
         
             <li><a href="Django.html">Django</a></li>
         
-            <li><a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html">C++设计模式实战</a></li>
-        
             <li><a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html">深入剖析Kubernetes</a></li>
         
             <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html">数据结构和算法</a></li>
@@ -172,64 +170,486 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15595632940014.html">
+                <a class="clearlink" href="15635886844365.html">
                 
-                  <h1>虚拟文件系统</h1>
+                  <h1>红黑树</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>文件系统结构</h4>
+                        	<h4>特点</h4>
 
 <ul>
-<li><img src="media/15595632940014/3c506edf93b15341da3db658e9970773.jpg" alt="3c506edf93b15341da3db658e9970773"/></li>
+<li>根节点是黑色的；</li>
+<li>每个叶子节点都是黑色的空节点（NIL），也就是说，叶子节点不存储数据；</li>
+<li>任何相邻的节点都不能同时为红色，也就是说，红色节点是被黑色节点隔开的；</li>
+<li>每个节点，从该节点到达其可达叶子节点的所有路径，都包含相同数目的黑色节点</li>
 </ul>
 
-<h4>挂载文件系统</h4>
+<h4>红黑树的高度</h4>
 
 <ul>
-<li>do_mount-&gt;do_new_mount-&gt;vfs_kern_mount</li>
-<li>mnt_parent 是装载点所在的父文件系统，mnt_mountpoint 是装载点在父文件系统中的 dentry；struct dentry 表示目录，并和目录的 inode 关联；mnt_root 是当前文件系统根目录的 dentry，mnt_sb 是指向超级块的指针</li>
+<li>2logn</li>
+<li>红黑树的高度只比高度平衡的 AVL 树的高度（log2n）仅仅大了一倍</li>
 </ul>
 
-<h4>打开文件</h4>
+<h4>AVL树</h4>
 
 <ul>
-<li>task_struct 中，有一个指针 files，类型是 files_struct</li>
-<li>文件描述符列表的每一项都是一个指向 struct file 的指针，也就是说，每打开一个文件，都会有一个 struct file 对应</li>
-<li>do_sys_open 中调用 do_filp_open，就是创建这个 struct file 结构，然后 fd_install(fd, f) 是将文件描述符和这个结构关联起来
-<img src="media/15595632940014/15596071070507.jpg" alt="" style="width:706px;"/></li>
+<li>AVL 树是一种高度平衡的二叉树，所以查找的效率非常高，但是，有利就有弊，AVL 树为了维持这种高度的平衡，就要付出更多的代价。每次插入、删除都要做调整，就比较复杂、耗时。所以，对于有频繁的插入、删除操作的数据集合，使用 AVL 树的代价就有点高了。</li>
 </ul>
 
-<h4>path_openat</h4>
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/07/20 10:11 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15634168691362.html">
+                
+                  <h1>Epoll实现</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>问题</h4>
 
 <ul>
-<li>get_empty_filp 生成一个 struct file 结构；</li>
-<li>path_init 初始化 nameidata，准备开始节点路径查找；</li>
-<li>link_path_walk 对于路径名逐层进行节点路径查找，这里面有一个大的循环，用“/”分隔逐层处理；</li>
-<li>do_last 获取文件对应的 inode 对象，并且初始化 file 对象。</li>
+<li>双向链表和红黑树的线程安全</li>
+<li>spinlock</li>
+</ul>
+
+<h4>时间</h4>
+
+<ul>
+<li>struct timespec 秒和纳秒</li>
+</ul>
+
+<h4>ET和LT的触发</h4>
+
+<ul>
+<li>epoll_callback</li>
+<li>可读</li>
+<li>可写</li>
+<li>对端关闭</li>
+<li>建立连接</li>
+<li>payload&gt;0 会不停的触发回调 水平触发</li>
+<li>只调用一次</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/07/18 10:27 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15633216428922.html">
+                
+                  <h1>网络包的接收</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>网络协议栈的TCP层</h4>
+
+<ul>
+<li>数据在tcp_data_queue中</li>
+<li>backlog队列 没有当前进程正在读取sock,调用tcp_add_back_log放入队列</li>
+<li>prequeue队列 用户态进程等待读取数据,调用tcp_prequeue放入prequeue队列</li>
+<li>sk_receive_queue队列 如果用户进程没有正在等待读取，或者因为内存原因没有能够拷贝成功</li>
+</ul>
+
+<h4>接收网络包流程</h4>
+
+<ul>
+<li>软中断的处理过程 从硬件中读取网络包</li>
+<li>用户态进程 读取网络包</li>
+<li>内核协议栈 存放网络包</li>
+</ul>
+
+<h4>数据判断</h4>
+
+<ul>
+<li>out_of_order_queue队列，新包和队列中的数据包凑成有序的可以放入sk_receive_queue队列</li>
+<li>end_seq &lt;= rcv_txt 重发ACK</li>
+<li>seq &gt;= rcv_txt + tcp_receive_window</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/07/17 08:00 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15632424892108.html">
+                
+                  <h1>epoll原理</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>集合</h4>
+
+<ul>
+<li>A 红黑树IO</li>
+<li>B 双向链表</li>
+<li>C 所有IO的集合</li>
+<li>A = C(包含B)</li>
+</ul>
+
+<h4>epoll</h4>
+
+<ul>
+<li>epi-&gt;event.events |= event;表示有两个事件</li>
+<li>pthread_cond_signal(&amp;ep-&gt;cond)通知触发epoll_wait向下执行</li>
+<li>0 不挂起</li>
+<li>-1 挂起</li>
+<li>正数 等待时间</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/07/16 10:01 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15628036865918.html">
+                
+                  <h1>Epoll高性能封装</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>Reactor设计模式</h4>
+
+<ul>
+<li>注册待处理事件epoll_ctl</li>
+</ul>
+
+<h4>fd的封装</h4>
+
+<ul>
+<li>fd的下标封装到数组</li>
+</ul>
+
+<h4>状态</h4>
+
+<ul>
+<li>epoll_state</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/07/11 08:08 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15631521777082.html">
+                
+                  <h1>二叉树</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>高度深度和层</h4>
+
+<ul>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/07/15 08:56 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15464129500537.html">
+                
+                  <h1>mysql修改语句</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>加锁规则</h4>
+
+<ul>
+<li>原则 1：加锁的基本单位是 next-key lock</li>
+<li>原则 2：查找过程中访问到的对象才会加锁。</li>
+<li>优化1 索引上的等值查询，给唯一索引加锁的时候，next-key lock 退化为行锁。</li>
+<li>优化2 索引上的等值查询，向右遍历时且最后一个值不满足等值条件的时候，next-key lock 退化为间隙锁。</li>
+<li>bug：唯一索引上的范围查询会访问到不满足条件的第一个值为止。<br/>
+#### 覆盖索引的注意事项</li>
+<li>select选择的字段中含有不在索引中的字段 ，即索引没有覆盖全部的列。</li>
+<li>where条件中不能含有对索引进行like的操作。</li>
+</ul>
+
+<h4>删除数据</h4>
+
+<ul>
+<li>在删除数据的时候尽量加 limit。这样不仅可以控制删除数据的条数，让操作更安全，还可以减小加锁的范围。</li>
+</ul>
+
+<h4>非唯一索引等值锁</h4>
+
+<ul>
+<li>lock in share mode 只锁覆盖索引，但是如果是 for update 就不一样了。 执行 for update 时，系统会认为你接下来要更新数据，因此会顺便给主键索引上满足条件的行加上行锁。</li>
+<li>如果你要用 lock in share mode 来给行加读锁避免数据被更新的话，就必须得绕过覆盖索引的优化，在查询字段中加入索引中不存在的字段。</li>
+</ul>
+
+<h4>next-key lock</h4>
+
+<ul>
+<li> next-key lock具体执行的时候，是要分成间隙锁和行锁两段来执行的</li>
+</ul>
+
+<h4>读提交</h4>
+
+<ul>
+<li>读提交隔离级别下，锁的范围更小，锁的时间更短，这也是不少业务都默认使用读提交隔离级别的原因。</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/01/02 15:09 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15630759404599.html">
+                
+                  <h1>消费者组避免重平衡</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>协调者</h4>
+
+<ul>
+<li>专门为 Consumer Group 服务，负责为 Group 执行 Rebalance 以及提供位移管理和组成员管理等</li>
+</ul>
+
+<h4>确定Coordinator所在broker</h4>
+
+<ul>
+<li>确定由位移主题的哪个分区来保存该 Group 数据：</li>
+<li>找出该分区 Leader 副本所在的 Broker，该 Broker 即为对应的 Coordinator</li>
+</ul>
+
+<h4>rebalance机制</h4>
+
+<ul>
+<li>Rebalance 影响 Consumer 端 TPS。这个之前也反复提到了，这里就不再具体讲了。总之就是，在 Rebalance 期间，Consumer 会停下手头的事情，什么也干不了。</li>
+<li>Rebalance 很慢</li>
+<li>Rebalance 效率不高。当前 Kafka 的设计机制决定了每次 Rebalance 时，Group 下的所有成员都要参与进来，而且通常不会考虑局部性原理，但局部性原理对提升系统性能是特别重要的</li>
+</ul>
+
+<h4>规避</h4>
+
+<ul>
+<li>Consumer实例会被 Coordinator 错误地认为“已停止”从而被“踢出”Group</li>
+<li>session.timout.ms 决定了 Consumer 存活性的时间间隔</li>
+<li>heartbeat.interval.ms 心跳间隔</li>
+<li>max.poll.interval.ms 参数。它限定了 Consumer 端应用程序两次调用 poll 方法的最大时间间隔</li>
+<li>第一类 Rebalance 是因为未能及时发送心跳，导致 Consumer 被“踢出”Group 而引发的</li>
+<li>第二类非必要 Rebalance 是 Consumer 消费时间过长导致的</li>
+<li>Consumer 端的 GC 表现，比如是否出现了频繁的 Full GC 导致的长时间停顿，从而引发了 Rebalance</li>
 </ul>
 
 <h4>总结</h4>
 
-<p><img src="media/15595632940014/8070294bacd74e0ac5ccc5ac88be1bb9.png" alt="8070294bacd74e0ac5ccc5ac88be1bb9"/></p>
+<ul>
+<li>session.timeout.ms</li>
+<li>heartbeat.interval.ms</li>
+<li>max.poll.interval.ms</li>
+<li>GC 参数</li>
+</ul>
 
-<h4>strace 追踪</h4>
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/07/14 11:45 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Kafka.html'>Kafka</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
 
-<pre class="line-numbers"><code class="language-text">execve(&quot;/bin/mount&quot;, [&quot;mount&quot;, &quot;/dev/sdc&quot;, &quot;/test_flash&quot;], [/* 26 vars */]) = 0
-open(&quot;/lib64/libmount.so.1&quot;, O_RDONLY|O_CLOEXEC) = 3
-lstat(&quot;/run/mount/utab&quot;, 0x7ffebb0a8130) = -1 ENOENT (No such file or directory)
-mkdir(&quot;/run/mount&quot;, 0755)               = -1 EEXIST (File exists)
-stat(&quot;/run/mount/utab&quot;, 0x7ffebb0a8020) = -1 ENOENT (No such file or directory)
-stat(&quot;/run/mount&quot;, {st_mode=S_IFDIR|0755, st_size=40, ...}) = 0
-access(&quot;/run/mount&quot;, R_OK|W_OK)         = 0
-stat(&quot;/sbin/mount.ext4&quot;, 0x7ffebb0a6fc0) = -1 ENOENT (No such file or directory)
-stat(&quot;/sbin/fs.d/mount.ext4&quot;, 0x7ffebb0a6fc0) = -1 ENOENT (No such file or directory)
-stat(&quot;/sbin/fs/mount.ext4&quot;, 0x7ffebb0a6fc0) = -1 ENOENT (No such file or directory)
-mount(&quot;/dev/sdc&quot;, &quot;/test_flash&quot;, &quot;ext4&quot;, MS_MGC_VAL, NULL) = 0
-</code></pre>
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15630740568197.html">
+                
+                  <h1>位移主题</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>__consumer_offsets</h4>
 
 <ul>
+<li>将 Consumer 的位移数据作为一条条普通的 Kafka 消息，提交到 <strong>consumer_offsets 中。可以这么说，</strong>consumer_offsets 的主要作用是保存 Kafka 消费者的位移信息</li>
+<li>实现高持久性，还要支持高频的写操作</li>
+</ul>
+
+<h4>位移主题</h4>
+
+<ul>
+<li>group_id,主题名,分区号</li>
+<li>用于保存 Consumer Group 信息的消息</li>
+<li>用于删除 Group 过期位移甚至是删除 Group 的消息</li>
+</ul>
+
+<h4>提交位移</h4>
+
+<ul>
+<li>自动提交位移 只要 Consumer 一直启动着，它就会无限期地向位移主题写入消息，会撑爆磁盘</li>
+<li>手动提交位移</li>
+</ul>
+
+<h4>删除位移主题中的消息</h4>
+
+<ul>
+<li>Compaction</li>
+<li>后台线程Log  Cleaner定期巡检待 Compact 的主题，看看是否存在满足条件的可删除数据</li>
 <li></li>
 </ul>
 
@@ -240,10 +660,10 @@ mount(&quot;/dev/sdc&quot;, &quot;/test_flash&quot;, &quot;ext4&quot;, MS_MGC_VA
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/06/03 20:01 下午</span>
+                    <span class="date">2019/07/14 11:14 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
+          					    <span class="posted-in"><a href='Kafka.html'>Kafka</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -257,170 +677,43 @@ mount(&quot;/dev/sdc&quot;, &quot;/test_flash&quot;, &quot;ext4&quot;, MS_MGC_VA
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15594450051359.html">
+                <a class="clearlink" href="15630721013183.html">
                 
-                  <h1>编译和连接</h1>
+                  <h1>消费者组</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>预处理</h4>
+                        	<h4>消息引擎模型</h4>
 
 <ul>
-<li>展开宏定义</li>
-<li>处理预编译命令</li>
-<li>处理#include</li>
-<li>删除注释</li>
-<li>添加行号和文件标识符</li>
-<li>保留#prama</li>
+<li>点对点模型 消息一旦被消费，就会从队列中被删除，而且只能被下游的一个 Consumer 消费</li>
+<li>发布 / 订阅模型倒是允许消息被多个 Consumer 消费，但它的问题也是伸缩性不高，因为每个订阅者都必须要订阅主题的所有分区</li>
 </ul>
 
-<h4>连接过程</h4>
+<h4>Consumer Group</h4>
 
 <ul>
-<li>地址和空间分配</li>
-<li>符号决议</li>
-<li>重定位</li>
+<li>共享一个公共的 ID，这个 ID 被称为 Group ID。组内的所有消费者协调在一起来消费订阅主题（Subscribed Topics）的所有分区（Partition）。当然，每个分区只能由同一个消费者组内的一个 Consumer 实例来消费</li>
+<li>Consumer Group 下可以有一个或多个 Consumer 实例。这里的实例可以是一个单独的进程，也可以是同一进程下的线程。在实际场景中，使用进程更为常见一些。</li>
+<li>Group ID 是一个字符串，在一个 Kafka 集群中，它标识唯一的一个 Consumer Group。</li>
+<li>Consumer Group 下所有实例订阅的主题的单个分区，只能分配给组内的某个 Consumer 实例消费。这个分区当然也可以被其他的 Group 消费。</li>
+<li>Consumer 实例的数量应该等于该 Group 订阅主题的分区总数</li>
 </ul>
 
-<h4>ELF</h4>
+<h4>rebalance</h4>
 
 <ul>
-<li>可重定位的目标文件</li>
-<li>可执行文件</li>
-<li>共享目标文件</li>
+<li>组成员数发生变更</li>
+<li>订阅主题数发生变更</li>
+<li>订阅主题的分区数发生变更</li>
 </ul>
 
-<h4>查看目标文件的格式</h4>
+<h4>rebalance不足</h4>
 
 <ul>
-<li>objdump -h simple.o</li>
-<li>size simple.o 查看各个段大小</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">SYMBOL TABLE:
-0000000000000000 l    df *ABS*  0000000000000000 simple.c
-0000000000000000 l    d  .text  0000000000000000 .text
-0000000000000000 l    d  .data  0000000000000000 .data
-0000000000000000 l    d  .bss   0000000000000000 .bss
-0000000000000000 l    d  .rodata    0000000000000000 .rodata
-0000000000000000 l     O .data  0000000000000004 static_var.2686
-0000000000000000 l     O .bss   0000000000000004 static_var2.2687
-0000000000000000 l    d  .note.GNU-stack    0000000000000000 .note.GNU-stack
-0000000000000000 l    d  .eh_frame  0000000000000000 .eh_frame
-0000000000000000 l    d  .comment   0000000000000000 .comment
-0000000000000000 g     F .text  0000000000000021 func1
-0000000000000000         *UND*  0000000000000000 printf
-0000000000000021 g     F .text  0000000000000030 main
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/06/02 11:10 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E7%A8%8B%E5%BA%8F%E5%91%98%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB.html'>程序员的自我修养</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15593496513250.html">
-                
-                  <h1>硬件文件系统</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>Inode与块</h4>
-
-<ul>
-<li>硬盘分成相同大小的单元，我们称为块（Block）。一块的大小是扇区大小的整数倍，默认是 4K</li>
-<li>元数据需要Inode来存放</li>
-<li>i_atime 访问</li>
-<li>i_ctime 修改inode的时间 用户和权限</li>
-<li>i_mtime 更改文件内容的时间,修改数据</li>
-</ul>
-
-<h4>EXT4</h4>
-
-<ul>
-<li>前 12 项直接保存了块的位置，也就是说，我们可以通过 i_block[0-11]，直接得到保存文件内容的块</li>
-<li>i_block[12]一级间接块, i_block[13]二级间接块, i_block[14]三级间接块</li>
-<li><img src="media/15593496513250/73349c0fab1a92d4e1ae0c684cfe06e2.jpeg" alt="73349c0fab1a92d4e1ae0c684cfe06e2"/></li>
-</ul>
-
-<h4>Extents</h4>
-
-<ul>
-<li>解决多级间接块访问速度过慢的问题</li>
-<li>存放128M的连续块</li>
-<li>采用树状结构</li>
-<li><img src="media/15593496513250/b8f184696be8d37ad6f2e2a4f12d002a.jpeg" alt="b8f184696be8d37ad6f2e2a4f12d002a"/></li>
-</ul>
-
-<h4>inode 位图和块位图</h4>
-
-<ul>
-<li>用一个块中的位表示一个块</li>
-<li>用一个块中的位表示一个inode节点</li>
-<li>创建一个文件流程</li>
-<li>do_sys_open-&gt;do_file_open-&gt;path_openat-&gt;do_last-&gt;lookup_open</li>
-<li>ext4_create-&gt;ext4_new_inode_start_handle-&gt;__ext4_new_inode</li>
-<li>创建新的inode</li>
-</ul>
-
-<h4>文件系统的格式</h4>
-
-<h5>一个块组组成</h5>
-
-<ul>
-<li>ext4_group_desc</li>
-<li>inode位图 bg_inode_bitmap_lo</li>
-<li>块位图 bg_block_bitmap_lo</li>
-<li>inode列表 bg_inode_table_lo</li>
-</ul>
-
-<h4>超级块</h4>
-
-<ul>
-<li>ext4_super_block</li>
-<li><img src="media/15593496513250/e3718f0af6a2523a43606a0c4003631b.jpeg" alt="e3718f0af6a2523a43606a0c4003631b"/></li>
-</ul>
-
-<h4>Meta Block Groups</h4>
-
-<ul>
-<li>将一个块组切分多个组</li>
-<li><img src="media/15593496513250/b0bf4690882253a70705acc7368983b9.jpeg" alt="b0bf4690882253a70705acc7368983b9"/></li>
-</ul>
-
-<h4>目录的存储格式</h4>
-
-<ul>
-<li>查找一个目录下面的文件名，可以通过名称取哈希</li>
-<li> <img src="media/15593496513250/3ea2ad5704f20538d9c911b02f42086d-2.jpeg" alt="3ea2ad5704f20538d9c911b02f42086d-2"/></li>
-</ul>
-
-<h4>软硬连接的存储格式</h4>
-
-<ul>
-<li>硬链接与原始文件共用一个 inode 的，但是 inode 是不跨文件系统的，每个文件系统都有自己的 inode 列表，因而硬链接是没有办法跨文件系统的</li>
-<li>软链接不同，软链接相当于重新创建了一个文件。这个文件也有独立的 inode，只不过打开这个文件看里面内容的时候，内容指向另外的一个文件</li>
-<li><img src="media/15593496513250/45a6cfdd9d45e30dc2f38f0d2572be7b.jpeg" alt="45a6cfdd9d45e30dc2f38f0d2572be7b"/></li>
+<li>STW 期间，所有应用线程都会停止工作，表现为整个应用程序僵在那边一动不动。Rebalance 过程也和这个类似，在 Rebalance 过程中，所有 Consumer 实例都会停止消费</li>
+<li> Rebalance 的设计是所有 Consumer 实例共同参与，全部重新分配所有分区。其实更高效的做法是尽量减少分配方案的变动。</li>
 </ul>
 
                         
@@ -430,552 +723,10 @@ mount(&quot;/dev/sdc&quot;, &quot;/test_flash&quot;, &quot;ext4&quot;, MS_MGC_VA
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/06/01 08:40 上午</span>
+                    <span class="date">2019/07/14 10:41 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15587428626726.html">
-                
-                  <h1>用户态内存映射</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>内存映射</h4>
-
-<ul>
-<li>物理内存和虚拟内存之间的映射</li>
-<li>文件中的内容映射到虚拟内存空间</li>
-<li><img src="media/15587428626726/f0dcb83fcaa4f185a8e36c9d28f12345.jpg" alt="f0dcb83fcaa4f185a8e36c9d28f12345"/></li>
-</ul>
-
-<h4>内存映射文件流程</h4>
-
-<ul>
-<li>通过文件描述符fd获取struct file</li>
-<li>调用 get_unmapped_area 找到一个没有映射的区域；</li>
-<li>调用 mmap_region 映射这个区域</li>
-</ul>
-
-<h5>匿名映射</h5>
-
-<ul>
-<li>调用 mm_struct 里面的get_unmapped_area 函数</li>
-<li>查找vm_area_struct红黑树的位置</li>
-</ul>
-
-<h5>文件映射</h5>
-
-<ul>
-<li>struct file-&gt;file_operations-&gt;thp_get_unmapped_area</li>
-<li>get_unmapped_area</li>
-</ul>
-
-<h4>映射内存区域</h4>
-
-<ul>
-<li>找到前一个虚拟内存区域的vm_area_struct</li>
-<li>如果不能合并，创建新的vm_area_struct加入队列</li>
-<li>通过__vma_link_file建立文件到内存的映射关系</li>
-<li>struct_file的vm_area_struct挂在i_mmap的红黑树上</li>
-</ul>
-
-<h4>用户态缺页异常</h4>
-
-<ul>
-<li>访问虚拟内存没有对应的物理页面</li>
-<li>调用handle_mm_fault映射区域</li>
-<li>通过五级进程页表PGD-&gt;PUD-&gt;PMD-&gt;PTE-&gt;Offset</li>
-<li>页表项 task_struct-&gt;mm_struct-&gt;pgd</li>
-<li>进程的虚拟地址空间分为用户态和内核态两部分</li>
-<li>页表也分为用户地址空间的页表和内核页表</li>
-<li>用户地址空间需要等到进程在CPU上运行，对内存访问的时候</li>
-</ul>
-
-<h4>访问物理内存</h4>
-
-<ul>
-<li>context_switch-&gt;switch_mm_irqs_off-&gt;load_new_mm_cr3</li>
-<li><img src="media/15587428626726/15587453477914.jpg" alt="" style="width:649px;"/></li>
-</ul>
-
-<h4>映射</h4>
-
-<ul>
-<li>匿名页面 分配页表项-&gt;分配页</li>
-<li>文件映射  filemap_fault  kmap_atomic，将物理内存映射到内核的虚拟地址空间，得到内核中的地址 kaddr</li>
-<li>swap page  kmap_atomic 映射</li>
-</ul>
-
-<h4>总结</h4>
-
-<ul>
-<li><img src="media/15587428626726/f0dcb83fcaa4f185a8e36c9d28f12345.jpg" alt="f0dcb83fcaa4f185a8e36c9d28f12345"/></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/05/25 08:07 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15585664053810.html">
-                
-                  <h1>Slub分配器</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>kmem_cache_alloc_node</h4>
-
-<ul>
-<li>创建 task_struct 的时候，我们不用到内存里面去分配，先在缓存里面看看有没有直接可用的，这就是kmem_cache_alloc_node的作用</li>
-<li>进程结束，task_struct 也不用直接被销毁，而是放回到缓存中，这就是kmem_cache_free的作用</li>
-</ul>
-
-<h4>kmem_cache</h4>
-
-<pre class="line-numbers"><code class="language-text">struct kmem_cache {
-   struct kmem_cache_cpu __percpu *cpu_slab;
-   struct kmem_cache_node *node[MAX_NUMNODES];
-}
-</code></pre>
-
-<h4>kmem_cache_cpu</h4>
-
-<ul>
-<li>分配缓存的快速通道</li>
-<li></li>
-</ul>
-
-<h4>kmem_cache_node</h4>
-
-<ul>
-<li>分配缓存的普通通道</li>
-</ul>
-
-<h4>内存分配</h4>
-
-<ul>
-<li><a href="https://www.cnblogs.com/luoahong/p/10907734.html">https://www.cnblogs.com/luoahong/p/10907734.html</a></li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/05/23 07:06 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15583995782246.html">
-                
-                  <h1>进程空间管理</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>用户态和内核态</h4>
-
-<ul>
-<li><img src="media/15583995782246/89723dc967b59f6f49419082f6ab7659.jpg" alt="89723dc967b59f6f49419082f6ab7659"/></li>
-</ul>
-
-<h4>进程空间部署</h4>
-
-<ul>
-<li><img src="media/15583995782246/f83b8d49b4e74c0e255b5735044c1eb1.jpg" alt="f83b8d49b4e74c0e255b5735044c1eb1"/></li>
-</ul>
-
-<h5>各区域的位置信息</h5>
-
-<ul>
-<li>total_vm 是总共映射的页的数目。</li>
-<li>locked_vm 就是被锁定不能换出，pinned_vm 是不能换出，也不能移动。</li>
-<li>data_vm 是存放数据的页的数目，exec_vm 是存放可执行文件的页的数目，stack_vm 是栈所占的页的数目。</li>
-<li>start_code 和 end_code 表示可执行代码的开始和结束位置，start_data 和 end_data 表示已初始化数据的开始位置和结束位置。</li>
-<li>start_brk 是堆的起始位置，brk 是堆当前的结束位置。前面咱们讲过 malloc 申请一小块内存的话，就是通过改变 brk 位置实现的。</li>
-<li>start_stack 是栈的起始位置，栈的结束位置在寄存器的栈顶指针中。</li>
-<li>arg_start 和 arg_end 是参数列表的位置， env_start 和 env_end 是环境变量的位置。它们都位于栈中最高地址的地方。</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">unsigned long mmap_base;    /* base of mmap area */
-unsigned long total_vm;     /* Total pages mapped */
-unsigned long locked_vm;    /* Pages that have PG_mlocked set */
-unsigned long pinned_vm;    /* Refcount permanently increased */
-unsigned long data_vm;      /* VM_WRITE &amp; ~VM_SHARED &amp; ~VM_STACK */
-unsigned long exec_vm;      /* VM_EXEC &amp; ~VM_WRITE &amp; ~VM_STACK */
-unsigned long stack_vm;     /* VM_STACK */
-unsigned long start_code, end_code, start_data, end_data;
-unsigned long start_brk, brk, start_stack;
-unsigned long arg_start, arg_end, env_start, env_end;
-</code></pre>
-
-<h5>各区域的属性信息</h5>
-
-<ul>
-<li>每一块区域使用vm_area_struct来描述信息</li>
-<li>vm_area_struct来描述位置信息</li>
-<li>解析ELF</li>
-<li>建立内存映射</li>
-</ul>
-
-<h6>load_elf_binary</h6>
-
-<ul>
-<li>调用 setup_new_exec，设置内存映射区 mmap_base；</li>
-<li>调用 setup_arg_pages，设置栈的 vm_area_struct，这里面设置了 mm-&gt;arg_start 是指向栈底的，current-&gt;mm-&gt;start_stack 就是栈底；</li>
-<li>elf_map 会将 ELF 文件中的代码部分映射到内存中来；</li>
-<li>set_brk 设置了堆的 vm_area_struct，这里面设置了 current-&gt;mm-&gt;start_brk = current-&gt;mm-&gt;brk，也即堆里面还是空的；</li>
-<li>load_elf_interp 将依赖的 so 映射到内存中的内存映射区域。</li>
-<li>内存映射图
-<img src="media/15583995782246/7af58012466c7d006511a7e16143314c.jpeg" alt="7af58012466c7d006511a7e16143314"/></li>
-</ul>
-
-<h5>修改映射</h5>
-
-<ul>
-<li>函数的调用</li>
-<li>malloc申请堆内的空间 brk 或者 mmap</li>
-</ul>
-
-<h4>堆内存分配</h4>
-
-<ul>
-<li>sys_brk的新堆顶地址和旧的堆顶地址进行合并</li>
-<li>考虑需要不需要分配页的问题</li>
-<li>如果是释放，直接释放</li>
-<li>如果是分配堆内存 当前的堆顶和下一个 vm_area_struct 之间还能不能分配一个完整的页</li>
-<li>do_brk 进一步分配堆空间，从旧堆顶开始，分配计算出的新旧堆顶之间的页数。</li>
-</ul>
-
-<h4>伙伴系统页的分配</h4>
-
-<ul>
-<li>把所有的空闲页分组为 11 个页块链表，每个块链表分别包含很多个大小的页块，有 1、2、4、8、16、32、64、128、256、512 和 1024 个连续页的页块</li>
-<li>在一个循环中先看当前节点的 zone。如果找不到空闲页，则再看备用节点的 zone</li>
-<li>先去free_area找与当前2<sup>order匹配的队列</sup></li>
-<li>找不到去更大的2<sup>order队列中找，然后把多余的页面放入其他页面链表</sup></li>
-</ul>
-
-<h4>物理内存的总结</h4>
-
-<ul>
-<li><img src="media/15583995782246/3fa8123990e5ae2c86859f70a8351f4f.jpeg" alt="3fa8123990e5ae2c86859f70a8351f4f"/></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/05/21 08:46 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15583967124783.html">
-                
-                  <h1>动态连接</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>解决方案</h4>
-
-<ul>
-<li>PLT 和 GOT，动态链接的解决方案</li>
-<li>程序链接表（Procedure Link Table）</li>
-<li>全局偏移表（GOT，Global Offset Table）</li>
-<li>共享库的代码部分的物理内存是共享的，但是数据部分是各个动态链接它的应用程序里面各加载一份的</li>
-<li>PLT--&gt;GOT</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/05/21 07:58 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86.html'>计算机组成原理</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15583085610757.html">
-                
-                  <h1>物理内存分配</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>经典内存使用方式</h4>
-
-<ul>
-<li><img src="media/15583085610757/fa6c2b6166d02ac37637d7da4e4b579b.jpeg" alt="fa6c2b6166d02ac37637d7da4e4b579b"/></li>
-</ul>
-
-<h4>SMP和NUMA模式</h4>
-
-<ul>
-<li><img src="media/15583085610757/8f158f58dda94ec04b26200073e15449.jpeg" alt="8f158f58dda94ec04b26200073e15449"/></li>
-</ul>
-
-<h4>NUMA模型</h4>
-
-<ul>
-<li>内存被分成了多个节点，每个节点再被分成一个一个的页面。由于页需要全局唯一定位，页还是需要有全局唯一的页号的。但是由于物理内存不是连起来的了，页号也就不再连续了。于是内存模型就变成了非连续内存模型</li>
-<li>CPU访问内存不用过总线</li>
-</ul>
-
-<h4>节点</h4>
-
-<ul>
-<li>pglist_data</li>
-<li>每一个节点都有自己的 ID：node_id；</li>
-<li>node_mem_map 就是这个节点的 struct page 数组，用于描述这个节点里面的所有的页；</li>
-<li>node_start_pfn 是这个节点的起始页号；</li>
-<li>node_spanned_pages 是这个节点中包含不连续的物理内存地址的页面数；</li>
-<li>node_present_pages 是真正可用的物理页面的数目。</li>
-</ul>
-
-<h4>DMA机制</h4>
-
-<ul>
-<li>DMA 是这样一种机制：要把外设的数据读入内存或把内存的数据传送到外设，原来都要通过 CPU 控制完成，但是这会占用 CPU，影响 CPU 处理其他事情，所以有了 DMA 模式。CPU 只需向 DMA 控制器下达指令，让 DMA 控制器来处理数据的传送，数据传送完毕再把信息反馈给 CPU，这样就可以解放 CPU。</li>
-</ul>
-
-<h4>区域</h4>
-
-<ul>
-<li>spanned_pages = zone_end_pfn - zone_start_pfn，也即 spanned_pages 指的是不管中间有没有物理内存空洞，反正就是最后的页号减去起始的页号。</li>
-<li>present_pages = spanned_pages - absent_pages(pages in holes)，也即 present_pages 是这个 zone 在物理内存中真实存在的所有 page 数目。</li>
-<li>managed_pages = present_pages - reserved_pages，也即 managed_pages 是这个 zone 被伙伴系统管理的所有的 page 数目，</li>
-<li>per_cpu_pageset</li>
-</ul>
-
-<h4>页面</h4>
-
-<ul>
-<li>匿名页  一整页的内存，或者直接和虚拟地址空间建立映射关系，我们把这种称为匿名页（Anonymous Page）</li>
-<li>文件页 关联一个文件，然后再和虚拟地址空间建立映射关系，这样的文件，我们称为内存映射文件（Memory-mapped File）。</li>
-</ul>
-
-<h4>匿名页</h4>
-
-<ul>
-<li>struct address_space *mapping 就是用于内存映射，如果是匿名页，最低位为 1；如果是映射文件，最低位为 0；</li>
-<li>pgoff_t index 是在映射区的偏移量；</li>
-<li>atomic_t _mapcount，每个进程都有自己的页表，这里指有多少个页表项指向了这个页；</li>
-<li>struct list_head lru 表示这一页应该在一个链表上，例如这个页面被换出，就在换出页的链表中；</li>
-<li>compound 相关的变量用于复合页（Compound Page），就是将物理上连续的两个或多个页看成一个独立的大页</li>
-</ul>
-
-<h4>文件页</h4>
-
-<ul>
-<li>分配小块内存，存储进程描述结构的对象</li>
-<li>slub allocator</li>
-</ul>
-
-<h4>页的分配</h4>
-
-<ul>
-<li>分配大内存使用伙伴系统</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/05/20 07:29 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15578775068733.html">
-                
-                  <h1>程序装载</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>装载器的需求</h4>
-
-<ul>
-<li>可执行程序加载后占用的内存空间应该是连续的</li>
-<li>我们需要同时加载很多个程序，并且不能让程序自己规定在内存中加载的位置</li>
-</ul>
-
-<h4>课外阅读</h4>
-
-<ul>
-<li>程序员的自我修养 1 4 6章</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/05/15 07:45 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86.html'>计算机组成原理</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15578769474390.html">
-                
-                  <h1>内存管理</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>管理角度</h4>
-
-<ul>
-<li><p>第一，物理内存的管理，相当于会议室管理员管理会议室。</p></li>
-<li><p>第二，虚拟地址的管理，也即在项目组的视角，会议室的虚拟地址应该如何组织。</p></li>
-<li><p>第三，虚拟地址和物理地址如何映射，也即会议室管理员如果管理映射表</p></li>
-</ul>
-
-<h4>内存栈空间</h4>
-
-<ul>
-<li>Text Segment</li>
-<li>Data Segment</li>
-<li>BSS Segment</li>
-</ul>
-
-<h4>内存分段机制</h4>
-
-<p><img src="media/15578769474390/9697ae17b9f561e78514890f9d58d4eb.jpg" alt="9697ae17b9f561e78514890f9d58d4eb"/></p>
-
-<h4>内存分页机制</h4>
-
-<ul>
-<li>32位系统</li>
-<li><img src="media/15578769474390/b6960eb0a7eea008d33f8e0c4facc8b8.jpg" alt="b6960eb0a7eea008d33f8e0c4facc8b8"/></li>
-<li>64位系统
-<img src="media/15578769474390/42eff3e7574ac8ce2501210e25cd2c0b.jpg" alt="42eff3e7574ac8ce2501210e25cd2c0b"/></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/05/15 07:35 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
+          					    <span class="posted-in"><a href='Kafka.html'>Kafka</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -1049,8 +800,6 @@ unsigned long arg_start, arg_end, env_start, env_end;
             <a href="Golang.html"><strong>Golang</strong></a>
         
             <a href="Django.html"><strong>Django</strong></a>
-        
-            <a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html"><strong>C++设计模式实战</strong></a>
         
             <a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html"><strong>深入剖析Kubernetes</strong></a>
         
@@ -1129,6 +878,18 @@ unsigned long arg_start, arg_end, env_start, env_end;
 	      
 		      
 			      <li class="post">
+			        <a href="15818128782116.html">Singleton</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15748977610569.html">State</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817697569868.html">字符串分割</a>
 			      </li>
 		     
@@ -1141,19 +902,7 @@ unsigned long arg_start, arg_end, env_start, env_end;
 		  
 		      
 			      <li class="post">
-			        <a href="15814649492497.html">Simple Factory</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814189410719.html">代码的可测试性</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814188057978.html">重构</a>
+			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

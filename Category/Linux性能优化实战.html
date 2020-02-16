@@ -87,8 +87,6 @@
         
             <li><a href="Django.html">Django</a></li>
         
-            <li><a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html">C++设计模式实战</a></li>
-        
             <li><a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html">深入剖析Kubernetes</a></li>
         
             <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html">数据结构和算法</a></li>
@@ -171,6 +169,150 @@
 	<div class="large-8 medium-8 columns">
 		<div class="markdown-body home-categories">
 		
+			<div class="article">
+                <a class="clearlink" href="15456164768088.html">
+                
+                  <h1>Linux内存工作机制</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>内存映射</h4>
+
+<ul>
+<li>每个进程都有很大的地址空间</li>
+<li>并不是所有的虚拟内存都会分配物理内存，只有那些实际使用的虚拟内存才分配物理内存，并且分配后的物理内存，是通过内存映射来管理的。</li>
+<li>将虚拟内存地址映射到物理内存地址。为了完成内存映射，内核为每个进程都维护了一张页表，记录虚拟地址与物理地址的映射关系</li>
+</ul>
+
+<h4>缺页异常</h4>
+
+<ul>
+<li> 进程访问的虚拟地址在页表中查不到时，系统会产生一个缺页异常，进入内核空间分配物理内存、更新进程页表，最后再返回用户空间，恢复进程的运行</li>
+</ul>
+
+<h4>解决页表过多</h4>
+
+<ul>
+<li>多级页表</li>
+<li>大页面</li>
+</ul>
+
+<h4>虚拟内存空间</h4>
+
+<p><img src="media/15456164768088/15456168238060.jpg" alt=""/></p>
+
+<ul>
+<li>文件映射包括动态库，共享内存</li>
+</ul>
+
+<h4>malloc内存</h4>
+
+<ul>
+<li>&gt;128K 使用mmap mmap() 方式分配的内存，会在释放时直接归还系统，所以每次 mmap 都会发生缺页异常。在内存工作繁忙时，频繁的内存分配会导致大量的缺页异常，使内核的管理负担增大。这也是 malloc 只对大块内存使用 mmap 的原因。</li>
+<li>&lt;128K 使用brk brk() 方式的缓存，可以减少缺页异常的发生，提高内存访问效率。不过，由于这些内存没有归还系统，在内存工作繁忙时，频繁的内存分配和释放会造成内存碎片。</li>
+<li>slab是内核空间的，只用来管理内核中的小块内存</li>
+</ul>
+
+<h4>管理小内存</h4>
+
+<ul>
+<li>slab管理器管理小内存</li>
+</ul>
+
+<h4>系统回收机制</h4>
+
+<ul>
+<li>回收缓存，比如使用 LRU（Least Recently Used）算法，回收最近使用最少的内存页面；</li>
+<li>回收不常访问的内存，把不常用的内存通过交换分区直接写到磁盘中；</li>
+<li>杀死进程，内存紧张时系统还会通过 OOM（Out of Memory），直接杀掉占用大量内存的进程。oom_adj的范围-17~15</li>
+</ul>
+
+<h4>top</h4>
+
+<ul>
+<li>VIRT 进程虚拟内存的大小，只要是进程申请过的内存，即便还没有真正分配物理内存，也会计算在内。</li>
+<li>RES 是常驻内存的大小，也就是进程实际使用的物理内存大小</li>
+<li>SHR 是共享内存的大小，比如与其他进程共同使用的共享内存、加载的动态链接库以及程序的代码段等。</li>
+<li>共享内存 SHR 并不一定是共享的，比方说，程序的代码段、非共享的动态链接库，也都算在 SHR 里。当然，SHR 也包括了进程间真正共享的内存。所以在计算多个进程的内存使用时，不要把所有进程的 SHR 直接相加得出结果</li>
+</ul>
+
+<h4>查看系统内存情况</h4>
+
+<ul>
+<li>cat /proc/[pid]/status和pmap -x pid</li>
+</ul>
+
+<h4>拓展阅读</h4>
+
+<ul>
+<li><a href="https://blog.holbertonschool.com/hack-the-virtual-memory-malloc-the-heap-the-program-break/">https://blog.holbertonschool.com/hack-the-virtual-memory-malloc-the-heap-the-program-break/</a></li>
+</ul>
+
+<h4>内存分配</h4>
+
+<ul>
+<li>调用c标准库的都是用户空间的调用，用户空间的内存分配都是基于buddy算法（伙伴算法），并不涉及slab</li>
+<li>brk()方式之所以会产生内存碎片，是由于brk分配的内存是推_edata指针，从堆的低地址向高地址推进。这种情况下，如果高地址的内存不释放，低地址的内存是得不到释放的</li>
+<li>mmap()方式分配的内存，是在堆与栈之间的空闲区域分配虚拟内存，直接拿到的是内存地址，可以直接操作内存的释放</li>
+<li>上述的都是在用户空间发生的行为，只有在内核空间，内核调用kmalloc去分配内存的时候，才会涉及到slab</li>
+</ul>
+
+<h4>缺页异常</h4>
+
+<ul>
+<li>缺页异常是内存分配必要步骤：陷入内核态分配内存并完成内存映射的过程</li>
+<li>可以直接从物理内存中分配时，被称为次缺页异常。</li>
+<li>需要磁盘 I/O 介入（比如 Swap）时，被称为主缺页异常。</li>
+</ul>
+
+<h4>oom_score</h4>
+
+<ul>
+<li>一个进程消耗的内存越大，oom_score 就越大；</li>
+<li>一个进程运行占用的 CPU 越多，oom_score 就越小。</li>
+<li>通过oom_adj来调整大小</li>
+</ul>
+
+<h4>缓存</h4>
+
+<ul>
+<li>cachestat 系统缓存和缓冲区的命中率</li>
+<li>cachetop 进程缓存和缓冲区的命中率</li>
+</ul>
+
+<h4>内存选项</h4>
+
+<ul>
+<li>RSS (Resident set size），使用 top 命令可以查询到，是最常用的内存指标，表示进程占用的物理内存大小。但是，将各进程的 RSS 值相加，通常会超出整个系统的内存消耗，这是因为 RSS 中包含了各进程间共享的内存。</li>
+<li>PSS (Proportional set size）所有使用某共享库的程序均分该共享库占用的内存时。显然所有进程的 PSS 之和就是系统的内存使用量。它会更准确一些，它将共享内存的大小进行平均后，再分推到各进程上去。</li>
+<li>USS (Unique set size）进程独自占用的内存，它只计算了进程独自占用的内存大小，</li>
+<li>smem -k  -s uss</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/12/24 09:54 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
 			<div class="article">
                 <a class="clearlink" href="15700959965580.html">
                 
@@ -401,6 +543,198 @@ echo 32678 &gt; /sys/class/net/ens33/queues/rx-0/rps_flow_cnt
               </div><!-- article -->
         
 			<div class="article">
+                <a class="clearlink" href="15486383451378.html">
+                
+                  <h1>Redis延迟高</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>strace</h4>
+
+<ul>
+<li>strace -f -T -tt -p pid</li>
+<li>-f 表示跟踪子进程和子线程，-T 表示显示系统调用的时长，-tt 表示显示跟踪时间</li>
+<li>PID=$(docker inspect --format {{.State.Pid}} app)</li>
+</ul>
+
+<h4>nsenter</h4>
+
+<ul>
+<li>nsenter --target $PID --net -- lsof -i</li>
+<li>进程iowait高，磁盘iowait不高，说明是单个进程使用了一些blocking的磁盘打开方式，比如每次都fsync</li>
+<li>strace -f -e指定系统调用</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/01/28 09:19 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15500241034354.html">
+                
+                  <h1>评估系统的网络性能</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>性能测试</h4>
+
+<ul>
+<li>带宽</li>
+<li>吞吐量</li>
+<li>延迟</li>
+<li>PPS</li>
+<li></li>
+</ul>
+
+<h4>各协议层的性能</h4>
+
+<ul>
+<li>web应用层 测试http/https</li>
+<li>服务器 tcp/udp</li>
+<li>交换机和路由器 PPS 网络层的转发性能</li>
+</ul>
+
+<h5>网络接口层</h5>
+
+<ul>
+<li>pktgen测试PPS</li>
+</ul>
+
+<h4>TCP和UDP</h4>
+
+<ul>
+<li>iperf</li>
+<li>netperf</li>
+</ul>
+
+<h4>http</h4>
+
+<ul>
+<li>ab</li>
+<li>webbench</li>
+</ul>
+
+<h4>应用负载请求</h4>
+
+<ul>
+<li>wrk</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/02/13 10:15 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15481479427093.html">
+                
+                  <h1>IO延迟很高</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>追踪流程</h4>
+
+<ul>
+<li>top</li>
+<li>iowait</li>
+<li>iostat -d -x 1</li>
+<li>pidstat -d 1</li>
+<li>strace -fp pid</li>
+</ul>
+
+<h4>filetop</h4>
+
+<ul>
+<li>主要跟踪内核中文件的读写情况，并输出线程 ID（TID）、读写大小、读写类型以及文件名称。</li>
+<li>eBPF内核追踪的原理</li>
+</ul>
+
+<h4>opensnoop</h4>
+
+<ul>
+<li>动态追踪内核中的open系统调用</li>
+</ul>
+
+<h4>追踪流程</h4>
+
+<ul>
+<li>top</li>
+<li>iostat</li>
+<li>pidstat</li>
+<li>strace</li>
+<li>lsof</li>
+<li>filetop</li>
+<li>opensnoop</li>
+<li>通过文件找到正在操作的数据库和表</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/01/22 17:05 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15576250906291.html">
                 
                   <h1>Swap内存</h1>
@@ -501,238 +835,161 @@ echo 32678 &gt; /sys/class/net/ens33/queues/rx-0/rps_flow_cnt
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15548549378624.html">
+                <a class="clearlink" href="15441451175680.html">
                 
-                  <h1>容器性能分析</h1>
+                  <h1>不可中断进程和僵尸进程</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>容器冷启动性能分析</h4>
+                        	<h4>概念</h4>
 
 <ul>
-<li>ServerLess服务启动流程</li>
-<li>事件触发（比如收到新的 HTTP 调用请求）</li>
-<li>资源调度</li>
-<li>镜像拉取 缓存热点镜像</li>
-<li>网络配置 网络资源预分配加速</li>
-<li>启动应用 复用预先创建好的容器</li>
+<li>不可中断状态，一般表示进程正在跟硬件交互，为了保护进程数据与硬件一致，系统不允许其他进程或中断打断该进程。</li>
+<li>僵尸进程表示进程已经退出，但它的父进程没有回收该进程所占用的资源</li>
 </ul>
 
-<h4>CPU火焰图和内存火焰图的区别</h4>
+<h4>进程状态</h4>
 
 <ul>
-<li>对 CPU 火焰图来说，采集的数据主要是消耗 CPU 的函数；</li>
-<li>而对内存火焰图来说，采集的数据主要是内存分配、释放、换页等内存管理函数。</li>
+<li>R 是 Running 或 Runnable 的缩写，表示进程在 CPU 的就绪队列中，正在运行或者正在等待运行。</li>
+<li>D 是 Disk Sleep 的缩写，也就是不可中断状态睡眠（Uninterruptible Sleep），一般表示进程正在跟硬件交互，并且交互过程不允许被其他进程或中断打断。</li>
+<li>Z 是 Zombie 的缩写，如果你玩过“植物大战僵尸”这款游戏，应该知道它的意思。它表示僵尸进程，也就是进程实际上已经结束了，但是父进程还没有回收它的资源（比如进程的描述符、PID 等）。</li>
+<li>S 是 Interruptible Sleep 的缩写，也就是可中断状态睡眠，表示进程因为等待某个事件而被系统挂起。当进程等待的事件发生时，它会被唤醒并进入 R 状态。</li>
+<li>I 是 Idle 的缩写，也就是空闲状态，用在不可中断睡眠的内核线程上。前面说了，硬件交互导致的不可中断进程用 D 表示，但对某些内核线程来说，它们有可能实际上并没有任何负载，用 Idle 正是为了区分这种情况。要注意，D 状态的进程会导致平均负载升高， I 状态的进程却不会。</li>
 </ul>
 
-<h4>perf probe</h4>
+<h4>下面问题分析</h4>
+
+<p><img src="media/15441451175680/15441459602016.jpg" alt=""/></p>
 
 <ul>
-<li>需要编译时候增加g选项</li>
+<li>iowait太高，导致系统的平均负载升高，甚至达到了系统CPU的个数</li>
+<li>僵尸进程正在不断增多，说明程序没能正确清理进程的资源
+<img src="media/15441451175680/15441462091525.jpg" alt=""/></li>
+<li>dstat 1 10
+<img src="media/15441451175680/15441465462749.jpg" alt=""/></li>
+<li> iowait 升高（wai）时，磁盘的读请求（read）都会很大。这说明 iowait 的升高跟磁盘的读请求有关，很可能就是磁盘读导致的。</li>
+<li>查看一个进程的资源使用情况pidstat</li>
+<li>利用perf record -g &amp; perf report 来查看结果
+<img src="media/15441451175680/15441491197686.jpg" alt=""/></li>
 </ul>
 
-<h4>RED法则监控微服务</h4>
+<h4>僵尸进程太多</h4>
+
+<pre class="line-numbers"><code class="language-text">ps -A -o stat,ppid,pid,cmd | grep -e &#39;^[Zz]&#39;
+</code></pre>
 
 <ul>
-<li>请求数（Rate）、错误数（Errors）以及响应时间（Duration）</li>
-<li>RED 方法适用于微服务应用的监控，而 USE 方法适用于系统资源的监控。</li>
+<li>通过上述命令找到僵尸进程，然后执行pstree -aps zombine-id找出父进程</li>
+<li>僵尸进程主要是找父进程</li>
 </ul>
 
-<h4>理解内核</h4>
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/12/07 09:11 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15432181027120.html">
+                
+                  <h1>上下文切换-CPU使用率</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>cpu上下文</h4>
 
 <ul>
-<li><a href="https://elixir.bootlin.com/">https://elixir.bootlin.com/</a> 内核函数</li>
-<li><a href="https://github.com/iovisor/bcc">https://github.com/iovisor/bcc</a> BCC工具</li>
+<li>cpu寄存器和程序计数器叫上下文</li>
+<li>CPU 寄存器，是 CPU 内置的容量小、但速度极快的内存。而程序计数器，则是用来存储 CPU 正在执行的指令位置、或者即将执行的下一条指令位置。</li>
+</ul>
+
+<h4>上下文切换场景</h4>
+
+<ul>
+<li>进程上下文切换 包括了虚拟内存、栈、全局变量等用户空间的资源，还包括了内核堆栈、寄存器等内核空间的状态</li>
+<li>线程上下文切换</li>
+<li>中断上下文切换</li>
+<li>系统调用发生了两次上下文切换 并不会涉及到虚拟内存等进程用户态的资源，也不会切换进程。这跟我们通常所说的进程上下文切换是不一样的</li>
 <li></li>
 </ul>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/04/10 08:08 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15546825457183.html">
-                
-                  <h1>Linux性能工具总结</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>CPU性能工具</h4>
+<h4>系统调用</h4>
 
 <ul>
-<li>主要性能指标</li>
-<li>CPU使用率</li>
-<li>平均负载</li>
-<li>上下文切换</li>
-<li>CPU缓存命中率
-<img src="media/15546825457183/9a211905538faffb5b3221ee01776a69.png" alt="9a211905538faffb5b3221ee01776a69"/><img src="media/15546825457183/28cb85011289f83804c51c1fb275dab0.png" alt="28cb85011289f83804c51c1fb275dab0"/></li>
+<li>系统调用过程通常称为特权模式切换，而不是上下文切换。但实际上，系统调用过程中，CPU 的上下文切换还是无法避免的。</li>
+<li>一次系统调用的过程，其实是发生了两次 CPU 上下文切换</li>
 </ul>
 
-<h4>内存性能工具</h4>
+<h4>TLB作用</h4>
 
 <ul>
-<li>系统内存指标</li>
-<li>进程内存指标</li>
-<li>SWAP
-<img src="media/15546825457183/ee36f73b9213063b3bcdaed2245944c0.png" alt="ee36f73b9213063b3bcdaed2245944c0"/>
-<img src="media/15546825457183/79ad5caf0a2c105b7e9ce77877d493f8.png" alt="79ad5caf0a2c105b7e9ce77877d493f8"/></li>
+<li>TLB（Translation Lookaside Buffer）来管理虚拟内存到物理内存的映射关系。当虚拟内存更新后，TLB 也需要刷新，内存的访问也会随之变慢。特别是在多处理器系统上，缓存是被多个处理器共享的，刷新缓存不仅会影响当前处理器的进程，还会影响共享缓存的其他处理器的进程。</li>
 </ul>
 
-<h4>磁盘IO性能工具</h4>
+<h4>进程上下文切换</h4>
 
 <ul>
-<li>文件系统的使用、缓存和缓冲区的使用</li>
-<li>磁盘 I/O 的使用率、吞吐量和延迟等
-<img src="media/15546825457183/723431a944034b51a9ef13a8a1d4d03b.png" alt="723431a944034b51a9ef13a8a1d4d03b"/>
-<img src="media/15546825457183/c232dcb4185f7b7ba95c126889cf6fa3.png" alt="c232dcb4185f7b7ba95c126889cf6fa3"/></li>
+<li>进程的上下文切换就比系统调用时多了一步：在保存当前进程的内核状态和 CPU 寄存器之前，（需要先把该进程的虚拟内存、栈等保存下来；而加载了下一进程的内核态后，还需要刷新进程的虚拟内存和用户栈）。<strong><em>这个系统调用并没有</em></strong></li>
+<li><img src="media/15432181027120/15432189386717.jpg" alt=""/></li>
+<li>线程也有自己的私有数据，比如栈和寄存器等，这些在上下文切换时也是需要保存的。</li>
+<li>两个线程属于同一个进程。此时，因为虚拟内存是共享的，所以在切换时，虚拟内存这些资源就保持不动，只需要切换线程的私有数据、寄存器等不共享的数据。</li>
 </ul>
 
-<h4>网络性能工具</h4>
-
-<p><img src="media/15546825457183/37d04c213acfa650bd7467e3000356a4.png" alt="37d04c213acfa650bd7467e3000356a4"/><br/>
-<img src="media/15546825457183/5dde213baffd7811ab73c82883b2a75d.png" alt="5dde213baffd7811ab73c82883b2a75d"/></p>
-
-<h4>基准测试工具</h4>
-
-<p><img src="media/15546825457183/f094f489049602e1058e02edc708e6e9.png" alt="f094f489049602e1058e02edc708e6e9"/></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/04/08 08:15 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15546809549290.html">
-                
-                  <h1>Linux性能优化总结</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>性能问题的来源</h4>
+<h4>中断上下文切换</h4>
 
 <ul>
-<li>资源瓶颈的分析思路，跟系统资源瓶颈是一样的。</li>
-<li>依赖服务的瓶颈，可以使用全链路跟踪系统，进行快速定位。</li>
-<li>应用自身的问题，则可以通过系统调用、热点函数，或者应用自身的指标和日志等，进行分析定位。</li>
+<li>线程是调度的基本单位，进程是资源拥有的基本单位，同属一个进程的线程，发生上下文切换，只切换线程的私有数据，共享数据不变，速度很快。</li>
 </ul>
 
-<h4>CPU优化</h4>
+<h4>怎么查看系统的上下文情况</h4>
 
 <ul>
-<li>进程绑定CPU, 把进程绑定到一个或者多个 CPU 上，充分利用 CPU 缓存的本地性，并减少进程间的相互影响。</li>
-<li>中断程序多CPU负载均衡，以便在发生大量中断时，可以充分利用多CPU的优势分摊负载。</li>
-<li>使用 Cgroups 等方法，为进程设置资源限制，避免个别进程消耗过多的CPU。</li>
-<li>为核心应用程序设置更高的优先级，减少低优先级任务的影响。</li>
+<li>vmstat</li>
+<li>自愿上下文切换 是指进程无法获取所需资源导致的上下文切换，比如IO,内存</li>
+<li>非自愿上下文切换， 进程由于时间片已到等时间，被系统强制调度，进而发生的上下文呢切换</li>
 </ul>
 
-<h4>内存优化</h4>
+<h4>有哪些减少上下文切换的技术用例？</h4>
+
+<p>数据库连接池（复用连接）、合理设置应用的最大进程，线程数、直接内存访问DMA、零拷贝技术</p>
+
+<h4>压力测试</h4>
 
 <ul>
-<li>禁止Swap</li>
-<li>使用 Cgroups 等方法，为进程设置内存限制</li>
-<li>核心应用，还应该降低 oom_score，避免被OOM杀死</li>
+<li>sysbench --threads=10 --max-time=300 threads run</li>
+<li>线程切换 sysbench --num-threads=10 --max-time=300 --test=threads run</li>
+<li>我们可以知道，系统的就绪队列过长，也就是正在运行和等待 CPU 的进程数过多，导致了大量的上下文切换，而上下文切换又导致了系统 CPU 的占用率升高。</li>
+<li>查看中断变化watch -d cat /proc/interrupts</li>
+<li>查看进程中线程变化的数据 pidstat -wt 1</li>
+<li>Rescheduling interrupts多处理器系统（SMP）中，调度器用来分散任务到不同 CPU 的机制，通常也被称为处理器间中断（Inter-Processor Interrupts，IPI）</li>
 </ul>
 
-<h4>磁盘和文件系统IO</h4>
+<h4>上下文切换类型</h4>
 
 <ul>
-<li>使用SSD，使用RAID提升IO性能</li>
-<li>选择合适的I/O调度算法，SSD和虚拟机磁盘使用Noop，数据库应用使用deadline算法</li>
-<li>优化文件系统和磁盘的缓存和缓冲区</li>
-</ul>
-
-<h4>网络优化</h4>
-
-<h5>内核资源和网络协议</h5>
-
-<ul>
-<li>增大套接字缓冲区、连接跟踪表、最大半连接数、最大文件描述符数、本地端口范围等内核资源配额</li>
-<li>减少TIMEOUT超时时间、SYN+ACK 重传数、Keepalive 探测时间等异常处理参数</li>
-<li>开启端口复用、反向地址校验，并调整 MTU 大小等降低内核的负担</li>
-</ul>
-
-<h5>反向地址校验</h5>
-
-<ul>
-<li>就是在一个网卡收到数据包后，把源地址和目标地址对调后查找路由出口，从而得到反身后路由出口。然后根据反向路由出口进行过滤。</li>
-<li>当rp_filter的值为1时，要求反向路由的出口必须与数据包的入口网卡是同一块，否则就会丢弃数据包。</li>
-<li>当rp_filter的值为2时，要求反向路由必须是可达的，如果反路由不可达，则会丢弃数据包。</li>
-</ul>
-
-<h6>作用</h6>
-
-<ul>
-<li>减少DDoS攻击<br/>
-校验数据包的反向路径，如果反向路径不合适，则直接丢弃数据包，避免过多的无效连接消耗系统资源。</li>
-<li>防止IP Spoofing<br/>
-校验数据包的反向路径，如果客户端伪造的源IP地址对应的反向路径不在路由表中，或者反向路径不是最佳路径，则直接丢弃数据包，不会向伪造IP的客户端回复响应</li>
-</ul>
-
-<h5>网络接口</h5>
-
-<ul>
-<li>CPU 上执行的工作，卸载到网卡中执行，开启网卡的 GRO、GSO、RSS、VXLAN </li>
-<li>开启网络接口的多队列功能，这样，每个队列就可以用不同的中断号，调度到不同 CPU 上执行</li>
-<li>增大网络接口的缓冲区大小以及队列长度等，提升网络传输的吞吐量</li>
-</ul>
-
-<h5>极限性能</h5>
-
-<ul>
-<li>DPDK 技术，跳过内核协议栈，直接由用户态进程用轮询的方式，来处理网络请求</li>
-<li>大页、CPU 绑定、内存对齐、流水线并发等多种机制，优化网络包的处理效率。</li>
-<li>增大网络接口的缓冲区大小以及队列长度等，提升网络传输的吞吐量</li>
-</ul>
-
-<h4>应用程序优化</h4>
-
-<ul>
-<li>从 CPU 使用的角度来说，简化代码、优化算法、异步处理以及编译器优化等，都是常用的降低 CPU 使用率的方法</li>
-<li>数据访问的角度来说，使用缓存、写时复制、增加 I/O 尺寸等，都是常用的减少磁盘 I/O 的方法，</li>
-<li>内存管理的角度来说，使用大页、内存池等方法，可以预先分配内存，减少内存的动态分配，从而更好地内存访问性能</li>
-<li>网络的角度来说，使用 I/O 多路复用、长连接代替短连接、DNS 缓存等方法，可以优化网络 I/O 并减少网络请求数，从而减少网络延时带来的性能问题</li>
-<li>从进程的工作模型来说，异步处理、多线程或多进程等，可以充分利用每一个 CPU 的处理能力，从而提高应用程序的吞吐能力</li>
-<li>架构层面 消息队列、CDN、负载均衡等各种方法，来优化应用程序的架构，将原来单机要承担的任务，调度到多台服务器中并行处理</li>
+<li>自愿上下文切换变多了，说明进程都在等待资源，有可能发生了 I/O 等其他问题；</li>
+<li>非自愿上下文切换变多了，说明进程都在被强制调度，也就是都在争抢 CPU，说明 CPU 的确成了瓶颈；</li>
+<li>中断次数变多了，说明 CPU 被中断处理程序占用，还需要通过查看 /proc/interrupts 文件来分析具体的中断类型。</li>
 </ul>
 
                         
@@ -742,292 +999,7 @@ echo 32678 &gt; /sys/class/net/ens33/queues/rx-0/rps_flow_cnt
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/04/08 07:49 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15538161650708.html">
-                
-                  <h1>系统监控的思路</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>USE法则</h4>
-
-<ul>
-<li>使用率，表示资源用于服务的时间或容量百分比。100% 的使用率，表示容量已经用尽或者全部时间都用于服务。</li>
-<li>饱和度，表示资源的繁忙程度，通常与等待队列的长度相关。100% 的饱和度，表示资源无法接受更多的请求。</li>
-<li>错误数表示发生错误的事件个数。错误数越多，表明系统的问题越严重。
-<img src="media/15538161650708/ccd7a9350c270c0168bad6cc8d0b8aee.png" alt="ccd7a9350c270c0168bad6cc8d0b8aee"/></li>
-<li>适用系统资源的监控</li>
-</ul>
-
-<h4>应用程序的性能监控</h4>
-
-<ul>
-<li>请求数</li>
-<li>错误率</li>
-<li>响应时间</li>
-</ul>
-
-<h4>指标</h4>
-
-<ul>
-<li>应用进程的资源使用情况，比如进程占用的 CPU、内存、磁盘 I/O、网络等。</li>
-<li>应用程序之间调用情况，比如调用频率、错误数、延时等</li>
-<li>应用程序内部核心逻辑的运行情况，比如关键环节的耗时以及执行过程中的错误等</li>
-</ul>
-
-<h4>Jaeger调用链</h4>
-
-<ul>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/03/29 07:36 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15535587417006.html">
-                
-                  <h1>服务吞吐量下降</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>连接数优化</h4>
-
-<pre class="line-numbers"><code class="language-text">ss -s 查看TCP连接数目
-timewait内核中的连接跟踪模块导致timewait
-查看内核处理溢出的情况 dmesg | tail 
-查看连接追踪数 
-sysctl net.netfilter.nf_conntrack_max 
-sysctl net.netfilter.nf_conntrack_count
-</code></pre>
-
-<h4>工作进程优化</h4>
-
-<pre class="line-numbers"><code class="language-text">查看容器日志 docker logs phpfpm --tail 5
-设置容器子进程最大进程数目
-</code></pre>
-
-<h4>套接字优化</h4>
-
-<pre class="line-numbers"><code class="language-text">查看套接字丢包情况 netstat -s | grep socket，观察socket overflowed和sockets dropped
-查看套接字队列大小 ss -ltnp
-查看全连接队列 net.ipv4.tcp_max_syn_backlog
-设置系统的套接字监听队列 sysctl net.core.somaxconn
-</code></pre>
-
-<h4>端口号优化</h4>
-
-<pre class="line-numbers"><code class="language-text">查看系统配置的临时端口号范围 sysctl net.ipv4.ip_local_port_range 
-配置系统的临时端口号范围 sysctl -w net.ipv4.ip_local_port_range
-打开端口重用 sysctl -w net.ipv4.tcp_tw_reuse=1
-inet_hash_connect()分配临时端口的函数
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/03/26 08:05 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15533912218590.html">
-                
-                  <h1>内核动态追踪</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>动态追踪技术</h4>
-
-<ul>
-<li>动态追踪技术，通过探针机制，来采集内核或者应用程序的运行信息，从而可以不用修改内核和应用程序的代码，就获得丰富的信息，帮你分析、定位想要排查的问题。</li>
-</ul>
-
-<h4>DTrace工作原理</h4>
-
-<ul>
-<li>它的运行常驻在内核中，用户可以通过 dtrace 命令，把 D 语言编写的追踪脚本，提交到内核中的运行时来执行。</li>
-</ul>
-
-<h4>动态追踪的机制</h4>
-
-<ul>
-<li>Dtrace 和 SystemTap 都会把用户传入的追踪处理函数（一般称为 Action），关联到被称为探针的检测点上。这些探针，实际上也就是各种动态追踪技术所依赖的事件源</li>
-</ul>
-
-<h4>事件源</h4>
-
-<ul>
-<li>硬件事件通常由性能监控计数器 PMC（Performance Monitoring Counter）产生，包括了各种硬件的性能情况，比如 CPU 的缓存、指令周期、分支预测等等</li>
-<li>静态探针，是指事先在代码中定义好，并编译到应用程序或者内核中的探针，静态探针包括内核中的跟踪点（tracepoints）和 USDT（Userland Statically Defined Tracing）探针。</li>
-<li>动态探针 则是指没有事先在代码中定义，但却可以在运行时动态添加的探针 
-<ul>
-<li>kprobes 用来跟踪内核态的函数，包括用于函数调用的 kprobe 和用于函数返回的 kretprobe。</li>
-<li>uprobes 用来跟踪用户态的函数，包括用于函数调用的 uprobe 和用于函数返回的 uretprobe。</li>
-</ul></li>
-</ul>
-
-<h4>Linux追踪机制</h4>
-
-<ul>
-<li>ftrace</li>
-<li>perf</li>
-<li>eBPF(Berkeley Packet Filter)</li>
-<li>容器分析 sysdig</li>
-<li>SystemTap和BCC(BPF Compiler Collection)</li>
-</ul>
-
-<h4>strace的缺点</h4>
-
-<ul>
-<li>由于 ptrace 是系统调用，就需要在内核态和用户态切换。当事件数量比较多时，繁忙的切换必然会影响原有服务的性能；</li>
-<li>ptrace 需要借助 SIGSTOP 信号挂起目标进程。这种信号控制和进程挂起，会影响目标进程的行为。</li>
-</ul>
-
-<h4>ftrace</h4>
-
-<ul>
-<li>function 表示跟踪函数的执行，function_graph 则是跟踪函数的调用关系，追踪函数的执行过程</li>
-<li> trace-cmd record -p function_graph -g do_sys_open -O funcgraph-proc ls</li>
-<li> trace-cmd report</li>
-</ul>
-
-<h4>拓展阅读</h4>
-
-<ul>
-<li><a href="https://leezhenghui.github.io/linux/2019/03/05/exploring-usdt-on-linux.html">https://leezhenghui.github.io/linux/2019/03/05/exploring-usdt-on-linux.html</a></li>
-</ul>
-
-<h4>perf添加探针</h4>
-
-<pre class="line-numbers"><code class="language-text">perf probe --add do_sys_open
-perf record -e probe:do_sys_open -aR sleep 10
-perf script
-</code></pre>
-
-<ul>
-<li>追踪用户空间的库函数</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text"># 为 /bin/bash 添加 readline 探针
-$ perf probe -x /bin/bash &#39;readline%return +0($retval):string’
-# 采样记录
-$ perf record -e probe_bash:readline__return -aR sleep 5
-# 查看结果
-$ perf script
-# 跟踪完成后删除探针
-$ perf probe --del probe_bash:readline__return
-</code></pre>
-
-<h4>eBPF和BCC</h4>
-
-<ul>
-<li>eBPF工作原理
-<img src="media/15533912218590/15533978673142.jpg" alt=""/></li>
-<li>从用户跟踪程序生成 BPF 字节码；</li>
-<li>加载到内核中运行；</li>
-<li>向用户空间输出结果。</li>
-</ul>
-
-<h4>SystemTap和sysdig</h4>
-
-<ul>
-<li> sysdig = strace + tcpdump + htop + iftop + lsof + docker inspect。</li>
-</ul>
-
-<h4>使用方法</h4>
-
-<ul>
-<li>在不需要很高灵活性的场景中，使用 perf 对性能事件进行采样，然后再配合火焰图辅助分析，就是最常用的一种方法；</li>
-<li>而需要对事件或函数调用进行统计分析（比如观察不同大小的 I/O 分布）时，就要用 SystemTap 或者 eBPF，通过一些自定义的脚本来进行数据处理。</li>
-</ul>
-
-<h4>sysdig监控容器</h4>
-
-<ul>
-<li>容器</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">查看机器上运行的容器列表及其资源使用情况
-sudo csysdig -vcontainers 
-查看容器上下文的进程列表 sudo csysdig -pc 
-查看运行在wordpress1容器里CPU的使用率
-sudo sysdig -pc -c topprocs_cpu container.name=wordpress1
-查看运行在wordpress1容器里网络带宽的使用率
-sudo sysdig -pc -c topprocs_net container.name=wordpress1
-查看在wordpress1容器里使用网络带宽最多的进程
- sudo sysdig -pc -c topprocs_net container.name=wordpress1
-查看在wordpress1 容器里占用 I/O 字节最多的文件
-sudo sysdig -pc -c topfiles_bytes container.name=wordpress1
-查看在wordpress1 容器里网络连接的排名情况
-sudo sysdig -pc -c topconns container.name=wordpress1
-显示wordpress1容器里所有命令执行的情况
-sudo sysdig -pc -c spy_users container.name=wordpress1
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/03/24 09:33 上午</span>
+                    <span class="date">2018/11/26 15:41 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
@@ -1104,8 +1076,6 @@ sudo sysdig -pc -c spy_users container.name=wordpress1
             <a href="Golang.html"><strong>Golang</strong></a>
         
             <a href="Django.html"><strong>Django</strong></a>
-        
-            <a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html"><strong>C++设计模式实战</strong></a>
         
             <a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html"><strong>深入剖析Kubernetes</strong></a>
         
@@ -1184,6 +1154,18 @@ sudo sysdig -pc -c spy_users container.name=wordpress1
 	      
 		      
 			      <li class="post">
+			        <a href="15818128782116.html">Singleton</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15748977610569.html">State</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817697569868.html">字符串分割</a>
 			      </li>
 		     
@@ -1196,19 +1178,7 @@ sudo sysdig -pc -c spy_users container.name=wordpress1
 		  
 		      
 			      <li class="post">
-			        <a href="15814649492497.html">Simple Factory</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814189410719.html">代码的可测试性</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814188057978.html">重构</a>
+			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

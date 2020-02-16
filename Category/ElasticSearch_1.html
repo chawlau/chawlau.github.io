@@ -87,8 +87,6 @@
         
             <li><a href="Django.html">Django</a></li>
         
-            <li><a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html">C++设计模式实战</a></li>
-        
             <li><a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html">深入剖析Kubernetes</a></li>
         
             <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html">数据结构和算法</a></li>
@@ -194,6 +192,213 @@
                   <div class="more-left left">
                   
                     <span class="date">2019/10/26 05:32 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='ElasticSearch.html'>ElasticSearch</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15714446800241.html">
+                
+                  <h1>集群管理</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>集群管理</h4>
+
+<ul>
+<li>GET /_cat/health?v</li>
+<li>green：每个索引的primary shard和replica shard都是active状态的</li>
+<li>yellow：每个索引的primary shard都是active状态的，但是部分replica shard不是active状态，处于不可用的状态</li>
+<li>red：不是所有索引的primary shard都是active状态的，部分索引有数据丢失了</li>
+</ul>
+
+<h4>替换方式</h4>
+
+<pre class="line-numbers"><code class="language-text">PUT /ecommerce/product/1
+{
+    &quot;name&quot; : &quot;jiajieshi yagao&quot;,
+    &quot;desc&quot; :  &quot;youxiao fangzhu&quot;,
+    &quot;price&quot; :  27,
+    &quot;producer&quot; :      &quot;jiajieshi producer&quot;,
+    &quot;tags&quot;: [ &quot;fangzhu&quot; ]
+}
+</code></pre>
+
+<ul>
+<li>替换方式有一个不好，即使必须带上所有的field，才能去进行信息的修改</li>
+</ul>
+
+<h4>更新请求</h4>
+
+<pre class="line-numbers"><code class="language-text">POST /ecommerce/product/1/_update
+{
+  &quot;doc&quot;: {
+    &quot;name&quot;: &quot;jiaqiangban gaolujie yagao&quot;
+  }
+}
+</code></pre>
+
+<ul>
+<li>可以更新部分请求</li>
+</ul>
+
+<h4>节点</h4>
+
+<ul>
+<li>Data Node</li>
+<li>可以保存数据的节点，叫做 Data Node。负责保存分片数据。在数据扩展上起到了</li>
+<li>至关重要的作用</li>
+<li>Coordinating Node</li>
+<li>负责接受 Cliente 的请求，将请求分发到合适的节点，最终把结果汇集到一起 o 每个节点默认都起到了 Coordinating Nodee 的职责</li>
+</ul>
+
+<h4>分片</h4>
+
+<ul>
+<li>主分片，用以解決数据水平扩展的题。通过主分片，可以将数据分布到集群内的所有节点之上 </li>
+<li>一个分片是一个运行的 Lucene 的实例</li>
+<li>主分片数在索引创建时指定，后续不允许修改，除非 Reindex </li>
+</ul>
+
+<h4>分片设置</h4>
+
+<ul>
+<li>分片数设置过小 导致后续无法增加节点实现水品扩展</li>
+<li>单个分片的数据量太大，导致数据重新分配耗时</li>
+<li>分片过大</li>
+<li>影响搜索结果的相关性打分，影响统计结果的准确性</li>
+<li>单个节点上过多的分片，会导致资源浪费，同时也会影响性能</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/10/19 08:24 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='ElasticSearch.html'>ElasticSearch</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15714384815163.html">
+                
+                  <h1>核心概念</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>功能</h4>
+
+<ul>
+<li>1）分布式的文档存储引擎</li>
+<li>2）分布式的搜索引擎和分析引擎</li>
+<li>3）分布式，支持PB级数据</li>
+</ul>
+
+<h4>核心概念</h4>
+
+<ul>
+<li>Near Realtime（NRT）：近实时，两个意思，从写入数据到数据可以被搜索到有一个小延迟（大概1秒）；基于es执行搜索和分析可以达到秒级</li>
+<li>Cluster：集群，包含多个节点，每个节点属于哪个集群是通过一个配置（集群名称，默认是elasticsearch）来决定的，对于中小型应用来说，刚开始一个集群就一个节点很正常</li>
+<li>Node：节点，集群中的一个节点，节点也有一个名称（默认是随机分配的），节点名称很重要（在执行运维管理操作的时候），默认节点会去加入一个名称为“elasticsearch”的集群，如果直接启动一堆节点，那么它们会自动组成一个elasticsearch集群，当然一个节点也可以组成一个elasticsearch集群</li>
+<li>Document&amp;field：文档，es中的最小数据单元，一个document可以是一条客户数据，一条商品分类数据，一条订单数据，通常用JSON数据结构表示，每个index下的type中，都可以去存储多个document。一个document里面有多个field，每个field就是一个数据字段。</li>
+<li>Index：索引，包含一堆有相似结构的文档数据，比如可以有一个客户索引，商品分类索引，订单索引，索引有一个名称。一个index包含很多document，一个index就代表了一类类似的或者相同的document。比如说建立一个product index，商品索引，里面可能就存放了所有的商品数据，所有的商品document。</li>
+<li>Type：类型，每个索引里都可以有一个或多个type，type是index中的一个逻辑数据分类，一个type下的document，都有相同的field，比如博客系统，有一个索引，可以定义用户数据type，博客数据type，评论数据type。</li>
+<li>现在只能创建为_doc</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">商品index，里面存放了所有的商品数据，商品document
+
+但是商品分很多种类，每个种类的document的field可能不太一样，比如说电器商品，可能还包含一些诸如售后时间范围这样的特殊field；生鲜商品，还包含一些诸如生鲜保质期之类的特殊field
+
+type，日化商品type，电器商品type，生鲜商品type
+
+日化商品type：product_id，product_name，product_desc，category_id，category_name
+电器商品type：product_id，product_name，product_desc，category_id，category_name，service_period
+生鲜商品type：product_id，product_name，product_desc，category_id，category_name，eat_period
+</code></pre>
+
+<ul>
+<li>shard：单台机器无法存储大量数据，es可以将一个索引中的数据切分为多个shard，分布在多台服务器上存储。有了shard就可以横向扩展，存储更多数据，让搜索和分析等操作分布到多台服务器上去执行，提升吞吐量和性能。每个shard都是一个lucene index。</li>
+<li>replica：任何一个服务器随时可能故障或宕机，此时shard可能就会丢失，因此可以为每个shard创建多个replica副本。可以读</li>
+</ul>
+
+<h4>ES对比数据库</h4>
+
+<table>
+<thead>
+<tr>
+<th>ES</th>
+<th>Mysql</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Doucument</td>
+<td>行</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>表</td>
+</tr>
+<tr>
+<td>Index</td>
+<td>库</td>
+</tr>
+</tbody>
+</table>
+
+<h4>es文档</h4>
+
+<p><img src="media/15714384815163/15719694321894.jpg" alt="" style="width:1342px;"/></p>
+
+<h4>基本概念</h4>
+
+<ul>
+<li>Ndex-索引是文档的容器，是一类文档的结合index 体现了逻辑空间的概念：每个索引都有</li>
+<li>自己的 Mapping 定义，用于定义包含的文档的字段名和字段类型</li>
+<li>Shard 体现了物理空间的概念：索引中的数据</li>
+<li>分散在 Shard 上索引的 Mapping 与 Settings o Mapping 定义文档字段的类型 Setting 定义不同的数据分布
+<img src="media/15714384815163/15719951836763.jpg" alt="" style="width:553px;"/></li>
+</ul>
+
+<p>􏱂􏵲􏲓 􏳣</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/10/19 06:41 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='ElasticSearch.html'>ElasticSearch</a></span>
@@ -619,196 +824,6 @@ GET /test_index/test_type/1?_source=test_field1,test_field2
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15715225044107.html">
-                
-                  <h1>聚合分析</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>统计商品数量</h4>
-
-<pre class="line-numbers"><code class="language-go">第一个分析需求：计算每个tag下的商品数量
-
-GET /ecommerce/product/_search
-{
-  &quot;aggs&quot;: {
-    &quot;group_by_tags&quot;: {
-      &quot;terms&quot;: { &quot;field&quot;: &quot;tags&quot; }
-    }
-  }
-}
-
-将文本field的fielddata属性设置为true
-
-PUT /ecommerce/_mapping/product
-{
-  &quot;properties&quot;: {
-    &quot;tags&quot;: {
-      &quot;type&quot;: &quot;text&quot;,
-      &quot;fielddata&quot;: true
-    }
-  }
-}
-</code></pre>
-
-<h4>统计商品数量</h4>
-
-<pre class="line-numbers"><code class="language-cpp">GET /ecommerce/product/_search
-{
-  &quot;size&quot;: 0,
-  &quot;query&quot;: {
-    &quot;match&quot;: {
-      &quot;name&quot;: &quot;yagao&quot;
-    }
-  },
-  &quot;aggs&quot;: {
-    &quot;all_tags&quot;: {
-      &quot;terms&quot;: {
-        &quot;field&quot;: &quot;tags&quot;
-      }
-    }
-  }
-}
-
-
-</code></pre>
-
-<h4>分组算平均值</h4>
-
-<pre class="line-numbers"><code class="language-cpp">GET /ecommerce/product/_search
-{
-    &quot;size&quot;: 0,
-    &quot;aggs&quot; : {
-        &quot;group_by_tags&quot; : {
-            &quot;terms&quot; : { &quot;field&quot; : &quot;tags&quot; },
-            &quot;aggs&quot; : {
-                &quot;avg_price&quot; : {
-                    &quot;avg&quot; : { &quot;field&quot; : &quot;price&quot; }
-                }
-            }
-        }
-    }
-}
-GET /ecommerce/product/_search
-{
-    &quot;size&quot;: 0,
-    &quot;aggs&quot; : {
-        &quot;all_tags&quot; : {
-            &quot;terms&quot; : { &quot;field&quot; : &quot;tags&quot;, &quot;order&quot;: { &quot;avg_price&quot;: &quot;desc&quot; } },
-            &quot;aggs&quot; : {
-                &quot;avg_price&quot; : {
-                    &quot;avg&quot; : { &quot;field&quot; : &quot;price&quot; }
-                }
-            }
-        }
-    }
-}
-</code></pre>
-
-<h4>区间分组</h4>
-
-<pre class="line-numbers"><code class="language-cpp">GET /ecommerce/product/_search
-{
-  &quot;size&quot;: 0,
-  &quot;aggs&quot;: {
-    &quot;group_by_price&quot;: {
-      &quot;range&quot;: {
-        &quot;field&quot;: &quot;price&quot;,
-        &quot;ranges&quot;: [
-          {
-            &quot;from&quot;: 0,
-            &quot;to&quot;: 20
-          },
-          {
-            &quot;from&quot;: 20,
-            &quot;to&quot;: 40
-          },
-          {
-            &quot;from&quot;: 40,
-            &quot;to&quot;: 50
-          }
-        ]
-      },
-      &quot;aggs&quot;: {
-        &quot;group_by_tags&quot;: {
-          &quot;terms&quot;: {
-            &quot;field&quot;: &quot;tags&quot;
-          },
-          &quot;aggs&quot;: {
-            &quot;average_price&quot;: {
-              &quot;avg&quot;: {
-                &quot;field&quot;: &quot;price&quot;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/20 06:01 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='ElasticSearch.html'>ElasticSearch</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15714751523207.html">
-                
-                  <h1>搜索方式</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>检索方式</h4>
-
-<pre class="line-numbers"><code class="language-text">GET /ecommerce/_search
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/19 16:52 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='ElasticSearch.html'>ElasticSearch</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -870,8 +885,6 @@ GET /ecommerce/product/_search
             <a href="Golang.html"><strong>Golang</strong></a>
         
             <a href="Django.html"><strong>Django</strong></a>
-        
-            <a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html"><strong>C++设计模式实战</strong></a>
         
             <a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html"><strong>深入剖析Kubernetes</strong></a>
         
@@ -950,6 +963,18 @@ GET /ecommerce/product/_search
 	      
 		      
 			      <li class="post">
+			        <a href="15818128782116.html">Singleton</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15748977610569.html">State</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817697569868.html">字符串分割</a>
 			      </li>
 		     
@@ -962,19 +987,7 @@ GET /ecommerce/product/_search
 		  
 		      
 			      <li class="post">
-			        <a href="15814649492497.html">Simple Factory</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814189410719.html">代码的可测试性</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814188057978.html">重构</a>
+			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

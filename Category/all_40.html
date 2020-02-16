@@ -87,8 +87,6 @@
         
             <li><a href="Django.html">Django</a></li>
         
-            <li><a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html">C++设计模式实战</a></li>
-        
             <li><a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html">深入剖析Kubernetes</a></li>
         
             <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html">数据结构和算法</a></li>
@@ -172,52 +170,57 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15566729397801.html">
+                <a class="clearlink" href="15619632498634.html">
                 
-                  <h1>CPU性能</h1>
+                  <h1>信号处理</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>性能指标</h4>
+                        	<h4>处理方式</h4>
 
 <ul>
-<li>响应时间</li>
-<li>吞吐率</li>
+<li>执行默认操作</li>
+<li>捕捉信号</li>
+<li>忽略信号</li>
 </ul>
 
-<h4>计算机的计时单位</h4>
+<h4>信号参数</h4>
 
 <ul>
-<li>CPU时钟</li>
-<li>wall clock time , Elapsed Time 记录程序运行结束的时间减去程序开始运行的时间</li>
-<li>real time，也就是我们说的 Wall Clock Time，也就是运行程序整个过程中流逝掉的时间</li>
-<li>user time，也就是 CPU 在运行你的程序，在用户态运行指令的时间</li>
-<li>sys time，是 CPU 在运行你的程序，在操作系统内核里运行指令的时间<img src="media/15566729397801/c2892bc899e5a9ad5c04c10f57705127.jpg" alt="c2892bc899e5a9ad5c04c10f57705127"/></li>
+<li>SA_ONESHOT 只执行一次</li>
+<li>SA_NOMASK 信号会被打断</li>
+<li>SA_INTERRUPT 系统调用被信号中断就不再执行</li>
+<li>SA_RESTAT 系统调用被中断后重新启动</li>
 </ul>
 
-<h4>性能优化三指标</h4>
+<h4>信号处理流程</h4>
 
 <ul>
-<li>程序的 CPU 执行时间 =CPU 时钟周期数×时钟周期时间</li>
-<li>程序的 CPU 执行时间 = 指令数×CPI×Clock Cycle Time</li>
-<li>时钟周期时间，就是计算机主频，这个取决于计算机硬件。我们所熟知的摩尔定律就一直在不停地提高我们计算机的主频。比如说，我最早使用的 80386 主频只有 33MHz，现在手头的笔记本电脑就有 2.8GHz，在主频层面，就提升了将近 100 倍。</li>
-<li>每条指令的平均时钟周期数 CPI，就是一条指令到底需要多少 CPU Cycle。在后面讲解 CPU 结构的时候，我们会看到，现代的 CPU 通过流水线技术（Pipeline），让一条指令需要的 CPU Cycle 尽可能地少。因此，对于 CPI 的优化，也是计算机组成和体系结构中的重要一环。</li>
-<li>指令数，代表执行我们的程序到底需要多少条指令、用哪些指令。这个很多时候就把挑战交给了编译器。同样的代码，编译成计算机指令时候，就有各种不同的表示方式。</li>
+<li><img src="media/15619632498634/7cb86c73b9e73893e6b0e0433d476928.png" alt="7cb86c73b9e73893e6b0e0433d476928"/></li>
 </ul>
 
-<h4>问题</h4>
+<h4>信号发送</h4>
 
 <ul>
-<li>user + sys 运行出来会比real time多</li>
-<li>是因为多核并行执行程序</li>
+<li>kill-&gt;kill_something_info-&gt;kill_pid_info-&gt;group_send_sig_info-&gt;do_send_sig_info</li>
+<li>tkill-&gt;do_tkill-&gt;do_send_specific-&gt;do_send_sig_info</li>
+<li>tgkill-&gt;do_tkill-&gt;do_send_specific-&gt;do_send_sig_info</li>
+<li>rt_sigqueueinfo-&gt;do_rt_sigqueueinfo-&gt;kill_proc_info-&gt;kill_pid_info-&gt;group_send_sig_info-&gt;do_send_sig_info</li>
 </ul>
 
-<h4>跑分软件作弊</h4>
+<h4>可靠信号和不可靠信号</h4>
 
 <ul>
-<li>一是检测到跑分软件就放开温度墙和功耗墙的限制 相当于提高主频</li>
-<li>二是跑分程序对于机型做了专门优化 相当于优化CPI和减少指令数</li>
+<li>小于32的为不可靠信号 放入集合</li>
+<li>大于32的为可靠信号 挂在struct sigpending链表上</li>
+</ul>
+
+<h4>信号发送和处理流程</h4>
+
+<ul>
+<li><img src="media/15619632498634/3dcb3366b11a3594b00805896b7731fb.png" alt="3dcb3366b11a3594b00805896b7731fb"/></li>
+<li></li>
 </ul>
 
                         
@@ -227,191 +230,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/05/01 09:08 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86.html'>计算机组成原理</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15562372828721.html">
-                
-                  <h1>组成原理知识图谱</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>学习地图</h4>
-
-<ul>
-<li><img src="media/15562372828721/12bc980053ea355a201e2b529048e2ff.jpg" alt="12bc980053ea355a201e2b529048e2ff"/></li>
-</ul>
-
-<h4>计算机组成视频教程</h4>
-
-<ul>
-<li><a href="https://www.bilibili.com/video/av24540152/">https://www.bilibili.com/video/av24540152/</a></li>
-<li>计算机组成：结构化方法  //TODO</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/04/26 08:08 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86.html'>计算机组成原理</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15558924748383.html">
-                
-                  <h1>进程数据结构</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>task_struct</h4>
-
-<ul>
-<li>任务ID</li>
-<li>任务展示</li>
-</ul>
-
-<h4>三种睡眠状态</h4>
-
-<ul>
-<li>TASK_INTERRUPTIBLE，可中断的睡眠状态</li>
-<li>TASK_UNINTERRUPTIBLE，不可中断的睡眠状态</li>
-<li>TASK_KILLABLE，可以终止的新睡眠状态 可以响应致命信号</li>
-</ul>
-
-<h4>进程调度</h4>
-
-<ul>
-<li>任务状态</li>
-<li>信号处理</li>
-<li>任务ID</li>
-<li>调度相关</li>
-</ul>
-
-<h4>运行统计信息</h4>
-
-<h4>进程亲缘关系</h4>
-
-<ul>
-<li>parent 指向其父进程。当它终止时，必须向它的父进程发送信号。</li>
-<li>children 表示链表的头部。链表中的所有元素都是它的子进程。</li>
-<li>sibling 用于把当前进程插入到兄弟链表中。
-<img src="media/15558924748383/92711107d8dcdf2c19e8fe4ee3965304.jpeg" alt="92711107d8dcdf2c19e8fe4ee3965304"/></li>
-</ul>
-
-<h4>用户和用户组的信息</h4>
-
-<ul>
-<li>uid gid</li>
-<li>euid egid</li>
-<li>fsuid fsgid</li>
-</ul>
-
-<h4>capabilites</h4>
-
-<ul>
-<li>cap_permitted 表示进程能够使用的权限</li>
-<li>cap_bset，也就是 capability bounding set，是系统中所有进程允许保留的权限。如果这个集合中不存在某个权限，那么系统中的所有进程都没有这个权限。即使以超级用户权限执行的进程，也是一样的</li>
-<li>cap_ambient 是比较新加入内核,执行 exec 的时候，cap_ambient 会被添加到 cap_permitted 中，同时设置到 cap_effective 中</li>
-</ul>
-
-<h4>进程</h4>
-
-<ul>
-<li>任务ID</li>
-<li>亲缘关系</li>
-<li>任务状态</li>
-<li>权限</li>
-<li>运行统计</li>
-<li>调度相关</li>
-<li>信号处理</li>
-<li>内存管理</li>
-<li>文件和文件系统</li>
-<li>内核栈 
-<img src="media/15558924748383/1c91956b52574b62a4418a7c6993d8bc.jpeg" alt="1c91956b52574b62a4418a7c6993d8b"/></li>
-</ul>
-
-<h4>用户栈和内核栈的具体实现</h4>
-
-<ul>
-<li>用户栈详解：<a href="http://blog.csdn.net/tiankong_/article/details/75676131">http://blog.csdn.net/tiankong_/article/details/75676131</a></li>
-<li>内核栈详解：<a href="http://blog.csdn.net/tiankong_/article/details/75647488">http://blog.csdn.net/tiankong_/article/details/75647488</a></li>
-</ul>
-
-<h4>用户态函数栈</h4>
-
-<ul>
-<li>栈是一个从高地址到低地址，往下增长的结构，也就是上面是栈底，下面是栈顶，入栈和出栈的操作都是从下面的栈顶开始的。
-<img src="media/15558924748383/aec865abccf0308155f4138cc905972e.jpg" alt="aec865abccf0308155f4138cc905972e"/></li>
-</ul>
-
-<h4>用户态和内核态执行</h4>
-
-<ul>
-<li>struct thread_info thread_info;</li>
-<li>void  *stack;</li>
-</ul>
-
-<h4>内核栈</h4>
-
-<p><img src="media/15558924748383/31d15bcd2a053235b5590977d12ffa2d.jpeg" alt="31d15bcd2a053235b5590977d12ffa2d"/></p>
-
-<h4>task_struct找内核</h4>
-
-<ul>
-<li>task_struct找内核栈是通过stack指针，直接找到内核线程栈，stack指针记录的是内核栈的首地址。</li>
-<li>task_struck找内核寄存器是通过 内核栈的首地址（1中的stack指针） + (THREAD_SIZE - TOP_OF_KERNEL_STACK_PADDING)定位到pt_regs的最高位地址，再减一得到pt_regs的最低位地址（首地址）</li>
-</ul>
-
-<h4>内核找task_struct</h4>
-
-<ul>
-<li>通过内核栈找到 task_struct<br/>
-  32位 直接由 thread_info 中的指针得到<br/>
-  64位 每个 CPU 当前运行进程的 task_struct 的指针存放到 Per CPU 变量 current_task 中<br/>
- <br/>
- #### </li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/04/22 08:21 上午</span>
+                    <span class="date">2019/07/01 14:40 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
@@ -428,45 +247,491 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15558350408118.html">
+                <a class="clearlink" href="15615915044903.html">
                 
-                  <h1>秒杀系统限制</h1>
+                  <h1>归并排序和快速排序</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>归并排序</h4>
+
+<pre class="line-numbers"><code class="language-text">void merge(vector&lt;int&gt;&amp; nums1, int m, vector&lt;int&gt;&amp; nums2, int n) {
+   for(int i=m-1, j=n-1, k=m+n-1; j&gt;=0; )
+       nums1[k--] = i&gt;=0 &amp;&amp; nums1[i]&gt;nums2[j]? nums1[i--]: nums2[j--];
+}
+</code></pre>
+
+<h4>快速排序</h4>
+
+<ul>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/06/27 07:25 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15458821339264.html">
+                
+                  <h1>排序算法考量</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>执行效率</h4>
+
+<ul>
+<li>最好情况，最坏情况，平均时间复杂度</li>
+<li>时间复杂度的系数，常数，低阶</li>
+<li>比较次数和交换次数</li>
+</ul>
+
+<h4>订单金额</h4>
+
+<ul>
+<li>先排时间</li>
+<li>再排金额</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/12/27 11:42 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15613334266263.html">
+                
+                  <h1>TCP/IP的设计</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>TCP/IP问题</h4>
+
+<ul>
+<li>滑动窗口如何实现</li>
+<li>sk_buff是什么</li>
+<li>TCP_NODELAY设置,针对的是对端收到包的时候的ACK发送回来是立即发送还是延迟发送，</li>
+<li>epoll检测网络IO的时候，ET和LT如何判断</li>
+<li>服务器端出现大量close wait如何解决， 客户端大量close</li>
+<li><p>DDOS攻击 </p>
+<ul>
+<li>半连接队列越来越长，创建一些字节流结构体，导致内核协议栈数据不断变大，IO无法约束</li>
+<li>防火墙是等三次连接建立后才进行转发</li>
+<li>防火墙工作在ip层</li>
+<li>DDOS攻击tcp层</li>
+</ul></li>
+<li><p>发送和接收缓冲区设置为0会怎么样</p></li>
+<li><p>如何发送syn包 raw socket</p></li>
+<li><p>buffer一般设置多大比较合适 流数据2MB, 字节数据KB字节</p></li>
+</ul>
+
+<h4>C10M</h4>
+
+<ul>
+<li>10M连接</li>
+<li>响应时间</li>
+<li>10M增长速度</li>
+<li>吞吐量-&gt; 10M</li>
+</ul>
+
+<h4>网卡作用</h4>
+
+<ul>
+<li>模拟信号转数字信号</li>
+<li>数字信号送入内核网络协议栈</li>
+</ul>
+
+<h4>软件中断和硬中断</h4>
+
+<ul>
+<li>软中断由操作系统发起</li>
+<li>硬中断没有操作系统参与</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/06/24 07:43 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15612568475513.html">
+                
+                  <h1>kafka线上集群方案部署</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>磁盘容量</h4>
+
+<ul>
+<li>新增消息数</li>
+<li>消息留存时间</li>
+<li>平均消息大小</li>
+<li>备份数</li>
+<li>是否启用压缩</li>
+</ul>
+
+<h4>带宽</h4>
+
+<ul>
+<li>利用率70%</li>
+<li>留出2/3的资源</li>
+</ul>
+
+<h4>参考</h4>
+
+<p><img src="media/15612568475513/d2a926bc8f448f58bda0d21b7ed39f55.jpeg" alt="d2a926bc8f448f58bda0d21b7ed39f55"/></p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/06/23 10:27 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Kafka.html'>Kafka</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15611602604286.html">
+                
+                  <h1>块设备</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>块设备操作的内核组件</h4>
+
+<ul>
+<li><img src="media/15611602604286/15611610923345.jpg" alt=""/></li>
+</ul>
+
+<h4>磁盘数据的典型构造</h4>
+
+<p><img src="media/15611602604286/15611614778298.jpg" alt="" style="width:846px;"/></p>
+
+<ul>
+<li>硬件设备采用扇区管理数据</li>
+<li>虚拟文件系统和映射层和文件系统将数据放在块的逻辑单元，块对应文件系统的最小的磁盘存储单元</li>
+<li>块设备驱动程序能够处理数据的段，一个段就是一个内存页或者内存页的一部分</li>
+<li>磁盘高速度缓存位于数据的页中</li>
+<li>通用块层将所有的上层和下层的组件组合在一起，需要了解数据的扇区，块和页面</li>
+</ul>
+
+<h4>设备</h4>
+
+<p><img src="media/15611602604286/3c473d163b6e90985d7301f115ab660e.jpeg" alt="3c473d163b6e90985d7301f115ab660e"/></p>
+
+<p><img src="media/15611602604286/c9f6a08075ba4eae3314523fa258363c.png" alt="c9f6a08075ba4eae3314523fa258363"/></p>
+
+<h4>段</h4>
+
+<ul>
+<li>不同的段在ram中对应的页框正好是连续的并且磁盘对应的数据块也是连续的，通用块层可以合并他们</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/06/22 07:37 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15432878255877.html">
+                
+                  <h1>链表</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>数组高效原因</h4>
+
+<ul>
+<li>数组简单易用，在实现上使用的是连续的内存空间，可以借助 CPU 的缓存机制，预读数组中的数据，所以访问效率更高。而链表在内存中并不是连续存储，所以对 CPU 缓存不友好，没办法有效预读。</li>
+</ul>
+
+<h4>链表代码原则</h4>
+
+<ul>
+<li>理解指针和引用的含义</li>
+<li>警惕指针丢失和内存泄露</li>
+<li>利用哨兵简化实现难度</li>
+<li>重点留意边界条件
+<ul>
+<li>如果链表为空时，代码是否能正常工作？</li>
+<li>如果链表只包含一个结点时，代码是否能正常工作？</li>
+<li>如果链表只包含两个结点时，代码是否能正常工作？</li>
+<li>代码逻辑在处理头结点和尾结点的时候，是否能正常工作？</li>
+</ul></li>
+</ul>
+
+<h4>链表训练</h4>
+
+<ul>
+<li>单链表反转</li>
+<li>链表中环的检测</li>
+<li>两个有序的链表合并</li>
+<li>删除链表倒数第n个节点</li>
+<li>求链表的中间节点</li>
+</ul>
+
+<h4>判断链表是否回文</h4>
+
+<pre class="line-numbers"><code class="language-text">class Solution {
+public:
+    bool isPalindrome(ListNode* head) {
+        if(head==NULL||head-&gt;next==NULL)
+            return true;
+        ListNode* slow=head;
+        ListNode* fast=head;
+        while(fast-&gt;next!=NULL&amp;&amp;fast-&gt;next-&gt;next!=NULL){
+            slow=slow-&gt;next;
+            fast=fast-&gt;next-&gt;next;
+        }
+        slow-&gt;next=reverseList(slow-&gt;next);
+        slow=slow-&gt;next;
+        while(slow!=NULL){
+            if(head-&gt;val!=slow-&gt;val)
+                return false;
+            head=head-&gt;next;
+            slow=slow-&gt;next;
+        }
+        return true;
+    }
+    ListNode* reverseList(ListNode* head) {
+        ListNode* pre=NULL;
+        ListNode* next=NULL;
+        while(head!=NULL){
+            next=head-&gt;next;
+            head-&gt;next=pre;
+            pre=head;
+            head=next;
+        }
+        return pre;
+    }
+};
+</code></pre>
+
+<h4>链表反转</h4>
+
+<p><img src="media/15432878255877/15610769477328.jpg" alt="" style="width:739px;"/></p>
+
+<h4>回文对比</h4>
+
+<ul>
+<li>无须判断奇偶，只需要以中点后的节点为基准就可以了
+<img src="media/15432878255877/15610772144136.jpg" alt="" style="width:717px;"/></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/11/27 11:03 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15606789387565.html">
+                
+                  <h1>协程切换</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>问题</h4>
+
+<ul>
+<li>共享栈</li>
+</ul>
+
+<h5>线程池与协程对比</h5>
+
+<ul>
+<li>共享栈如何实现 Libgo-&gt;ucontext</li>
+<li>性能差不多，线程处理业务逻辑，协程处理网络IO</li>
+<li>协程抛出异常怎么处理 schedule中有全局，然后随着协程切换而切换</li>
+<li>Ucontext,setjmp/longjmp,register</li>
+<li>协程如何与进程结合</li>
+</ul>
+
+<h4>线程池和协程</h4>
+
+<ul>
+<li>协程处理网络IO的问题</li>
+<li>异步IO处理磁盘文件IO的问题</li>
+<li>线程池处理业务逻辑的问题</li>
+</ul>
+
+<h4>协程</h4>
+
+<ul>
+<li>一个协程对应多个IO</li>
+</ul>
+
+<h4>Ucontext</h4>
+
+<ul>
+<li><a href="https://blog.csdn.net/qq910894904/article/details/41911175">https://blog.csdn.net/qq910894904/article/details/41911175</a></li>
+</ul>
+
+<h4>切换原语</h4>
+
+<ul>
+<li>Create</li>
+<li>Free</li>
+<li>Yield</li>
+<li>Resume</li>
+<li>sched_key_once</li>
+</ul>
+
+<h4>拓展阅读</h4>
+
+<ul>
+<li>libgo</li>
+<li>uconext</li>
+<li>函数栈帧的文章</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/06/16 17:55 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15603928522183.html">
+                
+                  <h1>拓展阅读</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
                         	<ul>
-<li>和已有的电商逻辑重度耦合</li>
-<li>资源共享，缺乏耦合</li>
-<li>服务缺乏限流和过载保护</li>
-<li>MYSQL存在性能瓶颈</li>
-<li>系统缺乏降级措施</li>
-<li>不能及时恢复</li>
-<li>对雪崩缺乏深刻的认识</li>
-</ul>
-
-<h4>秒杀系统</h4>
-
-<ul>
-<li>代码和部署完全隔离，避免互相影响</li>
-<li>根据后端承载能力，进行限流，防止全网挂掉</li>
-<li>平台化，所有操作web平台实时生效</li>
-<li>使用Redis承载海量QPS</li>
-<li>系统采用Go开发，极大提高了系统性能</li>
-<li>系统解耦</li>
-<li>过载保护</li>
-<li>降级预案</li>
-</ul>
-
-<h4>接入层核心功能</h4>
-
-<ul>
-<li>长连接</li>
-<li>IP黑明单</li>
-<li>抢购开关</li>
-<li>url校验</li>
-<li>refer白名单</li>
-<li>Id黑名单</li>
+<li><a href="http://www.wowotech.net/page/3">http://www.wowotech.net/page/3</a></li>
 <li></li>
 </ul>
 
@@ -477,70 +742,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/04/21 16:24 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15553724756526.html">
-                
-                  <h1>系统调用的流程</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>32位系统的调用流程</h4>
-
-<p><img src="media/15553724756526/566299fe7411161bae25b62e7fe20506.jpg" alt="566299fe7411161bae25b62e7fe20506"/></p>
-
-<ul>
-<li>将调用参数放入寄存器中, 由系统调用名得到系统调用号, 放入 eax</li>
-<li>执行 ENTER_KERNEL(一个宏), 对应 int $0x80 触发软中断, 进入内核</li>
-<li>调用软中断处理函数 entry_INT80_32(内核启动时, 由 trap_init() 配置)</li>
-<li>entry_INT80_32 将用户态寄存器存入 pt_regs 中(保存现场以及系统调用参数), 调用 do_syscall_32_iraq_on </li>
-<li>do_syscall_32_iraq_on 从 pt_regs 中取系统调用号(eax), 从系统调用表得到对应实现函数, 取 pt_regs 中存储的参数, 调用系统调用</li>
-<li>entry_INT80_32 调用 INTERRUPT_RUTURN(一个宏)对应 iret 指令, 系统调用结果存在 pt_regs 的 eax 位置, 根据 pt_regs 恢复用户态进程</li>
-</ul>
-
-<h4>64位系统的调用流程</h4>
-
-<p><img src="media/15553724756526/1fc62ab8406c218de6e0b8c7e01fdbd7.jpg" alt="1fc62ab8406c218de6e0b8c7e01fdbd7"/></p>
-
-<ul>
-<li>通过系统调用名得到系统调用号, 存入 rax; 不同中断, 执行 syscall 指令</li>
-<li>MSR(特殊模块寄存器), 辅助完成某些功能(包括系统调用)</li>
-<li>trap_init() 会调用 cpu_init-&gt;syscall_init 设置该寄存器</li>
-<li>syscall 从 MSR 寄存器中, 拿出函数地址进行调用, 即调用 entry_SYSCALL_64</li>
-<li>entry_SYSCALL_64 先保存用户态寄存器到 pt_regs 中</li>
-<li>调用 entry_SYSCALL64_slow_pat-&gt;do_syscall_64</li>
-<li>do_syscall_64 从 rax 取系统调用号, 从系统调用表得到对应实现函数, 取 pt_regs 中存储的参数, 调用系统调用</li>
-<li>返回执行 USERGS_SYSRET64(一个宏), 对应执行 swapgs 和 sysretq 指令; 系统调用结果存在 pt_regs 的 ax 位置, 根据 pt_regs 恢复用户态进程</li>
-</ul>
-
-<h4>64位系统调用的流程</h4>
-
-<p><img src="media/15553724756526/868db3f559ad08659ddc74db07a9a0a5-2.jpg" alt="868db3f559ad08659ddc74db07a9a0a5-2"/></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/04/16 07:54 上午</span>
+                    <span class="date">2019/06/13 10:27 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
@@ -557,50 +759,50 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15548549378624.html">
+                <a class="clearlink" href="15602962403070.html">
                 
-                  <h1>容器性能分析</h1>
+                  <h1>字符设备下</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>容器冷启动性能分析</h4>
+                        	<h4>中断处理</h4>
 
 <ul>
-<li>ServerLess服务启动流程</li>
-<li>事件触发（比如收到新的 HTTP 调用请求）</li>
-<li>资源调度</li>
-<li>镜像拉取 缓存热点镜像</li>
-<li>网络配置 网络资源预分配加速</li>
-<li>启动应用 复用预先创建好的容器</li>
+<li>unsigned int irq 是中断信号；</li>
+<li>q_ handler_ t handler 是中断处理函数；unsigned long flags 是一些标识位；const char*name 是设备名称；</li>
+<li>void<em>dev 这个通用指针应该和中断处理函数的 void</em>dev 相对应。</li>
 </ul>
 
-<h4>CPU火焰图和内存火焰图的区别</h4>
+<h4>中断处理成员</h4>
 
 <ul>
-<li>对 CPU 火焰图来说，采集的数据主要是消耗 CPU 的函数；</li>
-<li>而对内存火焰图来说，采集的数据主要是内存分配、释放、换页等内存管理函数。</li>
+<li>中断处理函数 handler;</li>
+<li>void* dev id 为设备 id; rq 为中断信</li>
+<li>如果中断处理函数在单独的线程运行，则有 thread_fn 是线程的执行函数，thread 是线程task struct</li>
 </ul>
 
-<h4>perf probe</h4>
+<h4>中断层次</h4>
 
 <ul>
-<li>需要编译时候增加g选项</li>
+<li>第一个层次是外部设备给中断控制器发送物理中断信号。</li>
+<li>第二个层次是中断控制器将物理中断信号转换成为中断向量 Interrupt vector，发给各个 CPU。</li>
+<li>第三个层次是每个 CPU 都会有一个中断向量表，根据 Interrupt vector 调用一个 IRQ处理函数。注意这里的 IRQ 处理函数还不是咱们上面指定的 irq_ handler_t，到这一层还是 CPU 硬件的要求。</li>
+<li>第四个层次是在 IRQ 处理函数中，将 interrupt vector 转化为抽象中断层的中断信号 irq 调用中断信号 irq 对应的中断描述结构里面的 irq_ handler_t。
+<img src="media/15602962403070/15602980613927.jpg" alt=""/></li>
 </ul>
 
-<h4>RED法则监控微服务</h4>
+<h4>中断向量表</h4>
 
 <ul>
-<li>请求数（Rate）、错误数（Errors）以及响应时间（Duration）</li>
-<li>RED 方法适用于微服务应用的监控，而 USE 方法适用于系统资源的监控。</li>
+<li> 0 到 31 的前 32 位是系统陷入或者系统异常，这些错误无法屏蔽，一定要处理</li>
+<li> 外加一位 32 位系统调用</li>
 </ul>
 
-<h4>理解内核</h4>
+<h4>总结</h4>
 
 <ul>
-<li><a href="https://elixir.bootlin.com/">https://elixir.bootlin.com/</a> 内核函数</li>
-<li><a href="https://github.com/iovisor/bcc">https://github.com/iovisor/bcc</a> BCC工具</li>
-<li></li>
+<li><img src="media/15602962403070/26bde4fa2279f66098856c5b2b6d308f.png" alt="26bde4fa2279f66098856c5b2b6d308f"/></li>
 </ul>
 
                         
@@ -610,257 +812,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/04/10 08:08 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15547145659086.html">
-                
-                  <h1>异地多活</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>同城异区</h4>
-
-<h4>跨城异区</h4>
-
-<h4>跨国异地</h4>
-
-<h4>思考题</h4>
-
-<ul>
-<li>高可用存储架构中的数据分区备份，又通过自动化运维能够保证 1 分钟就能将全部系统正常启动，那是否意味着没有必要做异地多活了？</li>
-<li>备份系统平常没有流量，如果直接上线可能触发平常测试不到的故障。</li>
-<li>再实时的系统也会有数据延时，如果涉及到金融这种系统，仍然是不敢直接切换的。</li>
-<li>系统运行过程中会有很多中间数据，缓存数据等。系统不经过预热直接把流量倒过来，大流量会直接把系统拖垮</li>
-</ul>
-
-<h4>设计技巧</h4>
-
-<ul>
-<li>保证核心业务的异地多活</li>
-<li>保证核心数据的最终一致性</li>
-<li>采用多种手段同步数据</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/04/08 17:09 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%9E%B6%E6%9E%84.html'>架构</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15547125688046.html">
-                
-                  <h1>微服务混合云部署</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>跨云服务的负载均衡</h4>
-
-<ul>
-<li>通过DNS实现负载均衡</li>
-<li>私有云通过LVS和Nginx实现四层和七层的负载均衡</li>
-<li>阿里云通过SLB和Nginx实现四层和七层的负载均衡</li>
-</ul>
-
-<h4>跨云服务的数据同步</h4>
-
-<ul>
-<li>私有云和阿里云之间架设专线</li>
-<li>缓存放公有云，穿透后访问私有云的数据库</li>
-</ul>
-
-<h4>容器运维</h4>
-
-<ul>
-<li>主机</li>
-<li>服务池</li>
-<li>集群</li>
-</ul>
-
-<h4>流量切换</h4>
-
-<ul>
-<li>DNS 层的切换主要是针对大规模流量增长的情况</li>
-<li>Nginx 层的切换主要是针对私有云内某个机房的 Java Web 容量不足或者服务有问题的时候，需要把这个机房的一部分流量切换到其他机房</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/04/08 16:36 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E5%BE%AE%E6%9C%8D%E5%8A%A1.html'>微服务</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15547108978976.html">
-                
-                  <h1>Service Mesh</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>Service Mesh原理</h4>
-
-<h5>SideCar</h5>
-
-<p><img src="media/15547108978976/daa8dee489e51238f450b51a53c1016d.png" alt="daa8dee489e51238f450b51a53c1016d"/></p>
-
-<ul>
-<li>基于 iptables 的网络拦截</li>
-<li>采用协议转换的方式</li>
-</ul>
-
-<h5>Control Plane</h5>
-
-<ul>
-<li>Control Plane</li>
-<li>服务发现。服务提供者会通过 SideCar 注册到 Control Plane 的注册中心，这样的话服务消费者把请求发送给 SideCar 后，SideCar 就会查询 Control Plane 的注册中心来获取服务提供者节点列表。</li>
-<li>负载均衡。SideCar 从 Control Plane 获取到服务提供者节点列表信息后，就需要按照一定的负载均衡算法从可用的节点列表中选取一个节点发起调用，可以通过 Control Plane 动态修改 SideCar 中的负载均衡配置。</li>
-<li>请求路由。SideCar 从 Control Plane 获取的服务提供者节点列表，也可以通过 Control Plane 来动态改变，比如需要进行 A/B 测试、灰度发布或者流量切换时，就可以动态地改变请求路由。</li>
-<li>故障处理。服务之间的调用如果出现故障，就需要加以控制，通常的手段有超时重试、熔断等，这些都可以在 SideCar 转发请求时，通过 Control Plane 动态配置。</li>
-<li>安全认证。可以通过 Control Plane 控制一个服务可以被谁访问，以及访问哪些信息。</li>
-<li>监控上报。所有 SideCar 转发的请求信息，都会发送到 Control Plane，再由 Control Plane 发送给监控系统，比如 Prometheus 等。</li>
-<li>日志记录。所有 SideCar 转发的日志信息，也会发送到 Control Plane，再由 Control Plane 发送给日志系统，比如 Stackdriver 等。<img src="media/15547108978976/746ba12fff2b184157b00ac44ec2e862.png" alt="746ba12fff2b184157b00ac44ec2e862"/></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/04/08 16:08 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E5%BE%AE%E6%9C%8D%E5%8A%A1.html'>微服务</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15546843019944.html">
-                
-                  <h1>X86结构</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>系统架构图</h4>
-
-<p><img src="media/15546843019944/e2e92f2239fe9b4c024d300046536d76.jpeg" alt="e2e92f2239fe9b4c024d300046536d76"/></p>
-
-<h4>寄存器</h4>
-
-<ul>
-<li>8086  CPU 中寄存器总共为 14 个，且均为 16 位 。<br/>
-即 AX，BX，CX，DX，SP，BP，SI，DI，IP，FLAG，CS，DS，SS，ES 共 14 个。<br/>
-而这 14 个寄存器按照一定方式又分为了通用寄存器，控制寄存器和段寄存器。</li>
-</ul>
-
-<h5>通用寄存器：</h5>
-
-<ul>
-<li>AX，BX，CX，DX 称作为数据寄存器：</li>
-<li>AX (Accumulator)：累加寄存器，也称之为累加器；</li>
-<li>BX (Base)：基地址寄存器；</li>
-<li>CX (Count)：计数器寄存器；</li>
-<li>DX (Data)：数据寄存器；</li>
-<li>SP 和 BP 又称作为指针寄存器：</li>
-<li>SP (Stack Pointer)：堆栈指针寄存器；</li>
-<li>BP (Base Pointer)：基指针寄存器；</li>
-</ul>
-
-<h5>变址寄存器：</h5>
-
-<ul>
-<li>SI (Source Index)：源变址寄存器；</li>
-<li>DI (Destination Index)：目的变址寄存器；</li>
-</ul>
-
-<h5>控制寄存器：</h5>
-
-<ul>
-<li>IP (Instruction Pointer)：指令指针寄存器；</li>
-<li>FLAG：标志寄存器；</li>
-</ul>
-
-<h5>段寄存器：</h5>
-
-<ul>
-<li>CS (Code Segment)：代码段寄存器；</li>
-<li>DS (Data Segment)：数据段寄存器；</li>
-<li>SS (Stack Segment)：堆栈段寄存器；</li>
-<li>ES (Extra Segment)：附加段寄存器；</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/04/08 08:45 上午</span>
+                    <span class="date">2019/06/12 07:37 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
@@ -937,8 +889,6 @@
             <a href="Golang.html"><strong>Golang</strong></a>
         
             <a href="Django.html"><strong>Django</strong></a>
-        
-            <a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html"><strong>C++设计模式实战</strong></a>
         
             <a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html"><strong>深入剖析Kubernetes</strong></a>
         
@@ -1017,6 +967,18 @@
 	      
 		      
 			      <li class="post">
+			        <a href="15818128782116.html">Singleton</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15748977610569.html">State</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817697569868.html">字符串分割</a>
 			      </li>
 		     
@@ -1029,19 +991,7 @@
 		  
 		      
 			      <li class="post">
-			        <a href="15814649492497.html">Simple Factory</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814189410719.html">代码的可测试性</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814188057978.html">重构</a>
+			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

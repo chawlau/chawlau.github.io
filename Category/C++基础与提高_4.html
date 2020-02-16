@@ -87,8 +87,6 @@
         
             <li><a href="Django.html">Django</a></li>
         
-            <li><a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html">C++设计模式实战</a></li>
-        
             <li><a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html">深入剖析Kubernetes</a></li>
         
             <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html">数据结构和算法</a></li>
@@ -172,26 +170,77 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15656903952504.html">
+                <a class="clearlink" href="15659499432841.html">
                 
-                  <h1>迭代器</h1>
+                  <h1>inline const mutable this staic</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>const迭代器</h4>
+                        	<h4>注意</h4>
 
 <ul>
-<li>const_iterator</li>
-<li>指向的值不能改变，迭代器本身可以改变</li>
+<li>成员函数可以访问成员变量，不管成员是否私有</li>
 </ul>
 
-<h4>迭代器失效</h4>
+<h4>inline</h4>
 
 <ul>
-<li>改变容器容量的操作中，会引起迭代器的失效</li>
-<li>容器中增加或者删除元素，可能引起指向容器元素的指针，引用，迭代器失效</li>
-<li>插入数据就break</li>
+<li>类中直接实现的成员函数，会被当成inline来处理，是否会处理成功取决于编译器自身</li>
+</ul>
+
+<h4>const</h4>
+
+<ul>
+<li>成员函数后面增加const,声明和定义都需要加const</li>
+<li>不会修改对象里任何成员变量的值</li>
+<li>常量成员函数</li>
+<li>const只能给成员函数使用</li>
+</ul>
+
+<h4>mutable</h4>
+
+<ul>
+<li>不稳定，易改变</li>
+<li>为了突破const的限制</li>
+<li>mutable表示成员变量永远处于被修改状态</li>
+</ul>
+
+<h4>返回自身对象的引用</h4>
+
+<ul>
+<li>this Time const* this</li>
+</ul>
+
+<h4>静态变量</h4>
+
+<ul>
+<li>局部静态变量</li>
+<li>static保证只能在本文件中使用</li>
+<li>静态成员变量属于类本身</li>
+<li>静态成员变量，一般在一个.cpp源文件开头来定义这个成员变量</li>
+</ul>
+
+<h4>析构函数</h4>
+
+<ul>
+<li>函数体是销毁new出来的东西</li>
+<li>函数体之后系统接管和销毁</li>
+</ul>
+
+<h4>函数屏蔽</h4>
+
+<ul>
+<li>子类中有父类的同名函数，父类同名函数会被屏蔽</li>
+<li>访问父类同名函数 using 让父类函数以重载方式执行，所有同名函数都可以见了</li>
+</ul>
+
+<h4>析构函数写成虚函数</h4>
+
+<ul>
+<li> 父类子针new子类的对象，delete的时候不会调用派生类的析构函数</li>
+<li> 父类的析构函数写成虚函数，delete base会根据动态类型来执行析构函数</li>
+<li> 父类对非继承的成员进行操作，需要把基类的函数定义为虚函数，析构函数的定义的虚属性会被继承给子类，这样子类中的析构函数也自然成为虚函数，虽然名字和基类的不同</li>
 </ul>
 
                         
@@ -201,194 +250,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/08/13 17:59 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15656045521412.html">
-                
-                  <h1>函数</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>inline函数</h4>
-
-<ul>
-<li>函数体很小，调用很频繁</li>
-<li>inline影响编译器，编译阶段，系统将函数调用替换为函数本体</li>
-<li>inline函数需要放在头文件</li>
-<li>代码膨胀，循环，分之，递归调用尽量不要出现在inline中</li>
-</ul>
-
-<h4>C++11新特性</h4>
-
-<ul>
-<li>constexpr 用在常量表达式的调用, 更严格的inline函数</li>
-<li>后置返回类型</li>
-</ul>
-
-<h4>函数杂合用法</h4>
-
-<ul>
-<li>函数返回指针和返回引用</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/12 18:09 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15655109586523.html">
-                
-                  <h1>内存管理</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>接口</h4>
-
-<ul>
-<li>brk</li>
-<li>mmap</li>
-<li>munmap</li>
-</ul>
-
-<h4>内存碎片原因</h4>
-
-<ul>
-<li>brk分配的地址需要等到高地址内存释放以后才能释放，mmap分配的内存可以单独释放</li>
-</ul>
-
-<h4>libc是如何管理内存</h4>
-
-<ul>
-<li>ptmalloc</li>
-<li>fast bins</li>
-<li>unsorted bins</li>
-<li>大内存 large bins-&gt;mmaped chunk-&gt;main area-&gt;top chunk</li>
-</ul>
-
-<h4>ptmalloc分配</h4>
-
-<ol>
-<li>获取分配区的锁，防止多线程冲突。</li>
-<li>计算出需要分配的内存的chunk实际大小。</li>
-<li>判断chunk的大小，如果小于max_fast（64b），则取fast bins上去查询是否有适合的chunk，如果有则分配结束。</li>
-<li>chunk大小是否小于512B，如果是，则从small bins上去查找chunk，如果有合适的，则分配结束。</li>
-<li>继续从 unsorted bins上查找。如果unsorted bins上只有一个chunk并且大于待分配的chunk，则进行切割，并且剩余的chunk继续扔回unsorted bins；如果unsorted bins上有大小和待分配chunk相等的，则返回，并从unsorted bins删除；如果unsorted bins中的某一chunk大小 属于small bins的范围，则放入small bins的头部；如果unsorted bins中的某一chunk大小 属于large bins的范围，则找到合适的位置放入。</li>
-<li>从large bins中查找，找到链表头后，反向遍历此链表，直到找到第一个大小 大于待分配的chunk，然后进行切割，如果有余下的，则放入unsorted bin中去，分配则结束。</li>
-<li>如果搜索fast bins和bins都没有找到合适的chunk，那么就需要操作top chunk来进行分配了（top chunk相当于分配区的剩余内存空间）。判断top chunk大小是否满足所需chunk的大小，如果是，则从top chunk中分出一块来。</li>
-<li>如果top chunk也不能满足需求，则需要扩大top chunk。主分区上，如果分配的内存小于分配阀值（默认128k），则直接使用brk()分配一块内存；如果分配的内存大于分配阀值，则需要mmap来分配；非主分区上，则直接使用mmap来分配一块内存。通过mmap分配的内存，就会放入mmap chunk上，mmap chunk上的内存会直接回收给操作系统。</li>
-</ol>
-
-<h4>ptmalloc释放</h4>
-
-<ol>
-<li>获取分配区的锁，保证线程安全。</li>
-<li>如果free的是空指针，则返回，什么都不做。</li>
-<li>判断当前chunk是否是mmap映射区域映射的内存，如果是，则直接munmap()释放这块内存。前面的已使用chunk的数据结构中，我们可以看到有M来标识是否是mmap映射的内存。</li>
-<li>判断chunk是否与top chunk相邻，如果相邻，则直接和top chunk合并（和top chunk相邻相当于和分配区中的空闲内存块相邻）。转到步骤8</li>
-<li>如果chunk的大小大于max_fast（64b），则放入unsorted bin，并且检查是否有合并，有合并情况并且和top chunk相邻，则转到步骤8；没有合并情况则free。</li>
-<li>如果chunk的大小小于 max_fast（64b），则直接放入fast bin，fast bin并没有改变chunk的状态。没有合并情况，则free；有合并情况，转到步骤7</li>
-<li>在fast bin，如果当前chunk的下一个chunk也是空闲的，则将这两个chunk合并，放入unsorted bin上面。合并后的大小如果大于64KB，会触发进行fast bins的合并操作，fast bins中的chunk将被遍历，并与相邻的空闲chunk进行合并，合并后的chunk会被放到unsorted bin中，fast bin会变为空。合并后的chunk和topchunk相邻，则会合并到topchunk中。转到步骤8</li>
-<li>判断top chunk的大小是否大于mmap收缩阈值（默认为128KB），如果是的话，对于主分配区，则会试图归还top chunk中的一部分给操作系统。free结束。</li>
-</ol>
-
-<h4>内存池</h4>
-
-<ul>
-<li>单线程内存池</li>
-<li>多线程内存池</li>
-<li>固定内存池和可变内存池</li>
-<li>boost::pool</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/11 16:09 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15654308309759.html">
-                
-                  <h1>C程序内存管理和main函数前生今世</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>智能指针</h4>
-
-<ul>
-<li>auto_ptr</li>
-<li>unique_ptr</li>
-</ul>
-
-<h4>main函数前生今世</h4>
-
-<ul>
-<li><img src="media/15654308309759/15654337396971.jpg" alt="" style="width:654px;"/></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/10 17:53 下午</span>
+                    <span class="date">2019/08/16 18:05 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
@@ -592,6 +454,185 @@ decltype(a + b) add(T1 a, T2b) {
               </div><!-- article -->
         
 			<div class="article">
+                <a class="clearlink" href="15656903952504.html">
+                
+                  <h1>迭代器</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>const迭代器</h4>
+
+<ul>
+<li>const_iterator</li>
+<li>指向的值不能改变，迭代器本身可以改变</li>
+</ul>
+
+<h4>迭代器失效</h4>
+
+<ul>
+<li>改变容器容量的操作中，会引起迭代器的失效</li>
+<li>容器中增加或者删除元素，可能引起指向容器元素的指针，引用，迭代器失效</li>
+<li>插入数据就break</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/08/13 17:59 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15655109586523.html">
+                
+                  <h1>内存管理</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>接口</h4>
+
+<ul>
+<li>brk</li>
+<li>mmap</li>
+<li>munmap</li>
+</ul>
+
+<h4>内存碎片原因</h4>
+
+<ul>
+<li>brk分配的地址需要等到高地址内存释放以后才能释放，mmap分配的内存可以单独释放</li>
+</ul>
+
+<h4>libc是如何管理内存</h4>
+
+<ul>
+<li>ptmalloc</li>
+<li>fast bins</li>
+<li>unsorted bins</li>
+<li>大内存 large bins-&gt;mmaped chunk-&gt;main area-&gt;top chunk</li>
+</ul>
+
+<h4>ptmalloc分配</h4>
+
+<ol>
+<li>获取分配区的锁，防止多线程冲突。</li>
+<li>计算出需要分配的内存的chunk实际大小。</li>
+<li>判断chunk的大小，如果小于max_fast（64b），则取fast bins上去查询是否有适合的chunk，如果有则分配结束。</li>
+<li>chunk大小是否小于512B，如果是，则从small bins上去查找chunk，如果有合适的，则分配结束。</li>
+<li>继续从 unsorted bins上查找。如果unsorted bins上只有一个chunk并且大于待分配的chunk，则进行切割，并且剩余的chunk继续扔回unsorted bins；如果unsorted bins上有大小和待分配chunk相等的，则返回，并从unsorted bins删除；如果unsorted bins中的某一chunk大小 属于small bins的范围，则放入small bins的头部；如果unsorted bins中的某一chunk大小 属于large bins的范围，则找到合适的位置放入。</li>
+<li>从large bins中查找，找到链表头后，反向遍历此链表，直到找到第一个大小 大于待分配的chunk，然后进行切割，如果有余下的，则放入unsorted bin中去，分配则结束。</li>
+<li>如果搜索fast bins和bins都没有找到合适的chunk，那么就需要操作top chunk来进行分配了（top chunk相当于分配区的剩余内存空间）。判断top chunk大小是否满足所需chunk的大小，如果是，则从top chunk中分出一块来。</li>
+<li>如果top chunk也不能满足需求，则需要扩大top chunk。主分区上，如果分配的内存小于分配阀值（默认128k），则直接使用brk()分配一块内存；如果分配的内存大于分配阀值，则需要mmap来分配；非主分区上，则直接使用mmap来分配一块内存。通过mmap分配的内存，就会放入mmap chunk上，mmap chunk上的内存会直接回收给操作系统。</li>
+</ol>
+
+<h4>ptmalloc释放</h4>
+
+<ol>
+<li>获取分配区的锁，保证线程安全。</li>
+<li>如果free的是空指针，则返回，什么都不做。</li>
+<li>判断当前chunk是否是mmap映射区域映射的内存，如果是，则直接munmap()释放这块内存。前面的已使用chunk的数据结构中，我们可以看到有M来标识是否是mmap映射的内存。</li>
+<li>判断chunk是否与top chunk相邻，如果相邻，则直接和top chunk合并（和top chunk相邻相当于和分配区中的空闲内存块相邻）。转到步骤8</li>
+<li>如果chunk的大小大于max_fast（64b），则放入unsorted bin，并且检查是否有合并，有合并情况并且和top chunk相邻，则转到步骤8；没有合并情况则free。</li>
+<li>如果chunk的大小小于 max_fast（64b），则直接放入fast bin，fast bin并没有改变chunk的状态。没有合并情况，则free；有合并情况，转到步骤7</li>
+<li>在fast bin，如果当前chunk的下一个chunk也是空闲的，则将这两个chunk合并，放入unsorted bin上面。合并后的大小如果大于64KB，会触发进行fast bins的合并操作，fast bins中的chunk将被遍历，并与相邻的空闲chunk进行合并，合并后的chunk会被放到unsorted bin中，fast bin会变为空。合并后的chunk和topchunk相邻，则会合并到topchunk中。转到步骤8</li>
+<li>判断top chunk的大小是否大于mmap收缩阈值（默认为128KB），如果是的话，对于主分配区，则会试图归还top chunk中的一部分给操作系统。free结束。</li>
+</ol>
+
+<h4>内存池</h4>
+
+<ul>
+<li>单线程内存池</li>
+<li>多线程内存池</li>
+<li>固定内存池和可变内存池</li>
+<li>boost::pool</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/08/11 16:09 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15654308309759.html">
+                
+                  <h1>C程序内存管理和main函数前生今世</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>智能指针</h4>
+
+<ul>
+<li>auto_ptr</li>
+<li>unique_ptr</li>
+</ul>
+
+<h4>main函数前生今世</h4>
+
+<ul>
+<li><img src="media/15654308309759/15654337396971.jpg" alt="" style="width:654px;"/></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/08/10 17:53 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15650804838191.html">
                 
                   <h1>C++基础</h1>
@@ -717,8 +758,6 @@ false, true<br/>
         
             <a href="Django.html"><strong>Django</strong></a>
         
-            <a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html"><strong>C++设计模式实战</strong></a>
-        
             <a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html"><strong>深入剖析Kubernetes</strong></a>
         
             <a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html"><strong>数据结构和算法</strong></a>
@@ -796,6 +835,18 @@ false, true<br/>
 	      
 		      
 			      <li class="post">
+			        <a href="15818128782116.html">Singleton</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15748977610569.html">State</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817697569868.html">字符串分割</a>
 			      </li>
 		     
@@ -808,19 +859,7 @@ false, true<br/>
 		  
 		      
 			      <li class="post">
-			        <a href="15814649492497.html">Simple Factory</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814189410719.html">代码的可测试性</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814188057978.html">重构</a>
+			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

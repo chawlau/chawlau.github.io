@@ -87,8 +87,6 @@
         
             <li><a href="Django.html">Django</a></li>
         
-            <li><a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html">C++设计模式实战</a></li>
-        
             <li><a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html">深入剖析Kubernetes</a></li>
         
             <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html">数据结构和算法</a></li>
@@ -172,124 +170,18 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15735993394297.html">
+                <a class="clearlink" href="15776085483416.html">
                 
-                  <h1>Grafna</h1>
+                  <h1>性能数据的分析</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>监控案例</h4>
+                        	<h4>对时间序列的分析</h4>
 
 <ul>
-<li>CPU使用率</li>
-<li>除去IO等待造成的CPU高之外，大部 分情况 就是 user%造成<br/>
-另外， </li>
-<li>system% 内核态的CPU 使用率 偶尔也会出现高的情况</li>
-<li>当服务器硬盘IO占用过大时，CPU会等待IO的返回进入interuptable 类型的CPU等待时间</li>
-</ul>
-
-<h4>硬盘监控</h4>
-
-<ul>
-<li>predict_linear()</li>
-<li>磁盘读写((rate(node_disk_read_bytes_total[1m] )+ rate(node_disk_written_bytes_total[1m])) / 1024 /1024) &gt; 0</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/13 06:55 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15735993111373.html">
-                
-                  <h1>命令行</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>函数使用</h4>
-
-<h5>rate</h5>
-
-<ul>
-<li>rate(go_goroutines[1m])</li>
-<li>counter类型的数据必须使用rate和increase函数</li>
-<li>在我们的工作中 取1m 还是取5m<br/>
-这个取决于 我们对于监控数据的敏感性程度来挑选</li>
-<li>rate(1m) 是取一段时间增量的平均每秒数量</li>
-<li>rate() -&gt; CPU 内存 硬盘 IO 网络流量</li>
-</ul>
-
-<h5>increase</h5>
-
-<ul>
-<li>increase(1m) 则是 取一段时间增量的总量</li>
-<li>对比rate,曲线基本一致，但是纵坐标单位不一样</li>
-<li><img src="media/15725061245362/15725074004046.jpg" alt="" style="width:1631px;"/></li>
-<li>如果采样点比较少，rate函数容易断链，采用increase比较平缓</li>
-</ul>
-
-<h5>sum</h5>
-
-<ul>
-<li>sum 会把结果集的输出进行总加合</li>
-<li>sum() by (cluster_name)</li>
-<li>sum() by (instance)</li>
-</ul>
-
-<h5>topk</h5>
-
-<ul>
-<li>topk(4,rate(node_network_receive_packets_total[20m]))</li>
-<li>根据给定的数字 取数值最高 &gt;=x 的数值</li>
-<li>Topk因为对于每一个时间点 都只取前三高的数值 那么必然会造成 单个机器的采集数据不连贯,实际使用的时候 一般用topk()函数进行瞬时报警 而不是为了观察曲线图</li>
-</ul>
-
-<h5>count</h5>
-
-<ul>
-<li>count进行一些模糊的监控判断</li>
-<li>比如说 企业中有100台服务器，那么当只有10台服务器CPU高 于80%的时候 这个时候不需要报警但是 当符合80%CPU的服务器数量 超过 30台的时候 那么就 会触发报警 count()</li>
-</ul>
-
-<h5>promethus</h5>
-
-<ul>
-<li>daemonize启动</li>
-<li>--web.read-timeout=5m 链接最大等待时间</li>
-<li>--web-max-connections=512 最大链接数目</li>
-<li>--storage.tsdb.retention=15d 开始采集监控数据后 会存在内存中和硬盘中 对于保留期限的设置</li>
-<li>--storage.tsdb.path=&quot;data/&quot; 存储数据路径</li>
-<li>--query.timeout=2m</li>
-<li>--query.max-concurrency=20</li>
-</ul>
-
-<h4>配置文件</h4>
-
-<ul>
-<li>node_cpu</li>
-<li>node_memory</li>
-<li>node_disk</li>
+<li>一个性能指标，按照时间顺序得到的观测值，可以看作是一个时间序列。很多分析就是针对这个时间序列进行的</li>
+<li>使用线性回归分析，通过拟合自变量与因变量之间最佳线性关系，来预测目标变量的方法</li>
 <li></li>
 </ul>
 
@@ -300,10 +192,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/11/13 06:55 上午</span>
+                    <span class="date">2019/12/29 16:35 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Prometheus.html'>Prometheus</a></span>
+          					    <span class="posted-in"><a href='%E6%80%A7%E8%83%BD%E5%B7%A5%E7%A8%8B%E9%AB%98%E6%89%8B%E8%AF%BE.html'>性能工程高手课</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -317,174 +209,43 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15735992739195.html">
+                <a class="clearlink" href="15776078672199.html">
                 
-                  <h1>对象的比较和拷贝</h1>
+                  <h1>性能工程三定律</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>等于&amp;&amp;is</h4>
+                        	<h4>帕内托法则</h4>
 
 <ul>
-<li>&#39;==&#39;操作符比较对象之间的值是否相等</li>
-<li>而&#39;is&#39;操作符比较的是对象的身份标识是否相等，即它们是否是同一个对象，是否指向同一个内存地址。</li>
+<li>所有的变量中，比较重要的只有 20%，是所谓的“关键少数”</li>
+<li><img src="media/15776078672199/9d99b547cbf2074144203f2ec2806c1d.png" alt="9d99b547cbf2074144203f2ec2806c1d"/></li>
 </ul>
 
-<h4>is效率比较高</h4>
+<h4>阿姆达尔定律</h4>
 
 <ul>
-<li>&#39;is&#39;操作符不能被重载</li>
-<li>&#39;==&#39;操作符却不同，执行a == b相当于是去执行a.__eq__(b)，而 Python 大部分的数据类型都会去重载__eq__这个函数，其内部的处理通常会复杂一些。比如，对于列表，__eq__函数会去遍历列表中的元素，比较它们的顺序和值是否相等</li>
+<li>阿姆达尔定律（Amdahl’s law / Amdahl’s argument）是计算机科学界非常重要的一个定律和法则。它本来用于衡量处理器进行并行处理时总体性能的提升度</li>
 </ul>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/13 06:54 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15735992285022.html">
-                
-                  <h1>元组和列表</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>内部实现</h4>
-
-<pre class="line-numbers"><code class="language-c">#ifndef Py_LIMITED_API
-typedef struct {
-    PyObject_VAR_HEAD
-    PyObject **ob_item;
-    Py_ssize_t allocated;
-} PyListObject;
-typedef struct {
-    PyObject_VAR_HEAD
-    PyObject *ob_item[1];
-} PyTupleObject;
-</code></pre>
-
-<h4>hash表</h4>
-
-<pre class="line-numbers"><code class="language-c">Indices
-----------------------------------------------------
-None | index | None | None | index | None | index ...
-----------------------------------------------------
-Entries
---------------------
-hash0   key0  value0
----------------------
-hash1   key1  value1
----------------------
-hash2   key2  value2
----------------------
-        ...
----------------------
-
-</code></pre>
+<h4>利特尔法则</h4>
 
 <ul>
-<li>旧的Hash表越来越稀疏</li>
+<li>在一个稳定的系统中，长期的平均客户人数（N）等于客户抵达速度（X）乘以客户在这个系统中平均处理时间（W），也就是说 N=XW。</li>
 </ul>
 
-<h4>全局变量修改</h4>
-
-<pre class="line-numbers"><code class="language-python">x = [1]
-
-def func2():
-    x.append(2)
-func2()
-print(x)
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/13 06:53 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15735109140523.html">
-                
-                  <h1>python对象</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>结构图</h4>
+<h4>用处</h4>
 
 <ul>
-<li><img src="media/15735109140523/15735109427738.jpg" alt="" style="width:1069px;"/></li>
+<li>帮助我们设计性能測试的环境。性能测试的内容我们后面会详细讲到，这里简单提下。比如当我们需要模拟一个固定容量的系統，那么性能测试的客户请求流量速度和每个请求的延时都需要仔细考虑。</li>
+<li>帮助我们验证测试结果的正确性。有时候，如果性能测试的工作没有仔细地规划，得出的测试结果会出奇得好，或者出奇得差，从而让我们抓脑壳。这时如果采用利特尔法则，就可以很快地发现问题所在之处。</li>
 </ul>
 
-<h4>type&amp;object&amp;class关系</h4>
-
-<pre class="line-numbers"><code class="language-python">type-&gt;int-&gt;1
-type-&gt;class-&gt;obj
-a = 1
-type(int)
-</code></pre>
+<h4>总结</h4>
 
 <ul>
-<li>object最顶层基类</li>
-<li>type是一个类，也是一个对象</li>
-</ul>
-
-<h4>结构关系图</h4>
-
-<ul>
-<li><img src="media/15735109140523/15735121320037.jpg" alt="" style="width:856px;"/></li>
-</ul>
-
-<h4>对象三个特征</h4>
-
-<ul>
-<li>身份</li>
-<li>值</li>
-<li>类型</li>
-</ul>
-
-<h4>内置类型</h4>
-
-<ul>
-<li><img src="media/15735109140523/15735128960548.jpg" alt="" style="width:763px;"/></li>
-<li>None</li>
+<li><img src="media/15776078672199/74b119d052157540473f3d75870c64dc.png" alt="74b119d052157540473f3d75870c64d"/></li>
 <li></li>
 </ul>
 
@@ -495,7 +256,444 @@ type(int)
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/11/12 06:21 上午</span>
+                    <span class="date">2019/12/29 16:24 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%80%A7%E8%83%BD%E5%B7%A5%E7%A8%8B%E9%AB%98%E6%89%8B%E8%AF%BE.html'>性能工程高手课</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15775800093186.html">
+                
+                  <h1>性能需求指标描述</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>性能需求指标</h4>
+
+<ul>
+<li>业务指标</li>
+<li>技术指标</li>
+</ul>
+
+<h4>业务指标和性能指标</h4>
+
+<ul>
+<li><img src="media/15775800093186/1bb1222c53e8b16414458a8572e786c2.png" alt="1bb1222c53e8b16414458a8572e786"/></li>
+</ul>
+
+<h4>TPS/QPS/RPS/CPS</h4>
+
+<ul>
+<li>QPS 一开始是用来描述 MySQL 中 SQL 每秒执行数 Query Per Second</li>
+<li>TPS 它用来描述每秒事务数。我们也知道 TPS 在不同的行业、不同的业务中定义的粒度都是不同的,需要知道T如何定义</li>
+<li>如果是接口层性能测试，T 可以直接定义为接口级；如果业务级性能测试，T 可以直接定义为每个业务步骤和完整的业务流。</li>
+<li>HPS 每秒点技数</li>
+<li>CPS/CPM：Calls Per Second/ Calls Per Minutes，每秒 / 每分钟调用次数</li>
+</ul>
+
+<h4>RT响应时间</h4>
+
+<ul>
+<li>响应时间来说，时间的拆分定位是性能瓶颈定位分析中非常重要的一节</li>
+</ul>
+
+<h4>压力工具的线程数和用户数和TPS</h4>
+
+<ul>
+<li>用户数*并发度=TPS</li>
+<li>TPS/RT=并发线程数</li>
+</ul>
+
+<h4>响应时间设计</h4>
+
+<ul>
+<li>同行业的对比数据。</li>
+<li>找到使用系统的样本用户（越多越好），对他们做统计，将结果拿出来，就是最有效的响应时间的制定标准</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/12/29 08:40 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95.html'>性能测试</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15775787094210.html">
+                
+                  <h1>TPS和响应时间</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>性能示意图</h4>
+
+<ul>
+<li><img src="media/15775787094210/36ee34ee92b75fd17d5314d74453367d.png" alt="36ee34ee92b75fd17d5314d74453367d"/></li>
+<li>三条曲线：吞吐量的曲线（紫色）、使用率 / 用户数曲线（绿色）、响应时间曲线（深蓝色）。</li>
+<li>三个区域：轻负载区（Light Load）、重负载区（Heavy Load）、塌陷区（Buckle Zone）。</li>
+<li>两个点：最优并发用户数（The Optimum Number of Concurrent Users）、最大并发用户数（The Maximum Number of Concurrent Users）。</li>
+<li>三个状态描述：资源饱和（Resource Saturated）、吞吐下降（Throughput Falling）、用户受影响（End Users Effected）。</li>
+</ul>
+
+<h4>直接关系图</h4>
+
+<ul>
+<li><img src="media/15775787094210/c0575730fe2d14842aba066bc8786734.png" alt="c0575730fe2d14842aba066b"/></li>
+</ul>
+
+<h4>场景定义</h4>
+
+<ul>
+<li><img src="media/15775787094210/55168e3443446e5866c85853f0e71ab1.jpg" alt="55168e3443446e5866c85853f0e71ab1"/></li>
+</ul>
+
+<h4>如何看待性能数据</h4>
+
+<ul>
+<li>一般有两个核心即趋势和证据链。</li>
+<li>分析数据趋势需要对一个时间序列数据的分析，一般采用线性回归分析。</li>
+<li>对于证据链查找，需要对不同时间序列数据的分析，一般采用数据的相关性分析</li>
+</ul>
+
+<h4>性能场景为什么要连续而不是断开</h4>
+
+<ul>
+<li>递增线程数，记录每次的性能指标，对比分析，画曲线，来观察指标变化的趋势，找出性能瓶颈，或者服务器最大处理能力</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/12/29 08:18 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95.html'>性能测试</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15775770763378.html">
+                
+                  <h1>性能测试概念</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>概念</h4>
+
+<ul>
+<li>性能测试针对系统的性能指标，建立性能测试模型，制定性能测试方案，制定监控策略，在场景条件之下执行性能场景，分析判断性能瓶颈并调优，最终得出性能结果来评估系统的性能指标是否满足既定值。</li>
+</ul>
+
+<h4>性能测试指标</h4>
+
+<ul>
+<li>时间指标</li>
+<li>容量指标</li>
+<li>资源利用率指标</li>
+</ul>
+
+<h4>性能测试模型</h4>
+
+<ul>
+<li>业务模型 </li>
+<li>监控模型 有分层、分段的能力，要有全局监控、定向监控的能力</li>
+</ul>
+
+<h4>性能测试方案</h4>
+
+<ul>
+<li>测试环境、测试数据、测试模型、性能指标、压力策略、准入准出和进度风险</li>
+</ul>
+
+<h4>监控</h4>
+
+<ul>
+<li>要有分层、分段的能力，要有全局监控、定向监控的能力</li>
+</ul>
+
+<h4>性能测试预定条件</h4>
+
+<ul>
+<li>软硬件环境、测试数据、测试执行策略、压力补偿</li>
+</ul>
+
+<h4>性能测试场景</h4>
+
+<ul>
+<li>在既定的环境（包括动态扩展等策略）、既定的数据（包括场景执行中的数据变化）、既定的执行策略、既定的监控之下，执行性能脚本，同时观察系统各层级的性能状态参数变化，并实时判断分析场景是否符合预期</li>
+</ul>
+
+<h5>基准性能场景</h5>
+
+<ul>
+<li>这里要做的是单交易的容量，为混合容量做准备</li>
+</ul>
+
+<h5>容量性能场景</h5>
+
+<h5>稳定性能场景</h5>
+
+<ul>
+<li>稳定性测试必然是性能场景的一个分类，稳定性测试中，显然最核心的元素是时间，时间的设置应该来自于运维周期</li>
+</ul>
+
+<h5>异常性能场景</h5>
+
+<ul>
+<li>前提就是要有压力。在压力流量之下，模拟异常。这个异常的定义是很宽泛的</li>
+</ul>
+
+<h4>性能测试的性能调优</h4>
+
+<ul>
+<li>瓶颈判断、性能分析</li>
+<li>新系统性能测试类</li>
+<li>旧系统新版本性能测试类</li>
+<li>新系统性能测试优化类</li>
+</ul>
+
+<h5>性能团队的职责</h5>
+
+<ul>
+<li>性能验证: 针对给定的指标，做性能验证</li>
+<li>性能测试：针对给定的系统，做全面的性能测试，可以得到系统最大容量，但不涉及到调优</li>
+<li>性能测试 + 分析调优: 针对给定的系统，做全面的性能测试，同时将系统调优到最优状态</li>
+</ul>
+
+<h4>性能测试报告</h4>
+
+<ul>
+<li>场景结果整理</li>
+<li>监控结果整理</li>
+<li>性能整体分析</li>
+<li>性能结论</li>
+<li>优化建议</li>
+<li>运维建议</li>
+</ul>
+
+<h4>总结</h4>
+
+<ul>
+<li>数据驱动, 很多企业已转向修炼内功，开始注重内部效率的提升。而数据则是这项内功最核心的部分，向内寻找答案，通过数据的力量驱动增长。性能数据也一样。</li>
+<li><img src="media/15775770763378/c78852164f22f4aac124b8bf9679243e.png" alt="c78852164f22f4aac124b8bf9679243e"/></li>
+</ul>
+
+<h4>性能测试</h4>
+
+<ul>
+<li>性能测试通过概念、模型、观测、实验等手段来进行问题的剖析。其涉及范围之广，从压力工具操作系统、开发语言、数据库、消息队列、中间件、网络、压力工具等各个方面。通常还需要深入的理解各种原理，特别是在一些重点细节上，往往需要有超出一般的认识和方法。</li>
+</ul>
+
+<h4>分布式系统和单机系统在性能上的差别</h4>
+
+<ul>
+<li>分布式系统首先要做的就是响应时间消耗的监控拆分。定位到某节点后再定向分析</li>
+</ul>
+
+<h4>全链路压测</h4>
+
+<ul>
+<li>全链路压测是两个部分。全链路和压测測，压测部分要做的就是有清晰的标识，而全链路就是系统要做的链路改造。</li>
+<li>从技术层面说，不管是使用同样的硬件做旁路应用，还是改造已有应用做链路标识识别，技术的实现手段都是成熟的。</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/12/29 07:51 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95.html'>性能测试</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15768019255107.html">
+                
+                  <h1>进程间通讯</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>三类queue</h4>
+
+<pre class="line-numbers"><code class="language-python">from multiprocessing import Process, Queue
+from queue import Queue
+from multiprocessing import Manager
+</code></pre>
+
+<h4>进程间通讯</h4>
+
+<pre class="line-numbers"><code class="language-python">import time
+from multiprocessing import Process, Queue, Pool, Manager, Pipe
+
+
+def producer(queue):
+    queue.put(&quot;a&quot;)
+    time.sleep(2)
+
+def consumer(queue):
+    time.sleep(2)
+    data = queue.get()
+    print(data)
+
+if __name__ == &quot;__main__&quot;:
+    queue = Queue(10)
+    my_producer = Process(target=producer, args=(queue,))
+    my_consumer = Process(target=consumer, args=(queue,))
+    my_producer.start()
+    my_consumer.start()
+    my_producer.join()
+    my_consumer.join()
+</code></pre>
+
+<h4>进程池间通讯</h4>
+
+<pre class="line-numbers"><code class="language-python">import time
+from multiprocessing import Process, Queue, Pool
+# from queue import Queue
+from multiprocessing import Manager
+
+Manager().Queue()
+
+def producer(queue):
+    queue.put(&#39;a&#39;)
+    time.sleep(2)
+
+def consumer(queue):
+    time.sleep(2)
+    data = queue.get()
+    print(data)
+
+if __name__ == &#39;__main__&#39;:
+    queue = Manager().Queue(10)
+    pool = Pool(2)
+
+    pool.apply_async(producer, args=(queue,))
+    pool.apply_async(consumer, args=(queue,))
+
+    pool.close()
+    pool.join()
+</code></pre>
+
+<h4>Pipe通讯</h4>
+
+<pre class="line-numbers"><code class="language-python">import time
+from multiprocessing import Process, Queue, Pool, Manager, Pipe
+
+def producer(pipe):
+    pipe.send(&#39;bobby&#39;)
+    pipe.send(&#39;ok&#39;)
+    pipe.send(&#39;hello&#39;)
+
+def consumer(pipe):
+    print(pipe.recv())
+    print(pipe.recv())
+    print(pipe.recv())
+
+if __name__ == &#39;__main__&#39;:
+    recv_pipe, send_pipe = Pipe()
+    my_pro = Process(target=producer, args=(send_pipe,))
+    my_con = Process(target=consumer, args=(recv_pipe,))
+
+    my_pro.start()
+    my_con.start()
+    my_pro.join()
+    my_pro.join()
+</code></pre>
+
+<ul>
+<li>pipe性能是高于queue</li>
+</ul>
+
+<h4>共享内存</h4>
+
+<pre class="line-numbers"><code class="language-python">import time
+from multiprocessing import Process, Queue, Pool, Manager, Pipe
+
+def add_data(p_dict, key, value):
+    p_dict[key] = value
+
+if __name__ == &#39;__main__&#39;:
+    progress_dict = Manager().dict()
+
+    first_pro = Process(target=add_data, args=(progress_dict, &quot;bobby1&quot;, 22))
+    second_pro = Process(target=add_data, args=(progress_dict, &quot;bobby2&quot;, 23))
+    third_pro = Process(target=add_data, args=(progress_dict, &quot;bobby3&quot;, 24))
+
+    first_pro.start()
+    second_pro.start()
+    third_pro.start()
+    first_pro.join()
+    second_pro.join()
+    third_pro.join()
+    print(progress_dict)
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/12/20 08:32 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Python.html'>Python</a></span>
@@ -512,9 +710,168 @@ type(int)
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15734291005727.html">
+                <a class="clearlink" href="15768004391774.html">
                 
-                  <h1>Flyweight</h1>
+                  <h1>多进程同步</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>多进程</h4>
+
+<pre class="line-numbers"><code class="language-python">import multiprocessing
+
+import time
+
+def get_html(n):
+    time.sleep(n)
+    print(&#39;sub_progress success&#39;)
+    return n
+
+if __name__ == &#39;__main__&#39;:
+    progress = multiprocessing.Process(target=get_html, args=(2,))
+    print(progress.pid)
+    progress.start()
+    print(progress.pid)
+    progress.join()
+    print(&#39;main progress end&#39;)
+</code></pre>
+
+<h4>进城池获取结果</h4>
+
+<pre class="line-numbers"><code class="language-python">import multiprocessing
+
+import time
+
+def get_html(n):
+    time.sleep(n)
+    print(&#39;sub_progress success&#39;)
+    return n
+
+if __name__ == &#39;__main__&#39;:
+    pool = multiprocessing.Pool(multiprocessing.cpu_count())
+    result = pool.apply_async(get_html, args=(3,))
+    pool.close()
+    pool.join() //前面必须有close
+    print(result.get())
+</code></pre>
+
+<h4>imap&amp;imap_unordered</h4>
+
+<pre class="line-numbers"><code class="language-python">import multiprocessing
+import  time
+def get_html(n):
+    time.sleep(n)
+    print(&#39;sub_process sucess&#39;)
+    return n
+
+if __name__ == &#39;__main__&#39;:
+    pool = multiprocessing.Pool(multiprocessing.cpu_count())
+
+//不按顺序输出结果，谁先完成，谁先输出
+    for result in pool.imap_unordered(get_html, [1,5,3]):
+        print(&#39;{} sleep success&#39;.format(result))
+//按照列表顺序输出结果
+    for result in pool.imap(get_html, [1, 5, 3]):
+        print(&#39;{} sleep success&#39;.format(result))
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/12/20 08:07 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15765509892543.html">
+                
+                  <h1>尾部递归调用</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>优化</h4>
+
+<ul>
+<li>C 语言默认情况下是不考虑并发的，因为并发是自己处理的，那么 GCC 编译器尽可能在指令上做到性能优先，这是 GCC 目标。Go 语言是指令尽可能优化，前提是 runtime 机制优先，runtime 机制优先于算法优化，所以避免把多次函数调用优化成时间非常长的循环。</li>
+<li>GCC 考虑的是 CPU 密集型。Go 考虑的是多任务的公平性</li>
+</ul>
+
+<h4>defer工作机制</h4>
+
+<ul>
+<li>第一个是函数，第二个是所有参数，它会立即求值，把参数和函数一起打包放在一个地方，等着后面去执行</li>
+<li>derfer 语句实际上形成两个函数调用，第一个是 derferproc 注册，把函数和参数打包放在一个地方不执行，然后在 RET 之前通过 deferreturn 函数来调用注册的函数</li>
+<li><img src="media/15765509892543/15765517178849.jpg" alt="" style="width:1274px;"/></li>
+</ul>
+
+<h4>延迟函数一定被执行</h4>
+
+<pre class="line-numbers"><code class="language-go">func main() {
+    defer println(&quot;exit&quot;)
+    //os.Exit(0)
+    panic(&quot;abc&quot;)
+}
+</code></pre>
+
+<ul>
+<li>引发 panic，延迟函数也会被执行。</li>
+<li>用 runtime.Goexit 终止当前 goroutine，延迟函数会被执行。</li>
+<li>但os.Exit 会立即终止进程，不执行任何延迟函数。</li>
+</ul>
+
+<h4>闭包</h4>
+
+<ul>
+<li>在堆上创建数据结构，这个数据结构有两个字段组成的，接下来把匿名函数的地址填到第一个字段里面，把环境变量的值拷贝到第二个字段里面。这个结构体包含闭包执行需要的数据，所以匿名函数加上所需要的环境变量叫做闭包。</li>
+<li>main 函数怎么执行这个匿名函数呢，首先通过 SP 拿到返回值，赋值给 DX，DX 赋值给局部变量 f，所以 f 严格意义上来说不是一个简单的函数，是闭包的第一个字段。DX 读出一个值放到 AX 内，接下来直接 call AX 相当于调用匿名函数，这个匿名函数通过 DX+8 取到第二个字段，就构成了一套的完整的闭包调用</li>
+<li>包装对象只有匿名函数地址，没有环境变量指针，因为匿名函数地址是固定的，所以这个包装对象不需要每次生成，编译器把它写到 rodata 里面。如果有闭包的话，环境变量的地址在堆上分配的，那么这个地址肯定是在运行期动态生成的，那么包装对象就没有办法在编译期确定，所以这个包装对象就不能生成到 rodata 里面。</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/12/17 10:49 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15765398211231.html">
+                
+                  <h1>迭代器模式</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
@@ -522,420 +879,275 @@ type(int)
                         	<h4>动机</h4>
 
 <ul>
-<li>在软件系统采用纯粹对象方案的问题在于大量细粒度的对象会很快充斥在系统中，从而带来很高的运行时代价一一主要指内存需求方面的代价。</li>
-<li>如何在避免大量细粒度对象问题的同时，让外部客户程序仍然能够透明地使用面向对象的方式来进行操作？</li>
-</ul>
-
-<h4>结构</h4>
-
-<ul>
-<li><img src="media/15734291005727/15734293143425.jpg" alt="" style="width:664px;"/></li>
+<li><p>在软件构建过程中，集合对象内部结构常常变化各异。但对于这些集合对象，我们希望在不暴露其内部结构的同时，可以让外部客户代码透明地访词其中包含的元素；同时这种“透明遍历”也为同一种算法在多种集合对象上进行操作”提供了可能。</p></li>
+<li><p>使用面向对象技术将这种遍历机制抽象为“迭代器对象”为“应对变化中的集合对象”提供了一种优雅的方式。</p></li>
 </ul>
 
 <h4>要点总结</h4>
 
 <ul>
-<li><p>面向对象很好地解决了抽象性的问题，但是作为一个运行在机器中的程序实体，我们需要考虑对象的代价问题。Flyweight 主要解决面向对象的代价问题，一般不触及面向对象的抽象性问题。</p></li>
-<li><p>Flyweight 采用对象共享的做法来降低系统中对象的个数，从而降低细粒度对象给系统带来的内存压力。在具体实现方面，要注意对象状态的处理。</p></li>
-<li><p>对象的数量太大从而导致对象内存开销加大ー一什么样的数量才算大？这需要我们仔细的根据具体应用情况进行评估，而不能凭空臆断。</p></li>
+<li>迭代抽象：访问一个聚合对象的内容而无需暴露它的内部表示。迭代多态：为遍历不同的集合结构提供一个统一的接口，从而支</li>
+<li>持同样的算法在不同的集合结构上进行操作。</li>
+<li>迭代器的健壮性考虑：遍历的同时更改迭代器所在的集合结构，会导致问题。</li>
 </ul>
 
-<h4>golang_demo</h4>
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/12/17 07:43 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
 
-<pre class="line-numbers"><code class="language-go">package design_pattern
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15758501024510.html">
+                
+                  <h1>多线程同步</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>死锁情况</h4>
 
-import &quot;fmt&quot;
+<pre class="line-numbers"><code class="language-python">#2. 锁会引起死锁
+#死锁的情况 A（a，b）
+A(a、b)
+acquire (a)
+acquire (b)
 
-type WebUser struct {
-    name string
-}
-
-type WebSite interface {
-    Use(*WebUser)
-}
-
-type ConcreteWebsite struct {
-    name string
-}
-
-func (c *ConcreteWebsite) Use(user *WebUser) {
-    fmt.Println(&quot;Web type &quot;, c.name, &quot; UserName &quot;, user.name)
-}
-
-type NetWebSite struct {
-    *ConcreteWebsite
-}
-
-func NewNetWebsite(name string) WebSite {
-    return &amp;NetWebSite{
-        ConcreteWebsite: &amp;ConcreteWebsite{name: name},
-    }
-}
-
-type WebFactory struct {
-    factory map[string]WebSite
-}
-
-func NewWebFactory() *WebFactory {
-    return &amp;WebFactory {
-        factory: make(map[string]WebSite),
-    }
-}
-
-func (w *WebFactory) GetWebsiteCategory(key string) WebSite {
-    if _, ok := w.factory[key]; !ok {
-        webSite := NewNetWebsite(key)
-        w.factory[key] = webSite
-        println(&quot;create new product&quot;)
-    }
-
-    return w.factory[key]
-}
-
-func TestFlyWeight(t *testing.T) {
-    factory := NewWebFactory()
-
-    f1 := factory.GetWebsiteCategory(&quot;product show&quot;)
-    f1.Use(&amp;WebUser{&quot;ming&quot;})
-
-    f2 := factory.GetWebsiteCategory(&quot;product show&quot;)
-    f2.Use(&amp;WebUser{&quot;zong&quot;})
-
-    f3 := factory.GetWebsiteCategory(&quot;discus&quot;)
-    f3.Use(&amp;WebUser{&quot;jim&quot;})
-
-    f4 := factory.GetWebsiteCategory(&quot;discus&quot;)
-    f4.Use(&amp;WebUser{&quot;bob&quot;})
-}
+B(a、b)
+acquire (a)
+acquire (b)
 </code></pre>
 
-<h4>python_code</h4>
+<h4>可重入的锁</h4>
 
-<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
+<ul>
+<li>同一个线程里面，可以连续调用多次acquire,一定要注意acquire的次数</li>
+<li>RLock可重入锁</li>
+</ul>
 
-class WebUser(object):
+<pre class="line-numbers"><code class="language-python">from threading import Lock, RLock, Condition
 
-    def __init__(self, name):
-        self.name = name
+total = 0
+lock = RLock()
 
+def add():
+    global lock
+    global total
+    for i in range(10000):
+        lock.acquire()
+        lock.acquire()
+        total += 1
+        lock.release()
+        lock.release()
 
-class WebSite(metaclass=ABCMeta):
+def desc():
+    global total
+    global lock
+    for i in range(10000):
+        # lock.acquire()
+        lock.acquire()
+        total -= 1
+        lock.release()
+        # lock.release()
 
-    @abstractmethod
-    def use(self, user):
-        pass
+import threading
 
-class ConcreteWebsite(WebSite):
+thread1 = threading.Thread(target=add)
+thread2 = threading.Thread(target=desc)
 
-    def __init__(self, name):
-        self.name = name
+thread1.start()
+thread2.start()
+thread2.join()
+thread2.join()
+print(&quot;total {}&quot;.format(total))
+</code></pre>
 
-    def use(self, user):
-        print(&#39;Web type {} {}&#39;.format(self.name, user.name))
+<h4>协同</h4>
 
+<pre class="line-numbers"><code class="language-python">import threading
 
-class WebFactory(object):
+class XiaoAi(threading.Thread):
+    def __init__(self, lock):
+        super().__init__(name=&quot;xiaoai&quot;)
+        self.lock = lock
 
-    def __init__(self):
-        self.factory = {}
+    def run(self):
+        self.lock.acquire()
+        print(&quot;{}. at &quot;.format(self.name))
+        self.lock.release()
 
-    def get_website_category(self, key):
-        if key not in self.factory:
-            print(&#39;create new website&#39;)
-            self.factory[key] = ConcreteWebsite(key)
-        return self.factory[key]
+        self.lock.acquire()
+        print(&quot;{}. ok &quot;.format(self.name))
+        self.lock.release()
+
+class TianMao(threading.Thread):
+    def __init__(self, lock):
+        super().__init__(name=&quot;tiaomao&quot;)
+        self.lock = lock
+
+    def run(self):
+        self.lock.acquire()
+        print(&quot;{} : xiaoai roomate&quot;.format(self.name))
+        self.lock.release()
+
+        self.lock.acquire()
+        print(&quot;{} : let&#39;s talk&quot;.format(self.name))
+        self.lock.release()
 
 if __name__ == &#39;__main__&#39;:
-   factory = WebFactory()
-
-   f1 = factory.get_website_category(&quot;product show&quot;)
-   f1.use(WebUser(&#39;ming&#39;))
-
-   f2 = factory.get_website_category(&quot;product show&quot;)
-   f2.use(WebUser(&#39;ming&#39;))
-
-   f3 = factory.get_website_category(&quot;discus&quot;)
-   f3.use(WebUser(&#39;ming&#39;))
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/11 07:38 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15734280261866.html">
-                
-                  <h1>Singleton</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>案例</h4>
-
-<pre class="line-numbers"><code class="language-cpp">std::mutex m;
- static MyCAS* GetInstance() {
-    //不代表一定没被new过，只有第一次多线程初始化的时候需要加锁，后面都不需要加锁
-    if (m_instance == nullptr) {
-      //初始化的时候才加锁
-      std::unque_lock(std::mutex) lock(m);
-      if (m_instance == nullptr) {
-        m_instance = new MyCAS();
-        static GC c1;
-      }
-      return m_instance;
-    }
-  }
-
+    lock = threading.Lock()
+    thread1 = XiaoAi(lock)
+    thread2 = TianMao(lock)
+    thread1.start()
+    thread2.start()
+    thread1.join()
+    thread2.join()
 </code></pre>
 
 <ul>
-<li>存在内存reorder, 加volatitle没有</li>
+<li>condition启动顺序很重要,在调用with cond之后才能调用wait或者notify方法</li>
+<li>condition有两层锁， 一把底层锁会在线程调用了wait方法的时候释放， 上面的锁会在每次调用wait的时候分配一把并放入到cond的等待队列中，等到notify方法的唤醒<br/>
+xiaoai.start()</li>
 </ul>
 
-<h4>golang_demo</h4>
+<pre class="line-numbers"><code class="language-python">import threading
 
-<pre class="line-numbers"><code class="language-go">//Singleton 是单例模式类
-type Singleton struct{}
+class XiaoAi(threading.Thread):
+    def __init__(self, cond):
+        super().__init__(name=&quot;xiaoai&quot;)
+        self.cond = cond
 
-var singleton *Singleton
-var once sync.Once
+    def run(self):
+        with self.cond:
+            self.cond.wait()
+            print(&#39;{}: 在 &#39;.format(self.name))
+            self.cond.notify()
 
-//GetInstance 用于获取单例模式对象
-func GetInstance() *Singleton {
-        once.Do(func() {
-                singleton = &amp;Singleton{}
-        })
+            self.cond.wait()
+            print(&#39;{}: 好阿 &#39;.format(self.name))
+            self.cond.notify()
 
-        return singleton
-}
+            self.cond.wait()
+            print(&#39;{}: 君住长江尾 &#39;.format(self.name))
+            self.cond.notify()
 
-func GetInstance() *Singleton {
-        once.Do(func() {
-                singleton = &amp;Singletion()
-        })
-}
+            self.cond.wait()
+            print(&#39;{}: 共饮长江水 &#39;.format(self.name))
+            self.cond.notify()
+
+            self.cond.wait()
+            print(&#39;{}: 此恨何时已 &#39;.format(self.name))
+            self.cond.notify()
+
+            self.cond.wait()
+            print(&#39;{}: 定不负相思意 &#39;.format(self.name))
+            self.cond.notify()
+
+class TianMao(threading.Thread):
+    def __init__(self, cond):
+        super().__init__(name=&quot;天猫精灵&quot;)
+        self.cond = cond
+
+    def run(self):
+        with self.cond:
+            print(&#39;{}: 小爱同学 &#39;.format(self.name))
+            self.cond.notify()
+            self.cond.wait()
+
+            print(&#39;{}: 我们来对古诗吧 &#39;.format(self.name))
+            self.cond.notify()
+            self.cond.wait()
+
+            print(&#39;{}: 我住长江头 &#39;.format(self.name))
+            self.cond.notify()
+            self.cond.wait()
+
+            print(&#39;{}: 日日思君不见君 &#39;.format(self.name))
+            self.cond.notify()
+            self.cond.wait()
+
+            print(&#39;{}: 此水几时休 &#39;.format(self.name))
+            self.cond.notify()
+            self.cond.wait()
+
+            print(&#39;{}: 只愿君心似我心 &#39;.format(self.name))
+            self.cond.notify()
+            self.cond.wait()
+
+if __name__ == &#39;__main__&#39;:
+    from concurrent import futures
+    cond = threading.Condition()
+    xiaoai = XiaoAi(cond)
+    tianmao = TianMao(cond)
+
+    xiaoai.start()
+    tianmao.start()
 </code></pre>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/11 07:20 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
+<h4>ThreadPoolExcutor</h4>
 
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15734246276075.html">
-                
-                  <h1>GC原则</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>查看引用计数</h4>
+<pre class="line-numbers"><code class="language-python">from concurrent.futures import ThreadPoolExecutor, as_completed, wait, FIRST_COMPLETED
+from concurrent.futures import Future
+from multiprocessing import Pool
 
-<ul>
-<li>sys.getrefcount() 这个函数，可以查看一个变量的引用次数。这段代码本身应该很好理解，不过别忘了，getrefcount 本身也会引入一次计数。</li>
-<li>在函数调用发生的时候，会产生额外的两次引用，一次来自函数栈，另一个是函数参数。</li>
-</ul>
 
-<h4>循环引用</h4>
-
-<pre class="line-numbers"><code class="language-python">
-import gc
-
-def func():
-    show_memory_info(&#39;initial&#39;)
-    a = [i for i in range(10000000)]
-    b = [i for i in range(10000000)]
-    show_memory_info(&#39;after a, b created&#39;)
-    a.append(b)
-    b.append(a)
-
-func()
-gc.collect()
-show_memory_info(&#39;finished&#39;)
-</code></pre>
-
-<h4>回收机制</h4>
-
-<h5>标记清除</h5>
-
-<ul>
-<li>对于一个有向图，如果从一个节点出发进行遍历，并标记其经过的所有节点；那么，在遍历结束后，所有没有被标记的节点，我们就称之为不可达节点。显而易见，这些节点的存在是没有任何意义的，自然的，我们就需要对它们进行垃圾回收。</li>
-<li>mark-sweep 使用双向链表维护了一个数据结构，并且只考虑容器类的对象（只有容器类对象才有可能产生循环引用）</li>
-</ul>
-
-<h5>分代收集算法</h5>
-
-<ul>
-<li>Python 将所有对象分为三代。刚刚创立的对象是第 0 代；经过一次垃圾回收后，依然存在的对象，便会依次从上一代挪到下一代。而每一代启动自动垃圾回收的阈值，则是可以单独指定的。当垃圾回收器中新增对象减去删除对象达到相应的阈值时，就会对这一代对象启动垃圾回收</li>
-</ul>
-
-<h4>引用计数</h4>
-
-<ul>
-<li>引用计数是其中最简单的实现，不过切记，这只是充分非必要条件，因为循环引用需要通过不可达判定，来确定是否可以回收</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/11 06:23 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15733756280245.html">
-                
-                  <h1>GIL</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>引入GIL原因</h4>
-
-<ul>
-<li>CPython  引进 GIL 其实主要就是这么两个原因：一是设计者为了规避类似于内存管理这样的复杂的竞争风险问题（race condition）；二是因为 CPython 大量使用 C 语言库，但大部分 C 语言库都不是原生线程安全的（线程安全会降低性能和增加复杂度）。</li>
-</ul>
-
-<h4>工作流程</h4>
-
-<ul>
-<li>一个 GIL 在 Python 程序的工作示例。其中，Thread 1、2、3 轮流执行，每一个线程在开始执行时，都会锁住 GIL，以阻止别的线程执行；同样的，每一个线程执行完一段后，会释放 GIL，以允许别的线程开始利用资源</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/10 16:47 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15733738151028.html">
-                
-                  <h1>Asyncio</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>多线程缺陷</h4>
-
-<ul>
-<li>比如，多线程运行过程容易被打断，因此有可能出现 race condition 的情况；再如，线程切换本身存在一定的损耗，线程数不能无限增加，因此，如果你的 I/O 操作非常 heavy，多线程很有可能满足不了高效率、高质量的需求。</li>
-</ul>
-
-<h4>多线程还是AsyncIO</h4>
-
-<ul>
-<li>如果是 I/O bound，并且 I/O 操作很慢，需要很多任务 / 线程协同实现，那么使用 Asyncio 更合适。</li>
-<li>如果是 I/O bound，但是 I/O 操作很快，只需要有限数量的任务 / 线程，那么使用多线程就可以了。</li>
-<li>如果是 CPU bound，则需要使用多进程来提高程序运行效率。</li>
-</ul>
-
-<h4>总结</h4>
-
-<ul>
-<li>不同于多线程，Asyncio 是单线程的，但其内部 event loop 的机制，可以让它并发地运行多个不同的任务，并且比多线程享有更大的自主控制权。Asyncio 中的任务，在运行过程中不会被打断，因此不会出现 race condition 的情况。尤其是在 I/O 操作 heavy 的场景下，Asyncio 比多线程的运行效率更高。因为 Asyncio 内部任务切换的损耗，远比线程切换的损耗要小；并且 Asyncio 可以开启的任务数量，也比多线程中的线程数量多得多。</li>
-</ul>
-
-<h4>demo</h4>
-
-<pre class="line-numbers"><code class="language-python">import asyncio
-import aiohttp
 import time
 
-async def download_one(url):
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url) as resp:
-            print(&#39;Read {} from {}&#39;.format(resp.content_length, url))
+def get_html(times):
+    time.sleep(times)
+    print(&#39;get page {} process&#39;.format(times))
+    return times
 
-async def download_all(sites):
-    tasks = [asyncio.create_task(download_one(site)) for site in sites]
-    await asyncio.gather(*tasks)
+executor = ThreadPoolExecutor(max_workers=2)
+</code></pre>
 
-def main():
-    sites = [
-      &#39;https://www.baidu.com&#39;,
-      &#39;https://www.taobao.com&#39;,
-      &#39;https://www.jd.com&#39;,
-      &#39;https://www.tencent.com/zh-cn/index.html&#39;
-    ]
-    start_time = time.perf_counter()
-    asyncio.run(download_all(sites))
-    end_time = time.perf_counter()
-    print(&#39;Download {} sites in {} seconds&#39;.format(len(sites), end_time - start_time))
+<h5>执行任务获取结果</h5>
 
-if __name__ == &#39;__main__&#39;:
-        main()
+<pre class="line-numbers"><code class="language-python">task1 = executor.submit(get_html, (3))
+task2 = executor.submit(get_html, (2))
+#
+print(task1.result())
+print(task2.cancel()) //取消结果
+</code></pre>
+
+<h5>多任务</h5>
+
+<pre class="line-numbers"><code class="language-python">urls = [3, 2, 4]
+
+all_task = [executor.submit(get_html, (url)) for url in urls]
+
+for future in as_completed(all_task):
+    data = future.result()
+    print(&#39;get {} page&#39;.format(data))
+
+
+#通过excutor获取已经完成的task
+for data in executor.map(get_html, urls):
+    print(&#39;get {} page&#39;.format(data))
+</code></pre>
+
+<h5>wait获取结果</h5>
+
+<pre class="line-numbers"><code class="language-python">#wait
+wait(all_task, return_when=FIRST_COMPLETED)
+print(&#39;main&#39;)
 </code></pre>
 
                         
@@ -945,7 +1157,7 @@ if __name__ == &#39;__main__&#39;:
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/11/10 16:16 下午</span>
+                    <span class="date">2019/12/09 08:08 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Python.html'>Python</a></span>
@@ -1022,8 +1234,6 @@ if __name__ == &#39;__main__&#39;:
             <a href="Golang.html"><strong>Golang</strong></a>
         
             <a href="Django.html"><strong>Django</strong></a>
-        
-            <a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html"><strong>C++设计模式实战</strong></a>
         
             <a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html"><strong>深入剖析Kubernetes</strong></a>
         
@@ -1102,6 +1312,18 @@ if __name__ == &#39;__main__&#39;:
 	      
 		      
 			      <li class="post">
+			        <a href="15818128782116.html">Singleton</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15748977610569.html">State</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817697569868.html">字符串分割</a>
 			      </li>
 		     
@@ -1114,19 +1336,7 @@ if __name__ == &#39;__main__&#39;:
 		  
 		      
 			      <li class="post">
-			        <a href="15814649492497.html">Simple Factory</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814189410719.html">代码的可测试性</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814188057978.html">重构</a>
+			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

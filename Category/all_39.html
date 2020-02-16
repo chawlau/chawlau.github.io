@@ -87,8 +87,6 @@
         
             <li><a href="Django.html">Django</a></li>
         
-            <li><a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html">C++设计模式实战</a></li>
-        
             <li><a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html">深入剖析Kubernetes</a></li>
         
             <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html">数据结构和算法</a></li>
@@ -172,508 +170,89 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15577065945094.html">
+                <a class="clearlink" href="15630648340094.html">
                 
-                  <h1>ELF和静态连接</h1>
+                  <h1>发送网络包</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>编译，链接和装载</h4>
+                        	<h4>socket write</h4>
 
 <ul>
-<li>第一个部分由编译（Compile）、汇编（Assemble）以及链接（Link）三个阶段组成。在这三个阶段完成之后，我们就生成了一个可执行文件。</li>
-<li>第二部分，我们通过装载器（Loader）把可执行文件装载（Load）到内存中。CPU 从内存中读取指令和数据，来开始真正执行程序。
-<img src="media/15577065945094/997341ed0fa9018561c7120c19cfa2a7.jpg" alt="997341ed0fa9018561c7120c19cfa2a7"/></li>
+<li>struct file-&gt;struct socket-&gt;sock_sendmsg-&gt;sock_sendmsg_nosec</li>
+<li>msg-&gt;struct sk_buff-&gt;tcp写入队列-&gt;mss-&gt;数据拷贝到连续数据区域-&gt;发送网络包</li>
 </ul>
 
-<h4>ELF格式和链接</h4>
+<h4>分散聚合</h4>
 
 <ul>
-<li>程序最终是通过装载器变成指令和数据的</li>
-<li>gcc -g -c add_lib.c link_example.c</li>
-<li>objdump -d -M intel -S add_lib.o</li>
-<li>objdump -d -M intel -S link_example.o</li>
-<li>gcc -o link-example add_lib.o link_example.o</li>
-<li>objdump -d -M intel -S link-example</li>
+<li>IP层通过内存拷贝进行聚合，让散的数据零散的放在原处，在设备层进行聚合。如果使用这种模式，网络包的数据就不会放在连续的数据区域</li>
+<li><img src="media/15630648340094/9ad34c3c748978f915027d5085a858b8-2.png" alt="9ad34c3c748978f915027d5085a858b8-2"/></li>
 </ul>
 
-<h4>ELF文件</h4>
+<h4>tcp_write_xmit</h4>
 
 <ul>
-<li>首先是.text Section，也叫作代码段或者指令段（Code Section），用来保存程序的代码和指令；</li>
-<li>接着是.data Section，也叫作数据段（Data Section），用来保存程序里面设置好的初始化数据信息；</li>
-<li>然后就是.rel.text Secion，叫作重定位表（Relocation Table）。重定位表里，保留的是当前的文件里面，哪些跳转地址其实是我们不知道的。比如上面的 link_example.o 里面，我们在 main 函数里面调用了 add 和 printf 这两个函数，但是在链接发生之前，我们并不知道该跳转到哪里，这些信息就会存储在重定位表里；</li>
-<li>最后是.symtab Section，叫作符号表（Symbol Table）。符号表保留了我们所说的当前文件里面定义的函数名称和对应地址的地址簿。
-<img src="media/15577065945094/276a740d0eabf5f4be905fe7326d9fb3-2.jpg" alt="276a740d0eabf5f4be905fe7326d9fb3-2"/></li>
-</ul>
-
-<h4>链接器</h4>
-
-<ul>
-<li>把所有符号表里的信息收集起来，构成一个全局的符号表</li>
-<li>根据重定位表，把所有不确定要跳转地址的代码，根据符号表里面存储的地址，进行一次修正</li>
-<li>把所有的目标文件的对应段进行一次合并，变成了最终的可执行代码</li>
-</ul>
-
-<h4>装载器</h4>
-
-<ul>
-<li>解析 ELF 文件，把对应的指令和数据，加载到内存里面供 CPU 执行</li>
-</ul>
-
-<h4>linux程序不能在win执行</h4>
-
-<ul>
-<li>两个操作系统下可执行文件的格式不一样</li>
-<li> Linux 下的 ELF 文件格式，而 Windows 的可执行文件格式是一种叫作PE（Portable Executable Format）的文件格式。Linux 下的装载器只能解析 ELF 格式而不能解析 PE 格式</li>
-</ul>
-
-<h4>扩展阅读</h4>
-
-<ul>
-<li>《程序员的自我修养——链接、装载和库》</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/05/13 08:16 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86.html'>计算机组成原理</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15576250906291.html">
-                
-                  <h1>Swap内存</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>回收场景</h4>
-
-<ul>
-<li>直接内存回收</li>
-<li>内核线程回收 kswapd0</li>
-</ul>
-
-<h5>三种水位</h5>
-
-<ul>
-<li>页最小阈值（pages_min）</li>
-<li>页低阈值（pages_low）</li>
-<li>页高阈值（pages_high
-<img src="media/15576250906291/c1054f1e71037795c6f290e670b29120.png" alt="c1054f1e71037795c6f290e670b29120"/></li>
-</ul>
-
-<h4>NUMA和Swap</h4>
-
-<ul>
-<li>NUMA 架构下，多个处理器被划分到不同 Node 上，且每个 Node 都拥有自己的本地内存空间。</li>
-<li>Node 内部的内存空间，实际上又可以进一步分为不同的内存域（Zone），比如直接内存访问区（DMA）、普通内存区（NORMAL）、伪内存区（MOVABLE）
-<img src="media/15576250906291/be6cabdecc2ec98893f67ebd5b9aead9.png" alt="be6cabdecc2ec98893f67ebd5b9aead9"/></li>
-</ul>
-
-<h5>回收内存模式</h5>
-
-<ul>
-<li>/proc/sys/vm/zone_reclaim_mode</li>
-<li>0 可以从其他 Node 寻找空闲内存，也可以从本地回收内存</li>
-<li>1、2、4 都表示只回收本地内存，2 表示可以回写脏数据回收内存，4 表示可以用 Swap 方式回收内存</li>
-</ul>
-
-<h4>文件页面和匿名页面</h4>
-
-<ul>
-<li>对文件页的回收，当然就是直接回收缓存，或者把脏页写回磁盘后再回收。</li>
-<li>而对匿名页的回收，其实就是通过 Swap 机制，把它们写入磁盘后再释放内存 </li>
-</ul>
-
-<h4>回收比例</h4>
-
-<ul>
-<li>/proc/sys/vm/swappiness</li>
-</ul>
-
-<h4>swap 类型</h4>
-
-<ul>
-<li>swap分区</li>
-<li>swap文件</li>
-<li>kbcommit，表示当前系统负载需要的内存。它实际上是为了保证系统内存不溢出，对需要内存的估计值。%commit，就是这个值相对总内存的百分比。</li>
-<li>kbactive，表示活跃内存，也就是最近使用过的内存，一般不会被系统回收。</li>
-<li>kbinact，表示非活跃内存，也就是不常访问的内存，有可能会被系统回收。</li>
-</ul>
-
-<h4>清空buffer和cache</h4>
-
-<ul>
-<li>sync; echo 1 &gt; /proc/sys/vm/drop_caches;</li>
-<li>echo 2 &gt; /proc/sys/vm/drop_caches;</li>
-<li>echo 3 &gt; /proc/sys/vm/drop_caches;</li>
-</ul>
-
-<h4>观察系统内存变化</h4>
-
-<ul>
-<li>watch -d grep -A 15 &#39;Normal&#39; /proc/zoneinfo</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/05/12 09:38 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15575401859226.html">
-                
-                  <h1>系统调用</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>操作系统与我们编写的软件并不同属一个进程，两边的内存地址空间都是独立的，如何实现系统调用</h4>
-
-<ul>
-<li>从虚拟内存机制的视角，操作系统内核和所有进程都在同一个地址空间，也就是，操作系统内核，它是所有进程共享的内存
-<img src="media/15575401859226/2b0adde3eca6262ae674a97f478c15b3.png" alt="2b0adde3eca6262ae674a97f478c15b3"/></li>
-<li>中断向量表的地址，以及操作系统内核的地址空间是一个契约。有了中断向量表的地址约定，用户态函数就可以发起一次系统调用（软中断）</li>
-</ul>
-
-<h4>编程接口</h4>
-
-<p><img src="media/15575401859226/b2393a109f849bd91c991b1e750cb3e0.png" alt="b2393a109f849bd91c991b1e750cb3e0"/></p>
-
-<ul>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/05/11 10:03 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15574892932253.html">
-                
-                  <h1>线程的创建</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>原理</h4>
-
-<ul>
-<li>由内核态和用户态合作完成的</li>
-<li>用户态维护线程的结构 pthread</li>
-</ul>
-
-<h4>线程栈的创建</h4>
-
-<ul>
-<li>设置栈的大小，需要你把设置的值拿出来；</li>
-<li>为了防止栈的访问越界，在栈的末尾设置guardsize，一旦访问到这里就错误了；</li>
-<li>get_cached_stack 从缓存中获取已经存在的线程</li>
-<li>__mmap创建新的线程内存区域</li>
-<li>计算出 guard 内存的位置</li>
-<li>设置pthread 这个结构里面的成员变量 stackblock、stackblock_size、guardsize、specific。这里的 specific 是用于存放 Thread Specific Data 的，也即属于线程的全局变量；</li>
-<li>将这个线程栈放到 stack_used 链表中，其实管理线程栈总共有两个链表，一个是 stack_used，也就是这个栈正被使用；另一个是 stack_cache，就是上面说的，一旦线程结束，先缓存起来，不释放，等有其他的线程创建的时候，给其他的线程用。</li>
-</ul>
-
-<h4>内核态创建任务</h4>
-
-<ul>
-<li>start_routine</li>
-<li>__nptl_nthreads 线程数加1</li>
-<li>create_thread 创建线程</li>
-<li>--clone--&gt;do_fork</li>
-</ul>
-
-<h5>标志位设定</h5>
-
-<ul>
-<li>CLONE_FS copy_fs </li>
-<li>CLONE_SIGHAND copy_sighand</li>
-<li>CLONE_VM copy_mm</li>
-</ul>
-
-<h5>亲缘关系</h5>
-
-<ul>
-<li> CLONE_THREAD </li>
-</ul>
-
-<h5>信号处理</h5>
-
-<ul>
-<li>kill 进程</li>
-<li>pthread_kill 线程</li>
-<li>初始化 struct sigpending pending</li>
-<li>返回用户态</li>
-</ul>
-
-<h4>用户态执行线程</h4>
-
-<ul>
-<li>start_thread 统一入口</li>
-<li>调用完毕线程数目减1</li>
+<li>TSO 分段-&gt;硬件网卡去做</li>
+<li>拥塞窗口</li>
+<li>tcp_transmit_skb-&gt;ip_queue_xmit</li>
 </ul>
 
 <h4>总结</h4>
 
-<p><img src="media/15574892932253/14635b1613d04df9f217c3508ae8524b.jpeg" alt="14635b1613d04df9f217c3508ae8524b"/></p>
+<p><img src="media/15630648340094/dc66535fa7e1a10fd6d728865f6c9344.png" alt="dc66535fa7e1a10fd6d728865f6"/></p>
 
 <ul>
-<li>查看进程和线程栈的使用情况</li>
-<li>pstack</li>
-<li>pstree</li>
+<li>VFS 层：write 系统调用找到 struct file，根据里面的 file_operations 的定义，调用 sock_write_iter 函数。sock_write_iter 函数调用 sock_sendmsg 函数。</li>
+<li>Socket 层：从 struct file 里面的 private_data 得到 struct socket，根据里面 ops 的定义，调用 inet_sendmsg 函数。</li>
+<li>Sock 层：从 struct socket 里面的 sk 得到 struct sock，根据里面 sk_prot 的定义，调用 tcp_sendmsg 函数。</li>
+<li>TCP 层：tcp_sendmsg 函数会调用 tcp_write_xmit 函数，tcp_write_xmit 函数会调用 tcp_transmit_skb，在这里实现了 TCP 层面向连接的逻辑。</li>
+<li>IP 层：扩展 struct sock，得到 struct inet_connection_sock，根据里面 icsk_af_ops 的定义，调用 ip_queue_xmit 函数。</li>
 </ul>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/05/10 19:54 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15574467683931.html">
-                
-                  <h1>函数调用</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>生成汇编代码</h4>
+<h4>ip层发送</h4>
 
 <ul>
-<li>gcc -g -c function_example.c</li>
-<li>objdump -d -M intel -S func.o</li>
-</ul>
-
-<h4>函数压栈</h4>
-
+<li>第一部分，选取路由，也即我要发送这个包应该从哪个网卡出去。</li>
+<li>路由规则Trie树进行匹配</li>
+<li>就是准备 IP 层的头，往里面填充内容。这就要对着 IP 层的头的格式进行理解。</li>
+<li>第三部分，就是调用 ip_local_out 发送 IP 包。__ip_local_out是决定转发规则 
 <ul>
-<li>每次程序调用函数之前，我们都把调用返回后的地址写在一个乒乓球上，然后塞进这个球桶。这个操作其实就是我们常说的压栈。如果函数执行完了，我们就从球桶里取出最上面的那个乒乓球，很显然，这就是出栈。</li>
-</ul>
-
-<h4>函数栈帧</h4>
-
-<ul>
-<li>整个函数所占用的所有内存空间，就是函数的栈帧（Stack Frame）</li>
-<li>rbp 帧指针</li>
-<li>rsp 栈顶指针</li>
-</ul>
-
-<h4>函数内联</h4>
-
-<ul>
-<li>把一个实际调用的函数产生的指令，直接插入到的位置，来替换对应的函数调用指令</li>
-<li>编译器进行自动优化的场景， 函数内联（Inline）</li>
-<li><img src="media/15574467683931/dca83475560147d4dd492ff283ae0c85.jpeg" alt="dca83475560147d4dd492ff283ae0"/></li>
-</ul>
-
-<h4>函数调用栈</h4>
-
-<ul>
-<li>初始化栈帧</li>
-<li>执行过程的计算</li>
-<li>恢复栈，返回</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/05/10 08:06 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86.html'>计算机组成原理</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15572743128254.html">
-                
-                  <h1>指令跳转</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>CPU执行指令原理</h4>
-
-<ul>
-<li>一个是PC 寄存器（Program Counter Register），我们也叫指令地址寄存器（Instruction Address Register）。顾名思义，它就是用来存放下一条需要执行的计算机指令的内存地址。</li>
-<li>第二个是指令寄存器（Instruction Register），用来存放当前正在执行的指令。</li>
-<li>第三个是条件码寄存器（Status Register），用里面的一个一个标记位（Flag），存放 CPU 进行算术或者逻辑计算的结果。
-<img src="media/15572743128254/cdba5c17a04f0dd5ef05b70368b9a96f.jpg" alt="cdba5c17a04f0dd5ef05b70368b9a96f"/></li>
-</ul>
-
-<h4>生成汇编代码</h4>
-
-<ul>
-<li> gcc -g -c test.c</li>
-<li> objdump -d -M intel -S test.o</li>
-<li> </li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/05/08 08:11 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86.html'>计算机组成原理</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15571872879168.html">
-                
-                  <h1>抢占式调度</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>时间片</h4>
-
-<ul>
-<li>计算机隔一段时间触发时钟中断</li>
-<li>计算进程分配的实际运行时间</li>
-<li>进程总共执行的实际时间 - 上次被调度时总的的运行时间 = 本次实际运行时间</li>
-<li>被调度条件
-<ul>
-<li>本次实际运行时间 &gt; 计算进程分配的实际运行时间</li>
-<li>当前进程的 vruntime 大于红黑树中最小的进程的 vruntime</li>
-<li>差值大于 ideal_runtime</li>
+<li>dst_output是真正的发送数据</li>
 </ul></li>
 </ul>
 
-<h4>调度</h4>
+<h4>mac层发送</h4>
 
 <ul>
-<li>打上TIF_NEED_RESCHED标签</li>
+<li>dev_queue_xmit</li>
+<li>网络设备发送队列 struct netdev_queue *txq</li>
+<li>qdisc pfifo_fast 内核如果需要通过某个网络接口发送数据包，都需要按照为这个接口配置的 qdisc（排队规则）把数据包加入队列</li>
+<li> __dev_xmit_skb -&gt; <strong>qdisc_run-&gt;</strong>netif_schedule-&gt; __netif_reschedule</li>
+<li>NET_TX_SOFTIRQ</li>
+<li>NET_RX_SOFTIRQ</li>
+<li>net_tx_action-&gt;qdisc_run-&gt;qdisc_restart-&gt;sch_direct_xmit-&gt;dev_hard_start_xmit-&gt;xmit_one-&gt;netdev_start_xmit-&gt;__netdev_start_xmit-&gt;ixgb_xmit_frame</li>
 </ul>
 
-<h4>进程被唤醒</h4>
+<h4>发送总流程</h4>
 
 <ul>
-<li>当被唤醒的进程优先级高于 CPU 上的当前进程，就会触发抢占</li>
-<li>这个唤醒的任务添加到队列当中</li>
-<li>激活任务</li>
-<li>标记被抢占</li>
+<li>VFS 层：write 系统调用找到 struct file，根据里面的 file_operations 的定义，调用 sock_write_iter 函数。sock_write_iter 函数调用 sock_sendmsg 函数。</li>
+<li>Socket 层：从 struct file 里面的 private_data 得到 struct socket，根据里面 ops 的定义，调用 inet_sendmsg 函数。</li>
+<li>Sock 层：从 struct socket 里面的 sk 得到 struct sock，根据里面 sk_prot 的定义，调用 tcp_sendmsg 函数。</li>
+<li>TCP 层：tcp_sendmsg 函数会调用 tcp_write_xmit 函数，tcp_write_xmit 函数会调用 tcp_transmit_skb，在这里实现了 TCP 层面向连接的逻辑。</li>
+<li>IP 层：扩展 struct sock，得到 struct inet_connection_sock，根据里面 icsk_af_ops 的定义，调用 ip_queue_xmit 函数。</li>
+<li>IP 层：ip_route_output_ports 函数里面会调用 fib_lookup 查找路由表。FIB 全称是 Forwarding Information Base，转发信息表，也就是路由表。</li>
+<li>在 IP 层里面要做的另一个事情是填写 IP 层的头。</li>
+<li>在 IP 层还要做的一件事情就是通过 iptables 规则。</li>
+<li>MAC 层：IP 层调用 ip_finish_output 进行 MAC 层。</li>
+<li>MAC 层需要 ARP 获得 MAC 地址，因而要调用 ___neigh_lookup_noref 查找属于同一个网段的邻居，他会调用 neigh_probe 发送 ARP。</li>
+<li>有了 MAC 地址，就可以调用 dev_queue_xmit 发送二层网络包了，它会调用 __dev_xmit_skb 会将请求放入队列。</li>
+<li>设备层：网络包的发送回触发一个软中断 NET_TX_SOFTIRQ 来处理队列中的数据。这个软中断的处理函数是 net_tx_action。</li>
+<li>在软中断处理函数中，会将网络包从队列上拿下来，调用网络设备的传输函数 ixgb_xmit_frame，将网络包发的设备的队列上去。</li>
+<li><img src="media/15630648340094/79cc42f3163d159a66e163c006d9f36f-2.png" alt="79cc42f3163d159a66e163c006d9f36f-2"/></li>
 </ul>
-
-<h4>用户态抢占时机</h4>
-
-<ul>
-<li>用户态抢占时机 系统调用中返回的那个时刻，是一个被抢占的时机</li>
-<li>中断中返回的那个时刻</li>
-</ul>
-
-<h4>内核态抢占时机</h4>
-
-<ul>
-<li>preempt_disable()--&gt;preempt_enable()</li>
-<li>内核态中断返回</li>
-</ul>
-
-<h4>进程调度总结</h4>
-
-<p><img src="media/15571872879168/93588d71abd7f007397979f0ba7def7f.png" alt="93588d71abd7f007397979f0ba7def7f"/></p>
 
                         
                       </div>
@@ -682,7 +261,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/05/07 08:01 上午</span>
+                    <span class="date">2019/07/14 08:40 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
@@ -699,35 +278,130 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15570152728743.html">
+                <a class="clearlink" href="15630159070216.html">
                 
-                  <h1>进程主动调度</h1>
+                  <h1>Socket网络通讯</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>进程上下文切换</h4>
+                        	<h4>分配结构</h4>
 
 <ul>
-<li>切换进程空间 虚拟内存</li>
-<li>切换寄存器和CPU上下文</li>
+<li>struct socket socket 是用于负责对上给用户提供接口，并且和文件系统关联</li>
+<li>struct sock  负责向下对接内核网络协议栈</li>
 </ul>
 
-<h4>TSS和TR</h4>
+<h4>结构</h4>
 
 <ul>
-<li> TSS（Task State Segment，任务状态段）结构</li>
-<li> 寄存器 TR（Task Register，任务寄存器）</li>
+<li>struct inet_connection_sock</li>
+<li>处于各种状态的队列，各种超时时间、拥塞控制等字眼</li>
 </ul>
 
-<h4>进程调度流程图</h4>
-
-<p><img src="media/15570152728743/9f4433e82c78ed5cd4399b4b116a9064.png" alt="9f4433e82c78ed5cd4399b4b116a9064"/></p>
-
-<h4>进程切换本质</h4>
+<h4>accept</h4>
 
 <ul>
-<li>进程切换，就是将某个进程的 thread_struct 里面的寄存器的值，写入到 CPU 的 TR 指向的 tss_struct，对于 CPU 来讲，这就算是完成了切换。</li>
+<li>基于监听的socket创建新的struct socket</li>
+<li>创建一个新的socket</li>
+<li>创建一个新的struct file 和 fd关联到socket</li>
+<li>如果 icsk_accept_queue 为空，则调用 inet_csk_wait_for_connect 进行等待</li>
+<li>等待的时候，调用 schedule_timeout，让出 CPU，并且将进程状态设置为 TASK_INTERRUPTIBLE</li>
+<li>如果再次 CPU 醒来，我们会接着判断 icsk_accept_queue 是否为空，同时也会调用 signal_pending 看有没有信号可以处理</li>
+<li>一旦 icsk_accept_queue 不为空，就从 inet_csk_wait_for_connect 中返回，在队列中取出一个 struct sock 对象赋值给 newsk</li>
+</ul>
+
+<h4>connect函数</h4>
+
+<ul>
+<li><img src="media/15630159070216/c028381cf45d65d3f148e57408d26bd8.png" alt="c028381cf45d65d3f148e57408d26bd8"/></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/07/13 19:05 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15625446924822.html">
+                
+                  <h1>Tcp滑动窗口</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>场景分析</h4>
+
+<ul>
+<li>cwnd创建的时候就确定的</li>
+</ul>
+
+<h4>三次握手确认</h4>
+
+<ul>
+<li>rtt,ttl</li>
+<li>mss=1024</li>
+<li>cwind是指网络承载数据的大小</li>
+<li>win是对对端期待接受的数据大小</li>
+</ul>
+
+<h4>坚持定时器</h4>
+
+<ul>
+<li>push=1是探测包</li>
+<li>setsockopt</li>
+</ul>
+
+<h4>通过窗口</h4>
+
+<ul>
+<li>码流 M</li>
+<li>字符数据 K</li>
+</ul>
+
+<h4>慢启动和线性增长</h4>
+
+<ul>
+<li>慢启动回一个ack，就增加mss</li>
+<li>拥塞控制是经过一个rtt，增加mss，不再依赖ack的数量</li>
+</ul>
+
+<h4>三个重复的包</h4>
+
+<ul>
+<li>丢包 中间的网络拥塞</li>
+<li>接收超时</li>
+<li>收到重复的包</li>
+<li>ack不会重传，syn才会重传</li>
+</ul>
+
+<h4>超时重传</h4>
+
+<ul>
+<li>经过RTO没有收到任何ACK，会触发超时定时器</li>
+</ul>
+
+<h4>断开链接</h4>
+
+<ul>
 <li></li>
 </ul>
 
@@ -738,10 +412,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/05/05 08:14 上午</span>
+                    <span class="date">2019/07/08 08:11 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
+          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -755,71 +429,26 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15566772208348.html">
+                <a class="clearlink" href="15628019228342.html">
                 
-                  <h1>进程调度</h1>
+                  <h1>哈希算法应用</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>调度策略和调度种类</h4>
+                        	<h4>安全加密</h4>
 
-<ul>
-<li>实时进程</li>
-<li>普通进程</li>
-</ul>
+<h4>唯一标识</h4>
 
-<h4>调度策略和优先级</h4>
+<h4>数据校验</h4>
 
-<ul>
-<li>实时进程，优先级的范围是 0～99</li>
-<li>普通进程，优先级的范围是 100～139</li>
-</ul>
+<h4>散列函数</h4>
 
-<h4>实时调度策略</h4>
+<h4>负载均衡</h4>
 
-<ul>
-<li>SCHED_FIFO 高优先级的进程可以抢占低优先级的进程，相同优先级的进程，我们遵循先来先得</li>
-<li>SCHED_RR 采用时间片，相同优先级的任务当用完时间片会被放到队列尾部，以保证公平性，而高优先级的任务也是可以抢占低优先级的任务</li>
-<li>SCHED_DEADLINE 当产生一个调度点的时候，DL 调度器总是选择其 deadline 距离当前时间点最近的那个任务，并调度它执行</li>
-</ul>
+<h4>数据分片</h4>
 
-<h4>普通调度策略</h4>
-
-<ul>
-<li>SCHED_NORMAL 普通进程</li>
-<li>SCHED_BATCH 后台进程</li>
-<li>SCHED_IDLE 空闲进程</li>
-</ul>
-
-<h4>调度变量</h4>
-
-<ul>
-<li>stop_sched_class 优先级最高的任务会使用这种策略，会中断所有其他线程，且不会被其他任务打断；</li>
-<li>dl_sched_class 就对应上面的 deadline 调度策略；</li>
-<li>rt_sched_class 就对应 RR 算法或者 FIFO 算法的调度策略，具体调度策略由进程的 task_struct-&gt;policy 指定；</li>
-<li>fair_sched_class 就是普通进程的调度策略；</li>
-<li>idle_sched_class 就是空闲进程的调度策略。</li>
-</ul>
-
-<h4>完全公平调度算法</h4>
-
-<ul>
-<li>CFS 会为每一个进程安排一个虚拟运行时间 vruntime。如果一个进程在运行，随着时间的增长，也就是一个个 tick 的到来，进程的 vruntime 将不断增大。没有得到执行的进程 vruntime 不变</li>
-<li>虚拟运行时间 vruntime += 实际运行时间 delta_exec * NICE_0_LOAD/ 权重</li>
-</ul>
-
-<h4>调度队列和调度实体</h4>
-
-<ul>
-<li>实时调度实体 sched_rt_entity</li>
-<li>Deadline 调度实体 sched_dl_entity  deadline</li>
-<li>完全公平算法调度实体 sched_entity real time </li>
-</ul>
-
-<h4>CPU进程调度</h4>
-
-<p><img src="media/15566772208348/10381dbafe0f78d80beb87560a9506af.jpeg" alt="10381dbafe0f78d80beb87560a9506af"/></p>
+<h4>一致性哈希</h4>
 
 <ul>
 <li></li>
@@ -832,10 +461,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/05/01 10:20 上午</span>
+                    <span class="date">2019/07/11 07:38 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
+          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -849,19 +478,93 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15566754920597.html">
+                <a class="clearlink" href="15627163531453.html">
                 
-                  <h1>性能提升</h1>
+                  <h1>哈希算法</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>方案</h4>
+                        	
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/07/10 07:52 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15626292718528.html">
+                
+                  <h1>工业级别散列表</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>散列表碰撞攻击</h4>
 
 <ul>
-<li>加速大概率事件</li>
-<li>通过流水线提高性能</li>
-<li>通过预测提高性能</li>
+<li>使得所有的数据经过散列函数之后，都散列到同一个槽里</li>
+</ul>
+
+<h4>散列函数设计</h4>
+
+<ul>
+<li>散列函数的设计不能太复杂</li>
+<li>散列函数生成的值要尽可能随机并且均匀分布</li>
+</ul>
+
+<h4>避免动态扩容</h4>
+
+<ul>
+<li>当有新数据要插入时，我们将新数据插入新散列表中，并且从老的散列表中拿出一个数据放入到新散列表。每次插入一个数据到散列表，我们都重复上面的过程。经过多次插入操作之后，老的散列表中的数据就一点一点全部搬移到新散列表中了</li>
+<li>查询的时候先去老的散列表查询，再去新的散列表查询</li>
+</ul>
+
+<h4>决绝冲突</h4>
+
+<h5>开放寻址法</h5>
+
+<ul>
+<li>所有数据都在一个数组里，冲突的代价高</li>
+</ul>
+
+<h5>链表法</h5>
+
+<ul>
+<li>链表法对内存的利用率比开放寻址法要高。因为链表结点可以在需要的时候再创建，并不需要像开放寻址法那样事先申请好</li>
+<li>将链表改造成跳表或者红黑树O(logn)</li>
+<li>基于链表的散列冲突处理方法比较适合存储大对象、大数据量的散列表，而且，比起开放寻址法，它更加灵活，支持更多的优化策略，比如用红黑树代替链表</li>
+</ul>
+
+<h4>HashMap</h4>
+
+<ul>
+<li>为了对 HashMap 做进一步优化，我们引入了红黑树。而当链表长度太长（默认超过 8）时，链表就转换为红黑树</li>
+</ul>
+
+<h4>如何设计散列表</h4>
+
+<ul>
+<li>设计一个合适的散列函数；</li>
+<li>定义装载因子阈值，并且设计动态扩容策略；</li>
+<li>选择合适的散列冲突解决方法。</li>
 </ul>
 
                         
@@ -871,10 +574,249 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/05/01 09:51 上午</span>
+                    <span class="date">2019/07/09 07:41 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86.html'>计算机组成原理</a></span>
+          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15615969107866.html">
+                
+                  <h1>TCP/IP 定时器</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>种类</h4>
+
+<ul>
+<li> 重传定时器</li>
+<li> 坚持定时器</li>
+<li> 保活定时器</li>
+<li> 2MSL定时器</li>
+</ul>
+
+<h4>问题</h4>
+
+<ul>
+<li>多少个定时器</li>
+<li>tcp协议栈已经有保活机制，为什么在应用层还需要keeplive</li>
+<li>重传的超时如何设置</li>
+</ul>
+
+<h4>重传定时器</h4>
+
+<ul>
+<li>重传多少合适</li>
+<li>mtu=mss+tcphdr + iphdr</li>
+</ul>
+
+<h4>保活定时器</h4>
+
+<ul>
+<li>内核协议栈的keeplive回主动释放连接</li>
+<li>应用层做一层心跳包</li>
+</ul>
+
+<h4>timewait</h4>
+
+<ul>
+<li>保证对端释放掉fd</li>
+<li>保证发起方的ACK必须到达对端</li>
+</ul>
+
+<h4>单位</h4>
+
+<ul>
+<li>cwind， ssthresh, mss 单位统一</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/06/27 08:55 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15625437509633.html">
+                
+                  <h1>散列表</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>散列冲突</h4>
+
+<ul>
+<li>删除的时候不能单纯的把删除元素置为空</li>
+<li>二次探测</li>
+<li>双重散列</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/07/08 07:55 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15625420226905.html">
+                
+                  <h1>跳表</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>概念</h4>
+
+<ul>
+<li>链表加多级索引的结构，就是跳表</li>
+</ul>
+
+<h4>复杂度</h4>
+
+<ul>
+<li>时间 mlogn</li>
+<li>空间复杂度 O(n)</li>
+</ul>
+
+<h4>空间复杂度</h4>
+
+<ul>
+<li>实际的软件开发中，原始链表中存储的有可能是很大的对象，而索引结点只需要存储关键值和几个指针，并不需要存储对象，所以当对象比索引结点大很多时，那索引占用的额外空间就可以忽略了。</li>
+</ul>
+
+<h4>删除操作</h4>
+
+<ul>
+<li>要删除原始链表中的结点</li>
+<li>删除索引中的</li>
+</ul>
+
+<h4>跳表索引动态更新</h4>
+
+<ul>
+<li>通过随机函数维护平衡性</li>
+<li>插入数据时，通过随机函数决定将结点插入几级索引</li>
+<li>保证跳表的索引大小和数据大小的平衡性</li>
+</ul>
+
+<h4>有序表不用红黑树</h4>
+
+<ul>
+<li>区间查找效率跳表更高</li>
+<li>改变索引构建策略，有效平衡执行效率和内存消耗</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/07/08 07:27 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15619668041503.html">
+                
+                  <h1>管道</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>总结</h4>
+
+<ul>
+<li>匿名管道，还是命名管道，在内核都是一个文件。只要是文件就要有一个 inode。这里我们又用到了特殊 inode、字符设备、块设备，其实都是这种特殊的 inode。<img src="media/15619668041503/486e2bc73abbe91d7083bb1f4f678097.png" alt="486e2bc73abbe91d7083bb1f4f678097"/></li>
+</ul>
+
+<h4>创建共享内存</h4>
+
+<ul>
+<li>newseg 函数的第一步，通过 kvmalloc 在直接映射区分配一个 struct shmid_kernel 结构</li>
+<li>共享内存需要和文件进行关联, 和内存系统的文件关联</li>
+<li>创建一个struct file结构，表示新的shmem文件</li>
+<li>通过 ipc_addid 将新创建的 struct shmid_kernel 结构挂到 shm_ids 里面的基数树上，并返回相应的 id，并且将 struct shmid_kernel 挂到当前进程的 sysvshm 队列中</li>
+</ul>
+
+<h4>总结</h4>
+
+<ul>
+<li><img src="media/15619668041503/20e8f4e69d47b7469f374bc9fbcf7251.png" alt="20e8f4e69d47b7469f374bc9fbcf7251"/></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/07/01 15:40 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -948,8 +890,6 @@
             <a href="Golang.html"><strong>Golang</strong></a>
         
             <a href="Django.html"><strong>Django</strong></a>
-        
-            <a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html"><strong>C++设计模式实战</strong></a>
         
             <a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html"><strong>深入剖析Kubernetes</strong></a>
         
@@ -1028,6 +968,18 @@
 	      
 		      
 			      <li class="post">
+			        <a href="15818128782116.html">Singleton</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15748977610569.html">State</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817697569868.html">字符串分割</a>
 			      </li>
 		     
@@ -1040,19 +992,7 @@
 		  
 		      
 			      <li class="post">
-			        <a href="15814649492497.html">Simple Factory</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814189410719.html">代码的可测试性</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814188057978.html">重构</a>
+			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

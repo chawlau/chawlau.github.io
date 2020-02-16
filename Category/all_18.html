@@ -87,8 +87,6 @@
         
             <li><a href="Django.html">Django</a></li>
         
-            <li><a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html">C++设计模式实战</a></li>
-        
             <li><a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html">深入剖析Kubernetes</a></li>
         
             <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html">数据结构和算法</a></li>
@@ -172,74 +170,90 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15695358138525.html">
+                <a class="clearlink" href="15606472792037.html">
                 
-                  <h1>Docker安装部署</h1>
+                  <h1>协程调度器</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<pre class="line-numbers"><code class="language-text">docker run \
---name node1-namesrv \
--p 9876:9876 \
- -d rocketmqinc/rocketmq sh mqnamesrv
+                        	<h4>协程调度器</h4>
 
-docker run \
---name node1-broker-master \
--p 10911:10911 \
--p 10909:10909 \
--v /root/download/rocketmq/logs/broker-master:/root/logs \
--v /root/download/rocketmq/store/broker-master:/root/store \
--v /root/download/rocketmq/conf/2m-2s-sync/broker-master:/opt/rocketmq/conf \
--e &quot;NAMESRV_ADDR=$master:9876;$node1:9876&quot; \
--d rocketmqinc/rocketmq sh mqbroker -c /opt/rocketmq/conf/broker.conf
+<ul>
+<li>libevent维护fd状态</li>
+<li>每个线程需要维护epollfd的状态</li>
+</ul>
 
-docker run \
---name node1-broker-slave \
--p 11011:10911 \
--p 11009:10909 \
--v /root/download/rocketmq/logs/broker-slave:/root/logs \
--v /root/download/rocketmq/store/broker-slave:/root/store \
--v /root/download/rocketmq/conf/2m-2s-sync/broker-slave:/opt/rocketmq/conf \
--e &quot;NAMESRV_ADDR=$master:9876;$node1:9876&quot; \
--d rocketmqinc/rocketmq sh mqbroker -c /opt/rocketmq/conf/broker.conf
+<h4>惊群</h4>
 
+<ul>
+<li>accept</li>
+<li>epoll_wait惊群</li>
+</ul>
 
-docker run \
---name rocketmq-console \
--p 8081:8080 \
--v /root/download/rocketmq/logs/rocketmq-console:/root/logs \
--v /tmp/rocketmq-console:/tmp \
--e &quot;NAMESRV_ADDR=$master:9876;$node1:9876&quot; \
--d  styletang/rocketmq-console-ng
+<h4>流程</h4>
 
- docker run \
---name node2-namesrv \
--p 9876:9876 \
- -d rocketmqinc/rocketmq sh mqnamesrv
+<ul>
+<li>create</li>
+<li>free</li>
+<li>yield</li>
+<li>resume</li>
+</ul>
 
-docker run \
---name node2-broker-master \
--p 10911:10911 \
--p 10909:10909 \
--v /root/download/rocketmq/logs/broker-master:/root/logs \
--v /root/download/rocketmq/store/broker-master:/root/store \
--v /root/download/rocketmq/conf/2m-2s-sync/broker-master:/opt/rocketmq/conf \
--e &quot;NAMESRV_ADDR=$master:9876;$node1:9876&quot; \
--d rocketmqinc/rocketmq sh mqbroker -c /opt/rocketmq/conf/broker.conf
+<h4>Poll_inner实现</h4>
 
+<ul>
+<li>将Pollfd添加到Epoll中</li>
+<li>让出CPU，切换上下文--&gt;upper 切换给schduel来统一执行</li>
+<li>将Epoll删除Pollfd--&gt;lower</li>
+</ul>
 
-docker run \
---name node2-broker-slave \
--p 11011:10911 \
--p 11009:10909 \
--v /root/download/rocketmq/logs/broker-slave:/root/logs \
--v /root/download/rocketmq/store/broker-slave:/root/store \
--v /root/download/rocketmq/conf/2m-2s-sync/broker-slave:/opt/rocketmq/conf \
--e &quot;NAMESRV_ADDR=$master:9876;$node1:9876&quot; \
--d rocketmqinc/rocketmq sh mqbroker -c /opt/rocketmq/conf/broker.conf
+<pre class="line-numbers"><code class="language-cpp">Int nSend(int sockfd, char *buffer, int length) {
+
+    int result = poll(&amp;pfd, 1, 1);
+    if (pfd.revents &amp; POLLRDHUP) {
+        return idx;
+    }
+    
+    return send(sockfd, buffer, length, 0);
+}
+
+Int nRecv(int sockfd, char *buffer, int length) {
+
+    int result = poll(&amp;pfd, 1, 1);
+    if (pfd.revents &amp; POLLRDHUP) {
+        return idx;
+    }
+    
+    return recv(sockfd, buffer, length, 0);
+}
+</code></pre>
+
+<h4>调度器</h4>
+
+<pre class="line-numbers"><code class="language-cpp">Int nSend(int sockfd, char *buffer, int length) {
+
+    int result = poll(&amp;pfd, 1, 1);
+    if (pfd.revents &amp; POLLRDHUP) {
+        return idx;
+    }
+    
+    return send(sockfd, buffer, length, 0);
+}
+
+Int nSend(int sockfd, char *buffer, int length) {
+
+    int result = poll_inner(&amp;pfd, 1, 1);
+    if (pfd.revents &amp; POLLRDHUP) {
+        return idx;
+    }
+    
+    return send(sockfd, buffer, length, 0);
+}
 
 </code></pre>
+
+<p><img src="media/15606472792037/15706767381701.jpg" alt="" style="width:676px;"/></p>
 
                         
                       </div>
@@ -248,10 +262,10 @@ docker run \
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/09/27 06:10 上午</span>
+                    <span class="date">2019/06/16 09:07 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='RocketMQ.html'>RocketMQ</a></span>
+          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -265,76 +279,63 @@ docker run \
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15694944763341.html">
+                <a class="clearlink" href="15605942368306.html">
                 
-                  <h1>类型区别</h1>
+                  <h1>协程</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>类型推断</h4>
-
-<pre class="line-numbers"><code class="language-text">template&lt;typename T&gt;
-int func(const T&amp; abc) {
-  cout &lt;&lt; &quot;i &quot; &lt;&lt; abc &lt;&lt; endl;
-  return abc;
-}
-
-int main() {
-  func(10);
-}
-</code></pre>
-
-<h4>universal reference 万能引用</h4>
+                        	<h4>问题</h4>
 
 <ul>
-<li>&amp;&amp;abc右值引用</li>
+<li>libgo C++</li>
+<li>异步哪些调用复杂</li>
+<li>为什么要做成上下文保存的方式</li>
+<li>同步与异步的性能差？</li>
+<li>什么场景用协程好，什么场景用线程好</li>
+<li>协程相比对系统线程性能提升在哪里</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-text">template&lt;typename T&gt;
-void func2(T&amp;&amp; tmp) { //&amp;&amp;属于形参的一部分,不属于T的一部分
-  cout &lt;&lt; &quot;tmp &quot; &lt;&lt; tmp &lt;&lt; endl;
-}
-void func2(int&amp; tmp) {
-  cout &lt;&lt; &quot;tmp &quot; &lt;&lt; tmp &lt;&lt; endl;
-}
-</code></pre>
+<h4>新东西</h4>
 
 <ul>
-<li>函数模板tmp既能接受左值也能接受右值</li>
-<li>单纯的函数是不可以接受左值</li>
+<li>是什么</li>
+<li>为什么</li>
+<li>怎么用</li>
+<li>什么时候用</li>
+<li>在哪里用</li>
 </ul>
 
-<h5>语境</h5>
+<h4>异步编程复杂性</h4>
 
 <ul>
-<li>必须是函数模版</li>
-<li>必须是发生了模版类型推断并且函数模板形参T&amp;&amp;</li>
-<li>auto也存在万能引用的概念</li>
-<li>右值引用必须传递右值</li>
-<li>万能引用可以传递左值引用和左值引用</li>
-<li>T&amp;&amp;或者tmp才是万能引用</li>
+<li>需要时刻关注IO</li>
+<li>每个子线程需要维护ep_fd和sockfd的状态</li>
+<li>当子线程send或者recv的时候，对端发生关闭的操作，对send和recv要做相应的处理</li>
+<li>EPOLLONESHOT</li>
+<li>线程维护fd的状态集</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-text">template&lt;typename T&gt;
-void func2(vector&lt;T&gt;&amp;&amp; tmp) {}//不是万能引用
-</code></pre>
-
-<h4>万能引用的资格剥夺和确认</h4>
+<h4>协程</h4>
 
 <ul>
-<li>const引用会剥夺万能引用资格，变成右值引用</li>
+<li>异步封装成同步的编程方式</li>
+<li>accept-&gt;async_accept</li>
+<li>recv-&gt;async_recv</li>
+<li>send-&gt;async_sned</li>
+<li>实现自己的网络接口</li>
+<li>send跟mtu没有关系</li>
+<li>需要自己定义堆栈，对内存消耗比较大</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-text">template&lt;typename T&gt;
-void func2(vector&lt;T&gt;&amp;&amp; tmp) {}//不是万能引用
+<h4>poll&amp;send</h4>
 
-template&lt;typename T&gt;
-class A {
-  void func2(vector&lt;T&gt;&amp;&amp; tmp) {}//不是万能引用,是右值引用
-  //成员函数没有类型推断
-}
-</code></pre>
+<ul>
+<li>inner_poll保存上下文同时切换上下文</li>
+<li>accept/send/poll都用一个poll</li>
+<li></li>
+</ul>
 
                         
                       </div>
@@ -343,10 +344,10 @@ class A {
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/09/26 18:41 下午</span>
+                    <span class="date">2019/06/15 18:23 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -360,64 +361,996 @@ class A {
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15694932578516.html">
+                <a class="clearlink" href="15706741933375.html">
                 
-                  <h1>函数调用运算符和function类模版</h1>
+                  <h1>调度器设计</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>function</h4>
+                        	<h4>调度器</h4>
+
+<p><img src="media/15706741933375/15706742581605.jpg" alt="" style="width:984px;"/></p>
 
 <ul>
-<li>()是函数调用运算符</li>
+<li>sleep和wait是红黑树</li>
+<li>ready和defer是队列</li>
+<li>最难的是设计这四个状态</li>
+<li>defer是定时器</li>
+<li>wait是read write IO</li>
+<li></li>
 </ul>
 
-<h4>标准库funtion</h4>
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/10/10 10:23 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
 
-<pre class="line-numbers"><code class="language-text">int func(int i) {
-  cout &lt;&lt; &quot;i &quot; &lt;&lt; i &lt;&lt; endl;
-  return i;
-}
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15646540611841.html">
+                
+                  <h1>消息队列</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>概念</h4>
 
-class A {
- public:
-  int operator()(int i) {
-    cout &lt;&lt; &quot;i &quot; &lt;&lt; i &lt;&lt; endl;
-    return i;
+<ul>
+<li>消息队列提供了分布式集群系统架构中各个服务模块之间的消息通信，主要解决应用解耦，异步消息，流量削锋等问题，实现高性能，高可用，可伸缩和最终一致性架构</li>
+</ul>
+
+<h4>时机</h4>
+
+<ul>
+<li>RPC</li>
+<li>MQ</li>
+</ul>
+
+<h4>可靠投递</h4>
+
+<ul>
+<li>事务机制 txSelect,txCommit,txRollback</li>
+<li>确认机制waitForConfirms,ACK 普通确认 批量确认 异步确认</li>
+</ul>
+
+<h4>可靠消费</h4>
+
+<ul>
+<li>最大努力投递机制</li>
+</ul>
+
+<h4>消息队列高可用</h4>
+
+<ul>
+<li>topic和tag对应的队列放入nameserver</li>
+<li>config_server</li>
+</ul>
+
+<h4>消息的顺序性</h4>
+
+<ul>
+<li>有顺序依赖的消息经过同一个路由，由broker推送到consumer</li>
+</ul>
+
+<h4>消息去重</h4>
+
+<ul>
+<li>幂等性</li>
+<li>去重表</li>
+<li>rocketmq没有实现</li>
+</ul>
+
+<h4>消息的一致性</h4>
+
+<ul>
+<li>两段式提交需要事务管理器和事务协调者</li>
+<li>最终一致性</li>
+<li>MQ定时器定时扫描prepare消息，发送询问消息给上游业务</li>
+<li>6 7 8失败了人工处理，否则系统处理的非常复杂，就有强依赖了</li>
+</ul>
+
+<h4>削峰填谷</h4>
+
+<p><img src="media/15646540611841/15706646763817.jpg" alt="" style="width:738px;"/></p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/08/01 18:07 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15651863685389.html">
+                
+                  <h1>主题管理</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>主题变更</h4>
+
+<ul>
+<li>主题分区变更</li>
+<li>主题级别参数</li>
+<li>变更副本</li>
+<li>修改主题限速</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">bin/kafka-configs.sh --zookeeper zookeeper_host:port --alter --add-config &#39;leader.replication.throttled.rate=104857600,follower.replication.throttled.rate=104857600&#39; --entity-type brokers --entity-name 0
+
+bin/kafka-configs.sh --zookeeper zookeeper_host:port --alter --add-config &#39;leader.replication.throttled.replicas=*,follower.replication.throttled.replicas=*&#39; --entity-type topics --entity-name test
+
+</code></pre>
+
+<ul>
+<li>主题分区迁移</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">bin/kafka-topics.sh --bootstrap-server broker_host:port --delete  --topic &lt;topic_name&gt;
+</code></pre>
+
+<h4>主题管理和运维</h4>
+
+<ul>
+<li>查看消费者组状态</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">kafka-console-consumer.sh --bootstrap-server master:9092 --topic __consumer_offsets --formatter &quot;kafka.coordinator.group.GroupMetadataManager\$GroupMetadataMessageFormatter&quot; --from-beginning
+</code></pre>
+
+<h4>常见问题</h4>
+
+<h5>主题删除失败怎么处理</h5>
+
+<ul>
+<li>第 1 步，手动删除 ZooKeeper 节点 /admin/delete_topics 下以待删除主题为名的 znode。</li>
+<li>第 2 步，手动删除该主题在磁盘上的分区目录。</li>
+<li>第 3 步，在 ZooKeeper 中执行 rmr /controller，触发 Controller 重选举，刷新 Controller 缓存。</li>
+</ul>
+
+<h5>__consumer_offsets占用太多的磁盘</h5>
+
+<ul>
+<li>kafka-log-cleaner-thread 前缀的线程挂掉了</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/08/07 21:59 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Kafka.html'>Kafka</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15649279845988.html">
+                
+                  <h1>Kafka控制器</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>watch</h4>
+
+<ul>
+<li>所谓的 Watch 通知功能。一旦 znode 节点被创建、删除，子节点数量发生变化，抑或是 znode 所存的数据本身变更，ZooKeeper 会通过节点变更监听器 (ChangeHandler) 的方式显式通知客户端</li>
+</ul>
+
+<h4>控制器数据</h4>
+
+<p><img src="media/15649279845988/38ff78fdeb2a86943ae60f15c3ad28c8.jpg" alt="38ff78fdeb2a86943ae60f15c3ad28"/></p>
+
+<h4>控制器组件</h4>
+
+<ul>
+<li>控制器组件（Controller），是 Apache Kafka 的核心组件。它的主要作用是在 Apache ZooKeeper 的帮助下管理和协调整个 Kafka 集群</li>
+<li>主题管理</li>
+<li>分区重分配</li>
+<li>领导者选举</li>
+<li>集群成员管理 存活机制 每个 Broker 启动后，会在 /brokers/ids 下创建一个临时 znode。当 Broker 宕机或主动关闭后，该 Broker 与 ZooKeeper 的会话结束，这个 znode 会被自动删除。通过watch机制观察</li>
+<li>数据服务 </li>
+</ul>
+
+<h4>内部设计原理</h4>
+
+<ul>
+<li>统一处理各种控制</li>
+<li><img src="media/15649279845988/b14c6f2d246cbf637f2fda5dae1688e5.png" alt="b14c6f2d246cbf637f2fda5dae1688e5"/>
+器事件，然后控制器将原来执行的操作全部建模成一个个独立的事件，发送到专属的事件队列中，供此线程消费</li>
+<li>之前同步操作 ZooKeeper 全部改为异步操作</li>
+</ul>
+
+<h4>快速删除主题</h4>
+
+<ul>
+<li>ZooKeeper 中手动删除 /controller 节点</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/08/04 22:13 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Kafka.html'>Kafka</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15705223687181.html">
+                
+                  <h1>ptmalloc和tcmalloc</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>ptmallic</h4>
+
+<h5>主分配区和非主分配区</h5>
+
+<ul>
+<li>ptmalloc的内存分配器中，为了解决多线程锁争夺问题，分为主分配main_area和非主分配区no_main_area。</li>
+<li>每个进程有一个主分配区，也可以允许有多个非主分配区。</li>
+<li>主分配区可以使用brk和mmap来分配，而非主分配区只能使用mmap来映射内存块</li>
+<li>非主分配区的数量一旦增加，则不会减少。</li>
+<li>主分配区和非主分配区形成一个环形链表进行管理。</li>
+</ul>
+
+<h5>bins</h5>
+
+<p><img src="media/15705223687181/15705232870790.jpg" alt="" style="width:696px;"/></p>
+
+<ul>
+<li>fast bins是bins的高速缓冲区，大约有10个定长队列。当用户释放一块不大于max_fast（默认值64 byte）的chunk（一般小内存）的时候，会默认会被放到fast bins上。当用户下次需要申请内存的时候首先会到fast bins上寻找是否有合适的chunk，然后才会到bins上空闲的chunk。ptmalloc会遍历fast bin，看是否有合适的chunk需要合并到bins上。</li>
+<li>unsorted bin。是bins的一个缓冲区。当用户释放的内存大于max_fast或者fast bins合并后的chunk都会进入unsorted bin上。当用户malloc的时候，先会到unsorted bin上查找是否有合适的bin，如果没有合适的bin，ptmalloc会将unsorted bin上的chunk放入bins上，然后到bins上查找合适的空闲chunk。</li>
+<li>small bins和large bins。small bins和large bins是真正用来放置chunk双向链表的。每个bin之间相差8个字节，并且通过上面的这个列表，可以快速定位到合适大小的空闲chunk。前64个为small bins，定长；后64个为large bins，非定长。</li>
+<li>Top chunk。并不是所有的chunk都会被放到bins上。top chunk相当于分配区的顶部空闲内存，当bins上都不能满足内存分配要求的时候，就会来top chunk上分配。</li>
+<li>mmaped chunk。当分配的内存非常大（大于分配阀值，默认128K）的时候，需要被mmap映射，则会放到mmaped chunk上，当释放mmaped chunk上的内存的时候会直接交还给操作系统。</li>
+</ul>
+
+<h4>分配流程</h4>
+
+<p><img src="media/15705223687181/15705236740408.jpg" alt="" style="width:571px;"/></p>
+
+<ol>
+<li>获取分配区的锁，防止多线程冲突。</li>
+<li>计算出需要分配的内存的chunk实际大小。</li>
+<li>判断chunk的大小，如果小于max_fast（64b），则取fast bins上去查询是否有适合的chunk，如果有则分配结束。</li>
+<li>chunk大小是否小于512B，如果是，则从small bins上去查找chunk，如果有合适的，则分配结束。</li>
+<li>继续从 unsorted bins上查找。如果unsorted bins上只有一个chunk并且大于待分配的chunk，则进行切割，并且剩余的chunk继续扔回unsorted bins；如果unsorted bins上有大小和待分配chunk相等的，则返回，并从unsorted bins删除；如果unsorted bins中的某一chunk大小 属于small bins的范围，则放入small bins的头部；如果unsorted bins中的某一chunk大小 属于large bins的范围，则找到合适的位置放入。</li>
+<li>从large bins中查找，找到链表头后，反向遍历此链表，直到找到第一个大小 大于待分配的chunk，然后进行切割，如果有余下的，则放入unsorted bin中去，分配则结束。</li>
+<li>如果搜索fast bins和bins都没有找到合适的chunk，那么就需要操作top chunk来进行分配了（top chunk相当于分配区的剩余内存空间）。判断top chunk大小是否满足所需chunk的大小，如果是，则从top chunk中分出一块来。</li>
+<li>如果top chunk也不能满足需求，则需要扩大top chunk。主分区上，如果分配的内存小于分配阀值（默认128k），则直接使用brk()分配一块内存；如果分配的内存大于分配阀值，则需要mmap来分配；非主分区上，则直接使用mmap来分配一块内存。通过mmap分配的内存，就会放入mmap chunk上，mmap chunk上的内存会直接回收给操作系统。</li>
+</ol>
+
+<h5>释放流程</h5>
+
+<ol>
+<li>获取分配区的锁，保证线程安全。</li>
+<li>如果free的是空指针，则返回，什么都不做。</li>
+<li>判断当前chunk是否是mmap映射区域映射的内存，如果是，则直接munmap()释放这块内存。前面的已使用chunk的数据结构中，我们可以看到有M来标识是否是mmap映射的内存。</li>
+<li>判断chunk是否与top chunk相邻，如果相邻，则直接和top chunk合并（和top chunk相邻相当于和分配区中的空闲内存块相邻）。转到步骤8</li>
+<li>如果chunk的大小大于max_fast（64b），则放入unsorted bin，并且检查是否有合并，有合并情况并且和top chunk相邻，则转到步骤8；没有合并情况则free。</li>
+<li>如果chunk的大小小于 max_fast（64b），则直接放入fast bin，fast bin并没有改变chunk的状态。没有合并情况，则free；有合并情况，转到步骤7</li>
+<li>在fast bin，如果当前chunk的下一个chunk也是空闲的，则将这两个chunk合并，放入unsorted bin上面。合并后的大小如果大于64KB，会触发进行fast bins的合并操作，fast bins中的chunk将被遍历，并与相邻的空闲chunk进行合并，合并后的chunk会被放到unsorted bin中，fast bin会变为空。合并后的chunk和topchunk相邻，则会合并到topchunk中。转到步骤8</li>
+<li>判断top chunk的大小是否大于mmap收缩阈值（默认为128KB），如果是的话，对于主分配区，则会试图归还top chunk中的一部分给操作系统。free结束。</li>
+</ol>
+
+<h4>缺陷</h4>
+
+<ol>
+<li>后分配的内存先释放,因为 ptmalloc 收缩内存是从 top chunk 开始,如果与 top chunk 相邻的 chunk 不能释放, top chunk 以下的 chunk 都无法释放。</li>
+<li>多线程锁开销大， 需要避免多线程频繁分配释放。</li>
+<li>内存从thread的分配区中分配， 内存不能从一个分配区移动到另一个分配区， 就是说如果多线程使用内存不均衡，容易导致内存的浪费。 比如说线程1使用了300M内存，完成任务后glibc没有释放给操作系统，线程2开始创建了一个新的arena， 但是线程1的300M却不能用了。</li>
+<li>每个chunk至少8字节的开销很大</li>
+</ol>
+
+<h4>tcmalloc</h4>
+
+<h5>小对象分配</h5>
+
+<ul>
+<li>tcmalloc为每个线程分配了一个线程本地ThreadCache，小内存从ThreadCache分配，此外还有个中央堆（CentralCache），ThreadCache不够用的时候，会从CentralCache中获取空间放到ThreadCache中。</li>
+<li>小对象（&lt;=32K）从ThreadCache分配，大对象从CentralCache分配。大对象分配的空间都是4k页面对齐的，多个pages也能切割成多个小对象划分到ThreadCache中。</li>
+<li>小对象有将近170个不同的大小分类(class)，每个class有个该大小内存块的FreeList单链表，分配的时候先找到best fit的class，然后无锁的获取该链表首元素返回。如果链表中无空间了，则到CentralCache中划分几个页面并切割成该class的大小，放入链表中。
+<img src="media/15705223687181/15705303959860.jpg" alt="" style="width:367px;"/></li>
+</ul>
+
+<h5>CentralCache分配管理</h5>
+
+<ul>
+<li>大对象(&gt;32K)先4k对齐后，从CentralCache中分配。 CentralCache的结构如下图所示， 数组中第256个元素是所有大于255个页面都挂到该链表中。
+<img src="media/15705223687181/15705304064238.jpg" alt="" style="width:532px;"/></li>
+</ul>
+
+<h5>PageHeap</h5>
+
+<ul>
+<li>在32位系统中，使用一个中央数组(central array)映射了页面和span对应关系， 数组索引号是页面号，数组元素是页面所在的span。 在64位系统中，使用一个3-level radix tree记录了该映射关系。</li>
+<li>如果是小对象，span会告诉我们他的size class，然后把该对象插入当前线程的ThreadCache中。如果此时ThreadCache超过一个预算的值（默认2MB），则会使用垃圾回收机制把未使用的object从ThreadCache移动到CentralCache的central free lists中。</li>
+<li>如果是大对象，span会告诉我们对象所在的页面号范围。 假设这个范围是[p,q]， 先查找页面p-1和q+1所在的span，如果这些临近的span也是free的，则合并到[p,q]所在的span， 然后把这个span回收到PageHeap中。</li>
+<li>CentralCache的central free lists类似ThreadCache的FreeList，不过它增加了一级结构，先根据size-class关联到spans的集合， 然后是对应span的object链表。如果span的链表中所有object已经free， 则span回收到PageHeap中。</li>
+</ul>
+
+<h5>改进</h5>
+
+<ol>
+<li>ThreadCache会阶段性的回收内存到CentralCache里。 解决了ptmalloc2中arena之间不能迁移的问题。</li>
+<li>Tcmalloc占用更少的额外空间。例如，分配N个8字节对象可能要使用大约8N * 1.01字节的空间。即，多用百分之一的空间。Ptmalloc2使用最少8字节描述一个chunk。</li>
+<li>更快，小对象几乎无锁， 大于32KB的对象从CentralCache中分配使用自旋锁。 并且&gt;32KB对象都是页面对齐分配，多线程的时候应尽量避免频繁分配，否则也会造成自旋锁的竞争和页面对齐造成的浪费。</li>
+</ol>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/10/08 16:12 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15659210764719.html">
+                
+                  <h1>链表</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>反转</h4>
+
+<ul>
+<li>leet_206</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Reverse a singly linked list.
+
+Example:
+
+Input: 1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;NULL
+Output: 5-&gt;4-&gt;3-&gt;2-&gt;1-&gt;NULL
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+      ListNode* pre = nullptr;
+      while (head) {
+        ListNode* next = head-&gt;next;
+        head-&gt;next= pre;
+        pre = head;
+        head = next;
+      }
+      return pre;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_92</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Reverse a linked list from position m to n. Do it in one-pass.
+
+Note: 1 ≤ m ≤ n ≤ length of list.
+
+Example:
+
+Input: 1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;NULL, m = 2, n = 4
+Output: 1-&gt;4-&gt;3-&gt;2-&gt;5-&gt;NULL
+class Solution {
+public:
+  ListNode* reverseBetween(ListNode* head, int m, int n) {
+    ListNode dumy(0);
+    dumy.next = head;
+    ListNode* pre = &amp;dumy;
+    for (int i = 0; i &lt; m - 1; i++) pre = pre-&gt;next;
+
+    ListNode* cur = pre-&gt;next;
+    for (int i = m; i &lt; n; i++) {
+      ListNode* p = cur-&gt;next;
+      cur-&gt;next = p-&gt;next;
+      p-&gt;next = pre-&gt;next;
+      pre-&gt;next = p;
+    }
+    
+    return dumy.next;
   }
 };
-
-int main() {
-  function&lt;int(int)&gt; f1 = func;
-  function&lt;int(int)&gt; f2 = A();
-  A a;
-  function&lt;int(int)&gt; f3 = a;
-  f1(5);
-  f2(5);
-  f3(6);
-  map&lt;string, function&lt;int(int)&gt;&gt; op = {
-    {&quot;f1&quot;, func},
-    {&quot;f2&quot;, A()},
-    {&quot;f3&quot;, a},
-  };
-  op[&quot;f1&quot;](7);
-  op[&quot;f2&quot;](8);
-  op[&quot;f3&quot;](9);
-}
 </code></pre>
 
 <ul>
-<li>函数func不能有重载,通过定义函数指针来解决</li>
+<li>leet_83</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-text">int(*func1)(int) = func;
-function&lt;int(int)&gt; f1 = func1;
+<pre class="line-numbers"><code class="language-cpp">Given a sorted linked list, delete all duplicates such that each element appear only  once.
+
+Example 1:
+
+Input: 1-&gt;1-&gt;2
+Output: 1-&gt;2
+class Solution {
+public:
+    ListNode* deleteDuplicates(ListNode* head) {
+        ListNode *cur = head;
+        while (cur &amp;&amp; cur-&gt;next) {
+            if (cur-&gt;val == cur-&gt;next-&gt;val) {
+                cur-&gt;next = cur-&gt;next-&gt;next;
+            } else {
+                cur = cur-&gt;next;
+            }
+        }
+        return head;
+    }
+};
 </code></pre>
 
 <ul>
-<li></li>
+<li>leet_86 </li>
 </ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a linked list and a value  x , partition it such that all nodes less than  x  come before nodes greater than or equal to  x.
+
+You should preserve the original relative order of the nodes in each of the two partitions.
+
+For example,
+Given 1-&gt;4-&gt;3-&gt;2-&gt;5-&gt;2 and  x  = 3,
+return 1-&gt;2-&gt;2-&gt;4-&gt;3-&gt;5.
+就是将所有小于给定值的节点取出组成一个新的链表，此时原链表中剩余的节点的值都大于或等于给定值，只要将原链表直接接在新链表后即可
+class Solution {
+public:
+    ListNode* partition(ListNode* head, int x) {
+      ListNode node1(0);
+      ListNode node2(0);
+      ListNode* p1 = &amp;node1;
+      ListNode* p2 = &amp;node2;
+      while (head) {
+        if (head-&gt;val &lt; x) {
+          p1-&gt;next = head;
+          p1 = p1-&gt;next;
+        } else {
+          p2-&gt;next = head;
+          p2 = p2-&gt;next;
+        }
+        head = head-&gt;next;
+      }
+      p2-&gt;next = nullptr;
+      p1-&gt;next = node2.next;
+      return node1.next;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_328</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a singly linked list, group all odd nodes together followed by the even nodes. Please note here we are talking about the node number and not the value in the nodes.
+
+You should try to do it in place. The program should run in O(1) space complexity and O(nodes) time complexity.
+
+Example 1:
+
+Input: 1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;NULL
+Output: 1-&gt;3-&gt;5-&gt;2-&gt;4-&gt;NULL
+class Solution {
+public:
+    ListNode* oddEvenList(ListNode* head) {
+      ListNode node1(0), node2(0);
+      ListNode* p1 = &amp;node1;
+      ListNode* p2 = &amp;node2;
+      int cnt = 1;
+      while (head) {
+        if (cnt++ % 2 == 1) {
+          p1-&gt;next = head;
+          p1 = p1-&gt;next;
+        } else {
+          p2-&gt;next = head;
+          p2 = p2-&gt;next;
+        }
+        head = head-&gt;next;
+      }
+      p2-&gt;next = nullptr;
+      p1-&gt;next = node2.next;
+      return node1.next;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_2</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Input: (2 -&gt; 4 -&gt; 3) + (5 -&gt; 6 -&gt; 4)
+Output: 7 -&gt; 0 -&gt; 8
+Explanation: 342 + 465 = 807.
+class Solution {
+public:
+  ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+    ListNode node(0), *p = &amp;node;
+    int extra = 0;
+    while (l1 || l2 || extra) {
+      if (l1) extra += l1-&gt;val, l1 = l1-&gt;next;
+      if (l2) extra += l2-&gt;val, l2 = l2-&gt;next;
+      p-&gt;next = new ListNode(extra % 10);
+      extra /= 10;
+      p = p-&gt;next;
+    }
+    return node.next;
+
+  }
+};
+</code></pre>
+
+<ul>
+<li>leet_445</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Follow up:
+What if you cannot modify the input lists? In other words, reversing the lists is not allowed.
+
+Example:
+
+Input: (7 -&gt; 2 -&gt; 4 -&gt; 3) + (5 -&gt; 6 -&gt; 4)
+Output: 7 -&gt; 8 -&gt; 0 -&gt; 7
+class Solution {
+public:
+  ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+    ListNode node(0), *p = &amp;node;
+    std::vector&lt;int&gt; num1, num2;
+    while (l1) {
+      num1.push_back(l1-&gt;val);
+      l1 = l1-&gt;next;
+    }
+    while (l2) {
+      num2.push_back(l2-&gt;val);
+      l2 = l2-&gt;next;
+    }
+
+    int extra = 0;
+    int i = num1.size();
+    int j = num2.size();
+    ListNode* pre = nullptr;
+    while (i &gt; 0|| j &gt; 0|| extra) {
+      if (--i &gt;= 0) extra += num1[i];
+      if (--j &gt;= 0) extra += num2[j];
+      ListNode* node = new ListNode(extra % 10);
+      node-&gt;next = pre;
+      pre = node;
+      p-&gt;next = pre;
+      extra /= 10;
+    }
+    return node.next;
+  }
+};
+</code></pre>
+
+<h4>设立虚拟头节点</h4>
+
+<ul>
+<li>leet_203</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Remove all elements from a linked list of integers that have value val.
+
+Example
+Given: 1 -- &gt; 2 --&gt; 6 --&gt; 3 --&gt; 4 --&gt; 5 --&gt; 6, val = 6
+Return: 1 -- &gt; 2 --&gt; 3 --&gt; 4 --&gt; 5
+class Solution {
+public:
+  ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+    ListNode node(0), *p = &amp;node;
+    int extra = 0;
+    while (l1 || l2 || extra) {
+      if (l1) extra += l1-&gt;val, l1 = l1-&gt;next;
+      if (l2) extra += l2-&gt;val, l2 = l2-&gt;next;
+      p-&gt;next = new ListNode(extra % 10);
+      extra /= 10;
+      p = p-&gt;next;
+    }
+    return node.next;
+
+  }
+};
+</code></pre>
+
+<ul>
+<li>leet_82</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">class Solution {
+public:
+    ListNode* deleteDuplicates(ListNode* head) {
+        if (!head || !head-&gt;next) return head;
+        ListNode *dummy = new ListNode(-1), *pre = dummy;
+        dummy-&gt;next = head;
+        while (pre-&gt;next) {
+            ListNode *cur = pre-&gt;next;
+            while (cur-&gt;next &amp;&amp; cur-&gt;next-&gt;val == cur-&gt;val) {
+                cur = cur-&gt;next;
+            }
+            if (cur != pre-&gt;next) pre-&gt;next = cur-&gt;next;
+            else pre = pre-&gt;next;
+        }
+        return dummy-&gt;next;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_21</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Input: 1-&gt;2-&gt;4, 1-&gt;3-&gt;4
+Output: 1-&gt;1-&gt;2-&gt;3-&gt;4-&gt;4
+class Solution {
+public:
+  ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
+
+    ListNode node(0), *p = &amp;node;
+    while (l1 &amp;&amp; l2) {
+      if (l1-&gt;val &lt; l2-&gt;val) {
+        p-&gt;next = l1;
+        l1 = l1-&gt;next;
+      } else {
+        p-&gt;next = l2;
+        l2 = l2-&gt;next;
+      }
+      p = p-&gt;next;
+    }
+
+    p-&gt;next = l1 ? l1 : l2;
+    return node.next;
+  }
+};
+</code></pre>
+
+<ul>
+<li>leet_25</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Example:
+
+Given this linked list: 1-&gt;2-&gt;3-&gt;4-&gt;5
+
+For k = 2, you should return: 2-&gt;1-&gt;4-&gt;3-&gt;5
+
+For k = 3, you should return: 3-&gt;2-&gt;1-&gt;4-&gt;5
+class Solution {
+public:
+    ListNode* reverseKGroup(ListNode* head, int k) {
+      ListNode dumy(0), *pre = &amp;dumy, *cur = &amp;dumy;
+      dumy.next = head;
+      int num = 0;
+      while (cur = cur-&gt;next)  num++;
+      while (num &gt;= k) {
+        cur = pre-&gt;next;
+        for (int i = 1; i &lt; k; i++) {
+          ListNode* t = cur-&gt;next;
+          cur-&gt;next = t-&gt;next;
+          t-&gt;next = pre-&gt;next;
+          pre-&gt;next = t;
+        }
+        pre = cur;
+        num -= k;
+      }
+      return dumy.next;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_147</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Sort a linked list using insertion sort.
+Input: 4-&gt;2-&gt;1-&gt;3
+Output: 1-&gt;2-&gt;3-&gt;4
+class Solution {
+public:
+    ListNode* insertionSortList(ListNode* head) {
+        ListNode* dummy = new ListNode(0);
+        dummy -&gt; next = head;
+        ListNode *pre = dummy, *cur = head;
+        while (cur) {
+            if ((cur -&gt; next) &amp;&amp; (cur -&gt; next -&gt; val &lt; cur -&gt; val)) {
+                while ((pre -&gt; next) &amp;&amp; (pre -&gt; next -&gt; val &lt; cur -&gt; next -&gt; val)) {
+                    pre = pre -&gt; next;
+                }
+                ListNode* temp = pre -&gt; next;
+                pre -&gt; next = cur -&gt; next;
+                cur -&gt; next = cur -&gt; next -&gt; next;
+                pre -&gt; next -&gt; next = temp;
+                pre = dummy;
+            }
+            else {
+                cur = cur -&gt; next;
+            }
+        }
+        return dummy -&gt; next;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_148</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Sort a linked list in  O ( n  log  n ) time using constant space complexity.
+
+Example 1:
+
+Input: 4-&gt;2-&gt;1-&gt;3
+Output: 1-&gt;2-&gt;3-&gt;4
+Example 2:
+
+Input: -1-&gt;5-&gt;3-&gt;4-&gt;0
+Output: -1-&gt;0-&gt;3-&gt;4-&gt;5
+class Solution {
+public:
+    ListNode* sortList(ListNode* head) {
+        if (!head || !head-&gt;next) return head;
+        ListNode *slow = head, *fast = head, *pre = head;
+        while (fast &amp;&amp; fast-&gt;next) {
+            pre = slow;
+            slow = slow-&gt;next;
+            fast = fast-&gt;next-&gt;next;
+        }
+        pre-&gt;next = NULL;
+        return merge(sortList(head), sortList(slow));
+    }
+    ListNode* merge(ListNode* l1, ListNode* l2) {
+        ListNode *dummy = new ListNode(-1);
+        ListNode *cur = dummy;
+        while (l1 &amp;&amp; l2) {
+            if (l1-&gt;val &lt; l2-&gt;val) {
+                cur-&gt;next = l1;
+                l1 = l1-&gt;next;
+            } else {
+                cur-&gt;next = l2;
+                l2 = l2-&gt;next;
+            }
+            cur = cur-&gt;next;
+        }
+        if (l1) cur-&gt;next = l1;
+        if (l2) cur-&gt;next = l2;
+        return dummy-&gt;next;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_237</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Supposed the linked list is 1 -&gt; 2 -&gt; 3 -&gt; 4 and you are given the third node with value 3, the linked list should become 1 -&gt; 2 -&gt; 4 after calling your function.
+class Solution {
+public:
+    void deleteNode(ListNode* node) {
+        node-&gt;val = node-&gt;next-&gt;val;
+        ListNode *tmp = node-&gt;next;
+        node-&gt;next = tmp-&gt;next;
+        delete tmp;
+    }
+};
+</code></pre>
+
+<h4>双节点</h4>
+
+<ul>
+<li>leet_61</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a list, rotate the list to the right by  k  places, where  k  is non-negative.
+
+For example:
+Given 1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;NULL and  k  = 2,
+return 4-&gt;5-&gt;1-&gt;2-&gt;3-&gt;NULL.
+class Solution {
+public:
+    ListNode *rotateRight(ListNode *head, int k) {
+        if (!head) return NULL;
+        int n = 0;
+        ListNode *cur = head;
+        while (cur) {
+            ++n;
+            cur = cur-&gt;next;
+        }
+        k %= n;
+        ListNode *fast = head, *slow = head;
+        for (int i = 0; i &lt; k; ++i) {
+            if (fast) fast = fast-&gt;next;
+        }
+        if (!fast) return head;
+        while (fast-&gt;next) {
+            fast = fast-&gt;next;
+            slow = slow-&gt;next;
+        }
+        fast-&gt;next = head;
+        fast = slow-&gt;next;
+        slow-&gt;next = NULL;
+        return fast;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_143</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a singly linked list  L :  L 0→ L 1→…→ L n -1→ L n,
+reorder it to:  L 0→ L n → L 1→ L n -1→ L 2→ L n -2→…
+
+You may not modify the values in the list&#39;s nodes, only nodes itself may be changed.
+
+Example 1:
+
+Given 1-&gt;2-&gt;3-&gt;4, reorder it to 1-&gt;4-&gt;2-&gt;3.
+Example 2:
+
+Given 1-&gt;2-&gt;3-&gt;4-&gt;5, reorder it to 1-&gt;5-&gt;2-&gt;4-&gt;3.
+class Solution {
+public:
+  
+    ListNode* reverse(ListNode* head) {
+      ListNode *pre = nullptr, *next = nullptr;
+      while (head) {
+        next = head-&gt;next;
+        head-&gt;next = pre;
+        pre = head;
+        head = next;
+      }
+      return pre;
+    }
+  
+    void reorderList(ListNode* head) {
+      if (!head || !head-&gt;next || !head-&gt;next-&gt;next) return;
+      ListNode *slow = head, *fast = head;
+      while (fast-&gt;next &amp;&amp; fast-&gt;next-&gt;next) {
+        slow = slow-&gt;next;
+        fast = fast-&gt;next-&gt;next;
+      }
+      
+      ListNode* mid = slow-&gt;next;
+      slow-&gt;next = nullptr;
+      ListNode* rhead = reverse(mid);
+      
+      while (head &amp;&amp; rhead) {
+        ListNode* next = head-&gt;next;
+        head-&gt;next = rhead;
+        rhead = rhead-&gt;next;
+        head-&gt;next-&gt;next = next;
+        head = next;
+      }
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_234</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a singly linked list, determine if it is a palindrome.
+
+Example 1:
+
+Input: 1-&gt;2
+Output: false
+Example 2:
+
+Input: 1-&gt;2-&gt;2-&gt;1
+Output: true
+class Solution {
+  public:
+  ListNode* reverse(ListNode* head) {
+    ListNode* pre = nullptr, *next = nullptr;
+
+    while (head) {
+      next = head-&gt;next;
+      head-&gt;next = pre;
+      pre = head;
+      head = next;
+    }
+
+    return pre;
+  }
+
+  bool isPalindrome(ListNode* head) {
+    if (!head || !head-&gt;next) return true;
+    
+    ListNode* fast = head, *slow = head;
+    while (fast-&gt;next &amp;&amp; fast-&gt;next-&gt;next) {
+      slow = slow-&gt;next;
+      fast = fast-&gt;next-&gt;next;
+    }
+
+    ListNode* mid = slow-&gt;next;
+    ListNode* rhead = reverse(mid);
+    while (rhead) {
+      if (rhead-&gt;val != head-&gt;val) return false;
+      rhead = rhead-&gt;next;
+      head = head-&gt;next;
+    }
+    return true;
+  }
+};
+</code></pre>
 
                         
                       </div>
@@ -426,66 +1359,10 @@ function&lt;int(int)&gt; f1 = func1;
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/09/26 18:20 下午</span>
+                    <span class="date">2019/08/16 10:04 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15694119108197.html">
-                
-                  <h1>多线程补充知识</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<ul>
-<li>补充</li>
-</ul>
-
-<h4>虚假唤醒</h4>
-
-<ul>
-<li>wait中需要有第二个参数</li>
-<li>这个lambda要正确判断要处理的公共数据是否存在</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">cond.wait(s1, [this]{
-                  if (!msgRecvQueue.empty())
-                     return true;
-                  return false;
-                });
-</code></pre>
-
-<h4>atomic</h4>
-
-<ul>
-<li>线程数目控制在200个，尽量不要超过500</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/25 19:45 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          					    <span class="posted-in"><a href='%E7%8E%A9%E8%BD%AC%E7%AE%97%E6%B3%95.html'>玩转算法</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -569,135 +1446,56 @@ std::lock_guard&lt;std::recursive_mutex&gt; s2(mutex1);
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15693756821958.html">
+                <a class="clearlink" href="15702724482478.html">
                 
-                  <h1>并查集</h1>
+                  <h1>可变参数函数&&initializer_list</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>连接问题</h4>
+                        	<h4>可变参数函数</h4>
 
 <ul>
-<li>网络是个抽象的概念：用户之间形成的网络</li>
-<li>数学中的集合类实现</li>
+<li>这种能够接收非固定个数数的数就是可变参数还数</li>
+<li>initialiser_1 ist 标准库类型，该类型能够使用的前提条件是所有的实多类型相同</li>
+<li>参数类型一致，但是个数不可预知</li>
 </ul>
 
-<h4>连接问题&amp;路径问题</h4>
+<h4>拷贝和赋值</h4>
 
 <ul>
-<li>和二分查找作比较</li>
-<li>和select作比较</li>
-<li>和堆作比较</li>
+<li>不会拷贝列表中元素，原来对象拷贝</li>
 </ul>
 
-<h4>Quick find</h4>
+<h4>省略号形参</h4>
 
 <ul>
-<li><img src="media/15693756821958/15693766400411.jpg" alt="" style="width:841px;"/></li>
+<li>这种省略形参式的可变参数函数虽然参数数量不固定，但是函数的所有参数是存储在线性连续的空间中的</li>
+<li>可变参数只能是字符串类型和int类型</li>
 </ul>
 
-<h4>quick find</h4>
+<pre class="line-numbers"><code class="language-cpp">double sum(int num, ...) {
+  va_list valist;
+  double sum = 0;
+  va_start(valist, num);
+  for (int i = 0; i &lt; num; i++) {
+    sum = sum + va_arg(valist, int);
+  }
+  va_end(valist);
+  return sum;
+}
 
-<ul>
-<li><img src="media/15693756821958/15693785463403.jpg" alt="" style="width:1262px;"/></li>
-</ul>
-
-<h4>uf3</h4>
-
-<p><img src="media/15693756821958/15693796785798.jpg" alt="" style="width:971px;"/></p>
-
-<h4>uf4</h4>
-
-<p><img src="media/15693756821958/15693802524690.jpg" alt="" style="width:1073px;"/></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/25 09:41 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E8%BF%9B%E9%98%B6.html'>数据结构和算法进阶</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15693208659724.html">
-                
-                  <h1>std::atomic</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>std::atomic</h4>
-
-<ul>
-<li>一般atomic原子操作，支持++,--,-=,+=其他的不支持</li>
-</ul>
-
-<h4>std::async</h4>
-
-<ul>
-<li>async一般叫创建异步任务</li>
-<li>async有时候并不创建线程</li>
-<li>deferred延迟调用，并且不创建新线程，延迟到future对象调用get或者wait的时候才执行线程函数，如果没有调用get或者wait，那么mythread不会执行</li>
-</ul>
-
-<h5>std::launch::async</h5>
-
-<pre class="line-numbers"><code class="language-text">std::future&lt;int&gt; res = std::async(std::launch::async, mythread);
-</code></pre>
-
-<ul>
-<li>强制异步任务在新线程上执行</li>
-</ul>
-
-<h5>std::launch::async|std::launch::deferred</h5>
-
-<pre class="line-numbers"><code class="language-text">std::future&lt;int&gt; res = std::async(std::launch::async | std::launch::deferred, mythread);
-</code></pre>
-
-<ul>
-<li>可能是创建新线程立即执行</li>
-<li>也可能是没有创建新线程，并且延迟到res.get()才开始执行任务入口函数</li>
-</ul>
-
-<h5>不带额外参数，只给async函数一入口函数名</h5>
-
-<pre class="line-numbers"><code class="language-text">std::future&lt;int&gt; res = std::async(std::launch::async | std::launch::deferred, mythread);
-</code></pre>
-
-<ul>
-<li>默认值是std::launch::async|std::launch::deferred</li>
-</ul>
-
-<h5>系统如何自行决定</h5>
-
-<ul>
-<li>std::async和std::thread</li>
-<li>std::thread创建线程，如果系统资源紧张，创建线程异常，整个程序就会报异常错误</li>
-<li>std::async创建异步任务，可能创建，也可能不创建，容易拿到入口函数的返回值</li>
-<li>async创建失败不会引起系统崩溃，可能执行在主线程上，不创建新的线程</li>
-<li>如果一定要创建std::launched::async, 可能是程序崩溃</li>
-<li>默认写法判定系统是否创建线程需要wait_for</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">std::future_status status = result.wait_for(std::chrono::seconds(0));
-if (status == std::future_status::deferred) {
-  //delay exec 
+void funcTest(const char* msg...) {
+  va_list  valist;
+  int cnt = atoi(msg);
+  va_start(valist, msg);
+  int args = 0;
+  while (args &lt; cnt) {
+    char* p = va_arg(valist, char*);
+    printf(&quot;args %d %s \n&quot;, cnt, p);
+    args++;
+  }
+  va_end(valist);
 }
 </code></pre>
 
@@ -708,354 +1506,10 @@ if (status == std::future_status::deferred) {
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/09/24 18:27 下午</span>
+                    <span class="date">2019/10/05 18:47 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15692331863352.html">
-                
-                  <h1>future&shared_future&atomic</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>future</h4>
-
-<pre class="line-numbers"><code class="language-text">  std::future&lt;int&gt; result = std::async(std::launch::deferred, mythread);
-  cout &lt;&lt; &quot;continue...!&quot; &lt;&lt; endl;
-
-  std::future_status status = result.wait_for(std::chrono::seconds(4));
-  if (status == std::future_status::timeout) {
-    cout &lt;&lt; &quot;timeout func thread not finished &quot; &lt;&lt; endl;
-  } else if (status == std::future_status::ready) {
-    cout &lt;&lt; &quot;thread suc finished &quot; &lt;&lt; endl;
-  } else if (status == std::future_status::deferred) {
-    //如果async第一个条件std::launch::deferred
-    cout &lt;&lt; &quot;thread deferred &quot; &lt;&lt; endl;
-    cout &lt;&lt; result.get() &lt;&lt; endl;
-  }
-</code></pre>
-
-<h4>shared_future</h4>
-
-<pre class="line-numbers"><code class="language-text">std::packaged_task&lt;int(int)&gt; mypt(mythread2);
-std::thread t1(std::ref(mypt), 1);
-t1.join();
-std::future&lt;int&gt; res = mypt.get_future();
-std::shared_future&lt;int&gt; result_s(std::move(res));
-
-bool valid = res.valid();//判断future对象值是否是有效值
-std::shared_future&lt;int&gt; result_s(res.share());
-
-valid = res.valid();
-auto getRes = result_s.get();
-getRes = result_s.get();
-
-
-
-std::shared_future&lt;int&gt; result_s(mypt.get_future());
-std::thread t2(mythread4, std::ref(result_s));
-t2.join();
-cout &lt;&lt; &quot; I love China&quot; &lt;&lt; endl;
-</code></pre>
-
-<h4>std::atomic</h4>
-
-<ul>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/23 18:06 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15691931782312.html">
-                
-                  <h1>MQ组件实现思路和架构设计方案</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>架构图</h4>
-
-<p><img src="media/15691931782312/15691932664810.jpg" alt="" style="width:1373px;"/></p>
-
-<h4>MQ组件实现功能点</h4>
-
-<ul>
-<li>支持消息高性能的序列化转换、异步化发送消息</li>
-<li>支持消息生产实例与消费实例的链接池化缓存化提升性能</li>
-<li>支持可靠性投递消息，保障消息的 100%不丢失</li>
-<li>支持消费端的幂等操作，避免消费端重复消费的问题</li>
-<li>支持迅速消息发送模式,在一些日志收集/统计分析等需求下可以保证高性能，超高吞吐量</li>
-<li>支持延迟消息模式，消息可以延迟发送，指定延迟时间，用于某些延迟检查、服务限流坜景</li>
-<li>支持事务消息，且 100%保暲可靠性投递，在金融行业单笔大金额操作时会有此类需求</li>
-<li>支持顺序消息，保证消息送达消费端的前后顺序，例如下订单等复合性操作支持消息补偿,重试,以及快速定位异常/失败消息</li>
-<li>支持集群消息负载均衡，保障消息落到具体 ST 集群的负載均衡</li>
-<li>支持消息路由策略，指定某些消息路由到指定的 SET 集群</li>
-</ul>
-
-<h4>迅速消息发送</h4>
-
-<ul>
-<li>迅速消息是指消息不进行落库存储，不做可靠性的保障</li>
-<li>在一些非核心消息、日志数据、或者统计分析等场景下比较合适</li>
-<li>迅速消息的优点就是性能最高，吞吐量最大
-<img src="media/15691931782312/15691934495696.jpg" alt="" style="width:984px;"/></li>
-</ul>
-
-<h4>确认消息发送</h4>
-
-<p><img src="media/15691931782312/15691934804861.jpg" alt="" style="width:1310px;"/></p>
-
-<h4>批量消息发送</h4>
-
-<p><img src="media/15691931782312/15691936700066.jpg" alt="" style="width:1328px;"/><br/>
-<img src="media/15691931782312/15691936915904.jpg" alt="" style="width:1363px;"/></p>
-
-<h4>延迟消息发送</h4>
-
-<ul>
-<li>延迟消息相对简单，就是我们在 Message 封装的时候添加 delay Time 属性即可，使得我们的消息可以进行延迟发送，根据具体的业务场景也可以很好的使用得到</li>
-<li>应用场景</li>
-<li>电商平台买到的商品签收后，不点击确认支付，那么系统自动会在 7 天（一定时间）去进行支付操作。</li>
-<li>还有一些自动超时作废的场景,你的优惠券/红包有使用时间限制，也可以用延迟消息机制</li>
-</ul>
-
-<h4>顺序消息</h4>
-
-<ul>
-<li>发送的顺序消息，必须保障消息投递到同一个队列，且这个消费者只能有一个独占模式）</li>
-<li>然后需要统一提交（可能是合并成一个大消息，也可能是拆分为多个消息），并且所有消息的会话 ID 一致</li>
-<li>添加消息属性：顺序标记的序号、和本次顺序消息的 SIZE 属性，进行落库操作</li>
-<li>并行进行发送给自身的延退消息（注意带上关键属性：会话 ID、SIZE）进行后续处理消费</li>
-<li>当收到延迟消息后，根据会话ID、SIZE抽取数据库数据进行处理即可</li>
-<li>定时轮训补偿机制，对于异常情况</li>
-<li>备注：比如生产端消息没有完全投追成功、或者消费端落库异常导致消费端落库后缺少消息条目的情況）
-<img src="media/15691931782312/15691939630945.jpg" alt="" style="width:1429px;"/></li>
-</ul>
-
-<h4>事务消息</h4>
-
-<ul>
-<li>txSelect</li>
-<li>我们采用类似可靠性投递的机制，也就是补偿机制</li>
-<li>但是我们的数据源必须是同一个，也就是业务操作 DB1 数据库和消息记录 DB2 数据库使用同一个数据源。
-<img src="media/15691931782312/15691943270894.jpg" alt="" style="width:1184px;"/></li>
-</ul>
-
-<h4>消息幂等性</h4>
-
-<h5>出现重复消费的情况</h5>
-
-<ul>
-<li>可靠性消息投递机制</li>
-<li>MQ Broker服务与消费端传输消息的过程中的网络抖动</li>
-<li>消费端故障或异常
-<img src="media/15691931782312/15691944331805.jpg" alt="" style="width:1358px;"/></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/23 06:59 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='RabbitMQ.html'>RabbitMQ</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15691037377724.html">
-                
-                  <h1>SET架构</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>单元集群</h4>
-
-<ul>
-<li>随着大型互联网公司业务的多元化发展，就拿滴滴、美团等大厂来讲，如滴滴打车、单车、外卖、酒店、旅行、金融等业务持续高速增长，单个大型分布式体系的集群，通过加机器+集群内部拆分（kv、mq、MYSQLS 等），虽然具备了一定的可扩展性。但是，随着业务量的进一步增长，整个集群规模逐渐变得巨大，从而一定会在某个点上达到瓶颈，无法满足扩展性需要，并且大集群内核心服务出现问题，会影响全网所有用户。</li>
-</ul>
-
-<h4>大型分布式集群问题</h4>
-
-<ul>
-<li>容灾问题</li>
-<li>核心服务（比如订单服务）挂掉，会影响全网所有用户导致整个业务不可用；<br/>
-数据库主库集中在一个 IDC，主机房挂掉，会影响全网所有用户，整个业务无法快速切换和恢复</li>
-<li>资源扩展问题</li>
-<li>单 IDC 的资源（机器、网络带宽等）已经没法满足，扩展 IDC 时，存在跨机房访问时延问题（增加异地机房时，时延问题更加严重）；数据库主库单点，连接数有限，不能支持应用程序的持续扩展</li>
-<li>大集群拆分问题</li>
-<li>核心问题：分布式集群规模扩大后，会相应的带来资源扩展大集群拆分以及容灾问题。<br/>
-所以出于对业务扩展性以及容灾需求的考虑，我们需要一套从底层架构彻底解决问题的方案，业界主流解决方案</li>
-</ul>
-
-<h5>同城双活</h5>
-
-<ul>
-<li>业务层面上已经做到真正的双活（或者多活），分别承担部分流量存储层面比如定时任务、缓存、持久层、数据分析等都是主从架构，会有跨机房写</li>
-<li>个数据中心故障，可以手动切换流量，部分组件可以自动切换</li>
-</ul>
-
-<h5>两地三中心</h5>
-
-<ul>
-<li>使用灾备的思想，在同城“双活”的基础上，在异地部署一套灾备数据中心，每个中心都具有完备的数据处理能力，只有当主节点故障需要容灾的时候才会紧急启动备用数据中心</li>
-<li><img src="media/15691037377724/15691042588639.jpg" alt="" style="width:1163px;"/></li>
-</ul>
-
-<h4>SET优化方案目标</h4>
-
-<ul>
-<li>业务：解决业务遇到的扩展性和容灾等需求，支撑业务的高速发展</li>
-<li>通用性：架构侧形成统一通用的解決方案，方便各业务线接入使用</li>
-</ul>
-
-<h4>SET化架构策略</h4>
-
-<ul>
-<li><img src="media/15691037377724/15691044588654.jpg" alt="" style="width:1247px;"/></li>
-</ul>
-
-<h5>流量路由</h5>
-
-<ul>
-<li>按照特殊的 key（通常为 userid）进行路由，判断某次请求该路由到中心集群还是单元化集群</li>
-</ul>
-
-<h5>中心集群：</h5>
-
-<ul>
-<li>未进行单元化改造的服务（通常不在核心交易链路，比如供应链系统）称为中心集群，跟当前架构保持一致</li>
-</ul>
-
-<h5>单元化集群</h5>
-
-<ul>
-<li>每个单元化集群只负责本单元内的流量处理，以实现流量拆分以及故障隔离</li>
-<li>每个单元化集群前期只存储本单元产生的交易数据，后续会做双向数据同步，实现容灾切换需求</li>
-</ul>
-
-<h5>中间件策略</h5>
-
-<ul>
-<li>中间件（RPC、KV、MQ 等）</li>
-<li>RPC：对于 SET 服务，调用封闭在 SET 内；对于非 SET 服务，沿用现有路由逻辑</li>
-<li>KV：支持分 SET 的数据生产和査询 MQ：支持分 SET 的消息生产和消费</li>
-</ul>
-
-<h5>数据同步</h5>
-
-<ul>
-<li>全局数据（数据量小且变化不大，比如商家的菜品数据）部署在中心集群，其他单元化集群同步全局数据到本单元化内；未来演变为昇地多活架构时，各单元化集群数据需要进行双向同步来实现容灾需要</li>
-</ul>
-
-<h5>能力</h5>
-
-<ul>
-<li>通过 SET 化架构的流量调度能力，将 SET 分别部署在不同地区的数据中心，实现跨地区容灾支持</li>
-<li>利用前端位置信息采集和域名解析簽略，将流量路由到最近的 SET，提供最高效的本地化服务；</li>
-<li>集装箱式扩展</li>
-<li>SET 的封装性支持更灵活的部署扩展性，比如 SET 一键创 建/下线,SET一键发布等</li>
-<li><img src="media/15691037377724/15691052560100.jpg" alt="" style="width:1077px;"/></li>
-<li><img src="media/15691037377724/15691053560728.jpg" alt="" style="width:1277px;"/></li>
-</ul>
-
-<h4>SET化架构原则</h4>
-
-<ul>
-<li>对业务透明原则</li>
-<li>SET 化架构的实现对业务代码透明，业务代码层面不需 要关心 SET 化规则，SET 的部署等问题</li>
-<li>理论上，切分规则由业务层面按需定制 y 实现上，建议优先选最大的业务维度进行切分；</li>
-<li>比如海量用户的 O20 业务，按用户位置信息进行切分。此外</li>
-<li>接入层、逻辑层和数据层可以有独立的 SET 切分规则，有利于实现部署和运维成本的最优化。</li>
-<li>部署规范原则</li>
-<li>一个 SET 并不ー定只限制在一个机房，也可以跨机房或者</li>
-<li>跨地区部署；为保证灵活性，单个 SET 内机器数不宜过多（如如不超过 1000 台物理机）</li>
-</ul>
-
-<h4>Rabbitmq-SET</h4>
-
-<ul>
-<li><img src="media/15691037377724/15691056825704.jpg" alt="" style="width:1367px;"/></li>
-<li>集群之间Federation</li>
-<li>rabbitmg-plugins enable rabbitmq federation</li>
-<li>rabbitmq-plugins enable rabbitmq federation management</li>
-<li>使用 Rabbitmq 通信插件 Federation</li>
-<li>Federation 插件是一个在不需要 cluster，而 brokers之间传输消息的高性能插件。</li>
-<li>Federation 插件可以在 brokers 或者 cluster 之间传输消息，链接的双方可以使用不同的 users 和 virtual hosts、或者双方的 rabbitmq和 erlang 版本不一致，federation 插件使用 AMQP 协议通信，可以接受不连续的传输。</li>
-</ul>
-
-<h5>SET规则</h5>
-
-<ul>
-<li>SET 化配置规则</li>
-<li>第一，Federation Exchanges，可以看成 Downstream (82 节点）从 Upstream  (81 节点）主动拉取消息，但并不是拉取所有消息，必须是在 Downstream 上已经明确定义 Bindings 关系的 Exchange，也就是有实际的物理 Queue 来接收消息才会从 Upstream 拉取消息到 Downstream。使用 AMQP 协议实施代理间通信 , Downstream会将绑定关系组合在一起，绑定/解除绑定命令将发送到 Upstream 交换机</li>
-<li>第二，经过配置后，Upstream 节点已经可以把消息直接通过 Federation Exchanges 路由给我们的 Downstream 节点，然后进行消费。<br/>
-也就是说可以实现消息的转发，接下来也可以在 Upstream 添加具体的队列去进行消费 Federation Exchanges 里的消息，我们一条消息分别发到了 2 个 Rabbitmq！集群并且消费，这样我们可以实现 SET 化的关键要素，就是集群间的消息同步了</li>
-<li>第三，可以根据自己的业务规则去规划不同的集群去监听不同的消息队列，从而达到 SET 化的手段，保障了性能、可靠性、数据一致性。</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/22 06:08 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='RabbitMQ.html'>RabbitMQ</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -1129,8 +1583,6 @@ cout &lt;&lt; &quot; I love China&quot; &lt;&lt; endl;
             <a href="Golang.html"><strong>Golang</strong></a>
         
             <a href="Django.html"><strong>Django</strong></a>
-        
-            <a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html"><strong>C++设计模式实战</strong></a>
         
             <a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html"><strong>深入剖析Kubernetes</strong></a>
         
@@ -1209,6 +1661,18 @@ cout &lt;&lt; &quot; I love China&quot; &lt;&lt; endl;
 	      
 		      
 			      <li class="post">
+			        <a href="15818128782116.html">Singleton</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15748977610569.html">State</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817697569868.html">字符串分割</a>
 			      </li>
 		     
@@ -1221,19 +1685,7 @@ cout &lt;&lt; &quot; I love China&quot; &lt;&lt; endl;
 		  
 		      
 			      <li class="post">
-			        <a href="15814649492497.html">Simple Factory</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814189410719.html">代码的可测试性</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814188057978.html">重构</a>
+			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

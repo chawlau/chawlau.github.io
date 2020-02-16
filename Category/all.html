@@ -87,8 +87,6 @@
         
             <li><a href="Django.html">Django</a></li>
         
-            <li><a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html">C++设计模式实战</a></li>
-        
             <li><a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html">深入剖析Kubernetes</a></li>
         
             <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html">数据结构和算法</a></li>
@@ -171,6 +169,1202 @@
 	<div class="large-8 medium-8 columns">
 		<div class="markdown-body home-categories">
 		
+			<div class="article">
+                <a class="clearlink" href="15818128782116.html">
+                
+                  <h1>Singleton</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>动机</h4>
+
+<ul>
+<li>在软件系统中，经常有这样一些特殊的类，必须保证它们在系统中只存在一个实例，才能确保它们的逻辑正确性、以及良好的效率</li>
+<li>如何绕过常规的构造器，提供一种机制来保证一个类只有一个实例？</li>
+<li>这应该是类设计者的责任，而不是使用者的责任</li>
+</ul>
+
+<h4>结构</h4>
+
+<ul>
+<li><img src="media/15818128782116/15818133316537.jpg" alt="" style="width:538px;"/></li>
+</ul>
+
+<h4>要点总结</h4>
+
+<ul>
+<li>Singleton 模式中的实例构造器可以设置为 protected 以允许子类派生。</li>
+<li>Singleton 模式一般不要支持拷贝构造函数和 Clone 接口，因为这有可能导致多个对象实例，与 Singleton 模式的初衷违背。</li>
+<li>如何实现多线程环境下安全的 Singleton？注意对双检查锁的正确实现。</li>
+</ul>
+
+<h4>单例模式问题</h4>
+
+<ul>
+<li>单例对 OOP 特性的支持不友好</li>
+<li>单例会隐藏类之间的依赖关系 单例类不需要显示创建、不需要依赖参数传递，在函数中直接调用就可以了。如果代码比较复杂，这种调用关系就会非常隐蔽</li>
+<li>单例对代码的扩展性不友好</li>
+<li>单例对代码的可测试性不友好 单例模式的使用会影响到代码的可测试性。如果单例类依赖比较重的外部资源，比如 DB，我们在写单元测试的时候，希望能通过 mock 的方式将它替换掉。而单例类这种硬编码式的使用方式，导致无法实现 mock 替换。</li>
+<li>单例不支持有参数的构造函数 单例不支持有参数的构造函数，比如我们创建一个连接池的单例对象，我们没法通过参数来指定连接池的大小, 解决方案是将将参数放到另外一个全局变量中</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+class Config {
+    public:
+    static const int argA = 123;
+    static const int argB = 123;
+};
+
+class Singleton {
+    private:
+    int argA_, argB_;
+    Singleton() : argA_(Config::argA), argB_(Config::argB) {}
+    public:
+    static Singleton* instance_;
+    static Singleton* get_instance() {
+        if (instance_ == nullptr) {
+            instance_ = new Singleton;
+        }
+        return instance_;
+    }
+};
+Singleton* Singleton::instance_ = nullptr;
+
+int main() {
+    Singleton* p1 = Singleton::get_instance();
+    Singleton* p2 = Singleton::get_instance();
+}
+</code></pre>
+
+<h4>多例模式实现</h4>
+
+<ul>
+<li>“单例”指的是一个类只能创建一个对象。对应地，“多例”指的就是一个类可以创建多个对象，但是个数是有限制的，比如只能创建 3 个对象。多例的实现也比较简单，通过一个 Map 来存储对象类型和对象之间的对应关系，来控制对象的个数</li>
+</ul>
+
+<h4>cpp_demo多例模式</h4>
+
+<pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;map&gt;
+using namespace std;
+
+const static int num_max = 5;
+class Singleton;
+static map&lt;int, Singleton*&gt; my_map;
+class Singleton {
+    private:
+    Singleton() {
+        cout &lt;&lt; &quot;Singleton \n&quot; ;
+    }
+
+    static Singleton* instance_;
+    static int instance_cnt_;
+    public:
+    static Singleton* get_instance() {
+        instance_ = my_map[instance_cnt_];
+
+        if (instance_ == nullptr) {
+            instance_ = new Singleton;
+            my_map[instance_cnt_] = instance_;
+        }
+        
+        instance_cnt_++;
+        if (instance_cnt_ &gt; num_max) {
+            instance_cnt_ = 1;
+        }
+        return instance_;
+    }
+};
+
+Singleton* Singleton::instance_ = nullptr;
+int Singleton::instance_cnt_ = 1;
+
+int main() {
+    Singleton* p1 = Singleton::get_instance();
+    Singleton* p2 = Singleton::get_instance();
+    Singleton* p3 = Singleton::get_instance();
+    Singleton* p4 = Singleton::get_instance();
+    Singleton* p5 = Singleton::get_instance();
+    cout &lt;&lt; p1 &lt;&lt; &quot; &quot; &lt;&lt; p2 &lt;&lt; &quot; &quot; &lt;&lt; p3 &lt;&lt; &quot; &quot; &lt;&lt; p4 &lt;&lt; &quot; &quot; &lt;&lt; p5 &lt;&lt; endl;
+}
+</code></pre>
+
+<h4>分布式环境下的单例模式</h4>
+
+<ul>
+<li>一个类只允许创建唯一一个对象。那对象的唯一性的作用范围是进程范围内</li>
+</ul>
+
+<h5>线程唯一的单例</h5>
+
+<ul>
+<li>我们通过一个Map来存储对象，其中 key 是线程 ID，value 是对象</li>
+</ul>
+
+<h4>如何实现集群环境下单例</h4>
+
+<ul>
+<li>我们需要把这个单例对象序列化并存储到外部共享存储区（比如文件）。进程在使用这个单例对象的时候，需要先从外部共享存储区中将它读取到内存，并反序列化成对象，然后再使用，使用完成之后还需要再存储回外部共享存储区</li>
+<li>为了保证任何时刻，在进程间都只有一份对象存在，一个进程在获取到对象之后，需要对对象加锁，避免其他进程再将其获取。在进程使用完这个对象之后，还需要显式地将对象从内存中删除，并且释放对对象的加锁，这里需要分布式锁，需要lua配合redis实现比较好</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2020/02/16 08:27 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15748977610569.html">
+                
+                  <h1>State</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>定义</h4>
+
+<ul>
+<li>在组件构建过程中，某些对象的状态经常面临变化，如何对这些变化进行有效的管理？同时又维持高层模块的稳定？“状态变化“模式为这一问题提供了一种解决方案。</li>
+</ul>
+
+<h4>典型模式</h4>
+
+<ul>
+<li>State</li>
+<li>Memento</li>
+</ul>
+
+<h4>动机</h4>
+
+<ul>
+<li>在软件构建过程中，某些对象的状态如果改变，其行为也会随之而发生变化，比如文档处于只读状态，其支持的行为和读写状态支持的行为就可能完全不同。</li>
+<li>如何在运行时根据对象的状态来透明地更改对象的行为？而不会为对象操作和状态转化之间引入紧耦合？</li>
+<li>虚函数本质上是运行态的if else</li>
+</ul>
+
+<h4>模式定义</h4>
+
+<ul>
+<li>允许一个对象在其内部状态改变时改变它的行为。从而使对象看起来似乎修改了其行为。</li>
+</ul>
+
+<h4>结构</h4>
+
+<ul>
+<li><img src="media/15748977610569/15818114887619.jpg" alt="" style="width:673px;"/></li>
+</ul>
+
+<h4>要点总结</h4>
+
+<ul>
+<li>State 模式将所有与个特定状态相关的行为都放入ー个 State 的子<br/>
+类对象中，往对象状态切換时应的对象但同时维持State的接口，这样实现了具体操作与状态转换之间的解耦。</li>
+<li>为不同的状态引入不同的对象使得状态转换变得更加明确，而且可以保证不会出现状态不一致的情况，因为转换是原子性的-即要么彻底转换过来，要么不转换</li>
+<li>如果State对象没有实例变量，那么各个上下文可以共享同一个State对象，从而节省开销</li>
+</ul>
+
+<h4>cpp_demo</h4>
+
+<pre class="line-numbers"><code class="language-cpp">//
+// Created by geraltliu on 2019-12-07.
+//
+
+#ifndef CPPCODE_STATE2_H
+#define CPPCODE_STATE2_H
+//
+// Created by geraltliu on 2019-12-07.
+//
+
+#include &lt;iostream&gt;
+
+//
+// Created by 刘超 on 2019-11-28.
+//
+
+class NetworkState {
+public:
+    NetworkState *pNext;
+
+    virtual void Operation1() = 0;
+
+    virtual void Operation2() = 0;
+
+    virtual void Operation3() = 0;
+
+    virtual ~NetworkState() {}
+};
+
+class OpenState : public NetworkState {
+    static NetworkState *m_instance;
+public:
+    static NetworkState *getInstance();
+
+    void Operation1();
+
+    void Operation2();
+
+    void Operation3();
+};
+
+
+class CloseState : public NetworkState {
+    static NetworkState *m_instance;
+public:
+    static NetworkState *getInstance();
+
+    void Operation1();
+
+    void Operation2();
+
+    void Operation3();
+};
+
+class ConnectState : public NetworkState {
+    static NetworkState *m_instance;
+public:
+    static NetworkState *getInstance();
+
+    void Operation1();
+
+    void Operation2();
+
+    void Operation3();
+};
+
+
+class NetworkProcessor {
+    NetworkState *pState;
+public:
+    NetworkProcessor(NetworkState *pState) {
+        this-&gt;pState = pState;
+    }
+
+    void Operation1() {
+        pState-&gt;Operation1();
+        pState = pState-&gt;pNext;
+    }
+
+    void Operation2() {
+        pState-&gt;Operation2();
+        pState = pState-&gt;pNext;
+    }
+
+    void Operation3() {
+        pState-&gt;Operation3();
+        pState = pState-&gt;pNext;
+    }
+};
+
+#endif //CPPCODE_STATE2_H
+
+//
+// Created by geraltliu on 2019-12-07.
+//
+
+#include &quot;state2.h&quot;
+
+//
+// Created by 刘超 on 2019-11-28.
+//
+
+NetworkState *OpenState::m_instance = nullptr;
+NetworkState *OpenState::getInstance() {
+    if (m_instance == nullptr) {
+        m_instance = new OpenState();
+    }
+    return m_instance;
+}
+
+
+void OpenState::Operation1() {
+    pNext = OpenState::getInstance();
+    std::cout &lt;&lt; &quot;switch to open&quot; &lt;&lt; std::endl;
+}
+
+void OpenState::Operation2() {
+    pNext = ConnectState::getInstance();
+    std::cout &lt;&lt; &quot;switch to connect&quot; &lt;&lt; std::endl;
+}
+
+void OpenState::Operation3() {
+    pNext = CloseState::getInstance();
+    std::cout &lt;&lt; &quot;switch to close&quot; &lt;&lt; std::endl;
+}
+
+
+NetworkState *CloseState::m_instance = nullptr;
+NetworkState *CloseState::getInstance() {
+    if (m_instance == nullptr) {
+        m_instance = new OpenState();
+    }
+    return m_instance;
+}
+
+void CloseState::Operation1() {
+    pNext = OpenState::getInstance();
+    std::cout &lt;&lt; &quot;switch to open&quot; &lt;&lt; std::endl;
+}
+
+void CloseState::Operation2() {
+    pNext = ConnectState::getInstance();
+    std::cout &lt;&lt; &quot;switch to connect&quot; &lt;&lt; std::endl;
+}
+
+void CloseState::Operation3() {
+    pNext = CloseState::getInstance();
+    std::cout &lt;&lt; &quot;switch to close&quot; &lt;&lt; std::endl;
+}
+
+NetworkState *ConnectState::m_instance = nullptr;
+NetworkState *ConnectState::getInstance() {
+    if (m_instance == nullptr) {
+        m_instance = new OpenState();
+    }
+    return m_instance;
+}
+
+void ConnectState::Operation1() {
+    pNext = OpenState::getInstance();
+    std::cout &lt;&lt; &quot;switch to open&quot; &lt;&lt; std::endl;
+}
+
+void ConnectState::Operation2() {
+    pNext = ConnectState::getInstance();
+    std::cout &lt;&lt; &quot;switch to connect&quot; &lt;&lt; std::endl;
+}
+
+void ConnectState::Operation3() {
+    pNext = CloseState::getInstance();
+    std::cout &lt;&lt; &quot;switch to close&quot; &lt;&lt; std::endl;
+}
+
+int main() {
+    NetworkProcessor *process = new NetworkProcessor(new ConnectState());
+    process-&gt;Operation1();
+    process-&gt;Operation2();
+    process-&gt;Operation3();
+}
+</code></pre>
+
+<h4>golang_demo</h4>
+
+<pre class="line-numbers"><code class="language-go">package geek
+
+import &quot;fmt&quot;
+
+type Week interface {
+    Today()
+    Next(*DayContext)
+}
+
+type DayContext struct {
+    today Week
+}
+
+func NewDayContext() *DayContext {
+    return &amp;DayContext{
+        today: &amp;Sunday{},
+    }
+}
+
+func (d *DayContext) Today() {
+    d.today.Today()
+}
+
+func (d *DayContext) Next() {
+    d.today.Next(d)
+}
+
+type Sunday struct{}
+
+func (*Sunday) Today() {
+    fmt.Println(&quot;Sunday&quot;)
+}
+
+func (*Sunday) Next(ctx *DayContext) {
+    ctx.today = &amp;Monday{}
+}
+
+type Monday struct{}
+
+func (*Monday) Today() {
+    fmt.Println(&quot;Monday&quot;)
+}
+
+func (*Monday) Next(ctx *DayContext) {
+    ctx.today = &amp;Monday{}
+}
+
+type Tuesday struct{}
+
+func (*Tuesday) Today() {
+    fmt.Println(&quot;Tuesday&quot;)
+}
+
+func (*Tuesday) Next(ctx *DayContext) {
+    ctx.today = &amp;Tuesday{}
+}
+func TestWeek(t *testing.T) {
+    ctx := NewDayContext()
+    todayAndNext := func() {
+        ctx.Today()
+        ctx.Next()
+    }
+
+    for i := 0; i &lt; 3; i++ {
+        todayAndNext()
+    }
+}
+</code></pre>
+
+<h4>golang_demo2</h4>
+
+<pre class="line-numbers"><code class="language-go">package design_pattern
+
+import (
+    &quot;fmt&quot;
+    &quot;sync&quot;
+)
+
+var (
+    openState    *OpenState
+    connectState *ConnectState
+    closeState   *CloseState
+    stateCtx     *StateContext
+    open         sync.Once
+    conn         sync.Once
+    close        sync.Once
+    state        sync.Once
+)
+
+type NetWorkState interface {
+    State()
+    Next(*StateContext)
+}
+
+type StateContext struct {
+    netState NetWorkState
+}
+
+func GetStateCtxInstance() *StateContext {
+    state.Do(func () {
+        stateCtx = &amp;StateContext{
+            netState: &amp;OpenState{},
+        }
+    })
+    return stateCtx
+}
+
+func (s *StateContext) State() {
+    s.netState.State()
+}
+
+func (s *StateContext) Next() {
+    s.netState.Next(s)
+}
+
+type OpenState struct{}
+
+func GetOpenInstance() *OpenState {
+    open.Do(func() {
+        openState = &amp;OpenState{}
+    })
+    return openState
+}
+
+func (o *OpenState) State() {
+    fmt.Println(&quot;OpenState&quot;)
+}
+
+func (o *OpenState) Next(ctx *StateContext) {
+    ctx.netState = GetConnectInstance()
+}
+
+type ConnectState struct{}
+
+func GetConnectInstance() *ConnectState {
+    conn.Do(func() {
+        connectState = &amp;ConnectState{}
+    })
+    return connectState
+}
+
+func (o *ConnectState) State() {
+    fmt.Println(&quot;ConnectState&quot;)
+}
+
+func (o *ConnectState) Next(ctx *StateContext) {
+    ctx.netState = GetCloseInstance()
+}
+
+type CloseState struct{}
+
+func GetCloseInstance() *CloseState {
+    close.Do(func() {
+        closeState = &amp;CloseState{}
+    })
+    return closeState
+}
+
+func (o *CloseState) State() {
+    fmt.Println(&quot;CloseState&quot;)
+}
+
+func (o *CloseState) Next(ctx *StateContext) {
+    ctx.netState = GetOpenInstance()
+}
+
+
+func TestState(t *testing.T) {
+    stateCtx = GetStateCtxInstance()
+    stateCtx.State()
+    stateCtx.Next()
+
+    stateCtx.State()
+    stateCtx.Next()
+
+    stateCtx.State()
+    stateCtx.Next()
+
+    stateCtx.State()
+    stateCtx.Next()
+}
+</code></pre>
+
+<h4>python_code</h4>
+
+<pre class="line-numbers"><code class="language-python">from abc import abstractmethod, ABCMeta
+
+class Week(metaclass=ABCMeta):
+   @abstractmethod
+   def today(self):
+      pass
+
+   def next(self, context):
+      pass
+
+class DayContext(object):
+
+   def __init__(self, day):
+      self.day = day
+
+   def today(self):
+      self.day.today()
+
+   def next(self):
+      self.day.next(self)
+
+class Sunday(Week):
+
+    def today(self):
+       print(&quot;Sunday&quot;)
+
+    def next(self, context):
+       context.day = Monday()
+
+
+class Monday(Week):
+
+   def today(self):
+      print(&quot;Tuesday&quot;)
+
+   def next(self, context):
+      context.day = Tuesday()
+
+
+class Tuesday(Week):
+
+   def today(self):
+      print(&quot;Tuesday&quot;)
+
+   def next(self, context):
+      context.day = Wensday()
+
+
+class Wensday(Week):
+
+   def today(self):
+      print(&quot;Wensday&quot;)
+
+   def next(self, context):
+      context.day = Friday()
+
+class Friday(Week):
+
+   def today(self):
+      print(&quot;Friday&quot;)
+
+   def next(self, context):
+      context.day = Sunday()
+
+if __name__ == &#39;__main__&#39;:
+  context = DayContext(Sunday())
+  context.today()
+  context.next()
+  context.today()
+</code></pre>
+
+<h4>python_demo3</h4>
+
+<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
+
+
+class Context(metaclass=ABCMeta):
+
+    def __init__(self):
+        self.__states = []
+        self.__cur_state = None
+        self.__temperature = 0
+
+    def add_state(self, state):
+
+        if state not in self.__states:
+            self.__states.append(state)
+
+    def change_state(self, state):
+
+        if state is None:
+            return False
+
+        if self.__cur_state is None:
+            print(&quot;init state {}&quot;.format(state.get_name()))
+        else:
+            print(&quot;change from {} to {}&quot;.format(self.__cur_state.get_name(),
+                                                state.get_name()))
+        self.__cur_state = state
+        self.add_state(state)
+        return True
+
+    def get_state(self):
+        return self.__cur_state
+
+
+    def _set_temperature(self, temperature):
+        self.__temperature = temperature
+        for state in self.__states:
+            if state.is_match(temperature):
+                self.change_state(state)
+
+    def _get_temperature(self):
+        return self.__temperature
+
+class Water(Context):
+
+    def __init__(self):
+        super().__init__()
+        self.add_state(SolidState(&#39;Solid&#39;))
+        self.add_state(LiquidState(&#39;Liquid&#39;))
+        self.add_state(GaseousState(&#39;Gaseous&#39;))
+        self.set_temperature(25)
+
+    def set_temperature(self, temp):
+        self._set_temperature(temp)
+
+    def get_temperature(self):
+        return self._get_temperature()
+
+    def rise_temperature(self, step):
+        self.set_temperature(self.get_temperature() + step)
+
+    def reduce_temperature(self, step):
+        self.set_temperature(self.get_temperature() - step)
+
+    def behavior(self):
+        state = self.get_state()
+        if isinstance(state, State):
+            state.behavior(self)
+
+class State(metaclass=ABCMeta):
+
+    def __init__(self, name):
+        self.__name = name
+
+    def get_name(self):
+        return self.__name
+
+    def is_match(self, temperature):
+        return False
+
+    @abstractmethod
+    def behavior(self, context):
+        pass
+
+
+def singleton(cls, *args, **kwargs):
+    instance = {}
+
+    def __singleton(*args, **kwargs):
+        if cls not in instance:
+            instance[cls] = cls(*args, **kwargs)
+        return instance[cls]
+
+    return __singleton
+
+@singleton
+class SolidState(State):
+
+    def __init__(self, name):
+        super().__init__(name)
+
+
+    def is_match(self, temperature):
+        return temperature &lt; 0
+
+    def behavior(self, context):
+        print(&quot;SolidState current temperature {} C &quot;.format(
+            context._get_temperature()))
+
+
+@singleton
+class LiquidState(State):
+
+    def __init__(self, name):
+        super().__init__(name)
+
+    def is_match(self, temperature):
+        return temperature &gt; 0 and temperature &lt; 100
+
+    def behavior(self, context):
+        print(&quot;LiquidState current temperature {} C &quot;.format(
+            context._get_temperature()))
+
+@singleton
+class GaseousState(State):
+
+    def __init__(self, name):
+        super().__init__(name)
+
+    def is_match(self, temperature):
+        return temperature &gt;= 100
+
+    def behavior(self, context):
+        print(&quot;GaseousState current temperature {} C &quot;.format(
+            context.get_temperature()))
+
+if __name__ == &#39;__main__&#39;:
+    # water = Water(LiquidState(&quot;Liquid&quot;))
+    water = Water()
+    water.behavior()
+    water.set_temperature(-4)
+    water.behavior()
+    water.rise_temperature(100)
+    water.behavior()
+    water.set_temperature(120)
+    water.behavior()
+    water.set_temperature(180)
+    water.behavior()
+</code></pre>
+
+<h4>golang_demo</h4>
+
+<pre class="line-numbers"><code class="language-go">package desian_pattern_practise
+
+import (
+    &quot;fmt&quot;
+    &quot;reflect&quot;
+    &quot;sync&quot;
+)
+
+var  (
+  once sync.Once
+  liquidState *LiquidState
+  solidState  *SolidState
+    gaseousState *GaseousState
+)
+
+
+type Context interface {
+    AddState(IState)
+    ChangeState(IState)
+}
+
+type Water struct {
+    states map[IState]bool
+    curState IState
+    temperature float64
+}
+
+func NewWater() *Water {
+    water := &amp;Water{
+        states: make(map[IState]bool),
+        curState: nil,
+        temperature: 25,
+    }
+    water.AddState(NewLiquidState(&quot;Liquid&quot;))
+    water.AddState(NewSolidState(&quot;Solid&quot;))
+    water.AddState(NewGaseousState(&quot;Gaseous&quot;))
+    return water
+}
+
+func (w *Water) AddState(state IState) {
+    if _, ok := w.states[state]; !ok {
+      w.states[state] = true
+    }
+}
+
+func (w *Water) ChangeState(state IState) {
+    if state == nil {
+        return
+    }
+
+    if w.curState == nil {
+        fmt.Println(&quot;Init State &quot;, reflect.TypeOf(w).String())
+    } else {
+        fmt.Println(&quot;change from state &quot;, reflect.TypeOf(w.curState).String(),
+            &quot; to state &quot;, reflect.TypeOf(state).String())
+    }
+
+    w.curState = state
+    w.AddState(state)
+}
+
+func (w *Water) Behavior() {
+    if w.curState != nil {
+      w.curState.Behavior(w)
+    }
+}
+
+func (w *Water) SetTemperature(temp float64) {
+    w.temperature = temp
+    for k, _ :=range w.states {
+        if k.IsMatch(temp) {
+            w.ChangeState(k)
+        }
+    }
+}
+
+func (w *Water) RiseTemperature(temp float64) {
+    w.SetTemperature(w.temperature + temp)
+}
+
+func (w *Water) ReduceTemperature(temp float64) {
+    w.SetTemperature(w.temperature - temp)
+}
+
+type IState interface {
+    Behavior(Context)
+    IsMatch(float64) bool
+}
+
+type State struct {
+    name string
+}
+
+func (s *State) Behavior(ctx Context) {
+}
+
+type LiquidState struct {
+    *State
+}
+
+func (l *LiquidState) IsMatch(temp float64) bool {
+    return temp &gt; 0 &amp;&amp; temp &lt; 100;
+}
+
+func NewLiquidState(name string) *LiquidState {
+    once.Do(func() {
+        liquidState = &amp;LiquidState{State: &amp;State{name:name}}
+    })
+    return liquidState
+}
+
+func (l *LiquidState) Behavior(ctx Context) {
+    fmt.Println(reflect.TypeOf(l).String() + &quot;current temperature is &quot;,
+        ctx.(*Water).temperature, &quot; C&quot;)
+}
+
+type SolidState struct {
+    *State
+}
+
+func (l *SolidState) IsMatch(temp float64) bool {
+    return temp &lt;= 0;
+}
+
+func NewSolidState(name string) *SolidState {
+    once.Do(func() {
+        solidState = &amp;SolidState{State: &amp;State{name:name}}
+    })
+    return solidState
+}
+
+func (l *SolidState) Behavior(ctx Context) {
+    fmt.Println(reflect.TypeOf(l).String() + &quot;current temperature is &quot;,
+        ctx.(*Water).temperature, &quot; C&quot;)
+}
+
+type GaseousState struct {
+    *State
+}
+
+func (l *GaseousState) IsMatch(temp float64) bool {
+    return temp &gt;= 100;
+}
+
+func NewGaseousState(name string) *GaseousState {
+    once.Do(func() {
+        gaseousState = &amp;GaseousState{State: &amp;State{name:name}}
+    })
+    return gaseousState
+}
+
+func (l *GaseousState) Behavior(ctx Context) {
+    fmt.Println(reflect.TypeOf(l).String() + &quot;current temperature is &quot;,
+        ctx.(*Water).temperature, &quot; C&quot;)
+}
+
+func TestState_Behavior(t *testing.T) {
+    water := NewWater()
+    water.Behavior()
+    water.SetTemperature(-4)
+    water.Behavior()
+    water.SetTemperature(100)
+    water.Behavior()
+    water.ReduceTemperature(50)
+    water.Behavior()
+}
+</code></pre>
+
+<h4>cpp_demo</h4>
+
+<pre class="line-numbers"><code class="language-cpp">//
+// Created by eredinliu on 2020-01-30.
+//
+
+#include &lt;iostream&gt;
+#include &lt;list&gt;
+#include &lt;algorithm&gt;
+#include &lt;mutex&gt;
+#include &lt;chrono&gt;
+#include &lt;thread&gt;
+
+using namespace std;
+
+class LiquidState;
+class GaseousState;
+class SolidState;
+
+class Context;
+
+class State {
+public:
+    virtual bool IsMatch(float temperature) = 0;
+    virtual void Behavior(Context* ctx) = 0;
+    State(const string&amp; _name) : name(_name) {}
+private:
+    string name;
+    friend class Context;
+};
+
+class Context {
+
+public:
+    void AddState(State* state) {
+        if (find(states.begin(), states.end(), state) == states.end()) {
+            states.push_back(state);
+        }
+    }
+    void ChangeState(State* state) {
+        if (state == nullptr) {
+            return;
+        }
+
+        if (cur_state == nullptr) {
+            cout &lt;&lt; &quot;init state &quot; &lt;&lt; state-&gt;name &lt;&lt; endl;
+        } else {
+            if (cur_state != state) {
+                cout &lt;&lt; &quot;change from &quot; &lt;&lt; this-&gt;cur_state-&gt;name &lt;&lt; &quot; to &quot; &lt;&lt;
+                     state-&gt;name &lt;&lt; endl;
+            }
+        }
+
+        cur_state = state;
+        states.push_back(cur_state);
+    }
+
+    virtual void Behavior() = 0;
+
+protected:
+    State* cur_state;
+    list&lt;State*&gt; states;
+};
+
+class Water : public Context {
+public:
+    Water();
+
+    void SetTemperature(float temp) {
+        temperature = temp;
+
+        list&lt;State*&gt; tmp = states;
+        for (auto&amp; it : tmp) {
+            if (it-&gt;IsMatch(temp)) {
+                ChangeState(it);
+            }
+        }
+    }
+
+    float GetTemperature() {
+        return this-&gt;temperature;
+    }
+
+    void RiseTemperature(float temp) {
+        SetTemperature(this-&gt;temperature + temp);
+    }
+
+    void ReduceTemperature(float temp) {
+        SetTemperature(this-&gt;temperature - temp);
+    }
+
+
+    void Behavior() {
+        if (cur_state != nullptr) {
+          cur_state-&gt;Behavior(this);
+        }
+    }
+private:
+    float temperature = 25;
+};
+
+class SolidState : public State {
+public:
+    bool IsMatch(float temp) {
+        return temp &lt;= 0;
+    }
+
+    void Behavior(Context* ctx) {
+        Water* water = reinterpret_cast&lt;Water*&gt;(ctx);
+        cout &lt;&lt; &quot;SolidState current temperature &quot; &lt;&lt; water-&gt;GetTemperature()
+            &lt;&lt; &quot; C &quot; &lt;&lt; endl;
+    }
+
+    static State* GetInstance() {
+        static std::once_flag flag;
+        call_once(flag, [&amp;](){solidState = new SolidState(&quot;SolidState&quot;);});
+        return solidState;
+    }
+
+    static State* solidState;
+private:
+    SolidState(const string&amp; _name) : State(_name) {}
+};
+
+class LiquidState : public State {
+public:
+    bool IsMatch(float temp) {
+        return temp &gt; 0 &amp;&amp; temp &lt; 100;
+    }
+
+    void Behavior(Context* ctx) {
+        Water* water = reinterpret_cast&lt;Water*&gt;(ctx);
+        cout &lt;&lt; &quot;LiquidState current temperature &quot; &lt;&lt; water-&gt;GetTemperature()
+             &lt;&lt; &quot; C &quot; &lt;&lt; endl;
+    }
+
+    static State* GetInstance() {
+        static std::once_flag flag;
+        call_once(flag, [&amp;](){liquidState = new LiquidState(&quot;LiquidState&quot;);});
+        return liquidState;
+    }
+
+    static State* liquidState;
+private:
+    LiquidState(const string&amp; _name) : State(_name) {}
+};
+
+
+class GaseousState : public State {
+public:
+    bool IsMatch(float temp) {
+        return temp &gt; 100;
+    }
+
+    void Behavior(Context* ctx) {
+        Water* water = reinterpret_cast&lt;Water*&gt;(ctx);
+        cout &lt;&lt; &quot;GaseousState current temperature &quot; &lt;&lt; water-&gt;GetTemperature()
+             &lt;&lt; &quot; C &quot; &lt;&lt; endl;
+    }
+
+    static State* GetInstance() {
+        static std::once_flag flag;
+        call_once(flag, [&amp;](){gaseousState = new GaseousState(&quot;GaseousState&quot;);});
+        return gaseousState;
+    }
+
+    static State* gaseousState;
+private:
+    GaseousState(const string&amp; _name) : State(_name) {}
+};
+
+State* LiquidState::liquidState = nullptr;
+State* GaseousState::gaseousState = nullptr;
+State* SolidState::solidState = nullptr;
+
+Water::Water() : Context() {
+    this-&gt;states.push_back(LiquidState::GetInstance());
+    this-&gt;states.push_back(SolidState::GetInstance());
+    this-&gt;states.push_back(GaseousState::GetInstance());
+}
+
+int main() {
+    Water* water = new Water();
+    water-&gt;Behavior();
+    water-&gt;SetTemperature(50);
+    water-&gt;Behavior();
+    water-&gt;SetTemperature(-4);
+    water-&gt;Behavior();
+    water-&gt;SetTemperature(50);
+    water-&gt;Behavior();
+    water-&gt;SetTemperature(120);
+    water-&gt;Behavior();
+    water-&gt;RiseTemperature(30);
+    water-&gt;Behavior();
+}
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/28 07:36 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
 			<div class="article">
                 <a class="clearlink" href="15817697569868.html">
                 
@@ -302,305 +1496,6 @@ int main()
                   <div class="more-left left">
                   
                     <span class="date">2020/02/15 18:04 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15814649492497.html">
-                
-                  <h1>Simple Factory</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>接口编程</h4>
-
-<ul>
-<li>接口从语法层面上来说，是一种特殊的抽象类，是一个纯虚的类。从软件设计的意义<br/>
-上来说，我们通常用接口来定义实现类的外观，就相当于一份契约，根据外部应用需要的功能，约定了实现类应该要实现的功能</li>
-<li>软件开发中永恒的主题是“变化“，“只有变化才是永恒不変！“，接口最重要的一个设计语义就是封装变化。所谓“封装变化”就是隔离变化。</li>
-<li>从软件的整体结构上看，只要接口不变，内部实现的变化就不会影响到外部应用，从而使得系统更灵活，具有更好的扩展性和可维护性。</li>
-</ul>
-
-<h4>简单工厂模式</h4>
-
-<ul>
-<li>实现客户端调用和具体类的分离，实现了变化隔离</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
-using namespace std;
-
-class Api {
-    public:
-    virtual void test(string&amp;&amp; s) = 0;
-    protected:
-    Api(){}
-};
-
-class Impl : public Api {
-    public:
-    void test(string&amp;&amp; s) override {
-        cout &lt;&lt; &quot;Iml class &quot; &lt;&lt; s &lt;&lt; &#39;\n&#39;;
-    }
-    using Api::Api;
-};
-
-class ImplPro : public Api {
-    public:
-    void test(string&amp;&amp; s) override {
-        cout &lt;&lt; &quot;Iml class &quot; &lt;&lt; s &lt;&lt; &#39;\n&#39;;
-    }
-    using Api::Api;
-};
-
-
-class Factory {
-    public:
-    static Api* createApi(int type) {
-        cout &lt;&lt; &quot;Simple Factory create instance \n&quot; ;
-        Api* api = nullptr;
-        if (type == 1) {
-            api = new Impl();
-        } else if (type == 2) {
-            api = new ImplPro();
-        }
-        return api;
-    }
-};
-
-int main() {
-    Api* api = Factory::createApi(2);
-    api-&gt;test(&quot;hello&quot;);
-}
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2020/02/12 07:49 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15814189410719.html">
-                
-                  <h1>代码的可测试性</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>覆盖率工具</h4>
-
-<ul>
-<li>JaCoCo、Cobertura、Emma、Clover</li>
-</ul>
-
-<h4>Bug修复工具</h4>
-
-<ul>
-<li>Getafix</li>
-<li>Infer</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2020/02/11 19:02 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html'>设计模式之美</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15814188057978.html">
-                
-                  <h1>重构</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>分类</h4>
-
-<ul>
-<li>大规模高层次重构（以下简称为“大型重构”）和小规模低层次的重构（以下简称为“小型重构”）</li>
-</ul>
-
-<h4>大型重构</h4>
-
-<ul>
-<li>型重构指的是对顶层代码设计的重构，包括：系统、模块、代码结构、类与类之间的关系等的重构，重构的手段有：分层、模块化、解耦、抽象可复用组件等等。这类重构的工具就是我们学习过的那些设计思想、原则和模式。</li>
-</ul>
-
-<h4>小型重构</h4>
-
-<ul>
-<li>小型重构指的是对代码细节的重构，主要是针对类、函数、变量等代码级别的重构，比如规范命名、规范注释、消除超大类或函数、提取重复代码等等。小型重构更多的是利用我们能后面要讲到的编码规范。</li>
-</ul>
-
-<h4>AntiPattern</h4>
-
-<p>常见的测试不友好的代码有下面这 5 种：</p>
-
-<h5>代码中包含未决行为逻辑</h5>
-
-<ul>
-<li>所谓的未决行为逻辑就是，代码的输出是随机或者说不确定的，比如，跟时间、随机数有关的代码</li>
-</ul>
-
-<h5>滥用可变全局变量</h5>
-
-<ul>
-<li>全局变量是一种面向过程的编程风格，有种种弊端。实际上，滥用全局变量也让编写单元测试变得困难</li>
-</ul>
-
-<h5>滥用静态方法</h5>
-
-<ul>
-<li>静态方法跟全局变量一样，也是一种面向过程的编程思维。在代码中调用静态方法，有时候会导致代码不易测试</li>
-</ul>
-
-<h5>使用复杂的继承关系</h5>
-
-<ul>
-<li>相比组合关系，继承关系的代码结构更加耦合、不灵活，更加不易扩展、不易维护</li>
-</ul>
-
-<h5>高度耦合的代码</h5>
-
-<ul>
-<li>如果一个类职责很重，需要依赖十几个外部对象才能完成工作，代码高度耦合，那我们在编写单元测试的时候，可能需要 mock 这十几个依赖的对象</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2020/02/11 19:00 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html'>设计模式之美</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15813811739408.html">
-                
-                  <h1>tuple 使用</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>类模板</h4>
-
-<ul>
-<li>类模板 std::tuple 是固定大小的异类值汇集。它是 std::pair 的推广。</li>
-</ul>
-
-<h4>使用</h4>
-
-<pre class="line-numbers"><code class="language-cpp">#include &lt;tuple&gt;
-#include &lt;iostream&gt;
-#include &lt;string&gt;
-#include &lt;stdexcept&gt;
- 
-std::tuple&lt;double, char, std::string&gt; get_student(int id)
-{
-    if (id == 0) return std::make_tuple(3.8, &#39;A&#39;, &quot;Lisa Simpson&quot;);
-    if (id == 1) return std::make_tuple(2.9, &#39;C&#39;, &quot;Milhouse Van Houten&quot;);
-    if (id == 2) return std::make_tuple(1.7, &#39;D&#39;, &quot;Ralph Wiggum&quot;);
-    throw std::invalid_argument(&quot;id&quot;);
-}
- 
-int main()
-{
-    auto student0 = get_student(0);
-    std::cout &lt;&lt; &quot;ID: 0, &quot;
-              &lt;&lt; &quot;GPA: &quot; &lt;&lt; std::get&lt;0&gt;(student0) &lt;&lt; &quot;, &quot;
-              &lt;&lt; &quot;grade: &quot; &lt;&lt; std::get&lt;1&gt;(student0) &lt;&lt; &quot;, &quot;
-              &lt;&lt; &quot;name: &quot; &lt;&lt; std::get&lt;2&gt;(student0) &lt;&lt; &#39;\n&#39;;
- 
-    double gpa1;
-    char grade1;
-    std::string name1;
-    std::tie(gpa1, grade1, name1) = get_student(1);
-    std::cout &lt;&lt; &quot;ID: 1, &quot;
-              &lt;&lt; &quot;GPA: &quot; &lt;&lt; gpa1 &lt;&lt; &quot;, &quot;
-              &lt;&lt; &quot;grade: &quot; &lt;&lt; grade1 &lt;&lt; &quot;, &quot;
-              &lt;&lt; &quot;name: &quot; &lt;&lt; name1 &lt;&lt; &#39;\n&#39;;
- 
-    // C++17 结构化绑定：
-    auto [ gpa2, grade2, name2 ] = get_student(2);
-    std::cout &lt;&lt; &quot;ID: 2, &quot;
-              &lt;&lt; &quot;GPA: &quot; &lt;&lt; gpa2 &lt;&lt; &quot;, &quot;
-              &lt;&lt; &quot;grade: &quot; &lt;&lt; grade2 &lt;&lt; &quot;, &quot;
-              &lt;&lt; &quot;name: &quot; &lt;&lt; name2 &lt;&lt; &#39;\n&#39;;
-}
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2020/02/11 08:32 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
@@ -849,38 +1744,127 @@ print(q2)
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15812339995025.html">
+                <a class="clearlink" href="15755890034719.html">
                 
-                  <h1>定时任务</h1>
+                  <h1>Memento</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>定时器循环任务</h4>
+                        	<h4>定义</h4>
 
-<pre class="line-numbers"><code class="language-python">import time
-import datetime
-from apscheduler.schedulers.blocking import BlockingScheduler
+<ul>
+<li>在组件构建过程中，某些对象的状态经常面临变化，如何对这些变化进行有效的管理？同时又维持高层模块的稳定？“状态变化模式为这一问题提供了一种解决方案。</li>
+</ul>
 
-def func():
-   now = datetime.datetime.now()
-   ts = now.strftime(&#39;%Y-%m-%d %H:%M:%S&#39;)
-   print(&#39;do func time :&#39;,ts)
+<h4>动机</h4>
 
-def func2():
- #耗时2S
-   now = datetime.datetime.now()
-   ts = now.strftime(&#39;%Y-%m-%d %H:%M:%S&#39;)
-   print(&#39;do func2 time：&#39;,ts)
+<ul>
+<li>在软件构建过程中，某些对象的状态在转换过程中，可能由于某种需要，要求程序能够回溯到对象之前处于某个点时的状态。如果使用一些公有接口来让其他对象得到对象的状态，便会暴露对象的细节实现。</li>
+<li>如何实现对象状态的良好保存与恢复？但同时又不会因此而破坏对象本身的封装性。</li>
+</ul>
 
-def dojob():
- #创建调度器：BlockingScheduler
- scheduler = BlockingScheduler()
- #添加任务,时间间隔2S
- scheduler.add_job(func, &#39;interval&#39;, seconds=2, id=&#39;test_job1&#39;)
- #添加任务,时间间隔5S
- scheduler.add_job(func2, &#39;interval&#39;, seconds=3, id=&#39;test_job2&#39;)
- scheduler.start()
+<h4>结构</h4>
+
+<ul>
+<li><p><img src="media/15755890034719/15815148061622.jpg" alt="" style="width:736px;"/></p></li>
+<li><p>设计模式是94年</p></li>
+<li><p>序列化的方案实现memento</p></li>
+</ul>
+
+<h5>golang_demo</h5>
+
+<pre class="line-numbers"><code class="language-go">package design_pattern
+
+type GameRole struct {
+    atk, def, vit int
+}
+
+func (g *GameRole) InitState() {
+    g.atk, g.def, g.vit = 100, 100, 100
+}
+
+func (g *GameRole) SaveState() *RoleMemento {
+    return &amp;RoleMemento{g.atk, g.def, g.vit}
+}
+
+func (g *GameRole) ResumeState(m *RoleMemento) {
+    g.atk, g.def, g.vit = m.atk, m.def, m.vit
+}
+
+func (g *GameRole) Fight() {
+    g.atk, g.def, g.vit = 0, 0, 0
+}
+
+type RoleCaretaker struct {
+    m *RoleMemento
+}
+
+type Originator struct {
+    state string
+}
+
+type Memento struct {
+    state string
+}
+
+type RoleMemento struct {
+    vit, atk, def int
+}
+
+func (o *Originator) CreateMemento() *Memento {
+    return &amp;Memento{o.state}
+}
+
+func (o *Originator) SetMemento(m *Memento) {
+    o.state = m.state
+}
+
+type Caretaker struct {
+    memento *Memento
+}
+</code></pre>
+
+<h4>python_demo</h4>
+
+<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
+
+class Snapshot(object):
+
+    def __init__(self, state):
+        self.state = state
+
+
+class Caretake(object):
+
+    def __init__(self):
+        pass
+
+    def add_snapshot(self, snapshot):
+        self.snapshot = snapshot
+
+class Editor(object):
+
+    def __init__(self, state):
+        self.state = state
+
+    def create_snapshot(self):
+        return Snapshot(self.state)
+
+    def recover_snapshot(self, snapshot):
+        self.state = snapshot.state
+
+    def change_state(self, state):
+        self.state = state
+
+if __name__ == &#39;__main__&#39;:
+    editor = Editor(&quot;original&quot;)
+    snapshot = editor.create_snapshot()
+    print(editor.state)
+    editor.change_state(&quot;state2&quot;)
+    print(editor.state)
+    editor.recover_snapshot(snapshot)
+    print(editor.state)
 </code></pre>
 
                         
@@ -890,10 +1874,10 @@ def dojob():
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2020/02/09 15:39 下午</span>
+                    <span class="date">2019/12/06 07:36 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -907,43 +1891,25 @@ def dojob():
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15812158642858.html">
+                <a class="clearlink" href="15814189410719.html">
                 
-                  <h1>积分系统</h1>
+                  <h1>代码的可测试性</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>开发工作</h4>
+                        	<h4>覆盖率工具</h4>
 
 <ul>
-<li>接口设计</li>
-<li>数据库设计</li>
-<li>业务模型设计</li>
+<li>JaCoCo、Cobertura、Emma、Clover</li>
 </ul>
 
-<h4>分层架构</h4>
+<h4>Bug修复工具</h4>
 
 <ul>
-<li>Contoller 层、Service 层、Repository 层</li>
-<li>Repository 层基于数据库表，而数据库表改动的可能性很小 Entity</li>
-<li>Controller 层提供适配给外部使用的接口，代码经常会变动 View Object</li>
-<li>Service层  Business Object</li>
-</ul>
-
-<h4>设计原则和思想</h4>
-
-<ul>
-<li><img src="media/15812158642858/15812161751517.jpg" alt="" style="width:667px;"/></li>
-</ul>
-
-<h4>功能划分</h4>
-
-<ul>
-<li>根据给定的时间区间，从数据库中拉取数据；</li>
-<li>根据原始数据，计算得到统计数据；</li>
-<li>将统计数据显示到终端（命令行或邮件）；</li>
-<li>定时触发以上 3 个过程的执行。</li>
+<li>Getafix</li>
+<li>Infer</li>
+<li></li>
 </ul>
 
                         
@@ -953,7 +1919,7 @@ def dojob():
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2020/02/09 10:37 上午</span>
+                    <span class="date">2020/02/11 19:02 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html'>设计模式之美</a></span>
@@ -970,20 +1936,156 @@ def dojob():
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15812077023246.html">
+                <a class="clearlink" href="15814649492497.html">
                 
-                  <h1>UML</h1>
+                  <h1>Simple Factory</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>各种概念</h4>
+                        	<h4>接口编程</h4>
 
 <ul>
-<li>复合</li>
-<li>聚合</li>
-<li>组合 整体消亡，部分也全部消亡了</li>
-<li></li>
+<li>接口从语法层面上来说，是一种特殊的抽象类，是一个纯虚的类。从软件设计的意义<br/>
+上来说，我们通常用接口来定义实现类的外观，就相当于一份契约，根据外部应用需要的功能，约定了实现类应该要实现的功能</li>
+<li>软件开发中永恒的主题是“变化“，“只有变化才是永恒不変！“，接口最重要的一个设计语义就是封装变化。所谓“封装变化”就是隔离变化。</li>
+<li>从软件的整体结构上看，只要接口不变，内部实现的变化就不会影响到外部应用，从而使得系统更灵活，具有更好的扩展性和可维护性。</li>
+</ul>
+
+<h4>简单工厂模式</h4>
+
+<ul>
+<li>实现客户端调用和具体类的分离，实现了变化隔离</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+class Api {
+    public:
+    virtual void test(string&amp;&amp; s) = 0;
+    protected:
+    Api(){}
+};
+
+class Impl : public Api {
+    public:
+    void test(string&amp;&amp; s) override {
+        cout &lt;&lt; &quot;Iml class &quot; &lt;&lt; s &lt;&lt; &#39;\n&#39;;
+    }
+    using Api::Api;
+};
+
+class ImplPro : public Api {
+    public:
+    void test(string&amp;&amp; s) override {
+        cout &lt;&lt; &quot;Iml class &quot; &lt;&lt; s &lt;&lt; &#39;\n&#39;;
+    }
+    using Api::Api;
+};
+
+
+class Factory {
+    public:
+    static Api* createApi(int type) {
+        cout &lt;&lt; &quot;Simple Factory create instance \n&quot; ;
+        Api* api = nullptr;
+        if (type == 1) {
+            api = new Impl();
+        } else if (type == 2) {
+            api = new ImplPro();
+        }
+        return api;
+    }
+};
+
+int main() {
+    Api* api = Factory::createApi(2);
+    api-&gt;test(&quot;hello&quot;);
+}
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2020/02/12 07:49 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15814188057978.html">
+                
+                  <h1>重构</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>分类</h4>
+
+<ul>
+<li>大规模高层次重构（以下简称为“大型重构”）和小规模低层次的重构（以下简称为“小型重构”）</li>
+</ul>
+
+<h4>大型重构</h4>
+
+<ul>
+<li>型重构指的是对顶层代码设计的重构，包括：系统、模块、代码结构、类与类之间的关系等的重构，重构的手段有：分层、模块化、解耦、抽象可复用组件等等。这类重构的工具就是我们学习过的那些设计思想、原则和模式。</li>
+</ul>
+
+<h4>小型重构</h4>
+
+<ul>
+<li>小型重构指的是对代码细节的重构，主要是针对类、函数、变量等代码级别的重构，比如规范命名、规范注释、消除超大类或函数、提取重复代码等等。小型重构更多的是利用我们能后面要讲到的编码规范。</li>
+</ul>
+
+<h4>AntiPattern</h4>
+
+<p>常见的测试不友好的代码有下面这 5 种：</p>
+
+<h5>代码中包含未决行为逻辑</h5>
+
+<ul>
+<li>所谓的未决行为逻辑就是，代码的输出是随机或者说不确定的，比如，跟时间、随机数有关的代码</li>
+</ul>
+
+<h5>滥用可变全局变量</h5>
+
+<ul>
+<li>全局变量是一种面向过程的编程风格，有种种弊端。实际上，滥用全局变量也让编写单元测试变得困难</li>
+</ul>
+
+<h5>滥用静态方法</h5>
+
+<ul>
+<li>静态方法跟全局变量一样，也是一种面向过程的编程思维。在代码中调用静态方法，有时候会导致代码不易测试</li>
+</ul>
+
+<h5>使用复杂的继承关系</h5>
+
+<ul>
+<li>相比组合关系，继承关系的代码结构更加耦合、不灵活，更加不易扩展、不易维护</li>
+</ul>
+
+<h5>高度耦合的代码</h5>
+
+<ul>
+<li>如果一个类职责很重，需要依赖十几个外部对象才能完成工作，代码高度耦合，那我们在编写单元测试的时候，可能需要 mock 这十几个依赖的对象</li>
 </ul>
 
                         
@@ -993,10 +2095,88 @@ def dojob():
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2020/02/09 08:21 上午</span>
+                    <span class="date">2020/02/11 19:00 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html'>C++设计模式实战</a></span>
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html'>设计模式之美</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15813811739408.html">
+                
+                  <h1>tuple 使用</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>类模板</h4>
+
+<ul>
+<li>类模板 std::tuple 是固定大小的异类值汇集。它是 std::pair 的推广。</li>
+</ul>
+
+<h4>使用</h4>
+
+<pre class="line-numbers"><code class="language-cpp">#include &lt;tuple&gt;
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+ 
+std::tuple&lt;double, char, std::string&gt; get_student(int id)
+{
+    if (id == 0) return std::make_tuple(3.8, &#39;A&#39;, &quot;Lisa Simpson&quot;);
+    if (id == 1) return std::make_tuple(2.9, &#39;C&#39;, &quot;Milhouse Van Houten&quot;);
+    if (id == 2) return std::make_tuple(1.7, &#39;D&#39;, &quot;Ralph Wiggum&quot;);
+    throw std::invalid_argument(&quot;id&quot;);
+}
+ 
+int main()
+{
+    auto student0 = get_student(0);
+    std::cout &lt;&lt; &quot;ID: 0, &quot;
+              &lt;&lt; &quot;GPA: &quot; &lt;&lt; std::get&lt;0&gt;(student0) &lt;&lt; &quot;, &quot;
+              &lt;&lt; &quot;grade: &quot; &lt;&lt; std::get&lt;1&gt;(student0) &lt;&lt; &quot;, &quot;
+              &lt;&lt; &quot;name: &quot; &lt;&lt; std::get&lt;2&gt;(student0) &lt;&lt; &#39;\n&#39;;
+ 
+    double gpa1;
+    char grade1;
+    std::string name1;
+    std::tie(gpa1, grade1, name1) = get_student(1);
+    std::cout &lt;&lt; &quot;ID: 1, &quot;
+              &lt;&lt; &quot;GPA: &quot; &lt;&lt; gpa1 &lt;&lt; &quot;, &quot;
+              &lt;&lt; &quot;grade: &quot; &lt;&lt; grade1 &lt;&lt; &quot;, &quot;
+              &lt;&lt; &quot;name: &quot; &lt;&lt; name1 &lt;&lt; &#39;\n&#39;;
+ 
+    // C++17 结构化绑定：
+    auto [ gpa2, grade2, name2 ] = get_student(2);
+    std::cout &lt;&lt; &quot;ID: 2, &quot;
+              &lt;&lt; &quot;GPA: &quot; &lt;&lt; gpa2 &lt;&lt; &quot;, &quot;
+              &lt;&lt; &quot;grade: &quot; &lt;&lt; grade2 &lt;&lt; &quot;, &quot;
+              &lt;&lt; &quot;name: &quot; &lt;&lt; name2 &lt;&lt; &#39;\n&#39;;
+}
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2020/02/11 08:32 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -1070,8 +2250,6 @@ def dojob():
             <a href="Golang.html"><strong>Golang</strong></a>
         
             <a href="Django.html"><strong>Django</strong></a>
-        
-            <a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html"><strong>C++设计模式实战</strong></a>
         
             <a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html"><strong>深入剖析Kubernetes</strong></a>
         
@@ -1150,6 +2328,18 @@ def dojob():
 	      
 		      
 			      <li class="post">
+			        <a href="15818128782116.html">Singleton</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15748977610569.html">State</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817697569868.html">字符串分割</a>
 			      </li>
 		     
@@ -1162,19 +2352,7 @@ def dojob():
 		  
 		      
 			      <li class="post">
-			        <a href="15814649492497.html">Simple Factory</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814189410719.html">代码的可测试性</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814188057978.html">重构</a>
+			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

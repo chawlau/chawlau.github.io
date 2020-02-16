@@ -87,8 +87,6 @@
         
             <li><a href="Django.html">Django</a></li>
         
-            <li><a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html">C++设计模式实战</a></li>
-        
             <li><a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html">深入剖析Kubernetes</a></li>
         
             <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html">数据结构和算法</a></li>
@@ -172,121 +170,42 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15432005577683.html">
+                <a class="clearlink" href="15446973439362.html">
                 
-                  <h1>strings&byte op</h1>
+                  <h1>微服务架构</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>与string值相比，strings.Builder类型的值有哪些优势？</h4>
+                        	<h4>结构</h4>
 
 <ul>
-<li>已经存在的内容不变，但是可以拼接更多的内容</li>
-<li>减少了内存分配和内容拷贝的次数</li>
-<li>可将内容重置，可重用值</li>
+<li><img src="media/15446973439362/15446973623824.jpg" alt=""/></li>
 </ul>
 
-<h4>string.Builder</h4>
+<h4>服务监控</h4>
 
 <ul>
-<li>Write</li>
-<li>WriteByte</li>
-<li>WriteRune</li>
-<li>WriteString</li>
+<li>指标收集。就是要把每一次服务调用的请求耗时以及成功与否收集起来，并上传到集中的数据处理中心。</li>
+<li>数据处理。有了每次调用的请求耗时以及成功与否等信息，就可以计算每秒服务请求量、平均耗时以及成功率等指标。</li>
+<li>数据展示。数据收集起来，经过处理之后，还需要以友好的方式对外展示，才能发挥价值。通常都是将数据展示在 Dashboard 面板上，并且每隔 10s 等间隔自动刷新，用作业务监控和报警等。</li>
 </ul>
 
-<h4>string.Builder约束</h4>
+<h4>服务追踪</h4>
 
 <ul>
-<li>绝不共享Builder值以及它的指针值。</li>
+<li>工作原理</li>
+<li>服务消费者发起调用前，会在本地按照一定的规则生成一个 requestid，发起调用时，将 requestid 当作请求参数的一部分，传递给服务提供者。</li>
+<li>服务提供者接收到请求后，记录下这次请求的 requestid，然后处理请求。如果服务提供者继续请求其他服务，会在本地再生成一个自己的 requestid，然后把这两个 requestid 都当作请求参数继续往下传递。</li>
 </ul>
 
-<h4>为什么说strings.Reader类型的值可以高效地读取字符串？</h4>
+<h4>服务治理</h4>
 
 <ul>
-<li>Reader值可以让我们很方便地读取一个字符串中的内容。它的高效主要体现在它对字符串的读取机制上。在读取的过程中，Reader值会保存已读取的字节的计数，也称已读计数。</li>
+<li>单机故障 依据策略自动摘除故障节点</li>
+<li>单IDC故障 自动切换故障IDC</li>
+<li>依赖服务不可用 通过熔断机制</li>
 </ul>
-
-<h4>byte.Buffer</h4>
-
-<ul>
-<li>使用字节切片作为内容机器</li>
-<li>int类型代表已读字节的计数</li>
-<li>Buffer值的长度是未读内容的长度，而不是已存内容的总长度。它与在当前值之上的读操作和写操作都有关系</li>
-<li>Buffer值的容量指的是它的内容容器（也就是那个字节切片）的容量，它只与在当前值之上的写操作有关，并会随着内容的写入而不断增长。</li>
-</ul>
-
-<h4>byte.Buffer已读计数的作用</h4>
-
-<ul>
-<li>读取内容时，相应方法会依据已读计数找到未读部分，并在读取后更新计数。</li>
-<li>写入内容时，如需扩容，相应方法会根据已读计数实现扩容策略。</li>
-<li>截断内容时，相应方法截掉的是已读计数代表索引之后的未读部分。</li>
-<li>读回退时，相应方法需要用已读计数记录回退点。</li>
-<li>重置内容时，相应方法会把已读计数置为0。</li>
-<li>导出内容时，相应方法只会导出已读计数代表的索引之后的未读部分。</li>
-<li>获取长度时，相应方法会依据已读计数和内容容器的长度，计算未读部分的长度并返回。</li>
-</ul>
-
-<h4>对比strings.Builder和bytes.Buffer的String方法，并判断哪一个更高效？原因是什么？</h4>
-
-<ul>
-<li>strings.Builder String方法中*(*string)(unsafe.Pointer(&amp;b.buf)) 是直接取得buf的地址然后转换成string返回。而bytes.Buffer的String方法是 string(b.buf[b.off:])然后对buf进行操作</li>
-</ul>
-
-<h4>案例</h4>
-
-<pre class="line-numbers"><code class="language-go">const numbers = 100
-
-func BenchmarkSprintf(b *testing.B) {
-    b.ResetTimer()
-    for idx := 0; idx &lt; b.N; idx++ {
-        var s string
-        for i := 0; i &lt; numbers; i++ {
-            s = fmt.Sprintf(&quot;%v%v&quot;, s, i)
-        }
-    }
-    b.StopTimer()
-}
-
-func BenchmarkStringBuilder(b *testing.B) {
-    b.ResetTimer()
-    for idx := 0; idx &lt; b.N; idx++ {
-        var builder strings.Builder
-        for i := 0; i &lt; numbers; i++ {
-            builder.WriteString(strconv.Itoa(i))
-
-        }
-        _ = builder.String()
-    }
-    b.StopTimer()
-}
-
-func BenchmarkBytesBuf(b *testing.B) {
-    b.ResetTimer()
-    for idx := 0; idx &lt; b.N; idx++ {
-        var buf bytes.Buffer
-        for i := 0; i &lt; numbers; i++ {
-            buf.WriteString(strconv.Itoa(i))
-        }
-        _ = buf.String()
-    }
-    b.StopTimer()
-}
-
-func BenchmarkStringAdd(b *testing.B) {
-    b.ResetTimer()
-    for idx := 0; idx &lt; b.N; idx++ {
-        var s string
-        for i := 0; i &lt; numbers; i++ {
-            s += strconv.Itoa(i)
-        }
-
-    }
-    b.StopTimer()
-}
-</code></pre>
 
                         
                       </div>
@@ -295,10 +214,10 @@ func BenchmarkStringAdd(b *testing.B) {
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/11/26 10:49 上午</span>
+                    <span class="date">2018/12/13 18:35 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
+          					    <span class="posted-in"><a href='%E5%BE%AE%E6%9C%8D%E5%8A%A1.html'>微服务</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -312,55 +231,40 @@ func BenchmarkStringAdd(b *testing.B) {
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15430293574294.html">
+                <a class="clearlink" href="15447533025677.html">
                 
-                  <h1>sync.Map</h1>
+                  <h1>Mysql的count(*)</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>并发安全字典对键的类型有要求吗</h4>
+                        	<h4>问题</h4>
 
 <ul>
-<li>有要求。键的实际类型不能是函数类型、字典类型和切片类型</li>
-<li>由于这些键值的实际类型只有在程序运行期间才能够确定，所以 Go 语言编译器是无法在编译期对它们进行检查的，不正确的键值实际类型肯定会引发 panic</li>
-<li>应该在每次操作并发安全字典的时候，都去显式地检查键值的实际类型。无论是存、取还是删，都应该如此。</li>
+<li>MyISAM 表虽然 count(*) 很快，但是不支持事务；</li>
+<li>show table status 命令虽然返回很快，但是不准确；</li>
+<li>InnoDB 表直接 count(*) 会遍历全表，虽然结果准确，但会导致性能问题。</li>
 </ul>
 
-<h4>使用sync.map</h4>
-
-<pre class="line-numbers"><code class="language-text">type IntStrMap struct {
- m sync.Map
-}
-func (iMap *IntStrMap) Range(f func(key int, value string) bool) {
- f1 := func(key, value interface{}) bool {
-  return f(key.(int), value.(string))
- }
- iMap.m.Range(f1)
-}
-</code></pre>
-
-<h4>怎样保证并发安全字典中的键和值的类型正确性？</h4>
+<h4>用一个表存储记录数目</h4>
 
 <ul>
-<li>通过封装sync.map，添加reflect.Type来判断key和value来使用</li>
-</ul>
-
-<h4>并发字典如何做到尽量避免安全锁</h4>
-
-<ul>
-<li>使用大量原子操作来读取键和值</li>
-<li>这两个字典在存储键和值的时候都只会存入它们的某个指针，而不是基本值。</li>
-<li>只读字典和脏字典之间是会互相转换的。在脏字典中查找键值对次数足够多的时候，sync.Map会把脏字典直接作为只读字典，保存在它的read字段中，然后把代表脏字典的dirty字段的值置为nil。</li>
-<li>读操作有很多但写操作却很少的情况下，并发安全字典的性能往往会更好。</li>
-<li>性能影响 新增键值对 &gt; 删除 &gt; 修改</li>
-</ul>
-
-<h4>sync.Map修改value</h4>
-
-<ul>
-<li>只读字典虽然不会增减其中的键，但却允许变更其中的键所对应的值。所以，它并不是传统意义上的快照，它的只读特性只是对于其中键的集合而言的。</li>
+<li>在事物操作中修改这个表</li>
+<li>先增加表的计数</li>
+<li>commit时再插入数据</li>
 <li></li>
+</ul>
+
+<h4>各种count差别</h4>
+
+<ul>
+<li>count(*)</li>
+<li>count(primary key)</li>
+<li>count(字段)</li>
+<li>count(1)</li>
+<li>count(主键 id) 来说，InnoDB 引擎会遍历整张表，把每一行的 id 值都取出来，返回给 server 层。server 层拿到 id 后，判断是不可能为空的，就按行累加。</li>
+<li>对于 count(1) 来说，InnoDB 引擎遍历整张表，但不取值。server 层对于返回的每一行，放一个数字“1”进去，判断是不可能为空的，按行累加</li>
+<li>count(字段) 如果这个“字段”是定义为 not null 的话，一行行地从记录里面读出这个字段，判断不能为 null，按行累加；如果这个“字段”定义允许为 null，那么执行的时候，判断到有可能是 null，还要把值取出来再判断一下，不是 null 才累加。</li>
 </ul>
 
                         
@@ -370,107 +274,7 @@ func (iMap *IntStrMap) Range(f func(key int, value string) bool) {
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/11/24 11:15 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15429594950026.html">
-                
-                  <h1>mysql index</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>索引常见数据结构</h4>
-
-<ul>
-<li>哈希表 适用于等值查询的场景</li>
-<li>有序数据</li>
-<li>搜索树</li>
-</ul>
-
-<h4>主键索引和非主键索引</h4>
-
-<ul>
-<li>从图中不难看出，根据叶子节点的内容，索引类型分为主键索引和非主键索引。</li>
-<li>主键索引的叶子节点存的是整行数据。在 InnoDB 里，主键索引也被称为聚簇索引（clustered index）。</li>
-<li>非主键索引的叶子节点内容是主键的值。在 InnoDB 里，非主键索引也被称为二级索引（secondary index）。</li>
-<li>先索引非主键索树，得到主键的值，在根据主键索引树搜索一次，这个过程叫回表</li>
-</ul>
-
-<h4>AutoIncrement</h4>
-
-<ul>
-<li>自增主键的插入数据模式，正符合了我们前面提到的递增插入的场景。每次插入一条新记录，都是追加操作，都不涉及到挪动其他记录，也不会触发叶子节点的分裂。</li>
-<li>由于每个非主键索引的叶子节点上都是主键的值。如果用身份证号做主键，那么每个二级索引的叶子节点占用约 20 个字节，而如果用整型做主键，则只要 4 个字节，如果是长整型（bigint）则是 8 个字节。</li>
-<li>显然，主键长度越小，普通索引的叶子节点就越小，普通索引占用的空间也就越小。</li>
-</ul>
-
-<h4>适合业务字段直接做主键</h4>
-
-<ul>
-<li>只有一个索引</li>
-<li>该索引必须是唯一索引</li>
-</ul>
-
-<h4>重建索引</h4>
-
-<ul>
-<li>如果删除，新建主键索引，会同时去修改普通索引对应的主键索引，性能消耗比较大。<br/>
-删除重建普通索引貌似影响不大，不过要注意在业务低谷期操作，避免影响业务。</li>
-<li>二级索引重建应该新建索引再做删除，如果有查询用到这个索引，此时索引已被删除，会导致业务抖动.主键重建不能采用drop这种方式去按操作，因为所有数据都是以主键组织的，删了主键后，InnoDB会自己找一个主键组织数据，再次添加主键又会重新组织数据，重建表的次已达二次，我们可以直接Optimiz这个表</li>
-</ul>
-
-<h4>mysql语句</h4>
-
-<pre class="line-numbers"><code class="language-text">select * from T where k between 3 and 5
-select ID from T where k between 3 and 5 覆盖索引，无须回表
-</code></pre>
-
-<h4>优化语句</h4>
-
-<pre class="line-numbers"><code class="language-text"> CREATE TABLE `geek` (
-  `a` int(11) NOT NULL,
-  `b` int(11) NOT NULL,
-  `c` int(11) NOT NULL,
-  `d` int(11) NOT NULL,
-  PRIMARY KEY (`a`,`b`),
-  KEY `c` (`c`),
-  KEY `ca` (`c`,`a`),
-  KEY `cb` (`c`,`b`)
-) ENGINE=InnoDB;
-select * from geek where c=N order by a limit 1;
-select * from geek where c=N order by b limit 1;
-</code></pre>
-
-<h4>案例</h4>
-
-<ul>
-<li>表实际内容的大小才10G, 而他的索引却有30G. 在阿里云控制面板上看,就是占了40G空间. 后来了解到是 InnoDB 这种引擎导致的,虽然删除了表的部分记录,但是它的索引还在, 并未释放.只能是重新建表才能重建索引.</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/11/23 15:51 下午</span>
+                    <span class="date">2018/12/14 10:08 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
@@ -487,78 +291,35 @@ select * from geek where c=N order by b limit 1;
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15429441476069.html">
+                <a class="clearlink" href="15447499262312.html">
                 
-                  <h1>索引</h1>
+                  <h1>快速分析CPU性能瓶颈</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>事物回滚日志的删除</h4>
+                        	<h4>CPU性能指标</h4>
 
 <ul>
-<li>当没有事务再需要用到这些回滚日志时，回滚日志会被删除。</li>
+<li>CPU使用率</li>
+<li>平均负载</li>
+<li>进程上下文切换</li>
+<li>CPU缓存命中率
+<img src="media/15447499262312/1e66612e0022cd6c17847f3ab6989007.png" alt="1e66612e0022cd6c17847f3ab6989007"/></li>
 </ul>
 
-<h4>长事物</h4>
+<h4>可中断睡眠和不可中断睡眠</h4>
 
 <ul>
-<li>这个事务提交之前，数据库里面它可能用到的回滚记录都必须保留，这就会导致大量占用存储空间。</li>
-<li>长事务还占用锁资源，也可能拖垮整个库</li>
-<li>set autocommit=1</li>
+<li>可中断的睡眠状态的进程会睡眠直到某个条件变为真，如产生一个硬件中断、释放进程正在等待的系统资源或是传递一个信号都可以是唤醒进程的条件。</li>
+<li>不可中断睡眠状态与可中断睡眠状态类似，但是它有一个例外，那就是把信号传递到这种睡眠状态的进程不能改变它的状态，也就是说它不响应信号的唤醒。</li>
 </ul>
 
-<h4>怎么避免长事物</h4>
+<h4>总结</h4>
 
-<h5>开发端</h5>
-
-<ul>
-<li>确认是否使用了set autocommit=1。</li>
-<li>确认是否有不必要的只读事务。</li>
-<li>通过 SET MAX_EXECUTION_TIME 命令，来控制每个语句执行的最长时间，避免单个语句意外执行太长时间。</li>
-</ul>
-
-<h5>数据库端</h5>
-
-<ul>
-<li>监控 information_schema.Innodb_trx 表，设置长事务阈值，超过就报警 / 或者 kill；</li>
-<li>Percona 的 pt-kill</li>
-<li>在业务功能测试阶段要求输出所有的 general_log，分析日志行为提前发现问题；</li>
-</ul>
-
-<h4>自增主键的好处</h4>
-
-<ul>
-<li>每次插入一条新记录，都是追加操作，都不涉及到挪动其他记录，也不会触发叶子节点的分裂。</li>
-<li>业务逻辑的字段做主键，则往往不容易保证有序插入，这样写数据成本相对较高</li>
-<li>插入数据如果是在某个数据满了页的首尾，为了减少数据移动和页分裂，会先去前后两个页看看是否满了，如果没满会先将数据放到前后两个页上</li>
-</ul>
-
-<h4>适合业务字段直接做主键的</h4>
-
-<ul>
-<li>只有一个索引</li>
-<li>该索引必须是唯一索引</li>
-</ul>
-
-<h4>Page内部定位行数据</h4>
-
-<ul>
-<li>内部有个有序数组，二分法</li>
-</ul>
-
-<h4>最左前缀原则</h4>
-
-<ul>
-<li>最左前缀可以是联合索引的最左 N 个字段，也可以是字符串索引的最左 M 个字符</li>
-</ul>
-
-<h4>索引下推</h4>
-
-<ul>
-<li>在二级索引中进行条件判断，无须从主键索引中回表拿到数据再进行判断</li>
-<li></li>
-</ul>
+<p><img src="media/15447499262312/596397e1d6335d2990f70427ad4b14ec.png" alt="596397e1d6335d2990f70427ad4b14e"/><br/>
+<img src="media/15447499262312/b0c67a7196f5ca4cc58f14f959a364ca.png" alt="b0c67a7196f5ca4cc58f14f959a364ca"/><br/>
+<img src="media/15447499262312/7a445960a4bc0a58a02e1bc75648aa17.png" alt="7a445960a4bc0a58a02e1bc75648aa17"/></p>
 
                         
                       </div>
@@ -567,135 +328,7 @@ select * from geek where c=N order by b limit 1;
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/11/23 11:35 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15429421228977.html">
-                
-                  <h1>Sql语句执行流程</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>基础架构示意图</h4>
-
-<p><img src="media/15429421228977/0d2070e8f84c4801adbfa03bda1f98d9.png" alt="0d2070e8f84c4801adbfa03bda1f98d9"/></p>
-
-<h4>查看sql连接</h4>
-
-<ul>
-<li>show processlist</li>
-</ul>
-
-<h4>长连接</h4>
-
-<ul>
-<li>定期断开长连接</li>
-<li>定期执行mysql_reset_connection</li>
-</ul>
-
-<h4>语法错误</h4>
-
-<ul>
-<li>关注user near</li>
-</ul>
-
-<h4>查询缓存</h4>
-
-<ul>
-<li>query_cache_type</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/11/23 11:02 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15429373418994.html">
-                
-                  <h1>平均负载</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>定义</h4>
-
-<ul>
-<li>单位时间内，系统处于可运行状态和不可中断状态的平均进程数，和cpu使用率没有直接关系</li>
-<li>包括了正在使用 CPU 的进程，还包括等待 CPU 和等待 I/O 的进程。</li>
-<li>本质上是平均活跃进程数</li>
-<li></li>
-</ul>
-
-<h4>过载</h4>
-
-<ul>
-<li>一旦1分钟的平均负载接近或超过了CPU的个数，就意味着系统正在发生过载的问题</li>
-<li>排查问题的阀门</li>
-<li><strong><em>当平均负载高于 CPU 数量 70% 的时候，你就应该分析排查负载高的问题了。</em></strong></li>
-</ul>
-
-<h4>cpu负载和cpu对应率的关系</h4>
-
-<ul>
-<li>CPU 密集型进程，使用大量 CPU 会导致平均负载升高，此时这两者是一致的。</li>
-<li>I/O 密集型进程，等待 I/O 也会导致平均负载升高，但 CPU 使用率不一定很高。</li>
-<li>大量等待 CPU 的进程调度也会导致平均负载升高，此时的 CPU 使用率也会比较高。</li>
-</ul>
-
-<h4>工具stress和sysstat</h4>
-
-<ul>
-<li>stress系统压力测试工具</li>
-<li>sysstat作为性能工具</li>
-<li>mpstat 是一个常用的多核 CPU 性能分析工具，用来实时查看每个 CPU 的性能指标，以及所有 CPU 的平均指标。</li>
-<li>pidstat 是一个常用的进程性能分析工具，用来实时查看进程的 CPU、内存、I/O 以及上下文切换等性能指标。</li>
-<li>pidstat wait就是进程等待CPU时间</li>
-<li>stress 缓冲区可能比较小，无法产生大的IO压力，这样大部分就都是系统调用的消耗了</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/11/23 09:42 上午</span>
+                    <span class="date">2018/12/14 09:12 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
@@ -712,28 +345,33 @@ select * from geek where c=N order by b limit 1;
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15428715333254.html">
+                <a class="clearlink" href="15446966492302.html">
                 
-                  <h1>性能问题学习</h1>
+                  <h1>高可用</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>学习方法</h4>
+                        	<h4>分类</h4>
 
 <ul>
-<li>性能问题并没有你想像得那么难，只要你理解了应用程序和系统的少数几个基本原理，再进行大量的实战练习，建立起整体性能的全局观，大多数性能问题的优化就会水到渠成。</li>
+<li>计算高可用 任务调度器</li>
+<li>存储高可用 数据 + 逻辑 = 业务 难点在于如何减少和规避数据不一致对业务的影响</li>
 </ul>
 
-<h4>处理步骤</h4>
+<h4>决策</h4>
 
 <ul>
-<li>选择指标评估应用程序和系统的性能</li>
-<li>为应用程序和系统设置性能目标</li>
-<li>进行性能基准测试</li>
-<li>性能分析定位瓶颈</li>
-<li>优化系统和应用程序</li>
-<li>性能监控和告警</li>
+<li>独裁式</li>
+<li>协商式 主备</li>
+<li>民主式 脑裂</li>
+</ul>
+
+<h4>高可用和高性能对比</h4>
+
+<ul>
+<li>高可用更复杂</li>
+<li>状态监控，服务切换或服务恢复上，为了降低其复杂度，又有无状态设计，熔断设计等等</li>
 </ul>
 
                         
@@ -743,7 +381,79 @@ select * from geek where c=N order by b limit 1;
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/11/22 15:25 下午</span>
+                    <span class="date">2018/12/13 18:24 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%9E%B6%E6%9E%84.html'>架构</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15445235023007.html">
+                
+                  <h1>软中断</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>Linux内核中断</h4>
+
+<ul>
+<li>上半部用来快速处理中断，它在中断禁止模式下运行，主要处理跟硬件紧密相关的或时间敏感的工作。</li>
+<li>下半部用来延迟处理上半部未完成的工作，通常以内核线程的方式运行。</li>
+<li>上半部直接处理硬件请求，是硬中断，快速执行，会立即打断cpu正在执行的任务</li>
+<li>下半部是内核触发，就是软中断，特点是延迟执行，在每个cpu都对应一个内核线程ksoftirqd/0</li>
+</ul>
+
+<h4>内核线程</h4>
+
+<ul>
+<li>ps 的输出中，名字括在中括号里的，一般都是内核线程</li>
+<li>ksoftirqd/n，每个处理器都有一组辅助处理中断的内核线程，专为出现大量软中断处理而设计，避免跟其他重要任务抢夺资源</li>
+</ul>
+
+<h4>实验</h4>
+
+<ul>
+<li> 发起攻击方 hping3 -S -p 9091 -i u1 10.62.45.4</li>
+<li> watch -d cat /proc/softirqs</li>
+<li> sar -n DEV 1 | grep -Ew &#39;(eth0|IFACE)&#39; 查看网卡收发包情况</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">
+17时30分03秒     IFACE   rxpck/s   txpck/s    rxkB/s    txkB/s   rxcmp/s   txcmp/s  rxmcst/s
+17时30分04秒      eth0    311.00    330.00    104.47    210.60      0.00      0.00      0.00
+17时30分04秒     IFACE   rxpck/s   txpck/s    rxkB/s    txkB/s   rxcmp/s   txcmp/s  rxmcst/s
+17时30分05秒      eth0    565.00    576.00    967.40   8123.24      0.00      0.00      0.00
+17时30分05秒     IFACE   rxpck/s   txpck/s    rxkB/s    txkB/s   rxcmp/s   txcmp/s  rxmcst/s
+17时30分06秒      eth0    165.00    205.00     31.62     95.04      0.00      0.00      0.00
+17时30分06秒     IFACE   rxpck/s   txpck/s    rxkB/s    txkB/s   rxcmp/s   txcmp/s  rxmcst/s
+17时30分07秒      eth0    126.00    125.00     72.29     12.88      0.00      0.00      0.00
+17时30分07秒     IFACE   rxpck/s   txpck/s    rxkB/s    txkB/s   rxcmp/s   txcmp/s  rxmcst/s
+</code></pre>
+
+<ul>
+<li>第三、四列：rxpck/s 和 txpck/s 分别表示每秒接收、发送的网络帧数，也就是 PPS。</li>
+<li>第五、六列：rxkB/s 和 txkB/s 分别表示每秒接收、发送的千字节数，也就是 BPS。</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/12/11 18:18 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
@@ -760,89 +470,76 @@ select * from geek where c=N order by b limit 1;
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15428714448886.html">
+                <a class="clearlink" href="15433746829951.html">
                 
-                  <h1>流媒体协议</h1>
+                  <h1>日志搜集系统</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/11/22 15:24 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE.html'>网络协议</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15428676130140.html">
-                
-                  <h1>HTTPS</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>签名算法的流程</h4>
+                        	<h4>要求</h4>
 
 <ul>
-<li>一般是对信息做一个 Hash 计算，得到一个 Hash 值，这个过程是不可逆的，也就是说无法通过 Hash 值得出原来的信息内容。在把信息发送出去时，把这个 Hash 值加密后，作为一个签名和信息一起发出去。</li>
-<li>而是会得到一个证书，这个证书有个发布机构 CA，你只要得到这个发布机构 CA 的公钥，去解密外卖网站证书的签名，如果解密成功了，Hash 也对的上，就说明这个外卖网站的公钥没有啥问题。<br/>
-#### https握手</li>
-<li><img src="media/15428676130140/7042f5c3d9e3437d5b0b30b30f43c802.jpg" alt="7042f5c3d9e3437d5b0b30b30f43c802"/></li>
+<li>日志搜集系统设计</li>
+<li>日志客户端开发</li>
 </ul>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/11/22 14:20 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE.html'>网络协议</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15428558593497.html">
-                
-                  <h1>Socket编程</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>socket</h4>
+<h4>为什么开发日志搜集系统</h4>
 
 <ul>
-<li>Socket 是一个文件，那对应就有文件描述符。每一个进程都有一个数据结构 task_struct，里面指向一个文件描述符数组，来列出这个进程打开的所有文件的文件描述符。文件描述符是一个整数，是这个数组的下标。</li>
+<li>运维成本高，每增加一个日志搜集，都需要手动修改配置</li>
+<li>监控缺失，无法准确获取logstash的状态</li>
+<li>无法做定制化开发以及维护</li>
+</ul>
+
+<h4>log-agent</h4>
+
+<ul>
+<li>kafka</li>
+<li>config</li>
+<li>tailf</li>
+<li>log</li>
+<li>go-fmt 格式化代码</li>
+</ul>
+
+<h4>etcd</h4>
+
+<ul>
+<li>强一致性的要求</li>
+</ul>
+
+<h4>使用场景</h4>
+
+<ul>
+<li>服务发现和服务注册</li>
+<li>配置中心</li>
+<li>分布式锁</li>
+<li>master选举</li>
+</ul>
+
+<h4>etcd使用</h4>
+
+<ul>
+<li>如何控制goroutine超时</li>
+<li>如何保存上下文数据</li>
+<li>ctx来传递数据</li>
+<li>课外阅读 <a href="https://blog.golang.org/context">https://blog.golang.org/context</a></li>
+</ul>
+
+<h4>context</h4>
+
+<ul>
+<li>通过ctx来控制协程的结束</li>
+</ul>
+
+<h4>etcd配置更新两种方式</h4>
+
+<h4>资产管理系统</h4>
+
+<h4>Etcd</h4>
+
+<ul>
+<li>使用的是grpc</li>
 <li></li>
 </ul>
 
@@ -853,7 +550,229 @@ select * from geek where c=N order by b limit 1;
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/11/22 11:04 上午</span>
+                    <span class="date">2018/11/28 11:11 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15442521406459.html">
+                
+                  <h1>微服务入门</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>微服务相对服务化特点</h4>
+
+<ul>
+<li>服务拆分粒度更细</li>
+<li>服务独立部署</li>
+<li>服务独立维护</li>
+<li>服务治理能力更高</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/12/08 14:55 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E5%BE%AE%E6%9C%8D%E5%8A%A1.html'>微服务</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15442494078551.html">
+                
+                  <h1>架构复杂度来源</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>主要目的</h4>
+
+<ul>
+<li>架构设计的主要目的是为了解决软件系统复杂度带来的问题</li>
+</ul>
+
+<h4>高性能</h4>
+
+<ul>
+<li>一方面是单台计算机内部为了高性能带来的复杂度</li>
+<li>另一方面是多台计算机集群为了高性能带来的复杂度</li>
+</ul>
+
+<h4>单计算机多任务方案</h4>
+
+<ul>
+<li>SMP</li>
+<li>NUMA</li>
+<li>MPP</li>
+</ul>
+
+<h4>集群带来的复杂度</h4>
+
+<ul>
+<li>任务分配 DNS轮询 智能DNS CDN GLSB</li>
+</ul>
+
+<h4>任务分解能够提升性能</h4>
+
+<ul>
+<li>简单系统容易做到高性能</li>
+<li>针对单个任务进行扩展  当各个逻辑任务分解到独立的子系统后，整个系统的性能瓶颈更加容易发现，而且发现后只需要针对有瓶颈的子系统进行性能优化或者提升，不需要改动整个系统</li>
+</ul>
+
+<h4>高性能的两个维度</h4>
+
+<h5>垂直维度</h5>
+
+<ul>
+<li>增大内存减少I/O操作</li>
+<li>更换为固态硬盘（SSD）提升I/O访问速度</li>
+<li>使用RAID增加I/O吞吐能力</li>
+<li>置换服务器获得更多的处理器或分配更多的虚拟核</li>
+<li>升级网络接口或增加网络接口 </li>
+</ul>
+
+<h5>水平维度</h5>
+
+<ul>
+<li>功能分解：基于功能将系统分解为更小的子系统</li>
+<li>多实例副本：同一组件重复部署到多台不同的服务器</li>
+<li>数据分割：在每台机器上都只部署一部分数据</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/12/08 14:10 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%9E%B6%E6%9E%84.html'>架构</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15442491165377.html">
+                
+                  <h1>什么是架构</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>模块和组件</h4>
+
+<ul>
+<li>从逻辑的角度来拆分系统后，得到的单元就是“模块”；从物理的角度来拆分系统后，得到的单元就是“组件”。划分模块的主要目的是职责分离；划分组件的主要目的是单元复用。</li>
+</ul>
+
+<h4>框架和架构</h4>
+
+<ul>
+<li>框架关注的是“规范”，架构关注的是“结构”</li>
+<li>软件架构指软件系统的顶层结构</li>
+</ul>
+
+<h4>软件架构</h4>
+
+<ul>
+<li>系统是一群关联个体组成，个体包括子系统，模块，组件</li>
+<li>架构需要明确个体运作和协作的规则</li>
+</ul>
+
+<h4>总结</h4>
+
+<ul>
+<li>架构是顶层设计；框架是面向编程或配置的半成品；组件是从技术维度上的复用；模块是从业务维度上职责的划分；系统是相互协同可运行的实体</li>
+<li>软件设计过程中，模块、对象、组件本质上是对一定规模软件在不同粒度和层次上的“拆分”方法论，软件架构是一种对软件的“组织”方法论。一分一合，其目的是为了软件研发过程中的成本、进度、质量得到有效控制。但是，一个成功的软件设计是要适应并满足业务需求，同时不断“演化”的。设计需要根据业务的变化、技术的发展不断进行“演进”，这就决定了这是一个动态活动，出现新问题，解决新问题，没有所谓的“一招鲜”。</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/12/08 14:05 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%9E%B6%E6%9E%84.html'>架构</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15442485813532.html">
+                
+                  <h1>VPN</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>IPsec</h4>
+
+<ul>
+<li>外层IP头 承载协议</li>
+<li>IPsec头 隧道协议</li>
+<li>内层IP包 乘客协议</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/12/08 13:56 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE.html'>网络协议</a></span>
@@ -930,8 +849,6 @@ select * from geek where c=N order by b limit 1;
             <a href="Golang.html"><strong>Golang</strong></a>
         
             <a href="Django.html"><strong>Django</strong></a>
-        
-            <a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html"><strong>C++设计模式实战</strong></a>
         
             <a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html"><strong>深入剖析Kubernetes</strong></a>
         
@@ -1010,6 +927,18 @@ select * from geek where c=N order by b limit 1;
 	      
 		      
 			      <li class="post">
+			        <a href="15818128782116.html">Singleton</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15748977610569.html">State</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817697569868.html">字符串分割</a>
 			      </li>
 		     
@@ -1022,19 +951,7 @@ select * from geek where c=N order by b limit 1;
 		  
 		      
 			      <li class="post">
-			        <a href="15814649492497.html">Simple Factory</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814189410719.html">代码的可测试性</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814188057978.html">重构</a>
+			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

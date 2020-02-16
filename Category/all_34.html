@@ -87,8 +87,6 @@
         
             <li><a href="Django.html">Django</a></li>
         
-            <li><a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html">C++设计模式实战</a></li>
-        
             <li><a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html">深入剖析Kubernetes</a></li>
         
             <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html">数据结构和算法</a></li>
@@ -172,33 +170,36 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15635886844365.html">
+                <a class="clearlink" href="15651826803428.html">
                 
-                  <h1>红黑树</h1>
+                  <h1>虚拟化</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>特点</h4>
+                        	<h4>KVM内核模块</h4>
 
 <ul>
-<li>根节点是黑色的；</li>
-<li>每个叶子节点都是黑色的空节点（NIL），也就是说，叶子节点不存储数据；</li>
-<li>任何相邻的节点都不能同时为红色，也就是说，红色节点是被黑色节点隔开的；</li>
-<li>每个节点，从该节点到达其可达叶子节点的所有路径，都包含相同数目的黑色节点</li>
+<li>通过 /dev/kvm 暴露接口，用户态程序可以通过 ioctl 来访问这个接口</li>
+<li><img src="media/15651826803428/f5ee1a44d7c4890e411c2520507ddc62.png" alt="f5ee1a44d7c4890e411c2520507dd"/></li>
+<li>Qemu 将 KVM 整合进来，将有关 CPU 指令的部分交由内核模块来做，就是 qemu-kvm </li>
+<li>网络需要virtio_net</li>
+<li>存储需要virtio_blk</li>
 </ul>
 
-<h4>红黑树的高度</h4>
+<h4>kvm工作原理</h4>
 
 <ul>
-<li>2logn</li>
-<li>红黑树的高度只比高度平衡的 AVL 树的高度（log2n）仅仅大了一倍</li>
+<li><img src="media/15651826803428/f748fd6b6b84fa90a1044a92443c3522.png" alt="f748fd6b6b84fa90a1044a92443"/></li>
 </ul>
 
-<h4>AVL树</h4>
+<h4>总结</h4>
 
 <ul>
-<li>AVL 树是一种高度平衡的二叉树，所以查找的效率非常高，但是，有利就有弊，AVL 树为了维持这种高度的平衡，就要付出更多的代价。每次插入、删除都要做调整，就比较复杂、耗时。所以，对于有频繁的插入、删除操作的数据集合，使用 AVL 树的代价就有点高了。</li>
+<li>虚拟化的本质是用 qemu 的软件模拟硬件，但是模拟方式比较慢，需要加速；</li>
+<li>虚拟化主要模拟 CPU、内存、网络、存储，分别有不同的加速办法；</li>
+<li>CPU 和内存主要使用硬件辅助虚拟化进行加速，需要配备特殊的硬件才能工作；</li>
+<li>网络和存储主要使用特殊的半虚拟化驱动加速，需要加载特殊的驱动程序。</li>
 </ul>
 
                         
@@ -208,7 +209,53 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/07/20 10:11 上午</span>
+                    <span class="date">2019/08/07 20:58 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15621133437153.html">
+                
+                  <h1>gdb</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>打印整个数组</h4>
+
+<pre class="line-numbers"><code class="language-text">p (int [10])*a
+p *a@10 （print *name@len）
+</code></pre>
+
+<h4>打印地址</h4>
+
+<pre class="line-numbers"><code class="language-text">gdb n/f/u三个参数可以一起使用。例如： 
+命令：x/3uh 0x7ff320 
+表示，从内存地址0x7ff320读取内容，h表示以双字节为一个单位，3表示三个单位
+u表示按十进制显示无符号整型。
+x 十六进制 d 十进制 c字符 d浮点型
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/07/03 08:22 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
@@ -225,36 +272,45 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15634168691362.html">
+                <a class="clearlink" href="15650870393858.html">
                 
-                  <h1>Epoll实现</h1>
+                  <h1>C++对象模型入门</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>问题</h4>
+                        	<h4>内容</h4>
 
 <ul>
-<li>双向链表和红黑树的线程安全</li>
-<li>spinlock</li>
+<li>C++对象内部工作原理</li>
+<li>底层的具体实现机制</li>
+<li>提高C++开发修养</li>
+<li>练习C++编程内功</li>
 </ul>
 
-<h4>时间</h4>
+<h4>效果</h4>
 
 <ul>
-<li>struct timespec 秒和纳秒</li>
+<li>拓展眼界和思路</li>
+<li>层次和能力，自信心</li>
+<li>应付面试</li>
+<li>空类sizeof</li>
+<li>虚函数表</li>
 </ul>
 
-<h4>ET和LT的触发</h4>
+<h4>研究内容</h4>
 
 <ul>
-<li>epoll_callback</li>
-<li>可读</li>
-<li>可写</li>
-<li>对端关闭</li>
-<li>建立连接</li>
-<li>payload&gt;0 会不停的触发回调 水平触发</li>
-<li>只调用一次</li>
+<li>研究系统内部底层的各种各样的实现是如何做的</li>
+<li>继承性</li>
+<li>多态性</li>
+</ul>
+
+<h4>讲解参照</h4>
+
+<ul>
+<li>深度探索C++对象模型</li>
+<li></li>
 </ul>
 
                         
@@ -264,7 +320,146 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/07/18 10:27 上午</span>
+                    <span class="date">2019/08/06 18:23 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B.html'>C++对象模型</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15650804838191.html">
+                
+                  <h1>C++基础</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>枚举类型</h4>
+
+<ul>
+<li>直接赋值整数不行</li>
+</ul>
+
+<h4>bool类型</h4>
+
+<ul>
+<li>枚举类型
+<code>
+typedef enum {<br/>
+false, true<br/>
+}bool
+</code></li>
+</ul>
+
+<h4>重载</h4>
+
+<ul>
+<li>返回值类型不同不可以构成重载</li>
+<li>参数顺序不同可以重载</li>
+<li>隐式转换尽量注意</li>
+<li>底层实现 name mangling 函数签名</li>
+<li>.h里面mangling,但是库没有改变，extern c保证头文件不被mangling</li>
+</ul>
+
+<h4>操作符重载</h4>
+
+<ul>
+<li>+号的全局重载函数</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/08/06 16:34 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15649975500687.html">
+                
+                  <h1>Zookeeper</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>概念</h4>
+
+<ul>
+<li>ZooKeeper是一个分布式的，开放源码的分布式集群应用程序协调服务，是Hadoop和Hbase的重要组件。在Zookeeper中，znode是一个跟Unix文件系统路径相似的节点，可以往这个节点存储或获取数据</li>
+</ul>
+
+<h4>节点类型</h4>
+
+<ul>
+<li>持久节点</li>
+<li>持久顺序节点</li>
+<li>临时节点</li>
+<li>临时顺序节点</li>
+</ul>
+
+<h4>zookeeper</h4>
+
+<ul>
+<li>配置集中管理</li>
+<li>服务注册和发现</li>
+<li>可靠性架构设计</li>
+<li>分布式锁 排他性 重入性 共享性 创建临时节点的原子性</li>
+<li>分布式队列 </li>
+</ul>
+
+<h4>一致性方案</h4>
+
+<ul>
+<li>ZAB协议需要确保那些已经在Leader服务器上提交的事务最终被所有服务器都提交（已经被处理的消息不能丢，ZXID不同），</li>
+<li>ZAB协议需要确保丢弃那些只在Leader服务器上被提出的事务（丢弃的消息不能再次出现，ZXID相同，myid最大的做leader</li>
+</ul>
+
+<h4>zookeeper缺陷</h4>
+
+<ul>
+<li>服务发现应该是AP，不是CP</li>
+</ul>
+
+<h4>eureka</h4>
+
+<ul>
+<li>最终一致性</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/08/05 17:32 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
@@ -281,36 +476,26 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15633216428922.html">
+                <a class="clearlink" href="15649927761897.html">
                 
-                  <h1>网络包的接收</h1>
+                  <h1>Nginx模块开发</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>网络协议栈的TCP层</h4>
+                        	<h4>动静分离</h4>
 
 <ul>
-<li>数据在tcp_data_queue中</li>
-<li>backlog队列 没有当前进程正在读取sock,调用tcp_add_back_log放入队列</li>
-<li>prequeue队列 用户态进程等待读取数据,调用tcp_prequeue放入prequeue队列</li>
-<li>sk_receive_queue队列 如果用户进程没有正在等待读取，或者因为内存原因没有能够拷贝成功</li>
+<li>静态数据放CDN</li>
+<li>动态数据 业务接口和实现</li>
 </ul>
 
-<h4>接收网络包流程</h4>
+<h4>模块开发</h4>
 
 <ul>
-<li>软中断的处理过程 从硬件中读取网络包</li>
-<li>用户态进程 读取网络包</li>
-<li>内核协议栈 存放网络包</li>
-</ul>
-
-<h4>数据判断</h4>
-
-<ul>
-<li>out_of_order_queue队列，新包和队列中的数据包凑成有序的可以放入sk_receive_queue队列</li>
-<li>end_seq &lt;= rcv_txt 重发ACK</li>
-<li>seq &gt;= rcv_txt + tcp_receive_window</li>
+<li>Handle模块</li>
+<li>Filter模块</li>
+<li>Upstream模块</li>
 <li></li>
 </ul>
 
@@ -321,57 +506,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/07/17 08:00 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15632424892108.html">
-                
-                  <h1>epoll原理</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>集合</h4>
-
-<ul>
-<li>A 红黑树IO</li>
-<li>B 双向链表</li>
-<li>C 所有IO的集合</li>
-<li>A = C(包含B)</li>
-</ul>
-
-<h4>epoll</h4>
-
-<ul>
-<li>epi-&gt;event.events |= event;表示有两个事件</li>
-<li>pthread_cond_signal(&amp;ep-&gt;cond)通知触发epoll_wait向下执行</li>
-<li>0 不挂起</li>
-<li>-1 挂起</li>
-<li>正数 等待时间</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/07/16 10:01 上午</span>
+                    <span class="date">2019/08/05 16:12 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
@@ -388,17 +523,18 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15631521777082.html">
+                <a class="clearlink" href="15649684154486.html">
                 
-                  <h1>二叉树</h1>
+                  <h1>动态规划</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>高度深度和层</h4>
+                        	<h4>流程</h4>
 
 <ul>
-<li></li>
+<li>整个求解过程分为 n 个阶段，每个阶段会决策一个物品是否放到背包中。每个物品决策（放入或者不放入背包）完之后，背包中的物品的重量会有多种情况，也就是说，会达到多种不同的状态，对应到递归树中，就是有很多不同的节点</li>
+<li>每一层重复的状态（节点）合并，只记录不同的状态，然后基于上一层的状态集合，来推导下一层的状态集合。我们可以通过合并每一层重复的状态，这样就保证每一层不同状态的个数都不会超过 w 个</li>
 </ul>
 
                         
@@ -408,7 +544,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/07/15 08:56 上午</span>
+                    <span class="date">2019/08/05 09:26 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
@@ -425,53 +561,46 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15630759404599.html">
+                <a class="clearlink" href="15649289939803.html">
                 
-                  <h1>消费者组避免重平衡</h1>
+                  <h1>高水位和Leader epoch</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>协调者</h4>
+                        	<h4>高水位作用</h4>
 
 <ul>
-<li>专门为 Consumer Group 服务，负责为 Group 执行 Rebalance 以及提供位移管理和组成员管理等</li>
+<li>定义消息可见性，即用来标识分区下的哪些消息是可以被消费者消费的。</li>
+<li>帮助 Kafka 完成副本同步</li>
+<li><img src="media/15649289939803/c2243d5887f0ca7a20a524914b85a8dd.png" alt="c2243d5887f0ca7a20a524914b85a8dd"/></li>
+<li>高水位和 LEO 是副本对象的两个重要属性。Kafka 所有副本都有对应的高水位和 LEO 值，而不仅仅是 Leader 副本</li>
 </ul>
 
-<h4>确定Coordinator所在broker</h4>
+<h4>高水位更新机制</h4>
 
 <ul>
-<li>确定由位移主题的哪个分区来保存该 Group 数据：</li>
-<li>找出该分区 Leader 副本所在的 Broker，该 Broker 即为对应的 Coordinator</li>
+<li>leader的broker保存远程副本，帮助leader副本 确定高水位</li>
+<li>leader的LEO通过生产者消息写入磁盘更新</li>
+<li>folloer副本通过拉取消息，更新磁盘</li>
+<li>follower副本高水位取LEO和leader发来的高水位最小值确定高水位</li>
+<li>leader副本高水位取leader副本和所有同步的leo的最小值</li>
+<li>leader远程副本leo通过follower拉取消息上报的位移算</li>
 </ul>
 
-<h4>rebalance机制</h4>
+<h4>副本同步判断</h4>
 
 <ul>
-<li>Rebalance 影响 Consumer 端 TPS。这个之前也反复提到了，这里就不再具体讲了。总之就是，在 Rebalance 期间，Consumer 会停下手头的事情，什么也干不了。</li>
-<li>Rebalance 很慢</li>
-<li>Rebalance 效率不高。当前 Kafka 的设计机制决定了每次 Rebalance 时，Group 下的所有成员都要参与进来，而且通常不会考虑局部性原理，但局部性原理对提升系统性能是特别重要的</li>
+<li>该远程 Follower 副本在 ISR 中。</li>
+<li>该远程 Follower 副本 LEO 值落后于 Leader 副本 LEO 值的时间，不超过 Broker 端参数 replica.lag.time.max.ms 的值</li>
+<li>先更新leo，然后更新高水位</li>
 </ul>
 
-<h4>规避</h4>
+<h4>Leader Epoch</h4>
 
 <ul>
-<li>Consumer实例会被 Coordinator 错误地认为“已停止”从而被“踢出”Group</li>
-<li>session.timout.ms 决定了 Consumer 存活性的时间间隔</li>
-<li>heartbeat.interval.ms 心跳间隔</li>
-<li>max.poll.interval.ms 参数。它限定了 Consumer 端应用程序两次调用 poll 方法的最大时间间隔</li>
-<li>第一类 Rebalance 是因为未能及时发送心跳，导致 Consumer 被“踢出”Group 而引发的</li>
-<li>第二类非必要 Rebalance 是 Consumer 消费时间过长导致的</li>
-<li>Consumer 端的 GC 表现，比如是否出现了频繁的 Full GC 导致的长时间停顿，从而引发了 Rebalance</li>
-</ul>
-
-<h4>总结</h4>
-
-<ul>
-<li>session.timeout.ms</li>
-<li>heartbeat.interval.ms</li>
-<li>max.poll.interval.ms</li>
-<li>GC 参数</li>
+<li>Epoch。一个单调增加的版本号。每当副本领导权发生变更时，都会增加该版本号。小版本号的 Leader 被认为是过期 Leader，不能再行使 Leader 权力。</li>
+<li>起始位移（Start Offset）。Leader 副本在该 Epoch 值上写入的首条消息的位移。</li>
 </ul>
 
                         
@@ -481,7 +610,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/07/14 11:45 上午</span>
+                    <span class="date">2019/08/04 22:29 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Kafka.html'>Kafka</a></span>
@@ -498,41 +627,83 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15630740568197.html">
+                <a class="clearlink" href="15649249729413.html">
                 
-                  <h1>位移主题</h1>
+                  <h1>消费者组重平衡</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>__consumer_offsets</h4>
+                        	<h4>重平衡通知</h4>
 
 <ul>
-<li>将 Consumer 的位移数据作为一条条普通的 Kafka 消息，提交到 <strong>consumer_offsets 中。可以这么说，</strong>consumer_offsets 的主要作用是保存 Kafka 消费者的位移信息</li>
-<li>实现高持久性，还要支持高频的写操作</li>
+<li>靠消费者的心跳线程</li>
+<li>协调者将REBALANCE_IN_PROGRESS封装进心跳请求响应中发送给消费者</li>
 </ul>
 
-<h4>位移主题</h4>
+<h4>消费者组状态机</h4>
+
+<table>
+<thead>
+<tr>
+<th style="text-align: center"></th>
+<th style="text-align: center">消费者五种状态</th>
+<th style="text-align: center"></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td style="text-align: center">状态</td>
+<td style="text-align: center">含义</td>
+<td style="text-align: center"></td>
+</tr>
+<tr>
+<td style="text-align: center">Empty</td>
+<td style="text-align: center">组内没有任何成员，但消费者组可能存在已提交的位移数据，而且这些位移尚未过期</td>
+<td style="text-align: center"></td>
+</tr>
+<tr>
+<td style="text-align: center">Dead</td>
+<td style="text-align: center">同样是组内没有任何成员，但组的元数据信息已经在协调者端被移除。协调者组件保存着当前向它注册过的所有组信息，所谓的元数据信息就类似于这个注册信息</td>
+<td style="text-align: center"></td>
+</tr>
+<tr>
+<td style="text-align: center">PreparingRebalance</td>
+<td style="text-align: center">消费者组准备开启重平衡，此时所有成员都要重新请求加入消费者组</td>
+<td style="text-align: center"></td>
+</tr>
+<tr>
+<td style="text-align: center">CompletingRebalance</td>
+<td style="text-align: center">消费者组下所有成员已经加入，各个成员正在等待分配方案。该状态在老一点的版本中被称为 Awaitingsync，它和 Completing Rebalancek 是等价的</td>
+<td style="text-align: center"></td>
+</tr>
+<tr>
+<td style="text-align: center">Stable</td>
+<td style="text-align: center">消费者组的稳定状态。该状态表明重平衡已经完成，组内各成员能够正常消费数据了</td>
+<td style="text-align: center"></td>
+</tr>
+</tbody>
+</table>
 
 <ul>
-<li>group_id,主题名,分区号</li>
-<li>用于保存 Consumer Group 信息的消息</li>
-<li>用于删除 Group 过期位移甚至是删除 Group 的消息</li>
+<li><img src="media/15649249729413/f16fbcb798a53c21c3bf1bcd5b72b006.png" alt="f16fbcb798a53c21c3bf1bcd5b72b006"/></li>
 </ul>
 
-<h4>提交位移</h4>
+<h4>重平衡流程</h4>
 
 <ul>
-<li>自动提交位移 只要 Consumer 一直启动着，它就会无限期地向位移主题写入消息，会撑爆磁盘</li>
-<li>手动提交位移</li>
+<li>JoinGroup JoinGroup 请求的主要作用是将组成员订阅信息发送给领导者消费者，待领导者制定好分配方案后，重平衡流程进入到 SyncGroup 请求阶段</li>
+<li>SyncGroup 就是让协调者把领导者制定的分配方案下发给各个组内成员。当所有成员都成功接收到分配方案后，消费者组进入到 Stable 状态，即开始正常的消费工作</li>
 </ul>
 
-<h4>删除位移主题中的消息</h4>
+<h4>重平衡场景</h4>
 
 <ul>
-<li>Compaction</li>
-<li>后台线程Log  Cleaner定期巡检待 Compact 的主题，看看是否存在满足条件的可删除数据</li>
-<li></li>
+<li>新成员入组</li>
+<li>组成员离开组</li>
+<li>组成员崩溃离组 session.timeout.ms</li>
+<li>重平衡时协调者对组内成员提交位移的处理</li>
 </ul>
 
                         
@@ -542,7 +713,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/07/14 11:14 上午</span>
+                    <span class="date">2019/08/04 21:22 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Kafka.html'>Kafka</a></span>
@@ -559,43 +730,33 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15630721013183.html">
+                <a class="clearlink" href="15647094297065.html">
                 
-                  <h1>消费者组</h1>
+                  <h1>分治思想</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>消息引擎模型</h4>
+                        	<h4>本质</h4>
 
 <ul>
-<li>点对点模型 消息一旦被消费，就会从队列中被删除，而且只能被下游的一个 Consumer 消费</li>
-<li>发布 / 订阅模型倒是允许消息被多个 Consumer 消费，但它的问题也是伸缩性不高，因为每个订阅者都必须要订阅主题的所有分区</li>
+<li>分治算法是一种处理问题的思想，递归是一种编程技巧</li>
 </ul>
 
-<h4>Consumer Group</h4>
+<h4>满足条件</h4>
 
 <ul>
-<li>共享一个公共的 ID，这个 ID 被称为 Group ID。组内的所有消费者协调在一起来消费订阅主题（Subscribed Topics）的所有分区（Partition）。当然，每个分区只能由同一个消费者组内的一个 Consumer 实例来消费</li>
-<li>Consumer Group 下可以有一个或多个 Consumer 实例。这里的实例可以是一个单独的进程，也可以是同一进程下的线程。在实际场景中，使用进程更为常见一些。</li>
-<li>Group ID 是一个字符串，在一个 Kafka 集群中，它标识唯一的一个 Consumer Group。</li>
-<li>Consumer Group 下所有实例订阅的主题的单个分区，只能分配给组内的某个 Consumer 实例消费。这个分区当然也可以被其他的 Group 消费。</li>
-<li>Consumer 实例的数量应该等于该 Group 订阅主题的分区总数</li>
+<li>原问题与分解成的小问题具有相同的模式；</li>
+<li>原问题分解成的子问题可以独立求解，子问题之间没有相关性，这一点是分治算法跟动态规划的明显区别，等我们讲到动态规划的时候，会详细对比这两种算法；</li>
+<li>具有分解终止条件，也就是说，当问题足够小时，可以直接求解；</li>
+<li>可以将子问题合并成原问题，而这个合并操作的复杂度不能太高，否则就起不到减小算法总体复杂度的效果了。</li>
 </ul>
 
-<h4>rebalance</h4>
+<h4>逆序度问题</h4>
 
 <ul>
-<li>组成员数发生变更</li>
-<li>订阅主题数发生变更</li>
-<li>订阅主题的分区数发生变更</li>
-</ul>
-
-<h4>rebalance不足</h4>
-
-<ul>
-<li>STW 期间，所有应用线程都会停止工作，表现为整个应用程序僵在那边一动不动。Rebalance 过程也和这个类似，在 Rebalance 过程中，所有 Consumer 实例都会停止消费</li>
-<li> Rebalance 的设计是所有 Consumer 实例共同参与，全部重新分配所有分区。其实更高效的做法是尽量减少分配方案的变动。</li>
+<li>二维平面上有 n 个点，如何快速计算出两个距离最近的点对？</li>
+<li>有两个 n<em>n 的矩阵 A，B，如何快速求解两个矩阵的乘积 C=A</em>B？</li>
 </ul>
 
                         
@@ -605,181 +766,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/07/14 10:41 上午</span>
+                    <span class="date">2019/08/02 09:30 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Kafka.html'>Kafka</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15630648340094.html">
-                
-                  <h1>发送网络包</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>socket write</h4>
-
-<ul>
-<li>struct file-&gt;struct socket-&gt;sock_sendmsg-&gt;sock_sendmsg_nosec</li>
-<li>msg-&gt;struct sk_buff-&gt;tcp写入队列-&gt;mss-&gt;数据拷贝到连续数据区域-&gt;发送网络包</li>
-</ul>
-
-<h4>分散聚合</h4>
-
-<ul>
-<li>IP层通过内存拷贝进行聚合，让散的数据零散的放在原处，在设备层进行聚合。如果使用这种模式，网络包的数据就不会放在连续的数据区域</li>
-<li><img src="media/15630648340094/9ad34c3c748978f915027d5085a858b8-2.png" alt="9ad34c3c748978f915027d5085a858b8-2"/></li>
-</ul>
-
-<h4>tcp_write_xmit</h4>
-
-<ul>
-<li>TSO 分段-&gt;硬件网卡去做</li>
-<li>拥塞窗口</li>
-<li>tcp_transmit_skb-&gt;ip_queue_xmit</li>
-</ul>
-
-<h4>总结</h4>
-
-<p><img src="media/15630648340094/dc66535fa7e1a10fd6d728865f6c9344.png" alt="dc66535fa7e1a10fd6d728865f6"/></p>
-
-<ul>
-<li>VFS 层：write 系统调用找到 struct file，根据里面的 file_operations 的定义，调用 sock_write_iter 函数。sock_write_iter 函数调用 sock_sendmsg 函数。</li>
-<li>Socket 层：从 struct file 里面的 private_data 得到 struct socket，根据里面 ops 的定义，调用 inet_sendmsg 函数。</li>
-<li>Sock 层：从 struct socket 里面的 sk 得到 struct sock，根据里面 sk_prot 的定义，调用 tcp_sendmsg 函数。</li>
-<li>TCP 层：tcp_sendmsg 函数会调用 tcp_write_xmit 函数，tcp_write_xmit 函数会调用 tcp_transmit_skb，在这里实现了 TCP 层面向连接的逻辑。</li>
-<li>IP 层：扩展 struct sock，得到 struct inet_connection_sock，根据里面 icsk_af_ops 的定义，调用 ip_queue_xmit 函数。</li>
-</ul>
-
-<h4>ip层发送</h4>
-
-<ul>
-<li>第一部分，选取路由，也即我要发送这个包应该从哪个网卡出去。</li>
-<li>路由规则Trie树进行匹配</li>
-<li>就是准备 IP 层的头，往里面填充内容。这就要对着 IP 层的头的格式进行理解。</li>
-<li>第三部分，就是调用 ip_local_out 发送 IP 包。__ip_local_out是决定转发规则 
-<ul>
-<li>dst_output是真正的发送数据</li>
-</ul></li>
-</ul>
-
-<h4>mac层发送</h4>
-
-<ul>
-<li>dev_queue_xmit</li>
-<li>网络设备发送队列 struct netdev_queue *txq</li>
-<li>qdisc pfifo_fast 内核如果需要通过某个网络接口发送数据包，都需要按照为这个接口配置的 qdisc（排队规则）把数据包加入队列</li>
-<li> __dev_xmit_skb -&gt; <strong>qdisc_run-&gt;</strong>netif_schedule-&gt; __netif_reschedule</li>
-<li>NET_TX_SOFTIRQ</li>
-<li>NET_RX_SOFTIRQ</li>
-<li>net_tx_action-&gt;qdisc_run-&gt;qdisc_restart-&gt;sch_direct_xmit-&gt;dev_hard_start_xmit-&gt;xmit_one-&gt;netdev_start_xmit-&gt;__netdev_start_xmit-&gt;ixgb_xmit_frame</li>
-</ul>
-
-<h4>发送总流程</h4>
-
-<ul>
-<li>VFS 层：write 系统调用找到 struct file，根据里面的 file_operations 的定义，调用 sock_write_iter 函数。sock_write_iter 函数调用 sock_sendmsg 函数。</li>
-<li>Socket 层：从 struct file 里面的 private_data 得到 struct socket，根据里面 ops 的定义，调用 inet_sendmsg 函数。</li>
-<li>Sock 层：从 struct socket 里面的 sk 得到 struct sock，根据里面 sk_prot 的定义，调用 tcp_sendmsg 函数。</li>
-<li>TCP 层：tcp_sendmsg 函数会调用 tcp_write_xmit 函数，tcp_write_xmit 函数会调用 tcp_transmit_skb，在这里实现了 TCP 层面向连接的逻辑。</li>
-<li>IP 层：扩展 struct sock，得到 struct inet_connection_sock，根据里面 icsk_af_ops 的定义，调用 ip_queue_xmit 函数。</li>
-<li>IP 层：ip_route_output_ports 函数里面会调用 fib_lookup 查找路由表。FIB 全称是 Forwarding Information Base，转发信息表，也就是路由表。</li>
-<li>在 IP 层里面要做的另一个事情是填写 IP 层的头。</li>
-<li>在 IP 层还要做的一件事情就是通过 iptables 规则。</li>
-<li>MAC 层：IP 层调用 ip_finish_output 进行 MAC 层。</li>
-<li>MAC 层需要 ARP 获得 MAC 地址，因而要调用 ___neigh_lookup_noref 查找属于同一个网段的邻居，他会调用 neigh_probe 发送 ARP。</li>
-<li>有了 MAC 地址，就可以调用 dev_queue_xmit 发送二层网络包了，它会调用 __dev_xmit_skb 会将请求放入队列。</li>
-<li>设备层：网络包的发送回触发一个软中断 NET_TX_SOFTIRQ 来处理队列中的数据。这个软中断的处理函数是 net_tx_action。</li>
-<li>在软中断处理函数中，会将网络包从队列上拿下来，调用网络设备的传输函数 ixgb_xmit_frame，将网络包发的设备的队列上去。</li>
-<li><img src="media/15630648340094/79cc42f3163d159a66e163c006d9f36f-2.png" alt="79cc42f3163d159a66e163c006d9f36f-2"/></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/07/14 08:40 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15630159070216.html">
-                
-                  <h1>Socket网络通讯</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>分配结构</h4>
-
-<ul>
-<li>struct socket socket 是用于负责对上给用户提供接口，并且和文件系统关联</li>
-<li>struct sock  负责向下对接内核网络协议栈</li>
-</ul>
-
-<h4>结构</h4>
-
-<ul>
-<li>struct inet_connection_sock</li>
-<li>处于各种状态的队列，各种超时时间、拥塞控制等字眼</li>
-</ul>
-
-<h4>accept</h4>
-
-<ul>
-<li>基于监听的socket创建新的struct socket</li>
-<li>创建一个新的socket</li>
-<li>创建一个新的struct file 和 fd关联到socket</li>
-<li>如果 icsk_accept_queue 为空，则调用 inet_csk_wait_for_connect 进行等待</li>
-<li>等待的时候，调用 schedule_timeout，让出 CPU，并且将进程状态设置为 TASK_INTERRUPTIBLE</li>
-<li>如果再次 CPU 醒来，我们会接着判断 icsk_accept_queue 是否为空，同时也会调用 signal_pending 看有没有信号可以处理</li>
-<li>一旦 icsk_accept_queue 不为空，就从 inet_csk_wait_for_connect 中返回，在队列中取出一个 struct sock 对象赋值给 newsk</li>
-</ul>
-
-<h4>connect函数</h4>
-
-<ul>
-<li><img src="media/15630159070216/c028381cf45d65d3f148e57408d26bd8.png" alt="c028381cf45d65d3f148e57408d26bd8"/></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/07/13 19:05 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
+          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -853,8 +843,6 @@
             <a href="Golang.html"><strong>Golang</strong></a>
         
             <a href="Django.html"><strong>Django</strong></a>
-        
-            <a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html"><strong>C++设计模式实战</strong></a>
         
             <a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html"><strong>深入剖析Kubernetes</strong></a>
         
@@ -933,6 +921,18 @@
 	      
 		      
 			      <li class="post">
+			        <a href="15818128782116.html">Singleton</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15748977610569.html">State</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817697569868.html">字符串分割</a>
 			      </li>
 		     
@@ -945,19 +945,7 @@
 		  
 		      
 			      <li class="post">
-			        <a href="15814649492497.html">Simple Factory</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814189410719.html">代码的可测试性</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814188057978.html">重构</a>
+			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

@@ -87,8 +87,6 @@
         
             <li><a href="Django.html">Django</a></li>
         
-            <li><a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html">C++设计模式实战</a></li>
-        
             <li><a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html">深入剖析Kubernetes</a></li>
         
             <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html">数据结构和算法</a></li>
@@ -172,1279 +170,144 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15814649492497.html">
+                <a class="clearlink" href="15818128782116.html">
                 
-                  <h1>Simple Factory</h1>
+                  <h1>Singleton</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>接口编程</h4>
+                        	<h4>动机</h4>
 
 <ul>
-<li>接口从语法层面上来说，是一种特殊的抽象类，是一个纯虚的类。从软件设计的意义<br/>
-上来说，我们通常用接口来定义实现类的外观，就相当于一份契约，根据外部应用需要的功能，约定了实现类应该要实现的功能</li>
-<li>软件开发中永恒的主题是“变化“，“只有变化才是永恒不変！“，接口最重要的一个设计语义就是封装变化。所谓“封装变化”就是隔离变化。</li>
-<li>从软件的整体结构上看，只要接口不变，内部实现的变化就不会影响到外部应用，从而使得系统更灵活，具有更好的扩展性和可维护性。</li>
+<li>在软件系统中，经常有这样一些特殊的类，必须保证它们在系统中只存在一个实例，才能确保它们的逻辑正确性、以及良好的效率</li>
+<li>如何绕过常规的构造器，提供一种机制来保证一个类只有一个实例？</li>
+<li>这应该是类设计者的责任，而不是使用者的责任</li>
 </ul>
 
-<h4>简单工厂模式</h4>
+<h4>结构</h4>
 
 <ul>
-<li>实现客户端调用和具体类的分离，实现了变化隔离</li>
+<li><img src="media/15818128782116/15818133316537.jpg" alt="" style="width:538px;"/></li>
+</ul>
+
+<h4>要点总结</h4>
+
+<ul>
+<li>Singleton 模式中的实例构造器可以设置为 protected 以允许子类派生。</li>
+<li>Singleton 模式一般不要支持拷贝构造函数和 Clone 接口，因为这有可能导致多个对象实例，与 Singleton 模式的初衷违背。</li>
+<li>如何实现多线程环境下安全的 Singleton？注意对双检查锁的正确实现。</li>
+</ul>
+
+<h4>单例模式问题</h4>
+
+<ul>
+<li>单例对 OOP 特性的支持不友好</li>
+<li>单例会隐藏类之间的依赖关系 单例类不需要显示创建、不需要依赖参数传递，在函数中直接调用就可以了。如果代码比较复杂，这种调用关系就会非常隐蔽</li>
+<li>单例对代码的扩展性不友好</li>
+<li>单例对代码的可测试性不友好 单例模式的使用会影响到代码的可测试性。如果单例类依赖比较重的外部资源，比如 DB，我们在写单元测试的时候，希望能通过 mock 的方式将它替换掉。而单例类这种硬编码式的使用方式，导致无法实现 mock 替换。</li>
+<li>单例不支持有参数的构造函数 单例不支持有参数的构造函数，比如我们创建一个连接池的单例对象，我们没法通过参数来指定连接池的大小, 解决方案是将将参数放到另外一个全局变量中</li>
 </ul>
 
 <pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
 using namespace std;
-
-class Api {
+class Config {
     public:
-    virtual void test(string&amp;&amp; s) = 0;
-    protected:
-    Api(){}
+    static const int argA = 123;
+    static const int argB = 123;
 };
 
-class Impl : public Api {
+class Singleton {
+    private:
+    int argA_, argB_;
+    Singleton() : argA_(Config::argA), argB_(Config::argB) {}
     public:
-    void test(string&amp;&amp; s) override {
-        cout &lt;&lt; &quot;Iml class &quot; &lt;&lt; s &lt;&lt; &#39;\n&#39;;
-    }
-    using Api::Api;
-};
-
-class ImplPro : public Api {
-    public:
-    void test(string&amp;&amp; s) override {
-        cout &lt;&lt; &quot;Iml class &quot; &lt;&lt; s &lt;&lt; &#39;\n&#39;;
-    }
-    using Api::Api;
-};
-
-
-class Factory {
-    public:
-    static Api* createApi(int type) {
-        cout &lt;&lt; &quot;Simple Factory create instance \n&quot; ;
-        Api* api = nullptr;
-        if (type == 1) {
-            api = new Impl();
-        } else if (type == 2) {
-            api = new ImplPro();
+    static Singleton* instance_;
+    static Singleton* get_instance() {
+        if (instance_ == nullptr) {
+            instance_ = new Singleton;
         }
-        return api;
+        return instance_;
     }
 };
+Singleton* Singleton::instance_ = nullptr;
 
 int main() {
-    Api* api = Factory::createApi(2);
-    api-&gt;test(&quot;hello&quot;);
+    Singleton* p1 = Singleton::get_instance();
+    Singleton* p2 = Singleton::get_instance();
 }
 </code></pre>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2020/02/12 07:49 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15787865983142.html">
-                
-                  <h1>定时器设计</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>case</h4>
-
-<pre class="line-numbers"><code class="language-go">type TimerTask struct {
-    t *time.Timer
-    d time.Duration
-}
-
-func (e *TimerTask) run() {
-    for {
-        select {
-        case &lt;- e.t.C:
-            fmt.Println(&quot;run&quot;)
-            e.t.Reset(e.d)
-        }
-    }
-}
-
-func main() {
-    dur := time.Duration(1) * time.Second
-    executor := &amp;TimerTask{d: dur, t: time.NewTimer(dur)}
-    executor.run()
-    select {}
-}
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2020/01/12 07:49 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15782640669384.html">
-                
-                  <h1>解析器</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>动机</h4>
+<h4>多例模式实现</h4>
 
 <ul>
-<li><p>在软件构建过程中，如果某一特定领域的问题比较复杂，类似的结构不断重复出现，如果使用普通的编程方式来实现将面临非常频繁的变化。</p></li>
-<li><p>在这种情况下，将特定领域的问题表达为某种语法规则下的句子然后构建一个解释器来解释这样的句子，从而达到解决问题的目的。</p></li>
+<li>“单例”指的是一个类只能创建一个对象。对应地，“多例”指的就是一个类可以创建多个对象，但是个数是有限制的，比如只能创建 3 个对象。多例的实现也比较简单，通过一个 Map 来存储对象类型和对象之间的对应关系，来控制对象的个数</li>
 </ul>
 
-<h4>模式定义</h4>
-
-<ul>
-<li>给定一个语言，定义它的文法的一种表示，并定义一种解释器，这个解释器使用该表示来解释语言中的句子。</li>
-</ul>
-
-<h4>结构</h4>
-
-<ul>
-<li><img src="media/15782640669384/15782652005755.jpg" alt="" style="width:598px;"/></li>
-</ul>
-
-<h4>要点总结</h4>
-
-<ul>
-<li>Interpreter 模式的应用场合是 Interpreter。模式应用中的难点，只有满足“业务规则频繁变化，<strong><em>且类似的结构不断重复出现，并且容易抽象为语法规则的问题”才适合使用 Interpreter/模式。</em></strong></li>
-<li>使用 Interpreter 模式来表示文法规则，从而可以使用面向对象技巧来方便地“扩展”文法</li>
-<li>interpreter/模式比较适合简单的文法表示,对于复杂的文法表示, nterperter/模式会产生比较大的类层次结构,需要求助于语法分析生成器这样的标准工具</li>
-</ul>
-
-<h4>golang_demo</h4>
-
-<pre class="line-numbers"><code class="language-go">package design_pattern
-
-import (
-    &quot;strconv&quot;
-    &quot;strings&quot;
-)
-
-type Node interface {
-    Interpret() int
-}
-
-type ValNode struct {
-    val int
-}
-
-func (n *ValNode) Interpret() int {
-    return n.val
-}
-
-type AddNode struct {
-    left, right Node
-}
-
-func (n *AddNode) Interpret() int {
-    return n.left.Interpret() + n.right.Interpret()
-}
-
-type MinNode struct {
-    left, right Node
-}
-
-func (n *MinNode) Interpret() int {
-    return n.left.Interpret() - n.right.Interpret()
-}
-
-type Parser struct {
-    exp   []string
-    index int
-    prev  Node
-}
-
-func (p *Parser) Parse(exp string) {
-    p.exp = strings.Split(exp, &quot; &quot;)
-
-    for {
-        if p.index &gt;= len(p.exp) {
-            return
-        }
-        switch p.exp[p.index] {
-        case &quot;+&quot;:
-            p.prev = p.newAddNode()
-        case &quot;-&quot;:
-            p.prev = p.newMinNode()
-        default:
-            p.prev = p.newValNode()
-        }
-    }
-}
-
-func (p *Parser) newAddNode() Node {
-    p.index++
-    return &amp;AddNode{
-        left:  p.prev,
-        right: p.newValNode(),
-    }
-}
-
-func (p *Parser) newMinNode() Node {
-    p.index++
-    return &amp;MinNode{
-        left:  p.prev,
-        right: p.newValNode(),
-    }
-}
-
-func (p *Parser) newValNode() Node {
-    v, _ := strconv.Atoi(p.exp[p.index])
-    p.index++
-    return &amp;ValNode{
-        val: v,
-    }
-}
-
-func (p *Parser) Result() Node {
-    return p.prev
-}
-
-import &quot;testing&quot;
-
-func TestInterpreter(t *testing.T) {
-    p := &amp;Parser{}
-    p.Parse(&quot;1 + 2 + 3 - 4 + 5 - 6&quot;)
-    res := p.Result().Interpret()
-    expect := 1
-    if res != expect {
-        t.Fatalf(&quot;expect %d got %d&quot;, expect, res)
-    }
-}
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2020/01/06 06:41 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15782299761779.html">
-                
-                  <h1>访问器模式</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>动机</h4>
-
-<ul>
-<li>在软件构建过程中，由于需求的改变，某些类层次结构中常常需要增加新的行为（方法），如果直接在基类中做这样的更改，将会给子类带来很繁重的变更负担，甚至破坏原有设计。</li>
-<li>如何在不更改类层次结构的前提下，在运行时根据需要透明地为类层次结构上的各个类动态添加新的操作，从而避免上述问题？</li>
-</ul>
-
-<h4>定义</h4>
-
-<ul>
-<li>表示一个作用于某对象结构中的各元素的操作。使得可以在不改变（稳定）各元素的类的前提下定义（扩展）作用于这些元素的新操作（变化）。</li>
-</ul>
-
-<h4>结构</h4>
-
-<ul>
-<li><img src="media/15782299761779/15782309016996.jpg" alt="" style="width:696px;"/></li>
-</ul>
-
-<h4>要点总结</h4>
-
-<ul>
-<li><p>Visitor 模式通过所谓双重分发（double dispatch）来实现在不更改（不添加新的操作-编译时）Elementa 类层次结构的前提下，在运行时透明地为类层次结构上的各个类动态添加新的操作（支持变化）。</p></li>
-<li><p>所谓双重分发即 Visitor 模式中间包括了两个多态分发（注意其中的多态机制）：第一个为 accept 方法的多态辨析；第二个为 /isitelementx 方法的多态辨析。</p></li>
-<li><p>Visitor 模式的最大缺点在于扩展类层次结构（增添新的 Element 子类），会导致 Visitor？类的改变。<strong><em>因此 Vistor 模式适用于Element 类层次结构稳定，而其中的操作却经常面临频繁改动</em></strong>。</p></li>
-</ul>
-
-<h4>cpp_demo</h4>
-
-<pre class="line-numbers"><code class="language-cpp">//
-// Created by eredinliu on 2020-01-05.
-//
-
-#include &lt;iostream&gt;
-
-using namespace std;
-
-class Visitor;
-
-class Element {
-public:
-    virtual void accept(Visitor&amp; visitor) = 0;
-};
-
-class ElementA : public Element {
-public:
-    void accept(Visitor&amp; visitor) override {
-        visitor.visitElementA(*this);
-    }
-};
-
-class ElementB : public Element {
-public:
-    void accept(Visitor&amp; visitor) override {
-        visitor.visitElementB(*this);
-    }
-};
-
-
-class Visitor {
-public:
-    virtual void visitElementA(ElementA&amp; e) = 0;
-    virtual void visitElementB(ElementB&amp; e) = 0;
-};
-
-class VisitorA : public Visitor {
-public:
-    void visitElementA(ElementA&amp; e) override {
-        cout &lt;&lt; &quot;VisitorA is processing Element A &quot; &lt;&lt; endl;
-    }
-
-    void visitElementB(ElementB&amp; e) override {
-        cout &lt;&lt; &quot;VisitorA is processing Element B &quot; &lt;&lt; endl;
-    }
-};
-
-class VisitorB : public Visitor {
-public:
-    void visitElementA(ElementA&amp; e) override {
-        cout &lt;&lt; &quot;VisitorB is processing Element A &quot; &lt;&lt; endl;
-    }
-
-    void visitElementB(ElementB&amp; e) override {
-        cout &lt;&lt; &quot;VisitorB is processing Element B &quot; &lt;&lt; endl;
-    }
-};
-
-int main() {
-    VisitorA visitorA;
-    VisitorB visitor;
-    ElementB elementB;
-    elementB.accept(visitor);
-    elementB.accept(visitorA);
-
-
-    ElementA elementA;
-    elementA.accept(visitor);
-    elementA.accept(visitorA);
-}
-</code></pre>
-
-<h4>golang_demo</h4>
-
-<pre class="line-numbers"><code class="language-go">package design_pattern
-
-import &quot;fmt&quot;
-
-type Element interface {
-    Accept(Visitor)
-}
-
-type Visitor interface {
-    visitA(*ElementA)
-    visitB(*ElementB)
-}
-
-type ElementA struct {
-}
-
-func (e *ElementA) Accept(visitor Visitor) {
-    visitor.visitA(e)
-}
-
-type ElementB struct {
-}
-
-func (e *ElementB) Accept(visitor Visitor) {
-    visitor.visitB(e)
-}
-
-type VisitorA struct {
-}
-
-func (v *VisitorA) visitA(e *ElementA) {
-    fmt.Println(&quot;VisitorA is processing Element A &quot; )
-}
-
-func (v *VisitorA) visitB(e *ElementB) {
-    fmt.Println(&quot;VisitorA is processing Element B &quot; )
-}
-
-type VisitorB struct {
-}
-
-func (v *VisitorB) visitA(e *ElementA) {
-    fmt.Println(&quot;VisitorB is processing Element A &quot; )
-}
-
-func (v *VisitorB) visitB(e *ElementB) {
-    fmt.Println(&quot;VisitorB is processing Element B &quot; )
-}
-
-type ObjectStructure struct {
-    elements map[Element]bool
-}
-
-func (o *ObjectStructure) Attach(e Element) {
-    o.elements[e] = true
-}
-
-func (o *ObjectStructure) Detach(e Element) {
-    delete(o.elements, e)
-}
-
-func (o *ObjectStructure) Accept(visitor Visitor) {
-    for k, _ := range o.elements {
-        k.Accept(visitor)
-    }
-}
-
-func NewObjectStructure() *ObjectStructure {
-    return &amp;ObjectStructure{
-        elements: make(map[Element]bool),
-    }
-}
-
-package design_pattern
-
-import &quot;testing&quot;
-
-func TestVisitor(t *testing.T) {
-    obj := NewObjectStructure()
-
-    elementB := &amp;ElementB{}
-    elementA := &amp;ElementA{}
-
-    obj.Attach(elementA)
-    obj.Attach(elementB)
-
-    vA := &amp;VisitorA{}
-    vB := &amp;VisitorB{}
-    obj.Accept(vA)
-    obj.Accept(vB)
-}
-</code></pre>
-
-<h4>python_code</h4>
-
-<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
-
-class Element(metaclass=ABCMeta):
-
-    @abstractmethod
-    def accept(self, visitor):
-        pass
-
-class Visitor(metaclass=ABCMeta):
-
-    @abstractmethod
-    def visitA(self, elementA):
-        pass
-
-    @abstractmethod
-    def visitB(self, elementB):
-        pass
-
-class ElementA(Element):
-
-    def accept(self, visitor):
-        visitor.visitA(self)
-
-class ElementB(Element):
-
-    def accept(self, visitor):
-        visitor.visitB(self)
-
-class VisitorA(Visitor):
-
-    def visitA(self, elementA):
-        print(type(self).__name__, &quot; process elementA&quot;)
-
-    def visitB(self, elementB):
-        print(type(self).__name__, &quot; process elementB&quot;)
-
-
-class VisitorB(Visitor):
-
-    def visitA(self, elementA):
-        print(type(self).__name__, &quot; process elementA&quot;)
-
-    def visitB(self, elementB):
-        print(type(self).__name__, &quot; process elementB&quot;)
-
-class ObjectStructure(object):
-
-    def __init__(self):
-        self.elements = []
-
-    def attach(self, element):
-        self.elements.append(element)
-
-    def detach(self, element):
-        self.elements.remove(element)
-
-    def accept(self, visitor):
-        for e in self.elements:
-            e.accept(visitor)
-
-if __name__ == &#39;__main__&#39;:
-    obj = ObjectStructure()
-
-    eA = ElementA()
-    eB = ElementB()
-
-    obj.attach(eA)
-    obj.attach(eB)
-
-    va = VisitorA()
-    vb = VisitorB()
-
-    obj.accept(va)
-    obj.accept(vb)
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2020/01/05 21:12 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15775908801763.html">
-                
-                  <h1>Command</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>行为变化模式</h4>
-
-<ul>
-<li>在组件的构建过程中，组件行为的变化经常导致组件本身剧烈的变化。“行为变化“模式将组件的行为和组件本身进行解耦，从而支持组件行为的变化，实现两者之间的松耦合。</li>
-</ul>
-
-<h4>动机</h4>
-
-<ul>
-<li>在软件构建过程中，“行为请求者”与“行为实现者通常呈现一种“紧耦合”。但在某些场合一一比如需要对行为进行“记录、撤销/重（undo/redo)、事务”等处理,这种无法抵御变化的紧耦合是不合适 的</li>
-<li>在这种情况下，如何将“行为请求者“与“行为实现者”解耦？将一组行为抽象为对象，可以实现二者之间的松耦合。</li>
-</ul>
-
-<h4>模式定义</h4>
-
-<ul>
-<li>将一个请求（行为）封装为一个对象，从而使你可用不同的请求对客户进行参数化；对请求排队或记录请求日志，以及支持可撇销的操作。</li>
-</ul>
-
-<h4>结构</h4>
-
-<ul>
-<li><img src="media/15775908801763/15811582346417.jpg" alt="" style="width:787px;"/></li>
-</ul>
-
-<h4>要点总结</h4>
-
-<ul>
-<li>Command 模式的根本目的在于将“行为请求者”与“行为实现者”解耦，在面向对象语言中，常见的实现手段是“将行为抽象为对象</li>
-<li>实现 Command 接口的具体命令对象 Concrete Command 有时侯根据需要可能会保存一些额外的状态信息。通过使用 Composite 模式可以将多个“命令“封装为ー个“复合命令“Macro Command</li>
-<li>Command 模式与 C++中的函数对象有些类似。但两者定义行为接口的规范有所区别：Command 以面向对象中的“接口-实现”来定义行为接口规范，更严格，但有性能损失；C++函数对象以函数签名来定义行为接口规范，更灵活，性能更高。</li>
-<li>编译时多态</li>
-<li>范形编程+函数对象解决了迭代器模式和命令模式</li>
-<li>设计模式是弥补语言设计的不足出现的</li>
-</ul>
-
-<h4>优缺点</h4>
-
-<h5>优点</h5>
-
-<ul>
-<li>将调用操作的类与知道如何执行该操作的对象解耦；</li>
-<li>提供队列系统后，可以创建一系列命令；</li>
-<li>添加新命令更加容易，并且无需更改现有代码；</li>
-<li>还可以使用命令模式来定义回滚系统，例如，在向导示例中，我们可以编写一个回滚方法。</li>
-</ul>
-
-<h6>缺点：</h6>
-
-<ul>
-<li>为了实现目标，需要大量的类和对象进行协作。应用程序开发人员为了正确开发这些类，需要倍加小心；</li>
-<li>每个单独的命令都是一个ConcreteCommand类，从而增加了需要实现和维护的类的数量。</li>
-</ul>
-
-<h4>cpp_code</h4>
+<h4>cpp_demo多例模式</h4>
 
 <pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
-#include &lt;list&gt;
+#include &lt;map&gt;
 using namespace std;
 
-class Command {
-    public:
-    virtual void execute() = 0;
-    Command() {}
-};
-
-class Barbecue {
-    public:
-    void bake_mutton() {cout &lt;&lt; &quot;bake mutton \n&quot;;}
-    void bake_chicken() {cout &lt;&lt; &quot;bake chicken\n&quot;;}
-};
-
-class MuttonCommand : public Command {
-    public:
-    MuttonCommand(Barbecue* barbecue) : barbecue_(barbecue) {}
-
-    void execute() {
-        this-&gt;barbecue_-&gt;bake_mutton();
-    }
+const static int num_max = 5;
+class Singleton;
+static map&lt;int, Singleton*&gt; my_map;
+class Singleton {
     private:
-    Barbecue* barbecue_ = nullptr;
-};
+    Singleton() {
+        cout &lt;&lt; &quot;Singleton \n&quot; ;
+    }
 
-class ChickenCommand : public Command {
+    static Singleton* instance_;
+    static int instance_cnt_;
     public:
-    ChickenCommand(Barbecue* barbecue) : barbecue_(barbecue) {}
+    static Singleton* get_instance() {
+        instance_ = my_map[instance_cnt_];
 
-    void execute() {
-        this-&gt;barbecue_-&gt;bake_chicken();
-    }
-    private:
-    Barbecue* barbecue_ = nullptr;
-};
-
-class Waiter {
-    public:
-    Waiter() {}
-
-    void AddOrder(Command* cmd) {
-        this-&gt;orders.push_back(cmd);
-    }
-
-    void DelOrder(Command* cmd) {
-        this-&gt;orders.remove(cmd);
-    }
-
-    void Notify() {
-        for (auto it : this-&gt;orders) {
-            it-&gt;execute();
+        if (instance_ == nullptr) {
+            instance_ = new Singleton;
+            my_map[instance_cnt_] = instance_;
         }
+        
+        instance_cnt_++;
+        if (instance_cnt_ &gt; num_max) {
+            instance_cnt_ = 1;
+        }
+        return instance_;
     }
-    private:
-    list&lt;Command*&gt; orders;
 };
+
+Singleton* Singleton::instance_ = nullptr;
+int Singleton::instance_cnt_ = 1;
 
 int main() {
-    auto boy = new Barbecue();
-    Command* cmd1 = new MuttonCommand(boy);
-    Command* cmd2 = new MuttonCommand(boy);
-    Command* cmd3 = new ChickenCommand(boy);
-    auto waiter = new Waiter();
-    waiter-&gt;AddOrder(cmd1);
-    waiter-&gt;AddOrder(cmd2);
-    waiter-&gt;AddOrder(cmd3);
-    waiter-&gt;Notify();
+    Singleton* p1 = Singleton::get_instance();
+    Singleton* p2 = Singleton::get_instance();
+    Singleton* p3 = Singleton::get_instance();
+    Singleton* p4 = Singleton::get_instance();
+    Singleton* p5 = Singleton::get_instance();
+    cout &lt;&lt; p1 &lt;&lt; &quot; &quot; &lt;&lt; p2 &lt;&lt; &quot; &quot; &lt;&lt; p3 &lt;&lt; &quot; &quot; &lt;&lt; p4 &lt;&lt; &quot; &quot; &lt;&lt; p5 &lt;&lt; endl;
 }
 </code></pre>
 
-<h4>golang_demo</h4>
-
-<pre class="line-numbers"><code class="language-go">package desian_pattern_practise
-
-
-import &quot;fmt&quot;
-
-type Command interface {
-    ExecuteCommand()
-}
-
-type Barbecue struct {}
-
-func (b *Barbecue) BakeMutton() {
-    fmt.Println(&quot;BakeMutton&quot;)
-}
-
-func (b *Barbecue) BakeChicken() {
-    fmt.Println(&quot;BakeChicken&quot;)
-}
-
-type MuttonCommand struct {
-    *Barbecue
-}
-
-func NewMuttonCommand(boy *Barbecue) *MuttonCommand {
-    return &amp;MuttonCommand{
-        Barbecue: boy,
-    }
-}
-
-func (m *MuttonCommand) ExecuteCommand() {
-    m.Barbecue.BakeMutton()
-}
-
-type BakeCommand struct {
-    *Barbecue
-}
-
-func NewBakeCommand(boy *Barbecue) *BakeCommand {
-    return &amp;BakeCommand{
-        Barbecue: boy,
-    }
-}
-
-func (b *BakeCommand) ExecuteCommand() {
-    b.Barbecue.BakeChicken()
-}
-
-type Waiter struct {
-    orders map[Command]bool
-}
-
-func NewWaiter() *Waiter {
-    return &amp;Waiter{
-        orders: make(map[Command]bool),
-    }
-}
-
-func (w *Waiter) AddOrder(cmd Command) {
-    w.orders[cmd] = true
-}
-
-func (w *Waiter) CancelOrder(cmd Command) {
-    delete(w.orders, cmd)
-}
-
-func (w *Waiter) Notify() {
-    for k, _ := range w.orders {
-        k.ExecuteCommand()
-    }
-}
-func TestBakeCommand_ExecuteCommand(t *testing.T) {
-    boy := &amp;Barbecue{}
-
-    cmd1, cmd2  := NewMuttonCommand(boy), NewMuttonCommand(boy)
-    cmd3 := NewBakeCommand(boy)
-
-    waiter := NewWaiter()
-    waiter.AddOrder(cmd1)
-
-    waiter.AddOrder(cmd2)
-
-    waiter.AddOrder(cmd3)
-
-    waiter.CancelOrder(cmd1)
-    waiter.Notify()
-}
-</code></pre>
-
-<h4>python_demo</h4>
-
-<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
-
-class Command(metaclass=ABCMeta):
-
-    @abstractmethod
-    def execute_command(self):
-        pass
-
-class Barbecue(object):
-
-    def bake_mutton(self):
-        print(&quot;bake mutton&quot;)
-
-    def bake_chicken(self):
-        print(&quot;bake chicken&quot;)
-
-class MuttonCommand(Command):
-
-    def __init__(self, barbecue):
-        self.barbecue = barbecue
-
-    def execute_command(self):
-        self.barbecue.bake_mutton()
-
-
-class ChickenCommand(Command):
-
-    def __init__(self, barbecue):
-        self.barbecue = barbecue
-
-    def execute_command(self):
-        self.barbecue.bake_chicken()
-
-class Waiter(object):
-
-    def __init__(self):
-        self.__orders = []
-
-    def add_order(self, cmd):
-        self.__orders.append(cmd)
-
-    def cancel_order(self, cmd):
-        self.__orders.remove(cmd)
-
-    def notify(self):
-        for order in self.__orders:
-            order.execute_command()
-
-if __name__ == &#39;__main__&#39;:
-    boy = Barbecue()
-
-    cmd1 = MuttonCommand(boy)
-    cmd2 = MuttonCommand(boy)
-    cmd3 = ChickenCommand(boy)
-
-    waiter = Waiter()
-
-    waiter.add_order(cmd1)
-    waiter.add_order(cmd2)
-    waiter.add_order(cmd3)
-
-    waiter.notify()
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/12/29 11:41 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15768853718636.html">
-                
-                  <h1>Chain of Responsibility</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>模式定义</h4>
+<h4>分布式环境下的单例模式</h4>
 
 <ul>
-<li>使多个对象都有机会处理请求，从而避免请求的发送者和接收者之间的耦合关系。将这些对象连成一条链，并沿着这条链传递请求，直到有一个对象处理它为止</li>
+<li>一个类只允许创建唯一一个对象。那对象的唯一性的作用范围是进程范围内</li>
 </ul>
 
-<h4>结构</h4>
+<h5>线程唯一的单例</h5>
 
 <ul>
-<li><img src="media/15768853718636/15806441423658.jpg" alt="" style="width:799px;"/></li>
+<li>我们通过一个Map来存储对象，其中 key 是线程 ID，value 是对象</li>
 </ul>
 
-<h4>要点总结</h4>
+<h4>如何实现集群环境下单例</h4>
 
 <ul>
-<li>Chain of Responsibility 7 模式的应用场合在于“一个请求可能有多个接受者，但是最后真正的接受者只有一个“，这时候请求发送者与接受者的耦合有可能出现“变化脆弱”的症状，职责链的目的就是将二者解耦，从而更好地应对变化</li>
-<li>应用了 Chain of Responsibility 模式后，对象的职责分派将更具灵活性。我们可以在运行时动态添加/修改请求的处理职责。</li>
-<li>如果请求传递到职责链的末尾仍得不到处理，应该有一个合理的缺省机制。这也是每一个接受对象的责任，而不是发出请求的对象的责任。</li>
-<li>这里发出这个请求的客户端并不知道这当中的哪一个对象最终处理这个请求，这样系统的更改可以在不影响客户端的情况下动态地重新组织和分配责任</li>
-</ul>
-
-<h4>cpp_demo</h4>
-
-<pre class="line-numbers"><code class="language-cpp">//
-// Created by eredinliu on 2020-02-03.
-//
-
-#include &lt;iostream&gt;
-#include &lt;typeinfo&gt;
-using namespace std;
-
-class Request {
-public:
-    Request(const string&amp; name, const string&amp; reason, int day_off) :
-            name_(name), reason_(reason), day_off_(day_off) {}
-    string name_, reason_;
-    int day_off_;
-};
-
-class Responsible {
-public:
-    void SetSuperior(Responsible* superior) {this-&gt;superior_ = superior;}
-    Responsible() {}
-
-    bool SuperiorHandle(Request* request) {
-        if (this-&gt;superior_ != nullptr) {
-            return this-&gt;superior_-&gt;HandleRequest(request);
-        }
-
-        cout &lt;&lt; &quot;Out of power, reject \n&quot;;
-        return false;
-    }
-
-    virtual bool HandleRequest(Request* request) = 0;
-
-private:
-    Responsible* superior_;
-};
-
-class Supervisor : public  Responsible {
-public:
-    bool HandleRequest(Request* request) {
-        if (request-&gt;day_off_ &gt; 0 &amp;&amp; request-&gt;day_off_ &lt;= 2) {
-            cout &lt;&lt; typeid(this).name() &lt;&lt; &quot; permit \n&quot;;
-            return true;
-        }
-
-        return this-&gt;SuperiorHandle(request);
-    }
-};
-
-class Depmanager : public  Responsible {
-public:
-    bool HandleRequest(Request* request) {
-        if (request-&gt;day_off_ &gt; 2 &amp;&amp; request-&gt;day_off_ &lt;= 5) {
-            cout &lt;&lt; typeid(this).name() &lt;&lt; &quot; permit \n&quot;;
-            return true;
-        }
-
-        return this-&gt;SuperiorHandle(request);
-    }
-};
-
-class CEO : public  Responsible {
-public:
-    bool HandleRequest(Request* request) {
-        if (request-&gt;day_off_ &gt; 5 &amp;&amp; request-&gt;day_off_ &lt;= 12) {
-            cout &lt;&lt; typeid(this).name() &lt;&lt; &quot; permit \n&quot;;
-            return true;
-        }
-
-        return this-&gt;SuperiorHandle(request);
-    }
-};
-
-int main() {
-    Responsible* ceo = new CEO();
-    Responsible* dep = new Depmanager();
-    Responsible* super = new Supervisor();
-    dep-&gt;SetSuperior(ceo);
-    super-&gt;SetSuperior(dep);
-
-    Request* req = new Request(&quot;ming&quot;, &quot;sick&quot;, 10);
-    super-&gt;HandleRequest(req);
-}
-</code></pre>
-
-<h4>golang_demo</h4>
-
-<pre class="line-numbers"><code class="language-go">package design_pattern
-
-import (
-    &quot;fmt&quot;
-    &quot;reflect&quot;
-)
-
-type Request struct {
-    name, reason string
-    dayOff int
-}
-
-type Responsible interface {
-    HandlerRequest(*Request) bool
-}
-
-type Manager struct {
-    superior Responsible
-}
-
-func (m *Manager) HandlerRequest(*Request) bool {
-    return true
-}
-
-func (m *Manager) SetSuperior(superior Responsible) {
-    m.superior = superior
-}
-
-func (m *Manager) SuperHandle(r *Request) bool {
-    if m.superior != nil {
-      return m.superior.HandlerRequest(r)
-    }
-
-    fmt.Println(&quot;out of power, reject&quot;)
-    return false
-}
-
-type Supervisor struct {
-    *Manager
-}
-
-func (s *Supervisor) HandlerRequest(r *Request) bool {
-    
-    if r.dayOff &gt; 0 &amp;&amp; r.dayOff &lt;=2 {
-        fmt.Println(reflect.TypeOf(s).String() + &quot; Permit&quot;)
-        return true
-    }
-
-    return s.SuperHandle(r)
-}
-
-func NewSupervisor() *Supervisor {
-    return &amp;Supervisor{
-        Manager: &amp;Manager{},
-    }
-}
-
-type DepManager struct {
-    *Manager
-}
-
-func (s *DepManager) HandlerRequest(r *Request) bool {
-
-    if r.dayOff &gt; 2 &amp;&amp; r.dayOff &lt;=5 {
-        fmt.Println(reflect.TypeOf(s).String() + &quot; Permit&quot;)
-        return true
-    }
-
-    return s.SuperHandle(r)
-}
-
-func NewDepManager() *DepManager {
-    return &amp;DepManager{
-        Manager: &amp;Manager{},
-    }
-}
-
-type CEO struct {
-    *Manager
-}
-
-func (s *CEO) HandlerRequest(r *Request) bool {
-
-    if r.dayOff &gt; 5 &amp;&amp; r.dayOff &lt;=22 {
-        fmt.Println(reflect.TypeOf(s).String() + &quot; Permit&quot;)
-        return true
-    }
-
-    return s.SuperHandle(r)
-}
-
-func NewCEO() *CEO{
-    return &amp;CEO{
-        Manager: &amp;Manager{},
-    }
-}
-
-func TestRequestChain(t *testing.T) {
-    c1 := NewCEO()
-    c1.SetSuperior(nil)
-    c2 := NewDepManager()
-    c2.SetSuperior(c1)
-    c3 := NewSupervisor()
-    c3.SetSuperior(c2)
-
-    request := &amp;Request{
-        name: &quot;ming&quot;,
-        reason: &quot;sick&quot;,
-        dayOff: 23,
-    }
-
-    c3.HandlerRequest(request)
-}
-</code></pre>
-
-<h4>python_code</h4>
-
-<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
-
-class Request(object):
-
-    def __init__(self, name, reason, dayOff):
-        self.name, self.reason, self.dayOff = name, reason, dayOff
-
-class Responsible(metaclass=ABCMeta):
-
-    @abstractmethod
-    def HandleRequest(self, request):
-        pass
-
-    def __init__(self):
-        self.__superior = None
-
-    def set_superior(self, superior):
-        self.__superior = superior
-
-    def super_handler(self, request):
-        if not self.__superior is None:
-            return self.__superior.HandleRequest(request)
-
-        print(&quot;out of power, reject&quot;)
-        return False
-
-
-class Supervisor(Responsible):
-
-    def HandleRequest(self, request):
-        if request.dayOff &gt; 0 and request.dayOff &lt;= 2:
-           print(type(self).__name__ + &#39; permit&#39;)
-           return True
-
-        return self.super_handler(request)
-
-
-class DepManager(Responsible):
-
-    def HandleRequest(self, request):
-        if request.dayOff &gt; 2 and request.dayOff &lt;= 5:
-            print(type(self).__name__ + &#39; permit&#39;)
-            return True
-
-        return self.super_handler(request)
-
-class CEO(Responsible):
-
-    def HandleRequest(self, request):
-        if request.dayOff &gt; 2 and request.dayOff &lt;= 5:
-            print(type(self).__name__ + &#39; permit&#39;)
-            return True
-
-        return self.super_handler(request)
-
-
-if __name__ == &#39;__main__&#39;:
-    c1 = CEO()
-    c2 = DepManager()
-    c2.set_superior(c1)
-    c3 = Supervisor()
-    c3.set_superior(c2)
-
-    req = Request(&quot;ming&quot;, &quot;sick&quot;, 2)
-    c3.HandleRequest(req)
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/12/21 07:42 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15765398211231.html">
-                
-                  <h1>迭代器模式</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>动机</h4>
-
-<ul>
-<li><p>在软件构建过程中，集合对象内部结构常常变化各异。但对于这些集合对象，我们希望在不暴露其内部结构的同时，可以让外部客户代码透明地访词其中包含的元素；同时这种“透明遍历”也为同一种算法在多种集合对象上进行操作”提供了可能。</p></li>
-<li><p>使用面向对象技术将这种遍历机制抽象为“迭代器对象”为“应对变化中的集合对象”提供了一种优雅的方式。</p></li>
-</ul>
-
-<h4>要点总结</h4>
-
-<ul>
-<li>迭代抽象：访问一个聚合对象的内容而无需暴露它的内部表示。迭代多态：为遍历不同的集合结构提供一个统一的接口，从而支</li>
-<li>持同样的算法在不同的集合结构上进行操作。</li>
-<li>迭代器的健壮性考虑：遍历的同时更改迭代器所在的集合结构，会导致问题。</li>
+<li>我们需要把这个单例对象序列化并存储到外部共享存储区（比如文件）。进程在使用这个单例对象的时候，需要先从外部共享存储区中将它读取到内存，并反序列化成对象，然后再使用，使用完成之后还需要再存储回外部共享存储区</li>
+<li>为了保证任何时刻，在进程间都只有一份对象存在，一个进程在获取到对象之后，需要对对象加锁，避免其他进程再将其获取。在进程使用完这个对象之后，还需要显式地将对象从内存中删除，并且释放对对象的加锁，这里需要分布式锁，需要lua配合redis实现比较好</li>
 </ul>
 
                         
@@ -1454,413 +317,7 @@ if __name__ == &#39;__main__&#39;:
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/12/17 07:43 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15755898090270.html">
-                
-                  <h1>Composite</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>Composite</h4>
-
-<ul>
-<li>常常有一些组件在内部具有特定的数据结构，如果让客户程序依赖这些特定的数据结构，将极大地破坏组件的复用。这时候，将这些特定数据结构封装在内部，在外部提供统一的接口，来实现与特定数据结构无关的访问，是一种行之有效的解决方案。</li>
-</ul>
-
-<h4>动机</h4>
-
-<ul>
-<li>在软件在某些情況下，客户代码过多地依赖于对象容器复杂的内部实现结构，对象容器内部实现结构（而非抽象接口）的变化将引起客户代码的频繁变化，带来了代码的维护性、扩展性等弊端。</li>
-<li>如何将“客户代码与复杂的对象容器结构”解耦？让对象容器自己来实现自身的复杂结构，从而使得客户代码就像处理简单对象样来处理复杂的对象容器？</li>
-</ul>
-
-<h4>结构</h4>
-
-<ul>
-<li><img src="media/15755898090270/15807244643257.jpg" alt="" style="width:828px;"/></li>
-</ul>
-
-<h4>要点</h4>
-
-<ul>
-<li>Composite 模式采用树形结构来实现普遍存在的对象容器从 i 致地く意用）处運对案和对象容器无需笑心处的是单个的对象，还的对象容器。</li>
-<li>将“客户代码与复杂的对象容器结构“解耦是 Composite 的核心，解耦之后，客户代码将与纯粹的抽象接口-而非对象容器的内部实现机构-产生依赖，从而更能应对变化</li>
-<li>Composite模式在具体实现中，可以让父对象中的子对象反向追溯；如果父对象有频繁的遍历需求，可使用缓存技巧来改善效率。</li>
-</ul>
-
-<h4>Cpp_demo</h4>
-
-<pre class="line-numbers"><code class="language-cpp">//
-// Created by 刘超 on 2019-12-06.
-//
-
-#include &lt;iostream&gt;
-#include &lt;vector&gt;
-#include &lt;list&gt;
-
-using namespace std;
-
-class Component {
-public:
-    virtual ~Component(){};
-    virtual void Operation() = 0;
-};
-
-class Composite : public Component {
-public:
-    Composite(const string&amp; _name) : name(_name) {}
-    ~Composite() {}
-
-    void Operation() {
-        for (auto&amp; iter : comList) {
-            std::cout &lt;&lt; &quot;Composite Operation&quot; &lt;&lt; std::endl;
-            iter-&gt;Operation();
-        }
-    }
-    void Add(Component* com) {
-        comList.push_back(com);
-    }
-    void Remove(Component* com) {
-        comList.remove(com);
-    }
-
-private:
-    list&lt;Component*&gt; comList;
-    string name;
-};
-
-class Leaf : public Component {
-public:
-    Leaf(const string&amp; name) : _name(name) {}
-    ~Leaf() {
-        cout &lt;&lt; &quot;Leaf::~leaf()&quot; &lt;&lt; endl;
-    }
-    void Operation() {
-        std::cout &lt;&lt; name &lt;&lt; &quot; Operation&quot; &lt;&lt; std::endl;
-    }
-
-private:
-    string _name;
-};
-
-int main() {
-    Composite* root = new Composite(&quot;root&quot;);
-    Composite* node1 = new Composite(&quot;node1&quot;);
-    Composite* node2 = new Composite(&quot;node2&quot;);
-    Composite* node3 = new Composite(&quot;node3&quot;);
-    Composite* node4 = new Composite(&quot;node4&quot;);
-    Leaf* lf1 = new Leaf(&quot;lf1&quot;);
-    Leaf* lf2 = new Leaf(&quot;lf2&quot;);
-
-    root-&gt;Add(node1);
-    node1-&gt;Add(node2);
-    node2-&gt;Add(lf1);
-
-    root-&gt;Add(node3);
-    node3-&gt;Add(node4);
-    node4-&gt;Add(lf2);
-    root-&gt;Operation();
-}
-</code></pre>
-
-<h4>golang_demo</h4>
-
-<pre class="line-numbers"><code class="language-go">package design_pattern
-
-import (
-    &quot;fmt&quot;
-)
-
-type IComponent interface {
-    Display(dep int)
-}
-
-func (l *Leaf) Display(dep int) {
-    fmt.Println(RetString(dep) + l.name)
-}
-
-type Leaf struct {
-    name string
-}
-
-func RetString(depth int) string {
-    var ret []byte
-    for i := 0; i &lt; depth; i++ {
-        ret = append(ret, &#39;-&#39;)
-    }
-
-    return string(ret)
-}
-
-func NewLeaf(name string) *Leaf {
-    return &amp;Leaf{name: name}
-}
-
-type Composite struct {
-    name string
-    comList map[IComponent]bool
-}
-
-func NewComposite(name string) *Composite {
-    return  &amp;Composite{
-        comList: make(map[IComponent]bool),
-        name: name,
-    }
-}
-
-func (c *Composite) Add(i IComponent) {
-    c.comList[i] = true
-}
-
-func (c *Composite) Remove(i IComponent) {
-    delete(c.comList, i)
-}
-
-func (c *Composite) Display(dep int) {
-
-    fmt.Println(RetString(dep) + c.name)
-    for k, _ := range c.comList {
-        k.Display(dep + 1)
-    }
-}
-</code></pre>
-
-<h4>python_code</h4>
-
-<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
-
-class Component(metaclass=ABCMeta):
-
-    @abstractmethod
-    def display(self):
-        pass
-
-class Composite(Component):
-
-    def __init__(self, name):
-        self.com_list = []
-        self.__name = name
-
-    def add(self, com):
-        self.com_list.append(com)
-
-    def remove(self, com):
-        self.com_list.remove(com)
-
-    def display(self):
-        print(&#39;{} display&#39;.format(self.__name))
-        for com in self.com_list:
-            com.display()
-
-class Leaf(Component):
-
-    def __init__(self, name):
-        self.__name = name
-
-    def display(self):
-        print(&#39;{} display&#39;.format(self.__name))
-
-if __name__ == &#39;__main__&#39;:
-    root = Composite(&quot;root&quot;)
-
-    node1 = Composite(&quot;node1&quot;)
-    node2 = Composite(&quot;node2&quot;)
-    node3 = Composite(&quot;node3&quot;)
-    node4 = Composite(&quot;node4&quot;)
-
-    lf1 = Leaf(&quot;lf1&quot;)
-    lf2 = Leaf(&quot;lf2&quot;)
-    lf3 = Leaf(&quot;lf3&quot;)
-
-    root.add(node1)
-    node1.add(node2)
-    node2.add(lf1)
-
-    root.add(node3)
-    node3.add(node4)
-    node4.add(lf2)
-
-    root.add(node4)
-
-    root.display()
-
-    print(&quot;=============================&quot;)
-    root.remove(node1)
-    root.display()
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/12/06 07:50 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15755890034719.html">
-                
-                  <h1>Memento</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>定义</h4>
-
-<ul>
-<li>在组件构建过程中，某些对象的状态经常面临变化，如何对这些变化进行有效的管理？同时又维持高层模块的稳定？“状态变化模式为这一问题提供了一种解决方案。</li>
-</ul>
-
-<h4>动机</h4>
-
-<ul>
-<li>在软件构建过程中，某些对象的状态在转换过程中，可能由于某种需要，要求程序能够回溯到对象之前处于某个点时的状态。如果使用一些公有接口来让其他对象得到对象的状态，便会暴露对象的细节实现。</li>
-<li>如何实现对象状态的良好保存与恢复？但同时又不会因此而破坏对象本身的封装性。</li>
-</ul>
-
-<h4>结构</h4>
-
-<ul>
-<li><p><img src="media/15755890034719/15815148061622.jpg" alt="" style="width:736px;"/></p></li>
-<li><p>设计模式是94年</p></li>
-<li><p>序列化的方案实现memento</p></li>
-</ul>
-
-<h5>golang_demo</h5>
-
-<pre class="line-numbers"><code class="language-go">package design_pattern
-
-type GameRole struct {
-    atk, def, vit int
-}
-
-func (g *GameRole) InitState() {
-    g.atk, g.def, g.vit = 100, 100, 100
-}
-
-func (g *GameRole) SaveState() *RoleMemento {
-    return &amp;RoleMemento{g.atk, g.def, g.vit}
-}
-
-func (g *GameRole) ResumeState(m *RoleMemento) {
-    g.atk, g.def, g.vit = m.atk, m.def, m.vit
-}
-
-func (g *GameRole) Fight() {
-    g.atk, g.def, g.vit = 0, 0, 0
-}
-
-type RoleCaretaker struct {
-    m *RoleMemento
-}
-
-type Originator struct {
-    state string
-}
-
-type Memento struct {
-    state string
-}
-
-type RoleMemento struct {
-    vit, atk, def int
-}
-
-func (o *Originator) CreateMemento() *Memento {
-    return &amp;Memento{o.state}
-}
-
-func (o *Originator) SetMemento(m *Memento) {
-    o.state = m.state
-}
-
-type Caretaker struct {
-    memento *Memento
-}
-</code></pre>
-
-<h4>python_demo</h4>
-
-<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
-
-class Snapshot(object):
-
-    def __init__(self, state):
-        self.state = state
-
-
-class Caretake(object):
-
-    def __init__(self):
-        pass
-
-    def add_snapshot(self, snapshot):
-        self.snapshot = snapshot
-
-class Editor(object):
-
-    def __init__(self, state):
-        self.state = state
-
-    def create_snapshot(self):
-        return Snapshot(self.state)
-
-    def recover_snapshot(self, snapshot):
-        self.state = snapshot.state
-
-    def change_state(self, state):
-        self.state = state
-
-if __name__ == &#39;__main__&#39;:
-    editor = Editor(&quot;original&quot;)
-    snapshot = editor.create_snapshot()
-    print(editor.state)
-    editor.change_state(&quot;state2&quot;)
-    print(editor.state)
-    editor.recover_snapshot(snapshot)
-    print(editor.state)
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/12/06 07:36 上午</span>
+                    <span class="date">2020/02/16 08:27 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
@@ -2908,6 +1365,1742 @@ int main() {
                 </div>
               </div><!-- article -->
         
+			<div class="article">
+                <a class="clearlink" href="15755890034719.html">
+                
+                  <h1>Memento</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>定义</h4>
+
+<ul>
+<li>在组件构建过程中，某些对象的状态经常面临变化，如何对这些变化进行有效的管理？同时又维持高层模块的稳定？“状态变化模式为这一问题提供了一种解决方案。</li>
+</ul>
+
+<h4>动机</h4>
+
+<ul>
+<li>在软件构建过程中，某些对象的状态在转换过程中，可能由于某种需要，要求程序能够回溯到对象之前处于某个点时的状态。如果使用一些公有接口来让其他对象得到对象的状态，便会暴露对象的细节实现。</li>
+<li>如何实现对象状态的良好保存与恢复？但同时又不会因此而破坏对象本身的封装性。</li>
+</ul>
+
+<h4>结构</h4>
+
+<ul>
+<li><p><img src="media/15755890034719/15815148061622.jpg" alt="" style="width:736px;"/></p></li>
+<li><p>设计模式是94年</p></li>
+<li><p>序列化的方案实现memento</p></li>
+</ul>
+
+<h5>golang_demo</h5>
+
+<pre class="line-numbers"><code class="language-go">package design_pattern
+
+type GameRole struct {
+    atk, def, vit int
+}
+
+func (g *GameRole) InitState() {
+    g.atk, g.def, g.vit = 100, 100, 100
+}
+
+func (g *GameRole) SaveState() *RoleMemento {
+    return &amp;RoleMemento{g.atk, g.def, g.vit}
+}
+
+func (g *GameRole) ResumeState(m *RoleMemento) {
+    g.atk, g.def, g.vit = m.atk, m.def, m.vit
+}
+
+func (g *GameRole) Fight() {
+    g.atk, g.def, g.vit = 0, 0, 0
+}
+
+type RoleCaretaker struct {
+    m *RoleMemento
+}
+
+type Originator struct {
+    state string
+}
+
+type Memento struct {
+    state string
+}
+
+type RoleMemento struct {
+    vit, atk, def int
+}
+
+func (o *Originator) CreateMemento() *Memento {
+    return &amp;Memento{o.state}
+}
+
+func (o *Originator) SetMemento(m *Memento) {
+    o.state = m.state
+}
+
+type Caretaker struct {
+    memento *Memento
+}
+</code></pre>
+
+<h4>python_demo</h4>
+
+<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
+
+class Snapshot(object):
+
+    def __init__(self, state):
+        self.state = state
+
+
+class Caretake(object):
+
+    def __init__(self):
+        pass
+
+    def add_snapshot(self, snapshot):
+        self.snapshot = snapshot
+
+class Editor(object):
+
+    def __init__(self, state):
+        self.state = state
+
+    def create_snapshot(self):
+        return Snapshot(self.state)
+
+    def recover_snapshot(self, snapshot):
+        self.state = snapshot.state
+
+    def change_state(self, state):
+        self.state = state
+
+if __name__ == &#39;__main__&#39;:
+    editor = Editor(&quot;original&quot;)
+    snapshot = editor.create_snapshot()
+    print(editor.state)
+    editor.change_state(&quot;state2&quot;)
+    print(editor.state)
+    editor.recover_snapshot(snapshot)
+    print(editor.state)
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/12/06 07:36 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15814649492497.html">
+                
+                  <h1>Simple Factory</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>接口编程</h4>
+
+<ul>
+<li>接口从语法层面上来说，是一种特殊的抽象类，是一个纯虚的类。从软件设计的意义<br/>
+上来说，我们通常用接口来定义实现类的外观，就相当于一份契约，根据外部应用需要的功能，约定了实现类应该要实现的功能</li>
+<li>软件开发中永恒的主题是“变化“，“只有变化才是永恒不変！“，接口最重要的一个设计语义就是封装变化。所谓“封装变化”就是隔离变化。</li>
+<li>从软件的整体结构上看，只要接口不变，内部实现的变化就不会影响到外部应用，从而使得系统更灵活，具有更好的扩展性和可维护性。</li>
+</ul>
+
+<h4>简单工厂模式</h4>
+
+<ul>
+<li>实现客户端调用和具体类的分离，实现了变化隔离</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+class Api {
+    public:
+    virtual void test(string&amp;&amp; s) = 0;
+    protected:
+    Api(){}
+};
+
+class Impl : public Api {
+    public:
+    void test(string&amp;&amp; s) override {
+        cout &lt;&lt; &quot;Iml class &quot; &lt;&lt; s &lt;&lt; &#39;\n&#39;;
+    }
+    using Api::Api;
+};
+
+class ImplPro : public Api {
+    public:
+    void test(string&amp;&amp; s) override {
+        cout &lt;&lt; &quot;Iml class &quot; &lt;&lt; s &lt;&lt; &#39;\n&#39;;
+    }
+    using Api::Api;
+};
+
+
+class Factory {
+    public:
+    static Api* createApi(int type) {
+        cout &lt;&lt; &quot;Simple Factory create instance \n&quot; ;
+        Api* api = nullptr;
+        if (type == 1) {
+            api = new Impl();
+        } else if (type == 2) {
+            api = new ImplPro();
+        }
+        return api;
+    }
+};
+
+int main() {
+    Api* api = Factory::createApi(2);
+    api-&gt;test(&quot;hello&quot;);
+}
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2020/02/12 07:49 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15734291005727.html">
+                
+                  <h1>Flyweight</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>动机</h4>
+
+<ul>
+<li>在软件系统采用纯粹对象方案的问题在于大量细粒度的对象会很快充斥在系统中，从而带来很高的运行时代价一一主要指内存需求方面的代价。</li>
+<li>如何在避免大量细粒度对象问题的同时，让外部客户程序仍然能够透明地使用面向对象的方式来进行操作？</li>
+</ul>
+
+<h4>结构</h4>
+
+<ul>
+<li><img src="media/15734291005727/15734293143425.jpg" alt="" style="width:664px;"/></li>
+</ul>
+
+<h4>要点总结</h4>
+
+<ul>
+<li><p>面向对象很好地解决了抽象性的问题，但是作为一个运行在机器中的程序实体，我们需要考虑对象的代价问题。Flyweight 主要解决面向对象的代价问题，一般不触及面向对象的抽象性问题。</p></li>
+<li><p>Flyweight 采用对象共享的做法来降低系统中对象的个数，从而降低细粒度对象给系统带来的内存压力。在具体实现方面，要注意对象状态的处理。</p></li>
+<li><p>对象的数量太大从而导致对象内存开销加大ー一什么样的数量才算大？这需要我们仔细的根据具体应用情况进行评估，而不能凭空臆断。</p></li>
+</ul>
+
+<h4>golang_demo</h4>
+
+<pre class="line-numbers"><code class="language-go">package design_pattern
+
+import &quot;fmt&quot;
+
+type WebUser struct {
+    name string
+}
+
+type WebSite interface {
+    Use(*WebUser)
+}
+
+type ConcreteWebsite struct {
+    name string
+}
+
+func (c *ConcreteWebsite) Use(user *WebUser) {
+    fmt.Println(&quot;Web type &quot;, c.name, &quot; UserName &quot;, user.name)
+}
+
+type NetWebSite struct {
+    *ConcreteWebsite
+}
+
+func NewNetWebsite(name string) WebSite {
+    return &amp;NetWebSite{
+        ConcreteWebsite: &amp;ConcreteWebsite{name: name},
+    }
+}
+
+type WebFactory struct {
+    factory map[string]WebSite
+}
+
+func NewWebFactory() *WebFactory {
+    return &amp;WebFactory {
+        factory: make(map[string]WebSite),
+    }
+}
+
+func (w *WebFactory) GetWebsiteCategory(key string) WebSite {
+    if _, ok := w.factory[key]; !ok {
+        webSite := NewNetWebsite(key)
+        w.factory[key] = webSite
+        println(&quot;create new product&quot;)
+    }
+
+    return w.factory[key]
+}
+
+func TestFlyWeight(t *testing.T) {
+    factory := NewWebFactory()
+
+    f1 := factory.GetWebsiteCategory(&quot;product show&quot;)
+    f1.Use(&amp;WebUser{&quot;ming&quot;})
+
+    f2 := factory.GetWebsiteCategory(&quot;product show&quot;)
+    f2.Use(&amp;WebUser{&quot;zong&quot;})
+
+    f3 := factory.GetWebsiteCategory(&quot;discus&quot;)
+    f3.Use(&amp;WebUser{&quot;jim&quot;})
+
+    f4 := factory.GetWebsiteCategory(&quot;discus&quot;)
+    f4.Use(&amp;WebUser{&quot;bob&quot;})
+}
+</code></pre>
+
+<h4>python_code</h4>
+
+<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
+
+class WebUser(object):
+
+    def __init__(self, name):
+        self.name = name
+
+
+class WebSite(metaclass=ABCMeta):
+
+    @abstractmethod
+    def use(self, user):
+        pass
+
+class ConcreteWebsite(WebSite):
+
+    def __init__(self, name):
+        self.name = name
+
+    def use(self, user):
+        print(&#39;Web type {} {}&#39;.format(self.name, user.name))
+
+
+class WebFactory(object):
+
+    def __init__(self):
+        self.factory = {}
+
+    def get_website_category(self, key):
+        if key not in self.factory:
+            print(&#39;create new website&#39;)
+            self.factory[key] = ConcreteWebsite(key)
+        return self.factory[key]
+
+if __name__ == &#39;__main__&#39;:
+   factory = WebFactory()
+
+   f1 = factory.get_website_category(&quot;product show&quot;)
+   f1.use(WebUser(&#39;ming&#39;))
+
+   f2 = factory.get_website_category(&quot;product show&quot;)
+   f2.use(WebUser(&#39;ming&#39;))
+
+   f3 = factory.get_website_category(&quot;discus&quot;)
+   f3.use(WebUser(&#39;ming&#39;))
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/11 07:38 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15736874304748.html">
+                
+                  <h1>Facade</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>接口隔离模式</h4>
+
+<ul>
+<li>在组件构建过程中，某些接口之间直接的依赖常常会带来很多题、甚至根本无法实现。采用添加一层间接（稳定）接口，来隔离本来互相紧密关联的接口是一种常见的解決方案。</li>
+</ul>
+
+<h4>系统间耦合的复杂度</h4>
+
+<ul>
+<li>方案的问题在于组件的客户和组件中各种复杂的子系统有了过多的耦合，随着外部客户程序和各子系统的演化，这种过多的耦合面临很多变化的挑战。</li>
+</ul>
+
+<h4>结构</h4>
+
+<ul>
+<li><img src="media/15736874304748/15807223678610.jpg" alt="" style="width:636px;"/></li>
+</ul>
+
+<h4>要点总结</h4>
+
+<ul>
+<li>从客户程序的角度来看，Facade 模式简化了整个组件系统的接口对于组件内部与外部客户程序来说达到了种“解耦”果内部学系统的程何雯化不会影到 Facades 接口的变</li>
+<li>Facade 设计模式更注重从架构的层次去看整个系统，而不是单个类的层次。Facade 很多时候更是一种架构</li>
+<li>Facade 设计模式并非、个集装箱，可以任意地放进任何多个对象。Facade 模式中组件的内部应该是、相互合关比较大的一系列组件”，而不是简单的功能集合</li>
+</ul>
+
+<h4>cpp_demo</h4>
+
+<pre class="line-numbers"><code class="language-cpp">//
+// Created by 刘超 on 2019-11-14.
+//
+#include &lt;iostream&gt;
+
+class SubSystem1 {
+public:
+    SubSystem1() {}
+    ~SubSystem1() {}
+
+    void Operation() {std::cout &lt;&lt; &quot;Subsystem1 operation...&quot; &lt;&lt; std::endl;}
+};
+
+class SubSystem2 {
+public:
+    SubSystem2() {}
+    ~SubSystem2() {}
+    void Operation() {std::cout &lt;&lt; &quot;Subsystem2 operation...&quot; &lt;&lt; std::endl;}
+};
+
+class Facade {
+public:
+    Facade() {
+        sub1 = new SubSystem1();
+        sub2 = new SubSystem2();
+    }
+
+    ~Facade();
+    void OperatonWrapper() {
+        sub1-&gt;Operation();
+        sub2-&gt;Operation();
+    }
+    SubSystem1* sub1;
+    SubSystem2* sub2;
+};
+
+int main() {
+    Facade* f =  new Facade();
+    f-&gt;OperatonWrapper();
+}
+</code></pre>
+
+<h4>go_demo</h4>
+
+<pre class="line-numbers"><code class="language-go">package desian_pattern_practise
+
+import &quot;reflect&quot;
+
+type Subsystem1 struct {
+}
+
+func (s *Subsystem1) Operation() {
+    println(reflect.TypeOf(s).String() + &quot; Operation&quot;)
+}
+
+type Subsystem2 struct {
+}
+
+func (s *Subsystem2) Operation() {
+    println(reflect.TypeOf(s).String() + &quot; Operation&quot;)
+}
+
+type Facade struct {
+    sub1 *Subsystem1
+    sub2 *Subsystem2
+}
+
+func (f *Facade) Operation() {
+    f.sub1.Operation()
+    f.sub2.Operation()
+}
+
+func NewFacade() *Facade {
+    return &amp;Facade{
+        sub1: &amp;Subsystem1{},
+        sub2: &amp;Subsystem2{},
+    }
+}
+</code></pre>
+
+<h4>python_demo</h4>
+
+<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
+
+class SubSystem1(object):
+
+    def operation(self):
+        print(&#39;Subsystem1 operation&#39;)
+
+class SubSystem2(object):
+
+    def operation(self):
+        print(&#39;Subsystem2 operation&#39;)
+
+class Facade(object):
+
+    def __init__(self):
+        self.sub1 = SubSystem1()
+        self.sub2 = SubSystem2()
+
+    def operation_wrapper(self):
+        self.sub1.operation()
+        self.sub2.operation()
+
+if __name__ == &#39;__main__&#39;:
+    facade = Facade()
+    facade.operation_wrapper()
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/14 07:23 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15737733784968.html">
+                
+                  <h1>Proxy</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>动机</h4>
+
+<ul>
+<li>在面向对象系统中，有些对象由于某种原因（比如对象创建的开消很大，或者某些操作需要安全控制，或者需要进程外的访问等）直接访问会给使用者、或者系统结构带来很多麻烦。</li>
+<li>如何在不失去透明操作对象的同时来管理/控制这些对象特有的复杂性？增加一层间接层是软件开发中常见的解決方式。</li>
+</ul>
+
+<h4>结构</h4>
+
+<ul>
+<li><img src="media/15737733784968/15807036463940.jpg" alt="" style="width:705px;"/></li>
+</ul>
+
+<h4>要点总结</h4>
+
+<ul>
+<li><img src="media/15737733784968/15737741074243.jpg" alt="" style="width:842px;"/></li>
+</ul>
+
+<h4>cpp_demo</h4>
+
+<pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
+
+class ITelco {
+public:
+    virtual ~ITelco() {}
+
+    virtual  void Recharge(int money) = 0;
+};
+
+class CMCC : public ITelco {
+public:
+    void Recharge(int money) override  {
+        std::cout &lt;&lt; &quot;Recharge &quot; &lt;&lt; money &lt;&lt; std::endl;
+    }
+};
+
+class Proxy : public ITelco {
+public:
+    Proxy() : m_pcMCC(nullptr) {}
+
+    void  Recharge(int money) override {
+       if (money &gt;= 50) {
+           if (m_pcMCC == nullptr)
+               m_pcMCC = new CMCC();
+           m_pcMCC-&gt;Recharge(money);
+       } else {
+           std::cout &lt;&lt; &quot;Sorry, too little money &quot; &lt;&lt; std::endl;
+       }
+    }
+
+public:
+    CMCC* m_pcMCC;
+};
+
+int main() {
+    Proxy* proxy = new Proxy();
+    proxy-&gt;Recharge(20);
+    proxy-&gt;Recharge(100);
+}
+</code></pre>
+
+<h4>golang_demo</h4>
+
+<pre class="line-numbers"><code class="language-go">import &quot;fmt&quot;
+
+tyecharge(money int) {
+    fmt.Println(&quot;CMCC Recharge money &quot;, money)
+}
+
+type ProxySub struct {
+    cmcc *ClientAPP
+}
+
+func (p *ProxySub) Recharge(money int) {
+    if money &gt;= 50 {
+        if p.cmcc == nil {pe Subject1 interface {
+        Recharge(money int)
+        }
+
+            type ClientAPP struct{}
+
+            func (c *ClientAPP) R
+            p.cmcc = &amp;ClientAPP{}
+        }
+        p.cmcc.Recharge(money)
+    } else {
+        fmt.Println(&quot;Sorry too littel money&quot;)
+    }
+}
+func TestProxySub(t *testing.T) {
+    var proxy Subject1
+    proxy = &amp;ProxySub{}
+    proxy.Recharge(30)
+    proxy.Recharge(100)
+}
+</code></pre>
+
+<h4>golang_demo</h4>
+
+<pre class="line-numbers"><code class="language-go">package desian_pattern_practise
+
+import &quot;fmt&quot;
+
+type IPSubject interface {
+    Request(string)
+}
+
+type PSubject struct {
+    name string
+}
+
+type RealSubject struct {
+    *PSubject
+}
+
+func (r *RealSubject) Request(content string) {
+    fmt.Println(&quot;RealSubject handle content&quot;, content)
+}
+
+type ProxySubject struct {
+    *PSubject
+    realSubject IPSubject
+}
+
+func NewRealSubject(name string) *RealSubject {
+    return &amp;RealSubject{
+        PSubject: &amp;PSubject{name: name},
+    }
+}
+
+func (p *ProxySubject) Request(content string) {
+    p.preRequest()
+    if p.realSubject != nil {
+        p.realSubject.Request(content)
+    }
+    p.afterRequest()
+}
+
+func NewProxySubject(name string, subject IPSubject) *ProxySubject {
+    return &amp;ProxySubject{
+        PSubject: &amp;PSubject{name: name},
+        realSubject: subject,
+    }
+}
+
+func (p *ProxySubject) preRequest() {
+    println(&quot;pre request&quot;)
+}
+
+func (p *ProxySubject) afterRequest() {
+    println(&quot;after request&quot;)
+}
+
+func TestProxySubject_Request(t *testing.T) {
+    realObj := NewRealSubject(&quot;realSubject&quot;)
+    proxySubject := NewProxySubject(&quot;ProxySubject&quot;, realObj)
+    proxySubject.Request(&quot;Html world&quot;)
+}
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/15 07:16 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15738632806643.html">
+                
+                  <h1>Adapter</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>动机</h4>
+
+<ul>
+<li><p>在软件系统中，由于应用环境的变化，常常需要将““一些现存的对象”放在新的环境中应用，但是新环境要求的接口是这些现存对象所不满足的</p></li>
+<li><p>如何应对这种“迁移的变化“？如何既能利用现有对象的良好实现，同时又能满足新的应用环境所要求的接口？</p></li>
+</ul>
+
+<h4>结构</h4>
+
+<p><img src="media/15738632806643/15808782023371.jpg" alt="" style="width:1193px;"/></p>
+
+<h4>要点总结</h4>
+
+<ul>
+<li>Adapters 模式主要应用于“希望复用一些现存的类，但是接口又与</li>
+<li>复用环境要求不一致的情況”，在遗留代码复用、类库注移等方面非常有用。</li>
+<li>GoF23 采用了两种 Adapter 模式的实现结构：对象和适配器。但类适配器采用“多继承”的实现方式般不推荐使用。对象适配器采用“对象组合“的方式，更符合松耦合精神。</li>
+<li>Adapter 模式可以实现的非常灵活，不必拘泥于 Gof23 中定义的两种结构。例如，完全可以将 Adapter 模式中现存对象”作为新的接口方法参数，来达到适配的目的。</li>
+<li>对象适配器比类适配器好</li>
+</ul>
+
+<h4>Cpp_demo</h4>
+
+<pre class="line-numbers"><code class="language-cpp">//
+// Created by eredinliu on 2020-02-05.
+//
+#include &lt;iostream&gt;
+using namespace std;
+
+class IAdapter {
+public:
+    virtual void Charge() = 0;
+    IAdapter() {}
+};
+
+class ITarget {
+public:
+    virtual void Process() = 0;
+    ITarget(IAdapter* adapter) : adapter_(adapter) {}
+protected:
+    IAdapter* adapter_;
+};
+
+class CNCharge : public IAdapter {
+public:
+    CNCharge() {}
+
+    void Charge() {
+        cout &lt;&lt; typeid(this).name() &lt;&lt; &quot; Charge \n&quot;;
+    }
+};
+
+class USCharge : public ITarget {
+public:
+    USCharge(IAdapter* adapter) : ITarget(adapter) {}
+
+    void Process() {
+        cout &lt;&lt; typeid(this).name() &lt;&lt; &quot; Process \n&quot;;
+        this-&gt;adapter_-&gt;Charge();
+    }
+};
+
+int main() {
+    IAdapter* cn_charge = new CNCharge();
+    ITarget* target = new USCharge(cn_charge);
+    target-&gt;Process();
+}
+</code></pre>
+
+<h4>golang_demo</h4>
+
+<pre class="line-numbers"><code class="language-go">type ITarget interface {
+    Process()
+}
+
+type IAdapter interface {
+    Charge()
+}
+
+type CNCharge struct {
+}
+
+func (c *CNCharge) Charge() {
+    println(reflect.TypeOf(c).String() + &quot; Charge&quot;)
+}
+
+type USCharge struct {
+    IAdapter
+}
+
+func (u *USCharge) Process() {
+    println(reflect.TypeOf(u).String() + &quot; Process&quot;)
+    u.IAdapter.Charge()
+}
+
+func NewUSCharge(adapter IAdapter) *USCharge {
+    return &amp;USCharge{
+        IAdapter: adapter,
+    }
+}
+
+
+func TestAdapter_Request2(t *testing.T) {
+    cnCharge := &amp;CNCharge{}
+    target := NewUSCharge(cnCharge)
+    target.Process()
+}
+</code></pre>
+
+<h4>python_code</h4>
+
+<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
+
+class ITarget(metaclass=ABCMeta):
+
+    @abstractmethod
+    def process(self):
+        pass
+
+    def __init__(self, adapter):
+        self.adapter = adapter
+
+class IAdapter(metaclass=ABCMeta):
+
+    @abstractmethod
+    def charge(self):
+        pass
+
+class CNCharge(IAdapter):
+
+    def charge(self):
+        print(type(self).__name__ + &#39; charge&#39;)
+
+class USCharge(ITarget):
+
+    def __init__(self, adapter):
+        super().__init__(adapter)
+
+    def process(self):
+        print(type(self).__name__ + &#39; process&#39;)
+        self.adapter.charge()
+
+if __name__ == &#39;__main__&#39;:
+    cn_charge = CNCharge()
+    target = USCharge(cn_charge)
+    target.process()
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/16 08:14 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15742917885791.html">
+                
+                  <h1>中介模式</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>动机</h4>
+
+<ul>
+<li>在软件构建过程中，经常会出现多个对象互相关联交互的情况，对象之间常常会维持一种复杂的引用关系，如果遇到一些需求的更改，这种直接的引用关系将面临不断的变化。</li>
+<li>在这种情況下，我们可使用一个“中介对象”来管理对象间的关联关系，避免相互交互的对象之间的紧耦合引用关系，从而更好地抵御变化。</li>
+</ul>
+
+<h4>模式定义</h4>
+
+<ul>
+<li>用一个中介对象来封装（封装变化）一系列的对象交互。中介者使各对象不需要显式的相互引用（编译时依赖运行时依赖），从而使其耦合松散（管理变化），而且可以独立地改变它们之间的交互</li>
+<li>编译时依赖改成运行时依赖</li>
+</ul>
+
+<h4>结构</h4>
+
+<p><img src="media/15742917885791/15803924036000.jpg" alt="" style="width:758px;"/></p>
+
+<p><img src="media/15742917885791/15742924128916.jpg" alt="" style="width:986px;"/></p>
+
+<h4>要点总结</h4>
+
+<ul>
+<li><p>将多个对象间复杂的关联关系解耦，Mediator 模式将多个对象间的控制逻辑进行集中管理，变“多个对象互相关联“为“多个对象和一个中介者关联“，简化了系统的维护，抵御了可能的变化。</p></li>
+<li><p>随着控制逻辑的复杂化，Mediator 具体对象的实现可能相当复杂。这时候可以对 Mediator 对象进行分解处理。</p></li>
+<li><p>Facade 模式是解耦系统（单向）的对象关联关系；Mediator 模式是解耦系统内各个对象之间（双向）的关联关系。</p></li>
+</ul>
+
+<h4>golang_demo</h4>
+
+<pre class="line-numbers"><code class="language-go">package desian_pattern_practise
+
+import (
+    &quot;reflect&quot;
+    &quot;strings&quot;
+    &quot;sync&quot;
+)
+
+var (
+    mediator *Mediator
+    monce sync.Once
+)
+type IColleague interface {
+    GetMediator()
+}
+
+type Colleague struct {
+    mediator IMediator
+}
+
+
+type IMediator interface {
+    Execute(IColleague)
+}
+
+type Mediator struct {
+    cd, cpu, videoCard, soundCard IColleague
+}
+
+func (m *Mediator) SetCD(cd IColleague) {
+    m.cd = cd
+}
+
+func (m *Mediator) SetCpu(cpu IColleague) {
+    m.cpu = cpu
+}
+
+func (m *Mediator) SetVideoCard(videoCard IColleague) {
+    m.videoCard = videoCard
+}
+
+func (m *Mediator) SetSoundCard(soundCard IColleague) {
+    m.soundCard = soundCard
+}
+
+func GetMediator() *Mediator {
+    monce.Do(func() {
+        mediator = &amp;Mediator{}
+    })
+    return mediator
+}
+
+func (m *Mediator) Execute(i IColleague) {
+    switch i.(type) {
+    case *CDDriver:
+        m.cpu.(*Cpu).Process(i.(*CDDriver).data)
+    case *Cpu:
+        m.soundCard.(*SoundCard).Play(i.(*Cpu).audio)
+        m.videoCard.(*VideoCard).Display(i.(*Cpu).video)
+    }
+}
+
+type CDDriver struct {
+    *Colleague
+    data string
+}
+
+func NewCDDriver() *CDDriver {
+    return &amp;CDDriver{
+        Colleague: &amp;Colleague{
+            mediator: GetMediator(),
+        },
+    }
+}
+
+func (c *CDDriver) GetMediator() {}
+
+func (c *CDDriver) ReadData() {
+    c.data = &quot;music, image&quot;
+    println(reflect.TypeOf(c).String() + &quot; reading data&quot;)
+    c.mediator.Execute(c)
+}
+
+type Cpu struct {
+    *Colleague
+    video, audio string
+}
+
+func NewCpu() *Cpu{
+    return &amp;Cpu {
+        Colleague: &amp;Colleague{
+            mediator: GetMediator(),
+        },
+    }
+}
+
+func (c *Cpu) GetMediator() {}
+
+func (c *Cpu) Process(data string) {
+    sp := strings.Split(data, &quot;,&quot;)
+    c.video = sp[1]
+    c.audio = sp[0]
+    println(reflect.TypeOf(c).String() + &quot; video &quot; + c.video + &quot; audio &quot;, c.audio)
+    c.mediator.Execute(c)
+}
+
+type VideoCard struct {
+    *Colleague
+}
+
+func NewVideoCard() *VideoCard{
+    return &amp;VideoCard {
+        Colleague: &amp;Colleague{
+            mediator: GetMediator(),
+        },
+    }
+}
+
+func (v *VideoCard) GetMediator() {}
+
+func (v *VideoCard) Display(data string) {
+    println(reflect.TypeOf(v).String() + &quot; display data &quot;, data)
+    v.mediator.Execute(v)
+}
+
+type SoundCard struct {
+    *Colleague
+}
+
+func NewSoundCard() *SoundCard {
+    return &amp;SoundCard {
+        Colleague: &amp;Colleague{
+            mediator: GetMediator(),
+        },
+    }
+}
+
+func (v *SoundCard) GetMediator() {}
+
+func (v *SoundCard) Play(data string) {
+    println(reflect.TypeOf(v).String() + &quot; play data &quot;, data)
+    v.mediator.Execute(v)
+}
+
+package desian_pattern_practise
+
+import &quot;testing&quot;
+
+func TestMediator_Execute(t *testing.T) {
+    cd:= NewCDDriver()
+    cpu := NewCpu()
+    soundCard := NewSoundCard()
+    videoCard := NewVideoCard()
+    GetMediator().SetCD(cd)
+    GetMediator().SetCpu(cpu)
+    GetMediator().SetSoundCard(soundCard)
+    GetMediator().SetVideoCard(videoCard)
+    cd.ReadData()
+}
+</code></pre>
+
+<h4>cpp_demo</h4>
+
+<pre class="line-numbers"><code class="language-cpp">//
+// Created by eredinliu on 2020-01-31.
+//
+#include &lt;iostream&gt;
+#include &lt;mutex&gt;
+#include &lt;typeinfo&gt;
+#include &lt;boost/algorithm/string.hpp&gt;
+#include &lt;vector&gt;
+
+using namespace std;
+using namespace boost;
+
+class Mediator;
+class Colleague {
+public:
+    Colleague(Mediator* _mediator) : mediator(_mediator) {}
+
+protected:
+    Mediator* mediator;
+};
+
+class Cpu;
+class CDDriver;
+class VideoCard;
+class SoundCard;
+
+class Mediator {
+public:
+    static Mediator* mediator;
+
+    static Mediator* GetMediator() {
+        static once_flag flag;
+        call_once(flag, [&amp;](){mediator = new Mediator();});
+        return mediator;
+    }
+
+    void SetCD(CDDriver* cd) {this-&gt;cd = cd;}
+
+    void SetCpu(Cpu* cpu) {this-&gt;cpu = cpu;}
+
+    void SetVideoCard(VideoCard* video) {this-&gt;videoCard = video;}
+
+    void SetSoundCard(SoundCard* sound) {this-&gt;soundCard = sound;}
+
+    void Execute(Colleague* colleague);
+private:
+    CDDriver* cd;
+    Cpu* cpu;
+    VideoCard *videoCard;
+    SoundCard *soundCard;
+    Mediator() {}
+};
+
+Mediator* Mediator::mediator = nullptr;
+
+class CDDriver : public Colleague {
+public:
+    CDDriver(Mediator* _mediator) : Colleague(_mediator) {}
+
+    void ReadData() {
+        this-&gt;data = &quot;Music,Image&quot;;
+        cout &lt;&lt; typeid(this).name() &lt;&lt; &quot; reading data&quot; &lt;&lt; endl;
+        this-&gt;mediator-&gt;Execute(this);
+    }
+
+    string&amp; GetData() {
+        return this-&gt;data;
+    }
+private:
+    string data;
+};
+
+class Cpu : public Colleague {
+public:
+    friend class Mediator;
+    Cpu(Mediator* _mediator) : Colleague(_mediator) {}
+
+    void Process(string&amp; data) {
+        vector&lt;string&gt; str_vec;
+        split(str_vec, data, is_any_of(&quot;,&quot;));
+        this-&gt;video = str_vec[1];
+        this-&gt;sound = str_vec[0];
+        cout &lt;&lt; typeid(this).name() &lt;&lt; &quot; video &quot; &lt;&lt; this-&gt;video &lt;&lt; &quot; sound &quot;
+        &lt;&lt; this-&gt;sound &lt;&lt; endl;
+        this-&gt;mediator-&gt;Execute(this);
+    }
+
+    string&amp; GetVideo() {return this-&gt;video;}
+
+    string&amp; GetSound() {return this-&gt;sound;}
+private:
+    string video, sound;
+};
+
+class VideoCard : public Colleague {
+public:
+    VideoCard(Mediator* _mediator) : Colleague(_mediator) {}
+
+    void Process(string&amp; data) {
+        cout &lt;&lt; typeid(this).name() &lt;&lt; &quot; display &quot; &lt;&lt; data &lt;&lt; endl;
+        this-&gt;mediator-&gt;Execute(this);
+    }
+};
+
+class SoundCard : public Colleague {
+public:
+    SoundCard(Mediator* _mediator) : Colleague(_mediator) {}
+
+    void Process(string&amp; data) {
+        cout &lt;&lt; typeid(this).name() &lt;&lt; &quot; play &quot; &lt;&lt; data &lt;&lt; endl;
+        this-&gt;mediator-&gt;Execute(this);
+    }
+};
+
+void Mediator::Execute(Colleague* colleague) {
+    if (colleague == cd) {
+        cpu-&gt;Process(cd-&gt;GetData());
+    } else if (colleague == cpu){
+        soundCard-&gt;Process(cpu-&gt;GetSound());
+        videoCard-&gt;Process(cpu-&gt;GetVideo());
+    }
+}
+
+int main() {
+    Mediator* mediator = Mediator::GetMediator();
+    CDDriver* cd = new CDDriver(mediator);
+    Cpu* cpu = new Cpu(mediator);
+    SoundCard* soundCard = new SoundCard(mediator);
+    VideoCard* videoCard = new VideoCard(mediator);
+    mediator-&gt;SetCD(cd);
+    mediator-&gt;SetCpu(cpu);
+    mediator-&gt;SetSoundCard(soundCard);
+    mediator-&gt;SetVideoCard(videoCard);
+    cd-&gt;ReadData();
+}
+</code></pre>
+
+<h4>python_code</h4>
+
+<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
+
+class Colleague(object):
+
+    def __init__(self, mediator):
+        self.mediator = mediator
+
+
+def singleton(cls, *args, **kwargs):
+    instance = {}
+
+    def __singleton(*args, **kwargs):
+        if cls not in instance:
+            instance[cls] = cls(*args, **kwargs)
+        return instance[cls]
+
+    return __singleton
+
+@singleton
+class Mediator(object):
+
+    def __init__(self):
+        self.__cd = self.__cpu = self.__video_card = self.__sound_card = None
+
+    def set_cd(self, cd):
+        self.__cd  = cd
+
+    def set_cpu(self, cpu):
+        self.__cpu = cpu
+
+    def set_video_card(self, video_card):
+        self.__video_card = video_card
+
+    def set_sound_card(self, sound_card):
+        self.__sound_card = sound_card
+
+    def execute(self, colleague):
+        if colleague == self.__cd:
+            self.__cpu.process(self.__cd.get_data())
+        elif colleague == self.__cpu:
+            self.__sound_card.process(colleague.get_sound())
+            self.__video_card.process(colleague.get_video())
+
+class CDDriver(Colleague):
+
+    def __init__(self, mediator):
+        super().__init__(mediator)
+        self.__data = &#39;&#39;
+
+    def read_data(self):
+        self.__data = &#39;Music,Image&#39;
+        print(type(self).__name__, &quot; reading data&quot;)
+        self.mediator.execute(self)
+
+    def get_data(self):
+        return self.__data
+
+class Cpu(Colleague):
+
+    def __init__(self, mediator):
+        super().__init__(mediator)
+        self.__video = self.__sound = &#39;&#39;
+
+    def process(self, data):
+        ret = data.split(&#39;,&#39;)
+        self.__video = ret[1]
+        self.__sound = ret[0]
+        print(type(self).__name__, &quot; video {} sound {}&quot;.format(self.__video, 
+                                                               self.__sound))
+
+        self.mediator.execute(self)
+
+    def get_video(self):
+        return self.__video
+
+    def get_sound(self):
+        return self.__sound
+
+
+class VideoCard(Colleague):
+
+    def __init__(self, mediator):
+        super().__init__(mediator)
+
+    def process(self, data):
+        print(type(self).__name__, &quot; display {}&quot;.format(data))
+
+
+class SoundCard(Colleague):
+
+    def __init__(self, mediator):
+        super().__init__(mediator)
+
+    def process(self, data):
+        print(type(self).__name__, &quot; play {}&quot;.format(data))
+
+if __name__ == &#39;__main__&#39;:
+    mediator = Mediator()
+    cd = CDDriver(mediator)
+    cpu = Cpu(mediator)
+    sound_card = SoundCard(mediator)
+    video_card = VideoCard(mediator)
+    mediator.set_cd(cd)
+    mediator.set_cpu(cpu)
+    mediator.set_sound_card(sound_card)
+    mediator.set_video_card(video_card)
+    cd.read_data()
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/21 07:16 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15775908801763.html">
+                
+                  <h1>Command</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>行为变化模式</h4>
+
+<ul>
+<li>在组件的构建过程中，组件行为的变化经常导致组件本身剧烈的变化。“行为变化“模式将组件的行为和组件本身进行解耦，从而支持组件行为的变化，实现两者之间的松耦合。</li>
+</ul>
+
+<h4>动机</h4>
+
+<ul>
+<li>在软件构建过程中，“行为请求者”与“行为实现者通常呈现一种“紧耦合”。但在某些场合一一比如需要对行为进行“记录、撤销/重（undo/redo)、事务”等处理,这种无法抵御变化的紧耦合是不合适 的</li>
+<li>在这种情况下，如何将“行为请求者“与“行为实现者”解耦？将一组行为抽象为对象，可以实现二者之间的松耦合。</li>
+</ul>
+
+<h4>模式定义</h4>
+
+<ul>
+<li>将一个请求（行为）封装为一个对象，从而使你可用不同的请求对客户进行参数化；对请求排队或记录请求日志，以及支持可撇销的操作。</li>
+</ul>
+
+<h4>结构</h4>
+
+<ul>
+<li><img src="media/15775908801763/15811582346417.jpg" alt="" style="width:787px;"/></li>
+</ul>
+
+<h4>要点总结</h4>
+
+<ul>
+<li>Command 模式的根本目的在于将“行为请求者”与“行为实现者”解耦，在面向对象语言中，常见的实现手段是“将行为抽象为对象</li>
+<li>实现 Command 接口的具体命令对象 Concrete Command 有时侯根据需要可能会保存一些额外的状态信息。通过使用 Composite 模式可以将多个“命令“封装为ー个“复合命令“Macro Command</li>
+<li>Command 模式与 C++中的函数对象有些类似。但两者定义行为接口的规范有所区别：Command 以面向对象中的“接口-实现”来定义行为接口规范，更严格，但有性能损失；C++函数对象以函数签名来定义行为接口规范，更灵活，性能更高。</li>
+<li>编译时多态</li>
+<li>范形编程+函数对象解决了迭代器模式和命令模式</li>
+<li>设计模式是弥补语言设计的不足出现的</li>
+</ul>
+
+<h4>优缺点</h4>
+
+<h5>优点</h5>
+
+<ul>
+<li>将调用操作的类与知道如何执行该操作的对象解耦；</li>
+<li>提供队列系统后，可以创建一系列命令；</li>
+<li>添加新命令更加容易，并且无需更改现有代码；</li>
+<li>还可以使用命令模式来定义回滚系统，例如，在向导示例中，我们可以编写一个回滚方法。</li>
+</ul>
+
+<h6>缺点：</h6>
+
+<ul>
+<li>为了实现目标，需要大量的类和对象进行协作。应用程序开发人员为了正确开发这些类，需要倍加小心；</li>
+<li>每个单独的命令都是一个ConcreteCommand类，从而增加了需要实现和维护的类的数量。</li>
+</ul>
+
+<h4>cpp_code</h4>
+
+<pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;list&gt;
+using namespace std;
+
+class Command {
+    public:
+    virtual void execute() = 0;
+    Command() {}
+};
+
+class Barbecue {
+    public:
+    void bake_mutton() {cout &lt;&lt; &quot;bake mutton \n&quot;;}
+    void bake_chicken() {cout &lt;&lt; &quot;bake chicken\n&quot;;}
+};
+
+class MuttonCommand : public Command {
+    public:
+    MuttonCommand(Barbecue* barbecue) : barbecue_(barbecue) {}
+
+    void execute() {
+        this-&gt;barbecue_-&gt;bake_mutton();
+    }
+    private:
+    Barbecue* barbecue_ = nullptr;
+};
+
+class ChickenCommand : public Command {
+    public:
+    ChickenCommand(Barbecue* barbecue) : barbecue_(barbecue) {}
+
+    void execute() {
+        this-&gt;barbecue_-&gt;bake_chicken();
+    }
+    private:
+    Barbecue* barbecue_ = nullptr;
+};
+
+class Waiter {
+    public:
+    Waiter() {}
+
+    void AddOrder(Command* cmd) {
+        this-&gt;orders.push_back(cmd);
+    }
+
+    void DelOrder(Command* cmd) {
+        this-&gt;orders.remove(cmd);
+    }
+
+    void Notify() {
+        for (auto it : this-&gt;orders) {
+            it-&gt;execute();
+        }
+    }
+    private:
+    list&lt;Command*&gt; orders;
+};
+
+int main() {
+    auto boy = new Barbecue();
+    Command* cmd1 = new MuttonCommand(boy);
+    Command* cmd2 = new MuttonCommand(boy);
+    Command* cmd3 = new ChickenCommand(boy);
+    auto waiter = new Waiter();
+    waiter-&gt;AddOrder(cmd1);
+    waiter-&gt;AddOrder(cmd2);
+    waiter-&gt;AddOrder(cmd3);
+    waiter-&gt;Notify();
+}
+</code></pre>
+
+<h4>golang_demo</h4>
+
+<pre class="line-numbers"><code class="language-go">package desian_pattern_practise
+
+
+import &quot;fmt&quot;
+
+type Command interface {
+    ExecuteCommand()
+}
+
+type Barbecue struct {}
+
+func (b *Barbecue) BakeMutton() {
+    fmt.Println(&quot;BakeMutton&quot;)
+}
+
+func (b *Barbecue) BakeChicken() {
+    fmt.Println(&quot;BakeChicken&quot;)
+}
+
+type MuttonCommand struct {
+    *Barbecue
+}
+
+func NewMuttonCommand(boy *Barbecue) *MuttonCommand {
+    return &amp;MuttonCommand{
+        Barbecue: boy,
+    }
+}
+
+func (m *MuttonCommand) ExecuteCommand() {
+    m.Barbecue.BakeMutton()
+}
+
+type BakeCommand struct {
+    *Barbecue
+}
+
+func NewBakeCommand(boy *Barbecue) *BakeCommand {
+    return &amp;BakeCommand{
+        Barbecue: boy,
+    }
+}
+
+func (b *BakeCommand) ExecuteCommand() {
+    b.Barbecue.BakeChicken()
+}
+
+type Waiter struct {
+    orders map[Command]bool
+}
+
+func NewWaiter() *Waiter {
+    return &amp;Waiter{
+        orders: make(map[Command]bool),
+    }
+}
+
+func (w *Waiter) AddOrder(cmd Command) {
+    w.orders[cmd] = true
+}
+
+func (w *Waiter) CancelOrder(cmd Command) {
+    delete(w.orders, cmd)
+}
+
+func (w *Waiter) Notify() {
+    for k, _ := range w.orders {
+        k.ExecuteCommand()
+    }
+}
+func TestBakeCommand_ExecuteCommand(t *testing.T) {
+    boy := &amp;Barbecue{}
+
+    cmd1, cmd2  := NewMuttonCommand(boy), NewMuttonCommand(boy)
+    cmd3 := NewBakeCommand(boy)
+
+    waiter := NewWaiter()
+    waiter.AddOrder(cmd1)
+
+    waiter.AddOrder(cmd2)
+
+    waiter.AddOrder(cmd3)
+
+    waiter.CancelOrder(cmd1)
+    waiter.Notify()
+}
+</code></pre>
+
+<h4>python_demo</h4>
+
+<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
+
+class Command(metaclass=ABCMeta):
+
+    @abstractmethod
+    def execute_command(self):
+        pass
+
+class Barbecue(object):
+
+    def bake_mutton(self):
+        print(&quot;bake mutton&quot;)
+
+    def bake_chicken(self):
+        print(&quot;bake chicken&quot;)
+
+class MuttonCommand(Command):
+
+    def __init__(self, barbecue):
+        self.barbecue = barbecue
+
+    def execute_command(self):
+        self.barbecue.bake_mutton()
+
+
+class ChickenCommand(Command):
+
+    def __init__(self, barbecue):
+        self.barbecue = barbecue
+
+    def execute_command(self):
+        self.barbecue.bake_chicken()
+
+class Waiter(object):
+
+    def __init__(self):
+        self.__orders = []
+
+    def add_order(self, cmd):
+        self.__orders.append(cmd)
+
+    def cancel_order(self, cmd):
+        self.__orders.remove(cmd)
+
+    def notify(self):
+        for order in self.__orders:
+            order.execute_command()
+
+if __name__ == &#39;__main__&#39;:
+    boy = Barbecue()
+
+    cmd1 = MuttonCommand(boy)
+    cmd2 = MuttonCommand(boy)
+    cmd3 = ChickenCommand(boy)
+
+    waiter = Waiter()
+
+    waiter.add_order(cmd1)
+    waiter.add_order(cmd2)
+    waiter.add_order(cmd3)
+
+    waiter.notify()
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/12/29 11:41 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
               
 
 
@@ -2969,8 +3162,6 @@ int main() {
             <a href="Golang.html"><strong>Golang</strong></a>
         
             <a href="Django.html"><strong>Django</strong></a>
-        
-            <a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html"><strong>C++设计模式实战</strong></a>
         
             <a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html"><strong>深入剖析Kubernetes</strong></a>
         
@@ -3049,6 +3240,18 @@ int main() {
 	      
 		      
 			      <li class="post">
+			        <a href="15818128782116.html">Singleton</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15748977610569.html">State</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817697569868.html">字符串分割</a>
 			      </li>
 		     
@@ -3061,19 +3264,7 @@ int main() {
 		  
 		      
 			      <li class="post">
-			        <a href="15814649492497.html">Simple Factory</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814189410719.html">代码的可测试性</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814188057978.html">重构</a>
+			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

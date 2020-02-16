@@ -87,8 +87,6 @@
         
             <li><a href="Django.html">Django</a></li>
         
-            <li><a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html">C++设计模式实战</a></li>
-        
             <li><a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html">深入剖析Kubernetes</a></li>
         
             <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html">数据结构和算法</a></li>
@@ -172,47 +170,54 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15502009179020.html">
+                <a class="clearlink" href="15441451175680.html">
                 
-                  <h1>kubernetes SIG-Node与CRI</h1>
+                  <h1>不可中断进程和僵尸进程</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>kubelet工作原理</h4>
+                        	<h4>概念</h4>
 
 <ul>
-<li><img src="media/15502009179020/914e097aed10b9ff39b509759f8b1d03.png" alt="914e097aed10b9ff39b509759f8b1d03"/></li>
+<li>不可中断状态，一般表示进程正在跟硬件交互，为了保护进程数据与硬件一致，系统不允许其他进程或中断打断该进程。</li>
+<li>僵尸进程表示进程已经退出，但它的父进程没有回收该进程所占用的资源</li>
 </ul>
 
-<h4>kubernetes架构图</h4>
+<h4>进程状态</h4>
 
 <ul>
-<li><img src="media/15502009179020/5161bd6201942f7a1ed6d70d7d55acfe.png" alt="5161bd6201942f7a1ed6d70d7d55acfe"/></li>
+<li>R 是 Running 或 Runnable 的缩写，表示进程在 CPU 的就绪队列中，正在运行或者正在等待运行。</li>
+<li>D 是 Disk Sleep 的缩写，也就是不可中断状态睡眠（Uninterruptible Sleep），一般表示进程正在跟硬件交互，并且交互过程不允许被其他进程或中断打断。</li>
+<li>Z 是 Zombie 的缩写，如果你玩过“植物大战僵尸”这款游戏，应该知道它的意思。它表示僵尸进程，也就是进程实际上已经结束了，但是父进程还没有回收它的资源（比如进程的描述符、PID 等）。</li>
+<li>S 是 Interruptible Sleep 的缩写，也就是可中断状态睡眠，表示进程因为等待某个事件而被系统挂起。当进程等待的事件发生时，它会被唤醒并进入 R 状态。</li>
+<li>I 是 Idle 的缩写，也就是空闲状态，用在不可中断睡眠的内核线程上。前面说了，硬件交互导致的不可中断进程用 D 表示，但对某些内核线程来说，它们有可能实际上并没有任何负载，用 Idle 正是为了区分这种情况。要注意，D 状态的进程会导致平均负载升高， I 状态的进程却不会。</li>
 </ul>
 
-<h4>CRI shim</h4>
+<h4>下面问题分析</h4>
+
+<p><img src="media/15441451175680/15441459602016.jpg" alt=""/></p>
 
 <ul>
-<li><img src="media/15502009179020/62c591c4d832d44fed6f76f60be88e3d.png" alt="62c591c4d832d44fed6f76f60be88e3d"/></li>
-<li>第一组，是 RuntimeService。它提供的接口，主要是跟容器相关的操作。比如，创建和启动容器、删除容器、执行 exec 命令等等。</li>
-<li>第二组，则是 ImageService。它提供的接口，主要是容器镜像相关的操作，比如拉取镜像、删除镜像等等</li>
+<li>iowait太高，导致系统的平均负载升高，甚至达到了系统CPU的个数</li>
+<li>僵尸进程正在不断增多，说明程序没能正确清理进程的资源
+<img src="media/15441451175680/15441462091525.jpg" alt=""/></li>
+<li>dstat 1 10
+<img src="media/15441451175680/15441465462749.jpg" alt=""/></li>
+<li> iowait 升高（wai）时，磁盘的读请求（read）都会很大。这说明 iowait 的升高跟磁盘的读请求有关，很可能就是磁盘读导致的。</li>
+<li>查看一个进程的资源使用情况pidstat</li>
+<li>利用perf record -g &amp; perf report 来查看结果
+<img src="media/15441451175680/15441491197686.jpg" alt=""/></li>
 </ul>
 
-<h4>kata container&amp; gVisor</h4>
+<h4>僵尸进程太多</h4>
+
+<pre class="line-numbers"><code class="language-text">ps -A -o stat,ppid,pid,cmd | grep -e &#39;^[Zz]&#39;
+</code></pre>
 
 <ul>
-<li><img src="media/15502009179020/d9fb7404c5dc9e0b5c902f74df9d7a61.png" alt="d9fb7404c5dc9e0b5c902f74df9d7a61"/></li>
-</ul>
-
-<h4>CRI shim实现机制</h4>
-
-<ul>
-<li><img src="media/15502009179020/a8e7ff6a6b0c9591a0a4f2b8e9e9bdef.png" alt="a8e7ff6a6b0c9591a0a4f2b8e9e9bdef"/></li>
-<li>kubectl command --&gt;API Server--&gt; kubelet-&gt; Exec api--&gt;CRI--&gt;exec</li>
-<li>CRI shim--&gt;(URL) kubelet --&gt; API Server</li>
-<li>API Server --&gt; Streaming Server</li>
-<li></li>
+<li>通过上述命令找到僵尸进程，然后执行pstree -aps zombine-id找出父进程</li>
+<li>僵尸进程主要是找父进程</li>
 </ul>
 
                         
@@ -222,269 +227,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/02/15 11:21 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15501998188113.html">
-                
-                  <h1>负载均衡算法</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>轮询</h4>
-
-<h4>加权轮询</h4>
-
-<h4>负载最低优先</h4>
-
-<ul>
-<li>如果是 CPU 密集型，可以以“CPU 负载”来衡量系统压力；</li>
-<li>如果是 I/O 密集型，可以以“I/O 负载”来衡量系统压力。</li>
-<li>复杂度增加很多</li>
-</ul>
-
-<h4>性能最优</h4>
-
-<ul>
-<li>负载均衡系统需要收集和分析每个服务器每个任务的响应时间，在大量任务处理的场景下，这种收集和统计本身也会消耗较多的性能。</li>
-<li>为了减少这种统计上的消耗，可以采取采样的方式来统计，即不统计所有任务的响应时间，而是抽样统计部分任务的响应时间来估算整体任务的响应时间。</li>
-<li>无论是全部统计还是采样统计，都需要选择合适的周期</li>
-</ul>
-
-<h4>Hash类</h4>
-
-<ul>
-<li>源地址HASH</li>
-<li>IDhash</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/15 11:03 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%9E%B6%E6%9E%84.html'>架构</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15501985470108.html">
-                
-                  <h1>负载均衡</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>本质</h4>
-
-<ul>
-<li>高性能集群的复杂性主要体现在需要增加一个任务分配器，以及为任务选择一个合适的任务分配算法</li>
-</ul>
-
-<h4>DNS负载均衡</h4>
-
-<ul>
-<li>一般用来实现地理级别的均衡</li>
-<li>实现简单、成本低，但也存在粒度太粗、负载均衡算法少等缺点</li>
-<li>一般公司自己实现HTTP-DNS</li>
-</ul>
-
-<h4>硬件负载均衡</h4>
-
-<ul>
-<li>F5和A10</li>
-<li>功能和性能强大</li>
-<li>稳定性高</li>
-<li>支持安全防护</li>
-<li>价格昂贵和扩展性差</li>
-</ul>
-
-<h4>软件负载均衡</h4>
-
-<ul>
-<li>一个nginx一般支持5w并发</li>
-</ul>
-
-<h4>应用场景</h4>
-
-<ul>
-<li>地理级别负载均衡DNS</li>
-<li>集群级别负载均衡F5</li>
-<li>机器级别负载均衡nginx和lvs</li>
-</ul>
-
-<h4>日活千万的论坛</h4>
-
-<h5>1、首先，流量评估。</h5>
-
-<ul>
-<li>1000万DAU，换算成秒级，平均约等于116。</li>
-<li>考虑每个用户操作次数，假定10，换算成平均QPS=1160。</li>
-<li>考虑峰值是均值倍数，假定10，换算成峰值QPS=11600。</li>
-<li>考虑静态资源、图片资源、服务拆分等，流量放大效应，假定10，QPS*10=116000。 </li>
-</ul>
-
-<h5>2、其次，容量规划。</h5>
-
-<ul>
-<li>考虑高可用、异地多活，QPS*2=232000。</li>
-<li>考虑未来半年增长，QPS*1.5=348000。</li>
-</ul>
-
-<h5>3、最后，方案设计。</h5>
-
-<ul>
-<li>三级导流。</li>
-<li>第一级，DNS，确定机房，以目前量级，可以不考虑。</li>
-<li>第二级，确定集群，扩展优先，则选Haproxy/LVS，稳定优先则选F5。</li>
-<li>第三级，Nginx+KeepAlived，确定实例。<br/>
-     <br/>
-    </li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/15 10:42 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%9E%B6%E6%9E%84.html'>架构</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15501977764557.html">
-                
-                  <h1>mysql复制</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>load data</h4>
-
-<ul>
-<li>不加“local”，是读取服务端的文件，这个文件必须在 secure_file_priv 指定的目录或子目录下；</li>
-<li>加上“local”，读取的是客户端的文件，只要 mysql 客户端有访问这个文件的权限即可。这时候，MySQL 客户端会先把本地文件传给服务端，然后执行上述的 load data 流程。</li>
-</ul>
-
-<h4>物理复制表结构</h4>
-
-<ul>
-<li>执行 create table r like t，创建一个相同表结构的空表；</li>
-<li>执行 alter table r discard tablespace，这时候 r.ibd 文件会被删除；</li>
-<li>执行 flush table t for export，这时候 db1 目录下会生成一个 t.cfg 文件；</li>
-<li>在 db1 目录下执行 cp t.cfg r.cfg; cp t.ibd r.ibd；这两个命令；</li>
-<li>执行 unlock tables，这时候 t.cfg 文件会被删除；</li>
-<li>执行 alter table r import tablespace，将这个 r.ibd 文件作为表 r 的新的表空间，由于这个文件的数据内容和 t.ibd 是相同的，所以表 r 中就有了和表 t 相同的数据。</li>
-</ul>
-
-<h4>对比</h4>
-
-<ul>
-<li>物理拷贝必须全表拷贝</li>
-<li>需要到服务器上拷贝</li>
-<li>源表和目标表都是InnoDB引擎才能使用</li>
-<li>mysqldump 不能使用join比较复杂的where条件写法</li>
-<li>select 每次智能导出一张表的数据，表结构也需要另外的语句单独备份</li>
-<li>逻辑备份可以跨引擎使用</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/15 10:29 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15501945078144.html">
-                
-                  <h1>DNS</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>DNS资源记录的方式</h4>
-
-<ul>
-<li>A 记录，用来把域名转换成 IP 地址；</li>
-<li>CNAME 记录，用来创建别名；</li>
-<li>NS 记录，则表示该域名对应的域名服务器地址。</li>
-</ul>
-
-<h4>DNS解析不稳定</h4>
-
-<ul>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/15 09:35 上午</span>
+                    <span class="date">2018/12/07 09:11 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
@@ -501,181 +244,71 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15501149405804.html">
+                <a class="clearlink" href="15566772208348.html">
                 
-                  <h1>CAP</h1>
+                  <h1>进程调度</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>三个点</h4>
+                        	<h4>调度策略和调度种类</h4>
 
 <ul>
-<li>Consistency、Availability、Partition Tolerance </li>
+<li>实时进程</li>
+<li>普通进程</li>
 </ul>
 
-<h4>一致性</h4>
+<h4>调度策略和优先级</h4>
 
 <ul>
-<li>对某个指定的客户端来说，读操作保证能够返回最新的写操作结果</li>
-<li>第一版从节点 node 的角度描述，第二版从客户端 client 的角度描述。</li>
-<li>第一版强调同一时刻拥有相同数据（same time + same data），第二版并没有强调这点。</li>
-<li>对于系统执行事务来说，在事务执行过程中，系统其实处于一个不一致的状态，不同的节点的数据并不完全一致</li>
+<li>实时进程，优先级的范围是 0～99</li>
+<li>普通进程，优先级的范围是 100～139</li>
 </ul>
 
-<h4>可用性</h4>
+<h4>实时调度策略</h4>
 
 <ul>
-<li>第一版是 every request，第二版强调了 A non-failing node</li>
-<li>第一版的 response 分为 success 和 failure，第二版用了两个 reasonable：reasonable response 和 reasonable time，而且特别强调了 no error or timeout</li>
+<li>SCHED_FIFO 高优先级的进程可以抢占低优先级的进程，相同优先级的进程，我们遵循先来先得</li>
+<li>SCHED_RR 采用时间片，相同优先级的任务当用完时间片会被放到队列尾部，以保证公平性，而高优先级的任务也是可以抢占低优先级的任务</li>
+<li>SCHED_DEADLINE 当产生一个调度点的时候，DL 调度器总是选择其 deadline 距离当前时间点最近的那个任务，并调度它执行</li>
 </ul>
 
-<h4>分区容忍性</h4>
+<h4>普通调度策略</h4>
 
 <ul>
-<li>当出现网络分区后，系统能够继续“履行职责”。</li>
-<li>第一版用的是 work，第二版用的是 function。</li>
+<li>SCHED_NORMAL 普通进程</li>
+<li>SCHED_BATCH 后台进程</li>
+<li>SCHED_IDLE 空闲进程</li>
 </ul>
 
-<h4>CAP关键细节点</h4>
+<h4>调度变量</h4>
 
 <ul>
-<li>CAP关注的粒度是数据，不是整个系统</li>
-<li>CAP是忽略网络延迟的</li>
-<li>正常运行情况下，不存在 CP 和 AP 的选择，可以同时满足 CA</li>
-<li>放弃并不等于什么都不做，需要为分区恢复后做准备</li>
+<li>stop_sched_class 优先级最高的任务会使用这种策略，会中断所有其他线程，且不会被其他任务打断；</li>
+<li>dl_sched_class 就对应上面的 deadline 调度策略；</li>
+<li>rt_sched_class 就对应 RR 算法或者 FIFO 算法的调度策略，具体调度策略由进程的 task_struct-&gt;policy 指定；</li>
+<li>fair_sched_class 就是普通进程的调度策略；</li>
+<li>idle_sched_class 就是空闲进程的调度策略。</li>
 </ul>
 
-<h4>BASE</h4>
+<h4>完全公平调度算法</h4>
 
 <ul>
-<li>BASE 是指基本可用（Basically Available）、软状态（ Soft State）、最终一致性（ Eventual Consistency），核心思想是即使无法做到强一致性（CAP 的一致性就是强一致性），但应用可以采用适合的方式达到最终一致性。</li>
-<li>BASE 是 CAP 理论中 AP 方案的延伸</li>
-<li>分布式系统中，节点之间的数据同步是基于网络的。由于网络本身固有的不可靠属性，极端情况下会出现网络不可用的情况，进而将网络两端的节点孤立开来，这就是所谓的“网络分区”现象。</li>
+<li>CFS 会为每一个进程安排一个虚拟运行时间 vruntime。如果一个进程在运行，随着时间的增长，也就是一个个 tick 的到来，进程的 vruntime 将不断增大。没有得到执行的进程 vruntime 不变</li>
+<li>虚拟运行时间 vruntime += 实际运行时间 delta_exec * NICE_0_LOAD/ 权重</li>
 </ul>
 
-<h4>CAP电商系统的设计</h4>
+<h4>调度队列和调度实体</h4>
 
 <ul>
-<li>电商网站核心功能有用户、产品、订单、支付、库存，相应的数据有用户、产品、订单、支付、库存。</li>
-<li>对于用户数据，选择CP。因为用户注册后，可能几分钟后重新登录，所以需要满足一致性；在网络出现分区时，因为需要满足一致性而暂时不能提供写服务，所以无法满足可用性；对于分区容错性，只要能返回一个合理的响应就能满足，这一点能很好满足。</li>
-<li>对于产品数据，无需满足一致性，所以选择AP。</li>
-<li>对于订单数据，业务需要满足一致性，所以选择CP。</li>
-<li>对于支付数据，业务需要满足一致性，所以选择CP。</li>
-<li>对于库存数据，业务需要满足一致性，所以选择CP。</li>
+<li>实时调度实体 sched_rt_entity</li>
+<li>Deadline 调度实体 sched_dl_entity  deadline</li>
+<li>完全公平算法调度实体 sched_entity real time </li>
 </ul>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/14 11:29 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%9E%B6%E6%9E%84.html'>架构</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
+<h4>CPU进程调度</h4>
 
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15501131231290.html">
-                
-                  <h1>微服务治理平台</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>平台功能</h4>
-
-<ul>
-<li><img src="media/15501131231290/f5aa7ddbd2c0997839d3f292ea89975d.png" alt="f5aa7ddbd2c0997839d3f292ea89975d"/></li>
-</ul>
-
-<h4>服务管理</h4>
-
-<ul>
-<li>服务上下线</li>
-<li>节点添加和删除</li>
-<li>服务查询</li>
-<li>服务节点查询</li>
-</ul>
-
-<h4>服务治理</h4>
-
-<ul>
-<li>限流</li>
-<li>降级</li>
-<li>切流量</li>
-</ul>
-
-<h4>服务监控</h4>
-
-<ul>
-<li>整体监控 服务依赖拓扑图，将整个系统内服务间的调用关系和依赖关系进行可视化的展示</li>
-<li>一个是具体服务监控，比如服务的 QPS、AvgTime、P999 等监控指标</li>
-</ul>
-
-<h4>问题定位</h4>
-
-<ul>
-<li>一个是宏观层面，即通过服务监控来发觉异常，比如某个服务的平均耗时异常导致调用失败</li>
-<li>一个是微观层面，即通过服务追踪来具体定位一次用户请求失败具体是因为服务调用全链路的哪一层导致的</li>
-</ul>
-
-<h4>日志查询</h4>
-
-<ul>
-<li>ELK</li>
-</ul>
-
-<h4>服务运维</h4>
-
-<ul>
-<li>发布部署</li>
-<li>扩缩容</li>
-</ul>
-
-<h4>微服务治理平台</h4>
-
-<ul>
-<li>Web Portal层</li>
-</ul>
-
-<h5>API层</h5>
-
-<ul>
-<li>添加服务接口</li>
-<li>删除服务接口</li>
-</ul>
-
-<h5>数据存储DB层</h5>
-
-<ul>
-<li>用户权限</li>
-<li>操作记录</li>
-<li>元数据</li>
-</ul>
-
-<h4>开源</h4>
-
-<ul>
-<li>OCTO</li>
-<li>动态路由配置</li>
-<li>服务熔断机制配置</li>
-</ul>
-
-<h4>服务治理平台</h4>
+<p><img src="media/15566772208348/10381dbafe0f78d80beb87560a9506af.jpeg" alt="10381dbafe0f78d80beb87560a9506af"/></p>
 
 <ul>
 <li></li>
@@ -688,10 +321,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/02/14 10:58 上午</span>
+                    <span class="date">2019/05/01 10:20 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E5%BE%AE%E6%9C%8D%E5%8A%A1.html'>微服务</a></span>
+          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -705,38 +338,120 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15501125147082.html">
+                <a class="clearlink" href="15558924748383.html">
                 
-                  <h1>服务配置</h1>
+                  <h1>进程数据结构</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>本地配置</h4>
-
-<h4>配置中心</h4>
+                        	<h4>task_struct</h4>
 
 <ul>
-<li>配置注册功能</li>
-<li>配置反注册功能</li>
-<li>配置查看功能</li>
-<li>配置变更订阅功能</li>
+<li>任务ID</li>
+<li>任务展示</li>
 </ul>
 
-<h4>配置中心的使用场景</h4>
+<h4>三种睡眠状态</h4>
 
 <ul>
-<li>资源服务化</li>
-<li>业务动态降级</li>
-<li>分组流量切换</li>
+<li>TASK_INTERRUPTIBLE，可中断的睡眠状态</li>
+<li>TASK_UNINTERRUPTIBLE，不可中断的睡眠状态</li>
+<li>TASK_KILLABLE，可以终止的新睡眠状态 可以响应致命信号</li>
 </ul>
 
-<h4>配置中心</h4>
+<h4>进程调度</h4>
 
 <ul>
-<li>Spring Cloud Config</li>
-<li>Disconf</li>
-<li>Apollo</li>
+<li>任务状态</li>
+<li>信号处理</li>
+<li>任务ID</li>
+<li>调度相关</li>
+</ul>
+
+<h4>运行统计信息</h4>
+
+<h4>进程亲缘关系</h4>
+
+<ul>
+<li>parent 指向其父进程。当它终止时，必须向它的父进程发送信号。</li>
+<li>children 表示链表的头部。链表中的所有元素都是它的子进程。</li>
+<li>sibling 用于把当前进程插入到兄弟链表中。
+<img src="media/15558924748383/92711107d8dcdf2c19e8fe4ee3965304.jpeg" alt="92711107d8dcdf2c19e8fe4ee3965304"/></li>
+</ul>
+
+<h4>用户和用户组的信息</h4>
+
+<ul>
+<li>uid gid</li>
+<li>euid egid</li>
+<li>fsuid fsgid</li>
+</ul>
+
+<h4>capabilites</h4>
+
+<ul>
+<li>cap_permitted 表示进程能够使用的权限</li>
+<li>cap_bset，也就是 capability bounding set，是系统中所有进程允许保留的权限。如果这个集合中不存在某个权限，那么系统中的所有进程都没有这个权限。即使以超级用户权限执行的进程，也是一样的</li>
+<li>cap_ambient 是比较新加入内核,执行 exec 的时候，cap_ambient 会被添加到 cap_permitted 中，同时设置到 cap_effective 中</li>
+</ul>
+
+<h4>进程</h4>
+
+<ul>
+<li>任务ID</li>
+<li>亲缘关系</li>
+<li>任务状态</li>
+<li>权限</li>
+<li>运行统计</li>
+<li>调度相关</li>
+<li>信号处理</li>
+<li>内存管理</li>
+<li>文件和文件系统</li>
+<li>内核栈 
+<img src="media/15558924748383/1c91956b52574b62a4418a7c6993d8bc.jpeg" alt="1c91956b52574b62a4418a7c6993d8b"/></li>
+</ul>
+
+<h4>用户栈和内核栈的具体实现</h4>
+
+<ul>
+<li>用户栈详解：<a href="http://blog.csdn.net/tiankong_/article/details/75676131">http://blog.csdn.net/tiankong_/article/details/75676131</a></li>
+<li>内核栈详解：<a href="http://blog.csdn.net/tiankong_/article/details/75647488">http://blog.csdn.net/tiankong_/article/details/75647488</a></li>
+</ul>
+
+<h4>用户态函数栈</h4>
+
+<ul>
+<li>栈是一个从高地址到低地址，往下增长的结构，也就是上面是栈底，下面是栈顶，入栈和出栈的操作都是从下面的栈顶开始的。
+<img src="media/15558924748383/aec865abccf0308155f4138cc905972e.jpg" alt="aec865abccf0308155f4138cc905972e"/></li>
+</ul>
+
+<h4>用户态和内核态执行</h4>
+
+<ul>
+<li>struct thread_info thread_info;</li>
+<li>void  *stack;</li>
+</ul>
+
+<h4>内核栈</h4>
+
+<p><img src="media/15558924748383/31d15bcd2a053235b5590977d12ffa2d.jpeg" alt="31d15bcd2a053235b5590977d12ffa2d"/></p>
+
+<h4>task_struct找内核</h4>
+
+<ul>
+<li>task_struct找内核栈是通过stack指针，直接找到内核线程栈，stack指针记录的是内核栈的首地址。</li>
+<li>task_struck找内核寄存器是通过 内核栈的首地址（1中的stack指针） + (THREAD_SIZE - TOP_OF_KERNEL_STACK_PADDING)定位到pt_regs的最高位地址，再减一得到pt_regs的最低位地址（首地址）</li>
+</ul>
+
+<h4>内核找task_struct</h4>
+
+<ul>
+<li>通过内核栈找到 task_struct<br/>
+  32位 直接由 thread_info 中的指针得到<br/>
+  64位 每个 CPU 当前运行进程的 task_struct 的指针存放到 Per CPU 变量 current_task 中<br/>
+ <br/>
+ #### </li>
 </ul>
 
                         
@@ -746,10 +461,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/02/14 10:48 上午</span>
+                    <span class="date">2019/04/22 08:21 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E5%BE%AE%E6%9C%8D%E5%8A%A1.html'>微服务</a></span>
+          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -763,70 +478,19 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15501086782135.html">
+                <a class="clearlink" href="15566754920597.html">
                 
-                  <h1>微服务调用失败的处理手段</h1>
+                  <h1>性能提升</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>超时</h4>
+                        	<h4>方案</h4>
 
 <ul>
-<li>参照服务提供者线上真实的服务水平，取 P999 或者 P9999 的值，也就是以 99.9% 或者 99.99% 的调用都在多少毫秒内返回为准。</li>
-</ul>
-
-<h4>重试</h4>
-
-<h4>双发</h4>
-
-<ul>
-<li>一个简单的提高服务调用成功率的办法就是每次服务消费者要发起服务调用的时候，都同时发起两次服务调用，一方面可以提高调用的成功率，另一方面两次服务调用哪个先返回就采用哪次的返回结果</li>
-<li>备份请求”（Backup Requests），它的大致思想是服务消费者发起一次服务调用后，在给定的时间内如果没有返回请求结果，那么服务消费者就立刻发起另一次服务调用</li>
-<li>最大重试比例可以设置成 15%</li>
-</ul>
-
-<h4>熔断</h4>
-
-<ul>
-<li>熔断就是把客户端的每一次服务调用用断路器封装起来，通过断路器来监控每一次服务调用。如果某一段时间内，服务调用失败的次数达到一定阈值，那么断路器就会被触发，后续的服务调用就直接返回，也就不会再向服务提供者发起请求了。</li>
-<li>熔断中断路器</li>
-<li>Closed状态</li>
-<li>Open状态: 当服务调用失败次数达到一定阈值时，断路器就会处于开启状态，后续的服务调用就直接返回，不会向服务提供者发起请求</li>
-<li>Half Open 状态：当断路器开启后，每隔一段时间，会进入半打开状态，这时候会向服务提供者发起探测调用，以确定服务提供者是否恢复正常。如果调用成功了，断路器就关闭；如果没有成功，断路器就继续保持开启状态，并等待下一个周期重新进入半打开状态。</li>
-<li><img src="media/15501086782135/caf39c417373e0261da5717d1442958a.png" alt="caf39c417373e0261da5717d1442958a"/></li>
-</ul>
-
-<h4>Hystrix</h4>
-
-<ul>
-<li>滑动窗口包含 10 个桶，每个桶时间宽度为 1 秒，每个桶内记录了这 1 秒内所有服务调用中成功的、失败的、超时的以及被线程拒绝的次数。当新的 1 秒到来时，滑动窗口就会往前滑动，丢弃掉最旧的 1 个桶，把最新 1 个桶包含进来。</li>
-<li>0 个桶内记录的所有失败的、超时的、被线程拒绝的调用次数之和除以总的调用次数就是滑动窗口内所有服务的调用的失败率</li>
-</ul>
-
-<h4>总结</h4>
-
-<ul>
-<li>采用双发对长尾请求的场景十分有效</li>
-</ul>
-
-<h4>思考题</h4>
-
-<ul>
-<li>Hystrix 采用了线程池隔离的方式来实现不同的服务调用相互之间不影响，你认为这种方式的优缺点有哪些？</li>
-<li>（1）线程池隔离模式：使用一个线程池来存储当前的请求，线程池对请求作处理，设置任务返回处理超时时间，堆积的请求堆积入线程池队列。这种方式需要为每个依赖的服务申请线程池，有一定的资源消耗，好处是可以应对突发流量（流量洪峰来临时，处理不完可将数据存储到线程池队里慢慢处理）</li>
-<li>（2）信号量隔离模式：使用一个原子计数器（或信号量）来记录当前有多少个线程在运行，请求来先判断计数器的数值，若超过设置的最大线程个数则丢弃改类型的新请求，若不超过则执行计数操作请求来计数器+1，请求返回计数器-1。这种方式是严格的控制线程且立即返回模式，无法应对突发流量（流量洪峰来临时，处理的线程超过数量，其他的请求会直接返回，不继续去请求依赖的服务）</li>
-<li>优点：可以防止某个服务占满可以使用的线程，影响其他服务</li>
-<li>缺点：如果运行线程特别多，线程上下文切换成本较高。</li>
-</ul>
-
-<h4>幂等性</h4>
-
-<ul>
-<li>对同一个系统，使用同样的条件，一次请求和重复的多次请求对系统资源的影响是一致的</li>
-<li>MVCC</li>
-<li>去重表</li>
-<li>Token机制</li>
+<li>加速大概率事件</li>
+<li>通过流水线提高性能</li>
+<li>通过预测提高性能</li>
 </ul>
 
                         
@@ -836,10 +500,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/02/14 09:44 上午</span>
+                    <span class="date">2019/05/01 09:51 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E5%BE%AE%E6%9C%8D%E5%8A%A1.html'>微服务</a></span>
+          					    <span class="posted-in"><a href='%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86.html'>计算机组成原理</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -853,50 +517,158 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15500401399354.html">
+                <a class="clearlink" href="15566729397801.html">
                 
-                  <h1>单台服务器的百万级并发</h1>
+                  <h1>CPU性能</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>思考题</h4>
+                        	<h4>性能指标</h4>
 
 <ul>
-<li>/etc/security/limits.conf</li>
+<li>响应时间</li>
+<li>吞吐率</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-text">* soft  nofile  102400
-* hard  nofile  102400
+<h4>计算机的计时单位</h4>
+
+<ul>
+<li>CPU时钟</li>
+<li>wall clock time , Elapsed Time 记录程序运行结束的时间减去程序开始运行的时间</li>
+<li>real time，也就是我们说的 Wall Clock Time，也就是运行程序整个过程中流逝掉的时间</li>
+<li>user time，也就是 CPU 在运行你的程序，在用户态运行指令的时间</li>
+<li>sys time，是 CPU 在运行你的程序，在操作系统内核里运行指令的时间<img src="media/15566729397801/c2892bc899e5a9ad5c04c10f57705127.jpg" alt="c2892bc899e5a9ad5c04c10f57705127"/></li>
+</ul>
+
+<h4>性能优化三指标</h4>
+
+<ul>
+<li>程序的 CPU 执行时间 =CPU 时钟周期数×时钟周期时间</li>
+<li>程序的 CPU 执行时间 = 指令数×CPI×Clock Cycle Time</li>
+<li>时钟周期时间，就是计算机主频，这个取决于计算机硬件。我们所熟知的摩尔定律就一直在不停地提高我们计算机的主频。比如说，我最早使用的 80386 主频只有 33MHz，现在手头的笔记本电脑就有 2.8GHz，在主频层面，就提升了将近 100 倍。</li>
+<li>每条指令的平均时钟周期数 CPI，就是一条指令到底需要多少 CPU Cycle。在后面讲解 CPU 结构的时候，我们会看到，现代的 CPU 通过流水线技术（Pipeline），让一条指令需要的 CPU Cycle 尽可能地少。因此，对于 CPI 的优化，也是计算机组成和体系结构中的重要一环。</li>
+<li>指令数，代表执行我们的程序到底需要多少条指令、用哪些指令。这个很多时候就把挑战交给了编译器。同样的代码，编译成计算机指令时候，就有各种不同的表示方式。</li>
+</ul>
+
+<h4>问题</h4>
+
+<ul>
+<li>user + sys 运行出来会比real time多</li>
+<li>是因为多核并行执行程序</li>
+</ul>
+
+<h4>跑分软件作弊</h4>
+
+<ul>
+<li>一是检测到跑分软件就放开温度墙和功耗墙的限制 相当于提高主频</li>
+<li>二是跑分程序对于机型做了专门优化 相当于优化CPI和减少指令数</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/05/01 09:08 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86.html'>计算机组成原理</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15439799166687.html">
+                
+                  <h1>Mysql选错索引</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>mysql选择索引依据</h4>
+
+<ul>
+<li>扫描行数</li>
+<li>是否使用临时表</li>
+<li>是否排序</li>
+</ul>
+
+<h4>Mysql获取索引基数</h4>
+
+<ul>
+<li>采样统计的时候，InnoDB 默认会选择 N 个数据页，统计这些页面上的不同值，得到一个平均值，然后乘以这个索引的页面数，就得到了这个索引的基数。</li>
+<li>而数据表是会持续更新的，索引统计信息也不会固定不变。所以，当变更的数据行数超过 1/M 的时候，会自动触发重新做一次索引统计。</li>
+<li>设置为 on 的时候，表示统计信息会持久化存储。这时，默认的 N 是 20，M 是 10。</li>
+<li>设置为 off 的时候，表示统计信息只存储在内存中。这时，默认的 N 是 8，M 是 16。</li>
+</ul>
+
+<h4>索引选择不准确矫正</h4>
+
+<ul>
+<li>索引统计信息不准确导致的问题，你可以用 analyze table 来解决。</li>
+<li>优化器误判的情况，你可以在应用端用force index来强行指定索引</li>
+<li>也可以通过修改语句来引导优化器</li>
+<li>还可以通过增加或者删除索引来绕过这个问题</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text"> CREATE TABLE `t` (
+  `id` int(11) NOT NULL,
+  `a` int(11) DEFAULT NULL,
+  `b` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `a` (`a`),
+  KEY `b` (`b`)
+) ENGINE=InnoDB
 </code></pre>
 
-<ul>
-<li>/etc/sysctl.conf</li>
-</ul>
+<h4>开启慢查询日志</h4>
 
-<pre class="line-numbers"><code class="language-text">net.ipv4.tcp_mem = 252144 524288 786432
-net.ipv4.tcp_wmem = 2048 2048 4096
-net.ipv4.tcp_rmem = 2048 2048 4096
-fs.file-max = 1048576
+<pre class="line-numbers"><code class="language-text">  show variables like &#39;log_%&#39;;
+  set sql_long_query=0;
+  set global long_query_time=0;
+  show variables like &quot;%slow%&quot;;
+  set slow_query_log=&#39;ON&#39;;
+  show variables like &quot;%slow%&quot;;
 </code></pre>
 
+<h4>查询优化</h4>
+
+<pre class="line-numbers"><code class="language-text">mysql&gt; select * from t where a between 10000 and 20000 and b between 50000 and 100000 order by b limit 1;
+Empty set (0.05 sec)
+
+mysql&gt; select * from t force index(a) where a between 10000 and 20000 and b between 50000 and 100000 order by b limit 1;
+Empty set (0.02 sec)
+</code></pre>
+
+<h4>清空查询缓存</h4>
+
+<pre class="line-numbers"><code class="language-text"> reset query cache;
+</code></pre>
+
+<h4>选择错误索引原因</h4>
+
 <ul>
-<li>适合长连接不适合大文件传输，会导致大文件被切割分片，导致内核协议栈处理次数变多，传输速率很慢</li>
+<li>每次从索引 a 上拿到一个值，都要回到主键索引上查出整行数据，这个代价优化器也要算进去的。如果选择扫描 10 万行，是直接在主键索引上扫描的，没有额外的代价。优化器会估算这两个选择的代价，从结果看来，优化器认为直接扫描主键索引更快。当然，从执行时间看来，这个选择并不是最优的。</li>
 </ul>
 
-<h4>单机服务架构</h4>
+<h4>优化错误索引</h4>
 
 <ul>
-<li>单线程同步：NTP</li>
-<li>多线程同步：Natty</li>
-<li>纯异步：Redis，HAProxy</li>
-<li>半同步半异步：Natty</li>
-<li>多进程同步：fastcgi</li>
-<li>多线程异步：memcached</li>
-<li>多进程异步：nginx</li>
-<li>每请求每进程（线程）：Apache/CGI</li>
-<li>微进程框架：erlang/go/lua</li>
-<li>协程框架：libco</li>
+<li>force index</li>
+<li>修改语句，引导mysql使用我们期望的索引</li>
+<li>新建合适的索引或者删掉误用的索引</li>
+<li>使用analze table 来解决</li>
 </ul>
 
                         
@@ -906,10 +678,304 @@ fs.file-max = 1048576
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/02/13 14:42 下午</span>
+                    <span class="date">2018/12/05 11:18 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
+          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15438265348573.html">
+                
+                  <h1>普通索引和唯一索引</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>InnoDB读取数据</h4>
+
+<ul>
+<li>InnoDB 的数据是按数据页为单位来读写的。也就是说，当需要读一条记录的时候，并不是将这个记录本身从磁盘读出来，而是以页为单位，将其整体读入内存。在 InnoDB 中，每个数据页的大小默认是 16KB。</li>
+<li>因为引擎是按页读写的，所以说，当找到 k=5 的记录的时候，它所在的数据页就都在内存里了。那么，对于普通索引来说，要多做的那一次“查找和判断下一条记录”的操作，就只需要一次指针寻找和一次计算。</li>
+<li>当然，如果 k=5 这个记录刚好是这个数据页的最后一个记录，那么要取下一个记录，必须读取下一个数据页，这个操作会稍微复杂一些。</li>
+</ul>
+
+<h4>change buffer</h4>
+
+<ul>
+<li>change buffer 在内存中有拷贝，也会被写入到磁盘上</li>
+<li>对于唯一索引来说，所有的更新操作都要先判断这个操作是否违反唯一性约束,必须要把数据页载入内存才能实现</li>
+<li>purge 的时候是真正进行数据更新的时刻，而 change buffer 的主要目的就是将记录的变更动作缓存下来，所以在一个数据页做 purge 之前，change buffer 记录的变更越多（也就是这个页面上要更新的次数越多），收益就越大。</li>
+<li>访问这个数据页会触发 purge 外，系统有后台线程会定期 purge。在数据库正常关闭（shutdown）的过程中，也会执行 purge 操作。</li>
+<li>更新后紧跟着这个记录的查询，change buffer应该关闭，其他情况下应该打开</li>
+<li>操作流程</li>
+</ul>
+
+<p><img src="media/15438265348573/15562408037391.jpg" alt="" style="width:583px;"/></p>
+
+<h4>redo log 和 binlog的区别</h4>
+
+<ul>
+<li>redo log 是 InnoDB 引擎特有的；binlog 是 MySQL 的 Server 层实现的，所有引擎都可以使用。</li>
+<li>redo log 是物理日志，记录的是修改；binlog 是逻辑日志，记录的是这个语句的原始操作逻辑</li>
+<li>redo log 是循环写的，空间固定会用完；binlog 是可以追加写入的。“追加写”是指 binlog 文件写到一定大小后会切换到下一个，并不会覆盖以前的日志。</li>
+</ul>
+
+<h4>redo log 和change buffer</h4>
+
+<ul>
+<li>redo log 主要节省的是随机写磁盘的 IO 消耗（转成顺序写）</li>
+<li>而 change buffer 主要节省的则是随机读磁盘的 IO 消耗。</li>
+</ul>
+
+<h4>change buffer的merge的流程</h4>
+
+<ul>
+<li>从磁盘读入数据页到内存（老版本的数据页）；</li>
+<li>从 change buffer 里找出这个数据页的 change buffer 记录 (可能有多个），依次应用，得到新版数据页；</li>
+<li>写 redo log。这个 redo log 包含了数据的变更和 change buffer 的变更。</li>
+<li>数据页和内存的数据需要线程定时刷新回磁盘</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/12/03 16:42 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15562372828721.html">
+                
+                  <h1>组成原理知识图谱</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>学习地图</h4>
+
+<ul>
+<li><img src="media/15562372828721/12bc980053ea355a201e2b529048e2ff.jpg" alt="12bc980053ea355a201e2b529048e2ff"/></li>
+</ul>
+
+<h4>计算机组成视频教程</h4>
+
+<ul>
+<li><a href="https://www.bilibili.com/video/av24540152/">https://www.bilibili.com/video/av24540152/</a></li>
+<li>计算机组成：结构化方法  //TODO</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/04/26 08:08 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86.html'>计算机组成原理</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15558350408118.html">
+                
+                  <h1>秒杀系统限制</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<ul>
+<li>和已有的电商逻辑重度耦合</li>
+<li>资源共享，缺乏耦合</li>
+<li>服务缺乏限流和过载保护</li>
+<li>MYSQL存在性能瓶颈</li>
+<li>系统缺乏降级措施</li>
+<li>不能及时恢复</li>
+<li>对雪崩缺乏深刻的认识</li>
+</ul>
+
+<h4>秒杀系统</h4>
+
+<ul>
+<li>代码和部署完全隔离，避免互相影响</li>
+<li>根据后端承载能力，进行限流，防止全网挂掉</li>
+<li>平台化，所有操作web平台实时生效</li>
+<li>使用Redis承载海量QPS</li>
+<li>系统采用Go开发，极大提高了系统性能</li>
+<li>系统解耦</li>
+<li>过载保护</li>
+<li>降级预案</li>
+</ul>
+
+<h4>接入层核心功能</h4>
+
+<ul>
+<li>长连接</li>
+<li>IP黑明单</li>
+<li>抢购开关</li>
+<li>url校验</li>
+<li>refer白名单</li>
+<li>Id黑名单</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/04/21 16:24 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15432181027120.html">
+                
+                  <h1>上下文切换-CPU使用率</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>cpu上下文</h4>
+
+<ul>
+<li>cpu寄存器和程序计数器叫上下文</li>
+<li>CPU 寄存器，是 CPU 内置的容量小、但速度极快的内存。而程序计数器，则是用来存储 CPU 正在执行的指令位置、或者即将执行的下一条指令位置。</li>
+</ul>
+
+<h4>上下文切换场景</h4>
+
+<ul>
+<li>进程上下文切换 包括了虚拟内存、栈、全局变量等用户空间的资源，还包括了内核堆栈、寄存器等内核空间的状态</li>
+<li>线程上下文切换</li>
+<li>中断上下文切换</li>
+<li>系统调用发生了两次上下文切换 并不会涉及到虚拟内存等进程用户态的资源，也不会切换进程。这跟我们通常所说的进程上下文切换是不一样的</li>
+<li></li>
+</ul>
+
+<h4>系统调用</h4>
+
+<ul>
+<li>系统调用过程通常称为特权模式切换，而不是上下文切换。但实际上，系统调用过程中，CPU 的上下文切换还是无法避免的。</li>
+<li>一次系统调用的过程，其实是发生了两次 CPU 上下文切换</li>
+</ul>
+
+<h4>TLB作用</h4>
+
+<ul>
+<li>TLB（Translation Lookaside Buffer）来管理虚拟内存到物理内存的映射关系。当虚拟内存更新后，TLB 也需要刷新，内存的访问也会随之变慢。特别是在多处理器系统上，缓存是被多个处理器共享的，刷新缓存不仅会影响当前处理器的进程，还会影响共享缓存的其他处理器的进程。</li>
+</ul>
+
+<h4>进程上下文切换</h4>
+
+<ul>
+<li>进程的上下文切换就比系统调用时多了一步：在保存当前进程的内核状态和 CPU 寄存器之前，（需要先把该进程的虚拟内存、栈等保存下来；而加载了下一进程的内核态后，还需要刷新进程的虚拟内存和用户栈）。<strong><em>这个系统调用并没有</em></strong></li>
+<li><img src="media/15432181027120/15432189386717.jpg" alt=""/></li>
+<li>线程也有自己的私有数据，比如栈和寄存器等，这些在上下文切换时也是需要保存的。</li>
+<li>两个线程属于同一个进程。此时，因为虚拟内存是共享的，所以在切换时，虚拟内存这些资源就保持不动，只需要切换线程的私有数据、寄存器等不共享的数据。</li>
+</ul>
+
+<h4>中断上下文切换</h4>
+
+<ul>
+<li>线程是调度的基本单位，进程是资源拥有的基本单位，同属一个进程的线程，发生上下文切换，只切换线程的私有数据，共享数据不变，速度很快。</li>
+</ul>
+
+<h4>怎么查看系统的上下文情况</h4>
+
+<ul>
+<li>vmstat</li>
+<li>自愿上下文切换 是指进程无法获取所需资源导致的上下文切换，比如IO,内存</li>
+<li>非自愿上下文切换， 进程由于时间片已到等时间，被系统强制调度，进而发生的上下文呢切换</li>
+</ul>
+
+<h4>有哪些减少上下文切换的技术用例？</h4>
+
+<p>数据库连接池（复用连接）、合理设置应用的最大进程，线程数、直接内存访问DMA、零拷贝技术</p>
+
+<h4>压力测试</h4>
+
+<ul>
+<li>sysbench --threads=10 --max-time=300 threads run</li>
+<li>线程切换 sysbench --num-threads=10 --max-time=300 --test=threads run</li>
+<li>我们可以知道，系统的就绪队列过长，也就是正在运行和等待 CPU 的进程数过多，导致了大量的上下文切换，而上下文切换又导致了系统 CPU 的占用率升高。</li>
+<li>查看中断变化watch -d cat /proc/interrupts</li>
+<li>查看进程中线程变化的数据 pidstat -wt 1</li>
+<li>Rescheduling interrupts多处理器系统（SMP）中，调度器用来分散任务到不同 CPU 的机制，通常也被称为处理器间中断（Inter-Processor Interrupts，IPI）</li>
+</ul>
+
+<h4>上下文切换类型</h4>
+
+<ul>
+<li>自愿上下文切换变多了，说明进程都在等待资源，有可能发生了 I/O 等其他问题；</li>
+<li>非自愿上下文切换变多了，说明进程都在被强制调度，也就是都在争抢 CPU，说明 CPU 的确成了瓶颈；</li>
+<li>中断次数变多了，说明 CPU 被中断处理程序占用，还需要通过查看 /proc/interrupts 文件来分析具体的中断类型。</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/11/26 15:41 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -983,8 +1049,6 @@ fs.file-max = 1048576
             <a href="Golang.html"><strong>Golang</strong></a>
         
             <a href="Django.html"><strong>Django</strong></a>
-        
-            <a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html"><strong>C++设计模式实战</strong></a>
         
             <a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html"><strong>深入剖析Kubernetes</strong></a>
         
@@ -1063,6 +1127,18 @@ fs.file-max = 1048576
 	      
 		      
 			      <li class="post">
+			        <a href="15818128782116.html">Singleton</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15748977610569.html">State</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817697569868.html">字符串分割</a>
 			      </li>
 		     
@@ -1075,19 +1151,7 @@ fs.file-max = 1048576
 		  
 		      
 			      <li class="post">
-			        <a href="15814649492497.html">Simple Factory</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814189410719.html">代码的可测试性</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814188057978.html">重构</a>
+			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

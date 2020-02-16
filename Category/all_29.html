@@ -87,8 +87,6 @@
         
             <li><a href="Django.html">Django</a></li>
         
-            <li><a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html">C++设计模式实战</a></li>
-        
             <li><a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html">深入剖析Kubernetes</a></li>
         
             <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html">数据结构和算法</a></li>
@@ -172,69 +170,21 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15655109586523.html">
+                <a class="clearlink" href="15669853573173.html">
                 
-                  <h1>内存管理</h1>
+                  <h1>Mysql</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>接口</h4>
+                        	<h4>读写分离和分库分表</h4>
 
 <ul>
-<li>brk</li>
-<li>mmap</li>
-<li>munmap</li>
-</ul>
-
-<h4>内存碎片原因</h4>
-
-<ul>
-<li>brk分配的地址需要等到高地址内存释放以后才能释放，mmap分配的内存可以单独释放</li>
-</ul>
-
-<h4>libc是如何管理内存</h4>
-
-<ul>
-<li>ptmalloc</li>
-<li>fast bins</li>
-<li>unsorted bins</li>
-<li>大内存 large bins-&gt;mmaped chunk-&gt;main area-&gt;top chunk</li>
-</ul>
-
-<h4>ptmalloc分配</h4>
-
-<ol>
-<li>获取分配区的锁，防止多线程冲突。</li>
-<li>计算出需要分配的内存的chunk实际大小。</li>
-<li>判断chunk的大小，如果小于max_fast（64b），则取fast bins上去查询是否有适合的chunk，如果有则分配结束。</li>
-<li>chunk大小是否小于512B，如果是，则从small bins上去查找chunk，如果有合适的，则分配结束。</li>
-<li>继续从 unsorted bins上查找。如果unsorted bins上只有一个chunk并且大于待分配的chunk，则进行切割，并且剩余的chunk继续扔回unsorted bins；如果unsorted bins上有大小和待分配chunk相等的，则返回，并从unsorted bins删除；如果unsorted bins中的某一chunk大小 属于small bins的范围，则放入small bins的头部；如果unsorted bins中的某一chunk大小 属于large bins的范围，则找到合适的位置放入。</li>
-<li>从large bins中查找，找到链表头后，反向遍历此链表，直到找到第一个大小 大于待分配的chunk，然后进行切割，如果有余下的，则放入unsorted bin中去，分配则结束。</li>
-<li>如果搜索fast bins和bins都没有找到合适的chunk，那么就需要操作top chunk来进行分配了（top chunk相当于分配区的剩余内存空间）。判断top chunk大小是否满足所需chunk的大小，如果是，则从top chunk中分出一块来。</li>
-<li>如果top chunk也不能满足需求，则需要扩大top chunk。主分区上，如果分配的内存小于分配阀值（默认128k），则直接使用brk()分配一块内存；如果分配的内存大于分配阀值，则需要mmap来分配；非主分区上，则直接使用mmap来分配一块内存。通过mmap分配的内存，就会放入mmap chunk上，mmap chunk上的内存会直接回收给操作系统。</li>
-</ol>
-
-<h4>ptmalloc释放</h4>
-
-<ol>
-<li>获取分配区的锁，保证线程安全。</li>
-<li>如果free的是空指针，则返回，什么都不做。</li>
-<li>判断当前chunk是否是mmap映射区域映射的内存，如果是，则直接munmap()释放这块内存。前面的已使用chunk的数据结构中，我们可以看到有M来标识是否是mmap映射的内存。</li>
-<li>判断chunk是否与top chunk相邻，如果相邻，则直接和top chunk合并（和top chunk相邻相当于和分配区中的空闲内存块相邻）。转到步骤8</li>
-<li>如果chunk的大小大于max_fast（64b），则放入unsorted bin，并且检查是否有合并，有合并情况并且和top chunk相邻，则转到步骤8；没有合并情况则free。</li>
-<li>如果chunk的大小小于 max_fast（64b），则直接放入fast bin，fast bin并没有改变chunk的状态。没有合并情况，则free；有合并情况，转到步骤7</li>
-<li>在fast bin，如果当前chunk的下一个chunk也是空闲的，则将这两个chunk合并，放入unsorted bin上面。合并后的大小如果大于64KB，会触发进行fast bins的合并操作，fast bins中的chunk将被遍历，并与相邻的空闲chunk进行合并，合并后的chunk会被放到unsorted bin中，fast bin会变为空。合并后的chunk和topchunk相邻，则会合并到topchunk中。转到步骤8</li>
-<li>判断top chunk的大小是否大于mmap收缩阈值（默认为128KB），如果是的话，对于主分配区，则会试图归还top chunk中的一部分给操作系统。free结束。</li>
-</ol>
-
-<h4>内存池</h4>
-
-<ul>
-<li>单线程内存池</li>
-<li>多线程内存池</li>
-<li>固定内存池和可变内存池</li>
-<li>boost::pool</li>
+<li>高可用 主主同步</li>
+<li>高并发 读写分离和分库分表</li>
+<li>自动扩容 部署机器好扩展</li>
+<li>myisam 叶子节点保存的是指针和offset</li>
+<li>innodb 数据保存在磁盘块中</li>
 </ul>
 
                         
@@ -244,7 +194,52 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/08/11 16:09 下午</span>
+                    <span class="date">2019/08/28 17:42 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15669803261255.html">
+                
+                  <h1>模板</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>类模版</h4>
+
+<ul>
+<li>成员函数必须被实例化后才能使用</li>
+<li>类模板能内部使用并不需要提供模版参数</li>
+<li>类模板用来实例化类型名</li>
+</ul>
+
+<h4>成员函数</h4>
+
+<ul>
+<li>template&lt;&gt; </li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/08/28 16:18 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
@@ -261,24 +256,23 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15654308309759.html">
+                <a class="clearlink" href="15669782449531.html">
                 
-                  <h1>C程序内存管理和main函数前生今世</h1>
+                  <h1>对象模型之巅</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>智能指针</h4>
+                        	<h4>函数模板</h4>
 
 <ul>
-<li>auto_ptr</li>
-<li>unique_ptr</li>
+<li>针对T的类型推断，是编译器在编译的时候，根据针对funcadd的调用来确定的</li>
 </ul>
 
-<h4>main函数前生今世</h4>
+<h4>成员函数实例化</h4>
 
 <ul>
-<li><img src="media/15654308309759/15654337396971.jpg" alt="" style="width:654px;"/></li>
+<li></li>
 </ul>
 
                         
@@ -288,7 +282,461 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/08/10 17:53 下午</span>
+                    <span class="date">2019/08/28 15:44 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B.html'>C++对象模型</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15666360771756.html">
+                
+                  <h1>对象构造语义学</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>对象构造</h4>
+
+<ul>
+<li>构造函数中你自己的代码中使用诸如memcpy或者直接操作等手段，来修改虚函数表指针的值，否则，调用虚函数时就可能造成系统崩溃；</li>
+</ul>
+
+<h4>构造函数对虚函数的调用</h4>
+
+<ul>
+<li>某个类的构造函数 中 调用一个虚函数，那么走的不是虚函数表，而是直接调用。</li>
+<li>从类中开始找，然后在父类中找</li>
+</ul>
+
+<h4>对象复制语义学，析构函数语义学</h4>
+
+<ul>
+<li>默认的对象赋值行为</li>
+</ul>
+
+<h4>析构函数语义</h4>
+
+<ul>
+<li>析构函数被合成</li>
+</ul>
+
+<h5>合成情况</h5>
+
+<ul>
+<li>继承一个基类，基类带析构函数，编译器会帮忙合成</li>
+<li>如果类成员是一个类类型成员，成员带析构函数，编译器会合成一个析构函数</li>
+</ul>
+
+<h5>析构函数被扩展</h5>
+
+<ul>
+<li>如果我们有自己的析构函数，编译器会扩展析构函数</li>
+<li>如果类成员是一个类类型成员，并且自带析构函数，编译器会扩展类A的析构函数代码</li>
+<li>先执行类A的析构函数，再执行成员函数析构函数</li>
+<li>如果继承一个基类，基类中带析构函数，编译器会扩展A类的析构函数来调用基类的析构函数</li>
+<li>虚基类扩展</li>
+</ul>
+
+<h4>局部对象和全局对象的构造和析构</h4>
+
+<ul>
+<li>全局对象构造和析构的步骤：<br/>
+a)全局对象g_aobj获得地址（编译时确定好的，内存也是编译时分配好的，内存时运行期间一直存在）<br/>
+b)把全局对象g_aobj的内存内容清0的能力（也叫静态初始化）<br/>
+c)调用全局对象g_aobj所对应的类A的构造函数</li>
+<li>如何保证静态局部对象只被构造一次</li>
+<li>编译器通过设置标记的方式</li>
+<li>如何来析构局部对象</li>
+<li>局部静态对象只会被构造一次，在调用的时候构造；在main函数执行完毕后析构</li>
+</ul>
+
+<h4>malloc</h4>
+
+<ul>
+<li>分配0个字节</li>
+</ul>
+
+<h4>new和delete进一步认识</h4>
+
+<ul>
+<li>A *pa = new A()会清零部分内存，如果有构造函数则不会清零</li>
+<li>A *pa = new A不会清零</li>
+</ul>
+
+<h4>new干了啥</h4>
+
+<ul>
+<li>operator new</li>
+<li>malloc</li>
+<li>A::A()</li>
+</ul>
+
+<h4>delete</h4>
+
+<ul>
+<li>A::~A()</li>
+<li>operator delete()</li>
+<li>free</li>
+</ul>
+
+<h4>嵌入式指针</h4>
+
+<ul>
+<li>一般应用在内存池代码</li>
+<li>成功使用有个前提条件</li>
+<li>借用了A对象占用的内存空间的前四个字节，4个字节用来链住空闲的内存块，一旦被分配</li>
+<li>出去，这个块的前四个字节就不再需要，四个字节就可以使用</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">struct obj {
+  struct obj* next; //next就是个嵌入式指针
+}
+</code></pre>
+
+<h4>placement new</h4>
+
+<ul>
+<li>只有new没有delete</li>
+<li>在已经分配的原始内存中初始化一个对象</li>
+<li>定位new不分配内存</li>
+<li>初始化对象</li>
+<li>在预先分配号的内存中分配一个对象</li>
+<li>new (address) 类类型</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">void *memPtr = (void*)new char[sizeof(A)];
+  A* obj = new (memPtr) A();
+
+  void *memPtr2 = (void*)new char[sizeof(A)];
+  A* obj2 = new (memPtr2) A();
+
+  obj-&gt;~A();
+  obj2-&gt;~A();
+
+  delete[](void*)obj;
+  delete[](void*)obj2;
+</code></pre>
+
+<h4>多版本的operator new</h4>
+
+<ul>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/08/24 16:41 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B.html'>C++对象模型</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15669507058461.html">
+                
+                  <h1>SQL99连接</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>等值连接</h4>
+
+<pre class="line-numbers"><code class="language-text">SELECT player_id, a.team_id, player_name, height, team_name FROM player as a, team as b WHERE a.team_id = b.team_id
+SELECT player_id, team_id, player_name, height, team_name FROM player NATURAL JOIN team 
+
+</code></pre>
+
+<h4>Using连接</h4>
+
+<ul>
+<li>USING 指定数据表里的同名字段进行等值连接</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">SELECT player_id, team_id, player_name, height, team_name FROM player JOIN team USING(team_id)
+</code></pre>
+
+<h4>select执行语句顺序</h4>
+
+<p>1、FROM子句组装数据（包括通过ON进行连接）<br/>
+2、WHERE子句进行条件筛选<br/>
+3、GROUP BY分组 <br/>
+4、使用聚集函数进行计算； <br/>
+5、HAVING筛选分组； <br/>
+6、计算所有的表达式； <br/>
+7、SELECT 的字段；<br/>
+8、ORDER BY排序<br/>
+9、LIMIT筛选</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/08/28 08:05 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='SQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>SQL必知必会</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15488133858576.html">
+                
+                  <h1>无法Kill的语句</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>kill</h4>
+
+<ul>
+<li>kill query</li>
+<li>kill connection</li>
+</ul>
+
+<h4>kill query执行原理</h4>
+
+<ul>
+<li>把 session B 的运行状态改成 THD::KILL_QUERY(将变量 killed 赋值为 THD::KILL_QUERY)；</li>
+<li>给 session B 的执行线程发一个信号。让session退出等待，处理THD:KILL_QUERY</li>
+<li>等行锁时，使用的是 pthread_cond_timedwait 函数，这个等待状态可以被唤醒,等待进入InnoDB的循环过程中，没有去判断线程的状态，所以不会进入逻辑终止阶段</li>
+<li> pthread_cond_timedwait 函数，这个等待状态可以被唤醒</li>
+<li> 如果没有判断线程的状态，就不会被唤醒</li>
+</ul>
+
+<h4>kill connection</h4>
+
+<ul>
+<li>把 12 号线程状态设置为 KILL_CONNECTION；</li>
+<li>关掉 12 号线程的网络连接。</li>
+<li>线程依然是killed状态，直到满足进入InnoDB条件后，才会判断线程状态，最后进入终止逻辑状态</li>
+</ul>
+
+<h4>kill无效</h4>
+
+<ul>
+<li>线程没有执行到判断线程状态的逻辑</li>
+<li>终止逻辑耗时比较长</li>
+<li>超大事物被kill</li>
+<li>大查询回滚</li>
+<li>DDL命令执行到最后阶段</li>
+</ul>
+
+<h4>客户端</h4>
+
+<ul>
+<li>连接后操作</li>
+<li>执行 show databases；</li>
+<li>切到 db1 库，执行 show tables；</li>
+<li>把这两个命令的结果用于构建一个本地的哈希表。</li>
+</ul>
+
+<h4>客户端查询返回结果</h4>
+
+<ul>
+<li>一种是本地缓存，也就是在本地开一片内存，先把结果存起来。API 开发，对应的就是 mysql_store_result 方法。</li>
+<li>另一种是不缓存，读一个处理一个。API开发，对应的就是 mysql_use_result 方法。-quick参数</li>
+</ul>
+
+<h4>quick参数效果</h4>
+
+<ul>
+<li>第一点，就是前面提到的，跳过表名自动补全功能。</li>
+<li>第二点，mysql_store_result 需要申请本地内存来缓存查询结果，如果查询结果太大，会耗费较多的本地内存，可能会影响客户端本地机器的性能；</li>
+<li>第三点，是不会把执行命令记录到本地的命令历史文件。</li>
+</ul>
+
+<h4>kill query本质</h4>
+
+<ul>
+<li>这些“kill 不掉”的情况，其实是因为发送 kill 命令的客户端，并没有强行停止目标线程的执行，而只是设置了个状态，并唤醒对应的线程。而被 kill 的线程，需要执行到判断状态的“埋点”，才会开始进入终止逻辑阶段。并且，终止逻辑本身也是需要耗费时间的</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/01/30 09:56 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15669477064349.html">
+                
+                  <h1>删库之后怎么办</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>分类</h4>
+
+<ul>
+<li>使用 delete 语句误删数据行；</li>
+<li>使用 drop table 或者 truncate table 语句误删数据表；</li>
+<li>使用 drop database 语句误删数据库；</li>
+<li>使用 rm 命令误删整个 MySQL 实例</li>
+</ul>
+
+<h4>误删行</h4>
+
+<ul>
+<li> binlog_format=row 和 binlog_row_image=FULL</li>
+<li> 对于 insert 语句，对应的 binlog event 类型是 Write_rows event，把它改成 Delete_rows event 即可；</li>
+<li>同理，对于 delete 语句，也是将 Delete_rows event 改为 Write_rows event；而如果是 Update_rows 的话，binlog 里面记录了数据行修改前和修改后的值，对调这两行的位置即</li>
+<li>sql_safe_updates on</li>
+</ul>
+
+<h4>误删库</h4>
+
+<ul>
+<li>如果原实例没有使用 GTID 模式，只能在应用到包含 12 点的 binlog 文件的时候，先用–stop-position 参数执行到误操作之前的日志，然后再用–start-position 从误操作之后的日志继续执行；</li>
+<li>如果实例使用了 GTID 模式，就方便多了。假设误操作命令的 GTID 是 gtid1，那么只需要执行 set gtid_next=gtid1;begin;commit; 先把这个 GTID 加到临时实例的 GTID 集合，之后按顺序执行 binlog 的时候，就会自动跳过误操作的语句</li>
+</ul>
+
+<h4>加速方法</h4>
+
+<ul>
+<li>只同步误操作的表，使用并行复制技术</li>
+<li>延迟复制从库CHANGE MASTER TO MASTER_DELAY = N</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/08/28 07:15 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15669003383519.html">
+                
+                  <h1>类型转换构造函数，运算符，类成员指针</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>类型转换构造运算符</h4>
+
+<ul>
+<li>operator type() const</li>
+<li>type 表示要转换的类型</li>
+<li>类型转换运算符，没有形参</li>
+<li>必须定义为类的成员函数</li>
+</ul>
+
+<h4>定义函数指针</h4>
+
+<ul>
+<li>typedef void(*func)(int);</li>
+<li>using func = void(*)(int)</li>
+</ul>
+
+<h4>类成员函数指针</h4>
+
+<ul>
+<li>void (A::*ptr)(int)</li>
+<li>成员函数是属于类的，和对象没有关系</li>
+<li>(a.*ptr)(12);</li>
+</ul>
+
+<h4>静态成员函数</h4>
+
+<ul>
+<li>void (*s_ptr)(int) = &amp;A::s_func;</li>
+<li>s_ptr(1200);</li>
+</ul>
+
+<h4>类成员变量指针</h4>
+
+<ul>
+<li>int A::*t = &amp;A::m_i;</li>
+<li>并不是真正的地址，而是该成员变量的偏移量</li>
+</ul>
+
+<h4>静态成员变量</h4>
+
+<ul>
+<li>有真正的内存地址</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/08/27 18:05 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
@@ -305,48 +753,52 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15652730246424.html">
+                <a class="clearlink" href="15668690739240.html">
                 
-                  <h1>HTTP优化</h1>
+                  <h1>搜索引擎的算法</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>消耗</h4>
+                        	<h4>结构</h4>
 
 <ul>
-<li>产生用于密钥交换的临时公私钥对（ECDHE）；</li>
-<li>验证证书时访问 CA 获取 CRL 或者 OCSP；</li>
-<li>非对称加密解密处理“Pre-Master”。</li>
+<li>搜集 利用爬虫爬取网页。分析，主要负责网页内容抽取、分词，构建临时索引，计算 PageRank 值这几部分工作</li>
+<li>分析 主要负责网页内容抽取、分词，构建临时索引，计算 PageRank 值这几部分工作</li>
+<li>索引 主要负责网页内容抽取、分词，构建临时索引，计算 PageRank 值这几部分工作</li>
+<li>查询 查询，主要负责响应用户的请求，根据倒排索引获取相关网页，计算网页排名，返回查询结果给用户</li>
 </ul>
 
-<h4>硬件优化</h4>
+<h4>搜集</h4>
 
 <ul>
-<li>CPU内建AES优化</li>
-<li>SSL加速卡 Tengine</li>
-<li>SSl加速服务器</li>
+<li>获取页面链接  把整个页面看作一个大的字符串，我们可以利用字符串匹配算法，在这个大字符串中，搜索这样一个网页标签，然后顺序读取之间的字符串。这其实就是网页链接</li>
+<li>网页判重 利用布隆过滤器 bloom_filter.bin</li>
+<li>原始网页存储文件 </li>
+<li>网页链接及其编号的对应文件 doc_id.bin</li>
 </ul>
 
-<h4>软件优化</h4>
+<h4>分析</h4>
 
 <ul>
-<li>协议优化</li>
-<li>证书优化 证书传输和验证</li>
+<li>抽取文本信息</li>
+<li>分词并且创建临时索引 单词编号对应文档</li>
+<li>单词编号对应的单词</li>
 </ul>
 
-<h4>False start</h4>
+<h4>索引</h4>
 
 <ul>
-<li>False Start 有抢跑的意思，意味着不按规则行事。TLS False Start 是指客户端在发送 Change Cipher Spec Finished 同时发送应用数据（如 HTTP 请求），服务端在 TLS 握手完成时直接返回应用数据（如 HTTP 响应）。这样，应用数据的发送实际上并未等到握手全部完成，故谓之抢跑。这个过程如下图所示：</li>
+<li>临时索引构建成倒排索引</li>
+<li>归并排序将脸时索引合并成排好序的临时索引，然后顺序扫描合并成倒排索引</li>
+<li>每个单词编号在倒排索引文件中的偏移位置。我们把这个文件命名为 term_offset.bin</li>
 </ul>
 
-<h4>会话复用</h4>
+<h4>查询</h4>
 
 <ul>
-<li>第一种叫“Session ID”，就是客户端和服务器首次连接后各自保存一个会话的 ID 号，内存里存储主密钥和其他相关的信</li>
-<li>session ticket 存储的责任由服务器转移到了客户端，服务器加密会话信息，用“New Session Ticket”消息发给客户端，让客户端保存</li>
-<li>PSK 发送 Ticket 的同时会带上应用数据（Early Data），免去了 1.2 里的服务器确认步骤，这种方式叫“Pre-shared Key”，简称为“PSK”</li>
+<li>输入某个查询文本的时候，我们先对用户输入的文本进行分词处理。假设分分词之后，我们得到 k 个单词</li>
+<li></li>
 </ul>
 
                         
@@ -356,172 +808,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/08/08 22:03 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='http_study.html'>http_study</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15652717124568.html">
-                
-                  <h1>TSL连接过程</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>子协议</h4>
-
-<ul>
-<li>记录协议</li>
-<li>警报协议</li>
-<li>握手协议</li>
-<li>变更密码规范协议</li>
-</ul>
-
-<h4>握手流程</h4>
-
-<ul>
-<li>client random params</li>
-<li>server random params </li>
-<li>密码套件</li>
-<li>ECDHE算法</li>
-</ul>
-
-<h4>TLS1.3</h4>
-
-<ul>
-<li>前向安全</li>
-</ul>
-
-<h4>验证CA的流程</h4>
-
-<ul>
-<li>服务器返回的是证书链（不包括根证书，根证书预置在浏览器中），然后浏览器就可以使用信任的根证书（根公钥）解析证书链的根证书得到一级证书的公钥+摘要验签，然后拿一级证书的公钥解密一级证书拿到二级证书的公钥和摘要验签，再然后拿二级证书的公钥解密二级证书得到服务器的公钥和摘要验签，验证过程就结束了</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/08 21:41 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='http_study.html'>http_study</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15652703560020.html">
-                
-                  <h1>Kafka动态配置</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>Dynamic Update Mode</h4>
-
-<ul>
-<li>read-only</li>
-<li>pre-broker</li>
-<li>cluster-wide</li>
-</ul>
-
-<h4>使用场景</h4>
-
-<ul>
-<li>动态调整 Broker 端各种线程池大小，实时应对突发流量。</li>
-<li>动态调整 Broker 端连接信息或安全配置信息。</li>
-<li>动态更新 SSL Keystore 有效期。</li>
-<li>动态调整 Broker 端 Compact 操作性能。</li>
-<li>实时变更 JMX 指标收集器 (JMX Metrics Reporter)。</li>
-</ul>
-
-<h4>参数</h4>
-
-<ul>
-<li>log.retention.ms 日志停留时长</li>
-<li>num.io.threads 和 num.network.threads。</li>
-<li>SSL参数ssl.keystore.type、ssl.keystore.location、ssl.keystore.password 和 ssl.key.password</li>
-<li>num.replica.fetchers 增加该参数值，确保有充足的线程可以执行 Follower 副本向 Leader 副本的拉取</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/08 21:19 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Kafka.html'>Kafka</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15652277691609.html">
-                
-                  <h1>动态规划</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>三个特征</h4>
-
-<ul>
-<li>最优子结构</li>
-<li>无后效性</li>
-<li>重复子问题</li>
-</ul>
-
-<h4>动态规划问题思路</h4>
-
-<ul>
-<li>回溯加备忘录 回溯算法实现 - 定义状态 - 画递归树 - 找重复子问题 - 画状态转移表 - 根据递推关系填表 - 将填表过程翻译成代码</li>
-<li>状态转移表法 找最优子结构 - 写状态转移方程 - 将状态转移方程翻译成代码。</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/08 09:29 上午</span>
+                    <span class="date">2019/08/27 09:24 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
@@ -538,58 +825,42 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15651863685389.html">
+                <a class="clearlink" href="15667846632853.html">
                 
-                  <h1>主题管理</h1>
+                  <h1>Redis常用数据结构</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>主题变更</h4>
+                        	<h4>列表</h4>
 
 <ul>
-<li>主题分区变更</li>
-<li>主题级别参数</li>
-<li>变更副本</li>
-<li>修改主题限速</li>
+<li>压缩列表</li>
+<li>循环链表</li>
+<li>额外定义一个 list 结构体，来组织链表的首、尾指针，还有长度等信息</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-text">bin/kafka-configs.sh --zookeeper zookeeper_host:port --alter --add-config &#39;leader.replication.throttled.rate=104857600,follower.replication.throttled.rate=104857600&#39; --entity-type brokers --entity-name 0
-
-bin/kafka-configs.sh --zookeeper zookeeper_host:port --alter --add-config &#39;leader.replication.throttled.replicas=*,follower.replication.throttled.replicas=*&#39; --entity-type topics --entity-name test
-
-</code></pre>
+<h4>字典</h4>
 
 <ul>
-<li>主题分区迁移</li>
+<li>使用压缩列表条件</li>
+<li>字典中保存的键和值的大小都要小于 64 字节；</li>
+<li>字典中键值对的个数要小于 512 个</li>
+<li>不满足条件就使用散列表来实现字典类型</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-text">bin/kafka-topics.sh --bootstrap-server broker_host:port --delete  --topic &lt;topic_name&gt;
-</code></pre>
-
-<h4>主题管理和运维</h4>
+<h4>集合</h4>
 
 <ul>
-<li>查看消费者组状态</li>
+<li>基于数组</li>
+<li>散列表</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-text">kafka-console-consumer.sh --bootstrap-server master:9092 --topic __consumer_offsets --formatter &quot;kafka.coordinator.group.GroupMetadataManager\$GroupMetadataMessageFormatter&quot; --from-beginning
-</code></pre>
-
-<h4>常见问题</h4>
-
-<h5>主题删除失败怎么处理</h5>
+<h4>有序集合</h4>
 
 <ul>
-<li>第 1 步，手动删除 ZooKeeper 节点 /admin/delete_topics 下以待删除主题为名的 znode。</li>
-<li>第 2 步，手动删除该主题在磁盘上的分区目录。</li>
-<li>第 3 步，在 ZooKeeper 中执行 rmr /controller，触发 Controller 重选举，刷新 Controller 缓存。</li>
-</ul>
-
-<h5>__consumer_offsets占用太多的磁盘</h5>
-
-<ul>
-<li>kafka-log-cleaner-thread 前缀的线程挂掉了</li>
+<li>跳表</li>
+<li>压缩表</li>
 </ul>
 
                         
@@ -599,210 +870,10 @@ bin/kafka-configs.sh --zookeeper zookeeper_host:port --alter --add-config &#39;l
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/08/07 21:59 下午</span>
+                    <span class="date">2019/08/26 09:57 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Kafka.html'>Kafka</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15651859939266.html">
-                
-                  <h1>虚拟化之内存</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>内存分类</h4>
-
-<ul>
-<li>虚拟机里面的虚拟内存（Guest OS Virtual Memory，GVA），这是虚拟机里面的进程看到的内存空间；</li>
-<li>虚拟机里面的物理内存（Guest OS Physical Memory，GPA），这是虚拟机里面的操作系统看到的内存，它认为这是物理内存；</li>
-<li>物理机的虚拟内存（Host Virtual Memory，HVA），这是物理机上的 qemu 进程看到的内存空间；</li>
-<li>物理机的物理内存（Host Physical Memory，HPA），这是物理机上的操作系统看到的内存。</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/07 21:53 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15651838501089.html">
-                
-                  <h1>虚拟化之CPU</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>创建虚拟机</h4>
-
-<ul>
-<li>kvm_create_vm 创建一个 struct kvm 结构。这个结构在内核里面代表一个虚拟机</li>
-</ul>
-
-<h4>虚拟机本质</h4>
-
-<ul>
-<li>KVM 的内核模块是一个文件，可以通过 ioctl 进行操作。基于这个内核模块创建的 VM 也是一个文件，也可以通过 ioctl 进行操作。在这个 VM 上创建的 vcpu 同样是一个文件，同样可以通过 ioctl 进行操作</li>
-</ul>
-
-<h4>VMCS</h4>
-
-<ul>
-<li>MSR(特殊模块寄存器), 辅助完成某些功能(包括系统调用)</li>
-<li>VMCS的全称是 Virtual Machine Control Structure</li>
-<li>Intel 实现 CPU 虚拟化，记录 vCPU 状态的一个关键数据结构</li>
-</ul>
-
-<h4>VMCS结构信息</h4>
-
-<ul>
-<li>Guest-state area，即 vCPU 的状态信息，包括 vCPU 的基本运行环境，例如寄存器等。</li>
-<li>Host-state area，是物理 CPU 的状态信息。物理 CPU 和 vCPU 之间也会来回切换，所以，VMCS 中既要记录 vCPU 的状态，也要记录物理 CPU 的状态。</li>
-<li>VM-execution control fields，对 vCPU 的运行行为进行控制。例如，发生中断怎么办，是否使用 EPT（Extended Page Table）功能</li>
-</ul>
-
-<h4>重要操作</h4>
-
-<ul>
-<li>VM-Entry，我们称为从根模式切换到非根模式，也即切换到 guest 上，这个时候 CPU 上运行的是虚拟机。</li>
-<li>VM-Exit 我们称为 CPU 从非根模式切换到根模式，也即从 guest 切换到宿主机</li>
-<li><img src="media/15651838501089/1ec7600be619221dfac03e6ade67f7dc.png" alt="1ec7600be619221dfac03e6ade67f7d"/></li>
-</ul>
-
-<h4>虚拟cpu运行</h4>
-
-<pre class="line-numbers"><code class="language-text"> do {
-        if (cpu_can_run(cpu)) {
-            r = kvm_cpu_exec(cpu);
-        }
-        qemu_wait_io_event(cpu);
-    } while (!cpu-&gt;unplug || cpu_can_run(cpu));
-int kvm_cpu_exec(CPUState *cpu)
-{
-    struct kvm_run *run = cpu-&gt;kvm_run;
-    int ret, run_ret;
-......
-    do {
-......
-        run_ret = kvm_vcpu_ioctl(cpu, KVM_RUN, 0);
-......
-        switch (run-&gt;exit_reason) {
-        case KVM_EXIT_IO:
-    
-</code></pre>
-
-<ul>
-<li>如果一直是客户机的操作系统占用这个 CPU，则会一直停留在这一行运行，一旦这个调用返回了，就说明 CPU 进入 VM-Exit 退出客户机模式，将 CPU 交还给宿主机。在循环中，我们会对退出的原因 exit_reason 进行分析处理，因为有了 I/O，还有了中断等，做相应的处理。处理完毕之后，再次循环，再次通过 VM-Entry，进入客户机模式。如此循环，直到虚拟机正常或者异常退出</li>
-</ul>
-
-<h4>总结</h4>
-
-<ul>
-<li><img src="media/15651838501089/c43639f7024848aa3e828bcfc10ca467.png" alt="c43639f7024848aa3e828bcfc10ca467"/></li>
-<li>CPU 初始化的时候，会调用 pc_new_cpu 创建一个虚拟 CPU，它会调用 CPU 这个类的初始化函数。</li>
-<li>每一个虚拟 CPU 会调用 qemu_thread_create 创建一个线程，线程的执行函数为 qemu_kvm_cpu_thread_fn。</li>
-<li>在虚拟 CPU 对应的线程执行函数中，我们先是调用 kvm_vm_ioctl(KVM_CREATE_VCPU)，在内核的 KVM 里面，创建一个结构 struct vcpu_vmx，表示这个虚拟 CPU。在这个结构里面，有一个 VMCS，用于保存当前虚拟机 CPU 的运行时的状态，用于状态切换。</li>
-<li>在虚拟 CPU 对应的线程执行函数中，我们接着调用 kvm_vcpu_ioctl(KVM_RUN)，在内核的 KVM 里面运行这个虚拟机 CPU。运行的方式是保存宿主机的寄存器，加载客户机的寄存器，然后调用 __ex(ASM_VMX_VMLAUNCH) 或者 __ex(ASM_VMX_VMRESUME)，进入客户机模式运行。一旦退出客户机模式，就会保存客户机寄存器，加载宿主机寄存器，进入宿主机模式运行，并且会记录退出虚拟机模式的原因。大部分的原因是等待 I/O，因而宿主机调用 kvm_handle_io 进行处理。</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/07 21:17 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15651826803428.html">
-                
-                  <h1>虚拟化</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>KVM内核模块</h4>
-
-<ul>
-<li>通过 /dev/kvm 暴露接口，用户态程序可以通过 ioctl 来访问这个接口</li>
-<li><img src="media/15651826803428/f5ee1a44d7c4890e411c2520507ddc62.png" alt="f5ee1a44d7c4890e411c2520507dd"/></li>
-<li>Qemu 将 KVM 整合进来，将有关 CPU 指令的部分交由内核模块来做，就是 qemu-kvm </li>
-<li>网络需要virtio_net</li>
-<li>存储需要virtio_blk</li>
-</ul>
-
-<h4>kvm工作原理</h4>
-
-<ul>
-<li><img src="media/15651826803428/f748fd6b6b84fa90a1044a92443c3522.png" alt="f748fd6b6b84fa90a1044a92443"/></li>
-</ul>
-
-<h4>总结</h4>
-
-<ul>
-<li>虚拟化的本质是用 qemu 的软件模拟硬件，但是模拟方式比较慢，需要加速；</li>
-<li>虚拟化主要模拟 CPU、内存、网络、存储，分别有不同的加速办法；</li>
-<li>CPU 和内存主要使用硬件辅助虚拟化进行加速，需要配备特殊的硬件才能工作；</li>
-<li>网络和存储主要使用特殊的半虚拟化驱动加速，需要加载特殊的驱动程序。</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/07 20:58 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
+          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -876,8 +947,6 @@ int kvm_cpu_exec(CPUState *cpu)
             <a href="Golang.html"><strong>Golang</strong></a>
         
             <a href="Django.html"><strong>Django</strong></a>
-        
-            <a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html"><strong>C++设计模式实战</strong></a>
         
             <a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html"><strong>深入剖析Kubernetes</strong></a>
         
@@ -956,6 +1025,18 @@ int kvm_cpu_exec(CPUState *cpu)
 	      
 		      
 			      <li class="post">
+			        <a href="15818128782116.html">Singleton</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15748977610569.html">State</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817697569868.html">字符串分割</a>
 			      </li>
 		     
@@ -968,19 +1049,7 @@ int kvm_cpu_exec(CPUState *cpu)
 		  
 		      
 			      <li class="post">
-			        <a href="15814649492497.html">Simple Factory</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814189410719.html">代码的可测试性</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814188057978.html">重构</a>
+			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

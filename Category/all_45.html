@@ -87,8 +87,6 @@
         
             <li><a href="Django.html">Django</a></li>
         
-            <li><a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html">C++设计模式实战</a></li>
-        
             <li><a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html">深入剖析Kubernetes</a></li>
         
             <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html">数据结构和算法</a></li>
@@ -172,272 +170,347 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15500274588408.html">
+                <a class="clearlink" href="15435593108560.html">
                 
-                  <h1>insert语句的锁</h1>
+                  <h1>CPU使用率</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>insert循环写入</h4>
+                        	<h4>节拍率</h4>
 
 <ul>
-<li>导致在表 t 上做全表扫描，并且会给索引 c 上的所有间隙都加上共享的 next-key lock。所以，这个语句执行期间，其他事务不能在这个表上插入数据</li>
-<li>一边遍历数据，一边更新数据的情况，如果读出来的数据直接写回原表，就可能在遍历过程中，读到刚刚插入的记录，新插入的记录如果参与计算逻辑，就跟语义不符</li>
+<li>为了维护 CPU 时间，Linux 通过事先定义的节拍率（内核中表示为 HZ），触发时间中断，并使用全局变量 Jiffies 记录了开机以来的节拍数</li>
+<li>nice 低优先级用户态CPU时间，就是进程的nice值被调整被1~19之间时的CPU时间</li>
+<li> steal 当前系统运行虚拟机的时候，被虚拟机占用的CPU时间</li>
 </ul>
 
-<h4>insert唯一键冲突</h4>
+<h4>CPU使用率</h4>
 
 <ul>
-<li>冲突后主键和唯一健索引冲突加的都是next-key lock</li>
-<li></li>
+<li>CPU使用率 = 1 - (空闲时间/总CPU时间)</li>
+<li>平均CPU使用率 = 1 - (空间时间new - 空闲时间old)/(总cpu时间new - 总空闲时间old)</li>
 </ul>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/13 11:10 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15500241034354.html">
-                
-                  <h1>评估系统的网络性能</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>性能测试</h4>
+<h4>PID不停的在变，CPU使用率高</h4>
 
 <ul>
-<li>带宽</li>
-<li>吞吐量</li>
-<li>延迟</li>
-<li>PPS</li>
-<li></li>
+<li>要么是这些进程在不停地重启，要么就是全新的进程，这无非也就两个原因：</li>
+<li>第一个原因，进程在不停地崩溃重启，比如因为段错误、配置错误等等，这时，进程在退出后可能又被监控系统自动重启了。</li>
+<li>第二个原因，这些进程都是短时进程，也就是在其他应用内部通过 exec 调用的外面命令。这些命令一般都只运行很短的时间就会结束，你很难用 top 这种间隔时间比较长的工具发现</li>
 </ul>
 
-<h4>各协议层的性能</h4>
+<h4>查看父进程</h4>
 
 <ul>
-<li>web应用层 测试http/https</li>
-<li>服务器 tcp/udp</li>
-<li>交换机和路由器 PPS 网络层的转发性能</li>
+<li>pstree | grep stress</li>
+<li>短时进程</li>
 </ul>
 
-<h5>网络接口层</h5>
+<h4>execsnoop</h4>
+
+<pre class="line-numbers"><code class="language-text">  #!/bin/bash
+#
+# execsnoop - trace process exec() with arguments.
+#             Written using Linux ftrace.
+#
+# This shows the execution of new processes, especially short-lived ones that
+# can be missed by sampling tools such as top(1).
+#
+# USAGE: ./execsnoop [-hrt] [-n name]
+#
+# REQUIREMENTS: FTRACE and KPROBE CONFIG, sched:sched_process_fork tracepoint,
+# and either the sys_execve, stub_execve or do_execve kernel function. You may
+# already have these on recent kernels. And awk.
+#
+# This traces exec() from the fork()-&gt;exec() sequence, which means it won&#39;t
+# catch new processes that only fork(). With the -r option, it will also catch
+# processes that re-exec. It makes a best-effort attempt to retrieve the program
+# arguments and PPID; if these are unavailable, 0 and &quot;[?]&quot; are printed
+# respectively. There is also a limit to the number of arguments printed (by
+# default, 8), which can be increased using -a.
+#
+# This implementation is designed to work on older kernel versions, and without
+# kernel debuginfo. It works by dynamic tracing an execve kernel function to
+# read the arguments from the %si register. The sys_execve function is tried
+# first, then stub_execve and do_execve. The sched:sched_process_fork
+# tracepoint is used to get the PPID. This program is a workaround that should be
+# improved in the future when other kernel capabilities are made available. If
+# you need a more reliable tool now, then consider other tracing alternatives
+# (eg, SystemTap). This tool is really a proof of concept to see what ftrace can
+# currently do.
+#
+# From perf-tools: https://github.com/brendangregg/perf-tools
+#
+# See the execsnoop(8) man page (in perf-tools) for more info.
+#
+# COPYRIGHT: Copyright (c) 2014 Brendan Gregg.
+#
+#  This program is free software; you can redistribute it and/or
+#  modify it under the terms of the GNU General Public License
+#  as published by the Free Software Foundation; either version 2
+#  of the License, or (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software Foundation,
+#  Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#
+#  (http://www.gnu.org/copyleft/gpl.html)
+#
+# 07-Jul-2014   Brendan Gregg   Created this.
+
+### default variables
+tracing=/sys/kernel/debug/tracing
+flock=/var/tmp/.ftrace-lock; wroteflock=0
+opt_duration=0; duration=; opt_name=0; name=; opt_time=0; opt_reexec=0
+opt_argc=0; argc=8; max_argc=16; ftext=
+trap &#39;:&#39; INT QUIT TERM PIPE HUP # sends execution to end tracing section
+
+function usage {
+    cat &lt;&lt;-END &gt;&amp;2
+    USAGE: execsnoop [-hrt] [-a argc] [-d secs] [name]
+                     -d seconds      # trace duration, and use buffers
+                     -a argc         # max args to show (default 8)
+                     -r              # include re-execs
+                     -t              # include time (seconds)
+                     -h              # this usage message
+                     name            # process name to match (REs allowed)
+      eg,
+           execsnoop                 # watch exec()s live (unbuffered)
+           execsnoop -d 1            # trace 1 sec (buffered)
+           execsnoop grep            # trace process names containing grep
+           execsnoop &#39;udevd$&#39;        # process names ending in &quot;udevd&quot;
+
+    See the man page and example file for more info.
+END
+    exit
+}
+
+function warn {
+    if ! eval &quot;$@&quot;; then
+        echo &gt;&amp;2 &quot;WARNING: command failed \&quot;$@\&quot;&quot;
+    fi
+}
+
+function end {
+    # disable tracing
+    echo 2&gt;/dev/null
+    echo &quot;Ending tracing...&quot; 2&gt;/dev/null
+    cd $tracing
+    warn &quot;echo 0 &gt; events/kprobes/$kname/enable&quot;
+    warn &quot;echo 0 &gt; events/sched/sched_process_fork/enable&quot;
+    warn &quot;echo -:$kname &gt;&gt; kprobe_events&quot;
+    warn &quot;echo &gt; trace&quot;
+    (( wroteflock )) &amp;&amp; warn &quot;rm $flock&quot;
+}
+
+function die {
+    echo &gt;&amp;2 &quot;$@&quot;
+    exit 1
+}
+
+function edie {
+    # die with a quiet end()
+    echo &gt;&amp;2 &quot;$@&quot;
+    exec &gt;/dev/null 2&gt;&amp;1
+    end
+    exit 1
+}
+
+### process options
+while getopts a:d:hrt opt
+do
+    case $opt in
+    a)  opt_argc=1; argc=$OPTARG ;;
+    d)  opt_duration=1; duration=$OPTARG ;;
+    r)  opt_reexec=1 ;;
+    t)  opt_time=1 ;;
+    h|?)    usage ;;
+    esac
+done
+shift $(( $OPTIND - 1 ))
+if (( $# )); then
+    opt_name=1
+    name=$1
+    shift
+fi
+(( $# )) &amp;&amp; usage
+
+### option logic
+(( opt_pid &amp;&amp; opt_name )) &amp;&amp; die &quot;ERROR: use either -p or -n.&quot;
+(( opt_pid )) &amp;&amp; ftext=&quot; issued by PID $pid&quot;
+(( opt_name )) &amp;&amp; ftext=&quot; issued by process name \&quot;$name\&quot;&quot;
+(( opt_file )) &amp;&amp; ftext=&quot;$ftext for filenames containing \&quot;$file\&quot;&quot;
+(( opt_argc &amp;&amp; argc &gt; max_argc )) &amp;&amp; die &quot;ERROR: max -a argc is $max_argc.&quot;
+if (( opt_duration )); then
+    echo &quot;Tracing exec()s$ftext for $duration seconds (buffered)...&quot;
+else
+    echo &quot;Tracing exec()s$ftext. Ctrl-C to end.&quot;
+fi
+
+### select awk
+if (( opt_duration )); then
+    [[ -x /usr/bin/mawk ]] &amp;&amp; awk=mawk || awk=awk
+else
+    # workarounds for mawk/gawk fflush behavior
+    if [[ -x /usr/bin/gawk ]]; then
+        awk=gawk
+    elif [[ -x /usr/bin/mawk ]]; then
+        awk=&quot;mawk -W interactive&quot;
+    else
+        awk=awk
+    fi
+fi
+
+### check permissions
+cd $tracing || die &quot;ERROR: accessing tracing. Root user? Kernel has FTRACE?
+    debugfs mounted? (mount -t debugfs debugfs /sys/kernel/debug)&quot;
+
+### ftrace lock
+[[ -e $flock ]] &amp;&amp; die &quot;ERROR: ftrace may be in use by PID $(cat $flock) $flock&quot;
+echo $$ &gt; $flock || die &quot;ERROR: unable to write $flock.&quot;
+wroteflock=1
+
+### build probe
+if [[ -x /usr/bin/getconf ]]; then
+    bits=$(getconf LONG_BIT)
+else
+    bits=64
+    [[ $(uname -m) == i* ]] &amp;&amp; bits=32
+fi
+(( offset = bits / 8 ))
+function makeprobe {
+    func=$1
+    kname=execsnoop_$func
+    kprobe=&quot;p:$kname $func&quot;
+    i=0
+    while (( i &lt; argc + 1 )); do
+        # p:kname do_execve +0(+0(%si)):string +0(+8(%si)):string ...
+        kprobe=&quot;$kprobe +0(+$(( i * offset ))(%si)):string&quot;
+        (( i++ ))
+    done
+}
+# try in this order: sys_execve, stub_execve, do_execve
+makeprobe sys_execve
+
+### setup and begin tracing
+echo nop &gt; current_tracer
+if ! echo $kprobe &gt;&gt; kprobe_events 2&gt;/dev/null; then
+    makeprobe stub_execve
+    if ! echo $kprobe &gt;&gt; kprobe_events 2&gt;/dev/null; then
+        makeprobe do_execve
+        if ! echo $kprobe &gt;&gt; kprobe_events 2&gt;/dev/null; then
+            edie &quot;ERROR: adding a kprobe for execve. Exiting.&quot;
+        fi
+    fi
+fi
+if ! echo 1 &gt; events/kprobes/$kname/enable; then
+    edie &quot;ERROR: enabling kprobe for execve. Exiting.&quot;
+fi
+if ! echo 1 &gt; events/sched/sched_process_fork/enable; then
+    edie &quot;ERROR: enabling sched:sched_process_fork tracepoint. Exiting.&quot;
+fi
+echo &quot;Instrumenting $func&quot;
+(( opt_time )) &amp;&amp; printf &quot;%-16s &quot; &quot;TIMEs&quot;
+printf &quot;%6s %6s %s\n&quot; &quot;PID&quot; &quot;PPID&quot; &quot;ARGS&quot;
+
+#
+# Determine output format. It may be one of the following (newest first):
+#           TASK-PID   CPU#  ||||    TIMESTAMP  FUNCTION
+#           TASK-PID    CPU#    TIMESTAMP  FUNCTION
+# To differentiate between them, the number of header fields is counted,
+# and an offset set, to skip the extra column when needed.
+#
+offset=$($awk &#39;BEGIN { o = 0; }
+    $1 == &quot;#&quot; &amp;&amp; $2 ~ /TASK/ &amp;&amp; NF == 6 { o = 1; }
+    $2 ~ /TASK/ { print o; exit }&#39; trace)
+
+### print trace buffer
+warn &quot;echo &gt; trace&quot;
+( if (( opt_duration )); then
+    # wait then dump buffer
+    sleep $duration
+    cat -v trace
+else
+    # print buffer live
+    cat -v trace_pipe
+fi ) | $awk -v o=$offset -v opt_name=$opt_name -v name=$name \
+    -v opt_duration=$opt_duration -v opt_time=$opt_time -v kname=$kname \
+    -v opt_reexec=$opt_reexec &#39;
+    # common fields
+    $1 != &quot;#&quot; {
+        # task name can contain dashes
+        comm = pid = $1
+        sub(/-[0-9][0-9]*/, &quot;&quot;, comm)
+        sub(/.*-/, &quot;&quot;, pid)
+    }
+
+    $1 != &quot;#&quot; &amp;&amp; $(4+o) ~ /sched_process_fork/ {
+        cpid=$0
+        sub(/.* child_pid=/, &quot;&quot;, cpid)
+        sub(/ .*/, &quot;&quot;, cpid)
+        getppid[cpid] = pid
+        delete seen[pid]
+    }
+
+    $1 != &quot;#&quot; &amp;&amp; $(4+o) ~ kname {
+        if (seen[pid])
+            next
+        if (opt_name &amp;&amp; comm !~ name)
+            next
+
+        #
+        # examples:
+        # ... arg1=&quot;/bin/echo&quot; arg2=&quot;1&quot; arg3=&quot;2&quot; arg4=&quot;3&quot; ...
+        # ... arg1=&quot;sleep&quot; arg2=&quot;2&quot; arg3=(fault) arg4=&quot;&quot; ...
+        # ... arg1=&quot;&quot; arg2=(fault) arg3=&quot;&quot; arg4=&quot;&quot; ...
+        # the last example is uncommon, and may be a race.
+        #
+        if ($0 ~ /arg1=&quot;&quot;/) {
+            args = comm &quot; [?]&quot;
+        } else {
+            args=$0
+            sub(/ arg[0-9]*=\(fault\).*/, &quot;&quot;, args)
+            sub(/.*arg1=&quot;/, &quot;&quot;, args)
+            gsub(/&quot; arg[0-9]*=&quot;/, &quot; &quot;, args)
+            sub(/&quot;$/, &quot;&quot;, args)
+            if ($0 !~ /\(fault\)/)
+                args = args &quot; [...]&quot;
+        }
+
+        if (opt_time) {
+            time = $(3+o); sub(&quot;:&quot;, &quot;&quot;, time)
+            printf &quot;%-16s &quot;, time
+        }
+        printf &quot;%6s %6d %s\n&quot;, pid, getppid[pid], args
+        if (!opt_duration)
+            fflush()
+        if (!opt_reexec) {
+            seen[pid] = 1
+            delete getppid[pid]
+        }
+    }
+
+    $0 ~ /LOST.*EVENT[S]/ { print &quot;WARNING: &quot; $0 &gt; &quot;/dev/stderr&quot; }
+&#39;
+
+### end tracing
+end
+</code></pre>
 
 <ul>
-<li>pktgen测试PPS</li>
-</ul>
-
-<h4>TCP和UDP</h4>
-
-<ul>
-<li>iperf</li>
-<li>netperf</li>
-</ul>
-
-<h4>http</h4>
-
-<ul>
-<li>ab</li>
-<li>webbench</li>
-</ul>
-
-<h4>应用负载请求</h4>
-
-<ul>
-<li>wrk</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/13 10:15 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15499501670261.html">
-                
-                  <h1>Libevent</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>优点</h4>
-
-<ul>
-<li>事件驱动</li>
-<li>专注于网络</li>
-<li>支持I/O，定时器和信号</li>
-</ul>
-
-<h4>函数解析</h4>
-
-<ul>
-<li>event_new(struct event_base <em>base, evutil_socket_t fd, short events, void (</em>cb)(evutil_socket_t, short, void *), void *arg)</li>
-<li>arg的参数通过回调用函数的第三个参数传进来</li>
-<li>buffer io event是带缓冲的event</li>
-<li>尽量不要使用bufferevent</li>
-<li>epoll_create和epoll_create1的区别</li>
-<li>persistent event被激活了一次是不会被删掉的</li>
-</ul>
-
-<h4>libevent结构</h4>
-
-<ul>
-<li><img src="media/15499501670261/15502973029899.jpg" alt=""/></li>
-<li><img src="media/15499501670261/15502971650987.jpg" alt=""/></li>
-</ul>
-
-<h4>thrift</h4>
-
-<ul>
-<li>IO线程是和客户端绑定</li>
-<li>监听的socket所在的线程会调用registerEvents，创建2个event：serverEvent用于服务监听，notificationEvent是一个socketpair，用于线程池里线程间的通信；</li>
-<li>当serverEvent变成可读时，调用到handleEvent，接受该请求，并且调用createConnection创建TConnection对象，然后再把tconnectionevent时间添加到libevent；</li>
-<li>当TConnection对象被libevent调用到有事件发生时，读取对端发送过来的内容（workSocket），并且调用transition，把读取到的内容封装成一个task<br/>
-添加到ThreadManager，之后由ThreadManager::Worker（具体的线程）主动去任务池里获取任务并调用任务的run方法。</li>
-<li>此时IO线程中的TConnection等待Worker执行完通知，在被通知之前会把事件从libevent中删除，等收到通知后，再重新添加事件到libevent中。</li>
-</ul>
-
-<h4>thrift不足</h4>
-
-<ul>
-<li>Worker主动从任务队列中获取任务，需要加锁和解锁，这并不是一种优良的处理方法；</li>
-<li>IO Thread在处理客户端同一次连接的多个调用的时序性上，依赖把event从libevent中删掉，等处理完单个调用后再添加进去，影响IO的执行效率。</li>
-<li>debug--&gt;design</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/12 13:42 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15499416717639.html">
-                
-                  <h1>高性能缓存架构</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>缓存穿透</h4>
-
-<ul>
-<li>存储数据不存在</li>
-<li>如果查询存储系统的数据没有找到，则直接设置一个默认值（可以是空值，也可以是具体的值）存到缓存中，这样第二次读取缓存时就会获取到默认值，而不会继续访问存储系统。</li>
-<li>缓存数据生成耗费大量时间或者资源</li>
-</ul>
-
-<h4>缓存雪崩</h4>
-
-<ul>
-<li>对缓存更新操作进行加锁保护，保证只有一个线程能够进行缓存更新，未能获取更新锁的线程要么等待锁释放后重新读取缓存，要么就返回空值或者默认值</li>
-<li>后台更新</li>
-<li>后台线程除了定时更新缓存，还要频繁地去读取缓存</li>
-<li>业务线程发现缓存失效后，通过消息队列发送一条消息通知后台线程更新缓存</li>
-</ul>
-
-<h4>缓存热点</h4>
-
-<ul>
-<li>缓存热点的解决方案就是复制多份缓存副本，将请求分散到多个缓存服务器上，减轻缓存热点导致的单台缓存服务器压力</li>
-</ul>
-
-<h4>思考题</h4>
-
-<ul>
-<li>所在的业务发生过哪些因为缓存导致的线上问题？采取了什么样的解决方案？效果如何？</li>
-<li>双key策略：要缓存的key过期时间是t，key1没有过期时间。每次缓存读取不到key时就返回key1的内容，然后触发一个事件。这个事件会同时更新key和key1。</li>
-<li>下线这个缓存加载功能，改造缓存加载方式，用后台进程去更新缓存，而不用业务访问加载</li>
-</ul>
-
-<h4>缓存设计方案考虑的点</h4>
-
-<ul>
-<li>1.什么数据应该缓存</li>
-<li>2.什么时机触发缓存和以及触发方式是什么</li>
-<li>3.缓存的层次和粒度</li>
-<li>4.缓存的命名规则和失效规则</li>
-<li>5.缓存的监控指标和故障应对方案</li>
-<li>6.可视化缓存数据如 redis 具体 key 内容和大小</li>
-</ul>
-
-<h4>mysql缓存的局限性</h4>
-
-<ul>
-<li>1. mysql第一种缓存叫sql语句结果缓存，但条件比较苛刻，程序员不可控，我们的dba线上都关闭这个功能，具体实现可以查一下</li>
-<li>2. mysql第二种缓存是innodb buffer pool，缓存的是磁盘上的分页数据，不是sql的查询结果，sql的执行过程省不了。而mc，redis这些实际上都是缓存sql的结果，两种缓存方式，性能差很远。</li>
-</ul>
-
-<h4>热点数据存在相当的突发性，临时的扩容似乎也来不及，能否从缓存架构角度如何避免类似微博宕机的事件</h4>
-
-<ul>
-<li>1. 限流</li>
-<li>2. 容器化+动态化</li>
-<li>3. 业务降级，例如限制评论</li>
+<li>基于内核BPF技术实现</li>
 </ul>
 
 <h4>拓展阅读</h4>
 
 <ul>
-<li><a href="https://github.com/qiujiayu/AutoLoadCache">https://github.com/qiujiayu/AutoLoadCache</a></li>
+<li><a href="http://blog.bruceding.com/420.html">http://blog.bruceding.com/420.html</a> </li>
 <li></li>
 </ul>
 
@@ -448,408 +521,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/02/12 11:21 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%9E%B6%E6%9E%84.html'>架构</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15499402437762.html">
-                
-                  <h1>高性能Mysql</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>关系数据库的弱点</h4>
-
-<ul>
-<li>关系数据库存储的是行记录，无法存储数据结构</li>
-<li>关系数据库的 schema 扩展很不方便</li>
-<li>关系数据库在大数据场景下 I/O 较高</li>
-<li>关系数据库的全文搜索功能比较弱</li>
-</ul>
-
-<h4>K-V存储</h4>
-
-<ul>
-<li>解决关系数据库无法存储数据结构的问题</li>
-<li>Redis并不支持完整的ACID事务</li>
-</ul>
-
-<h4>文档数据库</h4>
-
-<ul>
-<li>解决关系数据库强 schema 约束的问题</li>
-<li>新增字段简单</li>
-<li>历史数据不会出错</li>
-<li>可以很容易存储复杂数据</li>
-<li>文档数据库的这个特点，特别适合电商和游戏这类的业务场景</li>
-<li>不支持事务</li>
-<li>无法实现join操作</li>
-</ul>
-
-<h4>列式数据库</h4>
-
-<ul>
-<li>业务同时读取多个列时效率高，因为这些列都是按行存储在一起的，一次磁盘操作就能够把一行数据中的各个列都读取到内存中。</li>
-<li>能够一次性完成对一行中的多个列的写操作，保证了针对行数据写操作的原子性和一致性；否则如果采用列存储，可能会出现某次写操作，有的列成功了，有的列失败了，导致数据不一致</li>
-<li>离线的大数据分析和统计场景中，因为这种场景主要是针对部分列单列进行操作，且数据写入后就无须再更新删除。</li>
-</ul>
-
-<h4>全文搜索引擎</h4>
-
-<ul>
-<li>全文搜索的条件可以随意排列组合，如果通过索引来满足，则索引的数量会非常多。</li>
-<li>全文搜索的模糊匹配方式，索引无法满足，只能用 like 查询，而 like 查询是整表扫描，效率非常低。</li>
-<li>倒排索引</li>
-<li>索引对象是单词和文档</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/12 10:57 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%9E%B6%E6%9E%84.html'>架构</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15499358327518.html">
-                
-                  <h1>Kubernetes默认调度器</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>调度算法</h4>
-
-<ul>
-<li>从集群所有的节点中，根据调度算法挑选出所有可以运行该 Pod 的节点；</li>
-<li>从第一步的结果中，再根据调度算法挑选一个最符合条件的节点作为最终结果。</li>
-</ul>
-
-<h4>调度流程</h4>
-
-<ul>
-<li><img src="media/15499358327518/90343a090a8242ad46d2f82cb6b99b9b.png" alt="90343a090a8242ad46d2f82cb6b99b9b"/></li>
-<li>Informer Path 启动informer来监听ectd的对象变化，将新的Pod添加进调度队列</li>
-<li>对调度器缓存进行更新，尽最大可能将集群信息Cache化，从根本上提高Predicate 和 Priority的效率</li>
-<li>Scheduling Path 从Scheduler Cache获取可以运行pod的宿主机列表nodes,使用Predicate获取node,然后使用priority对上述列表进行打分，选出得分最高的node作为本次的调度结果</li>
-<li>然后将Pod对象的nodeName修改为调度的Node的名字，成为Bind</li>
-</ul>
-
-<h4>Assume和真正的绑定</h4>
-
-<ul>
-<li>Kubernetes 的默认调度器在 Bind 阶段，只会更新 Scheduler Cache 里的 Pod 和 Node 的信息，成为Assume</li>
-<li>Assume后，调度器才会创建一个 Goroutine 来异步地向 APIServer 发起更新 Pod 的请求，来真正完成 Bind 操作。</li>
-</ul>
-
-<h4>二次确认</h4>
-
-<ul>
-<li>当一个新的 Pod 完成调度需要在某个节点上运行起来之前，该节点上的 kubelet 还会通过一个叫作 Admit 的操作来再次验证该 Pod 是否确实能够运行在该节点上。</li>
-</ul>
-
-<h4>Predicates</h4>
-
-<ul>
-<li>GeneralPredicates,负责的是最基础的调度策略</li>
-<li>PodFitsHost 检查宿主机的名字是否跟Pod的spec.nodeName一致</li>
-<li>PodFitsHostPorts解决端口冲突</li>
-<li>PodMatchNodeSelector 检查的是，Pod 的 nodeSelector 或者 nodeAffinity 指定的节点，是否与待考察节点匹配</li>
-<li>Volume相关过滤策略</li>
-<li>NoDiskConflict多个 Pod 声明挂载的持久化 Volume 是否有冲突</li>
-<li>MaxPDVolumeCountPredicate 检查的条件，则是一个节点上某种类型的持久化 Volume 是不是已经超过了一定数目</li>
-<li>VolumeBindingPredicate 的规则。它负责检查的，是该 Pod 对应的 PV 的 nodeAffinity 字段，是否跟某个节点的标签相匹配</li>
-<li>宿主机相关的过滤规则</li>
-<li>PodToleratesNodeTaints，负责检查的就是我们前面经常用到的 Node 的“污点”机制。只有当 Pod 的 Toleration 字段与 Node 的 Taint 字段能够匹配的时候，这个 Pod 才能被调度到该节点上。</li>
-<li>NodeMemoryPressurePredicate，检查的是当前节点的内存是不是已经不够充足，如果是的话，那么待调度 Pod 就不能被调度到该节点上</li>
-<li>Pod 相关的过滤规则</li>
-<li>PodAffinityPredicate。这个规则的作用，是检查待调度 Pod 与 Node 上的已有 Pod 之间的亲密（affinity）和反亲密（anti-affinity）关系</li>
-</ul>
-
-<h4>Predicate</h4>
-
-<ul>
-<li>当开始调度一个 Pod 时，Kubernetes 调度器会同时启动 16 个 Goroutine，来并发地为集群里的所有 Node 计算 Predicates，最后返回可以运行这个 Pod 的宿主机列表。</li>
-</ul>
-
-<h4>Priorities</h4>
-
-<ul>
-<li>LeastRequestedPriority,就是在选择空闲资源（CPU 和 Memory）最多的宿主机</li>
-<li>BalancedResourceAllocation 调度完成后，所有节点里各种资源分配最均衡的那个节点，从而避免一个节点上 CPU 被大量分配、而 Memory 大量剩余的情况</li>
-</ul>
-
-<h4>调度优先级和抢占机制</h4>
-
-<ul>
-<li>解决Pod调度失败时怎么解决的问题</li>
-</ul>
-
-<h4>抢占机制</h4>
-
-<ul>
-<li>抢占发生的原因，一定是一个高优先级的 Pod 调度失败。这一次，我们还是称这个 Pod 为“抢占者”，称被抢占的 Pod 为“牺牲者”(victims)</li>
-<li>通过两个队列完成</li>
-<li>activeQ 都是下一个调度周期需要调度的对象</li>
-<li>unschedulableQ，专门用来存放调度失败的 Pod</li>
-</ul>
-
-<h4>调度器抢占操作</h4>
-
-<ul>
-<li>第一步，调度器会检查牺牲者列表，清理这些 Pod 所携带的 nominatedNodeName 字段。</li>
-<li>第二步，调度器会把抢占者的 nominatedNodeName，设置为被抢占的 Node 的名字。</li>
-<li>第三步，调度器会开启一个 Goroutine，同步地删除牺牲者。</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/12 09:43 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15498690715501.html">
-                
-                  <h1>Epoll原理</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>常见问题</h4>
-
-<ul>
-<li>Epoll有没有数量限制</li>
-<li>WebSocket推送的时候出现卡顿问题</li>
-<li>AIO为什么不能坐高性能网络IO</li>
-<li>用户态到内核态交互的性能低</li>
-</ul>
-
-<h4>问题</h4>
-
-<ul>
-<li>异步IO数据量太大会导致用户态溢出</li>
-<li>信号驱动IO</li>
-<li>EPOLL_SIZE是指有数据返回的事件集合</li>
-<li>epoll_create1</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/11 15:11 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15498670713472.html">
-                
-                  <h1>自增主键</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>作用</h4>
-
-<ul>
-<li>自增主键可以让主键索引尽量地保持递增顺序插入，避免了页分裂，因此索引更紧凑。</li>
-</ul>
-
-<h4>自增值的保存策略</h4>
-
-<ul>
-<li>MyISAM 引擎的自增值保存在数据文件中。</li>
-<li>InnoDB 引擎的自增值，其实是保存在了内存里，并且到了 MySQL 8.0 版本后，才有了“自增值持久化”的能力</li>
-</ul>
-
-<h4>自增值算法</h4>
-
-<ul>
-<li>从 auto_increment_offset 开始，以 auto_increment_increment 为步长，持续叠加，直到找到第一个大于 X 的值，作为新的自增值。</li>
-</ul>
-
-<h4>自增ID不连续</h4>
-
-<ul>
-<li>唯一键冲突</li>
-<li>事物回滚</li>
-<li>同一个语句去申请自增 id，每次申请到的自增 id 个数都是上一次的两倍。</li>
-</ul>
-
-<h4>自增锁的优化</h4>
-
-<ul>
-<li>主库不使用语句锁如果自增健不连续，但是从库执行语句会导致从库的自增值仍然是一致的，会导致主从不一致</li>
-<li>解决思路</li>
-<li>一种思路是，让原库的批量插入数据语句，固定生成连续的 id 值。所以，自增锁直到语句执行结束才释放，就是为了达到这个目的。</li>
-<li>另一种思路是，在 binlog 里面把插入数据的操作都如实记录进来，到备库执行的时候，不再依赖于自增主键去生成。这种情况，其实就是 innodb_autoinc_lock_mode 设置为 2，同时 binlog_format 设置为 row。</li>
-</ul>
-
-<h4>批量申请自增ID的策略</h4>
-
-<ul>
-<li>同一个语句去申请自增 id，每次申请到的自增 id 个数都是上一次的两倍。</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/11 14:37 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15498656013403.html">
-                
-                  <h1>C10K和C10M</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>并发请求问题</h4>
-
-<ul>
-<li>怎样在一个线程内处理多个请求，也就是要在一个线程内响应多个网络 I/O</li>
-<li>怎么更节省资源地处理客户请求，也就是要用更少的线程来服务这些请求</li>
-</ul>
-
-<h4>惊群问题</h4>
-
-<ul>
-<li>accept() 和 epoll_wait() 调用，还存在一个惊群的问题。换句话说，当网络 I/O 事件发生时，多个进程被同时唤醒，但实际上只有一个进程来响应这个事件，其他被唤醒的进程都会重新休眠。</li>
-<li>EPOLLEXCLUSIVE</li>
-</ul>
-
-<h4>nginx解决惊群问题</h4>
-
-<ul>
-<li> Nginx 在每个 worker 进程中，都增加一个了全局锁（accept_mutex）。这些 worker 进程需要首先竞争到锁，只有竞争到锁的进程，才会加入到 epoll 中，这样就确保只有一个 worker 子进程被唤醒</li>
-<li>所有的进程都监听相同的接口，并且开启 SO_REUSEPORT 选项，由内核负责将请求负载均衡到这些监听进程中去。这一过程如下图所示。</li>
-<li><img src="media/15498656013403/90df0945f6ce5c910ae361bf2b135bbd.png" alt="90df0945f6ce5c910ae361bf2b135bbd"/></li>
-<li>由内核确保只有一个进程被唤醒</li>
-</ul>
-
-<h4>C1000K</h4>
-
-<ul>
-<li>文件描述符的数量</li>
-<li>连接状态的跟踪（CONNTRACK）</li>
-<li>网络协议栈的缓存大小</li>
-<li>多队列网卡</li>
-<li>中断负载均衡</li>
-<li>CPU 绑定</li>
-<li>RPS/RFS（软中断负载均衡到多个 CPU 核上</li>
-<li>网络包的处理卸载（Offload）</li>
-</ul>
-
-<h4>C10M</h4>
-
-<ul>
-<li>DPDK</li>
-<li>是用户态网络的标准。它跳过内核协议栈，直接由用户态进程通过轮询的方式，来处理网络接收。
-<img src="media/15498656013403/998fd2f52f0a48a910517ada9f2bb23a.png" alt="998fd2f52f0a48a910517ada9f2bb23a"/></li>
-<li>实际工作时间远远高于查询时间</li>
-<li>在 PPS 非常高的场景中，查询时间比实际工作时间少了很多，绝大部分时间都在处理网络包，而跳过内核协议栈后，就省去了繁杂的硬中断、软中断再到 Linux 网络协议栈逐层处理的过程，应用程序可以针对应用的实际场景，有针对性地优化网络包的处理逻辑，而不需要关注所有的细节。</li>
-<li>大页、CPU 绑定、内存对齐、流水线并发等多种机制</li>
-</ul>
-
-<h4>XDP</h4>
-
-<ul>
-<li>Linux 内核提供的一种高性能网络数据路径。它允许网络包，在进入内核协议栈之前，就进行处理，也可以带来更高的性能。XDP 底层跟我们之前用到的 bcc-tools 一样，都是基于 Linux 内核的 eBPF 机制实现的。</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/11 14:13 下午</span>
+                    <span class="date">2018/11/30 14:28 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
@@ -866,28 +538,44 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15497919511141.html">
+                <a class="clearlink" href="15457876165545.html">
                 
-                  <h1>移动网络</h1>
+                  <h1>Linux buffer和cache</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>4G网络架构</h4>
+                        	<h4>buffer和cache</h4>
 
 <ul>
-<li><img src="media/15497919511141/15497924875492.jpg" alt=""/></li>
+<li>Buffers 是内核缓冲区用到的内存，对应的是 /proc/meminfo 中的 Buffers 值。</li>
+<li>Cache 是内核页缓存和 Slab 用到的内存，对应的是 /proc/meminfo 中的 Cached 与 SReclaimable 之和。</li>
+<li>Buffers 是对原始磁盘块的临时存储，也就是用来缓存磁盘的数据，通常不会特别大（20MB 左右）。这样，内核就可以把分散的写集中起来，统一优化磁盘的写入，比如可以把多次小的写合并成单次大的写等等。</li>
+<li>Cached 是从磁盘读取文件的页缓存，也就是用来缓存从文件读取的数据。这样，下次访问这些文件数据时，就可以直接从内存中快速获取，而不需要再次访问缓慢的磁盘。</li>
+<li>SReclaimable 是 Slab 的一部分。Slab 包括两部分，其中的可回收部分，用 </li>
+<li>SReclaimable 记录；而不可回收部分，用 SUnreclaim 记录。</li>
 </ul>
 
-<h4>SCTP</h4>
+<h4>结论</h4>
 
 <ul>
-<li>eNode和MME之间的协议</li>
-<li>多宿主 SCTP 引入了联合（association）的概念，将多个接口、多条路径放到一个联合中来。当检测到一条路径失效时，协议就会通过另外一条路径来发送通信数据。应用程序甚至都不必知道发生了故障、恢复，从而提供更高的可用性和可靠性。</li>
-<li>联合分流</li>
-<li>四次握手，防止SYN攻击</li>
-<li>消息分桢</li>
-<li>断开连接，三次挥手</li>
+<li>Buffer 既可以用作“将要写入磁盘数据的缓存”，也可以用作“从磁盘读取数据的缓存”。</li>
+<li>Cache 既可以用作“从文件读取数据的页缓存”，也可以用作“写文件的页缓存”。</li>
+</ul>
+
+<h4>思考</h4>
+
+<ul>
+<li>如何统计出所有进程的物理内存使用量呢？</li>
+</ul>
+
+<h4>利用缓存来提升效率</h4>
+
+<ul>
+<li>缓存命中率</li>
+<li>cachestat 提供了整个系统缓存的读写命中情况。</li>
+<li>cachetop 提供了每个进程的缓存命中情况。</li>
+<li>strace -p $(pgrep app) 查看进行的系统调用</li>
 <li></li>
 </ul>
 
@@ -898,10 +586,611 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/02/10 17:45 下午</span>
+                    <span class="date">2018/12/26 09:26 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE.html'>网络协议</a></span>
+          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15464093479091.html">
+                
+                  <h1>内存泄露实战</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>导致内存泄露的内存段</h4>
+
+<ul>
+<li>堆内存</li>
+<li>内存映射段，包括动态连接库和共享内存，其中共享内存由程序动态分配和管理，如果忘了回收也会导致内存泄露</li>
+</ul>
+
+<h4>使用memleak</h4>
+
+<ul>
+<li>/usr/share/bcc/tools/memleak -p $(pidof main) -a</li>
+<li>显示如下</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">  [22:44:58] Top 10 stacks with outstanding allocations:
+</code></pre>
+
+<ul>
+<li>表示没有内存泄露</li>
+</ul>
+
+<h4>脏页回收</h4>
+
+<ul>
+<li>fsync</li>
+<li>pdflush</li>
+</ul>
+
+<h4>堆内存</h4>
+
+<ul>
+<li>就是应用程序动态分配的堆内存，也就是匿名页</li>
+</ul>
+
+<h4>内存回收</h4>
+
+<ul>
+<li>直接内存回收</li>
+<li>定期内存回收 kswapd0</li>
+</ul>
+
+<h4>定期内存回收</h4>
+
+<ul>
+<li>页最小阈值（pages_min）</li>
+<li>页低阈值（pages_low）</li>
+<li>页高阈值（pages_high）</li>
+<li>剩余内存 pages_free 表示。</li>
+</ul>
+
+<h4>匿名页和文件页</h4>
+
+<ul>
+<li>对文件页的回收，当然就是直接回收缓存，或者把脏页写回磁盘后再回收。</li>
+<li>而对匿名页的回收，其实就是通过 Swap 机制，把它们写入磁盘后再释放内存。</li>
+<li>swappiness来控制匿名页和文件页的回收，数值越大，越积极使用Swap</li>
+</ul>
+
+<h4>内存指标动态监控</h4>
+
+<ul>
+<li>perf record -e kmem:* -p 27027 -g -- sleep 100</li>
+<li>perf script -i perf.data &amp;&gt; perf.unfold</li>
+<li>./stackcollapse-perf.pl perf.unfold &amp;&gt; perf.folded</li>
+<li>./flamegraph.pl perf.folded &gt; perf.svg</li>
+<li>perf script | ./stackcollapse-perf.pl | ./flamegraph.pl &gt; process.svg</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/01/02 14:09 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15553724756526.html">
+                
+                  <h1>系统调用的流程</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>32位系统的调用流程</h4>
+
+<p><img src="media/15553724756526/566299fe7411161bae25b62e7fe20506.jpg" alt="566299fe7411161bae25b62e7fe20506"/></p>
+
+<ul>
+<li>将调用参数放入寄存器中, 由系统调用名得到系统调用号, 放入 eax</li>
+<li>执行 ENTER_KERNEL(一个宏), 对应 int $0x80 触发软中断, 进入内核</li>
+<li>调用软中断处理函数 entry_INT80_32(内核启动时, 由 trap_init() 配置)</li>
+<li>entry_INT80_32 将用户态寄存器存入 pt_regs 中(保存现场以及系统调用参数), 调用 do_syscall_32_iraq_on </li>
+<li>do_syscall_32_iraq_on 从 pt_regs 中取系统调用号(eax), 从系统调用表得到对应实现函数, 取 pt_regs 中存储的参数, 调用系统调用</li>
+<li>entry_INT80_32 调用 INTERRUPT_RUTURN(一个宏)对应 iret 指令, 系统调用结果存在 pt_regs 的 eax 位置, 根据 pt_regs 恢复用户态进程</li>
+</ul>
+
+<h4>64位系统的调用流程</h4>
+
+<p><img src="media/15553724756526/1fc62ab8406c218de6e0b8c7e01fdbd7.jpg" alt="1fc62ab8406c218de6e0b8c7e01fdbd7"/></p>
+
+<ul>
+<li>通过系统调用名得到系统调用号, 存入 rax; 不同中断, 执行 syscall 指令</li>
+<li>MSR(特殊模块寄存器), 辅助完成某些功能(包括系统调用)</li>
+<li>trap_init() 会调用 cpu_init-&gt;syscall_init 设置该寄存器</li>
+<li>syscall 从 MSR 寄存器中, 拿出函数地址进行调用, 即调用 entry_SYSCALL_64</li>
+<li>entry_SYSCALL_64 先保存用户态寄存器到 pt_regs 中</li>
+<li>调用 entry_SYSCALL64_slow_pat-&gt;do_syscall_64</li>
+<li>do_syscall_64 从 rax 取系统调用号, 从系统调用表得到对应实现函数, 取 pt_regs 中存储的参数, 调用系统调用</li>
+<li>返回执行 USERGS_SYSRET64(一个宏), 对应执行 swapgs 和 sysretq 指令; 系统调用结果存在 pt_regs 的 ax 位置, 根据 pt_regs 恢复用户态进程</li>
+</ul>
+
+<h4>64位系统调用的流程</h4>
+
+<p><img src="media/15553724756526/868db3f559ad08659ddc74db07a9a0a5-2.jpg" alt="868db3f559ad08659ddc74db07a9a0a5-2"/></p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/04/16 07:54 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15546809549290.html">
+                
+                  <h1>Linux性能优化总结</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>性能问题的来源</h4>
+
+<ul>
+<li>资源瓶颈的分析思路，跟系统资源瓶颈是一样的。</li>
+<li>依赖服务的瓶颈，可以使用全链路跟踪系统，进行快速定位。</li>
+<li>应用自身的问题，则可以通过系统调用、热点函数，或者应用自身的指标和日志等，进行分析定位。</li>
+</ul>
+
+<h4>CPU优化</h4>
+
+<ul>
+<li>进程绑定CPU, 把进程绑定到一个或者多个 CPU 上，充分利用 CPU 缓存的本地性，并减少进程间的相互影响。</li>
+<li>中断程序多CPU负载均衡，以便在发生大量中断时，可以充分利用多CPU的优势分摊负载。</li>
+<li>使用 Cgroups 等方法，为进程设置资源限制，避免个别进程消耗过多的CPU。</li>
+<li>为核心应用程序设置更高的优先级，减少低优先级任务的影响。</li>
+</ul>
+
+<h4>内存优化</h4>
+
+<ul>
+<li>禁止Swap</li>
+<li>使用 Cgroups 等方法，为进程设置内存限制</li>
+<li>核心应用，还应该降低 oom_score，避免被OOM杀死</li>
+</ul>
+
+<h4>磁盘和文件系统IO</h4>
+
+<ul>
+<li>使用SSD，使用RAID提升IO性能</li>
+<li>选择合适的I/O调度算法，SSD和虚拟机磁盘使用Noop，数据库应用使用deadline算法</li>
+<li>优化文件系统和磁盘的缓存和缓冲区</li>
+</ul>
+
+<h4>网络优化</h4>
+
+<h5>内核资源和网络协议</h5>
+
+<ul>
+<li>增大套接字缓冲区、连接跟踪表、最大半连接数、最大文件描述符数、本地端口范围等内核资源配额</li>
+<li>减少TIMEOUT超时时间、SYN+ACK 重传数、Keepalive 探测时间等异常处理参数</li>
+<li>开启端口复用、反向地址校验，并调整 MTU 大小等降低内核的负担</li>
+</ul>
+
+<h5>反向地址校验</h5>
+
+<ul>
+<li>就是在一个网卡收到数据包后，把源地址和目标地址对调后查找路由出口，从而得到反身后路由出口。然后根据反向路由出口进行过滤。</li>
+<li>当rp_filter的值为1时，要求反向路由的出口必须与数据包的入口网卡是同一块，否则就会丢弃数据包。</li>
+<li>当rp_filter的值为2时，要求反向路由必须是可达的，如果反路由不可达，则会丢弃数据包。</li>
+</ul>
+
+<h6>作用</h6>
+
+<ul>
+<li>减少DDoS攻击<br/>
+校验数据包的反向路径，如果反向路径不合适，则直接丢弃数据包，避免过多的无效连接消耗系统资源。</li>
+<li>防止IP Spoofing<br/>
+校验数据包的反向路径，如果客户端伪造的源IP地址对应的反向路径不在路由表中，或者反向路径不是最佳路径，则直接丢弃数据包，不会向伪造IP的客户端回复响应</li>
+</ul>
+
+<h5>网络接口</h5>
+
+<ul>
+<li>CPU 上执行的工作，卸载到网卡中执行，开启网卡的 GRO、GSO、RSS、VXLAN </li>
+<li>开启网络接口的多队列功能，这样，每个队列就可以用不同的中断号，调度到不同 CPU 上执行</li>
+<li>增大网络接口的缓冲区大小以及队列长度等，提升网络传输的吞吐量</li>
+</ul>
+
+<h5>极限性能</h5>
+
+<ul>
+<li>DPDK 技术，跳过内核协议栈，直接由用户态进程用轮询的方式，来处理网络请求</li>
+<li>大页、CPU 绑定、内存对齐、流水线并发等多种机制，优化网络包的处理效率。</li>
+<li>增大网络接口的缓冲区大小以及队列长度等，提升网络传输的吞吐量</li>
+</ul>
+
+<h4>应用程序优化</h4>
+
+<ul>
+<li>从 CPU 使用的角度来说，简化代码、优化算法、异步处理以及编译器优化等，都是常用的降低 CPU 使用率的方法</li>
+<li>数据访问的角度来说，使用缓存、写时复制、增加 I/O 尺寸等，都是常用的减少磁盘 I/O 的方法，</li>
+<li>内存管理的角度来说，使用大页、内存池等方法，可以预先分配内存，减少内存的动态分配，从而更好地内存访问性能</li>
+<li>网络的角度来说，使用 I/O 多路复用、长连接代替短连接、DNS 缓存等方法，可以优化网络 I/O 并减少网络请求数，从而减少网络延时带来的性能问题</li>
+<li>从进程的工作模型来说，异步处理、多线程或多进程等，可以充分利用每一个 CPU 的处理能力，从而提高应用程序的吞吐能力</li>
+<li>架构层面 消息队列、CDN、负载均衡等各种方法，来优化应用程序的架构，将原来单机要承担的任务，调度到多台服务器中并行处理</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/04/08 07:49 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15548549378624.html">
+                
+                  <h1>容器性能分析</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>容器冷启动性能分析</h4>
+
+<ul>
+<li>ServerLess服务启动流程</li>
+<li>事件触发（比如收到新的 HTTP 调用请求）</li>
+<li>资源调度</li>
+<li>镜像拉取 缓存热点镜像</li>
+<li>网络配置 网络资源预分配加速</li>
+<li>启动应用 复用预先创建好的容器</li>
+</ul>
+
+<h4>CPU火焰图和内存火焰图的区别</h4>
+
+<ul>
+<li>对 CPU 火焰图来说，采集的数据主要是消耗 CPU 的函数；</li>
+<li>而对内存火焰图来说，采集的数据主要是内存分配、释放、换页等内存管理函数。</li>
+</ul>
+
+<h4>perf probe</h4>
+
+<ul>
+<li>需要编译时候增加g选项</li>
+</ul>
+
+<h4>RED法则监控微服务</h4>
+
+<ul>
+<li>请求数（Rate）、错误数（Errors）以及响应时间（Duration）</li>
+<li>RED 方法适用于微服务应用的监控，而 USE 方法适用于系统资源的监控。</li>
+</ul>
+
+<h4>理解内核</h4>
+
+<ul>
+<li><a href="https://elixir.bootlin.com/">https://elixir.bootlin.com/</a> 内核函数</li>
+<li><a href="https://github.com/iovisor/bcc">https://github.com/iovisor/bcc</a> BCC工具</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/04/10 08:08 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15547145659086.html">
+                
+                  <h1>异地多活</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>同城异区</h4>
+
+<h4>跨城异区</h4>
+
+<h4>跨国异地</h4>
+
+<h4>思考题</h4>
+
+<ul>
+<li>高可用存储架构中的数据分区备份，又通过自动化运维能够保证 1 分钟就能将全部系统正常启动，那是否意味着没有必要做异地多活了？</li>
+<li>备份系统平常没有流量，如果直接上线可能触发平常测试不到的故障。</li>
+<li>再实时的系统也会有数据延时，如果涉及到金融这种系统，仍然是不敢直接切换的。</li>
+<li>系统运行过程中会有很多中间数据，缓存数据等。系统不经过预热直接把流量倒过来，大流量会直接把系统拖垮</li>
+</ul>
+
+<h4>设计技巧</h4>
+
+<ul>
+<li>保证核心业务的异地多活</li>
+<li>保证核心数据的最终一致性</li>
+<li>采用多种手段同步数据</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/04/08 17:09 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%9E%B6%E6%9E%84.html'>架构</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15547125688046.html">
+                
+                  <h1>微服务混合云部署</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>跨云服务的负载均衡</h4>
+
+<ul>
+<li>通过DNS实现负载均衡</li>
+<li>私有云通过LVS和Nginx实现四层和七层的负载均衡</li>
+<li>阿里云通过SLB和Nginx实现四层和七层的负载均衡</li>
+</ul>
+
+<h4>跨云服务的数据同步</h4>
+
+<ul>
+<li>私有云和阿里云之间架设专线</li>
+<li>缓存放公有云，穿透后访问私有云的数据库</li>
+</ul>
+
+<h4>容器运维</h4>
+
+<ul>
+<li>主机</li>
+<li>服务池</li>
+<li>集群</li>
+</ul>
+
+<h4>流量切换</h4>
+
+<ul>
+<li>DNS 层的切换主要是针对大规模流量增长的情况</li>
+<li>Nginx 层的切换主要是针对私有云内某个机房的 Java Web 容量不足或者服务有问题的时候，需要把这个机房的一部分流量切换到其他机房</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/04/08 16:36 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E5%BE%AE%E6%9C%8D%E5%8A%A1.html'>微服务</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15547108978976.html">
+                
+                  <h1>Service Mesh</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>Service Mesh原理</h4>
+
+<h5>SideCar</h5>
+
+<p><img src="media/15547108978976/daa8dee489e51238f450b51a53c1016d.png" alt="daa8dee489e51238f450b51a53c1016d"/></p>
+
+<ul>
+<li>基于 iptables 的网络拦截</li>
+<li>采用协议转换的方式</li>
+</ul>
+
+<h5>Control Plane</h5>
+
+<ul>
+<li>Control Plane</li>
+<li>服务发现。服务提供者会通过 SideCar 注册到 Control Plane 的注册中心，这样的话服务消费者把请求发送给 SideCar 后，SideCar 就会查询 Control Plane 的注册中心来获取服务提供者节点列表。</li>
+<li>负载均衡。SideCar 从 Control Plane 获取到服务提供者节点列表信息后，就需要按照一定的负载均衡算法从可用的节点列表中选取一个节点发起调用，可以通过 Control Plane 动态修改 SideCar 中的负载均衡配置。</li>
+<li>请求路由。SideCar 从 Control Plane 获取的服务提供者节点列表，也可以通过 Control Plane 来动态改变，比如需要进行 A/B 测试、灰度发布或者流量切换时，就可以动态地改变请求路由。</li>
+<li>故障处理。服务之间的调用如果出现故障，就需要加以控制，通常的手段有超时重试、熔断等，这些都可以在 SideCar 转发请求时，通过 Control Plane 动态配置。</li>
+<li>安全认证。可以通过 Control Plane 控制一个服务可以被谁访问，以及访问哪些信息。</li>
+<li>监控上报。所有 SideCar 转发的请求信息，都会发送到 Control Plane，再由 Control Plane 发送给监控系统，比如 Prometheus 等。</li>
+<li>日志记录。所有 SideCar 转发的日志信息，也会发送到 Control Plane，再由 Control Plane 发送给日志系统，比如 Stackdriver 等。<img src="media/15547108978976/746ba12fff2b184157b00ac44ec2e862.png" alt="746ba12fff2b184157b00ac44ec2e862"/></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/04/08 16:08 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E5%BE%AE%E6%9C%8D%E5%8A%A1.html'>微服务</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15546843019944.html">
+                
+                  <h1>X86结构</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>系统架构图</h4>
+
+<p><img src="media/15546843019944/e2e92f2239fe9b4c024d300046536d76.jpeg" alt="e2e92f2239fe9b4c024d300046536d76"/></p>
+
+<h4>寄存器</h4>
+
+<ul>
+<li>8086  CPU 中寄存器总共为 14 个，且均为 16 位 。<br/>
+即 AX，BX，CX，DX，SP，BP，SI，DI，IP，FLAG，CS，DS，SS，ES 共 14 个。<br/>
+而这 14 个寄存器按照一定方式又分为了通用寄存器，控制寄存器和段寄存器。</li>
+</ul>
+
+<h5>通用寄存器：</h5>
+
+<ul>
+<li>AX，BX，CX，DX 称作为数据寄存器：</li>
+<li>AX (Accumulator)：累加寄存器，也称之为累加器；</li>
+<li>BX (Base)：基地址寄存器；</li>
+<li>CX (Count)：计数器寄存器；</li>
+<li>DX (Data)：数据寄存器；</li>
+<li>SP 和 BP 又称作为指针寄存器：</li>
+<li>SP (Stack Pointer)：堆栈指针寄存器；</li>
+<li>BP (Base Pointer)：基指针寄存器；</li>
+</ul>
+
+<h5>变址寄存器：</h5>
+
+<ul>
+<li>SI (Source Index)：源变址寄存器；</li>
+<li>DI (Destination Index)：目的变址寄存器；</li>
+</ul>
+
+<h5>控制寄存器：</h5>
+
+<ul>
+<li>IP (Instruction Pointer)：指令指针寄存器；</li>
+<li>FLAG：标志寄存器；</li>
+</ul>
+
+<h5>段寄存器：</h5>
+
+<ul>
+<li>CS (Code Segment)：代码段寄存器；</li>
+<li>DS (Data Segment)：数据段寄存器；</li>
+<li>SS (Stack Segment)：堆栈段寄存器；</li>
+<li>ES (Extra Segment)：附加段寄存器；</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/04/08 08:45 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -975,8 +1264,6 @@
             <a href="Golang.html"><strong>Golang</strong></a>
         
             <a href="Django.html"><strong>Django</strong></a>
-        
-            <a href="C++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E6%88%98.html"><strong>C++设计模式实战</strong></a>
         
             <a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html"><strong>深入剖析Kubernetes</strong></a>
         
@@ -1055,6 +1342,18 @@
 	      
 		      
 			      <li class="post">
+			        <a href="15818128782116.html">Singleton</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15748977610569.html">State</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15817697569868.html">字符串分割</a>
 			      </li>
 		     
@@ -1067,19 +1366,7 @@
 		  
 		      
 			      <li class="post">
-			        <a href="15814649492497.html">Simple Factory</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814189410719.html">代码的可测试性</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15814188057978.html">重构</a>
+			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  
