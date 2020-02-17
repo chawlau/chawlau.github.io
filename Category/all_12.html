@@ -170,46 +170,9 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15720396781792.html">
+                <a class="clearlink" href="15782298377426.html">
                 
-                  <h1>Analysis&Analyzer</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>分词器</h4>
-
-<ul>
-<li><img src="media/15720396781792/15720400458496.jpg" alt="" style="width:1287px;"/></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/26 05:41 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='ElasticSearch.html'>ElasticSearch</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15720391703377.html">
-                
-                  <h1>倒排索引</h1>
+                  <h1>接口隔离原则</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
@@ -217,917 +180,331 @@
                         	<h4>概念</h4>
 
 <ul>
-<li>倒排索引-单词到文档ID的关系</li>
-<li><img src="media/15720391703377/15720395940629.jpg" alt="" style="width:1333px;"/></li>
+<li>客户端不应该强迫依赖它不需要的接口。其中的“客户端”，可以理解为接口的调用者或者使用者</li>
+<li>接口理解</li>
+<li>一组API接口集合</li>
+<li>单个API接口或函数</li>
+<li>OOP中的接口概念</li>
 </ul>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/26 05:32 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='ElasticSearch.html'>ElasticSearch</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
+<h4>demo</h4>
 
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15714446800241.html">
-                
-                  <h1>集群管理</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>集群管理</h4>
-
-<ul>
-<li>GET /_cat/health?v</li>
-<li>green：每个索引的primary shard和replica shard都是active状态的</li>
-<li>yellow：每个索引的primary shard都是active状态的，但是部分replica shard不是active状态，处于不可用的状态</li>
-<li>red：不是所有索引的primary shard都是active状态的，部分索引有数据丢失了</li>
-</ul>
-
-<h4>替换方式</h4>
-
-<pre class="line-numbers"><code class="language-text">PUT /ecommerce/product/1
-{
-    &quot;name&quot; : &quot;jiajieshi yagao&quot;,
-    &quot;desc&quot; :  &quot;youxiao fangzhu&quot;,
-    &quot;price&quot; :  27,
-    &quot;producer&quot; :      &quot;jiajieshi producer&quot;,
-    &quot;tags&quot;: [ &quot;fangzhu&quot; ]
-}
-</code></pre>
-
-<ul>
-<li>替换方式有一个不好，即使必须带上所有的field，才能去进行信息的修改</li>
-</ul>
-
-<h4>更新请求</h4>
-
-<pre class="line-numbers"><code class="language-text">POST /ecommerce/product/1/_update
-{
-  &quot;doc&quot;: {
-    &quot;name&quot;: &quot;jiaqiangban gaolujie yagao&quot;
-  }
-}
-</code></pre>
-
-<ul>
-<li>可以更新部分请求</li>
-</ul>
-
-<h4>节点</h4>
-
-<ul>
-<li>Data Node</li>
-<li>可以保存数据的节点，叫做 Data Node。负责保存分片数据。在数据扩展上起到了</li>
-<li>至关重要的作用</li>
-<li>Coordinating Node</li>
-<li>负责接受 Cliente 的请求，将请求分发到合适的节点，最终把结果汇集到一起 o 每个节点默认都起到了 Coordinating Nodee 的职责</li>
-</ul>
-
-<h4>分片</h4>
-
-<ul>
-<li>主分片，用以解決数据水平扩展的题。通过主分片，可以将数据分布到集群内的所有节点之上 </li>
-<li>一个分片是一个运行的 Lucene 的实例</li>
-<li>主分片数在索引创建时指定，后续不允许修改，除非 Reindex </li>
-</ul>
-
-<h4>分片设置</h4>
-
-<ul>
-<li>分片数设置过小 导致后续无法增加节点实现水品扩展</li>
-<li>单个分片的数据量太大，导致数据重新分配耗时</li>
-<li>分片过大</li>
-<li>影响搜索结果的相关性打分，影响统计结果的准确性</li>
-<li>单个节点上过多的分片，会导致资源浪费，同时也会影响性能</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/19 08:24 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='ElasticSearch.html'>ElasticSearch</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15714384815163.html">
-                
-                  <h1>核心概念</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>功能</h4>
-
-<ul>
-<li>1）分布式的文档存储引擎</li>
-<li>2）分布式的搜索引擎和分析引擎</li>
-<li>3）分布式，支持PB级数据</li>
-</ul>
-
-<h4>核心概念</h4>
-
-<ul>
-<li>Near Realtime（NRT）：近实时，两个意思，从写入数据到数据可以被搜索到有一个小延迟（大概1秒）；基于es执行搜索和分析可以达到秒级</li>
-<li>Cluster：集群，包含多个节点，每个节点属于哪个集群是通过一个配置（集群名称，默认是elasticsearch）来决定的，对于中小型应用来说，刚开始一个集群就一个节点很正常</li>
-<li>Node：节点，集群中的一个节点，节点也有一个名称（默认是随机分配的），节点名称很重要（在执行运维管理操作的时候），默认节点会去加入一个名称为“elasticsearch”的集群，如果直接启动一堆节点，那么它们会自动组成一个elasticsearch集群，当然一个节点也可以组成一个elasticsearch集群</li>
-<li>Document&amp;field：文档，es中的最小数据单元，一个document可以是一条客户数据，一条商品分类数据，一条订单数据，通常用JSON数据结构表示，每个index下的type中，都可以去存储多个document。一个document里面有多个field，每个field就是一个数据字段。</li>
-<li>Index：索引，包含一堆有相似结构的文档数据，比如可以有一个客户索引，商品分类索引，订单索引，索引有一个名称。一个index包含很多document，一个index就代表了一类类似的或者相同的document。比如说建立一个product index，商品索引，里面可能就存放了所有的商品数据，所有的商品document。</li>
-<li>Type：类型，每个索引里都可以有一个或多个type，type是index中的一个逻辑数据分类，一个type下的document，都有相同的field，比如博客系统，有一个索引，可以定义用户数据type，博客数据type，评论数据type。</li>
-<li>现在只能创建为_doc</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">商品index，里面存放了所有的商品数据，商品document
-
-但是商品分很多种类，每个种类的document的field可能不太一样，比如说电器商品，可能还包含一些诸如售后时间范围这样的特殊field；生鲜商品，还包含一些诸如生鲜保质期之类的特殊field
-
-type，日化商品type，电器商品type，生鲜商品type
-
-日化商品type：product_id，product_name，product_desc，category_id，category_name
-电器商品type：product_id，product_name，product_desc，category_id，category_name，service_period
-生鲜商品type：product_id，product_name，product_desc，category_id，category_name，eat_period
-</code></pre>
-
-<ul>
-<li>shard：单台机器无法存储大量数据，es可以将一个索引中的数据切分为多个shard，分布在多台服务器上存储。有了shard就可以横向扩展，存储更多数据，让搜索和分析等操作分布到多台服务器上去执行，提升吞吐量和性能。每个shard都是一个lucene index。</li>
-<li>replica：任何一个服务器随时可能故障或宕机，此时shard可能就会丢失，因此可以为每个shard创建多个replica副本。可以读</li>
-</ul>
-
-<h4>ES对比数据库</h4>
-
-<table>
-<thead>
-<tr>
-<th>ES</th>
-<th>Mysql</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>Doucument</td>
-<td>行</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>表</td>
-</tr>
-<tr>
-<td>Index</td>
-<td>库</td>
-</tr>
-</tbody>
-</table>
-
-<h4>es文档</h4>
-
-<p><img src="media/15714384815163/15719694321894.jpg" alt="" style="width:1342px;"/></p>
-
-<h4>基本概念</h4>
-
-<ul>
-<li>Ndex-索引是文档的容器，是一类文档的结合index 体现了逻辑空间的概念：每个索引都有</li>
-<li>自己的 Mapping 定义，用于定义包含的文档的字段名和字段类型</li>
-<li>Shard 体现了物理空间的概念：索引中的数据</li>
-<li>分散在 Shard 上索引的 Mapping 与 Settings o Mapping 定义文档字段的类型 Setting 定义不同的数据分布
-<img src="media/15714384815163/15719951836763.jpg" alt="" style="width:553px;"/></li>
-</ul>
-
-<p>􏱂􏵲􏲓 􏳣</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/19 06:41 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='ElasticSearch.html'>ElasticSearch</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15708463915098.html">
-                
-                  <h1>Etcd</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>对比</h4>
-
-<p><img src="media/15708463915098/15708464367950.jpg" alt="" style="width:1479px;"/></p>
-
-<ul>
-<li><img src="media/15708463915098/15719107081661.jpg" alt="" style="width:1708px;"/></li>
-</ul>
-
-<h4>MVCC</h4>
-
-<ul>
-<li><img src="media/15708463915098/15708465094763.jpg" alt="" style="width:1492px;"/></li>
-</ul>
-
-<h4>数据存储</h4>
-
-<p><img src="media/15708463915098/15708466612817.jpg" alt="" style="width:1417px;"/></p>
-
-<h4>命令行</h4>
-
-<ul>
-<li>etcdctl get &quot;&quot; --prefix=true</li>
-<li>etcdctl del &quot;&quot; --prefix=true</li>
-</ul>
-
-<h4>etcdAPI</h4>
-
-<p><img src="media/15708463915098/15708480943917.jpg" alt="" style="width:469px;"/></p>
-
-<ul>
-<li>header
-<img src="media/15708463915098/15708481882498.jpg" alt="" style="width:773px;"/></li>
-<li>keyvalue
-<img src="media/15708463915098/15708482182058.jpg" alt="" style="width:788px;"/></li>
-<li>keyrange
-<img src="media/15708463915098/15708487068511.jpg" alt="" style="width:841px;"/></li>
-<li>kv
-<img src="media/15708463915098/15708486683352.jpg" alt="" style="width:896px;"/></li>
-<li>TXn API
-<img src="media/15708463915098/15708527202806.jpg" alt="" style="width:860px;"/>
-<img src="media/15708463915098/15708527736250.jpg" alt="" style="width:878px;"/></li>
-<li>Watch API
-<img src="media/15708463915098/15708530972955.jpg" alt="" style="width:898px;"/></li>
-<li>Lease API
-<img src="media/15708463915098/15708533513999.jpg" alt="" style="width:842px;"/></li>
-</ul>
-
-<pre class="line-numbers"><code class="language-go">package etcd_code
+<pre class="line-numbers"><code class="language-go">package design_pattern
 
 import (
-    &quot;context&quot;
     &quot;fmt&quot;
-    v3 &quot;go.etcd.io/etcd/clientv3&quot;
-    &quot;testing&quot;
+    &quot;reflect&quot;
+    &quot;time&quot;
 )
 
-func printGetResponse(r *v3.GetResponse) {
-    fmt.Printf(&quot;response header: %q\n&quot;, r.Header)
-    fmt.Printf(&quot;kvs: %v\n&quot;, r.Kvs)
-    fmt.Printf(&quot;more: %t\n&quot;, r.More)
-    fmt.Printf(&quot;count: %d\n&quot;, r.Count)
+type Updater interface {
+    updater()
 }
 
-// Run beforehand:
-//  etcdctl put TestGet 1
-func TestGet(t *testing.T) {
-    cli := newClient(t)
-    defer cli.Close()
-
-    key := &quot;TestGet&quot;
-
-    response, err := cli.Get(context.Background(), key)
-    if err != nil {
-        t.Fatal(err)
-    }
-    printGetResponse(response)
+type ConfigSource struct {
+    address string
+    timeOut, maxTotal int64
 }
 
-// Run beforehand:
-//  etcdctl put TestGetWithPrefix 1
-//  etcdctl put TestGetWithPrefix2 2
-func TestGetWithPrefix(t *testing.T) {
-    cli := newClient(t)
-    defer cli.Close()
 
-    keyPrefix := &quot;TestGetWithPrefix&quot;
-    response, err := cli.Get(context.Background(), keyPrefix, v3.WithPrefix())
-    if err != nil {
-        t.Fatal(err)
-    }
-    printGetResponse(response)
+type RedisConfig struct {
+    configSource *ConfigSource
+    address string
+    timeOut, maxTotal int64
 }
 
-// Run beforehand:
-//  etcdctl put TestGetWithRange 1
-//  etcdctl put TestGetWithRange2 2
-func TestGetWithRange(t *testing.T) {
-    cli := newClient(t)
-    defer cli.Close()
 
-    response, err := cli.Get(context.Background(), &quot;TestGetWithRange&quot;, v3.WithRange(&quot;TestGetWithRange2\x00&quot;))
-    if err != nil {
-        t.Fatal(err)
-    }
-    printGetResponse(response)
+func (r *RedisConfig) getAddress() string {
+    return r.address
 }
 
-// Run beforehand:
-//  etcdctl put TestGetWithSerializable 1
-func TestGetWithSerializable(t *testing.T) {
-    cli := newClient(t)
-    defer cli.Close()
-
-    key := &quot;TestGetWithSerializable&quot;
-    response, err := cli.Get(context.Background(), key, v3.WithSerializable())
-    if err != nil {
-        t.Fatal(err)
-    }
-    printGetResponse(response)
+func (r *RedisConfig) updater() {
+    //r.address = r.configSource.address
+    //r.timeOut, r.maxTotal = r.configSource.timeOut, r.configSource.timeOut
+    fmt.Println(&quot;Time to update config &quot;, reflect.TypeOf(r).String())
 }
 
-func TestPut(t *testing.T) {
-    cli := newClient(t)
-    defer cli.Close()
-
-    key := &quot;TestPut&quot;
-    response, err := cli.Put(context.Background(), key, &quot;1&quot;, v3.WithPrevKV())
-    if err != nil {
-        t.Fatal(err)
-    }
-    fmt.Printf(&quot;header: %q\n&quot;, response.Header)
-    fmt.Printf(&quot;prev_kv: %q\n&quot;, response.PrevKv)
+type KafkaConfig struct {
+    configSource *ConfigSource
+    address string
+    timeOut, maxTotal int64
 }
 
-// Run beforehand:
-//  etcdctl put TestDelete 1
-func TestDelete(t *testing.T) {
-    cli := newClient(t)
-    defer cli.Close()
-
-    key := &quot;TestDelete&quot;
-    response, err := cli.Delete(context.Background(), key)
-    if err != nil {
-        t.Fatal(err)
-    }
-    fmt.Printf(&quot;header: %v\n&quot;, response.Header)
-    fmt.Printf(&quot;deleted: %d\n&quot;, response.Deleted)
-    fmt.Printf(&quot;pre_kvs: %v\n&quot;, response.PrevKvs)
+func (k *KafkaConfig) updater() {
+    //k.address = k.configSource.address
+    //k.timeOut, k.maxTotal = k.configSource.timeOut, k.configSource.timeOut
+    fmt.Println(&quot;Time to update config &quot;, reflect.TypeOf(k).String())
 }
 
-// Run beforehand:
-//  etcdctl put TestTxn 1
-func TestTxn(t *testing.T) {
-    cli := newClient(t)
-    defer cli.Close()
-
-    key := &quot;TestTxn&quot;
-    thenValue := &quot;then&quot;
-
-    ctx := context.Background()
-    _, err := cli.Txn(ctx).
-        If(v3.Compare(v3.Value(key), &quot;&lt;&quot;, &quot;2&quot;)).
-        Then(v3.OpPut(key, thenValue)).
-        Else(v3.OpPut(key, &quot;else&quot;)).
-        Commit()
-    if err != nil {
-        t.Fatal(err)
-    }
-
-    // Return &quot;then&quot;
-    gresp, err := cli.Get(ctx, key)
-    if err != nil {
-        t.Fatal(err)
-    }
-
-    if l := len(gresp.Kvs); l != 1 {
-        t.Errorf(&quot;expeected 1 key-value, but got %d key-values\n&quot;, l)
-    }
-
-    if value := string(gresp.Kvs[0].Value); value != &quot;then&quot; {
-        t.Errorf(&quot;expected value %s, but got %s\n&quot;, thenValue, value)
-    }
-
-    for _, ev := range gresp.Kvs {
-        fmt.Printf(&quot;%s: %s\n&quot;, ev.Key, ev.Value)
-    }
-    //delete(cli, key, t)
+type MysqlConfig struct {
+    configSource *ConfigSource
+    address string
+    timeOut, maxTotal int64
 }
 
-func TestTxnOpOrder(t *testing.T) {
-    cli := newClient(t)
-    defer cli.Close()
-    key := &quot;TestTxnOpOrder&quot;
-
-    ctx := context.Background()
-    // If CreateRevision is 0, it means that the key does not exist.
-    cmp := v3.Compare(v3.CreateRevision(key), &quot;=&quot;, 0)
-    put := v3.OpPut(key, &quot;1&quot;)
-    get := v3.OpGet(key)
-
-    // Get Put
-    resp, err := cli.Txn(ctx).If(cmp).Then(get, put).Commit()
-    if err != nil {
-        t.Fatal(err)
-    }
-    printTxnResponse(resp)
-    if l := len(resp.Responses[0].GetResponseRange().Kvs); l != 0 {
-        t.Errorf(&quot;expeected 0 key-value, but got %d key-values\n&quot;, l)
-    }
-    delete(ctx, cli, key, t)
-
-    // Put Get
-    resp, err = cli.Txn(ctx).If(cmp).Then(put, get).Commit()
-    if err != nil {
-        t.Fatal(err)
-    }
-    printTxnResponse(resp)
-    if l := len(resp.Responses[1].GetResponseRange().Kvs); l != 1 {
-        t.Errorf(&quot;expeected 1 key-value, but got %d key-values\n&quot;, l)
-    }
-    delete(ctx, cli, key, t)
+type Executor struct {
+    t *time.Ticker
 }
 
-func TestTxnMultis(t *testing.T) {
-    cli := newClient(t)
-    defer cli.Close()
-    ctx := context.Background()
-
-    keyPrefix := &quot;TestTxnMultis&quot;
-    keys := []string{keyPrefix + &quot;1&quot;, keyPrefix + &quot;2&quot;}
-    var cmps [2]v3.Cmp
-    var puts [2]v3.Op
-    var gets [2]v3.Op
-    for i := 0; i &lt; 2; i++ {
-        val := string(i + 1)
-        cmps[i] = v3.Compare(v3.CreateRevision(keys[i]), &quot;=&quot;, 0)
-        puts[i] = v3.OpPut(keys[i], val)
-        gets[i] = v3.OpGet(keys[i])
-    }
-
-    // Executes two Puts
-    tresp, err := cli.Txn(ctx).If(cmps[:]...).Then(puts[:]...).Else(gets[:]...).Commit()
-    if err != nil {
-        t.Fatal(t)
-    }
-    if !tresp.Succeeded {
-        t.Fatal(&quot;Txn should succeed, but failed&quot;)
-    }
-
-    // Executes two Gets
-    tresp, err = cli.Txn(ctx).If(cmps[:]...).Then(puts[:]...).Else(gets[:]...).Commit()
-    if err != nil {
-        t.Fatal(t)
-    }
-    if tresp.Succeeded {
-        t.Fatal(&quot;Txn should fail, but succeeded&quot;)
-    }
-    for i := 0; i &lt; 2; i++ {
-        if count := tresp.Responses[i].GetResponseRange().Count; count != 1 {
-            t.Errorf(&quot;expected 1 value for key %s, but got %d value&quot;, keys[0], count)
+func (e *Executor) run(updater Updater) {
+    for {
+        select {
+          case &lt;- e.t.C:
+            updater.updater()
         }
     }
+}
 
-    // Execute two Deletes
-    tresp, err = cli.Txn(ctx).Then(v3.OpDelete(keys[0]), v3.OpDelete(keys[1])).Commit();
-    if err != nil {
-        t.Fatal(err)
-    }
-    for _, r := range tresp.Responses {
-        if deleted := r.GetResponseDeleteRange().Deleted; deleted != 1 {
-            t.Fatalf(&quot;expected to delete 1 key-value, but deleted %d key-value&quot;, deleted)
-        }
-    }
-    gresp, err := cli.Get(ctx, keyPrefix, v3.WithPrefix())
-    if gresp.Count != 0 {
-        t.Errorf(&quot;expected 0 key-values, bot got %d&quot;, gresp.Count)
+type ScheduleUpdater struct {
+    Updater
+    delayTime int64
+    executor *Executor
+}
+
+func (s *ScheduleUpdater) run() {
+    s.executor.run(s.Updater)
+}
+
+func NewScheduleUpdater(updater Updater, delayTime int64) *ScheduleUpdater {
+    return &amp;ScheduleUpdater {
+        Updater: updater,
+        delayTime: delayTime,
+        executor: &amp;Executor{
+            t: time.NewTicker(time.Duration(delayTime)),
+        },
     }
 }
 
-func printTxnResponse(resp *v3.TxnResponse) {
-    fmt.Printf(&quot;response header: %q\n&quot;, resp.Header)
-    fmt.Printf(&quot;succeeded: %t\n&quot;, resp.Succeeded)
-}
+import &quot;testing&quot;
 
-// version revision test
-func TestVersionAndRevision(t *testing.T) {
-    cli := newClient(t)
-    defer cli.Close()
-    key := &quot;TestVersionAndRevision&quot;
-    ctx := context.Background()
+func TestConfig(t *testing.T) {
+    configSource := &amp;ConfigSource{&quot;localhost&quot;, 2, 3}
+    redisConfig := &amp;RedisConfig{configSource: configSource}
+    kafkaConfig := &amp;KafkaConfig{configSource: configSource}
+    //mysqlConfig := &amp;MysqlConfig{configSource: configSource}
 
-    put(ctx, cli, key, t)
-    get(ctx, cli, key, t)
-    put(ctx, cli, key, t)
-    get(ctx, cli, key, t)
-    delete(ctx, cli, key, t)
+    var updaterList []*ScheduleUpdater
+    redisUpdater := NewScheduleUpdater(redisConfig, 10000)
+    updaterList = append(updaterList, redisUpdater)
 
-    put(ctx, cli, key, t)
-    get(ctx, cli, key, t)
-    put(ctx, cli, key, t)
-    get(ctx, cli, key, t)
-}
+    kafkaUpdater := NewScheduleUpdater(kafkaConfig, 10000)
+    updaterList = append(updaterList, kafkaUpdater)
 
-func put(ctx context.Context, cli *v3.Client, key string, t *testing.T) {
-    fmt.Println(&quot;Put&quot;)
-    response, err := cli.Put(ctx, key, &quot;one&quot;, v3.WithPrevKV())
-    if err != nil {
-        t.Fatal(err)
+    for _, v := range updaterList {
+        go v.run()
     }
-    fmt.Printf(&quot;put revision: %d\n&quot;, response.Header.Revision)
-    fmt.Printf(&quot;prev_kv: %v\n\n&quot;, response.PrevKv)
-}
-
-func get(ctx context.Context, cli *v3.Client, key string, t *testing.T) {
-    fmt.Println(&quot;Get&quot;)
-    response, err := cli.Get(ctx, key, v3.WithPrevKV())
-    if err != nil {
-        t.Fatal(err)
-    }
-    fmt.Printf(&quot;get revision: %d\n&quot;, response.Header.Revision)
-    fmt.Printf(&quot;kvs: %v\n\n&quot;, response.Kvs)
-}
-
-func delete(ctx context.Context, cli *v3.Client, key string, t *testing.T) {
-    fmt.Println(&quot;Delete&quot;)
-    response, err := cli.Delete(ctx, key, v3.WithPrevKV())
-    if err != nil {
-        t.Fatal(err)
-    }
-    fmt.Printf(&quot;delete revision: %d\n&quot;, response.Header.Revision)
-    fmt.Printf(&quot;deleted: %d\n&quot;, response.Deleted)
-    fmt.Printf(&quot;prev_kvs: %v\n\n&quot;, response.PrevKvs)
+    select {}
 }
 </code></pre>
 
-<h4>分布式队列</h4>
+<h4>添加接口查看</h4>
 
-<ul>
-<li><img src="media/15708463915098/15708535657472.jpg" alt="" style="width:1605px;"/></li>
-</ul>
+<pre class="line-numbers"><code class="language-go">package design_pattern
 
-<h4>分布式锁</h4>
+import (
+    &quot;container/list&quot;
+    &quot;fmt&quot;
+    &quot;github.com/luci/go-render/render&quot;
+    &quot;reflect&quot;
+    &quot;time&quot;
+)
 
-<ul>
-<li><img src="media/15708463915098/15708538122564.jpg" alt="" style="width:1471px;"/></li>
-<li><img src="media/15708463915098/15708538552096.jpg" alt="" style="width:1418px;"/></li>
-<li></li>
-</ul>
+type Updater interface {
+    updater()
+}
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/12 10:13 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Zookeeper.html'>Zookeeper</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
+type Viewer interface {
+    outPutInPlainText() string
+    output() map[string]string
+    containsKey(string) bool
+}
 
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15570152728743.html">
-                
-                  <h1>进程主动调度</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>进程上下文切换</h4>
+type ConfigSource interface {
+    add()
+}
 
-<ul>
-<li>切换进程空间 虚拟内存</li>
-<li>切换寄存器和CPU上下文</li>
-</ul>
+type ZookeeperConfigSource struct {
+    address string
+    timeOut, maxTotal int64
+}
 
-<h4>TSS和TR</h4>
+func (z *ZookeeperConfigSource) add() {
+}
 
-<ul>
-<li> TSS（Task State Segment，任务状态段）结构</li>
-<li> 寄存器 TR（Task Register，任务寄存器）</li>
-</ul>
 
-<h4>进程调度流程图</h4>
+type RedisConfig struct {
+    configSource ConfigSource
+    address string
+    timeOut, maxTotal int64
+}
 
-<p><img src="media/15570152728743/9f4433e82c78ed5cd4399b4b116a9064.png" alt="9f4433e82c78ed5cd4399b4b116a9064"/></p>
 
-<h4>进程切换本质</h4>
+func (r *RedisConfig) getAddress() string {
+    return r.address
+}
 
-<ul>
-<li>进程切换，就是将某个进程的 thread_struct 里面的寄存器的值，写入到 CPU 的 TR 指向的 tss_struct，对于 CPU 来讲，这就算是完成了切换。</li>
-<li></li>
-</ul>
+func (r *RedisConfig) updater() {
+    //r.address = r.configSource.address
+    //r.timeOut, r.maxTotal = r.configSource.timeOut, r.configSource.timeOut
+    fmt.Println(&quot;Time to update config &quot;, reflect.TypeOf(r).String())
+}
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/05/05 08:14 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
+func (r *RedisConfig) outPutInPlainText() string {
+    fmt.Println(&quot;outPutInPlainText &quot;, reflect.TypeOf(r).String())
+    return &quot;outPutInPlainText &quot; + reflect.TypeOf(r).String()
+}
 
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15718897954416.html">
-                
-                  <h1>错误处理</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>accept</h4>
+func (r *RedisConfig) output() map[string]string {
+    ret := make(map[string]string)
+    ret[&quot;outPut&quot;] = reflect.TypeOf(r).String()
+    fmt.Println(&quot;output &quot;, render.Render(ret))
+    return ret
+}
 
-<ul>
-<li>阻塞慢应用</li>
-<li>会被系统信号打断 errno = EINTR ECONNABORTED</li>
-</ul>
 
-<h4>read</h4>
+func (r *RedisConfig) containsKey(key string) bool {
+    return false
+}
 
-<ul>
-<li>&gt; 0 实际读到的字节数 1 == buf 1024  2 &gt; buf 56</li>
-<li>= 0 有EOF，到达文件末尾，读到文件末尾，对端关闭</li>
-<li>-1 出现异常</li>
-<li>1 errno == EINTR 被信号中断 重启或者退出</li>
-<li>2 errno == EAGIN(EWOULDBLOCK) 非阻塞方式读，没有数据</li>
-<li>3 others 错误</li>
-</ul>
+type KafkaConfig struct {
+    configSource ConfigSource
+    address string
+    timeOut, maxTotal int64
+}
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/24 12:03 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98.html'>网络编程实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
+func (k *KafkaConfig) updater() {
+    //k.address = k.configSource.address
+    //k.timeOut, k.maxTotal = k.configSource.timeOut, k.configSource.timeOut
+    fmt.Println(&quot;Time to update config &quot;, reflect.TypeOf(k).String())
+}
 
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15687637976768.html">
-                
-                  <h1>消息可靠性投递</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>导航</h4>
+func (k *KafkaConfig) outPutInPlainText() string {
+    fmt.Println(&quot;outPutInPlainText &quot;, reflect.TypeOf(k).String())
+    return &quot;outPutInPlainText &quot; + reflect.TypeOf(k).String()
+}
 
-<ul>
-<li>消息如何保障 100%的投递成功？</li>
-<li>幂等性概念详解</li>
-<li>在海量订单产生的业务高峰期，如何避免消息的重复消费问题？</li>
-<li>Confirm 确认消息、Return 返回消息</li>
-<li>自定义消费者</li>
-<li>消息的 ACK 与重回队列</li>
-<li>消息的限流</li>
-<li>TTL 消息</li>
-</ul>
+func (k *KafkaConfig) output() map[string]string {
+    ret := make(map[string]string)
+    ret[&quot;outPut&quot;] = reflect.TypeOf(k).String()
+    fmt.Println(&quot;output &quot;, render.Render(ret))
+    return ret
+}
 
-<h4>消息有序性</h4>
+type MysqlConfig struct {
+    configSource ConfigSource
+    address string
+    timeOut, maxTotal int64
+}
 
-<ul>
-<li>exclude</li>
-<li>如果消息不能路由到queue，消息就会被丢弃</li>
-</ul>
+func (m *MysqlConfig) outPutInPlainText() string {
+    fmt.Println(&quot;outPutInPlainText &quot;, reflect.TypeOf(m).String())
+    return &quot;outPutInPlainText &quot; + reflect.TypeOf(m).String()
+}
 
-<h4>可靠性投递</h4>
+func (m *MysqlConfig) output() map[string]string {
+    ret := make(map[string]string)
+    ret[&quot;outPut&quot;] = reflect.TypeOf(m).String()
+    fmt.Println(&quot;output &quot;, render.Render(ret))
+    return ret
+}
 
-<ul>
-<li>保障消息的成功发出</li>
-<li>保障 MQ 节点的成功接收</li>
-<li>发送端收到 MQ 节点（Broker）确认应答</li>
-<li>完善的消息进行补偿机制</li>
-</ul>
+func (r *MysqlConfig) containsKey(key string) bool {
+    return false
+}
 
-<h5>消息落库，对消息状态进行打标</h5>
+type Executor struct {
+    t *time.Timer
+    d time.Duration
+}
 
-<p><img src="media/15687637976768/15687639498887.jpg" alt="" style="width:1249px;"/></p>
+func (e *Executor) run(updater Updater) {
+    for {
+        select {
+          case &lt;- e.t.C:
+            updater.updater()
+                e.t.Reset(e.d)
+        }
+    }
+}
 
-<h5>业务消息落库</h5>
+type ScheduleUpdater struct {
+    Updater
+    delayTime int64
+    executor *Executor
+}
 
-<p><img src="media/15687637976768/15687640188248.jpg" alt="" style="width:1300px;"/></p>
+func (s *ScheduleUpdater) run() {
+    s.executor.run(s.Updater)
+}
 
-<h4>幂等性</h4>
+func NewScheduleUpdater(updater Updater, delayTime int64) *ScheduleUpdater {
+    dur :=  time.Duration(delayTime) * time.Second
+    return &amp;ScheduleUpdater {
+        Updater: updater,
+        delayTime: delayTime,
+        executor: &amp;Executor{
+            d: dur,
+            t: time.NewTimer(dur),
+        },
+    }
+}
 
-<ul>
-<li>多次操作结果都是一样的</li>
-<li><img src="media/15687637976768/15717869014026.jpg" alt="" style="width:779px;"/></li>
-</ul>
+type HttpServer struct {
+    host string
+    port int
+    viewers map[string]*list.List
+}
 
-<h5>唯一ID+指纹码机制，利用数据库主键去重利用</h5>
+func (h *HttpServer) addViewers(urlDic string, viewer Viewer) {
+    if !viewer.containsKey(urlDic) {
+        viewList := list.New()
+        h.viewers[urlDic] = viewList
 
-<ul>
-<li>唯一 ID+指纹码机制，利用数据库主键去重</li>
-<li>SELECT COUNT (1) FROM T ORDER WHERE D=唯一 ID+指纹码</li>
-<li>好处：实现简单</li>
-<li>坏处：高并发下有数据库写入的性能瓶颈</li>
-<li>解决方案：跟进 ID 进行分库分表进行算法路由</li>
-</ul>
+        h.viewers[urlDic].PushBack(viewer)
+    }
+}
 
-<h5>Redise 的原子性去实现</h5>
+func (h *HttpServer) run() {
+    fmt.Println(&quot;HttpServer viewer &quot;, render.Render(h.viewers))
+}
 
-<ul>
-<li>使用 Redis 进行幂等，需要考虑的问题</li>
-<li>第一：我们是否要进行数据落库，如果落库的话，关键解決的问题是数据库和缓存如何做到原子性？</li>
-<li>第二：如果不进行落库，那么都存储到缓存中，如何设置定时同步的策略？</li>
-</ul>
+func TestConfig(t *testing.T) {
+    configSource := &amp;ZookeeperConfigSource{&quot;localhost&quot;, 2, 3}
+    redisConfig := &amp;RedisConfig{configSource: configSource}
+    kafkaConfig := &amp;KafkaConfig{configSource: configSource}
+    mysqlConfig := &amp;MysqlConfig{configSource: configSource}
 
-<h4>Confirm机制</h4>
+    updaterList := list.New()
+    redisUpdater := NewScheduleUpdater(redisConfig, 2)
+    updaterList.PushBack(redisUpdater)
 
-<ul>
-<li>消息的确认，是指生产者投递消息后，如果 Brokerl 收到消息，则会给我们生产者一个应答。</li>
-<li>生产者进行接收应答，用来确定这条消息是否正常的发送到 Broker，这种方式也是消息的可靠性投递的核心保障！</li>
-<li><img src="media/15687637976768/15687655634522.jpg" alt="" style="width:1141px;"/></li>
-<li>第一步：在 channel 上开启确认模式：Confirm</li>
-<li>第二步：在 channel 上添加监听：NotifyConfirm(ack, nack chan uint64) 监听成功和失败的返回结果，根据具体的结果对消息进行重新发送、或记录日志等后续处理！</li>
-<li>如果ACK和NACK都没有，利用定时任务抓去做中间状态进行补偿</li>
-</ul>
+    kafkaUpdater := NewScheduleUpdater(kafkaConfig, 2)
+    updaterList.PushBack(kafkaUpdater)
 
-<h4>Exchange</h4>
+    for e := updaterList.Front(); e != nil; e = e.Next() {
+        go e.Value.(*ScheduleUpdater).run()
+    }
 
-<ul>
-<li>在客户端和服务端声明都可以</li>
-<li>如果声明的时候路由key不一样，则会生成两个</li>
-<li></li>
-</ul>
+    httpServer := &amp;HttpServer{
+        host: &quot;127.0.0.1&quot;,
+        port: 2389,
+        viewers: make(map[string]*list.List),
+    }
 
-<h4>Return消息机制</h4>
-
-<ul>
-<li>Return Listener 用于处理一些不可路由的消息</li>
-<li>我们的消息生产者，通过指定一个 Exchange 和 Routingkey，把消息送达到某一个队列中去，然后我们的消费者监听队列，进行消费处理操作！</li>
-<li>但是在某些情况下，如果我们在发送消息的时候，当前的 exchange不存在或者指定的路由 key 略由不到，这个时候如果我们需要监听这种不可达的消息，就要使用 Return Listener</li>
-<li>Mandatory：如果为 true，则监听器会接收到路由不可达的消息，然后进行后续处理，如果为 false，那么 brokers 端自动删除该消息</li>
-<li><img src="media/15687637976768/15688492958280.jpg" alt="" style="width:943px;"/></li>
-</ul>
-
-<h4>消费端限流</h4>
-
-<ul>
-<li>Rabbit MQ 提供了一种 qos（服务质量保证）功能，即在非自动确认消息的前提下，如果一定数目的消息（通过基于 Consume 或者 channeli 设置 Qos 的值）未被确认前，不进行消费新的消息。</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">type basicQos struct {
-  PrefetchSize  uint32 0不做限制
-  PrefetchCount uint16 一次处理多少条消息
-  Global        bool //channel true consumer false
+    httpServer.addViewers(&quot;/config&quot;, redisConfig)
+    httpServer.addViewers(&quot;/config&quot;, mysqlConfig)
+    httpServer.run()
+    select {}
 }
 </code></pre>
 
-<ul>
-<li>Prefetchsize: 0</li>
-<li>Prefetch Count：会告诉 Rabbitmq 不要同时给一个消费者推送多于 N 个消息，即一旦有 N 个消息还没有 ack，则该 consumer 将 block 掉，直到有消息 ack</li>
-<li>global: true\false 是否将上面设置应用于 channel简单点说，就是上面限制是 chann인l 级别的还是 consumer client级别</li>
-<li>autoAck设置为false</li>
-</ul>
-
-<h4>消费端ACK和重回队列</h4>
+<h4>接口隔离原则</h4>
 
 <ul>
-<li>消费端的手工 ACK 和 NACK， NACK保证消息重回队列</li>
-<li>消费端进行消费的时候，如果由于业务异常我们可以进行日志的记<br/>
-录，然后进行补偿</li>
-<li>如果由于服务器宕机等严重问题，那我们就需要手工进行 ACK 保障消费端消费成功</li>
-</ul>
-
-<h5>重回队列</h5>
-
-<ul>
-<li>消费端重回队列是为了对没有处理成功的消息，把消息重新会递给Broker</li>
-<li>一般我们在实际应用中，都会关闭重回队列，也就是设置为 False</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">type basicNack struct {
-  DeliveryTag uint64
-  Multiple    bool
-  Requeue     bool
-}
-type basicAck struct {
-  DeliveryTag uint64
-  Multiple    bool
-}
-Nack(tag uint64, multiple bool, requeue bool)
-multiple 是否批量
-requeue 是否重回队列
-Ack(tag uint64, multiple bool)
-</code></pre>
-
-<h4>TTL队列/消息</h4>
-
-<ul>
-<li>TTL 是 Time To Live 的缩写，也就是生存时间</li>
-<li>Rabbitmq 支持消息的过期时间，在消息发送时可以进行指定</li>
-<li>Rabbitmq 支持队列的过期时间，从消息入队列开始计算，只要超过了队列的超时时间配置，那么消息会自动的清除</li>
-<li>针对队列</li>
-<li>expiration针对单个消息</li>
-</ul>
-
-<h4>死信队列</h4>
-
-<ul>
-<li>死信队列：DLX, Dead- Letter- Exchange</li>
-<li>利用 DLX，当消息在一个队列中变成死信（dead message）之后</li>
-<li>它能被重新 publish 到另一个 Exchange，这个 Exchange 就是 DLX</li>
-<li><img src="media/15687637976768/15718066699196.jpg" alt="" style="width:1159px;"/></li>
-</ul>
-
-<h5>分类</h5>
-
-<ul>
-<li>消息被拒绝（basic. Reject/ basic. Nack）并且 requeue= false 消息 TTL 过期队列达到最大长度</li>
-<li>DLX 也是一个正常的 Exchange，和一般的 xchange 没有区別，它能在任何的队列上被指定，实际上就是设置某个队列的属性。</li>
-<li>当这个队列中有死信时，Rabbitmq 就会自动的将这个消息重新发布到设置的 Exchange 上去，进而被路由到另一个队列</li>
-<li>可以监听这个队列中消息做相应的处理，这个特性可以弥补 Rabbitmq 3.0 以前支持的 immediate 参数的功能。</li>
-</ul>
-
-<h5>设置</h5>
-
-<ul>
-<li>首先需要设置死信队列的 exchange 和 queue，然后进行绑定</li>
-<li>Exchange: dlx. Exchange</li>
-<li>Queue dlxqueue v Routing Key: #</li>
-<li>arguments.Put(&quot;x-dead-letter-exchange&quot;, dlx.exchange&quot;)</li>
-<li>这样消息在过期、requeue、队列在达到最大长度时，消息就可以直接路由到死信队列！</li>
-</ul>
-
-<h4>总结</h4>
-
-<ul>
-<li>本章节主要和大家一起学习了 Rabbitmqp 的高级特性，首先介绍了互联网大厂在实际使用中是如何保障 100%的消息投递成功和幕等性的，以及对 Rabbitmqf 的确认消息、返回消息、ACK 与重回队列、消息的限流，以及对超时时间、死信队列的使用</li>
+<li>理解“接口隔离原则”的重点是理解其中的“接口”二字。这里有三种不同的理解。</li>
+<li>如果把“接口”理解为一组接口集合，可以是某个微服务的接口，也可以是某个类库的接口等。如果部分接口只被部分调用者使用，我们就需要将这部分接口隔离出来，单独给这部分调用者使用，而不强迫其他调用者也依赖这部分不会被用到的接口。</li>
+<li>如果把“接口”理解为单个 API 接口或函数，部分调用者只需要函数中的部分功能，那我们就需要把函数拆分成粒度更细的多个函数，让调用者只依赖它需要的那个细粒度函数</li>
+<li>如果把“接口”理解为 OOP 中的接口，也可以理解为面向对象编程语言中的接口语法。那接口的设计要尽量单一，不要让接口的实现类和调用者，依赖不需要的接口函数。</li>
 </ul>
 
                         
@@ -1137,10 +514,10 @@ Ack(tag uint64, multiple bool)
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/09/18 07:43 上午</span>
+                    <span class="date">2020/01/05 21:10 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='RabbitMQ.html'>RabbitMQ</a></span>
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html'>设计模式之美</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -1154,180 +531,35 @@ Ack(tag uint64, multiple bool)
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15652717124568.html">
+                <a class="clearlink" href="15787865983142.html">
                 
-                  <h1>TSL连接过程</h1>
+                  <h1>定时器设计</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>子协议</h4>
+                        	<h4>case</h4>
 
-<ul>
-<li>记录协议</li>
-<li>警报协议</li>
-<li>握手协议</li>
-<li>变更密码规范协议</li>
-</ul>
-
-<h4>握手流程</h4>
-
-<ul>
-<li>client random params</li>
-<li>server random params </li>
-<li>密码套件</li>
-<li>ECDHE算法</li>
-</ul>
-
-<h4>TLS1.3</h4>
-
-<ul>
-<li>前向安全</li>
-</ul>
-
-<h4>验证CA的流程</h4>
-
-<ul>
-<li>服务器返回的是证书链（不包括根证书，根证书预置在浏览器中），然后浏览器就可以使用信任的根证书（根公钥）解析证书链的根证书得到一级证书的公钥+摘要验签，然后拿一级证书的公钥解密一级证书拿到二级证书的公钥和摘要验签，再然后拿二级证书的公钥解密二级证书得到服务器的公钥和摘要验签，验证过程就结束了</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/08 21:41 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='http_study.html'>http_study</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15432005577683.html">
-                
-                  <h1>strings&byte op</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>与string值相比，strings.Builder类型的值有哪些优势？</h4>
-
-<ul>
-<li>已经存在的内容不变，但是可以拼接更多的内容</li>
-<li>减少了内存分配和内容拷贝的次数</li>
-<li>可将内容重置，可重用值</li>
-</ul>
-
-<h4>string.Builder</h4>
-
-<ul>
-<li>Write</li>
-<li>WriteByte</li>
-<li>WriteRune</li>
-<li>WriteString</li>
-</ul>
-
-<h4>string.Builder约束</h4>
-
-<ul>
-<li>绝不共享Builder值以及它的指针值。</li>
-</ul>
-
-<h4>为什么说strings.Reader类型的值可以高效地读取字符串？</h4>
-
-<ul>
-<li>Reader值可以让我们很方便地读取一个字符串中的内容。它的高效主要体现在它对字符串的读取机制上。在读取的过程中，Reader值会保存已读取的字节的计数，也称已读计数。</li>
-</ul>
-
-<h4>byte.Buffer</h4>
-
-<ul>
-<li>使用字节切片作为内容机器</li>
-<li>int类型代表已读字节的计数</li>
-<li>Buffer值的长度是未读内容的长度，而不是已存内容的总长度。它与在当前值之上的读操作和写操作都有关系</li>
-<li>Buffer值的容量指的是它的内容容器（也就是那个字节切片）的容量，它只与在当前值之上的写操作有关，并会随着内容的写入而不断增长。</li>
-</ul>
-
-<h4>byte.Buffer已读计数的作用</h4>
-
-<ul>
-<li>读取内容时，相应方法会依据已读计数找到未读部分，并在读取后更新计数。</li>
-<li>写入内容时，如需扩容，相应方法会根据已读计数实现扩容策略。</li>
-<li>截断内容时，相应方法截掉的是已读计数代表索引之后的未读部分。</li>
-<li>读回退时，相应方法需要用已读计数记录回退点。</li>
-<li>重置内容时，相应方法会把已读计数置为0。</li>
-<li>导出内容时，相应方法只会导出已读计数代表的索引之后的未读部分。</li>
-<li>获取长度时，相应方法会依据已读计数和内容容器的长度，计算未读部分的长度并返回。</li>
-</ul>
-
-<h4>对比strings.Builder和bytes.Buffer的String方法，并判断哪一个更高效？原因是什么？</h4>
-
-<ul>
-<li>strings.Builder String方法中*(*string)(unsafe.Pointer(&amp;b.buf)) 是直接取得buf的地址然后转换成string返回。而bytes.Buffer的String方法是 string(b.buf[b.off:])然后对buf进行操作</li>
-</ul>
-
-<h4>案例</h4>
-
-<pre class="line-numbers"><code class="language-go">const numbers = 100
-
-func BenchmarkSprintf(b *testing.B) {
-    b.ResetTimer()
-    for idx := 0; idx &lt; b.N; idx++ {
-        var s string
-        for i := 0; i &lt; numbers; i++ {
-            s = fmt.Sprintf(&quot;%v%v&quot;, s, i)
-        }
-    }
-    b.StopTimer()
+<pre class="line-numbers"><code class="language-go">type TimerTask struct {
+    t *time.Timer
+    d time.Duration
 }
 
-func BenchmarkStringBuilder(b *testing.B) {
-    b.ResetTimer()
-    for idx := 0; idx &lt; b.N; idx++ {
-        var builder strings.Builder
-        for i := 0; i &lt; numbers; i++ {
-            builder.WriteString(strconv.Itoa(i))
-
+func (e *TimerTask) run() {
+    for {
+        select {
+        case &lt;- e.t.C:
+            fmt.Println(&quot;run&quot;)
+            e.t.Reset(e.d)
         }
-        _ = builder.String()
     }
-    b.StopTimer()
 }
 
-func BenchmarkBytesBuf(b *testing.B) {
-    b.ResetTimer()
-    for idx := 0; idx &lt; b.N; idx++ {
-        var buf bytes.Buffer
-        for i := 0; i &lt; numbers; i++ {
-            buf.WriteString(strconv.Itoa(i))
-        }
-        _ = buf.String()
-    }
-    b.StopTimer()
-}
-
-func BenchmarkStringAdd(b *testing.B) {
-    b.ResetTimer()
-    for idx := 0; idx &lt; b.N; idx++ {
-        var s string
-        for i := 0; i &lt; numbers; i++ {
-            s += strconv.Itoa(i)
-        }
-
-    }
-    b.StopTimer()
+func main() {
+    dur := time.Duration(1) * time.Second
+    executor := &amp;TimerTask{d: dur, t: time.NewTimer(dur)}
+    executor.run()
+    select {}
 }
 </code></pre>
 
@@ -1338,10 +570,220 @@ func BenchmarkStringAdd(b *testing.B) {
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/11/26 10:49 上午</span>
+                    <span class="date">2020/01/12 07:49 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15782640669384.html">
+                
+                  <h1>解析器</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>动机</h4>
+
+<ul>
+<li><p>在软件构建过程中，如果某一特定领域的问题比较复杂，类似的结构不断重复出现，如果使用普通的编程方式来实现将面临非常频繁的变化。</p></li>
+<li><p>在这种情况下，将特定领域的问题表达为某种语法规则下的句子然后构建一个解释器来解释这样的句子，从而达到解决问题的目的。</p></li>
+</ul>
+
+<h4>模式定义</h4>
+
+<ul>
+<li>给定一个语言，定义它的文法的一种表示，并定义一种解释器，这个解释器使用该表示来解释语言中的句子。</li>
+</ul>
+
+<h4>结构</h4>
+
+<ul>
+<li><img src="media/15782640669384/15782652005755.jpg" alt="" style="width:598px;"/></li>
+</ul>
+
+<h4>要点总结</h4>
+
+<ul>
+<li>Interpreter 模式的应用场合是 Interpreter。模式应用中的难点，只有满足“业务规则频繁变化，<strong><em>且类似的结构不断重复出现，并且容易抽象为语法规则的问题”才适合使用 Interpreter/模式。</em></strong></li>
+<li>使用 Interpreter 模式来表示文法规则，从而可以使用面向对象技巧来方便地“扩展”文法</li>
+<li>interpreter/模式比较适合简单的文法表示,对于复杂的文法表示, nterperter/模式会产生比较大的类层次结构,需要求助于语法分析生成器这样的标准工具</li>
+</ul>
+
+<h4>golang_demo</h4>
+
+<pre class="line-numbers"><code class="language-go">package design_pattern
+
+import (
+    &quot;strconv&quot;
+    &quot;strings&quot;
+)
+
+type Node interface {
+    Interpret() int
+}
+
+type ValNode struct {
+    val int
+}
+
+func (n *ValNode) Interpret() int {
+    return n.val
+}
+
+type AddNode struct {
+    left, right Node
+}
+
+func (n *AddNode) Interpret() int {
+    return n.left.Interpret() + n.right.Interpret()
+}
+
+type MinNode struct {
+    left, right Node
+}
+
+func (n *MinNode) Interpret() int {
+    return n.left.Interpret() - n.right.Interpret()
+}
+
+type Parser struct {
+    exp   []string
+    index int
+    prev  Node
+}
+
+func (p *Parser) Parse(exp string) {
+    p.exp = strings.Split(exp, &quot; &quot;)
+
+    for {
+        if p.index &gt;= len(p.exp) {
+            return
+        }
+        switch p.exp[p.index] {
+        case &quot;+&quot;:
+            p.prev = p.newAddNode()
+        case &quot;-&quot;:
+            p.prev = p.newMinNode()
+        default:
+            p.prev = p.newValNode()
+        }
+    }
+}
+
+func (p *Parser) newAddNode() Node {
+    p.index++
+    return &amp;AddNode{
+        left:  p.prev,
+        right: p.newValNode(),
+    }
+}
+
+func (p *Parser) newMinNode() Node {
+    p.index++
+    return &amp;MinNode{
+        left:  p.prev,
+        right: p.newValNode(),
+    }
+}
+
+func (p *Parser) newValNode() Node {
+    v, _ := strconv.Atoi(p.exp[p.index])
+    p.index++
+    return &amp;ValNode{
+        val: v,
+    }
+}
+
+func (p *Parser) Result() Node {
+    return p.prev
+}
+
+import &quot;testing&quot;
+
+func TestInterpreter(t *testing.T) {
+    p := &amp;Parser{}
+    p.Parse(&quot;1 + 2 + 3 - 4 + 5 - 6&quot;)
+    res := p.Result().Interpret()
+    expect := 1
+    if res != expect {
+        t.Fatalf(&quot;expect %d got %d&quot;, expect, res)
+    }
+}
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2020/01/06 06:41 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15782208339837.html">
+                
+                  <h1>里式替换</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>原则</h4>
+
+<ul>
+<li>子类对象（object of subtype/derived class）能够替换程序（program）中父类对象（object of base/parent class）出现的任何地方，并且保证原来程序的逻辑行为（behavior）不变及正确性不被破坏。</li>
+</ul>
+
+<h4>违背里式替换原则</h4>
+
+<ul>
+<li>子类违背父类声明要实现的功能</li>
+<li>子类违背父类对输入、输出、异常的约定</li>
+</ul>
+
+<h4>里氏替换原则</h4>
+
+<ul>
+<li>多态是面向对象编程的一大特性，也是面向对象编程语言的一种语法。它是一种代码实现的思路。而里式替换是一种设计原则，是用来指导继承关系中子类该如何设计的，子类的设计要保证在替换父类的时候，不改变原有程序的逻辑以及不破坏原有程序的正确性。</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2020/01/05 18:40 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html'>设计模式之美</a></span>
           				   
                   </div>
                   <div class="more-right right">

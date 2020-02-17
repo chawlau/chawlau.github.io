@@ -1,0 +1,773 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  Linux性能优化实战 - eredin-blog
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="eredin-blog" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site: ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="self" href="index.html">Home</a></li>
+        
+        <li id=""><a target="_self" href="archives.html">Archives</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="https://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; eredin-blog</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+        
+        <li><a target="self" href="index.html">Home</a></li>
+        
+        <li><a target="_self" href="archives.html">Archives</a></li>
+        
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html">C++基础与提高</a></li>
+        
+            <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html">设计模式</a></li>
+        
+            <li><a href="Python.html">Python</a></li>
+        
+            <li><a href="Golang.html">Golang</a></li>
+        
+            <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html">设计模式之美</a></li>
+        
+            <li><a href="%E6%80%A7%E8%83%BD%E5%B7%A5%E7%A8%8B%E9%AB%98%E6%89%8B%E8%AF%BE.html">性能工程高手课</a></li>
+        
+            <li><a href="%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95.html">性能测试</a></li>
+        
+            <li><a href="Prometheus.html">Prometheus</a></li>
+        
+            <li><a href="RocketMQ.html">RocketMQ</a></li>
+        
+            <li><a href="%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE.html">网络协议</a></li>
+        
+            <li><a href="Django.html">Django</a></li>
+        
+            <li><a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html">深入剖析Kubernetes</a></li>
+        
+            <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html">数据结构和算法</a></li>
+        
+            <li><a href="%E5%BE%AE%E6%9C%8D%E5%8A%A1.html">微服务</a></li>
+        
+            <li><a href="%E6%9E%B6%E6%9E%84.html">架构</a></li>
+        
+            <li><a href="%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html">操作系统原理</a></li>
+        
+            <li><a href="Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html">Mysql优化实战</a></li>
+        
+            <li><a href="Kafka.html">Kafka</a></li>
+        
+            <li><a href="linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html">linux服务器研发</a></li>
+        
+            <li><a href="%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86.html">计算机组成原理</a></li>
+        
+            <li><a href="%E7%A8%8B%E5%BA%8F%E5%91%98%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB.html">程序员的自我修养</a></li>
+        
+            <li><a href="C%E8%AF%AD%E8%A8%80%E8%BF%9B%E9%98%B6.html">C语言进阶</a></li>
+        
+            <li><a href="http_study.html">http_study</a></li>
+        
+            <li><a href="%E7%8E%A9%E8%BD%AC%E7%AE%97%E6%B3%95.html">玩转算法</a></li>
+        
+            <li><a href="C++%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B.html">C++对象模型</a></li>
+        
+            <li><a href="SQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html">SQL必知必会</a></li>
+        
+            <li><a href="Zookeeper.html">Zookeeper</a></li>
+        
+            <li><a href="Redis%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A.html">Redis从入门到精通</a></li>
+        
+            <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E8%BF%9B%E9%98%B6.html">数据结构和算法进阶</a></li>
+        
+            <li><a href="Mysql%E6%80%A7%E8%83%BD%E7%AE%A1%E7%90%86%E5%92%8C%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1.html">Mysql性能管理和架构设计</a></li>
+        
+            <li><a href="%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98.html">网络编程实战</a></li>
+        
+            <li><a href="Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html">Redis高并发缓存</a></li>
+        
+            <li><a href="Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html">Linux性能优化实战</a></li>
+        
+            <li><a href="%E5%80%99%E6%8D%B7STL.html">候捷STL</a></li>
+        
+            <li><a href="ElasticSearch.html">ElasticSearch</a></li>
+        
+            <li><a href="RabbitMQ.html">RabbitMQ</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+	$(function(){
+		$('#menu_item_index').addClass('is_active');
+	});
+</script>
+<div class="row">
+	<div class="large-8 medium-8 columns">
+		<div class="markdown-body home-categories">
+		
+			<div class="article">
+                <a class="clearlink" href="15488096226324.html">
+                
+                  <h1>IO磁盘性能优化</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>IO基准测试</h4>
+
+<ul>
+<li>fio常用测试命令</li>
+<li>direct 表示跳过系统缓存</li>
+<li>iodepth使用异步IO发出的IO请求上限</li>
+<li>rw 表示IO模式 read/write randread/randwrite</li>
+<li>ioengine sync libaio mmap net</li>
+<li>bs 表示IO的大小</li>
+<li></li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">随机读
+fio -name=randread -direct=1 -iodepth=64 -rw=randread -ioengine=libaio -bs=4k -size=1G -numjobs=1 -runtime=1000 -group_reporting -filename=/dev/sdb
+# 随机写
+fio -name=randwrite -direct=1 -iodepth=64 -rw=randwrite -ioengine=libaio -bs=4k -size=1G -numjobs=1 -runtime=1000 -group_reporting -filename=/dev/sdb
+# 顺序读
+fio -name=read -direct=1 -iodepth=64 -rw=read -ioengine=libaio -bs=4k -size=1G -numjobs=1 -runtime=1000 -group_reporting -filename=/dev/sdb
+# 顺序写
+fio -name=write -direct=1 -iodepth=64 -rw=write -ioengine=libaio -bs=4k -size=1G -numjobs=1 -runtime=1000 -group_reporting -filename=/dev/sdb 
+</code></pre>
+
+<h4>结果分析</h4>
+
+<pre class="line-numbers"><code class="language-text">Starting 1 process
+Jobs: 1 (f=1): [r(1)][100.0%][r=80.2MiB/s,w=0KiB/s][r=20.5k,w=0 IOPS][eta 00m:00s]
+randread: (groupid=0, jobs=1): err= 0: pid=12928: Wed Jan 30 09:25:22 2019
+   read: IOPS=24.9k, BW=97.2MiB/s (102MB/s)(1024MiB/10535msec)
+    slat (nsec): min=1439, max=11451k, avg=29995.24, stdev=67723.36
+    clat (usec): min=2, max=18542, avg=2539.13, stdev=934.51
+     lat (usec): min=28, max=18656, avg=2569.61, stdev=948.27
+    clat percentiles (usec):
+     |  1.00th=[  938],  5.00th=[ 1156], 10.00th=[ 1385], 20.00th=[ 1811],
+     | 30.00th=[ 2180], 40.00th=[ 2474], 50.00th=[ 2671], 60.00th=[ 2802],
+     | 70.00th=[ 2966], 80.00th=[ 3130], 90.00th=[ 3326], 95.00th=[ 3458],
+     | 99.00th=[ 3982], 99.50th=[ 4948], 99.90th=[13566], 99.95th=[13829],
+     | 99.99th=[18482]
+   bw (  KiB/s): min=81304, max=137900, per=99.84%, avg=99371.14, stdev=17054.91, samples=21
+   iops        : min=20326, max=34475, avg=24842.67, stdev=4263.69, samples=21
+  lat (usec)   : 4=0.01%, 50=0.01%, 100=0.01%, 250=0.01%, 500=0.01%
+  lat (usec)   : 750=0.02%, 1000=1.95%
+  lat (msec)   : 2=22.61%, 4=74.44%, 10=0.70%, 20=0.27%
+  cpu          : usr=0.59%, sys=93.35%, ctx=73394, majf=0, minf=71
+  IO depths    : 1=0.1%, 2=0.1%, 4=0.1%, 8=0.1%, 16=0.1%, 32=0.1%, &gt;=64=100.0%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, &gt;=64=0.0%
+     complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.1%, &gt;=64=0.0%
+     issued rwt: total=262144,0,0, short=0,0,0, dropped=0,0,0
+     latency   : target=0, window=0, percentile=100.00%, depth=64
+
+Run status group 0 (all jobs):
+   READ: bw=97.2MiB/s (102MB/s), 97.2MiB/s-97.2MiB/s (102MB/s-102MB/s), io=1024MiB (1074MB), run=10535-10535msec
+
+Disk stats (read/write):
+  sdb: ios=257920/0, merge=109/0, ticks=173639/0, in_queue=173879, util=95.56%
+</code></pre>
+
+<ul>
+<li>slat ，是指从 I/O 提交到实际执行 I/O 的时长（Submission latency）；<br/>
+clat ，是指从 I/O 提交到 I/O 完成的时长（Completion latency）；<br/>
+而 lat ，指的是从 fio 创建 I/O 到 I/O 完成的总时长。</li>
+<li>bw是吞吐量</li>
+<li>iops每秒I/O的次数</li>
+<li>blktrace /dev/sdb查看磁盘访问设备的I/O情况</li>
+<li>blkparse sdb -d sdb.bin</li>
+</ul>
+
+<h4>应用程序优化</h4>
+
+<ul>
+<li>可以用追加写代替随机写，减少寻址开销，加快 I/O 写的速度。</li>
+<li>可以借助缓存 I/O ，充分利用系统缓存，降低实际 I/O 的次数。</li>
+<li>可以在应用程序内部构建自己的缓存，或者用 Redis 这类外部缓存系统</li>
+<li>在需要频繁读写同一块磁盘空间时，可以用 mmap 代替 read/write，减少内存的拷贝次数。</li>
+<li>在需要同步写的场景中，尽量将写请求合并，而不是让每个请求都同步写入磁盘，即可以用 fsync() 取代 O_SYNC</li>
+<li>在多个应用程序共享相同磁盘时，为了保证 I/O 不被某个应用完全占用，推荐你使用 cgroups 的 I/O 子系统，来限制进程 / 进程组的 IOPS 以及吞吐量。</li>
+</ul>
+
+<h4>CFQ调度器优化</h4>
+
+<ul>
+<li>ionice 来调整进程的 I/O 调度优先级</li>
+<li>Idle、Best-effort 和 Realtime</li>
+</ul>
+
+<h4>文件系统优化</h4>
+
+<ul>
+<li>xfs 支持更大的磁盘分区和更大的文件数量但是无法收缩</li>
+<li>文件系统特性，日志模式，挂载选项 tune2fs //TODO</li>
+<li>优化文件系统的缓存<br/>
+<ul>
+<li>pdflush脏页的刷新频率 脏页的限额</li>
+<li>优化内核回收目录项缓存和索引节点缓存的倾向</li>
+<li>内存文件系统 tmpfs</li>
+</ul></li>
+</ul>
+
+<h4>磁盘优化</h4>
+
+<ul>
+<li>使用RAID</li>
+<li>选择调度算法</li>
+<li>配置磁盘级别的隔离</li>
+<li>顺序读的场景，调整磁盘预读  /sys/block/sdb/queue/read_ahead_kb  blockdev --setra 8192 /dev/sdb</li>
+<li>优化内核块设备I/O的选项 /sys/block/sdb/queue/nr_requests</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/01/30 08:53 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15486417501301.html">
+                
+                  <h1>系统IO瓶颈</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>IO性能指标</h4>
+
+<p><img src="media/15486417501301/9e42aaf53ff4a544b9a7b03b6ce63f38.png" alt="9e42aaf53ff4a544b9a7b03b6ce63f38"/></p>
+
+<h4>文件系统I/O性能指标</h4>
+
+<ul>
+<li>存储空间的使用情况，包括容量、使用量以及剩余空间</li>
+<li>索引节点使用情况</li>
+<li>页缓存、目录项缓存、索引节点缓存以及各个具体文件系统（如 ext4、XFS 等）的缓存</li>
+<li>IOPS</li>
+<li>响应时间</li>
+<li>吞吐量 B/s</li>
+</ul>
+
+<h4>磁盘I/O性能指标</h4>
+
+<ul>
+<li>使用率，是指磁盘忙处理 I/O 请求的百分比。过高的使用率（比如超过 60%）通常意味着磁盘 I/O 存在性能瓶颈。</li>
+<li>IOPS（Input/Output Per Second），是指每秒的 I/O 请求数。</li>
+<li>吞吐量，是指每秒的 I/O 请求大小。</li>
+<li>响应时间，是指从发出 I/O 请求到收到响应的间隔时间。
+<img src="media/15486417501301/b6d67150e471e1340a6f3c3dc3ba0120.png" alt="b6d67150e471e1340a6f3c3dc3ba0120"/></li>
+</ul>
+
+<h4>性能工具</h4>
+
+<ul>
+<li>文件系统缓存 /proc/meminfo、/proc/slabinfo 以及 slabtop</li>
+<li>磁盘 iostat pidstat filetop opensnoop</li>
+</ul>
+
+<h4>工具和性能指标图</h4>
+
+<p><img src="media/15486417501301/6f26fa18a73458764fcda00212006698.png" alt="6f26fa18a73458764fcda00212006698"/><br/>
+<img src="media/15486417501301/c48b6664c6d334695ed881d5047446e9.png" alt="c48b6664c6d334695ed881d5047446e9"/></p>
+
+<h4>IO性能指标分析套路</h4>
+
+<ul>
+<li>先用 iostat 发现磁盘 I/O 性能瓶颈；</li>
+<li>再借助 pidstat ，定位出导致瓶颈的进程；</li>
+<li>随后分析进程的 I/O 行为；</li>
+<li>最后，结合应用程序的原理，分析这些 I/O 的来源。<img src="media/15486417501301/1802a35475ee2755fb45aec55ed2d98a.png" alt="1802a35475ee2755fb45aec55ed2d98a"/></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/01/28 10:15 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15476249724855.html">
+                
+                  <h1>Linux IO操作</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>虚拟文件系统</h4>
+
+<ul>
+<li>目录项，记录了文件的名字，以及文件与其他目录项之间的目录关系。</li>
+<li>索引节点，记录了文件的元数据。</li>
+<li>逻辑块，是由连续磁盘扇区构成的最小读写单元，用来存储文件数据。</li>
+<li>超级块，用来记录文件系统整体的状态，如索引节点和逻辑块的使用情况等。</li>
+</ul>
+
+<h4>固态硬盘和机械磁盘</h4>
+
+<ul>
+<li>机械磁盘的最小读写单位是扇区，一般大小为 512 字节。</li>
+<li>而固态磁盘的最小读写单位是页，通常大小是 4KB、8KB 等。</li>
+</ul>
+
+<h4>通用块层</h4>
+
+<ul>
+<li>为文件系统和应用程序，提供访问块设备的标准接口；向下，把各种异构的磁盘设备抽象为统一的块设备，并提供统一框架来管理这些设备的驱动程序。</li>
+<li>通用块层还会给文件系统和应用程序发来的 I/O 请求排队，并通过重新排序、请求合并等方式，提高磁盘读写的效率。</li>
+</ul>
+
+<h4>磁盘性能指标</h4>
+
+<ul>
+<li>使用率，是指磁盘处理 I/O 的时间百分比。过高的使用率（比如超过 80%），通常意味着磁盘 I/O 存在性能瓶颈。</li>
+<li>饱和度，是指磁盘处理 I/O 的繁忙程度。过高的饱和度，意味着磁盘存在严重的性能瓶颈。当饱和度为 100% 时，磁盘无法接受新的 I/O 请求。</li>
+<li>IOPS（Input/Output Per Second），是指每秒的 I/O 请求数。</li>
+<li>吞吐量，是指每秒的 I/O 请求大小。</li>
+<li>响应时间，是指 I/O 请求从发出到收到响应的间隔时间。</li>
+<li>在数据库、大量小文件等这类随机读写比较多的场景中，IOPS 更能反映系统的整体性能；而在多媒体等顺序读写较多的场景中，吞吐量才更能反映系统的整体性能。</li>
+</ul>
+
+<h4>iostat指标</h4>
+
+<ul>
+<li>%util 磁盘IO使用率</li>
+<li>r/s + w/s 就是IOPS</li>
+<li>rkB/s+wkB/s 吞吐量</li>
+<li>r_await+w_await 响应时间</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/01/16 15:49 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15429373418994.html">
+                
+                  <h1>平均负载</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>定义</h4>
+
+<ul>
+<li>单位时间内，系统处于可运行状态和不可中断状态的平均进程数，和cpu使用率没有直接关系</li>
+<li>包括了正在使用 CPU 的进程，还包括等待 CPU 和等待 I/O 的进程。</li>
+<li>本质上是平均活跃进程数</li>
+<li></li>
+</ul>
+
+<h4>过载</h4>
+
+<ul>
+<li>一旦1分钟的平均负载接近或超过了CPU的个数，就意味着系统正在发生过载的问题</li>
+<li>排查问题的阀门</li>
+<li><strong><em>当平均负载高于 CPU 数量 70% 的时候，你就应该分析排查负载高的问题了。</em></strong></li>
+</ul>
+
+<h4>cpu负载和cpu对应率的关系</h4>
+
+<ul>
+<li>CPU 密集型进程，使用大量 CPU 会导致平均负载升高，此时这两者是一致的。</li>
+<li>I/O 密集型进程，等待 I/O 也会导致平均负载升高，但 CPU 使用率不一定很高。</li>
+<li>大量等待 CPU 的进程调度也会导致平均负载升高，此时的 CPU 使用率也会比较高。</li>
+</ul>
+
+<h4>工具stress和sysstat</h4>
+
+<ul>
+<li>stress系统压力测试工具</li>
+<li>sysstat作为性能工具</li>
+<li>mpstat 是一个常用的多核 CPU 性能分析工具，用来实时查看每个 CPU 的性能指标，以及所有 CPU 的平均指标。</li>
+<li>pidstat 是一个常用的进程性能分析工具，用来实时查看进程的 CPU、内存、I/O 以及上下文切换等性能指标。</li>
+<li>pidstat wait就是进程等待CPU时间</li>
+<li>stress 缓冲区可能比较小，无法产生大的IO压力，这样大部分就都是系统调用的消耗了</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/11/23 09:42 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+              
+
+
+			<div class="row">
+			  <div class="large-6 columns">
+			  <p class="text-left" style="padding-top:25px;">
+			   <a href="Linux性能优化实战_7.html">&laquo; Prev Page</a>  
+			  </p>
+			  </div>
+			  <div class="large-6 columns">
+			<p class="text-right" style="padding-top:25px;">
+			 <a href="Linux性能优化实战_9.html">&raquo; Next Page</a> 
+			</p>
+			  </div>
+			</div>
+		</div>
+	</div><!-- large 8 -->
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <h1>eredin-blog</h1>
+                <div class="site-des">生命的意义是成为你自己！</div>
+                <div class="social">
+
+
+
+
+
+
+
+
+
+
+
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html"><strong>C++基础与提高</strong></a>
+        
+            <a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html"><strong>设计模式</strong></a>
+        
+            <a href="Python.html"><strong>Python</strong></a>
+        
+            <a href="Golang.html"><strong>Golang</strong></a>
+        
+            <a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html"><strong>设计模式之美</strong></a>
+        
+            <a href="%E6%80%A7%E8%83%BD%E5%B7%A5%E7%A8%8B%E9%AB%98%E6%89%8B%E8%AF%BE.html"><strong>性能工程高手课</strong></a>
+        
+            <a href="%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95.html"><strong>性能测试</strong></a>
+        
+            <a href="Prometheus.html"><strong>Prometheus</strong></a>
+        
+            <a href="RocketMQ.html"><strong>RocketMQ</strong></a>
+        
+            <a href="%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE.html"><strong>网络协议</strong></a>
+        
+            <a href="Django.html"><strong>Django</strong></a>
+        
+            <a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html"><strong>深入剖析Kubernetes</strong></a>
+        
+            <a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html"><strong>数据结构和算法</strong></a>
+        
+            <a href="%E5%BE%AE%E6%9C%8D%E5%8A%A1.html"><strong>微服务</strong></a>
+        
+            <a href="%E6%9E%B6%E6%9E%84.html"><strong>架构</strong></a>
+        
+            <a href="%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html"><strong>操作系统原理</strong></a>
+        
+            <a href="Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html"><strong>Mysql优化实战</strong></a>
+        
+            <a href="Kafka.html"><strong>Kafka</strong></a>
+        
+            <a href="linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html"><strong>linux服务器研发</strong></a>
+        
+            <a href="%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86.html"><strong>计算机组成原理</strong></a>
+        
+            <a href="%E7%A8%8B%E5%BA%8F%E5%91%98%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB.html"><strong>程序员的自我修养</strong></a>
+        
+            <a href="C%E8%AF%AD%E8%A8%80%E8%BF%9B%E9%98%B6.html"><strong>C语言进阶</strong></a>
+        
+            <a href="http_study.html"><strong>http_study</strong></a>
+        
+            <a href="%E7%8E%A9%E8%BD%AC%E7%AE%97%E6%B3%95.html"><strong>玩转算法</strong></a>
+        
+            <a href="C++%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B.html"><strong>C++对象模型</strong></a>
+        
+            <a href="SQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html"><strong>SQL必知必会</strong></a>
+        
+            <a href="Zookeeper.html"><strong>Zookeeper</strong></a>
+        
+            <a href="Redis%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A.html"><strong>Redis从入门到精通</strong></a>
+        
+            <a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E8%BF%9B%E9%98%B6.html"><strong>数据结构和算法进阶</strong></a>
+        
+            <a href="Mysql%E6%80%A7%E8%83%BD%E7%AE%A1%E7%90%86%E5%92%8C%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1.html"><strong>Mysql性能管理和架构设计</strong></a>
+        
+            <a href="%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98.html"><strong>网络编程实战</strong></a>
+        
+            <a href="Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html"><strong>Redis高并发缓存</strong></a>
+        
+            <a href="Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html"><strong>Linux性能优化实战</strong></a>
+        
+            <a href="%E5%80%99%E6%8D%B7STL.html"><strong>候捷STL</strong></a>
+        
+            <a href="ElasticSearch.html"><strong>ElasticSearch</strong></a>
+        
+            <a href="RabbitMQ.html"><strong>RabbitMQ</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="15692331863352.html">future&shared_future&atomic</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15702724482478.html">可变参数函数&&initializer_list</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15818128782116.html">Singleton</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15748977610569.html">State</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15817697569868.html">字符串分割</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
+
+
+  </body>
+</html>

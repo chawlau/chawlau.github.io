@@ -170,176 +170,51 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15682366934995.html">
+                <a class="clearlink" href="15724763690872.html">
                 
-                  <h1>缓存的使用和设计</h1>
+                  <h1>学习目标</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<ul>
-<li>缓存的受益与成本</li>
-<li>无底洞问题优化</li>
-<li>缓存更新策略</li>
-<li>缓存雪崩优化</li>
-<li>缓存粒度控制</li>
-<li>热点key重建优化</li>
-<li>缓存穿透优化</li>
-</ul>
-
-<h4>缓存的收益与成本</h4>
-
-<h5>收益</h5>
+                        	<h4>目标</h4>
 
 <ul>
-<li>加速读写<br/>
-通过缓存加速读写速度: CPUL1/L2/L3 Cache、Linux page Cache 加速硬盘读写、浏览器缓存、Ehcache 存数据库结果。</li>
-<li>降低后端负载<br/>
-后端服务器通过前端缓存降低负载：业务端使用 Redisp 降低后端 MYSQLF 负载</li>
+<li>理解松耦合设计思想</li>
+<li>掌握面向对象设计原则</li>
+<li>掌握重构技法改善设计</li>
+<li>掌握 GOF 核心设计模式</li>
 </ul>
 
-<h5>成本</h5>
+<h4>底层思维</h4>
 
 <ul>
-<li>数据不一致：缓存层和数据层有时间窗口不一致，和更新策略有关</li>
-<li>代码维护成本：多了一层缓存逻辑。</li>
-<li>运维成本：例如 Redis Cluster</li>
+<li>语言构造</li>
+<li>编译转换</li>
+<li>内存模型</li>
+<li>运行时机制</li>
 </ul>
 
-<h5>使用场景</h5>
+<h4>抽象思维</h4>
 
 <ul>
-<li>降低后端负载</li>
-<li>对高消耗的 SQL: join结果集/分组统计结果缓存。</li>
-<li>加速请求响应</li>
-<li>利用 Redis/ Memcache 优 IO 响应时间</li>
-<li>大量写合并为批量写</li>
-<li>如如计数器先 Redisg 累加再批量写 DB</li>
+<li>面向对象</li>
+<li>组件封装</li>
+<li>设计模式</li>
+<li>架构模式</li>
 </ul>
 
-<h5>缓存更新策略</h5>
+<h4>解决复杂性</h4>
 
 <ul>
-<li>LRU/LFU/FIFO算法剔除:例如 maxmemory-policy</li>
-<li>超时剔除：例如 expire。</li>
-<li>主动更新：开发控制生命周期</li>
-<li>对比</li>
-<li><img src="media/15682366934995/15682375026812.jpg" alt="" style="width:842px;"/></li>
+<li>更高层次来讲，人们处理复杂性有一个通用的技术，即抽象。由于不能掌握全部的复杂对象，我们选择忽视它的非本质细节，而去处理泛化和理想化了的对象模型。</li>
 </ul>
 
-<h5>建议</h5>
+<h4>软件设计的目标</h4>
 
 <ul>
-<li>低一致性 最大内存和淘汰策略</li>
-<li>高一致性：超时剔别除和主动更新结合，最大内存和淘汏策略兜底。</li>
+<li>复用</li>
 </ul>
-
-<h4>缓存粒度控制</h4>
-
-<ul>
-<li>通用性：全量属性更好。</li>
-<li>占用空间：部分属性更好</li>
-<li>代码维护：表面上全量属性更好。</li>
-</ul>
-
-<h4>缓存穿透问题</h4>
-
-<p><img src="media/15682366934995/15682379147346.jpg" alt="" style="width:694px;"/></p>
-
-<ul>
-<li>业务代码自身问题</li>
-<li>恶意攻击、爬虫等等</li>
-</ul>
-
-<h5>如何发现</h5>
-
-<ul>
-<li>业务的相应时间</li>
-<li>业务本身问题</li>
-<li>相关指标：总调用数、绶存层命中数、存储层命中数</li>
-</ul>
-
-<h5>如何解决</h5>
-
-<ul>
-<li>缓存空对象
-<img src="media/15682366934995/15682381690804.jpg" alt="" style="width:528px;"/></li>
-<li>需要更多的键，设置过期时间</li>
-<li>缓存层和存储层数据短期不一致 订阅消息刷新缓存</li>
-<li>布隆过滤器
-<img src="media/15682366934995/15682383222668.jpg" alt="" style="width:577px;"/>
-<ul>
-<li>比较固定的数据适合</li>
-<li>布隆过滤器可以实时更新</li>
-</ul></li>
-</ul>
-
-<h4>缓存雪崩</h4>
-
-<ul>
-<li>由于 cache 服务承载大量请求，当 cache服务异常/脱机,流量直接压向后端组件（例如 DB），造成级联故障。
-<img src="media/15682366934995/15682386858701.jpg" alt="" style="width:788px;"/></li>
-<li>保证缓存高可用</li>
-<li>个别节点个别机器个别机房</li>
-<li>依赖隔离组件为后端限流</li>
-<li>提前演练 </li>
-</ul>
-
-<h5>Cache服务高可用</h5>
-
-<ul>
-<li>sentinel
-<img src="media/15682366934995/15682389685832.jpg" alt="" style="width:777px;"/></li>
-<li>主从漂移
-<img src="media/15682366934995/15682390174270.jpg" alt="" style="width:1067px;"/></li>
-<li>隔离组件  线程池/信号量
-<img src="media/15682366934995/15682390932828.jpg" alt="" style="width:1059px;"/></li>
-</ul>
-
-<h4>无底洞问题</h4>
-
-<ul>
-<li><a href="http://highscalability.com/blog/2009/10/26/facebooks-memcached-multiget-hole-more-machines-more-capacit.html">http://highscalability.com/blog/2009/10/26/facebooks-memcached-multiget-hole-more-machines-more-capacit.html</a></li>
-<li><img src="media/15682366934995/15682394176541.jpg" alt="" style="width:562px;"/></li>
-<li>更多的机器！=更高的性能</li>
-<li>批量接口需求（mget, mset 等</li>
-<li>数据增长与水平扩展需求</li>
-</ul>
-
-<h5>优化IO</h5>
-
-<ul>
-<li>命令本身优化：例如慢查询 keys、hgetall bigkey</li>
-<li>减少网络通信次数</li>
-<li>降低接入成本: 例如客户端长连接/连接池、NIO 等</li>
-</ul>
-
-<h4>热点key重建优化</h4>
-
-<p><img src="media/15682366934995/15682398016392.jpg" alt="" style="width:1263px;"/></p>
-
-<h5>三个目标</h5>
-
-<ul>
-<li>减少重缓存的次数</li>
-<li>数据尽可能一致</li>
-<li>减少潜在危险</li>
-</ul>
-
-<h5>解决</h5>
-
-<ul>
-<li>互斥锁（mutex key）没有大量重建 </li>
-<li>永远不过期
-<img src="media/15682366934995/15682401824843.jpg" alt="" style="width:1091px;"/></li>
-<li>功能层面：为每个 value 添加逻辑过期时间，但发现超过逻辑过期时间后，会使用单独的线程去构建缓存。</li>
-<li>对比</li>
-<li><img src="media/15682366934995/15682402327738.jpg" alt="" style="width:1191px;"/></li>
-</ul>
-
-<h4>总结</h4>
-
-<p><img src="media/15682366934995/15682403962881.jpg" alt="" style="width:1084px;"/></p>
 
                         
                       </div>
@@ -348,10 +223,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/09/12 05:18 上午</span>
+                    <span class="date">2019/10/31 06:59 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Redis%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A.html'>Redis从入门到精通</a></span>
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -365,207 +240,45 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15676462008800.html">
+                <a class="clearlink" href="15724311586874.html">
                 
-                  <h1>动态规划</h1>
+                  <h1>操作</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>记忆化搜索</h4>
+                        	<h4>查询cpu使用率</h4>
 
-<ul>
-<li>递归是自上向下</li>
-</ul>
-
-<h4>动态规划</h4>
-
-<ul>
-<li>自下而上的解决问题</li>
-<li>将原问题拆解成若干子问题，保存子问题的答案，使得每个子问题都只求解一次</li>
-<li>递归问题-&gt;重叠子问题-&gt;</li>
-<li>leet_120</li>
-<li>leet_64 没有非负整数， 没有限制条件</li>
-<li>leet_343 回溯</li>
-<li><img src="media/15676462008800/15680798276938.jpg" alt="" style="width:1006px;"/></li>
-<li><img src="media/15676462008800/15680799034216.jpg" alt="" style="width:996px;"/></li>
-<li>leet_279</li>
-<li><img src="media/15676462008800/15680822078106.jpg" alt="" style="width:1149px;"/></li>
-<li>leet_79</li>
-<li>leet_62</li>
-<li>leet_63</li>
-</ul>
-
-<h4>leet_198</h4>
-
-<ul>
-<li><img src="media/15676462008800/15676509845611.jpg" alt="" style="width:1066px;"/></li>
-<li><img src="media/15676462008800/15676510940203.jpg" alt="" style="width:1166px;"/></li>
-<li>状态定义和状态转移一定要搞懂</li>
-<li><img src="media/15676462008800/15676523958822.jpg" alt="" style="width:922px;"/></li>
-<li>使用新的状态定义</li>
-<li>leet_213</li>
-<li>leet_337</li>
-<li>leet_309</li>
-</ul>
-
-<h4>0-1背包问题</h4>
-
-<ul>
-<li>O(2<sup>n*n)</sup></li>
-<li>贪心算法</li>
-<li><img src="media/15676462008800/15679064880244.jpg" alt="" style="width:976px;"/></li>
-<li>自顶向下 递归</li>
-<li>自底向上 动态规划</li>
-<li>背包问题优化</li>
-<li><img src="media/15676462008800/15679083241737.jpg" alt="" style="width:1001px;"/></li>
-</ul>
-
-<h4>背包问题</h4>
-
-<ul>
-<li>每个物品可以无限使用</li>
-<li>多重背包问题</li>
-<li>物品之间加入更多约束</li>
-</ul>
-
-<h4>leetcode</h4>
-
-<ul>
-<li>leet_416</li>
-<li><img src="media/15676462008800/15679109143760.jpg" alt="" style="width:1002px;"/></li>
-<li>leet_300</li>
-<li><img src="media/15676462008800/15679095425409.jpg" alt="" style="width:989px;"/></li>
-<li><img src="media/15676462008800/15679098812535.jpg" alt="" style="width:1012px;"/></li>
-<li><img src="media/15676462008800/15679103037974.jpg" alt="" style="width:821px;"/></li>
-<li>没有递增的特性</li>
-<li>LIS问题的O(nlogn)解法</li>
-<li>leet_376</li>
-<li>leet_322</li>
-<li>leet_377</li>
-<li>leet_474</li>
-<li>leet_139</li>
-<li>leet_494</li>
-</ul>
-
-<h4>more</h4>
-
-<ul>
-<li>最长公共子序列</li>
-<li><img src="media/15676462008800/15679159466365.jpg" alt="" style="width:972px;"/></li>
-<li><img src="media/15676462008800/15679161027984.jpg" alt="" style="width:1023px;"/></li>
-</ul>
-
-<h4>dijkstra</h4>
-
-<ul>
-<li>单源最短路径算法</li>
-<li><img src="media/15676462008800/15679162036286.jpg" alt="" style="width:815px;"/></li>
-</ul>
-
-<h4>动态规划子问题</h4>
-
-<ul>
-<li><img src="media/15676462008800/15679164823964.jpg" alt="" style="width:1028px;"/></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/05 09:16 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E7%8E%A9%E8%BD%AC%E7%AE%97%E6%B3%95.html'>玩转算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15680245397248.html">
-                
-                  <h1>unique_ptr删除器尺寸</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>临时对象</h4>
-
-<ul>
-<li>unique_ptr不能拷贝，但是在局部临时对象中，即将被销毁的时候，是可以被拷贝的</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">unique_ptr&lt;int&gt; p1;
-p1 = func();
+<pre class="line-numbers"><code class="language-text">//一段时间的cpu使用率
+rate(node_cpu_seconds_total{mode!=&quot;idle&quot;}[1m])
+//一分钟的增量
+increase(node_cpu_seconds_total{mode!=&quot;idle&quot;}[1m])
+//总的使用率
+sum(increase(node_cpu_seconds_total{mode!=&quot;idle&quot;}[1m]))
+//平均使用
+(1-((sum(increase(node_cpu_seconds_total{mode=&quot;idle&quot;}[1m])) by (instance)) / (sum(increase(node_cpu_seconds_total[1m])) by (instance)))) * 100
 </code></pre>
 
-<h4>指定删除器</h4>
+<h4>按机器拆分</h4>
 
-<ul>
-<li>unique_ptr&lt;指向的对象,删除器&gt; 智能指针变量名</li>
-<li>删除器 可调用对象 比如函数 重载</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">void mydelete(int *pdel) {
-  delete pdel;
-  pdel = nullptr;
-}
-
-int main() {
-  unique_ptr&lt;int&gt; p1;
-  p1 = func();
-  typedef void(*fp) (int*);
-  using fp = void(*)(int*);
-  typedef decltype(mydelete)* fp2;//decltype返回的是void(int*) ,加*表示函数类型
-  unique_ptr&lt;int, decltype(mydelete)*&gt; ps2(new int(100), mydelete);
-  unique_ptr&lt;int, fp&gt; ps1(new int(100), mydelete);
-}
+<pre class="line-numbers"><code class="language-text">sum(increase(node_cpu_seconds_total{mode=&quot;idle&quot;}[1m])) by (instance)
 </code></pre>
 
 <ul>
-<li>指定删除器会影响unique_ptr的类型</li>
-<li>unique_ptr删除器不同的智能指针不能放入同一个容器</li>
+<li>by instance按每台机器划分的实例</li>
 </ul>
 
-<h4>尺寸问题</h4>
+<h4>查看单独cpu的使用率</h4>
+
+<pre class="line-numbers"><code class="language-text">sum(increase(node_cpu_seconds_total{mode=&quot;user&quot;}[1m]))
+sum(increase(node_cpu_seconds_total{mode=&quot;system&quot;}[1m]))
+sum(increase(node_cpu_seconds_total{mode=&quot;iowait&quot;}[1m]))
+</code></pre>
+
+<h4>命令行扩展</h4>
 
 <ul>
-<li>跟裸指针一样大</li>
-<li>如果增加了自己的删除器，则尺寸有可能增加，也可能不增加</li>
-<li>增加删除器会增加unique_ptr尺寸</li>
-</ul>
-
-<h4>智能指针设计思想</h4>
-
-<ul>
-<li>帮助释放内存</li>
-<li>C++ auto_ptr=unique_ptr</li>
-</ul>
-
-<h4>auto_ptr</h4>
-
-<ul>
-<li>具有unique_ptr部分特性</li>
-<li>不能放入容器</li>
-<li>不能从函数中返回</li>
-</ul>
-
-<h4>智能指针</h4>
-
-<ul>
-<li>多个指向同一一个对象的指针，使用shared_ptr</li>
-<li>指向同一个对象的指针，使用unique_ptr首选</li>
+<li>tag扩展</li>
 <li></li>
 </ul>
 
@@ -576,10 +289,10 @@ int main() {
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/09/09 18:22 下午</span>
+                    <span class="date">2019/10/30 18:25 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          					    <span class="posted-in"><a href='Prometheus.html'>Prometheus</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -593,101 +306,84 @@ int main() {
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15672468334916.html">
+                <a class="clearlink" href="15724252772617.html">
                 
-                  <h1>shared_ptr常用操作</h1>
+                  <h1>监控分类</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>引用计数增加</h4>
+                        	<h4>类别</h4>
 
 <ul>
-<li>每个shared_ptr都会记录其他的shared_ptr指向对象</li>
-<li>智能当成实参在函数里传递会增加</li>
-<li>如果是引用则不增加</li>
-<li>返回值返回</li>
+<li>业务监控 可以包含 用户访问QPS，DAU日活，访问状态(http code)， 业务接入(登陆，注 册，聊天，上传，留言，短信，搜索)，产品转化率，充值额度，用户投诉 等等这些很宏观的概 念(上层)</li>
+<li>系统监控 主要是跟操作系统相关的 基本监控项 CPU/ 内存 / 硬盘 / IO / TCP链接 / 流量 等等 (Nagios - plugins, prometheus)</li>
+<li>网络监控 (IDC)对网络状态的监控(交换机，路由器，防火墙，VPN) 互联网公司必不可 少 但是很多时候又被忽略 例如:内网之间(物理内网，逻辑内网 可用区 创建虚拟机 内网IP ) 外网丢包率 延迟 等等</li>
+<li>日志监控 监控中的重头戏(Splunk,ELK)，往往单独设计和搭建， 全部种类的日志都有需要采 集 (syslog, soft, 网络设备，用户行为)</li>
+<li>程序监控 一般需要和开发人员配合，程序中嵌入各种接又 直接获取数据 或者特质的日志格式</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-text">void func(shared_ptr&lt;int&gt;&amp; ptr);不增加
-void func(shared_ptr&lt;int&gt; ptr);//增加
-shared_ptr&lt;int&gt; func2(shared_ptr&lt;int&gt;&amp; ptr)//增加
-</code></pre>
-
-<h4>引用计数减少</h4>
+<h4>采取</h4>
 
 <ul>
-<li>局部的shared_ptr离开其作用域</li>
-<li>指向其他对象</li>
+<li>自带图形调试</li>
+<li>精细数据采样到s级</li>
 </ul>
 
-<h4>常用操作</h4>
+<h4>不足</h4>
 
 <ul>
-<li>use_count</li>
-<li>unique</li>
+<li>不支持集群</li>
+<li>被监控集群过大，性能有一定瓶颈</li>
+<li>偶尔发生数据丢失</li>
 </ul>
 
-<h4>reset</h4>
+<h4>promethus</h4>
 
 <ul>
-<li>若pi是唯一指向该对象的指针，那么释放pi指向的对象，pi置空，否则引用计数减q，不释放对象，同时pi置空</li>
-<li>reset带参数的话</li>
-<li>空指针也可以用reset，指向新的对象</li>
+<li>prometheus本身是一个以进程方式启动,之后以多进程和多线程实现监敬据收集计算查询更新存储的这样一个C/S模型远行模式</li>
+<li><img src="media/15724252772617/15724275818078.jpg" alt="" style="width:786px;"/></li>
 </ul>
 
-<h4>get</h4>
+<h4>数据存储</h4>
 
 <ul>
-<li>返回裸指针</li>
-<li>如果智能指针释放了对象，裸指针也就无效了</li>
-<li>第三方函数就是需要裸指针</li>
+<li>Prometheus 采用的是 tme- series（时间序列）的方式以一种自定义的格式存储在本地硬盘上</li>
+<li>prometheus 的本地 T-S (ime- senes）数据库以毎两小时为间隔来分 block（块）存储，每一个块中又分为</li>
+<li>多个 chunk 文件（我们以后会介绍 chunk 的概念）, chunk 文件是用来存放采集过来的数据的 TS 数据，metadata 和引文件（index </li>
+<li>index 文件是对 metrics (prometheus 中一突 KV 采集数据叫做一个 metric）和 labels（标签）进行素引之后存在 chunk 中 chunk 是作为存储的基本单位，index and metadata 是作为子集</li>
+<li>prometheus 平时是将采集过来的数据先都存放在内存之中（prometheus 对内存的消耗还是不小的）以类似缓存的方式用于加快授索和访问当出现当机时，prometheus？有一种保折机叫做 WAL 可以讲数据定期存入硬盘中以 chunk 来表示，并在重新启动时用以恢复进入内存</li>
 </ul>
 
-<h4>swap</h4>
+<h4>数据采集</h4>
 
 <ul>
-<li>交换两个智能指针的对象</li>
+<li>pull</li>
+<li>push 指的是在客户（或者服务端）安装这个官方提供的 pushgateway 插件<br/>
+然后，使用我们运维自行开发的各种脚本把监控数据组织成 k 的形式 metrics？形式发送给 pushgateway 之后 pushgateway 会再推送给 prometheus</li>
 </ul>
 
-<h4>nullptr</h4>
+<h4>prometheus metrics</h4>
 
 <ul>
-<li>将指向的对象引用计数减去1，若为0，释放智能指针指向的对象</li>
+<li>Gauges</li>
+<li>最简单的度量指标，只有一个简单的返回值，或者叫瞬时状态</li>
+<li>Counters</li>
+<li>Counter就是计数器，从数据量 0 开始累积计算在理想状态下只能是永远的增长不会降低</li>
+<li>Histograms</li>
+<li>Histograms 统计数据的分布情况。比如最小值，最大值，中间值，还有中位数，75 百分位，90 百分位，95 百分位，98 百分位，99 百分位，和 99.9 百分位的值</li>
 </ul>
 
-<h4>指定删除器和数组问题</h4>
+<h4>数据格式</h4>
 
 <ul>
-<li>默认将delete作为资源析构方式</li>
-<li>我们可以指定自己的删除器来取代系统提供的默认的删除器</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">void  myDelete(int* p) {
-  cout &lt;&lt; __func__ &lt;&lt; endl;
-  delete p;
-}
-shared_ptr&lt;int&gt; p11(new int(12345), myDelete);
-  shared_ptr&lt;int&gt; p12(p11);
-  p12.reset();
-  p11.reset();
-</code></pre>
-
-<ul>
-<li>系统默认删除器处理不了数组</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">* shared_ptr&lt;A&gt; pA(new A[10]);//系统释放PA是delete pA所指向的裸指针，而不delete[]pA
-* defalut_delete
-* shared_ptr&lt;A&gt; pB(new A[10], default_delete&lt;A[]&gt;());
-* shared_ptr&lt;A[]&gt; pC(new A[10]);
-</code></pre>
-
-<h4>指定删除器额外说明</h4>
-
-<ul>
-<li>shared_ptr指定的删除器不同，但是指向的类型的相同</li>
-<li>可以放入同一个容器</li>
+<li>key value</li>
+<li>Push 的形式是把 pushgateway 安装在客户端或者服务（其实装那里都无俗谓）pushgateway，本身也是一个http服务器</li>
+<li>Exporters 虽然采集类型已经很丰高了，但是我们依然需要很多自制的监控敬据非规则化的自定制的</li>
+<li>exporter 由于数据类型采集量大其实很多据或者说大部分数据其实我们监控中真的用不到用 pushgateway 是定义一项数据就采集着一种节省资源</li>
+<li>一个新的自定义的 pushgatewaye 脚本开发远远比开发一个全新的 exporter 简单快速的多的多的多！(exporter 的开发需要使用真正的缩程语言，shel 这种快速本是不行的而且需要了解很多 prometheus 自定的编程格式才能开始制作工作量很大）</li>
+<li>exporter 虽然已经很丰富了，但是依然有很多的我们需要的采集形式，exporter：无法提供，或者说现有的 poter 还不支持，但是如果使用 pushgatewayg 的形式就可以任意灵活想做什么都可以做到而且极快</li>
+<li><img src="media/15724252772617/15724311436825.jpg" alt="" style="width:997px;"/></li>
 </ul>
 
                         
@@ -697,10 +393,10 @@ shared_ptr&lt;int&gt; p11(new int(12345), myDelete);
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/08/31 18:20 下午</span>
+                    <span class="date">2019/10/30 16:47 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          					    <span class="posted-in"><a href='Prometheus.html'>Prometheus</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -714,177 +410,67 @@ shared_ptr&lt;int&gt; p11(new int(12345), myDelete);
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15677684117226.html">
+                <a class="clearlink" href="15447000048936.html">
                 
-                  <h1>unique_ptr</h1>
+                  <h1>云中网络</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>概述</h4>
+                        	<h4>注意事项</h4>
 
 <ul>
-<li>独占式的，专属所有权，同一时刻，只能有一个unique_ptr指针指向这块对象</li>
-<li>当这个unique_ptr被销毁的时候，它所指向的对象也被销毁</li>
+<li>共享</li>
+<li>隔离 vconfig基于物理网卡创建带VLAN的虚拟网卡</li>
+<li>互通 </li>
+<li>灵活</li>
 </ul>
 
-<h4>make_unique</h4>
+<h4>访问外网</h4>
 
 <ul>
-<li>c++14才有</li>
-<li>不支持指定的删除器语法</li>
+<li>桥接</li>
 </ul>
 
-<h4>不支持的操作</h4>
+<h4>iptables功能</h4>
 
 <ul>
-<li>unique_ptr<string> ps1(new string(&quot;I love China&quot;));</li>
-<li>unique_ptr<string> ps2(ps1)</li>
-<li>拷贝，赋值</li>
+<li>连接追踪</li>
+<li>数据包过滤</li>
+<li>网络地址转换</li>
+<li>数据包的修改</li>
 </ul>
 
-<h4>移动语义</h4>
+<h4>snat</h4>
 
 <ul>
-<li>unique_ptr<int> ps5 = std::move(pi3);</li>
+<li>Netfilter 的连接跟踪（conntrack）功能实现返回的请求还原成具体的私网IP</li>
 </ul>
 
-<h4>release()</h4>
+<h4>云中网络流量控制</h4>
 
 <ul>
-<li>放弃指针控制权，返回裸指针，将该指针置空</li>
-<li>裸指针可以释放，可以delete, 也可以初始化另外的智能指针</li>
-<li>直接release会导致内存泄露</li>
-<li>int* tmp = p5.release();</li>
-<li>delete tmp</li>
+<li>云中的流量控制主要通过队列进行的，队列分为两大类：无类别队列规则和基于类别的队列规则。</li>
+<li>在云中网络 Openvswitch 中，主要使用的是分层令牌桶规则（HTB），将总的带宽在一棵树上按照配置的比例进行分配，并且在一个分支不用的时候，可以借给另外的分支，从而增强带宽利用率。</li>
 </ul>
 
-<h4>reset</h4>
+<h4>网络隔离</h4>
 
 <ul>
-<li>不带参数，释放智能指针所指向的对象，并且将智能指针置为空</li>
-<li>带参数 释放智能指针所指向的对象，并且将智能指针指向新对象</li>
-<li>pi2.reset(p5.release());</li>
+<li>底层的物理网络设备组成的网络我们称为Underlay 网络</li>
+<li>虚拟机和云中的这些技术组成的网络称为Overlay 网络</li>
 </ul>
 
-<h4>nullptr</h4>
+<h4>GRE</h4>
 
 <ul>
-<li>释放智能指针指向的对象，并将智能指针置空</li>
+<li><img src="media/15447000048936/b189df0a6ee4b0462818bf2f154c9531.jpg" alt="b189df0a6ee4b0462818bf2f154"/></li>
 </ul>
 
-<h4>指向数组</h4>
+<h4>VXLAN</h4>
 
 <ul>
-<li>unique_ptr<A> ptr(new A[10]) A没有析构函数，正常</li>
-<li>有析构函数，会导致异常</li>
-</ul>
-
-<h4>get()</h4>
-
-<ul>
-<li>有些函数的参数需要内置的裸指针</li>
-<li>get的指针千万不要delete</li>
-</ul>
-
-<h4>swap</h4>
-
-<ul>
-<li>交换智能指针指向的对象</li>
-</ul>
-
-<h4>智能指针作为判断条件</h4>
-
-<ul>
-<li>if (ptr)</li>
-</ul>
-
-<h4>转换为shared_ptr</h4>
-
-<ul>
-<li>shared_ptr有个显式的构造函数。用于将shared_ptr转换为unique_ptr</li>
-<li>临时对象都是右值</li>
-<li>unique_ptr没有控制块</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/06 19:13 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15679316164736.html">
-                
-                  <h1>代码生成器</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>map遍历无序</h4>
-
-<h4>服务流</h4>
-
-<ul>
-<li><img src="media/15679316164736/15679356650039.jpg" alt="" style="width:860px;"/></li>
-<li>GrpcGennerator-&gt;RouterGenerator-&gt;ControllerGenerator</li>
-<li>RouterGenerator 打点统计</li>
-<li><img src="media/15679316164736/15679358942122.jpg" alt="" style="width:535px;"/></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/08 16:33 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15679012406438.html">
-                
-                  <h1>动态配置</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>操作</h4>
-
-<ul>
-<li>addauth digest super:chawlau</li>
-<li>reconfig -remove 3</li>
+<li><img src="media/15447000048936/3b02d54c9093e3de6d1a847dd0eb060f.jpg" alt="3b02d54c9093e3de6d1a847dd0eb060f"/></li>
 <li></li>
 </ul>
 
@@ -895,280 +481,10 @@ shared_ptr&lt;int&gt; p11(new int(12345), myDelete);
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/09/08 08:07 上午</span>
+                    <span class="date">2018/12/13 19:20 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Zookeeper.html'>Zookeeper</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15678080784552.html">
-                
-                  <h1>Hash索引和索引使用原则</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>Hash区别</h4>
-
-<ul>
-<li>Hash 索引不能进行范围查询，而 B+ 树可以。这是因为 Hash 索引指向的数据是无序的，而 B+ 树的叶子节点是个有序的链表。</li>
-<li>Hash 索引不支持联合索引的最左侧原则</li>
-<li>Hash 索引不支持 ORDER BY 排序和模糊搜索</li>
-</ul>
-
-<h4>索引使用原则</h4>
-
-<ul>
-<li>字段有唯一性的限制</li>
-<li>频繁使用where查询</li>
-<li>需要使用group by 和 order by</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">SELECT user_id, count(*) as num FROM product_comment group by user_id order by comment_time desc limit 100
-</code></pre>
-
-<ul>
-<li>UPDATE、DELETE 的 WHERE 条件列</li>
-<li>DISTINCT 字段需要创建索引 索引会对数据按照某种顺序进行排序，所以在去重的时候也会快很多</li>
-<li>多表 JOIN 连接操作时, 表不要超过3张</li>
-</ul>
-
-<h4>不实用索引</h4>
-
-<ul>
-<li>WHERE 条件（包括 GROUP BY、ORDER BY）里用不到的字段不需要创建索引</li>
-<li>表记录太少</li>
-<li>字段中有大量重复数据</li>
-<li>频繁更新的字段不一定要创建索引</li>
-</ul>
-
-<h4>索引失效</h4>
-
-<ul>
-<li>如果索引进行了表达式计算，则会失效</li>
-<li>如果对索引使用函数，也会造成失效</li>
-<li>WHERE 子句中，如果在 OR 前的条件列进行了索引，而在 OR 后的条件列没有进行索引，那么索引会失效</li>
-<li>当我们使用 LIKE 进行模糊查询的时候，前面不能是 %</li>
-<li>索引列尽量设置为 NOT NULL 约束</li>
-<li>我们在使用联合索引的时候要注意最左原则， 一条 SQL 语句可以只使用联合索引的一部分，但是需要从最左侧开始，否则就会失效，联合索引如果语句都使用的话就不会失效</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/07 06:14 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='SQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>SQL必知必会</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15678067248596.html">
-                
-                  <h1>索引</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>索引场景</h4>
-
-<ul>
-<li>数据量比较少不需要索引</li>
-<li>数据重复度大</li>
-<li>索引的本质是快速定位，如果定位的数据很多，就不需要索引</li>
-</ul>
-
-<h4>索引</h4>
-
-<ul>
-<li>普通索引</li>
-<li>唯一索引 unique</li>
-<li>主键索引 unique + not null</li>
-<li>全文索引ES</li>
-</ul>
-
-<h4>物理实现方式</h4>
-
-<ul>
-<li>聚集索引 表内的数据行才会按找索引列的值在磁盘上进行物理排序和存储</li>
-<li>非聚集索引 索引项是按照顺序存储的，但索引项指向的内容是随机存储的 先找索引，再找索引行对应的位置</li>
-</ul>
-
-<h4>聚集索引和非聚集索引对比</h4>
-
-<ul>
-<li>聚集索引的叶子节点存储的就是我们的数据记录，非聚集索引的叶子节点存储的是数据位置。非聚集索引不会影响数据表的物理存储顺序。</li>
-<li>一个表只能有一个聚集索引，因为只能有一种排序存储的方式，但可以有多个非聚集索引，也就是多个索引目录提供数据检索。</li>
-<li>使用聚集索引的时候，数据的查询效率高，但如果对数据进行插入，删除，更新等操作，效率会比非聚集索引低</li>
-</ul>
-
-<h4>字段数</h4>
-
-<ul>
-<li>单一索引 </li>
-<li>联合索引 最左匹配原则 where and </li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/07 05:52 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='SQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>SQL必知必会</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15676787915607.html">
-                
-                  <h1>Shared_ptr使用场景，陷阱和性能分析</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>使用场景</h4>
-
-<ul>
-<li>临时局部变量返回</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">shared_ptr&lt;int&gt; create(int val) {
-  return make_shared&lt;int&gt;(val);
-}
-
-shared_ptr&lt;int&gt;func(int val) {
-  shared_ptr&lt;int&gt; ptr = create(5);
-  return ptr;
-}
-ptr返回的引用计数没有增加
-</code></pre>
-
-<ul>
-<li>不允许隐式转换</li>
-<li>裸指针绑定到shared_ptr后，管理权限就交给智能指针了，不能再操作裸指针</li>
-</ul>
-
-<h4>注意</h4>
-
-<ul>
-<li>不要delete get()返回的指针</li>
-<li>不能随便释放get返回的指针</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  shared_ptr&lt;int&gt; p1(p);
-  shared_ptr&lt;int&gt; p2(p); //p2p1无关联，导致p1p2内存被释放两次
-  shared_ptr&lt;int&gt; p1(new int);
-  shared_ptr&lt;int&gt; p2(p1); //这种写法p1p2互通，使用同一个控制块kkk
-</code></pre>
-
-<h4>this返回</h4>
-
-<ul>
-<li>不要把this作为shared_ptr返回</li>
-<li>裸指针初始化多个智能指针会导致指向同一内存，但是不是同一控制块</li>
-<li>enable_shared_from_this</li>
-<li>shared_from_this</li>
-<li>enable_shared_from_this中又个weak_ptr监视this，shared_from_this,嗲用了lock方法，让引用计数+1，同时返回shared_ptr</li>
-</ul>
-
-<h4>性能说明</h4>
-
-<ul>
-<li>shared_ptr weak_ptr是裸指针的两倍</li>
-<li>第一个指针指向智能指针所指向的对象</li>
-<li>第二个指针指向的是控制块</li>
-<li>1）指向对象的强引用计数shared_ptr</li>
-<li>2) 指向对象的弱引用计数weak_ptr</li>
-<li>3) 删除器指针 内存分配器</li>
-<li>控制块是由第一个指向对象的shared_ptr创建的</li>
-</ul>
-
-<h4>控制块创建时机</h4>
-
-<ul>
-<li>make_shared 分配并且初始化一个对象，返回对象的shared_ptr</li>
-</ul>
-
-<h4>裸指针初始化shared_ptr</h4>
-
-<ul>
-<li>int* p = new  int;</li>
-<li>shared_ptr<int> p1(p)</li>
-<li>shared_ptr<int> p2(p)</li>
-<li>不允许，会产生多个控制块，就有多个引用计数，导致析构多次</li>
-</ul>
-
-<h4>移动语义</h4>
-
-<ul>
-<li>shared_ptr<int> p1(new int(100))</li>
-<li>shared_ptr<int> p2(std::move(p1))</li>
-<li>移动构造一个新的智能指针对象p2,p1就不再指向该对象，引用计数依旧是一</li>
-<li>shared_ptr<int> p3</li>
-<li>p3 = std::move(p2)</li>
-<li>移动赋值运算符比拷贝构造函数快</li>
-</ul>
-
-<h4>使用建议</h4>
-
-<ul>
-<li>分配器解决内存分配</li>
-<li>优先使用make_shared</li>
-<li>shared_ptr<string> s1(new string(&quot;new&quot;)) 分配两次内存</li>
-<li>auto ps2 = make_shared<string>(&quot;new&quot;) 分配一次内存 </li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/05 18:19 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          					    <span class="posted-in"><a href='%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE.html'>网络协议</a></span>
           				   
                   </div>
                   <div class="more-right right">

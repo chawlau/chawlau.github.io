@@ -170,467 +170,162 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15502009179020.html">
+                <a class="clearlink" href="15702634865284.html">
                 
-                  <h1>kubernetes SIG-Node与CRI</h1>
+                  <h1>宏定义进阶</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>kubelet工作原理</h4>
+                        	<pre class="line-numbers"><code class="language-c">//version1
+#define MAX(x,y) ((x) &gt; (y) ? (x) : (y))
 
-<ul>
-<li><img src="media/15502009179020/914e097aed10b9ff39b509759f8b1d03.png" alt="914e097aed10b9ff39b509759f8b1d03"/></li>
-</ul>
+//version2
+#define MAX(x,y)({     \
+    int _x = x;        \
+    int _y = y;        \
+    _x &gt; _y ? _x : _y; \
+})
 
-<h4>kubernetes架构图</h4>
+//versron3
+#define MAX(type,x,y)({     \
+    type _x = x;        \
+    type _y = y;        \
+    _x &gt; _y ? _x : _y; \
+})
 
-<ul>
-<li><img src="media/15502009179020/5161bd6201942f7a1ed6d70d7d55acfe.png" alt="5161bd6201942f7a1ed6d70d7d55acfe"/></li>
-</ul>
+//内核中实现
+#define min_t(type, x, y) ({            \
+    type __min1 = (x);          \
+    type __min2 = (y);          \
+    __min1 &lt; __min2 ? __min1 : __min2; })
 
-<h4>CRI shim</h4>
+#define max_t(type, x, y) ({            \
+    type __max1 = (x);          \
+    type __max2 = (y);          \
+    __max1 &gt; __max2 ? __max1 : __max2; })
+</code></pre>
 
-<ul>
-<li><img src="media/15502009179020/62c591c4d832d44fed6f76f60be88e3d.png" alt="62c591c4d832d44fed6f76f60be88e3d"/></li>
-<li>第一组，是 RuntimeService。它提供的接口，主要是跟容器相关的操作。比如，创建和启动容器、删除容器、执行 exec 命令等等。</li>
-<li>第二组，则是 ImageService。它提供的接口，主要是容器镜像相关的操作，比如拉取镜像、删除镜像等等</li>
-</ul>
+<h4>typeof</h4>
 
-<h4>kata container&amp; gVisor</h4>
+<pre class="line-numbers"><code class="language-c">int i ;
+typeof(i) j = 20;
 
-<ul>
-<li><img src="media/15502009179020/d9fb7404c5dc9e0b5c902f74df9d7a61.png" alt="d9fb7404c5dc9e0b5c902f74df9d7a61"/></li>
-</ul>
+typeof(int *) a;
 
-<h4>CRI shim实现机制</h4>
-
-<ul>
-<li><img src="media/15502009179020/a8e7ff6a6b0c9591a0a4f2b8e9e9bdef.png" alt="a8e7ff6a6b0c9591a0a4f2b8e9e9bdef"/></li>
-<li>kubectl command --&gt;API Server--&gt; kubelet-&gt; Exec api--&gt;CRI--&gt;exec</li>
-<li>CRI shim--&gt;(URL) kubelet --&gt; API Server</li>
-<li>API Server --&gt; Streaming Server</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/15 11:21 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15500401399354.html">
-                
-                  <h1>单台服务器的百万级并发</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>思考题</h4>
-
-<ul>
-<li>/etc/security/limits.conf</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">* soft  nofile  102400
-* hard  nofile  102400
+int f();
+typeof(f()) k;
 </code></pre>
 
 <ul>
-<li>/etc/sysctl.conf</li>
+<li>在上面的代码中，因为变量 i 的类型为 int，所以 typeof(i) 就等于 int，typeof(i) j =20 就相当于 int j = 20，typeof(int *) a; 相当于 int * a;，函数也是有类型的，函数的类型即其返回值类型，所以 typeof(f()) k; 就相当于 int </li>
 </ul>
 
-<pre class="line-numbers"><code class="language-text">net.ipv4.tcp_mem = 252144 524288 786432
-net.ipv4.tcp_wmem = 2048 2048 4096
-net.ipv4.tcp_rmem = 2048 2048 4096
-fs.file-max = 1048576
+<pre class="line-numbers"><code class="language-c">#define MAX(x,y)({     \
+    typeof(x) _x = x;        \
+    typeof(x) _y = y;        \
+    _x &gt; _y ? _x : _y; \
+})
+
+int main(void)
+{
+    int i = 2;
+    int j = 6;
+    printf(&quot;max: %d\n&quot;, MAX(i, j));
+    printf(&quot;max: %f\n&quot;, MAX(3.14, 3.15));
+    return 0;
+}
+
+#define swap(a, b) \
+do {               \
+    typeof(a) __tmp = (a);  \ 
+    (a) = (b);         \
+    (b) = __tmp; \
+} while (0)
 </code></pre>
 
-<ul>
-<li>适合长连接不适合大文件传输，会导致大文件被切割分片，导致内核协议栈处理次数变多，传输速率很慢</li>
-</ul>
+<h4>内核中部的使用</h4>
 
-<h4>单机服务架构</h4>
+<pre class="line-numbers"><code class="language-c">#define min(x, y) ({                \
+    typeof(x) _min1 = (x);          \
+    typeof(y) _min2 = (y);          \
+    (void) (&amp;_min1 == &amp;_min2);      \
+    _min1 &lt; _min2 ? _min1 : _min2; })
 
-<ul>
-<li>单线程同步：NTP</li>
-<li>多线程同步：Natty</li>
-<li>纯异步：Redis，HAProxy</li>
-<li>半同步半异步：Natty</li>
-<li>多进程同步：fastcgi</li>
-<li>多线程异步：memcached</li>
-<li>多进程异步：nginx</li>
-<li>每请求每进程（线程）：Apache/CGI</li>
-<li>微进程框架：erlang/go/lua</li>
-<li>协程框架：libco</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/13 14:42 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15501998188113.html">
-                
-                  <h1>负载均衡算法</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>轮询</h4>
-
-<h4>加权轮询</h4>
-
-<h4>负载最低优先</h4>
-
-<ul>
-<li>如果是 CPU 密集型，可以以“CPU 负载”来衡量系统压力；</li>
-<li>如果是 I/O 密集型，可以以“I/O 负载”来衡量系统压力。</li>
-<li>复杂度增加很多</li>
-</ul>
-
-<h4>性能最优</h4>
-
-<ul>
-<li>负载均衡系统需要收集和分析每个服务器每个任务的响应时间，在大量任务处理的场景下，这种收集和统计本身也会消耗较多的性能。</li>
-<li>为了减少这种统计上的消耗，可以采取采样的方式来统计，即不统计所有任务的响应时间，而是抽样统计部分任务的响应时间来估算整体任务的响应时间。</li>
-<li>无论是全部统计还是采样统计，都需要选择合适的周期</li>
-</ul>
-
-<h4>Hash类</h4>
-
-<ul>
-<li>源地址HASH</li>
-<li>IDhash</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/15 11:03 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%9E%B6%E6%9E%84.html'>架构</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15501985470108.html">
-                
-                  <h1>负载均衡</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>本质</h4>
-
-<ul>
-<li>高性能集群的复杂性主要体现在需要增加一个任务分配器，以及为任务选择一个合适的任务分配算法</li>
-</ul>
-
-<h4>DNS负载均衡</h4>
-
-<ul>
-<li>一般用来实现地理级别的均衡</li>
-<li>实现简单、成本低，但也存在粒度太粗、负载均衡算法少等缺点</li>
-<li>一般公司自己实现HTTP-DNS</li>
-</ul>
-
-<h4>硬件负载均衡</h4>
-
-<ul>
-<li>F5和A10</li>
-<li>功能和性能强大</li>
-<li>稳定性高</li>
-<li>支持安全防护</li>
-<li>价格昂贵和扩展性差</li>
-</ul>
-
-<h4>软件负载均衡</h4>
-
-<ul>
-<li>一个nginx一般支持5w并发</li>
-</ul>
-
-<h4>应用场景</h4>
-
-<ul>
-<li>地理级别负载均衡DNS</li>
-<li>集群级别负载均衡F5</li>
-<li>机器级别负载均衡nginx和lvs</li>
-</ul>
-
-<h4>日活千万的论坛</h4>
-
-<h5>1、首先，流量评估。</h5>
-
-<ul>
-<li>1000万DAU，换算成秒级，平均约等于116。</li>
-<li>考虑每个用户操作次数，假定10，换算成平均QPS=1160。</li>
-<li>考虑峰值是均值倍数，假定10，换算成峰值QPS=11600。</li>
-<li>考虑静态资源、图片资源、服务拆分等，流量放大效应，假定10，QPS*10=116000。 </li>
-</ul>
-
-<h5>2、其次，容量规划。</h5>
-
-<ul>
-<li>考虑高可用、异地多活，QPS*2=232000。</li>
-<li>考虑未来半年增长，QPS*1.5=348000。</li>
-</ul>
-
-<h5>3、最后，方案设计。</h5>
-
-<ul>
-<li>三级导流。</li>
-<li>第一级，DNS，确定机房，以目前量级，可以不考虑。</li>
-<li>第二级，确定集群，扩展优先，则选Haproxy/LVS，稳定优先则选F5。</li>
-<li>第三级，Nginx+KeepAlived，确定实例。<br/>
-     <br/>
-    </li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/15 10:42 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%9E%B6%E6%9E%84.html'>架构</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15501977764557.html">
-                
-                  <h1>mysql复制</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>load data</h4>
-
-<ul>
-<li>不加“local”，是读取服务端的文件，这个文件必须在 secure_file_priv 指定的目录或子目录下；</li>
-<li>加上“local”，读取的是客户端的文件，只要 mysql 客户端有访问这个文件的权限即可。这时候，MySQL 客户端会先把本地文件传给服务端，然后执行上述的 load data 流程。</li>
-</ul>
-
-<h4>物理复制表结构</h4>
-
-<ul>
-<li>执行 create table r like t，创建一个相同表结构的空表；</li>
-<li>执行 alter table r discard tablespace，这时候 r.ibd 文件会被删除；</li>
-<li>执行 flush table t for export，这时候 db1 目录下会生成一个 t.cfg 文件；</li>
-<li>在 db1 目录下执行 cp t.cfg r.cfg; cp t.ibd r.ibd；这两个命令；</li>
-<li>执行 unlock tables，这时候 t.cfg 文件会被删除；</li>
-<li>执行 alter table r import tablespace，将这个 r.ibd 文件作为表 r 的新的表空间，由于这个文件的数据内容和 t.ibd 是相同的，所以表 r 中就有了和表 t 相同的数据。</li>
-</ul>
-
-<h4>对比</h4>
-
-<ul>
-<li>物理拷贝必须全表拷贝</li>
-<li>需要到服务器上拷贝</li>
-<li>源表和目标表都是InnoDB引擎才能使用</li>
-<li>mysqldump 不能使用join比较复杂的where条件写法</li>
-<li>select 每次智能导出一张表的数据，表结构也需要另外的语句单独备份</li>
-<li>逻辑备份可以跨引擎使用</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/15 10:29 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15481513628351.html">
-                
-                  <h1>主库出问题</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>主备切换</h4>
-
-<p><img src="media/15481513628351/aadb3b956d1ffc13ac46515a7d619e79.png" alt="aadb3b956d1ffc13ac46515a7d619e79"/></p>
-
-<pre class="line-numbers"><code class="language-text"> CHANGE MASTER TO 
-MASTER_HOST=$host_name 
-MASTER_PORT=$port 
-MASTER_USER=$user_name 
-MASTER_PASSWORD=$password 
-MASTER_LOG_FILE=$master_log_name 
-MASTER_LOG_POS=$master_log_pos  
+#define max(x, y) ({                \
+    typeof(x) _max1 = (x);          \
+    typeof(y) _max2 = (y);          \
+    (void) (&amp;_max1 == &amp;_max2);      \
+    _max1 &gt; _max2 ? _max1 : _max2; })
 </code></pre>
 
-<ul>
-<li>MASTER_LOG_FILE和MASTER_LOG_POS就是主库对应的文件名和日志偏移量就是同步位点</li>
-</ul>
+<h4>container_of</h4>
 
-<h4>主备切换错误</h4>
+<pre class="line-numbers"><code class="language-c">#define offsetof(TYPE, MEMBER) ((size_t) &amp;((TYPE *)0)-&gt;MEMBER)
+#define  container_of(ptr, type, member) ({    \
+     const typeof( ((type *)0)-&gt;member ) *__mptr = (ptr); \
+     (type *)( (char *)__mptr - offsetof(type,member) );})
+     
+struct student
+{
+    int age;
+    int num;
+    int math;
+};
+int main(void)
+{
+    struct student stu = { 20, 1001, 99};
 
-<ul>
-<li>主动跳过一个事物</li>
-<li>set global sql_slave_skip_counter=1;</li>
-<li>start slave;</li>
-<li>跳过指定的错误</li>
-<li>slave_skip_errors=1032,1062</li>
-</ul>
+    int *p = &amp;stu.math;
+    struct student *stup = NULL;
+    stup = container_of( p, struct student, math);
+    printf(&quot;%p\n&quot;,stup);
+    printf(&quot;age: %d\n&quot;,stup-&gt;age);
+    printf(&quot;num: %d\n&quot;,stup-&gt;num);
 
-<h4>GTID和在线DDL</h4>
-
-<ul>
-<li>互为主备关系的库X是主库，Y是从库</li>
-<li>在实例 X 上执行 stop slave。</li>
-<li>在实例 Y 上执行 DDL 语句。注意，这里并不需要关闭 binlog。</li>
-<li>执行完成后，查出这个 DDL 语句对应的 GTID，并记为 server_uuid_of_Y:gno。</li>
-<li>到实例 X 上执行以下语句序列：</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">set GTID_NEXT=&quot;3c8f3ed7-f85e-11e8-b414-fa163e483aea:1002077&quot;;
-begin;
-commit;
-set gtid_next=automatic;
-start slave;
+    return 0;     
+}
 </code></pre>
 
-<h4>mysql主从复制的配置</h4>
+<h4>计算成员变量在结构体的偏移</h4>
 
-<pre class="line-numbers"><code class="language-text">[mysqld]
-#
-# Remove leading # and set to the amount of RAM for the most important data
-# cache in MySQL. Start at 70% of total RAM for dedicated server, else 10%.
-# innodb_buffer_pool_size = 128M
-#
-# Remove leading # to turn on a very important data integrity option: logging
-# changes to the binary log between backups.
-#log_bin=ON
-#log_bin_basename=/var/lib/mysql/mysql-bin
-#log_bin_index=/var/lib/mysql/mysql-bin.index
-server-id=1
-log-bin=/var/lib/mysql/mysql-binlog.log
-#
-# Remove leading # to set options mainly useful for reporting servers.
-# The server defaults are faster for transactions and fast SELECTs.
-# Adjust sizes as needed, experiment to find the optimal values.
-# join_buffer_size = 128M
-# sort_buffer_size = 2M
-# read_rnd_buffer_size = 2M
-datadir=/var/lib/mysql
-socket=/var/lib/mysql/mysql.sock
-
-# Disabling symbolic-links is recommended to prevent assorted security risks
-symbolic-links=0
-
-log-error=/var/log/mysqld.log
-pid-file=/var/run/mysqld/mysqld.pid
-long_query_time=0
-slow_query_log=ON
-slow_query_log_file=/var/lib/mysql/host4-slow.log
-
-server_id=100
-binlog-ignore-db=mysql
-log-bin=edu-mysql-bin
-binlog_cache_size=1M
-binlog_format=mixed
-expire_logs_days=7
-slave_skip_errors=1062
-gtid_mode = ON
-enforce_gtid_consistency = ON
+<pre class="line-numbers"><code class="language-c">struct student{
+    int age;
+    int num;
+    int math;
+};
+int main(void)
+{
+    printf(&quot;&amp;age = %p\n&quot;,&amp;((struct student*)0)-&gt;age);
+    printf(&quot;&amp;num = %p\n&quot;,&amp;((struct student*)0)-&gt;num);
+    printf(&quot;&amp;math= %p\n&quot;,&amp;((struct student*)0)-&gt;math);
+    return 0;   
+}
 </code></pre>
 
-<h4>slave跳过指定事物</h4>
+<h4>零数组</h4>
 
-<pre class="line-numbers"><code class="language-text">show slave status;
-Executed_Gtid_Set: 94b06c13-1f09-11e5-97ea-000c29c8caec:1-10
-stop slave;
-set gtid_next=&#39;3c8f3ed7-f85e-11e8-b414-fa163e483aea:6&#39;;
-begin;
-commit;
-set gtid_next=automatic;
-start slave;
-show slave status;
+<pre class="line-numbers"><code class="language-c">#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+
+struct buffer{
+    int len;
+    char a[0];
+};
+
+int main(void)
+{
+    struct buffer *buf;
+    buf = (struct buffer *)malloc (sizeof(struct buffer)+ 20);
+
+    buf-&gt;len = 20;
+    strcpy(buf-&gt;a, &quot;hello wanglitao!\n&quot;);
+    puts(buf-&gt;a);
+
+    free(buf);
+    return 0;
+}
 </code></pre>
 
                         
@@ -640,10 +335,10 @@ show slave status;
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/01/22 18:02 下午</span>
+                    <span class="date">2019/10/05 16:18 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+          					    <span class="posted-in"><a href='C%E8%AF%AD%E8%A8%80%E8%BF%9B%E9%98%B6.html'>C语言进阶</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -657,26 +352,51 @@ show slave status;
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15501945078144.html">
+                <a class="clearlink" href="15702631234763.html">
                 
-                  <h1>DNS</h1>
+                  <h1>范围赋值</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>DNS资源记录的方式</h4>
-
-<ul>
-<li>A 记录，用来把域名转换成 IP 地址；</li>
-<li>CNAME 记录，用来创建别名；</li>
-<li>NS 记录，则表示该域名对应的域名服务器地址。</li>
+                        	<ul>
+<li>通过数组索引，我们可以直接给指定的数组元素赋值。除此之外，一个结构体变量的初始化，也可以通过指定某个结构体域直接赋值。</li>
 </ul>
 
-<h4>DNS解析不稳定</h4>
+<pre class="line-numbers"><code class="language-c">#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
 
-<ul>
-<li></li>
-</ul>
+
+int main(void)
+{
+  int b[100] = { [10 ... 30] = 1, [50 ... 60] = 2 };
+  for(int i = 0; i &lt; 100; i++)
+  {
+    printf(&quot;%d  &quot;, b[i]);
+    if( i % 10 == 0)
+      printf(&quot;\n&quot;);
+  }
+
+  int j = 5;
+  switch(j)
+  {
+    case 1:
+      printf(&quot;1\n&quot;);
+      break;
+    case 2 ... 8:
+      printf(&quot;%d\n&quot;,j);
+      break;
+    case 9:
+      printf(&quot;9\n&quot;);
+      break;
+    default:
+      printf(&quot;default!\n&quot;);
+      break;
+  }
+
+  return 0;
+}
+</code></pre>
 
                         
                       </div>
@@ -685,10 +405,10 @@ show slave status;
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/02/15 09:35 上午</span>
+                    <span class="date">2019/10/05 16:12 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          					    <span class="posted-in"><a href='C%E8%AF%AD%E8%A8%80%E8%BF%9B%E9%98%B6.html'>C语言进阶</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -702,69 +422,572 @@ show slave status;
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15501149405804.html">
+                <a class="clearlink" href="15665280444092.html">
                 
-                  <h1>CAP</h1>
+                  <h1>二叉树和递归</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>三个点</h4>
+                        	<h4>天然递归结构</h4>
 
 <ul>
-<li>Consistency、Availability、Partition Tolerance </li>
+<li>空也是一棵二叉树</li>
+<li>是否存在键值</li>
 </ul>
 
-<h4>一致性</h4>
+<pre class="line-numbers"><code class="language-cpp">bool contain(Node8 node, Key key) {
+  if (!node) return false;
+  
+  if (key == node-&gt;key) return true;
+  
+  if(contain(node-&gt;left, key) ||
+     contain(node-&gt;right, key)) return true;
+  return false;
+}
+</code></pre>
 
 <ul>
-<li>对某个指定的客户端来说，读操作保证能够返回最新的写操作结果</li>
-<li>第一版从节点 node 的角度描述，第二版从客户端 client 的角度描述。</li>
-<li>第一版强调同一时刻拥有相同数据（same time + same data），第二版并没有强调这点。</li>
-<li>对于系统执行事务来说，在事务执行过程中，系统其实处于一个不一致的状态，不同的节点的数据并不完全一致</li>
+<li>leet_104</li>
 </ul>
 
-<h4>可用性</h4>
+<pre class="line-numbers"><code class="language-cpp">class Solution {
+public:
+    int maxDepth(TreeNode* root) {
+        if (!root) return 0;
+        return 1 + max(maxDepth(root-&gt;left), maxDepth(root-&gt;right));
+    }
+};
+</code></pre>
 
 <ul>
-<li>第一版是 every request，第二版强调了 A non-failing node</li>
-<li>第一版的 response 分为 success 和 failure，第二版用了两个 reasonable：reasonable response 和 reasonable time，而且特别强调了 no error or timeout</li>
+<li>leet_111</li>
 </ul>
 
-<h4>分区容忍性</h4>
+<pre class="line-numbers"><code class="language-cpp">Given a binary tree, find its minimum depth.
+class Solution {
+public:
+    int minDepth(TreeNode* root) {
+        if (!root) return 0;
+        if (!root-&gt;left) return 1 + minDepth(root-&gt;right);
+        if (!root-&gt;right) return 1 + minDepth(root-&gt;left);
+        return 1 + min(minDepth(root-&gt;left), minDepth(root-&gt;right));
+    }
+};
+</code></pre>
 
 <ul>
-<li>当出现网络分区后，系统能够继续“履行职责”。</li>
-<li>第一版用的是 work，第二版用的是 function。</li>
+<li>leet_226</li>
 </ul>
 
-<h4>CAP关键细节点</h4>
+<pre class="line-numbers"><code class="language-cpp">Invert a binary tree.
+
+     4
+   /   \
+  2     7
+ / \   / \
+1   3 6   9
+
+to
+     4
+   /   \
+  7     2
+ / \   / \
+9   6 3   1
+
+// Recursion
+class Solution {
+public:
+    TreeNode* invertTree(TreeNode* root) {
+        if (!root) return NULL;
+        TreeNode *tmp = root-&gt;left;
+        root-&gt;left = invertTree(root-&gt;right);
+        root-&gt;right = invertTree(tmp);
+        return root;
+    }
+};
+
+// Non-Recursion
+class Solution {
+public:
+    TreeNode* invertTree(TreeNode* root) {
+        if (!root) return NULL;
+        queue&lt;TreeNode*&gt; q;
+        q.push(root);
+        while (!q.empty()) {
+            TreeNode *node = q.front(); q.pop();
+            TreeNode *tmp = node-&gt;left;
+            node-&gt;left = node-&gt;right;
+            node-&gt;right = tmp;
+            if (node-&gt;left) q.push(node-&gt;left);
+            if (node-&gt;right) q.push(node-&gt;right);
+        }
+        return root;
+    }
+};
+</code></pre>
 
 <ul>
-<li>CAP关注的粒度是数据，不是整个系统</li>
-<li>CAP是忽略网络延迟的</li>
-<li>正常运行情况下，不存在 CP 和 AP 的选择，可以同时满足 CA</li>
-<li>放弃并不等于什么都不做，需要为分区恢复后做准备</li>
+<li>leet_100</li>
 </ul>
 
-<h4>BASE</h4>
+<pre class="line-numbers"><code class="language-cpp">判断两棵树是否相同
+class Solution {
+public:
+    bool isSameTree(TreeNode *p, TreeNode *q) {
+        if (!p &amp;&amp; !q) return true;
+        if ((p &amp;&amp; !q) || (!p &amp;&amp; q) || (p-&gt;val != q-&gt;val)) return false;
+        return isSameTree(p-&gt;left, q-&gt;left) &amp;&amp; isSameTree(p-&gt;right, q-&gt;right);
+    }
+};
+</code></pre>
 
 <ul>
-<li>BASE 是指基本可用（Basically Available）、软状态（ Soft State）、最终一致性（ Eventual Consistency），核心思想是即使无法做到强一致性（CAP 的一致性就是强一致性），但应用可以采用适合的方式达到最终一致性。</li>
-<li>BASE 是 CAP 理论中 AP 方案的延伸</li>
-<li>分布式系统中，节点之间的数据同步是基于网络的。由于网络本身固有的不可靠属性，极端情况下会出现网络不可用的情况，进而将网络两端的节点孤立开来，这就是所谓的“网络分区”现象。</li>
+<li>leet_101</li>
 </ul>
 
-<h4>CAP电商系统的设计</h4>
+<pre class="line-numbers"><code class="language-cpp">Given a binary tree, check whether it is a mirror of itself (ie, symmetric around its center).
+
+For example, this binary tree is symmetric:
+
+    1
+   / \
+  2   2
+ / \ / \
+3  4 4  3
+
+class Solution {
+public:
+    bool isSymmetric(TreeNode *root) {
+        if (!root) return true;
+        return isSymmetric(root-&gt;left, root-&gt;right);
+    }
+    bool isSymmetric(TreeNode *left, TreeNode *right) {
+        if (!left &amp;&amp; !right) return true;
+        if (left &amp;&amp; !right || !left &amp;&amp; right || left-&gt;val != right-&gt;val) return false;
+        return isSymmetric(left-&gt;left, right-&gt;right) &amp;&amp; isSymmetric(left-&gt;right, right-&gt;left);
+    }
+    
+};
+</code></pre>
 
 <ul>
-<li>电商网站核心功能有用户、产品、订单、支付、库存，相应的数据有用户、产品、订单、支付、库存。</li>
-<li>对于用户数据，选择CP。因为用户注册后，可能几分钟后重新登录，所以需要满足一致性；在网络出现分区时，因为需要满足一致性而暂时不能提供写服务，所以无法满足可用性；对于分区容错性，只要能返回一个合理的响应就能满足，这一点能很好满足。</li>
-<li>对于产品数据，无需满足一致性，所以选择AP。</li>
-<li>对于订单数据，业务需要满足一致性，所以选择CP。</li>
-<li>对于支付数据，业务需要满足一致性，所以选择CP。</li>
-<li>对于库存数据，业务需要满足一致性，所以选择CP。</li>
+<li>leet_222</li>
 </ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a complete binary tree, count the number of nodes.
+Input: 
+    1
+   / \
+  2   3
+ / \  /
+4  5 6
+
+Output: 6
+由 root 根结点往下，分别找最靠左边和最靠右边的路径长度，如果长度相等，则证明二叉树最后一层节点是满的，是满二叉树，直接返回节点个数，如果不相等，则节点个数为左子树的节点个数加上右子树的节点个数再加1(根节点)，
+
+class Solution {
+public:
+    int countNodes(TreeNode* root) {
+        int hLeft = leftHeight(root);
+        int hRight = rightHeight(root);
+        if (hLeft == hRight) return pow(2, hLeft) - 1;
+        return countNodes(root-&gt;left) + countNodes(root-&gt;right) + 1;
+    }
+    int leftHeight(TreeNode* root) {
+        if (!root) return 0;
+        return 1 + leftHeight(root-&gt;left);
+    }
+    int rightHeight(TreeNode* root) {
+        if (!root) return 0;
+        return 1 + rightHeight(root-&gt;right);
+    }
+};
+
+class Solution {
+public:
+    int countNodes(TreeNode* root) {
+        int res = 0, h = getHeight(root);
+        if (h &lt; 0) return 0;
+        if (getHeight(root-&gt;right) == h - 1) return (1 &lt;&lt; h) + countNodes(root-&gt;right);
+        return (1 &lt;&lt; (h - 1)) + countNodes(root-&gt;left);
+    }
+    int getHeight(TreeNode* node) {
+        return node ? (1 + getHeight(node-&gt;left)) : -1;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_110</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a binary tree, determine if it is height-balanced.
+class Solution {
+public:    
+    bool isBalanced(TreeNode *root) {
+        if (checkDepth(root) == -1) return false;
+        else return true;
+    }
+    int checkDepth(TreeNode *root) {
+        if (!root) return 0;
+        int left = checkDepth(root-&gt;left);
+        if (left == -1) return -1;
+        int right = checkDepth(root-&gt;right);
+        if (right == -1) return -1;
+        int diff = abs(left - right);
+        if (diff &gt; 1) return -1;
+        else return 1 + max(left, right);
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_112</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given the below binary tree and sum = 22,
+
+      5
+     / \
+    4   8
+   /   / \
+  11  13  4
+ /  \      \
+7    2      1
+
+class Solution {
+public:
+    bool hasPathSum(TreeNode* root, int sum) {
+        if (!root) return false;
+        if (!root-&gt;left &amp;&amp; !root-&gt;right &amp;&amp; root-&gt;val == sum ) return true;
+        return hasPathSum(root-&gt;left, sum - root-&gt;val) || hasPathSum(root-&gt;right, sum - root-&gt;val);
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_111</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a binary tree, find its minimum depth.
+class Solution {
+public:
+    int minDepth(TreeNode* root) {
+        if (!root) return 0;
+        if (!root-&gt;left) return 1 + minDepth(root-&gt;right);
+        if (!root-&gt;right) return 1 + minDepth(root-&gt;left);
+        return 1 + min(minDepth(root-&gt;left), minDepth(root-&gt;right));
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_404</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Find the sum of all left leaves in a given binary tree.
+class Solution {
+public:
+    int sumOfLeftLeaves(TreeNode* root) {
+        if (!root || (!root-&gt;left &amp;&amp; !root-&gt;right)) return 0;
+        int res = 0;
+        helper(root-&gt;left, true, res);
+        helper(root-&gt;right, false, res);
+        return res;
+    }
+    void helper(TreeNode* node, bool left, int&amp; res) {
+        if (!node) return;
+        if (!node-&gt;left &amp;&amp; !node-&gt;right &amp;&amp; left) res += node-&gt;val;
+        helper(node-&gt;left, true, res);
+        helper(node-&gt;right, false, res);
+    }
+};
+
+class Solution {
+public:
+    int sumOfLeftLeaves(TreeNode* root) {
+        if (!root || (!root-&gt;left &amp;&amp; !root-&gt;right)) return 0;
+        int res = 0;
+        queue&lt;TreeNode*&gt; q;
+        q.push(root);
+        while (!q.empty()) {
+            TreeNode *t = q.front(); q.pop();
+            if (t-&gt;left &amp;&amp; !t-&gt;left-&gt;left &amp;&amp; !t-&gt;left-&gt;right) res += t-&gt;left-&gt;val;
+            if (t-&gt;left) q.push(t-&gt;left);
+            if (t-&gt;right) q.push(t-&gt;right);
+        }
+        return res;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_257</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">For example, given the following binary tree:
+   1
+ /   \
+2     3
+ \
+  5
+All root-to-leaf paths are:
+[&quot;1-&gt;2-&gt;5&quot;, &quot;1-&gt;3&quot;]
+
+class Solution {
+public:
+    vector&lt;string&gt; binaryTreePaths(TreeNode* root) {
+        vector&lt;string&gt; res;
+        if (root) helper(root, &quot;&quot;, res);
+        return res;
+    }
+    void helper(TreeNode* node, string out, vector&lt;string&gt;&amp; res) {
+        if (!node-&gt;left &amp;&amp; !node-&gt;right) res.push_back(out + to_string(node-&gt;val));
+        if (node-&gt;left) helper(node-&gt;left, out + to_string(node-&gt;val) + &quot;-&gt;&quot;, res);
+        if (node-&gt;right) helper(node-&gt;right, out + to_string(node-&gt;val) + &quot;-&gt;&quot;, res);
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_113</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">For example:
+Given the below binary tree and sum = 22,
+
+              5
+             / \
+            4   8
+           /   / \
+          11  13  4
+         /  \    / \
+        7    2  5   1
+return
+[
+   [5,4,11,2],
+   [5,8,4,5]
+]
+
+class Solution {
+public:
+    vector&lt;vector&lt;int&gt;&gt; pathSum(TreeNode* root, int sum) {
+        vector&lt;vector&lt;int&gt;&gt; res;
+        vector&lt;int&gt; out;
+        helper(root, sum, out, res);
+        return res;
+    }
+    void helper(TreeNode* node, int sum, vector&lt;int&gt;&amp; out, vector&lt;vector&lt;int&gt;&gt;&amp; res) {
+        if (!node) return;
+        out.push_back(node-&gt;val);
+        if (sum == node-&gt;val &amp;&amp; !node-&gt;left &amp;&amp; !node-&gt;right) {
+            res.push_back(out);
+        }
+        helper(node-&gt;left, sum - node-&gt;val, out, res);
+        helper(node-&gt;right, sum - node-&gt;val, out, res);
+        out.pop_back();
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_129</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Input: [1,2,3]
+    1
+   / \
+  2   3
+Output: 25
+Explanation:
+The root-to-leaf path 1-&gt;2 represents the number 12.
+The root-to-leaf path 1-&gt;3 represents the number 13.
+Therefore, sum = 12 + 13 = 25.
+
+class Solution {
+public:
+    int sumNumbers(TreeNode* root) {
+        return sumNumbersDFS(root, 0);
+    }
+    int sumNumbersDFS(TreeNode* root, int sum) {
+        if (!root) return 0;
+        sum = sum * 10 + root-&gt;val;
+        if (!root-&gt;left &amp;&amp; !root-&gt;right) return sum;
+        return sumNumbersDFS(root-&gt;left, sum) + sumNumbersDFS(root-&gt;right, sum);
+    }
+};
+</code></pre>
+
+<h4>二分搜索树</h4>
+
+<ul>
+<li>leet_235</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        if (!root) return NULL;
+        if (root-&gt;val &gt; max(p-&gt;val, q-&gt;val)) 
+            return lowestCommonAncestor(root-&gt;left, p, q);
+        else if (root-&gt;val &lt; min(p-&gt;val, q-&gt;val)) 
+            return lowestCommonAncestor(root-&gt;right, p, q);
+        else return root;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_98</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a binary tree, determine if it is a valid binary search tree (BST).
+
+class Solution {
+public:
+  bool isValidBST(TreeNode* root) {
+    return isValidBST(root, nullptr, nullptr);
+  }
+
+  bool isValidBST(TreeNode* root, TreeNode* min, TreeNode* max) {
+    if (!root) return true;
+
+    if (min &amp;&amp; min-&gt;val &gt;= root-&gt;val || max &amp;&amp; max-&gt;val &lt;= root-&gt;val)
+      return false;
+
+    return isValidBST(root-&gt;left, min, root) &amp;&amp; isValidBST(root-&gt;right, root, max);
+  } 
+};
+</code></pre>
+
+<ul>
+<li>leet_450</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">root = [5,3,6,2,4,null,7]
+key = 3
+
+    5
+   / \
+  3   6
+ / \   \
+2   4   7
+
+Given key to delete is 3. So we find the node with value 3 and delete it.
+
+One valid answer is [5,4,6,2,null,null,7], shown in the following BST.
+
+    5
+   / \
+  4   6
+ /     \
+2       7
+
+class Solution {
+public:
+    TreeNode* deleteNode(TreeNode* root, int key) {
+        if (!root) return NULL;
+        if (root-&gt;val &gt; key) {
+            root-&gt;left = deleteNode(root-&gt;left, key);
+        } else if (root-&gt;val &lt; key) {
+            root-&gt;right = deleteNode(root-&gt;right, key);
+        } else {
+            if (!root-&gt;left || !root-&gt;right) {
+                root = (root-&gt;left) ? root-&gt;left : root-&gt;right;
+            } else {
+                TreeNode *cur = root-&gt;right;
+                while (cur-&gt;left) cur = cur-&gt;left;
+                root-&gt;val = cur-&gt;val;
+                root-&gt;right = deleteNode(root-&gt;right, cur-&gt;val);
+            }
+        }
+        return root;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_108</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given the sorted array: [-10,-3,0,5,9],
+
+One possible answer is: [0,-3,9,-10,null,5], which represents the following height balanced BST:
+
+      0
+     / \
+   -3   9
+   /   /
+ -10  5
+class Solution {
+public:
+    TreeNode* sortedArrayToBST(vector&lt;int&gt;&amp; nums) {
+        return helper(nums, 0 , (int)nums.size() - 1);
+    }
+    TreeNode* helper(vector&lt;int&gt;&amp; nums, int left, int right) {
+        if (left &gt; right) return NULL;
+        int mid = left + (right - left) / 2;
+        TreeNode *cur = new TreeNode(nums[mid]);
+        cur-&gt;left = helper(nums, left, mid - 1);
+        cur-&gt;right = helper(nums, mid + 1, right);
+        return cur;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_230</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Input: root = [5,3,6,2,4,null,null,1], k = 3
+       5
+      / \
+     3   6
+    / \
+   2   4
+  /
+ 1
+Output: 3
+class Solution {
+public:
+    int kthSmallest(TreeNode* root, int k) {
+        int cnt = 0;
+        stack&lt;TreeNode*&gt; s;
+        TreeNode *p = root;
+        while (p || !s.empty()) {
+            while (p) {
+                s.push(p);
+                p = p-&gt;left;
+            }
+            p = s.top(); s.pop();
+            ++cnt;
+            if (cnt == k) return p-&gt;val;
+            p = p-&gt;right;
+        }
+        return 0;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_236</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Input: root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1
+Output: 3
+Explanation: The LCA of nodes 5 and 1 is 3.
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+       if (!root || p == root || q == root) return root;
+       TreeNode *left = lowestCommonAncestor(root-&gt;left, p, q);
+       TreeNode *right = lowestCommonAncestor(root-&gt;right, p , q);
+       if (left &amp;&amp; right) return root;
+       return left ? left : right;
+    }
+};
+</code></pre>
 
                         
                       </div>
@@ -773,10 +996,10 @@ show slave status;
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/02/14 11:29 上午</span>
+                    <span class="date">2019/08/23 10:40 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E6%9E%B6%E6%9E%84.html'>架构</a></span>
+          					    <span class="posted-in"><a href='%E7%8E%A9%E8%BD%AC%E7%AE%97%E6%B3%95.html'>玩转算法</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -790,97 +1013,48 @@ show slave status;
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15501131231290.html">
+                <a class="clearlink" href="15701550034103.html">
                 
-                  <h1>微服务治理平台</h1>
+                  <h1>延时队列</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>平台功能</h4>
+                        	<pre class="line-numbers"><code class="language-go">import &quot;github.com/garyburd/redigo/redis&quot;
+ 
+func AddZset(data, zsetName string, score int64) (err error) {
+    con := pool.Get()
+    defer con.Close()
+    _, err = con.Do(&quot;zadd&quot;, zsetName, score, data)
+    if err != nil {
+        return
+    }
+    return
+}
 
-<ul>
-<li><img src="media/15501131231290/f5aa7ddbd2c0997839d3f292ea89975d.png" alt="f5aa7ddbd2c0997839d3f292ea89975d"/></li>
-</ul>
-
-<h4>服务管理</h4>
-
-<ul>
-<li>服务上下线</li>
-<li>节点添加和删除</li>
-<li>服务查询</li>
-<li>服务节点查询</li>
-</ul>
-
-<h4>服务治理</h4>
-
-<ul>
-<li>限流</li>
-<li>降级</li>
-<li>切流量</li>
-</ul>
-
-<h4>服务监控</h4>
-
-<ul>
-<li>整体监控 服务依赖拓扑图，将整个系统内服务间的调用关系和依赖关系进行可视化的展示</li>
-<li>一个是具体服务监控，比如服务的 QPS、AvgTime、P999 等监控指标</li>
-</ul>
-
-<h4>问题定位</h4>
-
-<ul>
-<li>一个是宏观层面，即通过服务监控来发觉异常，比如某个服务的平均耗时异常导致调用失败</li>
-<li>一个是微观层面，即通过服务追踪来具体定位一次用户请求失败具体是因为服务调用全链路的哪一层导致的</li>
-</ul>
-
-<h4>日志查询</h4>
-
-<ul>
-<li>ELK</li>
-</ul>
-
-<h4>服务运维</h4>
-
-<ul>
-<li>发布部署</li>
-<li>扩缩容</li>
-</ul>
-
-<h4>微服务治理平台</h4>
-
-<ul>
-<li>Web Portal层</li>
-</ul>
-
-<h5>API层</h5>
-
-<ul>
-<li>添加服务接口</li>
-<li>删除服务接口</li>
-</ul>
-
-<h5>数据存储DB层</h5>
-
-<ul>
-<li>用户权限</li>
-<li>操作记录</li>
-<li>元数据</li>
-</ul>
-
-<h4>开源</h4>
-
-<ul>
-<li>OCTO</li>
-<li>动态路由配置</li>
-<li>服务熔断机制配置</li>
-</ul>
-
-<h4>服务治理平台</h4>
-
-<ul>
-<li></li>
-</ul>
+//index sorted set from start to end, [start:end], eg: [0:1] will return[member1, score1, member2, score2]
+func RangeZset(start, end int, zsetName string) (data []string, err error) {
+    con := pool.Get()
+    defer con.Close()
+    data, err = redis.Strings(con.Do(&quot;zrange&quot;, zsetName, start, end, &quot;withscores&quot;))
+    return
+}
+func RangeZsetByScore(start, end int64, zsetName string) (data []string, err error) {
+    con := pool.Get()
+    defer con.Close()
+    data, err = redis.Strings(con.Do(&quot;zrangebyscore&quot;, zsetName, start, end, &quot;withscores&quot;))
+    return
+}
+func RemZset(zsetName string, keys []string) (err error) {
+    if len(keys) == 0 {
+        return
+    }
+    con := pool.Get()
+    defer con.Close()
+    _, err = con.Do(&quot;zrem&quot;, redis.Args{}.Add(zsetName).AddFlat(keys)...)
+    return
+}
+</code></pre>
 
                         
                       </div>
@@ -889,68 +1063,10 @@ show slave status;
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/02/14 10:58 上午</span>
+                    <span class="date">2019/10/04 10:10 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E5%BE%AE%E6%9C%8D%E5%8A%A1.html'>微服务</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15501125147082.html">
-                
-                  <h1>服务配置</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>本地配置</h4>
-
-<h4>配置中心</h4>
-
-<ul>
-<li>配置注册功能</li>
-<li>配置反注册功能</li>
-<li>配置查看功能</li>
-<li>配置变更订阅功能</li>
-</ul>
-
-<h4>配置中心的使用场景</h4>
-
-<ul>
-<li>资源服务化</li>
-<li>业务动态降级</li>
-<li>分组流量切换</li>
-</ul>
-
-<h4>配置中心</h4>
-
-<ul>
-<li>Spring Cloud Config</li>
-<li>Disconf</li>
-<li>Apollo</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/14 10:48 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E5%BE%AE%E6%9C%8D%E5%8A%A1.html'>微服务</a></span>
+          					    <span class="posted-in"><a href='Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html'>Redis高并发缓存</a></span>
           				   
                   </div>
                   <div class="more-right right">

@@ -170,352 +170,37 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15484692913861.html">
+                <a class="clearlink" href="15490122357421.html">
                 
-                  <h1>DaemonSet</h1>
+                  <h1>从外界连通Service与Service调试“三板斧”</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>工作原理</h4>
+                        	<h5>NodePort</h5>
 
 <ul>
-<li>DaemonSet Controller，首先从 Etcd 里获取所有的 Node 列表，然后遍历所有的 Node。这时，它就可以很容易地去检查，当前这个 Node 上是不是有一个携带了 name=fluentd-elasticsearch 标签的 Pod 在运行。</li>
+<li>配置spec.type=NodePort</li>
+<li>IP包离开宿主机发到目的Pod时，对IP包做一次SNAT</li>
 </ul>
 
-<h4>调度</h4>
-
-<ul>
-<li>通过Toleration忽略指定节点的污点和nodeAffinity</li>
-<li>ControllerRevision 来进行版本控制</li>
-<li>和StatefulSet一样都是直接来管理Pod</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/01/26 10:21 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15484675744433.html">
-                
-                  <h1>Statefulset</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>mysql集群解决问题</h4>
-
-<ul>
-<li>Master 节点和 Slave 节点需要有不同的配置文件（即：不同的 my.cnf）；</li>
-<li>Master 节点和 Salve 节点需要能够传输备份信息文件；</li>
-<li>在 Slave 节点第一次启动之前，需要执行一些初始化 SQL 操作；</li>
-</ul>
-
-<h4>master各节点配置</h4>
-
-<pre class="line-numbers"><code class="language-text">apiVersion: v1
-kind: Service
-metadata:
-  name: mysql
-  labels:
-    app: mysql
-spec:
-  ports:
-  - name: mysql
-    port: 3306
-  clusterIP: None
-  selector:
-    app: mysql
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: mysql-read
-  labels:
-    app: mysql
-spec:
-  ports:
-  - name: mysql
-    port: 3306
-  selector:
-    app: mysql
-</code></pre>
-
-<h4>master和slave节点之间传输文件</h4>
-
-<ul>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/01/26 09:52 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15482971827337.html">
-                
-                  <h1>深入理解Statefulset</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>有状态应用</h4>
-
-<ul>
-<li>实例之间有不对等关系，以及实例对外部数据有依赖关系的应用，就被称为“有状态应用”（Stateful Application）</li>
-</ul>
-
-<h4>StatefulSet</h4>
-
-<ul>
-<li>拓扑状态</li>
-<li>存储状态</li>
-</ul>
-
-<h4>Headless Service</h4>
-
-<ul>
-<li>第一种方式，是以 Service 的 VIP（Virtual IP，即：虚拟 IP）方式 代理分发</li>
-<li>第二种方式，就是以 Service 的 DNS 方式</li>
-<li>Normal Service 访问DNS--&gt;VIP</li>
-<li>Headless Service --&gt; my-svc代理的Pod的IP地址</li>
-<li>Headless的本质就是没有VIP作为头，以DNS的记录的方式暴露代理</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">&lt;pod-name&gt;.&lt;svc-name&gt;.&lt;namespace&gt;.svc.cluster.local
-</code></pre>
-
-<h4>查看容器</h4>
-
-<ul>
-<li> kubectl exec web-1 -- sh -c &#39;hostname&#39;</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text"> kubectl run -i --tty --image docker.io/busybox:1.28.4 dns-test --restart=Never --rm /bin/sh
-</code></pre>
-
-<h4>stateful set过程</h4>
-
-<ul>
-<li>StatefulSet 这个控制器的主要作用之一，就是使用 Pod 模板创建 Pod 的时候，对它们进行编号，并且按照编号顺序逐一完成创建工作。而当 StatefulSet 的“控制循环”发现 Pod 的“实际状态”与“期望状态”不一致，需要新建或者删除 Pod 进行“调谐”的时候，它会严格按照这些 Pod 编号的顺序，逐一完成这些操作。</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/01/24 10:33 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15479545783109.html">
-                
-                  <h1>控制器模型</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>Deployment</h4>
-
-<ul>
-<li>Deployment 控制器从 Etcd 中获取到所有携带了“app: nginx”标签的 Pod，然后统计它们的数量，这就是实际状态；</li>
-<li>Deployment 对象的 Replicas 字段的值就是期望状态；</li>
-<li>Deployment 控制器将两个状态做比较，然后根据比较结果，确定是创建 Pod，还是删除已有的 Pod</li>
-</ul>
-
-<h4>控制器和被控制对象</h4>
-
-<p><img src="media/15479545783109/72cc68d82237071898a1d149c8354b26.png" alt="72cc68d82237071898a1d149c8354b26"/></p>
-
-<ul>
-<li>控制器模式”，对于控制器来说是主动的，自身在不断地获取信息，起到事后“监控”作用，知道同步完成，实际状态与期望状态一致</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/01/20 11:22 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15470893891809.html">
-                
-                  <h1>Pod</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>k8s本质</h4>
-
-<ul>
-<li>就是操作系统</li>
-<li>pod的本质就是进程组共享了一些资源的容器</li>
-</ul>
-
-<h4>容器进程模型</h4>
-
-<ul>
-<li>并不是指容器只能运行一个进程，而是指容器没有管理多个进程的能力</li>
-</ul>
-
-<h4>Pod</h4>
-
-<ul>
-<li>互相之间会发生直接的文件交换</li>
-<li>使用 localhost 或者 Socket 文件进行本地通信</li>
-<li>会发生非常频繁的远程调用</li>
-<li>需要共享某些 Linux Namespace（比如，一个容器要加入另一个容器的 Network Namespace）</li>
-<li>Pod里的所有容器共享一个NetWork NameSpace,可以声明共享同一个Volume</li>
-<li>通过infra中间容器来创建其他容器</li>
-<li><img src="media/15470893891809/8c016391b4b17923f38547c498e434cf.png" alt="8c016391b4b17923f38547c498e434cf"/></li>
-<li>infra使用k8s.gcr.io/pause镜像</li>
-<li>Init Container和 Container</li>
-</ul>
-
-<h4>sidecar设计模式</h4>
-
-<ul>
-<li>sidecar 指的就是我们可以在一个 Pod 中，启动一个辅助容器，来完成一些独立于主进程（主容器）之外的工作</li>
-<li>微服务治理Istio</li>
-</ul>
-
-<h4>Init Container</h4>
-
-<ul>
-<li>Init Container 定义的容器，都会比 spec.containers 定义的用户容器先启动。并且，Init Container 容器会按顺序逐一启动，而直到它们都启动并且退出了，用户容器才会启动。</li>
-<li>Tomcat 容器是我们要使用的主容器，而 WAR 包容器的存在，只是为了给它提供一个 WAR 包而已。所以，我们用 Init Container 的方式优先运行 WAR 包容器，扮演了一个 sidecar 的角色。</li>
-</ul>
-
-<h4>Pod本质</h4>
-
-<ul>
-<li>Pod本质是在扮演传统基础设施的虚拟机角色</li>
-<li>Pod相当于传统环境的机器，容器是运行在这个机器的程序</li>
-<li>凡是调度,网络，存储和安全相关的，基本都是Pod级别的</li>
-</ul>
-
-<h4>Lifecycle</h4>
-
-<ul>
-<li>它定义的是 Container Lifecycle Hooks。顾名思义，Container Lifecycle Hooks 的作用，是在容器状态发生变化时触发一系列“钩子”</li>
-</ul>
-
-<h4>Pod Status</h4>
-
-<ul>
-<li>Pending。这个状态意味着，Pod 的 YAML 文件已经提交给了 Kubernetes，API 对象已经被创建并保存在 Etcd 当中。但是，这个 Pod 里有些容器因为某种原因而不能被顺利创建。比如，调度不成功。</li>
-<li>Running。这个状态下，Pod 已经调度成功，跟一个具体的节点绑定。它包含的容器都已经创建成功，并且至少有一个正在运行中。</li>
-<li>Succeeded。这个状态意味着，Pod 里的所有容器都正常运行完毕，并且已经退出了。这种情况在运行一次性任务时最为常见。</li>
-<li>Failed。这个状态下，Pod 里至少有一个容器以不正常的状态（非 0 的返回码）退出。这个状态的出现，意味着你得想办法 Debug 这个容器的应用，比如查看 Pod 的 Events 和日志。</li>
-<li>Unknown。这是一个异常状态，意味着 Pod 的状态不能持续地被 kubelet 汇报给 kube-apiserver，这很有可能是主从节点（Master 和 Kubelet）间的通信出现了问题。</li>
-</ul>
-
-<h4>Project Volume</h4>
-
-<ul>
-<li>Secret；</li>
-<li>ConfigMap；</li>
-<li>Downward API；</li>
-<li>ServiceAccountToken</li>
-</ul>
-
-<h4>Service Account</h4>
-
-<pre class="line-numbers"><code class="language-text"> Volumes:
-  default-token-2djhh:
-    Type:        Secret (a volume populated by a Secret)
-    SecretName:  default-token-2djhh
-    Optional:    false
+<pre class="line-numbers"><code class="language-text">-A KUBE-POSTROUTING -m comment --comment &quot;kubernetes service traffic requiring SNAT&quot; -m mark --mark 0x4000/0x4000 -j MASQUERADE
 </code></pre>
 
 <ul>
-<li>把 Kubernetes 客户端以容器的方式运行在集群里，然后使用 default Service Account 自动授权的方式，被称作“InClusterConfig”</li>
+<li>Pod 需要明确知道所有请求来源设置spec.externalTrafficPolicy=local</li>
 </ul>
 
-<h4>容器健康检查和恢复机制</h4>
+<h4>LoadBalancer</h4>
+
+<h4>ExternalName</h4>
+
+<h4>故障检测</h4>
 
 <ul>
-<li>livenessProbe</li>
-<li>exec</li>
-<li>http</li>
-<li>tcp</li>
-<li>readinessProbe</li>
-<li>只要 Pod 的 restartPolicy 指定的策略允许重启异常的容器（比如：Always），那么这个 Pod 就会保持 Running 状态，并进行容器重启。否则，Pod 就会进入 Failed 状态 。</li>
-<li>对于包含多个容器的 Pod，只有它里面所有的容器都进入异常状态后，Pod 才会进入 Failed 状态。在此之前，Pod 都是 Running 状态。此时，Pod 的 READY 字段会显示正常容器的个数</li>
+<li>检查 Kubernetes 自己的 Master 节点的 Service DNS 是否正常，Pod内执行nslookup kubernetes.default</li>
+<li>检查kube-dns的运行日志和状态</li>
+<li>检查服务是否有endpoints</li>
 <li></li>
 </ul>
 
@@ -526,7 +211,7 @@ spec:
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/01/10 11:03 上午</span>
+                    <span class="date">2019/02/01 17:10 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
@@ -543,55 +228,36 @@ spec:
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15470858063747.html">
+                <a class="clearlink" href="15490071556861.html">
                 
-                  <h1>kubeadm部署</h1>
+                  <h1>Service、DNS与服务发现</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>static pod</h4>
+                        	<h4>Service工作原理</h4>
 
 <ul>
-<li>把要部署的 Pod 的 YAML 文件放在一个指定的目录里。这样，当这台机器上的 kubelet 启动时，它会自动检查这个目录，加载所有的 Pod YAML 文件，然后在这台机器上启动它们。</li>
+<li> kube-proxy 组件，加上 iptables 来共同实现的</li>
+<li> iptables-save</li>
+<li> service-cluster-ip只是一条 iptables 规则上的配置，并没有真正的网络设备，所以你 ping 这个地址，是不会有任何响应的。</li>
 </ul>
 
-<h4>bootstrap token</h4>
+<pre class="line-numbers"><code class="language-text">-A KUBE-SVC-DPS3HM6JILO2T4WM -m comment --comment &quot;test/hostnames:default&quot; -m statistic --mode random --probability 0.33332999982 -j KUBE-SEP-DPVQIFXK4PIYVROG
+-A KUBE-SVC-DPS3HM6JILO2T4WM -m comment --comment &quot;test/hostnames:default&quot; -m statistic --mode random --probability 0.50000000000 -j KUBE-SEP-IDFIHXEZVXF2N5Y3
+-A KUBE-SVC-DPS3HM6JILO2T4WM -m comment --comment &quot;test/hostnames:default&quot; -j KUBE-SEP-GOWOXQVBZIZRJUVW
+-A KUBE-SEP-DPVQIFXK4PIYVROG -p tcp -m comment --comment &quot;test/hostnames:default&quot; -m tcp -j DNAT --to-destination 10.128.125.67:9376
+-A KUBE-SEP-GOWOXQVBZIZRJUVW -p tcp -m comment --comment &quot;test/hostnames:default&quot; -m tcp -j DNAT --to-destination 10.128.31.30:9376
+-A KUBE-SEP-IDFIHXEZVXF2N5Y3 -p tcp -m comment --comment &quot;test/hostnames:default&quot; -m tcp -j DNAT --to-destination 10.128.177.159:9376
+</code></pre>
 
-<ul>
-<li>安装了 kubelet 和 kubadm 的节点，都可以通过 kubeadm join 加入到这个集群当中</li>
-</ul>
-
-<h4>kube-proxy</h4>
-
-<ul>
-<li>服务发现功能</li>
-</ul>
+<h4>IPVS</h4>
 
 <h4>DNS</h4>
 
 <ul>
-<li>DNS功能</li>
-</ul>
-
-<h4>node节点加入集群</h4>
-
-<ul>
-<li>kubeadm访问kube-apiserver获取保存在configmap中的cluster-info</li>
-<li>cluster-info 里的 kube-apiserver 的地址、端口、证书</li>
-</ul>
-
-<h4>访问仓库</h4>
-
-<ul>
-<li>gcr.io</li>
-<li>quay.io</li>
-</ul>
-
-<h4>部署单机k8s集群</h4>
-
-<ul>
-<li><a href="https://www.datayang.com/article/45">https://www.datayang.com/article/45</a></li>
+<li>ClusterIP 模式的 Service 为你提供的，就是一个 Pod 的稳定的 IP 地址，即 VIP。并且，这里 Pod 和 Service 的关系是可以通过 Label 确定的。</li>
+<li>Headless Service 为你提供的，则是一个 Pod 的稳定的 DNS 名字，并且，这个名字是可以通过 Pod 名字和 Service 名字拼接出来的。</li>
 <li></li>
 </ul>
 
@@ -602,7 +268,7 @@ spec:
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/01/10 10:03 上午</span>
+                    <span class="date">2019/02/01 15:45 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
@@ -619,54 +285,28 @@ spec:
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15470844509355.html">
+                <a class="clearlink" href="15489893285277.html">
                 
-                  <h1>K8S的本质</h1>
+                  <h1>容器网络隔离</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>k8s结构图</h4>
-
-<p><img src="media/15470844509355/8ee9f2fa987eccb490cfaa91c6484f67.png" alt="8ee9f2fa987eccb490cfaa91c6484f67"/></p>
-
-<h4>结构剖析</h4>
+                        	<h4>NetWorkPolicy</h4>
 
 <ul>
-<li>控制节点</li>
-<li>负责API服务的kube-apiserver</li>
-<li>负责调度的kube-scheduler</li>
-<li>负责容器编排的kube-controller-manager</li>
-<li>计算节点</li>
+<li>ingress 流入</li>
+<li>egress 流出</li>
+<li>CNI 网络插件，都维护着一个 NetworkPolicy Controller，通过控制循环的方式对 NetworkPolicy 对象的增删改查做出响应，然后在宿主机上完成 iptables 规则的配置工作</li>
+<li>Kubernetes 网络插件对 Pod 进行隔离，其实是靠在宿主机上生成 NetworkPolicy 对应的 iptable 规则来实现的</li>
+<li>网络插件还需要想办法，将所有对被隔离 Pod 的访问请求，都转发到上述 KUBE-NWPLCY-CHAIN 规则上去进行匹配。并且，如果匹配不通过，这个请求应该被“拒绝”。</li>
 </ul>
 
-<h4>kubelet组件</h4>
+<h4>自定义iptables规则</h4>
 
-<ul>
-<li>容器通过CRI接入Kuberbetes</li>
-<li>通过OCI翻译CRI的请求与底层的Linux操作系统交互</li>
-<li>CNI调用网络插件为容器配置网络</li>
-<li>CSI调用存储插件为容器配置持久存储</li>
-</ul>
-
-<h4>解决问题</h4>
-
-<ul>
-<li>运行在大规模集群中的各种任务之间，实际上存在着各种各样的关系。这些关系的处理，才是作业编排和管理系统最困难的地方。</li>
-<li><img src="media/15470844509355/16c095d6efb8d8c226ad9b098689f306.png" alt="16c095d6efb8d8c226ad9b098689f306"/></li>
-<li>deployment解决Pod的多实例管理器</li>
-<li>service解决固定IP地址访问的问题</li>
-<li>secret解决访问时的授权信息</li>
-<li>daemonset描述每个宿主机必须只能运行一个副本的守护任务</li>
-</ul>
-
-<h4>和过去集群管理的区别</h4>
-
-<ul>
-<li>过去很多的集群管理项目（比如 Yarn、Mesos，以及 Swarm）所擅长的，都是把一个容器，按照某种规则，放置在某个最佳节点上运行起来。这种功能，我们称为“调度”。</li>
-<li>而 Kubernetes 项目所擅长的，是按照用户的意愿和整个系统的规则，完全自动化地处理好容器之间的各种关系。这种功能，就是我们经常听到的一个概念：编排。</li>
-<li></li>
-</ul>
+<pre class="line-numbers"><code class="language-text">iptables -A KUBE-POD-SPECIFIC-FW-CHAIN -j KUBE-NWPLCY-CHAIN
+iptables -A KUBE-POD-SPECIFIC-FW-CHAIN -j REJECT --reject-with icmp-port-unreachable
+</code></pre>
 
                         
                       </div>
@@ -675,7 +315,7 @@ spec:
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/01/10 09:40 上午</span>
+                    <span class="date">2019/02/01 10:48 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
@@ -692,117 +332,116 @@ spec:
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15467443920316.html">
+                <a class="clearlink" href="15488381890610.html">
                 
-                  <h1>深入理解容器镜像</h1>
+                  <h1>容器网络</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>mount space</h4>
+                        	<h4>网络栈</h4>
 
 <ul>
-<li>Mount Namepace修改的是容器进程对文件系统挂载点的认知</li>
-<li>tmpfs内存盘</li>
+<li>网卡</li>
+<li>回环设备</li>
+<li>路由表</li>
+<li>iptables</li>
 </ul>
 
-<h4>挂载原理</h4>
-
-<pre class="line-numbers"><code class="language-text">  mount(“”, “/“, NULL, MS_PRIVATE, “”) 
-</code></pre>
-
-<h4>chroot</h4>
+<h4>被隔离的容器进程，该如何跟其他 Network Namespace 里的容器进程进行交互呢？</h4>
 
 <ul>
-<li>改变进程的根目录到指定的位置</li>
-<li>挂载在容器根目录上，用来为容器进程提供隔离后执行环境的文件系统就是容器镜像，也叫rootfs</li>
+<li>docker创建虚拟网桥</li>
+<li><img src="media/15488381890610/e0d28e0371f93af619e91a86eda99a66.png" alt="e0d28e0371f93af619e91a86eda99a66"/></li>
+<li>被限制在 Network Namespace 里的容器进程，实际上是通过 Veth Pair 设备 + 宿主机网桥的方式，实现了跟同其他容器的数据交换</li>
 </ul>
 
-<h4>Docker核心流程</h4>
+<h4>容器跨主机通讯</h4>
 
 <ul>
-<li>启动linux namespace配置</li>
-<li>设置指定的cgroups参数</li>
-<li>切换进程的根目录</li>
+<li>overlay网络</li>
+<li><img src="media/15488381890610/b4387a992352109398a66d1dbe6e413d.png" alt="b4387a992352109398a66d1dbe6e413d"/></li>
 </ul>
 
-<h4>pivot_root和chroot的区别</h4>
-
-<h4>容器一致性</h4>
+<h4>Flannel</h4>
 
 <ul>
-<li>rootfs有层级概念</li>
-<li>每一层对应一个文件夹</li>
-<li>OverlayFS仅有两层，也就是说镜像中的每一层并不对应OverlayFS中的层，而是，镜像中的每一层对应/var/lib/docker/overlay中的一个文件夹，文件夹以该层的UUID命名。然后使用硬连接将下面层的文件引用到上层。这在一定程度上节省了磁盘空间。这样，OverlayFS中的lowerdir就对应镜像层的最上层，并且是只读的。在创建镜像时，Docker会新建一个文件夹作为OverlayFS的upperdir，它是可写的。</li>
+<li>VXLAN</li>
+<li>host-gw</li>
+<li>UDP</li>
 </ul>
 
-<h4>删除文件</h4>
+<h4>通讯原理</h4>
 
 <ul>
-<li>通过可读写层创建一个whiteout文件，把只读层的文件遮挡起来</li>
+<li><img src="media/15488381890610/e6827cecb75641d3c8838f2213543cf0.png" alt="e6827cecb75641d3c8838f2213543cf0"/></li>
+<li>VXLAN
+<img src="media/15488381890610/cefe6b99422fba768c53f0093947cd38.png" alt="cefe6b99422fba768c53f0093947cd38"/></li>
+<li>flannel VXLAN的外部帧
+<img src="media/15488381890610/43f5ebb001145ecd896fd10fb27c5c41.png" alt="43f5ebb001145ecd896fd10fb27c5"/></li>
 </ul>
 
-<h4>init层</h4>
+<h4>网络模型和CNI插件</h4>
 
 <ul>
-<li>Init 层是 Docker 项目单独生成的一个内部层，专门用来存放 /etc/hosts、/etc/resolv.conf 等信息。</li>
+<li>一方面，Kubernetes 项目并没有使用 Docker 的网络模型（CNM），所以它并不希望、也不具备配置 docker0 网桥的能力；</li>
+<li>另一方面，这还与 Kubernetes 如何配置 Pod，也就是 Infra 容器的 Network Namespace 密切相关。</li>
+<li>Kubernetes 在启动 Infra 容器之后，就可以直接调用 CNI 网络插件，为这个 Infra 容器的 Network Namespace，配置符合预期的网络栈。</li>
 </ul>
 
-<h4>容器修改文件的流程</h4>
+<h4>CNI基础可执行文件</h4>
 
 <ul>
-<li>修改一个文件的时候，首先会从上到下查找有没有这个文件，找到，就复制到容器层中，修改，修改的结果就会作用到下层的文件，这种方式也被称为copy-on-write。</li>
+<li>Main 插件，它是用来创建具体网络设备的二进制文件,bridge（网桥设备）、ipvlan、loopback（lo 设备）、macvlan、ptp（Veth Pair 设备），以及 vlan。</li>
+<li>IPAM（IP Address Management）插件，它是负责分配 IP 地址的二进制文件。dhcp,hostlocal分配预先制定的IP地址</li>
+<li>CNI 社区维护的内置 CNI 插件,tuning，是一个通过 sysctl 调整网络设备参数的二进制文件；portmap，是一个通过 iptables 配置端口映射的二进制文件；bandwidth，是一个使用 Token Bucket Filter (TBF) 来进行限流的二进制文件。</li>
 </ul>
 
-<h4>katacontainers</h4>
+<h4>容器网络方案</h4>
 
 <ul>
-<li>新的容器技术//TODO</li>
+<li>实现这个网络方案本身，配置宿主机路由、配置 ARP 和 FDB 表里的信息等等。</li>
+<li>实现该网络方案对应的 CNI 插件。这一部分主要需要做的，就是配置 Infra 容器里面的网络栈，并把它连接在 CNI 网桥上</li>
 </ul>
 
-<h4>exec原理</h4>
+<h4>host-gw</h4>
 
 <ul>
-<li>docker inspect --format &#39;{{.State.Pid}}&#39; container-id</li>
-<li>通过加入一个进程的NameSpace中达到进入容器的目的</li>
-<li>通过调用sentns的系统调用实现</li>
+<li>host-gw 模式的工作原理，其实就是将每个 Flannel 子网（Flannel Subnet，比如：10.244.1.0/24）的“下一跳”，设置成了该子网对应的宿主机的 IP 地址。</li>
+<li>Flannel host-gw 模式必须要求集群宿主机之间是二层连通的</li>
 </ul>
 
-<h4>容器里进程新建的文件，怎么才能让宿主机获取到？</h4>
+<h4>Calico</h4>
 
 <ul>
-<li>rootfs之后,chroot之前，宿主机的目录被联合挂载到/var/lib/docker/aufs/mnt/目录中的可读写层中，这个挂载工作就完成了</li>
-<li>容器进程是指docker创建的容器初始化进程，最后通过execv()系统调用，让应用进程取代自己，成为容器pid=1的进程</li>
-<li>绑定挂载允许将一个目录或者文件挂载到指定的目录上，该挂载点上进行的任何操作，只是发生在被挂载的目录或者文件上，而原挂载点的内容则会被隐藏起来且不受影响。</li>
-<li><img src="media/15467443920316/95c957b3c2813bb70eb784b8d1daedc6.png" alt="95c957b3c2813bb70eb784b8d1daed"/></li>
-<li>绑定挂载本质就是inode替换的过程</li>
-<li>新建目录不会被namespace隔离，会产生新的目录，但是对该目录的改变只会产生在宿主机，不会在容器中产生。</li>
+<li>BGP协议 在大规模网络中实现节点路由信息共享的一种协议</li>
+<li>在每个边界网关上都会运行着一个小程序，它们会将各自的路由表信息，通过 TCP 传输给其他的边界网关。而其他边界网关上的这个小程序，则会对收到的这些数据进行分析，然后将需要的信息添加到自己的路由表里。</li>
+<li>CNI插件 </li>
+<li>Felix 负责在宿主机上插入路由规则（即：写入 Linux 内核的 FIB 转发信息库），以及维护 Calico 所需的网络设备等工作。</li>
+<li>BIRD 专门负责在集群里分发路由规则信息</li>
+<li>Node to Node mesh模式</li>
+<li>Route reflector</li>
 </ul>
 
-<h4>Docker copyData功能</h4>
-
-<h4>cgroup的NameSpace作用</h4>
+<h4>IPIP模式</h4>
 
 <ul>
-<li>容器中一旦挂载cgroup filesystem，可以修改整全局的cgroup配置</li>
-<li>cgroup namespace更加安全。</li>
-<li>namespace中的进程都有自己cgroupns root和cgroup filesystem视图</li>
-<li>会使容器迁移更加容易；在迁移时，/proc/self/cgroup需要复制到目标机器，这要求容器的cgroup路径是唯一的，否则可能会与目标机器冲突</li>
-<li></li>
+<li>IP 包进入 IP 隧道设备之后，就会被 Linux 内核的 IPIP 驱动接管。IPIP 驱动会将这个 IP 包直接封装在一个宿主机网络的 IP 包中
+<img src="media/15488381890610/83c0dfa5fbac2b9854c6d8c57b404b15.png" alt="83c0dfa5fbac2b9854c6d8c57b404b15"/></li>
+<li>Node 2 的网络内核栈会使用 IPIP 驱动进行解包，从而拿到原始的 IP 包</li>
 </ul>
 
-<h4>获取宿主机的ip</h4>
+<h4>Calio原理</h4>
 
 <ul>
-<li>downwardapi</li>
+<li><a href="https://www.yangcs.net/posts/calico-rr/">https://www.yangcs.net/posts/calico-rr/</a></li>
 </ul>
 
-<h4>overlay</h4>
+<h4>实验</h4>
 
 <ul>
-<li>modprobe overlay</li>
-<li> mount -t overlay overlay -olowerdir=./lower,upperdir=./upper,workdir=./work ./merged</li>
-<li> </li>
+<li>Docker单机网络模型动手实验 <a href="https://github.com/mz1999/blog/blob/master/docs/docker-network-bridge.md">https://github.com/mz1999/blog/blob/master/docs/docker-network-bridge.md</a></li>
+<li>Docker跨主机Overlay网络动手实验 <a href="https://github.com/mz1999/blog/blob/master/docs/docker-overlay-networks.md">https://github.com/mz1999/blog/blob/master/docs/docker-overlay-networks.md</a></li>
 </ul>
 
                         
@@ -812,548 +451,7 @@ spec:
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/01/06 11:13 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15441675877605.html">
-                
-                  <h1>DockerFile教程</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>Docker的优势</h4>
-
-<ul>
-<li>更高效的利用系统资源，容器不需要进行硬件虚拟以及运行完整操作系统等额外开销</li>
-<li>更快速的启动时间，传统的虚拟机技术启动应用服务往往需要数分钟， Docker容器应用可以做到秒级、甚至毫秒级的启动时间</li>
-<li>更轻松的迁移，由于 Docker 确保了执行环境的一致性，使得应用的迁移更加容易</li>
-<li>更轻松的维护和扩展，Docker 使用的分层存储以及镜像的技术，使得应用重复部分的复用更为容易，也使得应用的维护更新更加简单，基于基础镜像进一步扩展镜像也变得非常简单。</li>
-</ul>
-
-<h4>对比传统虚拟机总结</h4>
-
-<table>
-<thead>
-<tr>
-<th style="text-align: center">特性</th>
-<th style="text-align: center">容器</th>
-<th style="text-align: center">虚拟机</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td style="text-align: center">启动</td>
-<td style="text-align: center">秒级</td>
-<td style="text-align: center">分钟级别</td>
-</tr>
-<tr>
-<td style="text-align: center">硬盘使用</td>
-<td style="text-align: center">一般以MB为单位</td>
-<td style="text-align: center">一般以GB为单位</td>
-</tr>
-<tr>
-<td style="text-align: center">性能</td>
-<td style="text-align: center">接近原生</td>
-<td style="text-align: center">弱于</td>
-</tr>
-<tr>
-<td style="text-align: center">系统支持量</td>
-<td style="text-align: center">单机支持上千个容器</td>
-<td style="text-align: center">一般几十个</td>
-</tr>
-</tbody>
-</table>
-
-<h4>容器&amp;镜像&amp;仓库&amp;Docker daemon &amp;Docker client</h4>
-
-<ul>
-<li>容器的实质是进程，相对于系统的普通进程，容器应用的文件系统，网络配置，进程空间都是运行在一个隔离的环境，如下图所示</li>
-</ul>
-
-<p><img src="media/15439151260869/v2-4c8aea533a4cd6c1939b66eb4cbf536a_hd.jpg" alt="v2-4c8aea533a4cd6c1939b66eb4cbf536a_hd"/></p>
-
-<ul>
-<li>镜像相对于容器就像二进制程序和二进制程序运行的进程类似，镜像是静态的定义，容器是运行的实体</li>
-<li>仓库就是存储一个软件不同版本的镜像，用标签来标签来标识，例如ubuntu这个镜像，有两个版本，分别就表示为ubuntu:14.04，ubuntu:16.04 ，：后面就是镜像的标签</li>
-<li>Docker daemon就是用来管理容器运行和镜像的平台，用来运行，停止，删除容器。更新升级容器的镜像</li>
-<li>Docker client就是用来操作Docker平台的入口，通过Docker client的pull start stop等指令来操作管理Docker平台的容器和镜像</li>
-<li>关系如下图
-<img src="media/15439151260869/high-level-overview-of-docker-architecture.png" alt="high-level-overview-of-docker-architecture"/></li>
-</ul>
-
-<h4>DockerFile</h4>
-
-<ul>
-<li>Dockfile是一种被Docker程序解释的脚本，Dockerfile由一条一条的指令组成，每条指令对应Linux下面的一条命令。Docker程序将这些Dockerfile指令翻译真正的Linux命令。</li>
-<li>Dockerfile的指令是忽略大小写的，建议使用大写，使用#作为注释，每一行只支持一条指令，每条指令可以携带多个参数。</li>
-<li>Dockerfile的指令根据作用可以分为两种，构建指令和设置指令。构建指令用于构建image，其指定的操作不会在运行image的容器上执行；设置指令用于设置image的属性，其指定的操作将在运行image的容器中执行。
-<img src="media/15439151260869/WechatIMG38.png" alt="WechatIMG38"/></li>
-</ul>
-
-<h4>1 制作镜像环境</h4>
-
-<ul>
-<li>在linux操作系统中创建一个文件夹专门用于制作镜像</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  mkdir docker_build
-</code></pre>
-
-<ul>
-<li>创建一个名为Dockerile的文件，这个文件用来编写Dockfile</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  touch Dockerfile
-</code></pre>
-
-<h4>2 FROM(指定基础image)</h4>
-
-<ul>
-<li>必须指定且需要在Dockerfile其他指令的前面。后续的指令都依赖于该指令指定的image。FROM指令指定的基础image可以是官方远程仓库中的，也可以位于本地仓库。</li>
-<li>该指令有两种格式</li>
-<li>指定基础image为该image的最后修改的版本</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text"> FROM &lt;image&gt;
-</code></pre>
-
-<ul>
-<li>或者指定基础image为该image的一个tag版本。</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text"> FROM &lt;image&gt;:&lt;tag&gt;
-</code></pre>
-
-<h4>3 MAINTAINER（用来指定镜像创建者信息）</h4>
-
-<ul>
-<li>构建指令，用于将image的制作者相关的信息写入到image中。当我们对该image执行docker inspect命令时，输出中有相应的字段记录该信息。</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  MAINTAINER &lt;name&gt;
-</code></pre>
-
-<h4>4 RUN(安装软件用)</h4>
-
-<ul>
-<li>构建指令，RUN可以运行任何被基础image支持的命令。如基础image选择了ubuntu的linux发行版，那么软件管理部分只能使用ubuntu的命令。如果选择了centos的linux发行版，软件管理部门只能使用centos的系统指令</li>
-<li>RUN命令将在当前构建的image中执行任意合法命令并提交执行结果。命令执行提交后，就会自动执行Dockerfile中的下一个指令。相当于在操作系统中执行安装软件的操作，RUN就是在镜像中安装了一些软件，这些镜像运行起来成为容器后就可以使用这些软件。</li>
-<li>RUN 命令可以多个命令合并成一行。</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">FROM debian:jessie
-
-RUN buildDeps=&#39;gcc libc6-dev make&#39; \
-    &amp;&amp; apt-get update \
-    &amp;&amp; apt-get install -y $buildDeps \
-    &amp;&amp; wget -O redis.tar.gz &quot;http://download.redis.io/releases/redis-3.2.5.tar.gz&quot; \
-    &amp;&amp; mkdir -p /usr/src/redis \
-    &amp;&amp; tar -xzf redis.tar.gz -C /usr/src/redis --strip-components=1 \
-    &amp;&amp; make -C /usr/src/redis \
-    &amp;&amp; make -C /usr/src/redis install \
-    &amp;&amp; rm -rf /var/lib/apt/lists/* \
-    &amp;&amp; rm redis.tar.gz \
-    &amp;&amp; rm -r /usr/src/redis \
-    &amp;&amp; apt-get purge -y --auto-remove $buildDeps
-</code></pre>
-
-<h4>5 COPY</h4>
-
-<ul>
-<li>将一些应用程序所需要的第三方程序和插件，拷贝进制作的docker镜像的容器中</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  COPY file /docker_image_dir
-</code></pre>
-
-<ul>
-<li>使用 COPY 指令，源文件的各种元数据都会保留。比如读、写、执行权限、文件变更时间等, 可以通过--chown来改变用户和属组属性</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">COPY --chown=55:mygroup files* /mydir/
-COPY --chown=bin files* /mydir/
-COPY --chown=1 files* /mydir/
-COPY --chown=10:11 files* /mydir/
-</code></pre>
-
-<h4>6 ADD(从src复制文件到container的dest路径)</h4>
-
-<ul>
-<li>构建镜像的时候，需要一些辅助的文件和库来支撑应用程序的运行，就是通常所说的程序运行所依赖的第三方库或者文件。这些文件需要从构建镜像的宿主机器的目录中拷贝进容器镜像</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  ADD host/dir/file image/dir 
-</code></pre>
-
-<h4>7 WORKDIR(切换目录)</h4>
-
-<ul>
-<li>设置指令，可以多次切换(相当于cd命令)，对RUN,CMD,ENTRYPOINT生效。</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text"> WORKDIR /path/to/workdir
-</code></pre>
-
-<h4>8 EXPOSE(指定容器需要映射到宿主机器的端口)</h4>
-
-<ul>
-<li>相当于服务启动时监听的端口，通过该端口，客户端就可以服务绑定的IP和端口进行调用访问</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  EXPOSE Port
-</code></pre>
-
-<h4>9 VOLUME(指定挂载点)</h4>
-
-<ul>
-<li>Volume设置指令，使容器中的一个目录具有持久化存储数据的功能，该目录可以被容器本身使用，也可以共享给其他容器使用。我们知道容器使用的是AUFS，这种文件系统不能持久化数据，当容器关闭后，所有的更改都会丢失。当容器中的应用有持久化数据的需求时可以在Dockerfile中使用该指令。</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  VOLUME [&quot;&lt;mountpoint&gt;&quot;]
-  示例相当于cd /p1/p2目录中，然后编辑a.txt文件
-  WORKDIR /p1 
-  WORKDIR p2 
-  RUN vim a.txt  
-</code></pre>
-
-<h4>10 CMD(设置container启动时执行的操作)</h4>
-
-<ul>
-<li>设置指令，用于container启动时指定的操作。该操作可以是执行自定义脚本，也可以是执行系统命令。容器启动时需要启动安装在容器中的应用程序，通过CMD命令可以启动自己的应用程序</li>
-<li>例子中就会先执行docker-entrypoint.sh，然后执行服务启动命令</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  &lt;ENTRYPOINT&gt; &quot;&lt;CMD&gt;&quot;
-  ENTRYPOINT [&quot;docker-entrypoint.sh&quot;]
-  CMD [ &quot;sh&quot; &quot;-c&quot;, &quot;start.sh start&quot; ]
-</code></pre>
-
-<h4>11 ENV(用于设置环境变量)</h4>
-
-<ul>
-<li>设置容器内部的全局环境变量</li>
-<li>可以进行后期定制升级操作</li>
-<li>下面例子可以看出，后期如果需要升级和变动，只需要修改NODE_VERSION就可以了</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">ENV NODE_VERSION 7.2.0
-
-RUN curl -SLO &quot;https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.xz&quot; \
-  &amp;&amp; curl -SLO &quot;https://nodejs.org/dist/v$NODE_VERSION/
-</code></pre>
-
-<h4>开始构建镜像</h4>
-
-<ul>
-<li>经过上面11个步骤之后，一个Dockerfile文件就写好，下面就是在Dockerfile文件所在的目录下执行命令来构建镜像，命令如下</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text"> docker build -t image_name:version .
- 示例
- sudo docker build -t nginx:v1 .
-</code></pre>
-
-<ul>
-<li>执行过程如下图</li>
-</ul>
-
-<p><img src="media/15441675877605/15441762275426.jpg" alt=""/></p>
-
-<ul>
-<li>执行到Successfully built表示镜像已经构建成功</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/07 15:26 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15439151260869.html">
-                
-                  <h1>DockerFile编写</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>Docker简介</h4>
-
-<ul>
-<li>Docker是基于 Linux 内核的 cgroup，namespace，以及 AUFS 类的 Union FS 等技术，对进程进行封装隔离，属于操作系统层面的虚拟化技术</li>
-<li>相比传统的虚拟机，Docker没有自己的内核，无需硬件模拟，相对而言更加轻便，无需操作系统
-<img src="media/15439151260869/virtualization.png" alt="virtualization"/>
-<img src="media/15439151260869/docker.png" alt="docke"/></li>
-</ul>
-
-<h4>Docker的优势</h4>
-
-<ul>
-<li>更高效的利用系统资源，容器不需要进行硬件虚拟以及运行完整操作系统等额外开销</li>
-<li>更快速的启动时间，传统的虚拟机技术启动应用服务往往需要数分钟， Docker容器应用可以做到秒级、甚至毫秒级的启动时间</li>
-<li>更轻松的迁移，由于 Docker 确保了执行环境的一致性，使得应用的迁移更加容易</li>
-<li>更轻松的维护和扩展，Docker 使用的分层存储以及镜像的技术，使得应用重复部分的复用更为容易，也使得应用的维护更新更加简单，基于基础镜像进一步扩展镜像也变得非常简单。</li>
-</ul>
-
-<h4>对比传统虚拟机总结</h4>
-
-<table>
-<thead>
-<tr>
-<th style="text-align: center">特性</th>
-<th style="text-align: center">容器</th>
-<th style="text-align: center">虚拟机</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td style="text-align: center">启动</td>
-<td style="text-align: center">秒级</td>
-<td style="text-align: center">分钟级别</td>
-</tr>
-<tr>
-<td style="text-align: center">硬盘使用</td>
-<td style="text-align: center">一般以MB为单位</td>
-<td style="text-align: center">一般以GB为单位</td>
-</tr>
-<tr>
-<td style="text-align: center">性能</td>
-<td style="text-align: center">接近原生</td>
-<td style="text-align: center">弱于</td>
-</tr>
-<tr>
-<td style="text-align: center">系统支持量</td>
-<td style="text-align: center">单机支持上千个容器</td>
-<td style="text-align: center">一般几十个</td>
-</tr>
-</tbody>
-</table>
-
-<h4>容器&amp;镜像&amp;仓库&amp;Docker daemon &amp;Docker client</h4>
-
-<ul>
-<li>容器的实质是进程，相对于系统的普通进程，容器应用的文件系统，网络配置，进程空间都是运行在一个隔离的环境，如下图所示</li>
-</ul>
-
-<p><img src="media/15439151260869/v2-4c8aea533a4cd6c1939b66eb4cbf536a_hd.jpg" alt="v2-4c8aea533a4cd6c1939b66eb4cbf536a_hd"/></p>
-
-<ul>
-<li>镜像相对于容器就像二进制程序和二进制程序运行的进程类似，镜像是静态的定义，容器是运行的实体</li>
-<li>仓库就是存储一个软件不同版本的镜像，用标签来标签来标识，例如ubuntu这个镜像，有两个版本，分别就表示为ubuntu:14.04，ubuntu:16.04 ，：后面就是镜像的标签</li>
-<li>Docker daemon就是用来管理容器运行和镜像的平台，用来运行，停止，删除容器。更新升级容器的镜像</li>
-<li>Docker client就是用来操作Docker平台的入口，通过Docker client的pull start stop等指令来操作管理Docker平台的容器和镜像</li>
-<li>关系如下图
-<img src="media/15439151260869/high-level-overview-of-docker-architecture.png" alt="high-level-overview-of-docker-architecture"/></li>
-</ul>
-
-<h4>DockerFile</h4>
-
-<ul>
-<li>Dockerfile 是一个文本文件，其内包含了一条条的指令(Instruction)，每一条指令构建一层，因此每一条指令的内容，就是描述该层应当如何构建容器的镜像</li>
-<li>DockerFile和容器与镜像的关系如下图
-<img src="media/15439151260869/WechatIMG38.png" alt="WechatIMG38"/></li>
-</ul>
-
-<h4>制作镜像环境</h4>
-
-<ul>
-<li>创建一个文件夹专门用于制作镜像</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  mkdir docker_build
-</code></pre>
-
-<ul>
-<li>创建一个名为Dockerile的文件</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  touch Dcokerfile
-</code></pre>
-
-<h4>FROM</h4>
-
-<ul>
-<li>制作镜像基础镜像是必须指定的。而FROM 就是指定基础镜像，因此一个Dockerfile 中 FROM 是必备的指令，并且必须是第一条指令。</li>
-<li>FROM是构建应用程序的docker镜像的基础镜像，表示应用程序在此基础上构建</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  FROM centos:latest/debain/ubuntu/
-</code></pre>
-
-<h4>RUN</h4>
-
-<ul>
-<li>RUN 指令是用来执行命令行命令的,用于程序构建项目所需要的基础环境，应用程序依赖的第三方库和一些插件和运行环境</li>
-<li>Dockerfile 中每一指令都会建立一层，尽量缩减层数，减少构建部署时间，Union FS 是有最大层数限制的, docker的AUFS现在是不得超过127层。</li>
-<li>需要合并指令,简化指令</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">FROM debian:jessie
-
-RUN buildDeps=&#39;gcc libc6-dev make&#39; \
-    &amp;&amp; apt-get update \
-    &amp;&amp; apt-get install -y $buildDeps \
-    &amp;&amp; wget -O redis.tar.gz &quot;http://download.redis.io/releases/redis-3.2.5.tar.gz&quot; \
-    &amp;&amp; mkdir -p /usr/src/redis \
-    &amp;&amp; tar -xzf redis.tar.gz -C /usr/src/redis --strip-components=1 \
-    &amp;&amp; make -C /usr/src/redis \
-    &amp;&amp; make -C /usr/src/redis install \
-    &amp;&amp; rm -rf /var/lib/apt/lists/* \
-    &amp;&amp; rm redis.tar.gz \
-    &amp;&amp; rm -r /usr/src/redis \
-    &amp;&amp; apt-get purge -y --auto-remove $buildDeps
-</code></pre>
-
-<h4>COPY</h4>
-
-<ul>
-<li>将一些应用程序所需要的第三方程序和插件，拷贝进制作的docker镜像的容器中</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  COPY file /docker_image_dir
-</code></pre>
-
-<ul>
-<li>使用 COPY 指令，源文件的各种元数据都会保留。比如读、写、执行权限、文件变更时间等, 可以通过--chown来改变用户和属组属性</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">COPY --chown=55:mygroup files* /mydir/
-COPY --chown=bin files* /mydir/
-COPY --chown=1 files* /mydir/
-COPY --chown=10:11 files* /mydir/
-</code></pre>
-
-<h4>ADD</h4>
-
-<ul>
-<li>ADD 指令和 COPY 的格式和性质基本一致。但是在 COPY 基础上增加了一些功能。在 Docker 官方的 Dockerfile 最佳实践文档 中要求，尽可能的使用 COPY，因为 COPY 的语义很明确，就是复制文件而已，而 ADD 则包含了更复杂的功能，其行为也不一定很清晰。最适合使用 ADD 的场合，就是所提及的需要自动解压缩的场合。</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  ADD ubuntu-xenial-core-cloudimg-amd64-root.tar.gz /
-</code></pre>
-
-<h4>WORKDIR</h4>
-
-<ul>
-<li>使用 WORKDIR 指令可以来指定工作目录（或者称为当前目录），以后各层的当前目录就被改为指定的目录，如该目录不存在，WORKDIR 会帮你建立目录。一般就是应用程序二进制的运行目录/bin/</li>
-</ul>
-
-<h4>EXPOSE</h4>
-
-<ul>
-<li>EXPOSE 指令是声明运行时容器提供服务端口，这只是一个声明，在运行时并不会因为这个,声明应用就会开启这个端口的服务。这个端口是给调用方进行API调用通信使用</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  EXPOSE Port
-</code></pre>
-
-<h4>VOLUME</h4>
-
-<ul>
-<li>有些数据需要持久化数据的需要挂载卷，然后在容器外部将外部卷映射对应到容器内部的目录，这个目录给容器中运行的程序需要存储的数据提供存储</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  docker run -it -v outside_dir:docker_dir:read_write_privilege
-</code></pre>
-
-<h4>ENTRYPOINT&amp;CMD</h4>
-
-<ul>
-<li>ENTRYPOINT指令用于服务启动前的一些准备工作，比如配置一些变量，初始化运行环境</li>
-<li>CMD用于启动容器中二进制程序的命令</li>
-<li>ENTRYPOINT先执行，然后再执行CMD命令 </li>
-<li>例子中就会先执行docker-entrypoint.sh，然后执行服务启动命令</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  &lt;ENTRYPOINT&gt; &quot;&lt;CMD&gt;&quot;
-  ENTRYPOINT [&quot;docker-entrypoint.sh&quot;]
-  CMD [ &quot;sh&quot; &quot;-c&quot;, &quot;start.sh start&quot; ]
-</code></pre>
-
-<h4>ENV</h4>
-
-<ul>
-<li>设置容器内部的全局环境变量</li>
-<li>可以进行后期定制升级操作</li>
-<li>下面例子可以看出，后期如果需要升级和变动，只需要修改NODE_VERSION就可以了</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">ENV NODE_VERSION 7.2.0
-
-RUN curl -SLO &quot;https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.xz&quot; \
-  &amp;&amp; curl -SLO &quot;https://nodejs.org/dist/v$NODE_VERSION/
-</code></pre>
-
-<h4>build image</h4>
-
-<ul>
-<li>执行命令，用于构建应用程序的docker镜像</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text"> docker build -t image_name:version .
-</code></pre>
-
-<h4>build image from container</h4>
-
-<ul>
-<li>以当前容器id为参数制作镜像</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  docker commit container_id  docker_image_name:version
-</code></pre>
-
-<h4>push image</h4>
-
-<ul>
-<li>将制作的镜像推送到指定的镜像仓库</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">docker tag image_id docker_image_name:version
-docker push docker_image_name:version
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/04 17:18 下午</span>
+                    <span class="date">2019/01/30 16:49 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>

@@ -170,203 +170,51 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15710898154881.html">
+                <a class="clearlink" href="15765509892543.html">
                 
-                  <h1>微信红包</h1>
+                  <h1>尾部递归调用</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>开发流程</h4>
-
-<p><img src="media/15710898154881/15710899833084.jpg" alt="" style="width:1193px;"/></p>
-
-<h4>业务功能点</h4>
+                        	<h4>优化</h4>
 
 <ul>
-<li>新建红包:在DB、cache各新增一条记录</li>
-<li>抢红包:请求访问cache，剩余红包个数大于0则可拆开红包</li>
-<li>key:1，value:20 string decr原子减，每次减1 ， 而decreby减指定数量2</li>
-<li>拆红包: 20个红包里面有500块，key:1,value:50000(以分为单位) decreby 548，decreby 1055 ，decreby 2329</li>
-<li>请求访问cache，剩余红包个数大于0则继续，同时获取可抢红包数与金额 计算金额(从1分到剩余平均值2倍之间随机数，如果不是最后一个红包，剩余金额预留 最少1分给cas更新失败，最后一位拿红包的人) cas更新数据库(更新红包计数表记录【剩余红包个数、剩余红包金额】、插入领取记 录)</li>
-<li>查看红包记录:用户进来直接查DB即可</li>
+<li>C 语言默认情况下是不考虑并发的，因为并发是自己处理的，那么 GCC 编译器尽可能在指令上做到性能优先，这是 GCC 目标。Go 语言是指令尽可能优化，前提是 runtime 机制优先，runtime 机制优先于算法优化，所以避免把多次函数调用优化成时间非常长的循环。</li>
+<li>GCC 考虑的是 CPU 密集型。Go 考虑的是多任务的公平性</li>
 </ul>
 
-<h4>红包的库表设计</h4>
-
-<pre class="line-numbers"><code class="language-mysql">
-CREATE TABLE `red_packet_info` (
-`id` int(11) NOT NULL AUTO_INCREMENT,
-`red_packet_id` bigint(11) NOT NULL DEFAULT 0 COMMENT &#39;红包id，采用timestamp+5位随机数&#39;, `total_amount` int(11) NOT NULL DEFAULT 0 COMMENT &#39;红包总金额，单位分&#39;,
-`total_packet` int(11) NOT NULL DEFAULT 0 COMMENT &#39;红包总个数&#39;,
-`remaining_amount` int(11) NOT NULL DEFAULT 0 COMMENT &#39;剩余红包金额，单位分&#39;, `remaining_packet` int(11) NOT NULL DEFAULT 0 COMMENT &#39;剩余红包个数&#39;,
-`uid` int(20) NOT NULL DEFAULT 0 COMMENT &#39;新建红包用户的用户标识&#39;,
-`create_time` timestamp COMMENT &#39;创建时间&#39;,
-`update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-COMMENT &#39;更新时间&#39;, PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT=&#39;红包信息表，新建一个红包插 入一条记录&#39;;
-
-CREATE TABLE `red_packet_record` (
-`id` int(11) NOT NULL AUTO_INCREMENT,
-`amount` int(11) NOT NULL DEFAULT &#39;0&#39; COMMENT &#39;抢到红包的金额&#39;,
-`nick_name` varchar(32) NOT NULL DEFAULT &#39;0&#39; COMMENT &#39;抢到红包的用户的用户名&#39;,
-`img_url` varchar(255) NOT NULL DEFAULT &#39;0&#39; COMMENT &#39;抢到红包的用户的头像&#39;,
-`uid` int(20) NOT NULL DEFAULT &#39;0&#39; COMMENT &#39;抢到红包用户的用户标识&#39;,
-`red_packet_id` bigint(11) NOT NULL DEFAULT &#39;0&#39; COMMENT &#39;红包id，采用timestamp+5位随机
-数&#39;,
-`create_time` timestamp COMMENT &#39;创建时间&#39;,
-`update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-COMMENT &#39;更新时间&#39;, PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT=&#39;抢红包记录表，抢一个红包插 入一条记录&#39;;
-</code></pre>
-
-<h4>发红包接口实现</h4>
+<h4>defer工作机制</h4>
 
 <ul>
-<li>发红包功能接口开发</li>
-<li>新增一条红包记录 往mysql里面添加一条红包记录 往redis里面添加一条红包数量记录 decr 往redis里面添加一条红包金额记录 decreby</li>
-<li>抢红包功能接口开发</li>
-<li>抢红包功能属于原子减操作</li>
-<li>当大小小于0时原子减失败 当红包个数为0时后面进来的用户全部抢红包失败，并不会进入拆红包环节</li>
-<li>抢红包功能扩展设计</li>
-<li>将红包ID的请求放入请求队列中，如果发现超过红包的个数，直接返回</li>
-<li>类推出token令牌和秒杀设计原理 注意点</li>
-<li>抢到红包不到能拆成功</li>
-<li>2014年的红包一点开就知道金额，分两次操作，先抢到金额，然后再转账。 2015年后的红包的拆和抢 是分离的，需要点两次，因此会出现抢到红包了，但点开后告知红包已经被领完的状况。进入到第一个 页面不代表抢到，只表示当时红包还有。</li>
+<li>第一个是函数，第二个是所有参数，它会立即求值，把参数和函数一起打包放在一个地方，等着后面去执行</li>
+<li>derfer 语句实际上形成两个函数调用，第一个是 derferproc 注册，把函数和参数打包放在一个地方不执行，然后在 RET 之前通过 deferreturn 函数来调用注册的函数</li>
+<li><img src="media/15765509892543/15765517178849.jpg" alt="" style="width:1274px;"/></li>
 </ul>
 
-<h4>抢红包接口实现</h4>
+<h4>延迟函数一定被执行</h4>
 
-<p><img src="media/15710898154881/15710924219795.jpg" alt="" style="width:1157px;"/><br/>
-<img src="media/15710898154881/15710924361303.jpg" alt="" style="width:1127px;"/></p>
-
-<ul>
-<li>抢红包功能接口开发</li>
-<li>在抢红包这里并不能保证用户已经能领到这个红包 抢红包只是做了一个判断，判断当前是否还有红包 有红包则返回可以领</li>
-<li>没红包则返回不可以领</li>
-<li>拆红包功能接口开发</li>
-<li>拆红包才是用户能领导红包 这时候要先减redis里面的金额和红包数量 减完金额再入库</li>
-</ul>
-
-<h4>红包业务思考</h4>
-
-<ul>
-<li>take all操作 入库转账时需要保证红包个数和红包剩余金额正确</li>
-<li>高并发处理:红包如何计算被抢完?</li>
-<li>cache会抵抗无效请求，将无效的请求过滤掉，实际进入到后台的量不大。cache记录红包个数，原子操作进行个数递减，到0表示被抢光</li>
-<li>lua原子操作减红包个数和金额</li>
-<li>性能扩展</li>
-<li>多主sharding，水平扩展机器 数据库层面sharding分片 redis层面sharding分片技术</li>
-<li>业务能动性，从发展的角度来看待业务 观察总结，技术赋能业务</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/15 05:50 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html'>Redis高并发缓存</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15710601189403.html">
-                
-                  <h1>常量&数据类型</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>常量</h4>
-
-<p><img src="media/15710601189403/15710601502836.jpg" alt="" style="width:1229px;"/></p>
-
-<ul>
-<li>位操作</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-go">const (
-  Readable = 1 &lt;&lt; iota
-  Writable
-  Executable
-)
-</code></pre>
-
-<h4>禁止类型转换</h4>
-
-<ul>
-<li>别名都不可以</li>
-</ul>
-
-<h4>类型预定义的值</h4>
-
-<ul>
-<li>math.MaxInt64</li>
-<li>math.MaxFloat64</li>
-</ul>
-
-<h4>字符串string</h4>
-
-<ul>
-<li>string == 0 来判断</li>
-</ul>
-
-<h4>数组</h4>
-
-<pre class="line-numbers"><code class="language-go">a := [...]int{1,2,3,4}
-b := [...]int{1,2,3,4}
-</code></pre>
-
-<ul>
-<li>要求数组长度，顺序，和类型一致</li>
-</ul>
-
-<h4>位操作</h4>
-
-<pre class="line-numbers"><code class="language-go">1 &amp;^ 0  -- 1
-1 &amp;^ 1  -- 0
-0 &amp;^ 1  -- 0
-0 &amp;^ 0  -- 0
-</code></pre>
-
-<h4>循环</h4>
-
-<p><img src="media/15710601189403/15710612828833.jpg" alt="" style="width:508px;"/></p>
-
-<h4>if条件</h4>
-
-<p><img src="media/15710601189403/15710613636218.jpg" alt="" style="width:1024px;"/></p>
-
-<h4>switch</h4>
-
-<pre class="line-numbers"><code class="language-go">func TestSwitchCaseCondition(t *testing.T) {
-    for i := 0; i &lt; 5; i++ {
-        switch {
-        case i%2 == 0:
-            t.Log(&quot;Even&quot;)
-        case i%2 == 1:
-            t.Log(&quot;Odd&quot;)
-        default:
-            t.Log(&quot;unknow&quot;)
-        }
-    }
+<pre class="line-numbers"><code class="language-go">func main() {
+    defer println(&quot;exit&quot;)
+    //os.Exit(0)
+    panic(&quot;abc&quot;)
 }
 </code></pre>
 
+<ul>
+<li>引发 panic，延迟函数也会被执行。</li>
+<li>用 runtime.Goexit 终止当前 goroutine，延迟函数会被执行。</li>
+<li>但os.Exit 会立即终止进程，不执行任何延迟函数。</li>
+</ul>
+
+<h4>闭包</h4>
+
+<ul>
+<li>在堆上创建数据结构，这个数据结构有两个字段组成的，接下来把匿名函数的地址填到第一个字段里面，把环境变量的值拷贝到第二个字段里面。这个结构体包含闭包执行需要的数据，所以匿名函数加上所需要的环境变量叫做闭包。</li>
+<li>main 函数怎么执行这个匿名函数呢，首先通过 SP 拿到返回值，赋值给 DX，DX 赋值给局部变量 f，所以 f 严格意义上来说不是一个简单的函数，是闭包的第一个字段。DX 读出一个值放到 AX 内，接下来直接 call AX 相当于调用匿名函数，这个匿名函数通过 DX+8 取到第二个字段，就构成了一套的完整的闭包调用</li>
+<li>包装对象只有匿名函数地址，没有环境变量指针，因为匿名函数地址是固定的，所以这个包装对象不需要每次生成，编译器把它写到 rodata 里面。如果有闭包的话，环境变量的地址在堆上分配的，那么这个地址肯定是在运行期动态生成的，那么包装对象就没有办法在编译期确定，所以这个包装对象就不能生成到 rodata 里面。</li>
+</ul>
+
                         
                       </div>
                   </div>
@@ -374,7 +222,7 @@ b := [...]int{1,2,3,4}
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/10/14 21:35 下午</span>
+                    <span class="date">2019/12/17 10:49 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
@@ -391,24 +239,26 @@ b := [...]int{1,2,3,4}
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15710092044608.html">
+                <a class="clearlink" href="15765398211231.html">
                 
-                  <h1>分配器</h1>
+                  <h1>迭代器模式</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>STL使用allocator</h4>
-
-<p><img src="media/15710092044608/15710094857674.jpg" alt="" style="width:665px;"/></p>
+                        	<h4>动机</h4>
 
 <ul>
-<li>GC实现</li>
-<li><img src="media/15710092044608/15710099849351.jpg" alt="" style="width:662px;"/></li>
-<li>类似内存池</li>
-<li><img src="media/15710092044608/15710102531992.jpg" alt="" style="width:808px;"/></li>
-<li>G++4.9
-<img src="media/15710092044608/15710104091264.jpg" alt="" style="width:866px;"/></li>
+<li><p>在软件构建过程中，集合对象内部结构常常变化各异。但对于这些集合对象，我们希望在不暴露其内部结构的同时，可以让外部客户代码透明地访词其中包含的元素；同时这种“透明遍历”也为同一种算法在多种集合对象上进行操作”提供了可能。</p></li>
+<li><p>使用面向对象技术将这种遍历机制抽象为“迭代器对象”为“应对变化中的集合对象”提供了一种优雅的方式。</p></li>
+</ul>
+
+<h4>要点总结</h4>
+
+<ul>
+<li>迭代抽象：访问一个聚合对象的内容而无需暴露它的内部表示。迭代多态：为遍历不同的集合结构提供一个统一的接口，从而支</li>
+<li>持同样的算法在不同的集合结构上进行操作。</li>
+<li>迭代器的健壮性考虑：遍历的同时更改迭代器所在的集合结构，会导致问题。</li>
 </ul>
 
                         
@@ -418,10 +268,10 @@ b := [...]int{1,2,3,4}
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/10/14 07:26 上午</span>
+                    <span class="date">2019/12/17 07:43 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E5%80%99%E6%8D%B7STL.html'>候捷STL</a></span>
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -435,258 +285,240 @@ b := [...]int{1,2,3,4}
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15710044750017.html">
+                <a class="clearlink" href="15758501024510.html">
                 
-                  <h1>布隆过滤器</h1>
+                  <h1>多线程同步</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>结构</h4>
+                        	<h4>死锁情况</h4>
 
-<p><img src="media/15710044750017/15710044945778.jpg" alt="" style="width:1134px;"/></p>
+<pre class="line-numbers"><code class="language-python">#2. 锁会引起死锁
+#死锁的情况 A（a，b）
+A(a、b)
+acquire (a)
+acquire (b)
 
-<h4>抽奖程序</h4>
-
-<ul>
-<li><img src="media/15710044750017/15710046156516.jpg" alt="" style="width:1142px;"/></li>
-<li>可以调整误码率，没有过滤的%1根据mysql进行过滤</li>
-</ul>
-
-<h4>google布隆过滤器</h4>
-
-<ul>
-<li>基于内存布隆过滤器有什么特点</li>
-<li>启动时间长，</li>
-<li>内存级别产物</li>
-<li>重启即失效</li>
-<li>本地内存无法用在分布式场景</li>
-<li>不支持大数据量存储</li>
-</ul>
-
-<h4>redis安装布隆过滤器</h4>
-
-<ul>
-<li>loadmodule /usr/local/rebloom.so</li>
-<li>redis-cli -p 6379 bf.add myBloom redis1</li>
-</ul>
-
-<h4>秒杀系统</h4>
-
-<p><img src="media/15710044750017/15710055062721.jpg" alt="" style="width:1015px;"/></p>
-
-<ul>
-<li>功能核心点</li>
-<li>经典互联网商品抢购秒杀功能</li>
-<li>功能api 商品秒杀接口</li>
-<li>数据落地存储方案</li>
-<li>通过分布式redis减库存</li>
-<li>DB存最终订单信息数据 api性能调优</li>
-<li>性能瓶颈在高并发秒杀</li>
-<li>技术难题在于超卖问题</li>
-</ul>
-
-<h5>系统分析</h5>
-
-<ul>
-<li><img src="media/15710044750017/15710057936881.jpg" alt="" style="width:1156px;"/></li>
-</ul>
-
-<h4>秒杀功能步骤</h4>
-
-<ul>
-<li>首先通过数据控制模块，提前将秒杀商品缓存到读写分离 Redis，并设置秒杀开始标记如下:</li>
-<li>&quot;skuId_start&quot;: 0 //开始标记0表示秒杀开始</li>
-<li>&quot;skuId_count&quot;: 10000 //总数 </li>
-<li>&quot;skuId_access&quot;: 12000 //接受抢购数</li>
-<li>秒杀开始前，服务集群读取 goodsId_Start 为 0，直接返回未开始。 </li>
-<li>服务时间不一致可能导致流量倾斜，所有流量打到一个机器</li>
-<li>数据控制模块将 goodsId_start 改为1，标志秒杀开始。</li>
-<li>当接受下单数达到 sku_count*1.2 后，继续拦截所有请求，商品剩余数量为 0</li>
-</ul>
-
-<h4>API实战</h4>
-
-<ul>
-<li>判断秒杀是否开始</li>
-<li>流量拦截</li>
-</ul>
-
-<h5>信息校验层</h5>
-
-<ul>
-<li>订单信息校验层</li>
-<li>校验当前用户是否已经买过这个商品</li>
-<li>需要存储用户的uid 存数据库效率太低</li>
-<li>存Redis value方式数据太大 </li>
-<li>存布隆过滤器性能高且数据量小</li>
-<li>校验完通过直接返回抢购成功</li>
-</ul>
-
-<h4>库存扣减</h4>
-
-<ul>
-<li>库存扣除成功，获取当前最新库存 如果库存大于0，即马上进行库存扣除，并且访问抢购成功给用户 </li>
-<li>考虑原子性问题</li>
-<li>保证原子性的方式，采用lua脚本</li>
-<li>采用lua脚本方式保证原子性带来缺点</li>
-<li>性能有所下降不保证原子性缺点，放入请求量可能大于预期值</li>
-<li>当前扣除库存场景必须保证原子性，否则会导致超卖 返回抢购结果</li>
-<li>抢购成功</li>
-<li>库存没了 ，抢购失败
-<img src="media/15710044750017/15710074434359.jpg" alt="" style="width:385px;"/></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/14 06:07 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html'>Redis高并发缓存</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15709754805789.html">
-                
-                  <h1>STL</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>六大部件</h4>
-
-<ul>
-<li><img src="media/15709754805789/15709754961260.jpg" alt="" style="width:987px;"/></li>
-<li>数据和算法分离</li>
-<li><img src="media/15709754805789/15709757583079.jpg" alt="" style="width:609px;"/></li>
-</ul>
-
-<h4>容器</h4>
-
-<ul>
-<li><img src="media/15709754805789/15709761094606.jpg" alt="" style="width:1043px;"/></li>
-</ul>
-
-<h4>分配器</h4>
-
-<p><img src="media/15709754805789/15709776442988.jpg" alt="" style="width:1020px;"/></p>
-
-<h4>GP</h4>
-
-<ul>
-<li>容器和算法可以各自闭门造车。</li>
-<li><img src="media/15709754805789/15709782266111.jpg" alt="" style="width:425px;"/></li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/13 22:04 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E5%80%99%E6%8D%B7STL.html'>候捷STL</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15709492220475.html">
-                
-                  <h1>epoll</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>函数原型</h4>
-
-<ul>
-<li>epoll_create(int size)</li>
-<li>size 是红黑树的树根</li>
-<li>epoll_ctl将描述符事件挂到红黑树上</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-c">int epoll_ctl(int epfd, int op, int fd, struct epoll_event //指针 *event);
-int epoll_wait(int epfd, struct epoll_event *events,//数组传出参数
-                      int maxevents, int timeout);
+B(a、b)
+acquire (a)
+acquire (b)
 </code></pre>
 
-<h4>结构</h4>
+<h4>可重入的锁</h4>
 
 <ul>
-<li><img src="media/15709492220475/15709504809809.jpg" alt="" style="width:1208px;"/></li>
-<li>epoll配置</li>
-<li>cat /proc/sys/fs/file-max<br/>
-sudo vi /etc/security/limits.conf<br/>
-在文件尾部写入以下配置,soft软限制，hard硬限制。如下图所示。</li>
-<li>soft nofile 65536</li>
-<li>hard nofile 100000</li>
-<li>epoll除了提供select/poll那种IO事件的电平触发（Level Triggered）外，还提供了边沿触发（Edge Triggered），这就使得用户空间程序有可能缓存IO状态，减少epoll_wait/epoll_pwait的调用，提高应用程序效率。</li>
+<li>同一个线程里面，可以连续调用多次acquire,一定要注意acquire的次数</li>
+<li>RLock可重入锁</li>
 </ul>
 
-<h4>ET</h4>
+<pre class="line-numbers"><code class="language-python">from threading import Lock, RLock, Condition
+
+total = 0
+lock = RLock()
+
+def add():
+    global lock
+    global total
+    for i in range(10000):
+        lock.acquire()
+        lock.acquire()
+        total += 1
+        lock.release()
+        lock.release()
+
+def desc():
+    global total
+    global lock
+    for i in range(10000):
+        # lock.acquire()
+        lock.acquire()
+        total -= 1
+        lock.release()
+        # lock.release()
+
+import threading
+
+thread1 = threading.Thread(target=add)
+thread2 = threading.Thread(target=desc)
+
+thread1.start()
+thread2.start()
+thread2.join()
+thread2.join()
+print(&quot;total {}&quot;.format(total))
+</code></pre>
+
+<h4>协同</h4>
+
+<pre class="line-numbers"><code class="language-python">import threading
+
+class XiaoAi(threading.Thread):
+    def __init__(self, lock):
+        super().__init__(name=&quot;xiaoai&quot;)
+        self.lock = lock
+
+    def run(self):
+        self.lock.acquire()
+        print(&quot;{}. at &quot;.format(self.name))
+        self.lock.release()
+
+        self.lock.acquire()
+        print(&quot;{}. ok &quot;.format(self.name))
+        self.lock.release()
+
+class TianMao(threading.Thread):
+    def __init__(self, lock):
+        super().__init__(name=&quot;tiaomao&quot;)
+        self.lock = lock
+
+    def run(self):
+        self.lock.acquire()
+        print(&quot;{} : xiaoai roomate&quot;.format(self.name))
+        self.lock.release()
+
+        self.lock.acquire()
+        print(&quot;{} : let&#39;s talk&quot;.format(self.name))
+        self.lock.release()
+
+if __name__ == &#39;__main__&#39;:
+    lock = threading.Lock()
+    thread1 = XiaoAi(lock)
+    thread2 = TianMao(lock)
+    thread1.start()
+    thread2.start()
+    thread1.join()
+    thread2.join()
+</code></pre>
 
 <ul>
-<li>边缘触发需要全部读出来，不然高并发情况下容易塞满缓冲区</li>
-<li>数据太大容易耗时</li>
-<li>可以先添加字节预判</li>
-<li>不需要的话定时来清空一次</li>
-<li>readn </li>
+<li>condition启动顺序很重要,在调用with cond之后才能调用wait或者notify方法</li>
+<li>condition有两层锁， 一把底层锁会在线程调用了wait方法的时候释放， 上面的锁会在每次调用wait的时候分配一把并放入到cond的等待队列中，等到notify方法的唤醒<br/>
+xiaoai.start()</li>
 </ul>
 
-<h4>反应堆模型</h4>
+<pre class="line-numbers"><code class="language-python">import threading
 
-<ul>
-<li><img src="media/15709492220475/15709528116580.jpg" alt="" style="width:1399px;"/></li>
-<li>滑动窗口</li>
-</ul>
+class XiaoAi(threading.Thread):
+    def __init__(self, cond):
+        super().__init__(name=&quot;xiaoai&quot;)
+        self.cond = cond
 
-<h4>反应堆封装</h4>
+    def run(self):
+        with self.cond:
+            self.cond.wait()
+            print(&#39;{}: 在 &#39;.format(self.name))
+            self.cond.notify()
 
-<ul>
-<li><img src="media/15709492220475/15709625341033.jpg" alt="" style="width:1210px;"/></li>
-<li><img src="media/15709492220475/15709631484414.jpg" alt="" style="width:1226px;"/></li>
-<li><img src="media/15709492220475/15709632979371.jpg" alt="" style="width:728px;"/></li>
-<li><img src="media/15709492220475/15709633931994.jpg" alt="" style="width:1175px;"/></li>
-<li><img src="media/15709492220475/15709637173151.jpg" alt="" style="width:672px;"/></li>
-<li>goto语句</li>
-<li><img src="media/15709492220475/15709643328752.jpg" alt="" style="width:1218px;"/></li>
-<li><img src="media/15709492220475/15709750116673.jpg" alt="" style="width:1114px;"/></li>
-<li>last_active每次是event_set时改变的</li>
-</ul>
+            self.cond.wait()
+            print(&#39;{}: 好阿 &#39;.format(self.name))
+            self.cond.notify()
 
-<h4>心跳包</h4>
+            self.cond.wait()
+            print(&#39;{}: 君住长江尾 &#39;.format(self.name))
+            self.cond.notify()
 
-<ul>
-<li></li>
-</ul>
+            self.cond.wait()
+            print(&#39;{}: 共饮长江水 &#39;.format(self.name))
+            self.cond.notify()
+
+            self.cond.wait()
+            print(&#39;{}: 此恨何时已 &#39;.format(self.name))
+            self.cond.notify()
+
+            self.cond.wait()
+            print(&#39;{}: 定不负相思意 &#39;.format(self.name))
+            self.cond.notify()
+
+class TianMao(threading.Thread):
+    def __init__(self, cond):
+        super().__init__(name=&quot;天猫精灵&quot;)
+        self.cond = cond
+
+    def run(self):
+        with self.cond:
+            print(&#39;{}: 小爱同学 &#39;.format(self.name))
+            self.cond.notify()
+            self.cond.wait()
+
+            print(&#39;{}: 我们来对古诗吧 &#39;.format(self.name))
+            self.cond.notify()
+            self.cond.wait()
+
+            print(&#39;{}: 我住长江头 &#39;.format(self.name))
+            self.cond.notify()
+            self.cond.wait()
+
+            print(&#39;{}: 日日思君不见君 &#39;.format(self.name))
+            self.cond.notify()
+            self.cond.wait()
+
+            print(&#39;{}: 此水几时休 &#39;.format(self.name))
+            self.cond.notify()
+            self.cond.wait()
+
+            print(&#39;{}: 只愿君心似我心 &#39;.format(self.name))
+            self.cond.notify()
+            self.cond.wait()
+
+if __name__ == &#39;__main__&#39;:
+    from concurrent import futures
+    cond = threading.Condition()
+    xiaoai = XiaoAi(cond)
+    tianmao = TianMao(cond)
+
+    xiaoai.start()
+    tianmao.start()
+</code></pre>
+
+<h4>ThreadPoolExcutor</h4>
+
+<pre class="line-numbers"><code class="language-python">from concurrent.futures import ThreadPoolExecutor, as_completed, wait, FIRST_COMPLETED
+from concurrent.futures import Future
+from multiprocessing import Pool
+
+
+import time
+
+def get_html(times):
+    time.sleep(times)
+    print(&#39;get page {} process&#39;.format(times))
+    return times
+
+executor = ThreadPoolExecutor(max_workers=2)
+</code></pre>
+
+<h5>执行任务获取结果</h5>
+
+<pre class="line-numbers"><code class="language-python">task1 = executor.submit(get_html, (3))
+task2 = executor.submit(get_html, (2))
+#
+print(task1.result())
+print(task2.cancel()) //取消结果
+</code></pre>
+
+<h5>多任务</h5>
+
+<pre class="line-numbers"><code class="language-python">urls = [3, 2, 4]
+
+all_task = [executor.submit(get_html, (url)) for url in urls]
+
+for future in as_completed(all_task):
+    data = future.result()
+    print(&#39;get {} page&#39;.format(data))
+
+
+#通过excutor获取已经完成的task
+for data in executor.map(get_html, urls):
+    print(&#39;get {} page&#39;.format(data))
+</code></pre>
+
+<h5>wait获取结果</h5>
+
+<pre class="line-numbers"><code class="language-python">#wait
+wait(all_task, return_when=FIRST_COMPLETED)
+print(&#39;main&#39;)
+</code></pre>
 
                         
                       </div>
@@ -695,10 +527,10 @@ sudo vi /etc/security/limits.conf<br/>
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/10/13 14:47 下午</span>
+                    <span class="date">2019/12/09 08:08 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98.html'>网络编程实战</a></span>
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -712,32 +544,130 @@ sudo vi /etc/security/limits.conf<br/>
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15709349060146.html">
+                <a class="clearlink" href="15758463705532.html">
                 
-                  <h1>线性排序</h1>
+                  <h1>GIL</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>桶排序</h4>
+                        	<h4>概念</h4>
 
 <ul>
-<li>桶排序比较适合用在外部排序中。所谓的外部排序就是数据存储在外部磁盘中，数据量比较大，内存有限，无法将数据全部加载到内存中。</li>
-<li>要排序的数据需要很容易就能划分成 m 个桶，并且，桶与桶之间有着天然的大小顺序。这样每个桶内的数据都排序完之后，桶与桶之间的数据不需要再进行排序</li>
-<li>数据在各个桶之间的分布是比较均匀的。如果数据经过桶的划分之后，有些桶里的数据非常多，有些非常少，很不平均，那桶内数据排序的时间复杂度就不是常量级了。在极端情况下，如果数据都被划分到一个桶里，那就退化为 O(nlogn) 的排序算法了</li>
+<li>全局解释器锁</li>
+<li>CPython</li>
+<li>GIL使得同一时刻只有一个线程在一个CPU上执行字节码</li>
+<li>无法将多个线程映射到多个CPU上执行</li>
 </ul>
 
-<h4>计数排序</h4>
+<h4>释放的时机</h4>
 
 <ul>
-<li>计数排序只能用在数据范围不大的场景中，如果数据范围 k 比要排序的数据 n 大很多，就不适合用计数排序了。而且，计数排序只能给非负整数排序，如果要排序的数据是其他类型的，要将其在不改变相对大小的情况下，转化为非负整数。</li>
+<li>根据执行字节码的行数或者执行的时间片来进行释放</li>
+<li>遇到IO操作的时候释放</li>
 </ul>
 
-<h4>基数排序</h4>
+<h4>线程调度</h4>
 
 <ul>
-<li>基数排序对要排序的数据是有要求的，需要可以分割出独立的“位”来比较，而且位之间有递进的关系，如果 a 数据的高位比 b 数据大，那剩下的低位就不用比较了。除此之外，每一位的数据范围不能太大，要可以用线性排序算法来排序，否则，基数排序的时间复杂度就无法做到 O(n) 了。</li>
+<li>对于IO操作来说，多线程和多进程性能差别不大</li>
 </ul>
+
+<h4>thread_demo</h4>
+
+<pre class="line-numbers"><code class="language-python">import time
+import threading
+
+
+def get_detail_html(url):
+    print(&quot;get detail html started&quot;)
+    time.sleep(2)
+    print(&quot;get detail html end&quot;)
+
+
+def get_detail_url(url):
+    print(&quot;get detail url started&quot;)
+    time.sleep(2)
+    print(&quot;get detail url end&quot;)
+
+if __name__ == &quot;__main__&quot;:
+   thread1 = threading.Thread(target=get_detail_html, args=(&quot;&quot;,))
+   thread2 = threading.Thread(target=get_detail_url, args=(&quot;&quot;,))
+   thread1.setDaemon(True)
+   # thread2.setDaemon(True)
+   start_time = time.time()
+   thread1.start()
+   thread2.start()
+
+   print(&quot;last time : {}&quot;.format(time.time() - start_time))
+</code></pre>
+
+<h4>thread_join</h4>
+
+<pre class="line-numbers"><code class="language-python">def get_detail_html(url):
+    print(&quot;get detail html started&quot;)
+    time.sleep(2)
+    print(&quot;get detail html end&quot;)
+
+
+def get_detail_url(url):
+    print(&quot;get detail url started&quot;)
+    time.sleep(4)
+    print(&quot;get detail url end&quot;)
+
+if __name__ == &quot;__main__&quot;:
+   thread1 = threading.Thread(target=get_detail_html, args=(&quot;&quot;,))
+   thread2 = threading.Thread(target=get_detail_url, args=(&quot;&quot;,))
+   # thread1.setDaemon(True)
+   # thread2.setDaemon(True)
+   start_time = time.time()
+   thread1.start()
+   thread2.start()
+   thread1.join()
+   thread2.join()
+
+   print(&quot;last time : {}&quot;.format(time.time() - start_time))
+</code></pre>
+
+<ul>
+<li>deque在字节码的层面是安全的</li>
+</ul>
+
+<h4>集成Thread来实现多线程</h4>
+
+<pre class="line-numbers"><code class="language-python">import time
+import threading
+
+class GetDetailHtml(threading.Thread):
+    def __init__(self, name):
+        super().__init__(name=name)
+
+    def run(self):
+        print(&quot;get detail html started&quot;)
+        time.sleep(2)
+        print(&quot;get detail html end&quot;)
+
+class GetDetailUrl(threading.Thread):
+    def __init__(self, name):
+        super().__init__(name=name)
+
+    def run(self):
+        print(&quot;get detail url started&quot;)
+        time.sleep(4)
+        print(&quot;get detail url end&quot;)
+
+if __name__ == &quot;__main__&quot;:
+    thread1 = GetDetailHtml(&quot;get_detail_html&quot;)
+    thread2 = GetDetailUrl(&quot;get_detail_url&quot;)
+    start_time = time.time()
+    thread1.start()
+    thread2.start()
+    thread1.join()
+    thread2.join()
+
+    print(&quot;last time : {}&quot;.format(time.time() - start_time))
+
+</code></pre>
 
                         
                       </div>
@@ -746,179 +676,10 @@ sudo vi /etc/security/limits.conf<br/>
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/10/13 10:48 上午</span>
+                    <span class="date">2019/12/09 07:06 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15708740577150.html">
-                
-                  <h1>分配器&迭代器</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>作用</h4>
-
-<ul>
-<li>内存分配器，扮演内存池的角色，通过大量较少对malloc的调用，来节省内存，分配效率有提高</li>
-<li>缺省的alloactor没有使用内存池技术</li>
-</ul>
-
-<h4>其他的分配器</h4>
-
-<p><img src="media/15708740577150/15708752337942.jpg" alt="" style="width:884px;"/></p>
-
-<h4>迭代器</h4>
-
-<h5>分类</h5>
-
-<ul>
-<li>迭代器的移动特性以及在这个迭代器的操作</li>
-<li>迭代器表示一个位置，一般分类是依据他的跳跃能力</li>
-<li>输出型迭代器 struct output_iterator_tag;</li>
-<li>输入型迭代器 struct input_iterator_tag;</li>
-<li>前向迭代器 struct forward_iterator_tag</li>
-<li>双向迭代器 struct bidirectional_iterator_tag</li>
-<li>随机访问迭代器 struct random_access_iterator_tag
-<img src="media/15708740577150/15708760939711.jpg" alt="" style="width:778px;"/></li>
-<li>并不是所有容器都有迭代器 stack queue heap
-<img src="media/15708740577150/15708762347915.jpg" alt="" style="width:849px;"/></li>
-</ul>
-
-<h5>迭代器</h5>
-
-<p><img src="media/15708740577150/15708766232720.jpg" alt="" style="width:810px;"/></p>
-
-<ul>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/12 17:54 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15708541774439.html">
-                
-                  <h1>LSM分布式结构</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/12 12:22 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Zookeeper.html'>Zookeeper</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15708454108646.html">
-                
-                  <h1>Raft</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>比较</h4>
-
-<p><img src="media/15708454108646/15708454332686.jpg" alt="" style="width:1547px;"/></p>
-
-<h4>复制状态机系统架构</h4>
-
-<p><img src="media/15708454108646/15708455976380.jpg" alt="" style="width:1005px;"/></p>
-
-<h4>日志复制</h4>
-
-<p><img src="media/15708454108646/15708456655889.jpg" alt="" style="width:1584px;"/></p>
-
-<ul>
-<li>容错：在数量少于 Raft 服务器总数一半的 Follower 失败的情况下，Raf 集群仍然可以正常处理来自客户端的请求。、</li>
-<li>确保重叠：一旦 Raft leader 响应了一个客户端请求，即使出现 Raf 集群中少数服务器的失败，也会有一个服务器包含所有以前提交的日志条目。</li>
-</ul>
-
-<h4>选举算法</h4>
-
-<ul>
-<li><img src="media/15708454108646/15708460295671.jpg" alt="" style="width:1432px;"/></li>
-</ul>
-
-<h4>保证新term的leader保存了所有提交的日志项目</h4>
-
-<p><img src="media/15708454108646/15708462001028.jpg" alt="" style="width:1540px;"/></p>
-
-<h4>状态机命令</h4>
-
-<ul>
-<li><img src="media/15708454108646/15708463049854.jpg" alt="" style="width:1523px;"/></li>
-</ul>
-
-<h4>集群成员更新</h4>
-
-<ul>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/12 09:56 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Zookeeper.html'>Zookeeper</a></span>
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
           				   
                   </div>
                   <div class="more-right right">

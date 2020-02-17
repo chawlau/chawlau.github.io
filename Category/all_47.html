@@ -170,20 +170,657 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15522686446802.html">
+                <a class="clearlink" href="15659210764719.html">
                 
-                  <h1>容器应用启动慢</h1>
+                  <h1>链表</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>容器查看</h4>
+                        	<h4>反转</h4>
 
 <ul>
-<li>docker logs -f 容器ID</li>
-<li>docker inspect tomcat -f &#39;{{json .State}}&#39; | jq</li>
-<li>删除旧容器 docker rm -f tomcat 无须停止容器再删除<br/>
-# 运行新容器</li>
+<li>leet_206</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Reverse a singly linked list.
+
+Example:
+
+Input: 1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;NULL
+Output: 5-&gt;4-&gt;3-&gt;2-&gt;1-&gt;NULL
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+      ListNode* pre = nullptr;
+      while (head) {
+        ListNode* next = head-&gt;next;
+        head-&gt;next= pre;
+        pre = head;
+        head = next;
+      }
+      return pre;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_92</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Reverse a linked list from position m to n. Do it in one-pass.
+
+Note: 1 ≤ m ≤ n ≤ length of list.
+
+Example:
+
+Input: 1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;NULL, m = 2, n = 4
+Output: 1-&gt;4-&gt;3-&gt;2-&gt;5-&gt;NULL
+class Solution {
+public:
+  ListNode* reverseBetween(ListNode* head, int m, int n) {
+    ListNode dumy(0);
+    dumy.next = head;
+    ListNode* pre = &amp;dumy;
+    for (int i = 0; i &lt; m - 1; i++) pre = pre-&gt;next;
+
+    ListNode* cur = pre-&gt;next;
+    for (int i = m; i &lt; n; i++) {
+      ListNode* p = cur-&gt;next;
+      cur-&gt;next = p-&gt;next;
+      p-&gt;next = pre-&gt;next;
+      pre-&gt;next = p;
+    }
+    
+    return dumy.next;
+  }
+};
+</code></pre>
+
+<ul>
+<li>leet_83</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a sorted linked list, delete all duplicates such that each element appear only  once.
+
+Example 1:
+
+Input: 1-&gt;1-&gt;2
+Output: 1-&gt;2
+class Solution {
+public:
+    ListNode* deleteDuplicates(ListNode* head) {
+        ListNode *cur = head;
+        while (cur &amp;&amp; cur-&gt;next) {
+            if (cur-&gt;val == cur-&gt;next-&gt;val) {
+                cur-&gt;next = cur-&gt;next-&gt;next;
+            } else {
+                cur = cur-&gt;next;
+            }
+        }
+        return head;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_86 </li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a linked list and a value  x , partition it such that all nodes less than  x  come before nodes greater than or equal to  x.
+
+You should preserve the original relative order of the nodes in each of the two partitions.
+
+For example,
+Given 1-&gt;4-&gt;3-&gt;2-&gt;5-&gt;2 and  x  = 3,
+return 1-&gt;2-&gt;2-&gt;4-&gt;3-&gt;5.
+就是将所有小于给定值的节点取出组成一个新的链表，此时原链表中剩余的节点的值都大于或等于给定值，只要将原链表直接接在新链表后即可
+class Solution {
+public:
+    ListNode* partition(ListNode* head, int x) {
+      ListNode node1(0);
+      ListNode node2(0);
+      ListNode* p1 = &amp;node1;
+      ListNode* p2 = &amp;node2;
+      while (head) {
+        if (head-&gt;val &lt; x) {
+          p1-&gt;next = head;
+          p1 = p1-&gt;next;
+        } else {
+          p2-&gt;next = head;
+          p2 = p2-&gt;next;
+        }
+        head = head-&gt;next;
+      }
+      p2-&gt;next = nullptr;
+      p1-&gt;next = node2.next;
+      return node1.next;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_328</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a singly linked list, group all odd nodes together followed by the even nodes. Please note here we are talking about the node number and not the value in the nodes.
+
+You should try to do it in place. The program should run in O(1) space complexity and O(nodes) time complexity.
+
+Example 1:
+
+Input: 1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;NULL
+Output: 1-&gt;3-&gt;5-&gt;2-&gt;4-&gt;NULL
+class Solution {
+public:
+    ListNode* oddEvenList(ListNode* head) {
+      ListNode node1(0), node2(0);
+      ListNode* p1 = &amp;node1;
+      ListNode* p2 = &amp;node2;
+      int cnt = 1;
+      while (head) {
+        if (cnt++ % 2 == 1) {
+          p1-&gt;next = head;
+          p1 = p1-&gt;next;
+        } else {
+          p2-&gt;next = head;
+          p2 = p2-&gt;next;
+        }
+        head = head-&gt;next;
+      }
+      p2-&gt;next = nullptr;
+      p1-&gt;next = node2.next;
+      return node1.next;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_2</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Input: (2 -&gt; 4 -&gt; 3) + (5 -&gt; 6 -&gt; 4)
+Output: 7 -&gt; 0 -&gt; 8
+Explanation: 342 + 465 = 807.
+class Solution {
+public:
+  ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+    ListNode node(0), *p = &amp;node;
+    int extra = 0;
+    while (l1 || l2 || extra) {
+      if (l1) extra += l1-&gt;val, l1 = l1-&gt;next;
+      if (l2) extra += l2-&gt;val, l2 = l2-&gt;next;
+      p-&gt;next = new ListNode(extra % 10);
+      extra /= 10;
+      p = p-&gt;next;
+    }
+    return node.next;
+
+  }
+};
+</code></pre>
+
+<ul>
+<li>leet_445</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Follow up:
+What if you cannot modify the input lists? In other words, reversing the lists is not allowed.
+
+Example:
+
+Input: (7 -&gt; 2 -&gt; 4 -&gt; 3) + (5 -&gt; 6 -&gt; 4)
+Output: 7 -&gt; 8 -&gt; 0 -&gt; 7
+class Solution {
+public:
+  ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+    ListNode node(0), *p = &amp;node;
+    std::vector&lt;int&gt; num1, num2;
+    while (l1) {
+      num1.push_back(l1-&gt;val);
+      l1 = l1-&gt;next;
+    }
+    while (l2) {
+      num2.push_back(l2-&gt;val);
+      l2 = l2-&gt;next;
+    }
+
+    int extra = 0;
+    int i = num1.size();
+    int j = num2.size();
+    ListNode* pre = nullptr;
+    while (i &gt; 0|| j &gt; 0|| extra) {
+      if (--i &gt;= 0) extra += num1[i];
+      if (--j &gt;= 0) extra += num2[j];
+      ListNode* node = new ListNode(extra % 10);
+      node-&gt;next = pre;
+      pre = node;
+      p-&gt;next = pre;
+      extra /= 10;
+    }
+    return node.next;
+  }
+};
+</code></pre>
+
+<h4>设立虚拟头节点</h4>
+
+<ul>
+<li>leet_203</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Remove all elements from a linked list of integers that have value val.
+
+Example
+Given: 1 -- &gt; 2 --&gt; 6 --&gt; 3 --&gt; 4 --&gt; 5 --&gt; 6, val = 6
+Return: 1 -- &gt; 2 --&gt; 3 --&gt; 4 --&gt; 5
+class Solution {
+public:
+  ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+    ListNode node(0), *p = &amp;node;
+    int extra = 0;
+    while (l1 || l2 || extra) {
+      if (l1) extra += l1-&gt;val, l1 = l1-&gt;next;
+      if (l2) extra += l2-&gt;val, l2 = l2-&gt;next;
+      p-&gt;next = new ListNode(extra % 10);
+      extra /= 10;
+      p = p-&gt;next;
+    }
+    return node.next;
+
+  }
+};
+</code></pre>
+
+<ul>
+<li>leet_82</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">class Solution {
+public:
+    ListNode* deleteDuplicates(ListNode* head) {
+        if (!head || !head-&gt;next) return head;
+        ListNode *dummy = new ListNode(-1), *pre = dummy;
+        dummy-&gt;next = head;
+        while (pre-&gt;next) {
+            ListNode *cur = pre-&gt;next;
+            while (cur-&gt;next &amp;&amp; cur-&gt;next-&gt;val == cur-&gt;val) {
+                cur = cur-&gt;next;
+            }
+            if (cur != pre-&gt;next) pre-&gt;next = cur-&gt;next;
+            else pre = pre-&gt;next;
+        }
+        return dummy-&gt;next;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_21</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Input: 1-&gt;2-&gt;4, 1-&gt;3-&gt;4
+Output: 1-&gt;1-&gt;2-&gt;3-&gt;4-&gt;4
+class Solution {
+public:
+  ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
+
+    ListNode node(0), *p = &amp;node;
+    while (l1 &amp;&amp; l2) {
+      if (l1-&gt;val &lt; l2-&gt;val) {
+        p-&gt;next = l1;
+        l1 = l1-&gt;next;
+      } else {
+        p-&gt;next = l2;
+        l2 = l2-&gt;next;
+      }
+      p = p-&gt;next;
+    }
+
+    p-&gt;next = l1 ? l1 : l2;
+    return node.next;
+  }
+};
+</code></pre>
+
+<ul>
+<li>leet_25</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Example:
+
+Given this linked list: 1-&gt;2-&gt;3-&gt;4-&gt;5
+
+For k = 2, you should return: 2-&gt;1-&gt;4-&gt;3-&gt;5
+
+For k = 3, you should return: 3-&gt;2-&gt;1-&gt;4-&gt;5
+class Solution {
+public:
+    ListNode* reverseKGroup(ListNode* head, int k) {
+      ListNode dumy(0), *pre = &amp;dumy, *cur = &amp;dumy;
+      dumy.next = head;
+      int num = 0;
+      while (cur = cur-&gt;next)  num++;
+      while (num &gt;= k) {
+        cur = pre-&gt;next;
+        for (int i = 1; i &lt; k; i++) {
+          ListNode* t = cur-&gt;next;
+          cur-&gt;next = t-&gt;next;
+          t-&gt;next = pre-&gt;next;
+          pre-&gt;next = t;
+        }
+        pre = cur;
+        num -= k;
+      }
+      return dumy.next;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_147</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Sort a linked list using insertion sort.
+Input: 4-&gt;2-&gt;1-&gt;3
+Output: 1-&gt;2-&gt;3-&gt;4
+class Solution {
+public:
+    ListNode* insertionSortList(ListNode* head) {
+        ListNode* dummy = new ListNode(0);
+        dummy -&gt; next = head;
+        ListNode *pre = dummy, *cur = head;
+        while (cur) {
+            if ((cur -&gt; next) &amp;&amp; (cur -&gt; next -&gt; val &lt; cur -&gt; val)) {
+                while ((pre -&gt; next) &amp;&amp; (pre -&gt; next -&gt; val &lt; cur -&gt; next -&gt; val)) {
+                    pre = pre -&gt; next;
+                }
+                ListNode* temp = pre -&gt; next;
+                pre -&gt; next = cur -&gt; next;
+                cur -&gt; next = cur -&gt; next -&gt; next;
+                pre -&gt; next -&gt; next = temp;
+                pre = dummy;
+            }
+            else {
+                cur = cur -&gt; next;
+            }
+        }
+        return dummy -&gt; next;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_148</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Sort a linked list in  O ( n  log  n ) time using constant space complexity.
+
+Example 1:
+
+Input: 4-&gt;2-&gt;1-&gt;3
+Output: 1-&gt;2-&gt;3-&gt;4
+Example 2:
+
+Input: -1-&gt;5-&gt;3-&gt;4-&gt;0
+Output: -1-&gt;0-&gt;3-&gt;4-&gt;5
+class Solution {
+public:
+    ListNode* sortList(ListNode* head) {
+        if (!head || !head-&gt;next) return head;
+        ListNode *slow = head, *fast = head, *pre = head;
+        while (fast &amp;&amp; fast-&gt;next) {
+            pre = slow;
+            slow = slow-&gt;next;
+            fast = fast-&gt;next-&gt;next;
+        }
+        pre-&gt;next = NULL;
+        return merge(sortList(head), sortList(slow));
+    }
+    ListNode* merge(ListNode* l1, ListNode* l2) {
+        ListNode *dummy = new ListNode(-1);
+        ListNode *cur = dummy;
+        while (l1 &amp;&amp; l2) {
+            if (l1-&gt;val &lt; l2-&gt;val) {
+                cur-&gt;next = l1;
+                l1 = l1-&gt;next;
+            } else {
+                cur-&gt;next = l2;
+                l2 = l2-&gt;next;
+            }
+            cur = cur-&gt;next;
+        }
+        if (l1) cur-&gt;next = l1;
+        if (l2) cur-&gt;next = l2;
+        return dummy-&gt;next;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_237</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Supposed the linked list is 1 -&gt; 2 -&gt; 3 -&gt; 4 and you are given the third node with value 3, the linked list should become 1 -&gt; 2 -&gt; 4 after calling your function.
+class Solution {
+public:
+    void deleteNode(ListNode* node) {
+        node-&gt;val = node-&gt;next-&gt;val;
+        ListNode *tmp = node-&gt;next;
+        node-&gt;next = tmp-&gt;next;
+        delete tmp;
+    }
+};
+</code></pre>
+
+<h4>双节点</h4>
+
+<ul>
+<li>leet_61</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a list, rotate the list to the right by  k  places, where  k  is non-negative.
+
+For example:
+Given 1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;NULL and  k  = 2,
+return 4-&gt;5-&gt;1-&gt;2-&gt;3-&gt;NULL.
+class Solution {
+public:
+    ListNode *rotateRight(ListNode *head, int k) {
+        if (!head) return NULL;
+        int n = 0;
+        ListNode *cur = head;
+        while (cur) {
+            ++n;
+            cur = cur-&gt;next;
+        }
+        k %= n;
+        ListNode *fast = head, *slow = head;
+        for (int i = 0; i &lt; k; ++i) {
+            if (fast) fast = fast-&gt;next;
+        }
+        if (!fast) return head;
+        while (fast-&gt;next) {
+            fast = fast-&gt;next;
+            slow = slow-&gt;next;
+        }
+        fast-&gt;next = head;
+        fast = slow-&gt;next;
+        slow-&gt;next = NULL;
+        return fast;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_143</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a singly linked list  L :  L 0→ L 1→…→ L n -1→ L n,
+reorder it to:  L 0→ L n → L 1→ L n -1→ L 2→ L n -2→…
+
+You may not modify the values in the list&#39;s nodes, only nodes itself may be changed.
+
+Example 1:
+
+Given 1-&gt;2-&gt;3-&gt;4, reorder it to 1-&gt;4-&gt;2-&gt;3.
+Example 2:
+
+Given 1-&gt;2-&gt;3-&gt;4-&gt;5, reorder it to 1-&gt;5-&gt;2-&gt;4-&gt;3.
+class Solution {
+public:
+  
+    ListNode* reverse(ListNode* head) {
+      ListNode *pre = nullptr, *next = nullptr;
+      while (head) {
+        next = head-&gt;next;
+        head-&gt;next = pre;
+        pre = head;
+        head = next;
+      }
+      return pre;
+    }
+  
+    void reorderList(ListNode* head) {
+      if (!head || !head-&gt;next || !head-&gt;next-&gt;next) return;
+      ListNode *slow = head, *fast = head;
+      while (fast-&gt;next &amp;&amp; fast-&gt;next-&gt;next) {
+        slow = slow-&gt;next;
+        fast = fast-&gt;next-&gt;next;
+      }
+      
+      ListNode* mid = slow-&gt;next;
+      slow-&gt;next = nullptr;
+      ListNode* rhead = reverse(mid);
+      
+      while (head &amp;&amp; rhead) {
+        ListNode* next = head-&gt;next;
+        head-&gt;next = rhead;
+        rhead = rhead-&gt;next;
+        head-&gt;next-&gt;next = next;
+        head = next;
+      }
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_234</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a singly linked list, determine if it is a palindrome.
+
+Example 1:
+
+Input: 1-&gt;2
+Output: false
+Example 2:
+
+Input: 1-&gt;2-&gt;2-&gt;1
+Output: true
+class Solution {
+  public:
+  ListNode* reverse(ListNode* head) {
+    ListNode* pre = nullptr, *next = nullptr;
+
+    while (head) {
+      next = head-&gt;next;
+      head-&gt;next = pre;
+      pre = head;
+      head = next;
+    }
+
+    return pre;
+  }
+
+  bool isPalindrome(ListNode* head) {
+    if (!head || !head-&gt;next) return true;
+    
+    ListNode* fast = head, *slow = head;
+    while (fast-&gt;next &amp;&amp; fast-&gt;next-&gt;next) {
+      slow = slow-&gt;next;
+      fast = fast-&gt;next-&gt;next;
+    }
+
+    ListNode* mid = slow-&gt;next;
+    ListNode* rhead = reverse(mid);
+    while (rhead) {
+      if (rhead-&gt;val != head-&gt;val) return false;
+      rhead = rhead-&gt;next;
+      head = head-&gt;next;
+    }
+    return true;
+  }
+};
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/08/16 10:04 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E7%8E%A9%E8%BD%AC%E7%AE%97%E6%B3%95.html'>玩转算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15694092395844.html">
+                
+                  <h1>recursive_mutex</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>概念</h4>
+
+<ul>
+<li>独占，可以递归lock，允许同一个互斥量多次被lock</li>
+<li>允许同一个线程，同一个互斥量多次被调用，效率比mutex低一些</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">std::recursive_mutex mutex1;
+std::lock_guard&lt;std::recursive_mutex&gt; s1(mutex1);
+std::lock_guard&lt;std::recursive_mutex&gt; s2(mutex1);
+//可以多次调用
+</code></pre>
+
+<h4>std::timed_mutex&amp;std::recursive_timed_mutex</h4>
+
+<ul>
+<li>try_lock_for  等待一段时间，如果规定时间内没有拿到锁，就直接走下去</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text"> for (int i = 0; i &lt; 10000; i++) {
+      //std::lock_guard&lt;std::timed_mutex&gt; s1(mutex1);
+      std::chrono::milliseconds timeout(100);
+      //mutex1.try_lock_until(chrono::steady_clock::now() + timeout)
+      if (mutex1.try_lock_for(timeout)) {
+        cout &lt;&lt; &quot;get lock&quot; &lt;&lt; endl;
+        msgRecvQueue.push_back(i);
+        cout &lt;&lt; &quot;insert ele &quot; &lt;&lt; i &lt;&lt; endl;
+        mutex1.unlock();
+      } else {
+        cout &lt;&lt; &quot;not get lock sleep &quot; &lt;&lt; endl;
+        std::this_thread::sleep_for(timeout);
+      }
+    }
+</code></pre>
+
+<ul>
 <li></li>
 </ul>
 
@@ -194,10 +831,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/03/11 09:44 上午</span>
+                    <span class="date">2019/09/25 19:00 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -211,76 +848,40 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15429441476069.html">
+                <a class="clearlink" href="15703486295241.html">
                 
-                  <h1>索引</h1>
+                  <h1>思考题</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>事物回滚日志的删除</h4>
+                        	<h4>案例、服务器端高并发IO的keep alive方案，满足一下几个需求</h4>
 
 <ul>
-<li>当没有事务再需要用到这些回滚日志时，回滚日志会被删除。</li>
+<li>1. 每个IO都是自己的时间戳</li>
+<li>2. 每个IO收到自己的beat后，重置自己的定时器</li>
+<li>3. 若IO定时没有收到beat，则执行IO的回调函数，并重置定时器</li>
+<li>4. 若再次没有收到beat，销毁IO，注销定时器。</li>
 </ul>
 
-<h4>长事物</h4>
+<h5>方案一</h5>
 
 <ul>
-<li>这个事务提交之前，数据库里面它可能用到的回滚记录都必须保留，这就会导致大量占用存储空间。</li>
-<li>长事务还占用锁资源，也可能拖垮整个库</li>
-<li>set autocommit=1</li>
+<li>timerfd+epoll</li>
+<li>0. 时间精准度高</li>
+<li>小块代码逻辑清晰</li>
+<li>程序总体逻辑混乱</li>
+<li>代码是基于时间反应堆的</li>
+<li>回调函数中不易做较长时间操作，比如数椐库，第三方 HTP 请求中</li>
 </ul>
 
-<h4>怎么避免长事物</h4>
-
-<h5>开发端</h5>
+<h5>方案三</h5>
 
 <ul>
-<li>确认是否使用了set autocommit=1。</li>
-<li>确认是否有不必要的只读事务。</li>
-<li>通过 SET MAX_EXECUTION_TIME 命令，来控制每个语句执行的最长时间，避免单个语句意外执行太长时间。</li>
-</ul>
-
-<h5>数据库端</h5>
-
-<ul>
-<li>监控 information_schema.Innodb_trx 表，设置长事务阈值，超过就报警 / 或者 kill；</li>
-<li>Percona 的 pt-kill</li>
-<li>在业务功能测试阶段要求输出所有的 general_log，分析日志行为提前发现问题；</li>
-</ul>
-
-<h4>自增主键的好处</h4>
-
-<ul>
-<li>每次插入一条新记录，都是追加操作，都不涉及到挪动其他记录，也不会触发叶子节点的分裂。</li>
-<li>业务逻辑的字段做主键，则往往不容易保证有序插入，这样写数据成本相对较高</li>
-<li>插入数据如果是在某个数据满了页的首尾，为了减少数据移动和页分裂，会先去前后两个页看看是否满了，如果没满会先将数据放到前后两个页上</li>
-</ul>
-
-<h4>适合业务字段直接做主键的</h4>
-
-<ul>
-<li>只有一个索引</li>
-<li>该索引必须是唯一索引</li>
-</ul>
-
-<h4>Page内部定位行数据</h4>
-
-<ul>
-<li>内部有个有序数组，二分法</li>
-</ul>
-
-<h4>最左前缀原则</h4>
-
-<ul>
-<li>最左前缀可以是联合索引的最左 N 个字段，也可以是字符串索引的最左 M 个字符</li>
-</ul>
-
-<h4>索引下推</h4>
-
-<ul>
-<li>在二级索引中进行条件判断，无须从主键索引中回表拿到数据再进行判断</li>
+<li>红黑树</li>
+<li>key 时间戳 val 是 io</li>
+<li>期限到了直接删除节点</li>
+<li>如果key的值是一样的，从s扩充到ms</li>
 <li></li>
 </ul>
 
@@ -291,10 +892,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/11/23 11:35 上午</span>
+                    <span class="date">2019/10/06 15:57 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -308,212 +909,47 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15518364500430.html">
+                <a class="clearlink" href="15703439218598.html">
                 
-                  <h1>网络性能答疑</h1>
+                  <h1>nginx线程池</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>网络收发缓冲区</h4>
+                        	<h4>线程池</h4>
+
+<pre class="line-numbers"><code class="language-c">struct thread_pool_s {
+    pthread_mutex_t        mtx; //互斥锁
+    thread_pool_queue_t   queue; //任务队列
+    int_t                 waiting; //等待任务的数量
+    pthread_cond_t         cond;
+
+    char                  *name; //线程池名称
+    uint_t                threads; //线程池数目
+    int_t                 max_queue;
+};
+</code></pre>
 
 <ul>
-<li>网卡收发网络包时，通过 DMA 方式交互的环形缓冲区</li>
-<li>网卡中断处理程序为网络帧分配的，内核数据结构 sk_buff 缓冲区,链表中的每一个元素都是一个网络帧（Packet）</li>
-<li>应用程序通过套接字接口，与网络协议栈交互时的套接字缓冲区。</li>
-<li>sk_buff、套接字缓冲、连接跟踪通过slab分配器来管理, /proc/slabinfo查看</li>
+<li>pthread_attr_setdetachstate(&amp;attr, PTHREAD_CREATE_DETACHED); 设置线程的分离状态，会释放所有资源</li>
+<li>pthread_join才会释放资源</li>
+<li>分配任务的时候把上下文的空间一块分配了</li>
 </ul>
 
-<h4>内核协议栈处理线程</h4>
+<pre class="line-numbers"><code class="language-cpp">    thread_task_t  *task;
+
+    task = calloc(1,sizeof(thread_task_t) + size);
+    if (task == NULL) {
+        return NULL;
+    }
+
+    task-&gt;ctx = task + 1;
+
+    return task;
+</code></pre>
 
 <ul>
-<li>软中断处理，就有专门的内核线程 ksoftirqd。每个 CPU 都会绑定一个 ksoftirqd 内核线程</li>
-</ul>
-
-<h4>最大连接数的限制</h4>
-
-<ul>
-<li>Linux 协议栈，通过五元组来标志一个连接（即协议，源 IP、源端口、目的 IP、目的端口)</li>
-<li>客户端最大支持65535, 服务端是海量的</li>
-</ul>
-
-<h4>MASQUERADE性能问题</h4>
-
-<ul>
-<li>当多个内网 IP 地址的端口号相同时，MASQUERADE 当然仍可以正常工作</li>
-<li>连接跟踪</li>
-<li>MASQUERADE 机器的网络带宽</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/03/06 09:40 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15514038480126.html">
-                
-                  <h1>网络性能优化套路</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>优化性能指标</h4>
-
-<ul>
-<li>整体目标，是降低网络延迟（如 RTT）和提高吞吐量BPS和PPS</li>
-<li>NAT网关需要接近线性转发，PPS是最主要性能目标</li>
-<li>数据库和缓存系统,低延迟是主要目标</li>
-<li>Web服务要兼顾吞吐量和延迟</li>
-</ul>
-
-<h4>网络协议栈各层级目标</h4>
-
-<ul>
-<li>网络接口层和网络层，PPS是主要性能指标， 使用pkten来测试PPS</li>
-<li>测试教程 <a href="http://khalily.github.io/2015/05/03/pktgen/">http://khalily.github.io/2015/05/03/pktgen/</a></li>
-<li>TCP UDP 吞吐量和连接数以及延迟 iperf和netperf</li>
-<li>ICMP hping3 ping</li>
-<li>应用层 吞吐量，每秒请求数和延迟wrk,ab</li>
-</ul>
-
-<h4>工具和性能指标的对应</h4>
-
-<ul>
-<li><img src="media/15514038480126/a1eb07e281e5795be83c11d7255c543b.png" alt="a1eb07e281e5795be83c11d7255c543b"/></li>
-<li><img src="media/15514038480126/0d87b39b89a1b7f325fc5477c0182ea0.png" alt="0d87b39b89a1b7f325fc5477c0182ea0"/></li>
-</ul>
-
-<h4>网络收发流程</h4>
-
-<ul>
-<li><img src="media/15514038480126/a118911721f9b67ce9c83de15666753f.png" alt="a118911721f9b67ce9c83de15666753f"/></li>
-</ul>
-
-<h4>应用层网络协议优化</h4>
-
-<ul>
-<li>使用长连接取代短连接，可以显著降低 TCP 建立连接的成本。在每秒请求次数较多时，这样做的效果非常明显。</li>
-<li>使用内存等方式，来缓存不常变化的数据，可以降低网络 I/O 次数，同时加快应用程序的响应速度。</li>
-<li>使用 Protocol Buffer 等序列化的方式，压缩网络 I/O 的数据量，可以提高应用程序的吞吐。</li>
-<li>使用 DNS 缓存、预取、HTTPDNS 等方式，减少 DNS 解析的延迟，也可以提升网络 I/O 的整体速度。</li>
-</ul>
-
-<h4>套接字内核选项</h4>
-
-<ul>
-<li><img src="media/15514038480126/708e766b878d9b32bcdaafb21f0a657f.png" alt="708e766b878d9b32bcdaafb21f0a657f"/></li>
-<li>TCP优化</li>
-<li>为 TCP 连接设置 TCP_NODELAY 后，就可以禁用 Nagle 算法；</li>
-<li>为 TCP 连接开启 TCP_CORK 后，可以让小包聚合成大包后再发送（注意会阻塞小包的发送）；</li>
-<li>使用 SO_SNDBUF 和 SO_RCVBUF ，可以分别调整套接字发送缓冲区和接收缓冲区的大小。</li>
-</ul>
-
-<h4>传输层优化</h4>
-
-<ul>
-<li>配置参数在/etc/sysctl.conf</li>
-</ul>
-
-<h5>处理TIME_WAIT</h5>
-
-<ul>
-<li>增大处于 TIME_WAIT 状态的连接数量 net.ipv4.tcp_max_tw_buckets ，并增大连接跟踪表的大小 net.netfilter.nf_conntrack_max。</li>
-<li>减小 net.ipv4.tcp_fin_timeout 和 net.netfilter.nf_conntrack_tcp_timeout_time_wait ，让系统尽快释放它们所占用的资源。</li>
-<li>开启端口复用 net.ipv4.tcp_tw_reuse。这样，被 TIME_WAIT 状态占用的端口，还能用到新建的连接中。</li>
-<li>增大本地端口的范围 net.ipv4.ip_local_port_range 。这样就可以支持更多连接，提高整体的并发能力。</li>
-<li>增加最大文件描述符的数量。你可以使用 fs.nr_open ，设置系统的最大文件描述符数；或在应用程序的 systemd 配置文件中，配置 LimitNOFILE ，设置应用程序的最大文件描述符数。</li>
-</ul>
-
-<h5>SYN状态优化</h5>
-
-<ul>
-<li>增大 TCP 半连接的最大数量 net.ipv4.tcp_max_syn_backlog ，或者开启 TCP SYN Cookies net.ipv4.tcp_syncookies ，来绕开半连接数量限制的问题（注意，这两个选项不可同时使用）。</li>
-<li>减少 SYN_RECV 状态的连接重传 SYN+ACK 包的次数 net.ipv4.tcp_synack_retries。</li>
-</ul>
-
-<h4>配置与Keepalive选项</h4>
-
-<ul>
-<li>缩短最后一次数据包到 Keepalive 探测包的间隔时间 net.ipv4.tcp_keepalive_time；</li>
-<li>缩短发送 Keepalive 探测包的间隔时间 net.ipv4.tcp_keepalive_intvl；</li>
-<li>减少 Keepalive 探测失败后，一直到通知应用程序前的重试次数 net.ipv4.tcp_keepalive_probes。</li>
-</ul>
-
-<h5>tcp优化总结</h5>
-
-<ul>
-<li><img src="media/15514038480126/38c164bcd76d426c215fad997ecfd396.png" alt="38c164bcd76d426c215fad997ecfd396"/></li>
-</ul>
-
-<h4>UDP优化</h4>
-
-<ul>
-<li>跟上篇套接字部分提到的一样，增大套接字缓冲区大小以及 UDP 缓冲区范围。</li>
-<li>跟前面 TCP 部分提到的一样，增大本地端口号的范围；</li>
-<li>根据 MTU 大小，调整 UDP 数据包的大小，减少或者避免分片的发生。</li>
-</ul>
-
-<h4>网络层</h4>
-
-<h5>路由转发</h5>
-
-<ul>
-<li>开启ip转发  net.ipv4.ip_forward = 1</li>
-<li>调整数据包的生存周期 TTL，比如设置 net.ipv4.ip_default_ttl = 64</li>
-<li>开启数据包的反向地址校验，比如设置 net.ipv4.conf.eth0.rp_filter = 1。这样可以防止 IP 欺骗，并减少伪造 IP 带来的 DDoS 问题</li>
-</ul>
-
-<h6>分片</h6>
-
-<ul>
-<li>从分片的角度出发，最主要的是调整 MTU（Maximum Transmission Unit）的大小。</li>
-</ul>
-
-<h5>限制ICMP的行为</h5>
-
-<ul>
-<li>禁止 ICMP 协议，即设置 net.ipv4.icmp_echo_ignore_all = 1。这样，外部主机就无法通过 ICMP 来探测主机</li>
-<li>禁止广播 ICMP，即设置 net.ipv4.icmp_echo_ignore_broadcasts = 1</li>
-</ul>
-
-<h4>链路层</h4>
-
-<ul>
-<li>网卡硬中断配置 CPU 亲和性（smp_affinity），或者开启 irqbalance 服务。</li>
-<li>开启 RPS（Receive Packet Steering）和 RFS（Receive Flow Steering），将应用程序和软中断的处理，调度到相同 CPU 上，这样就可以增加 CPU 缓存命中率，减少网络延迟</li>
-<li>TSO和UFO让TCP包的分段和UDP的分片由网卡来完成</li>
-<li>GSO将分包分片延迟到进入网卡前</li>
-<li>LRO接收TCP分段包时由网卡进行组装合并后交给上层处理</li>
-<li>GRO支持TCP和UDP组装的</li>
-<li>RSS多队列接收，基于硬件的多个队列接收，分配网络接收进程，让多CPU处理接收到的包</li>
-<li>VXLALN卸载，让网卡来完成VXLAN的组包功能</li>
-</ul>
-
-<h4>网络接口</h4>
-
-<ul>
-<li>开启网络接口的多队列功能</li>
-<li>增大网络接口的缓冲区大小</li>
-<li>使用TC为不同网络流量配置Qos</li>
+<li>退出通过投递任务thread_pool_exit_handler</li>
 <li></li>
 </ul>
 
@@ -524,360 +960,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/03/01 09:30 上午</span>
+                    <span class="date">2019/10/06 14:38 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15516060476932.html">
-                
-                  <h1>微博容器运维平台</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>DCP整体架构</h4>
-
-<ul>
-<li>基础设施层</li>
-</ul>
-
-<h4>编排层</h4>
-
-<ul>
-<li>服务依赖</li>
-<li>服务发现</li>
-<li>nginx-upsunc-module</li>
-<li>Motan RPC</li>
-<li>自动扩缩容</li>
-<li>依靠容量决策支持系统</li>
-</ul>
-
-<h4>微博Devops</h4>
-
-<ul>
-<li>CI（Continuous Integration），持续集成。开发完成代码开发后，能自动地进行代码检查、单元测试、打包部署到测试环境，进行集成测试，跑自动化测试用例。</li>
-<li>CD（Continuous Deploy），持续部署。代码测试通过后，能自动部署到类生产环境中进行集成测试，测试通过后再进行小流量的灰度验证，验证通过后代码就达到线上发布的要求了，就可以把代码自动部署到线上。</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/03/03 17:40 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E5%BE%AE%E6%9C%8D%E5%8A%A1.html'>微服务</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15516057203462.html">
-                
-                  <h1>微服务容器化运维</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>容器调度</h4>
-
-<ul>
-<li>主机过滤  存活过滤 硬件过滤</li>
-<li>调度策略<br/></li>
-</ul>
-
-<h4>服务编排</h4>
-
-<ul>
-<li>服务依赖</li>
-<li>服务发现 基于nginx的服务发现 基于注册中心的服务发现</li>
-<li>自动扩缩容</li>
-</ul>
-
-<h4>解决方案</h4>
-
-<ul>
-<li>Swarm</li>
-<li>Mesos</li>
-<li>Kubernetes</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/03/03 17:35 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E5%BE%AE%E6%9C%8D%E5%8A%A1.html'>微服务</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15515895835692.html">
-                
-                  <h1>监控体系</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>Prometheus</h4>
-
-<ul>
-<li><img src="media/15515895835692/2ada1ece66fcc81d704c2ba46f9dd7d3.png" alt="2ada1ece66fcc81d704c2ba46f9dd7d3"/></li>
-</ul>
-
-<h4>三类数据</h4>
-
-<ul>
-<li>宿主机的监控数据</li>
-<li>来自于Kubernetes的API Server等组件的API</li>
-<li>Kubernetes相关的监控数据</li>
-</ul>
-
-<h4>监控指标USE原则和RED原则</h4>
-
-<ul>
-<li>USE</li>
-<li>利用率（Utilization），资源被有效利用起来提供服务的平均时间占比；</li>
-<li>饱和度（Saturation），资源拥挤的程度，比如工作队列的长度；</li>
-<li>错误率（Errors），错误的数量。</li>
-<li>RED</li>
-<li>每秒请求数量Rate</li>
-<li>每秒错误数量Errors；</li>
-<li>服务响应时间Duration</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/03/03 13:06 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15511641605241.html">
-                
-                  <h1>Open vSwitch</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>ovs安装</h4>
-
-<ul>
-<li><a href="https://www.jianshu.com/p/658332deac99">https://www.jianshu.com/p/658332deac99</a></li>
-</ul>
-
-<h4>docker实验openvswitch</h4>
-
-<ul>
-<li><a href="https://segmentfault.com/a/1190000011406037">https://segmentfault.com/a/1190000011406037</a></li>
-</ul>
-
-<h4>云中网络Qos</h4>
-
-<ul>
-<li>云中的流量控制主要通过队列进行的，队列分为两大类：无类别队列规则和基于类别的队列规则。</li>
-<li>在云中网络 Openvswitch 中，主要使用的是分层令牌桶规则（HTB），将总的带宽在一棵树上按照配置的比例进行分配，并且在一个分支不用的时候，可以借给另外的分支，从而增强带宽利用率</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/26 14:56 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE.html'>网络协议</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15510743422768.html">
-                
-                  <h1>集群和分区</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>数据集群</h4>
-
-<ul>
-<li>数据集中式集群</li>
-<li>复杂度</li>
-<li>主机如何将数据复制给备机</li>
-<li>备机如何检测主机状态</li>
-<li>主机故障后，如何决定新的主机</li>
-</ul>
-
-<h4>数据分散集群</h4>
-
-<ul>
-<li>均衡性</li>
-<li>容错性</li>
-<li>可伸缩性</li>
-</ul>
-
-<h4>数据分区</h4>
-
-<ul>
-<li>数据量</li>
-<li>分区规则</li>
-<li>复制规则 集中式,互备式和独立式</li>
-</ul>
-
-<h4>远距离分布的集群的缺点</h4>
-
-<ul>
-<li>1、更容易出现不可用性，具体表现在业务响应慢，数据读/写/复制延迟高</li>
-<li>2、一致性也难保证</li>
-<li>3、也难保证均衡性，容错性，可伸缩性特点</li>
-<li>4、复杂度较近距离的集群呈现指数级增长</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/25 13:59 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%9E%B6%E6%9E%84.html'>架构</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15510052060203.html">
-                
-                  <h1>双机架构</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>高可用本质</h4>
-
-<ul>
-<li>存储高可用方案的本质都是通过将数据复制到多个存储设备，通过数据冗余的方式来实现高可用，其复杂性主要体现在如何应对复制延迟和中断导致的数据不一致问题</li>
-</ul>
-
-<h4>常见方案</h4>
-
-<ul>
-<li>主备</li>
-<li>主从</li>
-<li>主主</li>
-<li>集群</li>
-<li>分区</li>
-</ul>
-
-<h4>双机切换</h4>
-
-<ul>
-<li>主备状态判断</li>
-<li>状态传递的渠道：是相互间互相连接，还是第三方仲裁？</li>
-<li>状态检测的内容：例如机器是否掉电、进程是否存在、响应是否缓慢等。</li>
-<li>切换策略</li>
-<li>切换时机 切换策略 自动程序</li>
-<li>数据冲突解决</li>
-</ul>
-
-<h4>常见架构</h4>
-
-<ul>
-<li>互连式</li>
-<li>中介式 zookeeper和keeplived</li>
-<li>模拟式 模拟式指主备机之间并不传递任何状态数据，而是备机模拟成一个客户端，向主机发起模拟的读写操作，根据读写操作的响应情况来判断主机的状态</li>
-<li>主主复制  临时性、可丢失、可覆盖的数据场景 用户登录产生的 session 数据（可以重新登录生成）、用户行为的日志数据（可以丢失）、论坛的草稿数据（可以丢失）</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/24 18:46 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%9E%B6%E6%9E%84.html'>架构</a></span>
+          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
           				   
                   </div>
                   <div class="more-right right">

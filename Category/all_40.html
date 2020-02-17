@@ -170,372 +170,171 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15615915044903.html">
+                <a class="clearlink" href="15713033971664.html">
                 
-                  <h1>归并排序和快速排序</h1>
+                  <h1>可复用的模块</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>归并排序</h4>
+                        	<h4>包管理</h4>
 
-<pre class="line-numbers"><code class="language-text">void merge(vector&lt;int&gt;&amp; nums1, int m, vector&lt;int&gt;&amp; nums2, int n) {
-   for(int i=m-1, j=n-1, k=m+n-1; j&gt;=0; )
-       nums1[k--] = i&gt;=0 &amp;&amp; nums1[i]&gt;nums2[j]? nums1[i--]: nums2[j--];
+<p>以首字母大写来表明可被包外代码访问代码的<br/>
+package 可以和所在的目录不一致<br/>
+同一目录里的 Go 代码的 package 要保持一致</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/10/17 17:09 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15713027420690.html">
+                
+                  <h1>异常错误处理</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>panic &amp; os.Exit</h4>
+
+<ul>
+<li>os.Exit退出时不会调用defer指定的函数</li>
+<li>不用输出当前调用栈信息</li>
+</ul>
+
+<h4>recover</h4>
+
+<p><img src="media/15713027420690/15713033206416.jpg" alt="" style="width:615px;"/></p>
+
+<ul>
+<li>形成僵尸进程，导致health check 失效</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/10/17 16:59 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15713004768074.html">
+                
+                  <h1>相关接口</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>接口差异</h4>
+
+<ul>
+<li>接口为非入侵性，实现不依赖于接口定义</li>
+<li>所以接口的定义可以包含在接口使用者包内</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-go">type IntConv func(op int) int
+
+func timeSpent(inner IntConv) IntConv {
+    return func(n int) int {
+        start := time.Now()
+        ret := inner(n)
+        fmt.Println(&quot;time spent:&quot;, time.Since(start).Seconds())
+        return ret
+    }
+}
+
+func slowFun(op int) int {
+    time.Sleep(time.Second * 1)
+    return op
+}
+
+func TestFn(t *testing.T) {
+    tsSF := timeSpent(slowFun)
+    t.Log(tsSF(10))
 }
 </code></pre>
 
-<h4>快速排序</h4>
+<h4>扩展和复用</h4>
 
-<ul>
-<li></li>
-</ul>
+<pre class="line-numbers"><code class="language-go">func TestDog(t *testing.T) {
+    var dog *Dog = new(Dog)
+    var p = *Pet(dog)
+    p.SpeakTo(&quot;CHao&quot;)
+    dog := new(Dog)
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/06/27 07:25 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15458821339264.html">
-                
-                  <h1>排序算法考量</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>执行效率</h4>
-
-<ul>
-<li>最好情况，最坏情况，平均时间复杂度</li>
-<li>时间复杂度的系数，常数，低阶</li>
-<li>比较次数和交换次数</li>
-</ul>
-
-<h4>订单金额</h4>
-
-<ul>
-<li>先排时间</li>
-<li>再排金额</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/27 11:42 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15613334266263.html">
-                
-                  <h1>TCP/IP的设计</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>TCP/IP问题</h4>
-
-<ul>
-<li>滑动窗口如何实现</li>
-<li>sk_buff是什么</li>
-<li>TCP_NODELAY设置,针对的是对端收到包的时候的ACK发送回来是立即发送还是延迟发送，</li>
-<li>epoll检测网络IO的时候，ET和LT如何判断</li>
-<li>服务器端出现大量close wait如何解决， 客户端大量close</li>
-<li><p>DDOS攻击 </p>
-<ul>
-<li>半连接队列越来越长，创建一些字节流结构体，导致内核协议栈数据不断变大，IO无法约束</li>
-<li>防火墙是等三次连接建立后才进行转发</li>
-<li>防火墙工作在ip层</li>
-<li>DDOS攻击tcp层</li>
-</ul></li>
-<li><p>发送和接收缓冲区设置为0会怎么样</p></li>
-<li><p>如何发送syn包 raw socket</p></li>
-<li><p>buffer一般设置多大比较合适 流数据2MB, 字节数据KB字节</p></li>
-</ul>
-
-<h4>C10M</h4>
-
-<ul>
-<li>10M连接</li>
-<li>响应时间</li>
-<li>10M增长速度</li>
-<li>吞吐量-&gt; 10M</li>
-</ul>
-
-<h4>网卡作用</h4>
-
-<ul>
-<li>模拟信号转数字信号</li>
-<li>数字信号送入内核网络协议栈</li>
-</ul>
-
-<h4>软件中断和硬中断</h4>
-
-<ul>
-<li>软中断由操作系统发起</li>
-<li>硬中断没有操作系统参与</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/06/24 07:43 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15612568475513.html">
-                
-                  <h1>kafka线上集群方案部署</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>磁盘容量</h4>
-
-<ul>
-<li>新增消息数</li>
-<li>消息留存时间</li>
-<li>平均消息大小</li>
-<li>备份数</li>
-<li>是否启用压缩</li>
-</ul>
-
-<h4>带宽</h4>
-
-<ul>
-<li>利用率70%</li>
-<li>留出2/3的资源</li>
-</ul>
-
-<h4>参考</h4>
-
-<p><img src="media/15612568475513/d2a926bc8f448f58bda0d21b7ed39f55.jpeg" alt="d2a926bc8f448f58bda0d21b7ed39f55"/></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/06/23 10:27 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Kafka.html'>Kafka</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15611602604286.html">
-                
-                  <h1>块设备</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>块设备操作的内核组件</h4>
-
-<ul>
-<li><img src="media/15611602604286/15611610923345.jpg" alt=""/></li>
-</ul>
-
-<h4>磁盘数据的典型构造</h4>
-
-<p><img src="media/15611602604286/15611614778298.jpg" alt="" style="width:846px;"/></p>
-
-<ul>
-<li>硬件设备采用扇区管理数据</li>
-<li>虚拟文件系统和映射层和文件系统将数据放在块的逻辑单元，块对应文件系统的最小的磁盘存储单元</li>
-<li>块设备驱动程序能够处理数据的段，一个段就是一个内存页或者内存页的一部分</li>
-<li>磁盘高速度缓存位于数据的页中</li>
-<li>通用块层将所有的上层和下层的组件组合在一起，需要了解数据的扇区，块和页面</li>
-</ul>
-
-<h4>设备</h4>
-
-<p><img src="media/15611602604286/3c473d163b6e90985d7301f115ab660e.jpeg" alt="3c473d163b6e90985d7301f115ab660e"/></p>
-
-<p><img src="media/15611602604286/c9f6a08075ba4eae3314523fa258363c.png" alt="c9f6a08075ba4eae3314523fa258363"/></p>
-
-<h4>段</h4>
-
-<ul>
-<li>不同的段在ram中对应的页框正好是连续的并且磁盘对应的数据块也是连续的，通用块层可以合并他们</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/06/22 07:37 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15432878255877.html">
-                
-                  <h1>链表</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>数组高效原因</h4>
-
-<ul>
-<li>数组简单易用，在实现上使用的是连续的内存空间，可以借助 CPU 的缓存机制，预读数组中的数据，所以访问效率更高。而链表在内存中并不是连续存储，所以对 CPU 缓存不友好，没办法有效预读。</li>
-</ul>
-
-<h4>链表代码原则</h4>
-
-<ul>
-<li>理解指针和引用的含义</li>
-<li>警惕指针丢失和内存泄露</li>
-<li>利用哨兵简化实现难度</li>
-<li>重点留意边界条件
-<ul>
-<li>如果链表为空时，代码是否能正常工作？</li>
-<li>如果链表只包含一个结点时，代码是否能正常工作？</li>
-<li>如果链表只包含两个结点时，代码是否能正常工作？</li>
-<li>代码逻辑在处理头结点和尾结点的时候，是否能正常工作？</li>
-</ul></li>
-</ul>
-
-<h4>链表训练</h4>
-
-<ul>
-<li>单链表反转</li>
-<li>链表中环的检测</li>
-<li>两个有序的链表合并</li>
-<li>删除链表倒数第n个节点</li>
-<li>求链表的中间节点</li>
-</ul>
-
-<h4>判断链表是否回文</h4>
-
-<pre class="line-numbers"><code class="language-text">class Solution {
-public:
-    bool isPalindrome(ListNode* head) {
-        if(head==NULL||head-&gt;next==NULL)
-            return true;
-        ListNode* slow=head;
-        ListNode* fast=head;
-        while(fast-&gt;next!=NULL&amp;&amp;fast-&gt;next-&gt;next!=NULL){
-            slow=slow-&gt;next;
-            fast=fast-&gt;next-&gt;next;
-        }
-        slow-&gt;next=reverseList(slow-&gt;next);
-        slow=slow-&gt;next;
-        while(slow!=NULL){
-            if(head-&gt;val!=slow-&gt;val)
-                return false;
-            head=head-&gt;next;
-            slow=slow-&gt;next;
-        }
-        return true;
-    }
-    ListNode* reverseList(ListNode* head) {
-        ListNode* pre=NULL;
-        ListNode* next=NULL;
-        while(head!=NULL){
-            next=head-&gt;next;
-            head-&gt;next=pre;
-            pre=head;
-            head=next;
-        }
-        return pre;
-    }
-};
+    dog.SpeakTo(&quot;Chao&quot;)
+}
 </code></pre>
 
-<h4>链表反转</h4>
+<h4>go多态</h4>
 
-<p><img src="media/15432878255877/15610769477328.jpg" alt="" style="width:739px;"/></p>
+<pre class="line-numbers"><code class="language-go">func writeFirstProgram(p Programmer) {
+  fmt.Printf(&quot;%T %v\n&quot;, p, p.WriteHelloWorld())
+}
+p必须传指针才能实现多态
+</code></pre>
 
-<h4>回文对比</h4>
+<h4>空接口断言</h4>
 
-<ul>
-<li>无须判断奇偶，只需要以中点后的节点为基准就可以了
-<img src="media/15432878255877/15610772144136.jpg" alt="" style="width:717px;"/></li>
-</ul>
+<pre class="line-numbers"><code class="language-go">func DoSomething(p interface{}) {
+    if i, ok := p.(int); ok {
+      fmt.Println(&quot;Integer&quot;, i)
+      return
+    }
+    // if s, ok := p.(string); ok {
+    //  fmt.Println(&quot;stirng&quot;, s)
+    //  return
+    // }
+    // fmt.Println(&quot;Unknow Type&quot;)
+    switch v := p.(type) {
+    case int:
+        fmt.Println(&quot;Integer&quot;, v)
+    case string:
+        fmt.Println(&quot;String&quot;, v)
+    default:
+        fmt.Println(&quot;Unknow Type&quot;)
+    }
+}
+</code></pre>
+
+<h4>接口实践</h4>
+
+<p><img src="media/15713004768074/15713026545360.jpg" alt="" style="width:767px;"/></p>
 
                         
                       </div>
@@ -544,10 +343,10 @@ public:
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/11/27 11:03 上午</span>
+                    <span class="date">2019/10/17 16:21 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
+          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -561,66 +360,16 @@ public:
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15606789387565.html">
+                <a class="clearlink" href="15712250734123.html">
                 
-                  <h1>协程切换</h1>
+                  <h1>行为的定义和实现</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>问题</h4>
+                        	<h4>差别</h4>
 
-<ul>
-<li>共享栈</li>
-</ul>
-
-<h5>线程池与协程对比</h5>
-
-<ul>
-<li>共享栈如何实现 Libgo-&gt;ucontext</li>
-<li>性能差不多，线程处理业务逻辑，协程处理网络IO</li>
-<li>协程抛出异常怎么处理 schedule中有全局，然后随着协程切换而切换</li>
-<li>Ucontext,setjmp/longjmp,register</li>
-<li>协程如何与进程结合</li>
-</ul>
-
-<h4>线程池和协程</h4>
-
-<ul>
-<li>协程处理网络IO的问题</li>
-<li>异步IO处理磁盘文件IO的问题</li>
-<li>线程池处理业务逻辑的问题</li>
-</ul>
-
-<h4>协程</h4>
-
-<ul>
-<li>一个协程对应多个IO</li>
-</ul>
-
-<h4>Ucontext</h4>
-
-<ul>
-<li><a href="https://blog.csdn.net/qq910894904/article/details/41911175">https://blog.csdn.net/qq910894904/article/details/41911175</a></li>
-</ul>
-
-<h4>切换原语</h4>
-
-<ul>
-<li>Create</li>
-<li>Free</li>
-<li>Yield</li>
-<li>Resume</li>
-<li>sched_key_once</li>
-</ul>
-
-<h4>拓展阅读</h4>
-
-<ul>
-<li>libgo</li>
-<li>uconext</li>
-<li>函数栈帧的文章</li>
-</ul>
+<p><img src="media/15712250734123/15712253092495.jpg" alt="" style="width:1343px;"/></p>
 
                         
                       </div>
@@ -629,182 +378,10 @@ public:
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/06/16 17:55 下午</span>
+                    <span class="date">2019/10/16 19:24 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15603928522183.html">
-                
-                  <h1>拓展阅读</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<ul>
-<li><a href="http://www.wowotech.net/page/3">http://www.wowotech.net/page/3</a></li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/06/13 10:27 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15602962403070.html">
-                
-                  <h1>字符设备下</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>中断处理</h4>
-
-<ul>
-<li>unsigned int irq 是中断信号；</li>
-<li>q_ handler_ t handler 是中断处理函数；unsigned long flags 是一些标识位；const char*name 是设备名称；</li>
-<li>void<em>dev 这个通用指针应该和中断处理函数的 void</em>dev 相对应。</li>
-</ul>
-
-<h4>中断处理成员</h4>
-
-<ul>
-<li>中断处理函数 handler;</li>
-<li>void* dev id 为设备 id; rq 为中断信</li>
-<li>如果中断处理函数在单独的线程运行，则有 thread_fn 是线程的执行函数，thread 是线程task struct</li>
-</ul>
-
-<h4>中断层次</h4>
-
-<ul>
-<li>第一个层次是外部设备给中断控制器发送物理中断信号。</li>
-<li>第二个层次是中断控制器将物理中断信号转换成为中断向量 Interrupt vector，发给各个 CPU。</li>
-<li>第三个层次是每个 CPU 都会有一个中断向量表，根据 Interrupt vector 调用一个 IRQ处理函数。注意这里的 IRQ 处理函数还不是咱们上面指定的 irq_ handler_t，到这一层还是 CPU 硬件的要求。</li>
-<li>第四个层次是在 IRQ 处理函数中，将 interrupt vector 转化为抽象中断层的中断信号 irq 调用中断信号 irq 对应的中断描述结构里面的 irq_ handler_t。
-<img src="media/15602962403070/15602980613927.jpg" alt=""/></li>
-</ul>
-
-<h4>中断向量表</h4>
-
-<ul>
-<li> 0 到 31 的前 32 位是系统陷入或者系统异常，这些错误无法屏蔽，一定要处理</li>
-<li> 外加一位 32 位系统调用</li>
-</ul>
-
-<h4>总结</h4>
-
-<ul>
-<li><img src="media/15602962403070/26bde4fa2279f66098856c5b2b6d308f.png" alt="26bde4fa2279f66098856c5b2b6d308f"/></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/06/12 07:37 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15601222553386.html">
-                
-                  <h1>字符设备上</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>内核模块组成</h4>
-
-<ul>
-<li>头文件部分</li>
-<li>处理内核模块的主要逻辑,打开、关闭、读取、写入设备的函数或者响应中断的函数</li>
-<li>定义一个 file_operations 结构</li>
-<li>模块的初始化和退出函数</li>
-<li>调用module_init 和 module_exit</li>
-<li>lisense</li>
-</ul>
-
-<h4>字符设备</h4>
-
-<ul>
-<li>insmod加载字符模块进内核</li>
-<li>注册字符设备， 主设备号和从设备号</li>
-<li>/dev的devtmpfs文件系统中创建文件</li>
-<li>打开字符文件设备</li>
-<li>写入字符文件设备 vfs_write-&gt;write-&gt;lp_write</li>
-</ul>
-
-<h4>写入函数流程</h4>
-
-<ul>
-<li>copy_from_user 将数据从用户态拷贝到内核态的缓存</li>
-<li>调用 parport_write 写入外部设备</li>
-</ul>
-
-<h4>总结</h4>
-
-<ul>
-<li><img src="media/15601222553386/fba61fe95e0d2746235b1070eb4c18cd.jpeg" alt="fba61fe95e0d2746235b1070eb4c18cd"/></li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/06/10 07:17 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
+          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
           				   
                   </div>
                   <div class="more-right right">

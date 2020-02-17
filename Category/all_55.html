@@ -170,110 +170,499 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15470893891809.html">
+                <a class="clearlink" href="15698792898834.html">
                 
-                  <h1>Pod</h1>
+                  <h1>分库分表</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>k8s本质</h4>
+                        	<h4>集中方式</h4>
 
 <ul>
-<li>就是操作系统</li>
-<li>pod的本质就是进程组共享了一些资源的容器</li>
+<li>把一个实例中的多个数据库拆分到不同的实例
+<img src="media/15698792898834/15698794876981.jpg" alt="" style="width:1093px;"/></li>
+<li>把一个库中的表分离到不同的数据库中</li>
+<li>根据写压力来拆分，缓解写负载
+<img src="media/15698792898834/15698795766519.jpg" alt="" style="width:966px;"/></li>
 </ul>
 
-<h4>容器进程模型</h4>
+<h4>数据库分片</h4>
 
 <ul>
-<li>并不是指容器只能运行一个进程，而是指容器没有管理多个进程的能力</li>
+<li>对一个库中的相关表进行水平拆分到不同实例的数据库中</li>
 </ul>
 
-<h4>Pod</h4>
+<h5>选择分区键</h5>
 
 <ul>
-<li>互相之间会发生直接的文件交换</li>
-<li>使用 localhost 或者 Socket 文件进行本地通信</li>
-<li>会发生非常频繁的远程调用</li>
-<li>需要共享某些 Linux Namespace（比如，一个容器要加入另一个容器的 Network Namespace）</li>
-<li>Pod里的所有容器共享一个NetWork NameSpace,可以声明共享同一个Volume</li>
-<li>通过infra中间容器来创建其他容器</li>
-<li><img src="media/15470893891809/8c016391b4b17923f38547c498e434cf.png" alt="8c016391b4b17923f38547c498e434cf"/></li>
-<li>infra使用k8s.gcr.io/pause镜像</li>
-<li>Init Container和 Container</li>
+<li>分区键要能尽量避兔跨分片查询的发生</li>
+<li>分区键要能尽量使各个分片中的数据平均</li>
 </ul>
 
-<h4>sidecar设计模式</h4>
+<h5>如何存储无需分片的表</h5>
 
 <ul>
-<li>sidecar 指的就是我们可以在一个 Pod 中，启动一个辅助容器，来完成一些独立于主进程（主容器）之外的工作</li>
-<li>微服务治理Istio</li>
+<li>每个分片中存储一份相同的数据</li>
+<li>使用额外的节点统一存储</li>
 </ul>
 
-<h4>Init Container</h4>
+<h5>如何在节点上部署分片</h5>
 
 <ul>
-<li>Init Container 定义的容器，都会比 spec.containers 定义的用户容器先启动。并且，Init Container 容器会按顺序逐一启动，而直到它们都启动并且退出了，用户容器才会启动。</li>
-<li>Tomcat 容器是我们要使用的主容器，而 WAR 包容器的存在，只是为了给它提供一个 WAR 包而已。所以，我们用 Init Container 的方式优先运行 WAR 包容器，扮演了一个 sidecar 的角色。</li>
+<li>每个分片使用单一数据库，并且数据库名也相同</li>
+<li>将多个分片表存储在一个数据库中，并在表名上加入分片号后缀</li>
+<li>在一个节点中部署多个数据库，每个数据库包含一个分片</li>
 </ul>
 
-<h4>Pod本质</h4>
+<h5>如何分配分片中的数据</h5>
 
 <ul>
-<li>Pod本质是在扮演传统基础设施的虚拟机角色</li>
-<li>Pod相当于传统环境的机器，容器是运行在这个机器的程序</li>
-<li>凡是调度,网络，存储和安全相关的，基本都是Pod级别的</li>
+<li>按分区键的 Hash 值取模来分配分片数据</li>
+<li>按分区键的范围来分配分片数据</li>
+<li>利用分区键和分片的映射表来分配分片数据//表放在缓存中</li>
 </ul>
 
-<h4>Lifecycle</h4>
+<h5>如何生成全局唯一ID</h5>
 
 <ul>
-<li>它定义的是 Container Lifecycle Hooks。顾名思义，Container Lifecycle Hooks 的作用，是在容器状态发生变化时触发一系列“钩子”</li>
+<li>使用 auto_increment_increment 和 auto_increment_offset 参数跟分片数目相同</li>
+<li>使用全局节点来生成 ID</li>
+<li>在Redis等绶存服务器中创建全局ID</li>
 </ul>
 
-<h4>Pod Status</h4>
+<h4>演示</h4>
 
 <ul>
-<li>Pending。这个状态意味着，Pod 的 YAML 文件已经提交给了 Kubernetes，API 对象已经被创建并保存在 Etcd 当中。但是，这个 Pod 里有些容器因为某种原因而不能被顺利创建。比如，调度不成功。</li>
-<li>Running。这个状态下，Pod 已经调度成功，跟一个具体的节点绑定。它包含的容器都已经创建成功，并且至少有一个正在运行中。</li>
-<li>Succeeded。这个状态意味着，Pod 里的所有容器都正常运行完毕，并且已经退出了。这种情况在运行一次性任务时最为常见。</li>
-<li>Failed。这个状态下，Pod 里至少有一个容器以不正常的状态（非 0 的返回码）退出。这个状态的出现，意味着你得想办法 Debug 这个容器的应用，比如查看 Pod 的 Events 和日志。</li>
-<li>Unknown。这是一个异常状态，意味着 Pod 的状态不能持续地被 kubelet 汇报给 kube-apiserver，这很有可能是主从节点（Master 和 Kubelet）间的通信出现了问题。</li>
+<li>oneProxyp</li>
+<li><img src="media/15698792898834/15698810528098.jpg" alt="" style="width:697px;"/></li>
+<li><img src="media/15698792898834/15698810874116.jpg" alt="" style="width:721px;"/></li>
+<li><img src="media/15698792898834/15698811118872.jpg" alt="" style="width:492px;"/></li>
+<li>节点一</li>
+<li><img src="media/15698792898834/15698812390408.jpg" alt="" style="width:718px;"/></li>
+<li>节点二</li>
+<li><img src="media/15698792898834/15698812790906.jpg" alt="" style="width:898px;"/></li>
+<li><img src="media/15698792898834/15698812971307.jpg" alt="" style="width:846px;"/></li>
+<li>全局ID</li>
+<li><img src="media/15698792898834/15698815144180.jpg" alt="" style="width:1288px;"/></li>
 </ul>
 
-<h4>Project Volume</h4>
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/10/01 05:34 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Mysql%E6%80%A7%E8%83%BD%E7%AE%A1%E7%90%86%E5%92%8C%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1.html'>Mysql性能管理和架构设计</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15698009142943.html">
+                
+                  <h1>消费者应用</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>Pushconsumer 核心参数详解<br/>
+Push Consumer 消费模式集群模式<br/>
+Push Consumer 消费模式-广播模式<br/>
+消息存储核心-偏移量 offset<br/>
+集群模式- RemoteBrokeroffsetstoref 解析<br/>
+广播模式- LocalFileOffsetstore 解析</p>
+
+<h4>PushConsumer核心参数</h4>
 
 <ul>
-<li>Secret；</li>
-<li>ConfigMap；</li>
-<li>Downward API；</li>
-<li>ServiceAccountToken</li>
+<li>consumeFromwhere 第一次启动从尾部消费，后面从上次消费的位置消费</li>
+<li>AllocateMessagequeuestrategy </li>
+<li>subscription</li>
+<li>offsetStore</li>
+<li>Consumethread Min/consume Thread Max</li>
+<li>consumeconcurrentlyMaxSpan/pullthresholdForqueue</li>
+<li>pullinteral/pullBatchSize</li>
+<li>consumeMessageBatchMaxSize</li>
+<li>setMessageModel BROADCASTING CLUSTERING 集群模式和广播模式</li>
+<li></li>
 </ul>
 
-<h4>Service Account</h4>
+<h4>集群模式</h4>
 
-<pre class="line-numbers"><code class="language-text"> Volumes:
-  default-token-2djhh:
-    Type:        Secret (a volume populated by a Secret)
-    SecretName:  default-token-2djhh
-    Optional:    false
+<ul>
+<li>Groupname 用于把多个 Consumers 组织到一起</li>
+<li>相同 Groupname 的 Consumer 只消费所订阋消息的一部分</li>
+<li>达到天然的负载均衡机制</li>
+<li>tag  putUserProperty()</li>
+<li>集群模式不能确定消费者的消费消息数目</li>
+</ul>
+
+<h4>广播模式</h4>
+
+<ul>
+<li>Broadcasting 模式（广模式）</li>
+<li>同一个 Consumergroup 里的 consumer 都消费订阅</li>
+<li>Topic：全部信息也就是一条消息会被每一个 Consumer 消费 </li>
+<li>setmessagemode 方法</li>
+<li>收到一部分消费根据tag进行过滤</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/09/30 07:48 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='RocketMQ.html'>RocketMQ</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15697951220815.html">
+                
+                  <h1>SQL查询优化</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>优化</h4>
+
+<ul>
+<li>查询优化，库表优化，索引优化</li>
+</ul>
+
+<h4>获取有性能问题的SQL</h4>
+
+<ul>
+<li>通过用户反馈获取存在性能问题的</li>
+<li>SQL通过慢查日志获取存在性问题的SQL</li>
+<li>实时获取存在性能问题的SQL</li>
+</ul>
+
+<h4>慢查日志获取存在性问题的SQL</h4>
+
+<ul>
+<li>slow_query_log 启动停止记录慢查询日志</li>
+<li>slow_query_log_file 指定慢查日志的存储路径及文件</li>
+<li>long_query_time 指定记录慢查日志SQL执行时间的阀值
+<img src="media/15697951220815/15697956818258.jpg" alt="" style="width:680px;"/></li>
+<li>1ms比较合适</li>
+<li>log_ queries_ not_using_indexes 是否记录未使用索引的SQL</li>
+</ul>
+
+<h5>常用工具</h5>
+
+<ul>
+<li>mysqldumpslow
+<img src="media/15697951220815/15697959332594.jpg" alt="" style="width:791px;"/></li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">pt-query-digest --explain -h -u slow-mysql.log
+</code></pre>
+
+<h4>实时获取有性能问题SQL</h4>
+
+<pre class="line-numbers"><code class="language-text">SELECT `id`,`user`,`host`,DB,command,`time`,state,Info
+FROM information_schema.PROCESSLIST WHERE TIME&gt;=60
+</code></pre>
+
+<h4>执行流程</h4>
+
+<ul>
+<li>客户端发送 SQL 请求给服务器 </li>
+<li>服务器检查是否可以在査询绶存中命中该 SQL</li>
+<li>服务器端进行 SQL 解析，预处理，再由优化器生成对应的执行计划</li>
+<li>跟据执行计划，调用存储引擎 AI 来查询数据</li>
+<li>将结果返回给客户端</li>
+</ul>
+
+<h5>查询缓存</h5>
+
+<ul>
+<li>query_cache_type 设置查询绶存是否可用 OFF</li>
+<li>query_ cache_size 设置査询缓存的内存大小 0</li>
+<li>query_cache_ limit 设置查询缓存可用存储的最大值</li>
+<li>query_cache lock invalidate 设置数据表被锁后是否返回绶存中的数据</li>
+<li>query_cache_ min_res_unit 设置查询缓存分配的内存块最小单位</li>
+</ul>
+
+<h4>解析阶段</h4>
+
+<ul>
+<li>MYSQL依照这个执行计划和存储引擎进行交互这个阶段包括了多个子过程</li>
+<li>检查查询中所涉及的表和数据列是否存在及名字或别名是否存在歧义等等</li>
+<li>语法检查全都通过了，查询优化器就可以生成查询计划了</li>
+</ul>
+
+<h5>生成错误的执行计划的原因</h5>
+
+<ul>
+<li>统计信息不准确</li>
+<li>执行计划中的成本估算不等同于实际的执行计划的成本</li>
+<li>MYSQL优化器所认为的最优可能与你所认为的最优不一样</li>
+<li>MYSQL 从不考虑其他并发的査询，这可能会影响当前查询的速度</li>
+<li>MySQL 有时候也会基于一些固定的规则来生成执行计划 </li>
+<li>MySQL 不会考虑不受其控制的成本 自定义函数</li>
+</ul>
+
+<h5>可优化的类型</h5>
+
+<ul>
+<li>重新定义表的关联顺序</li>
+<li>将外连接转化成内连接</li>
+<li>使用等价变换规则</li>
+<li>优化count()min()max()</li>
+<li>select tables optimized away</li>
+<li>优化器已经从执行计划中移除了该表，并以一个常数取而代之</li>
+<li>将一个表达式转化为常数表达式</li>
+<li>使用等价变换规则</li>
+<li>子查询优化</li>
+<li>提前终止查询</li>
+<li>in条件优化，先排序，然后通过二分查找的方式</li>
+</ul>
+
+<h4>确定查询处理各个阶段所消耗的时间</h4>
+
+<ul>
+<li>实用profile</li>
+<li>set profiling=1;</li>
+<li>show profiles;</li>
+<li>show profile for query N;</li>
+<li>show profile cpu for query 1;</li>
+<li>performance_shema</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">UPDATE `setup_instruments` SET enabled=&#39;YES&#39;, TIMED=&#39;YES&#39; WHERE NAME LIKE &#39;stage%&#39;;
+UPDATE setup_consumers SET enabled=&#39;yes&#39; WHERE NAME LIKE &#39;events%&#39;;
+
+
+SELECT a.THREAD_ID,SQL_TEXT,c.EVENT_NAME,(c.TIMER_END-c.TIMER_START)/1000000000 AS &#39;DURATION (ms)&#39; FROM events_ statements_history_long a JOIN threads b ON a.`THREAD_ID`=b.`THREAD_ID` JOIN events_stages_history_long c ON c.`THREAD_ID`=b.`THREAD_ID` AND c.`EVENT_ID` BETWEEN a.EVENT_ID AND a.END_EVENT_ID WHERE b.`PROCESSLIST_ID`=CONNECTION_ID() AND a.EVENT_NAME=&#39;statement/sql/select&#39; ORDER BY a.THREAD_ID,c.EVENT_ID;
+</code></pre>
+
+<p><img src="media/15697951220815/15697985375993.jpg" alt="" style="width:1208px;"/></p>
+
+<h4>特定mysql的查询优化</h4>
+
+<ul>
+<li>分批处理 暂停一段时间</li>
+</ul>
+
+<h5>修改大表结构</h5>
+
+<p><img src="media/15697951220815/15697987541897.jpg" alt="" style="width:809px;"/></p>
+
+<pre class="line-numbers"><code class="language-text">pt-online-schema-change --alter=&quot;modify c1 varchar(40) not null default &#39;&#39; &quot; --user=root --password=L19880901c- D=crn2,t=t charset=utf8 --execute;
+</code></pre>
+
+<h5>优化not in &amp;&amp; &lt;&gt;查询</h5>
+
+<p><img src="media/15697951220815/15697994236380.jpg" alt="" style="width:1085px;"/></p>
+
+<h5>使用汇总表查询优化</h5>
+
+<p><img src="media/15697951220815/15697995377681.jpg" alt="" style="width:1188px;"/></p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/09/30 06:12 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Mysql%E6%80%A7%E8%83%BD%E7%AE%A1%E7%90%86%E5%92%8C%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1.html'>Mysql性能管理和架构设计</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15697112820357.html">
+                
+                  <h1>索引性能优化</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>索引类型</h4>
+
+<h4>B+tree索引</h4>
+
+<ul>
+<li>B-tree 过引以 B+树的结构存储数据</li>
+<li>Innodb通过主键。Myisam通过物理位置引用物理行</li>
+<li>B-tree 索引能够加快数据的查询速度</li>
+<li>B-tree 索引更适合进行范围查找</li>
+</ul>
+
+<h5>能够使用索引的场景</h5>
+
+<ul>
+<li>全值匹配的查询</li>
+<li>匹配最左前缀的查询</li>
+<li>匹配列前缀查询 orders_sn like &#39;9876%&#39;</li>
+<li>匹配范围值的查询 </li>
+<li>精确匹配左前列并范围匹配另外一列</li>
+<li>只访问索引的查询 覆盖索引</li>
+</ul>
+
+<h5>使用限制</h5>
+
+<ul>
+<li>如果不是按照索引最左列开始查找，则无法使用索引</li>
+<li>使用索引时不能跳过索引中的列</li>
+<li>Not in和&lt;&gt;无法使用</li>
+<li>如果査询中有某个列的范围查询，则其右边所有列都无法使用索引</li>
+</ul>
+
+<h4>Hash索引</h4>
+
+<ul>
+<li>只能等值查询</li>
+<li>Hash 索引是基于 Hash 表实现的，只有查询条件精确匹配 Hash 索引中的所有列时，才能够使用到 hash 索引。</li>
+<li>对于 Hash 索引中的所有列，存储引擎都会为每一行计算一个 Hash 码，Hash 索引中存储的就是 Hash 码。</li>
+<li>Hash 索引必须进行二次查找</li>
+<li>Hash 索引无法用于排序</li>
+<li>Hash 索引不支持部分索引查找也不支持范闺查找</li>
+<li>Hash 索引中 Hash 码的计算可能存在 Hash冲突</li>
+</ul>
+
+<h4>为什么使用索引</h4>
+
+<ul>
+<li>索引大大減少了存储引孳需要扫描的数据量</li>
+<li>索引可以帮助我们进行排序以避免使用临时表</li>
+<li>索引可以把随机I/O変为顺序I/O</li>
+</ul>
+
+<h4>索引是不是越多越好</h4>
+
+<ul>
+<li>索引会增加写操作的成本</li>
+<li>太多的索引会增加查询优化器的选择时间</li>
+</ul>
+
+<h4>索引优化策略</h4>
+
+<h5>索引列上不能使用表达式或函数</h5>
+
+<p><img src="media/15697112820357/15697127274946.jpg" alt="" style="width:1103px;"/></p>
+
+<h5>前缀索引和索引列的选择性</h5>
+
+<p><img src="media/15697112820357/15697128097620.jpg" alt="" style="width:952px;"/></p>
+
+<ul>
+<li>索引的选择性是不重复的索引值和表的记录数的比值
+<img src="media/15697112820357/15697128954405.jpg" alt="" style="width:700px;"/></li>
+</ul>
+
+<h5>联合索引</h5>
+
+<ul>
+<li>经常会被使用到的列优先</li>
+<li>选择高的列优先</li>
+<li>宽度小的列优先</li>
+</ul>
+
+<h5>覆盖索引</h5>
+
+<ul>
+<li>可以优化缓存，减少磁盘IO操作</li>
+<li>可以减少随机 IO，変随机 IO 操作变为 O 操作</li>
+<li>可以避免对 Innodb 主键索引的二次査询</li>
+<li>可以避免MYISAM 表进行系统调用</li>
+<li>无法使用的情况</li>
+<li>存储引擎不支持覆盖索引</li>
+<li>査询中使用了太多的列</li>
+<li>使用了双%号的 like 查询</li>
+</ul>
+
+<h4>适用索引来优化查询</h4>
+
+<h5>通过排序操作</h5>
+
+<ul>
+<li>innodb索引顺序和主键顺序是一致的</li>
+<li>索引的列顺序和 Order By 子句的顺序完全一致</li>
+<li>索引中所有列的方向升序降序和 Order by 子句完全致 Order by 中的字段全部在关联表中的第一张表中
+<img src="media/15697112820357/15697147233050.jpg" alt="" style="width:1733px;"/></li>
+</ul>
+
+<h5>按照索引顺序扫描数据</h5>
+
+<h4>模拟hash索引</h4>
+
+<ul>
+<li>只能处理键值的全值匹配查找</li>
+<li>所使用的 Hash 函数决定着索引键的大小</li>
+</ul>
+
+<h4>索引效果</h4>
+
+<ul>
+<li>减少锁定的行数</li>
+<li>加快锁的释放，增加并发</li>
+</ul>
+
+<h4>索引的维护和优化</h4>
+
+<ul>
+<li>删除重复和冗余的索引</li>
+<li>使用工具pt-duplicat-key-checker h = 127.0.0.1</li>
+<li>查找未被使用过的索引</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">select object_schema,object_name,index_name,b.`TABLE_ROWS` FROM  
+performance_schema.table_io_waits_summary_by_index_usage a 
+JOIN information_schema.tables b ON
+a.`OBJECT_SCHEMA`=b.`TABLE_SCHEMA` AND
+a.`OBJECT_NAME`=b.`TABLE_NAME`
+WHERE index_name IS NOT NULL
+AND count_star = 0
+ORDER BY object_schema,object_name;
 </code></pre>
 
 <ul>
-<li>把 Kubernetes 客户端以容器的方式运行在集群里，然后使用 default Service Account 自动授权的方式，被称作“InClusterConfig”</li>
-</ul>
-
-<h4>容器健康检查和恢复机制</h4>
-
-<ul>
-<li>livenessProbe</li>
-<li>exec</li>
-<li>http</li>
-<li>tcp</li>
-<li>readinessProbe</li>
-<li>只要 Pod 的 restartPolicy 指定的策略允许重启异常的容器（比如：Always），那么这个 Pod 就会保持 Running 状态，并进行容器重启。否则，Pod 就会进入 Failed 状态 。</li>
-<li>对于包含多个容器的 Pod，只有它里面所有的容器都进入异常状态后，Pod 才会进入 Failed 状态。在此之前，Pod 都是 Running 状态。此时，Pod 的 READY 字段会显示正常容器的个数</li>
+<li>更新索引统计信息较少索引碎片</li>
+<li>analysz table table_name</li>
+<li>optimize table table_name</li>
 <li></li>
 </ul>
 
@@ -284,708 +673,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/01/10 11:03 上午</span>
+                    <span class="date">2019/09/29 06:54 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15477155524350.html">
-                
-                  <h1>Mysql高可用</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>seconds_behind_master</h4>
-
-<ul>
-<li>每个事务的 binlog 里面都有一个时间字段，用于记录主库上写入的时间；</li>
-<li>备库取出当前正在执行的事务的时间字段的值，计算它与当前系统时间的差值，得到 seconds_behind_master。</li>
-</ul>
-
-<h4>主备延迟</h4>
-
-<ul>
-<li>备库机器性能比较差</li>
-<li>备库压力大
-<ul>
-<li>一主多从</li>
-<li>通过binlog输出到外部系统如hadoop </li>
-</ul></li>
-<li>大事务 一次性删除太多历史数据 大表DDL</li>
-<li>备库的并行复制能力</li>
-</ul>
-
-<h4>可靠性优先策略</h4>
-
-<ul>
-<li>双M结构下主从切换，然后等切换成主库的备库的seconds_behind_master=0,把备库改成可读写状态</li>
-<li><img src="media/15477155524350/54f4c7c31e6f0f807c2ab77f78c8844a.png" alt="54f4c7c31e6f0f807c2ab77f78c8844a"/></li>
-</ul>
-
-<h4>可用性优先策略</h4>
-
-<ul>
-<li>双M主备的切换过程中，不等主备同步，直接把连接切到备库</li>
-<li>如果binglog是statement会导致主备不一致，如果是row则会抛出异常不会执行</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/01/17 16:59 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15476249724855.html">
-                
-                  <h1>Linux IO操作</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>虚拟文件系统</h4>
-
-<ul>
-<li>目录项，记录了文件的名字，以及文件与其他目录项之间的目录关系。</li>
-<li>索引节点，记录了文件的元数据。</li>
-<li>逻辑块，是由连续磁盘扇区构成的最小读写单元，用来存储文件数据。</li>
-<li>超级块，用来记录文件系统整体的状态，如索引节点和逻辑块的使用情况等。</li>
-</ul>
-
-<h4>固态硬盘和机械磁盘</h4>
-
-<ul>
-<li>机械磁盘的最小读写单位是扇区，一般大小为 512 字节。</li>
-<li>而固态磁盘的最小读写单位是页，通常大小是 4KB、8KB 等。</li>
-</ul>
-
-<h4>通用块层</h4>
-
-<ul>
-<li>为文件系统和应用程序，提供访问块设备的标准接口；向下，把各种异构的磁盘设备抽象为统一的块设备，并提供统一框架来管理这些设备的驱动程序。</li>
-<li>通用块层还会给文件系统和应用程序发来的 I/O 请求排队，并通过重新排序、请求合并等方式，提高磁盘读写的效率。</li>
-</ul>
-
-<h4>磁盘性能指标</h4>
-
-<ul>
-<li>使用率，是指磁盘处理 I/O 的时间百分比。过高的使用率（比如超过 80%），通常意味着磁盘 I/O 存在性能瓶颈。</li>
-<li>饱和度，是指磁盘处理 I/O 的繁忙程度。过高的饱和度，意味着磁盘存在严重的性能瓶颈。当饱和度为 100% 时，磁盘无法接受新的 I/O 请求。</li>
-<li>IOPS（Input/Output Per Second），是指每秒的 I/O 请求数。</li>
-<li>吞吐量，是指每秒的 I/O 请求大小。</li>
-<li>响应时间，是指 I/O 请求从发出到收到响应的间隔时间。</li>
-<li>在数据库、大量小文件等这类随机读写比较多的场景中，IOPS 更能反映系统的整体性能；而在多媒体等顺序读写较多的场景中，吞吐量才更能反映系统的整体性能。</li>
-</ul>
-
-<h4>iostat指标</h4>
-
-<ul>
-<li>%util 磁盘IO使用率</li>
-<li>r/s + w/s 就是IOPS</li>
-<li>rkB/s+wkB/s 吞吐量</li>
-<li>r_await+w_await 响应时间</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/01/16 15:49 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15429373418994.html">
-                
-                  <h1>平均负载</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>定义</h4>
-
-<ul>
-<li>单位时间内，系统处于可运行状态和不可中断状态的平均进程数，和cpu使用率没有直接关系</li>
-<li>包括了正在使用 CPU 的进程，还包括等待 CPU 和等待 I/O 的进程。</li>
-<li>本质上是平均活跃进程数</li>
-<li></li>
-</ul>
-
-<h4>过载</h4>
-
-<ul>
-<li>一旦1分钟的平均负载接近或超过了CPU的个数，就意味着系统正在发生过载的问题</li>
-<li>排查问题的阀门</li>
-<li><strong><em>当平均负载高于 CPU 数量 70% 的时候，你就应该分析排查负载高的问题了。</em></strong></li>
-</ul>
-
-<h4>cpu负载和cpu对应率的关系</h4>
-
-<ul>
-<li>CPU 密集型进程，使用大量 CPU 会导致平均负载升高，此时这两者是一致的。</li>
-<li>I/O 密集型进程，等待 I/O 也会导致平均负载升高，但 CPU 使用率不一定很高。</li>
-<li>大量等待 CPU 的进程调度也会导致平均负载升高，此时的 CPU 使用率也会比较高。</li>
-</ul>
-
-<h4>工具stress和sysstat</h4>
-
-<ul>
-<li>stress系统压力测试工具</li>
-<li>sysstat作为性能工具</li>
-<li>mpstat 是一个常用的多核 CPU 性能分析工具，用来实时查看每个 CPU 的性能指标，以及所有 CPU 的平均指标。</li>
-<li>pidstat 是一个常用的进程性能分析工具，用来实时查看进程的 CPU、内存、I/O 以及上下文切换等性能指标。</li>
-<li>pidstat wait就是进程等待CPU时间</li>
-<li>stress 缓冲区可能比较小，无法产生大的IO压力，这样大部分就都是系统调用的消耗了</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/11/23 09:42 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15470904831321.html">
-                
-                  <h1>Linux性能答疑</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>内存回收方式</h4>
-
-<ul>
-<li>基于 LRU（Least Recently Used）算法，回收缓存；</li>
-<li>基于 Swap 机制，回收不常访问的匿名页；</li>
-<li>基于 OOM（Out of Memory）机制，杀掉占用大量内存的进程。触发时机是进程在申请内存时，如果申请的虚拟内存加上服务器实际已用的内存之和，比总的物理内存还大，就会触发OOM</li>
-</ul>
-
-<h4>统计总内存</h4>
-
-<ul>
-<li>把共享内存平分到各个进程后，再加上进程本身的非共享内存大小的和。</li>
-<li>grep Pss /proc/[1-9]*/smaps | awk &#39;{total+=$2}; END {printf &quot;%d kB\n&quot;, total }&#39;</li>
-</ul>
-
-<h4>缓存和缓冲区的却别</h4>
-
-<ul>
-<li>缓存包括两部分，一部分是磁盘读取文件的页缓存，用来缓存从磁盘读取的数据，可以加快以后再次访问的速度。另一部分，则是 Slab 分配器中的可回收内存。</li>
-<li>缓冲区是对原始磁盘块的临时存储，用来缓存将要写入磁盘的数据。这样，内核就可以把分散的写集中起来，统一优化磁盘写入。</li>
-</ul>
-
-<h4>各种内存片段</h4>
-
-<ul>
-<li>虚拟内存，包括了进程代码段、数据段、共享内存、已经申请的堆内存和已经换出的内存等。这里要注意，已经申请的内存，即使还没有分配物理内存，也算作虚拟内存。</li>
-<li>常驻内存是进程实际使用的物理内存，不过，它不包括 Swap 和共享内存。</li>
-<li>共享内存，既包括与其他进程共同使用的真实的共享内存，还包括了加载的动态链接库以及程序的代码段等。</li>
-<li><img src="media/15470904831321/e28cf90f0b137574bca170984d1e6736.png" alt="e28cf90f0b137574bca170984d1e6736"/></li>
-</ul>
-
-<h4>内存性能工具</h4>
-
-<ul>
-<li>根据指标找工具</li>
-<li><img src="media/15470904831321/8f477035fc4348a1f80bde3117a7dfed.png" alt="8f477035fc4348a1f80bde3117a7dfed"/></li>
-<li>工具工具找指标
-<img src="media/15470904831321/52bb55fba133401889206d02c224769b.png" alt="52bb55fba133401889206d02c224769b"/></li>
-<li>分析流程图
-<img src="media/15470904831321/d79cd017f0c90b84a36e70a3c5dccffe.png" alt="d79cd017f0c90b84a36e70a3c5dccffe"/></li>
-</ul>
-
-<h4>内存优化思路</h4>
-
-<ul>
-<li>最好禁止 Swap。如果必须开启 Swap，降低 swappiness 的值，减少内存回收时 Swap 的使用倾向。</li>
-<li>减少内存的动态分配。比如，可以使用内存池、大页（HugePage）等。</li>
-<li>尽量使用缓存和缓冲区来访问数据。比如，可以使用堆栈明确声明内存空间，来存储需要缓存的数据；或者用 Redis 这类的外部缓存组件，优化数据的访问。</li>
-<li>使用 cgroups 等方式限制进程的内存使用情况。这样，可以确保系统内存不会被异常进程耗尽。</li>
-<li>通过 /proc/pid/oom_adj ，调整核心应用的 oom_score。这样，可以保证即使内存紧张，核心应用也不会被 OOM 杀死。</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/01/10 11:21 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15470858063747.html">
-                
-                  <h1>kubeadm部署</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>static pod</h4>
-
-<ul>
-<li>把要部署的 Pod 的 YAML 文件放在一个指定的目录里。这样，当这台机器上的 kubelet 启动时，它会自动检查这个目录，加载所有的 Pod YAML 文件，然后在这台机器上启动它们。</li>
-</ul>
-
-<h4>bootstrap token</h4>
-
-<ul>
-<li>安装了 kubelet 和 kubadm 的节点，都可以通过 kubeadm join 加入到这个集群当中</li>
-</ul>
-
-<h4>kube-proxy</h4>
-
-<ul>
-<li>服务发现功能</li>
-</ul>
-
-<h4>DNS</h4>
-
-<ul>
-<li>DNS功能</li>
-</ul>
-
-<h4>node节点加入集群</h4>
-
-<ul>
-<li>kubeadm访问kube-apiserver获取保存在configmap中的cluster-info</li>
-<li>cluster-info 里的 kube-apiserver 的地址、端口、证书</li>
-</ul>
-
-<h4>访问仓库</h4>
-
-<ul>
-<li>gcr.io</li>
-<li>quay.io</li>
-</ul>
-
-<h4>部署单机k8s集群</h4>
-
-<ul>
-<li><a href="https://www.datayang.com/article/45">https://www.datayang.com/article/45</a></li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/01/10 10:03 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15470844509355.html">
-                
-                  <h1>K8S的本质</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>k8s结构图</h4>
-
-<p><img src="media/15470844509355/8ee9f2fa987eccb490cfaa91c6484f67.png" alt="8ee9f2fa987eccb490cfaa91c6484f67"/></p>
-
-<h4>结构剖析</h4>
-
-<ul>
-<li>控制节点</li>
-<li>负责API服务的kube-apiserver</li>
-<li>负责调度的kube-scheduler</li>
-<li>负责容器编排的kube-controller-manager</li>
-<li>计算节点</li>
-</ul>
-
-<h4>kubelet组件</h4>
-
-<ul>
-<li>容器通过CRI接入Kuberbetes</li>
-<li>通过OCI翻译CRI的请求与底层的Linux操作系统交互</li>
-<li>CNI调用网络插件为容器配置网络</li>
-<li>CSI调用存储插件为容器配置持久存储</li>
-</ul>
-
-<h4>解决问题</h4>
-
-<ul>
-<li>运行在大规模集群中的各种任务之间，实际上存在着各种各样的关系。这些关系的处理，才是作业编排和管理系统最困难的地方。</li>
-<li><img src="media/15470844509355/16c095d6efb8d8c226ad9b098689f306.png" alt="16c095d6efb8d8c226ad9b098689f306"/></li>
-<li>deployment解决Pod的多实例管理器</li>
-<li>service解决固定IP地址访问的问题</li>
-<li>secret解决访问时的授权信息</li>
-<li>daemonset描述每个宿主机必须只能运行一个副本的守护任务</li>
-</ul>
-
-<h4>和过去集群管理的区别</h4>
-
-<ul>
-<li>过去很多的集群管理项目（比如 Yarn、Mesos，以及 Swarm）所擅长的，都是把一个容器，按照某种规则，放置在某个最佳节点上运行起来。这种功能，我们称为“调度”。</li>
-<li>而 Kubernetes 项目所擅长的，是按照用户的意愿和整个系统的规则，完全自动化地处理好容器之间的各种关系。这种功能，就是我们经常听到的一个概念：编排。</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/01/10 09:40 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15467443920316.html">
-                
-                  <h1>深入理解容器镜像</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>mount space</h4>
-
-<ul>
-<li>Mount Namepace修改的是容器进程对文件系统挂载点的认知</li>
-<li>tmpfs内存盘</li>
-</ul>
-
-<h4>挂载原理</h4>
-
-<pre class="line-numbers"><code class="language-text">  mount(“”, “/“, NULL, MS_PRIVATE, “”) 
-</code></pre>
-
-<h4>chroot</h4>
-
-<ul>
-<li>改变进程的根目录到指定的位置</li>
-<li>挂载在容器根目录上，用来为容器进程提供隔离后执行环境的文件系统就是容器镜像，也叫rootfs</li>
-</ul>
-
-<h4>Docker核心流程</h4>
-
-<ul>
-<li>启动linux namespace配置</li>
-<li>设置指定的cgroups参数</li>
-<li>切换进程的根目录</li>
-</ul>
-
-<h4>pivot_root和chroot的区别</h4>
-
-<h4>容器一致性</h4>
-
-<ul>
-<li>rootfs有层级概念</li>
-<li>每一层对应一个文件夹</li>
-<li>OverlayFS仅有两层，也就是说镜像中的每一层并不对应OverlayFS中的层，而是，镜像中的每一层对应/var/lib/docker/overlay中的一个文件夹，文件夹以该层的UUID命名。然后使用硬连接将下面层的文件引用到上层。这在一定程度上节省了磁盘空间。这样，OverlayFS中的lowerdir就对应镜像层的最上层，并且是只读的。在创建镜像时，Docker会新建一个文件夹作为OverlayFS的upperdir，它是可写的。</li>
-</ul>
-
-<h4>删除文件</h4>
-
-<ul>
-<li>通过可读写层创建一个whiteout文件，把只读层的文件遮挡起来</li>
-</ul>
-
-<h4>init层</h4>
-
-<ul>
-<li>Init 层是 Docker 项目单独生成的一个内部层，专门用来存放 /etc/hosts、/etc/resolv.conf 等信息。</li>
-</ul>
-
-<h4>容器修改文件的流程</h4>
-
-<ul>
-<li>修改一个文件的时候，首先会从上到下查找有没有这个文件，找到，就复制到容器层中，修改，修改的结果就会作用到下层的文件，这种方式也被称为copy-on-write。</li>
-</ul>
-
-<h4>katacontainers</h4>
-
-<ul>
-<li>新的容器技术//TODO</li>
-</ul>
-
-<h4>exec原理</h4>
-
-<ul>
-<li>docker inspect --format &#39;{{.State.Pid}}&#39; container-id</li>
-<li>通过加入一个进程的NameSpace中达到进入容器的目的</li>
-<li>通过调用sentns的系统调用实现</li>
-</ul>
-
-<h4>容器里进程新建的文件，怎么才能让宿主机获取到？</h4>
-
-<ul>
-<li>rootfs之后,chroot之前，宿主机的目录被联合挂载到/var/lib/docker/aufs/mnt/目录中的可读写层中，这个挂载工作就完成了</li>
-<li>容器进程是指docker创建的容器初始化进程，最后通过execv()系统调用，让应用进程取代自己，成为容器pid=1的进程</li>
-<li>绑定挂载允许将一个目录或者文件挂载到指定的目录上，该挂载点上进行的任何操作，只是发生在被挂载的目录或者文件上，而原挂载点的内容则会被隐藏起来且不受影响。</li>
-<li><img src="media/15467443920316/95c957b3c2813bb70eb784b8d1daedc6.png" alt="95c957b3c2813bb70eb784b8d1daed"/></li>
-<li>绑定挂载本质就是inode替换的过程</li>
-<li>新建目录不会被namespace隔离，会产生新的目录，但是对该目录的改变只会产生在宿主机，不会在容器中产生。</li>
-</ul>
-
-<h4>Docker copyData功能</h4>
-
-<h4>cgroup的NameSpace作用</h4>
-
-<ul>
-<li>容器中一旦挂载cgroup filesystem，可以修改整全局的cgroup配置</li>
-<li>cgroup namespace更加安全。</li>
-<li>namespace中的进程都有自己cgroupns root和cgroup filesystem视图</li>
-<li>会使容器迁移更加容易；在迁移时，/proc/self/cgroup需要复制到目标机器，这要求容器的cgroup路径是唯一的，否则可能会与目标机器冲突</li>
-<li></li>
-</ul>
-
-<h4>获取宿主机的ip</h4>
-
-<ul>
-<li>downwardapi</li>
-</ul>
-
-<h4>overlay</h4>
-
-<ul>
-<li>modprobe overlay</li>
-<li> mount -t overlay overlay -olowerdir=./lower,upperdir=./upper,workdir=./work ./merged</li>
-<li> </li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/01/06 11:13 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15465006494547.html">
-                
-                  <h1>IO多路复用，EPOLL原理</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>Epoll有没有数量的限制</h4>
-
-<h4>Websocket推送数据的时候，卡顿的问题</h4>
-
-<h4>AIO为什么不能做高性能的IO</h4>
-
-<h4>Epoll只拷贝一部分，拷贝那一部分</h4>
-
-<h4>用户态到内核态交互为什么性能低</h4>
-
-<h4>线程</h4>
-
-<ul>
-<li>一个线程8M空间</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/01/03 15:30 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15458801627823.html">
-                
-                  <h1>递归算法</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>条件</h4>
-
-<ul>
-<li>问题分解为几个子问题</li>
-<li>存在递归子条件</li>
-</ul>
-
-<h4>解决重复计算</h4>
-
-<pre class="line-numbers"><code class="language-text">public int f(int n) {
-  if (n == 1) return 1;
-  if (n == 2) return 2;
-  
-  // hasSolvedList 可以理解成一个 Map，key 是 n，value 是 f(n)
-  if (hasSolvedList.containsKey(n)) {
-    return hasSovledList.get(n);
-  }
-  
-  int ret = f(n-1) + f(n-2);
-  hasSovledList.put(n, ret);
-  return ret;
-}
-</code></pre>
-
-<h4>递归改成非递归</h4>
-
-<pre class="line-numbers"><code class="language-text">int f(int n) {
-  if (n == 1) return 1;
-  if (n == 2) return 2;
-  
-  int ret = 0;
-  int pre = 2;
-  int prepre = 1;
-  for (int i = 3; i &lt;= n; ++i) {
-    ret = pre + prepre;
-    prepre = pre;
-    pre = ret;
-  }
-  return ret;
-}
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/27 11:09 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
+          					    <span class="posted-in"><a href='Mysql%E6%80%A7%E8%83%BD%E7%AE%A1%E7%90%86%E5%92%8C%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1.html'>Mysql性能管理和架构设计</a></span>
           				   
                   </div>
                   <div class="more-right right">

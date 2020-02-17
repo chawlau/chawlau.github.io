@@ -170,607 +170,67 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15366575299342.html">
+                <a class="clearlink" href="15683697645245.html">
                 
-                  <h1>K8S资源</h1>
+                  <h1>线程传参</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>Service 类型</h4>
+                        	<h4>临时对象</h4>
 
 <ul>
-<li>ClusterIP, NodePort: </li>
-<li>client-&gt;NodeIP:NodePort-&gt;ClusterIP:ServicePort--&gt;PodIP:contanerPort</li>
-<li>LoadBaLancer</li>
-<li>ExternelName: CNAME--&gt;FQDN //TODO</li>
-<li>No ClusterIP: Headless Service</li>
-<li>ServiceName -&gt; PodIP</li>
-<li>SSL会话七层的会话机制</li>
-<li>DaemonSet在有限个节点运行</li>
-<li>外部接入七层外部流量节点</li>
-<li></li>
+<li>参数不能传引用和指针</li>
+<li>线程传参传字符串</li>
 </ul>
 
-<h4>Service 模型</h4>
-
-<ul>
-<li>模型: userspace, iptables, ipvs</li>
-<li>KUBE_PROXY_MODE=ipvs</li>
-<li>ip_vs,ip_vs_rr, ip_vs_wrr,ip_vs_sh</li>
-<li>nf_conntrack_ipv4</li>
-</ul>
-
-<h4>Ingress Controller</h4>
-
-<ul>
-<li>独立运行的Pod资源</li>
-<li>Nginx,Traefik,Envoy</li>
-<li>Envoy专门用来做微服务</li>
-<li>Ingress资源 </li>
-<li><img src="media/15366575299342/15367192097989.jpg" alt=""/></li>
-<li>配置文件重载</li>
-<li>实现七层调度</li>
-<li><img src="media/15366575299342/15367193534135.jpg" alt=""/></li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/09/11 17:18 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15362028339277.html">
-                
-                  <h1>K8S集群初始化</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>集群架构图</h4>
-
-<ul>
-<li><img src="media/15362028339277/15362028894465.jpg" alt=""/></li>
-<li><img src="media/15362028339277/15362030011227.jpg" alt=""/></li>
-</ul>
-
-<h4>kube部署</h4>
-
-<ul>
-<li>k8s组件都运行为容器</li>
-<li>static pod</li>
-<li>master, nodes: 安装kubelet,kubeadm,docker</li>
-<li>master: kubeadm init</li>
-<li>nodes: kubeadm join</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  kubeadm join 10.19.1.211:6443 --token 5jg2wm.lvzwvvq2ubr0uyl4 --discovery-token-ca-cert-hash sha256:56180787411165f97e1da1e7c3a33d17f5eea7e13c5003bae458dd883ce7b543
+<pre class="line-numbers"><code class="language-text">//void myprint(const int&amp; i, char* buf) {
+//存在主线程被回收,char* buf还没有转成string
+void myprint(const int&amp; i, const string&amp; buf) {
+  cout &lt;&lt; &quot; i &quot; &lt;&lt; i &lt;&lt; endl;
+  cout &lt;&lt; &quot;buf &quot; &lt;&lt; buf &lt;&lt; endl;
+}
+thread th(myprint, var, A(var));
+thread th(myprint, var, string(buf));
 </code></pre>
 
 <ul>
-<li>pod,service,replicaset,deployment,statefulet,daemonset,job,cronjon,node</li>
-<li>查看k8s的DNS服务器kubectl get pods -n kube-system -o wide</li>
-<li>wget -O - -q <a href="http://nginx:80/">http://nginx:80/</a></li>
-<li>kubectl get pods --show-labels</li>
-<li>kubectl get deployment -w 监控</li>
-<li>kubectl scale --replicas=5 deployment myapp 动态扩容和缩容</li>
-<li>kubectl set image deployment myapp myapp=ikubernetes/myapp:v2 升级</li>
-<li>回滚 kubectl rollout undo deployment myapp</li>
-<li>基于yml来管理</li>
+<li>创建线程的同时传递临时对象是可行的</li>
+<li>保证在主线程被回收前</li>
+<li>thread传递值，传递类对象避免隐式类型转换， 全部在创建线程的时候构建出来</li>
+<li>不使用detach，使用join</li>
 </ul>
 
-<h4>docker1.13无法启动镜像</h4>
+<h4>临时对象作为线程参数</h4>
 
 <ul>
-<li>ln -sf /usr/libexec/docker/docker-runc-current /usr/bin/docker-runc</li>
-<li>kubectl delete deployment myapp</li>
-<li>kubectl get deployment</li>
-<li>kubectl exec -it client -c busy-deploy -- /bin/sh</li>
-<li>oc rsh client</li>
+<li>获取线程id， this_thread::get_id()来获取</li>
+<li>临时对象构造时机捕获</li>
 </ul>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/09/06 11:00 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15363042633543.html">
-                
-                  <h1>k8s资源清单</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>常用资源</h4>
-
-<ul>
-<li>RESTful</li>
-<li>GET PUT DELETE POST</li>
-<li>kubectl run,get,edit</li>
-<li>workload: Pod,ReplicaSet,Deployment,StatefulSet,DaemonSet,Job,Cronjob</li>
-<li>服务发现与均衡: Service, Ingress</li>
-<li>配置与存储: Volume，CSI //TODO</li>
-<li>ConfigMap, Secret</li>
-<li>DownwardAPI</li>
-<li>集群级别资源</li>
-<li>Namespace,Node,Role,ClusterRole,RoleBinding,ClusterRoleBinding</li>
-<li>元数据型资源</li>
-<li>HPA,PodTemplate,LimitRange</li>
-<li>group/version core</li>
-</ul>
-
-<h4>创建资源</h4>
-
-<ul>
-<li>apiserver仅接收json格式的资源定义</li>
-<li>yml格式来提供配置清单,apiserver可自动转为json格式，而后再提交</li>
-</ul>
-
-<h4>大部分资源的配置清单</h4>
-
-<ul>
-<li>apiVersion</li>
-<li>kubectl api-versions</li>
-</ul>
-
-<h5>metadata</h5>
-
-<ul>
-<li>name</li>
-<li>namespace</li>
-<li>lablels</li>
-<li>annotations</li>
-<li>每个资源的引用PATH</li>
-<li>/api/GROUP/VERSION/namespaces/NAMESPACE/TYPE/NAME</li>
-<li>spec: 期望的状态 desired state</li>
-<li>status: 当前状态 current state本字段由集群维护</li>
-</ul>
-
-<h4>Pod资源</h4>
-
-<ul>
-<li>spec.containers</li>
-<li>name </li>
-<li>image</li>
-<li>imagePullPolicy  Always Never IfNotPresent</li>
-<li>修改镜像中的操作</li>
-</ul>
-
-<h4>标签选择器</h4>
-
-<ul>
-<li>等值关系： = ,！= </li>
-<li>集合关系： KEY in (val1,val2)</li>
-<li>Key not in (val1,val2)</li>
-<li>KEY</li>
-</ul>
-
-<h4>许多资源支持内嵌字段</h4>
-
-<ul>
-<li>matchLabels: 直接给定键值</li>
-<li>matchExperssions: 基于给定的表达式来定义使用标签选择器, {key:&quot;KEY&quot;, operator:&quot;OPERATOR&quot;, values:[VAL1,VAL2,...]}</li>
-<li>操作符</li>
-<li>In NotIn: values字段必须为非空列表</li>
-<li>Exists, NotExists: values字段必须为空列表</li>
-</ul>
-
-<h4>nodeSelector</h4>
-
-<ul>
-<li>节点标签选择器</li>
-<li>影响调度算法的指标</li>
-</ul>
-
-<h4>annotations</h4>
-
-<ul>
-<li>与label不同在于，不能用于挑选资源对象，仅用于为对象提供元数据</li>
-</ul>
-
-<h4>Pods生命周期</h4>
-
-<ul>
-<li>状态: Pending, Running, Failed, Succeeded, Unkown</li>
-<li>创建Pod: ApiServer Etcd kubelet</li>
-<li><img src="media/15363042633543/15364876918339.jpg" alt="" style="width:473px;"/></li>
-</ul>
-
-<h5>Pod生命周期的重要行为</h5>
-
-<ul>
-<li>初始化容器</li>
-<li>容器探测</li>
-<li>liveness</li>
-<li>readiness</li>
-</ul>
-
-<h5>restartPolicy</h5>
-
-<ul>
-<li>Always </li>
-<li>OnFailure</li>
-<li>Never 不再重启</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/09/07 15:11 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15360412611733.html">
-                
-                  <h1>iptables & tcp_wrapper</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>iptables的连接追踪表最大容量</h4>
-
-<ul>
-<li>加大 ip_contrack_max值</li>
-<li>降低 ip_contrack timeout时间</li>
-</ul>
-
-<h4>课外扩展</h4>
-
-<ul>
-<li>recent模块</li>
-<li>layer7模块</li>
-</ul>
-
-<h4>tcp_wrapper包装器</h4>
-
-<ul>
-<li>基于tcp协议开发提供服务的应用程序，提供的一层的访问控制工具</li>
-<li>基于库调用实现功能</li>
-</ul>
-
-<h4>判断服务是否能够由tcp_wrapper进行访问控制</h4>
-
-<ul>
-<li>动态编译: ldd命令查看是否有libwrap.so</li>
-<li>静态编译 strings命令查看应用程序，并且其结果中如果出现host.allow, host.deny</li>
-</ul>
-
-<h4>配置文件实现访问控制</h4>
-
-<ul>
-<li>/etc/hosts/allow</li>
-<li>/etc/hosts/deny</li>
-<li>配置文件语法：</li>
-<li>daemon_list: client_list [:options]</li>
-</ul>
-
-<h5>daemon_list:</h5>
-
-<ul>
-<li>应用程序的文件名称，而非服务名</li>
-<li>应用程序文件名称列表，逗号分隔</li>
-<li>例如 sshd, vsftpd</li>
-<li>ALL表示所有</li>
-</ul>
-
-<h5>client_list</h5>
-
-<ul>
-<li>IP地址</li>
-<li>主机名</li>
-<li>网络地址</li>
-<li>简短格式的网络格式</li>
-<li>ALL表示所有主机</li>
-<li>KNOW</li>
-<li>UNKNOW</li>
-<li>PARANOID</li>
-</ul>
-
-<h4>[:options]</h4>
-
-<ul>
-<li>spawn: 启动额外应用程序</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/09/04 14:07 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15360244431288.html">
-                
-                  <h1>Iptable之内网访问互联网</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>NAT，proxy</h4>
-
-<ul>
-<li>nat 隐藏本地网络的IP地址 Network Address Translation 网络层+传输层</li>
-<li>proxy 代理 应用层</li>
-</ul>
-
-<h4>nat技术分类</h4>
-
-<ul>
-<li>SNAT 只修改请求报文的源地址</li>
-<li>DNAT 只修改请求报文的目标地址</li>
-<li>IPVS 基于10种方式来实现负载均衡LVS</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  iptables -t nat -A PREROUTING -d gateway -p tcp --dport 80 -j DNAT --to-destination dest_ip:port
-  iptables -t nat -A PREROUTING -d gateway -p tcp --dport 22 -j DNAT --to-destination dest_ip:port 端口映射
-  iptables -t nat -A POSTROUTING -s 192.168.20.0/24 ! -d 192.168.20.0/24 -j MASQUERADE //地址伪装
-</code></pre>
-
-<h4>NAT表</h4>
-
-<ul>
-<li>PREROUTING: DNAT</li>
-<li>OUTPUT</li>
-<li>POSTROUTING: SNAT</li>
-<li>REDIRECT 端口重定向</li>
-<li>美国往事//TODO</li>
-</ul>
-
-<h4>nat的实现方式</h4>
-
-<ul>
-<li>源地址转化 iptables -t nat -A POSTROUTING -s LOCALNET ! -d LOCALNET  -j SNAT --to-source ExtIP</li>
-<li> iptables -t nat -A POSTROUTING -s LOCALNET ! -d LOCALNET  -j MASQUERADE  地址不固定</li>
-<li> iptables -t nat -L -n</li>
-<li> 目标地址转换 iptables -t nat -A PREROUTING -d ExtIP -p tcp --dport PORT -j DNAT --to-destination InterServerIP</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/09/04 09:27 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15356859617795.html">
-                
-                  <h1>Docker资源限制</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>资源限制</h4>
-
-<ul>
-<li>docker可以耗尽主机的全部资源</li>
-<li>Linux Capabilities</li>
-</ul>
-
-<h4>Memory</h4>
-
-<ul>
-<li>Docker daemon的OOM优先级</li>
-<li>定义 -16 到 15 之间的一个数值以便帮助决定某个进程的 oom_score。oom_score 值越高，被oom_killer 杀死的进程数就越多。将 oom_adj 值设定为 -17 则为该进程禁用 oom_killer。</li>
-</ul>
-
-<h4>CPU</h4>
-
-<ul>
-<li>CFS调度</li>
-<li>--cpu-shares</li>
-<li>--cpuset-cpus</li>
-<li>docker top container</li>
-<li>docker stats</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/08/31 11:26 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15356194485834.html">
-                
-                  <h1>Docker Registry</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>Registry分类</h4>
-
-<ul>
-<li>Sponsor Registry</li>
-<li>Mirror Registry</li>
-<li>Vendor Registry</li>
-<li>Private Registry</li>
-</ul>
-
-<h4>PUSH</h4>
-
-<ul>
-<li>insecure-registries</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  docker push node1:5000/myweb:v0.3-2
-  /etc/docker/daemon.json 修改配置 &quot;insecure-registries&quot;: [&quot;node1:5000&quot;]
+<pre class="line-numbers"><code class="language-text">void myprint2(const A&amp; buf) {
+  cout &lt;&lt; &quot;buf &quot; &lt;&lt; &amp;buf &lt;&lt; &quot; thread_id &quot; &lt;&lt; this_thread::get_id() &lt;&lt; endl;
+}
+thread th2(myprint2, var);
 </code></pre>
 
 <ul>
-<li>habor</li>
+<li>使用临时对象构建线程，是在主线程中构建完成</li>
 </ul>
 
-<h4>容器编排</h4>
+<h4>传递类对象和智能指针</h4>
 
 <ul>
-<li>docker-compose</li>
-<li></li>
+<li>std::ref 可以使用非const拷贝构造函数</li>
 </ul>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/08/30 16:57 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15355950448978.html">
-                
-                  <h1>Dockerfile</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>制作镜像</h4>
-
-<ul>
-<li>自定义镜像: 基于容器</li>
-<li>基于Dockerfile</li>
-<li>.dockerignore隐藏文件打包时不包含进去</li>
-<li>docker build 隐藏是启动容器</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-制作镜像命令">  ${variable:-word}为空则设置为word
-  ${variable:+word}有值则显示为word
-  FROM &lt;reposity&gt;@&lt;digest&gt;
-  docker run --name tinyweb1 --rm tinyhttpd:v0.1-1 cat /data/web/html/index.html
-  docker run --name tinyweb1 --rm -P tinyhttpd:v0.1-7 printenv
+<pre class="line-numbers"><code class="language-text">unique_ptr&lt;int&gt; u_ptr(new int(100));
+thread th3(myprint3, std::move(u_ptr));
 </code></pre>
 
-<h4>制作命令</h4>
+<h4>成员函数指针做线程函数</h4>
 
 <ul>
-<li>COPY</li>
-<li>ADD</li>
-<li>VOLUME</li>
-<li><p>EXPOSE 自动生产DNAT规则，并不会直接暴露，需要启动时通过-P暴露<br/>
-<img src="media/15355950448978/15355994721782.jpg" alt=""/></p></li>
-<li><p>yum 安装缓存要清理</p></li>
 <li></li>
 </ul>
 
@@ -781,7 +241,76 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/08/30 10:10 上午</span>
+                    <span class="date">2019/09/13 18:16 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15355258133696.html">
+                
+                  <h1>Docker存储卷</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>写实复制</h4>
+
+<ul>
+<li><img src="media/15355258133696/15355259487972.jpg" alt=""/></li>
+<li>mount --bind</li>
+<li><img src="m%5Bweb%E7%AB%99%E7%82%B9%E5%92%8Cnginx%5D(media/15355258133696/web%E7%AB%99%E7%82%B9%E5%92%8Cnginx.md)edia/15355258133696/15355271868297.jpg" alt=""/></li>
+</ul>
+
+<h4>存储机制</h4>
+
+<p><img src="media/15355258133696/15355282809804.jpg" alt=""/></p>
+
+<ul>
+<li>联合挂载文件系统</li>
+</ul>
+
+<h4>两种卷</h4>
+
+<ul>
+<li> Bind mount volume</li>
+<li> Docker-managed volume</li>
+<li> docker run -it -name bbox1 -v /data busybox</li>
+<li><img src="media/15355258133696/15355329411052.jpg" alt="" style="width:374px;"/></li>
+<li></li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">docker run --name nginx --network container:infracon --volumes-from infracon -it --rm busybox
+</code></pre>
+
+<ul>
+<li>docker容器编排compose</li>
+</ul>
+
+<h4>挂载本地配置文件</h4>
+
+<pre class="line-numbers"><code class="language-text">docker run --name prometheus -d   -p 9090:9090   -v /home/liuchao/Downloads/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml   prom/prometheus   --config.file=/etc/prometheus/prometheus.yml
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/08/29 14:56 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
@@ -798,139 +327,137 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15354190834336.html">
+                <a class="clearlink" href="15683306595324.html">
                 
-                  <h1>Docker 基础使用</h1>
+                  <h1>Redis开发规范</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>LXC</h4>
+                        	<h4>键值设计</h4>
 
 <ul>
-<li>主机级虚拟化</li>
-<li>Type-I</li>
-<li>Type-II</li>
-<li>Jail Vserver(chroot) </li>
+<li>可读性和可管理性</li>
+<li>以业务名（或数据库名）为前缀(防止 key 冲突),用冒号分割比如业务名表名，比如ugc:video:1</li>
+<li>简洁性</li>
+<li>保证语义的前提下，控制 key 的长度，当 key 较多时，内存占用也不容忽=</li>
+<li>不要包含特殊字符 反例：包含空格、换行、单双引号以及其他转义字符</li>
 </ul>
 
-<h4>隔离</h4>
+<h4>内部编码</h4>
 
 <ul>
-<li>UTS,Mount,IPC，PID，User，Net</li>
-<li>进程树,文件树</li>
-<li>名称空间 NameSpace</li>
-<li><p><img src="media/15354190834336/15354215091445.jpg" alt="" style="width:622px;"/></p></li>
-<li><p>clone() setns() </p></li>
-<li><p>压缩型资源</p></li>
-<li><p><img src="media/15354190834336/15354223497650.jpg" alt="" style="width:619px;"/></p></li>
+<li>embstr</li>
+<li><img src="media/15683306595324/15683312158728.jpg" alt="" style="width:1260px;"/></li>
+<li>raw</li>
+<li>int</li>
 </ul>
 
-<h4>容器核心技术</h4>
+<h4>Value设计</h4>
+
+<h5>拒绝bigkey</h5>
 
 <ul>
-<li>NameSpace</li>
-<li>Chroot</li>
-<li>Cgroup</li>
+<li>string 类型控制在 10 KB 以内</li>
+<li>hash、list、set、zset 元素个数不要超过 5000</li>
+<li>网络阻塞
+<img src="media/15683306595324/15683314237064.jpg" alt="" style="width:1165px;"/></li>
+<li>集群节点数据不均衡
+<img src="media/15683306595324/15683315102980.jpg" alt="" style="width:1055px;"/></li>
+<li>Rediss阻塞</li>
+<li>频繁序列化：应用服务器 CPU 消耗
+<img src="media/15683306595324/15683315993529.jpg" alt="" style="width:1020px;"/></li>
+<li>慢查询
+<img src="media/15683306595324/15683314878389.jpg" alt="" style="width:1105px;"/></li>
 </ul>
 
-<h4>方案</h4>
+<h5>发现bigkey</h5>
 
 <ul>
-<li>Control Groups， CGroups</li>
-<li>LinuxX Container</li>
-<li>lxc-create template</li>
+<li>应用方的发现</li>
+<li>redis-cli --bigkeys 建议在slave节点</li>
+<li>scan + debug object</li>
+<li>主动报警：网络流量监控，客户端监控</li>
+<li>内核热点key问题优化</li>
+<li>建立堆
+<img src="media/15683306595324/15683319818275.jpg" alt="" style="width:833px;"/></li>
 </ul>
 
-<h4>Docker</h4>
+<h5>bigkey删除</h5>
 
 <ul>
-<li>利用lxc作为容器引擎</li>
-<li>分层构建，联合挂载</li>
-<li><img src="media/15354190834336/15354248546973.jpg" alt="" style="width:499px;"/></li>
-<li>nmp 容器编排工具</li>
-<li>machine+swarm+composer</li>
-<li>mesos+marathon统一资源调度和分配</li>
-<li>kubernetes-&gt;k8s</li>
-<li>Moby CNCF</li>
-<li><p><img src="media/15354190834336/15354257791981.jpg" alt="" style="width:634px;"/></p></li>
-<li><p>libcontainer--&gt;runc</p></li>
-<li><p>OCI</p></li>
+<li>注意隐性删除
+<img src="media/15683306595324/15683324454924.jpg" alt="" style="width:1217px;"/></li>
+<li>过期事件删除导致阻塞，不会在主节点慢查询日志，在从节点慢查询有</li>
+<li>lazy delete</li>
+<li>通过scan 进行子删除</li>
 </ul>
 
-<h4>docker架构</h4>
+<h5>bigkey预防</h5>
 
 <ul>
-<li><img src="media/15354190834336/15354263451948.jpg" alt="" style="width:1009px;"/></li>
-<li>unix sock套接字</li>
-<li>container--&gt;image</li>
+<li>优化数据结构</li>
+<li>优化数据结构：例如二级拆分</li>
+<li>物理隔离或者万兆网卡：不是治标方案</li>
+<li>命令优化：例如 hgetall-~ hmget、scan </li>
+<li>报警和定期优化</li>
 </ul>
 
-<h4>Docker对象</h4>
+<h5>bigkey总结</h5>
 
 <ul>
-<li>images</li>
-<li>containers</li>
-<li>network</li>
-<li>volumes</li>
-<li>plugins</li>
+<li>牢记 Reds 单线程特性</li>
+<li>选择合理的数据结构和命令</li>
+<li>凊楚自身OPS</li>
+<li>了解 bigley 的危害</li>
 </ul>
 
-<h4>安装和使用</h4>
+<h5>选择合适的数据结构</h5>
 
 <ul>
-<li>配置文件</li>
-<li>/etc/docker/daemon.json</li>
-<li>docker info</li>
-<li>overplay2</li>
-<li>alpine 构建容器小镜像的工具</li>
-<li>busybox 基本工具应用</li>
+<li><img src="media/15683306595324/15683328513846.jpg" alt="" style="width:1141px;"/>
+<img src="media/15683306595324/15683329353848.jpg" alt="" style="width:1005px;"/></li>
+<li><img src="media/15683306595324/15683329738070.jpg" alt="" style="width:1370px;"/>
+<img src="media/15683306595324/15683330641058.jpg" alt="" style="width:1043px;"/></li>
 </ul>
 
-<h4>docker run命令</h4>
+<h4>键值生命周期</h4>
 
 <ul>
-<li>-i 交互式访问</li>
-<li>-t 终端</li>
-<li>-d 自动运行在后台</li>
-<li>不能让容器中程序运行在后台</li>
-<li>--exec 绕过容器看内部运行机制</li>
-<li>docker run --name kvstore -d redis:4-alpine</li>
-<li>docker run --name t1 -it shawliu/web</li>
-<li>docker ps -a</li>
-<li>docker exec -it image_id /bin/sh</li>
-<li><img src="media/15354190834336/15354368427576.jpg" alt="" style="width:1118px;"/></li>
+<li>Redis不是垃圾桶</li>
+<li>idletime</li>
+<li>周期数据需要设置过期时间，object idletime key可以找垃圾 key-value</li>
+<li>过期时间不宜集中：缓存穿透和雪崩等问题</li>
 </ul>
 
-<h4>Docker镜像管理</h4>
+<h4>命令优化</h4>
 
 <ul>
-<li><img src="media/15354190834336/15354374897154.jpg" alt="" style="width:634px;"/></li>
-<li>Docker镜像原理</li>
-<li><img src="media/15354190834336/15354375869764.jpg" alt="" style="width:1080px;"/></li>
-<li><img src="media/15354190834336/15354378908073.jpg" alt="" style="width:484px;"/></li>
-<li>aufs--&gt;layerfs</li>
-<li>存储位置</li>
-<li><img src="media/15354190834336/15354385520975.jpg" alt="" style="width:752px;"/></li>
+<li>O (N）以上命令关注 N 的数量 例如：hgetal、lange、smembers、zrange、sinter 等并非不能使用，但是需要明确 N 的值。有遍历的需求可以使用 hscan、sscan、zscan 代替。</li>
+<li>禁止线上使用 keys、flushall、flushes 等，通过 redis 的 rename 机制禁掉命令，或者使用 scan 的方式渐进式处理。</li>
 </ul>
 
-<h4>Registry</h4>
+<pre class="line-numbers"><code class="language-text">rename-command FLUSHALL &quot;&quot;
+rename-command FLUSHDB  &quot;&quot;
+rename-command CONFIG   &quot;&quot;
+rename-command KEYS &quot;&quot;
+</code></pre>
 
 <ul>
-<li>Repository</li>
-<li>Index</li>
-<li>云原生</li>
-<li>quay</li>
+<li>合理使用select </li>
+<li>redis事务弱 不支持回滚</li>
+<li>集群版本（自研和官方）要求一次事务操作的 key 必须在一个 slot 上（可以使用 hashtag 功能解決）</li>
+<li>redis集群版本在lua上有特殊要求</li>
+<li>必要使用monitor命令，不能长时间使用</li>
+<li><img src="media/15683306595324/15683338191048.jpg" alt="" style="width:832px;"/></li>
 </ul>
 
-<h4>镜像制作</h4>
+<h5>客户端优化</h5>
 
 <ul>
-<li><img src="media/15354190834336/15354402486496.jpg" alt="" style="width:963px;"/></li>
-<li>docker build</li>
-<li>dockerfile</li>
-<li>docker hub automated builds</li>
-<li>docker commit -p b1</li>
+<li>避免多个应用使用一个redis实例</li>
+<li>不想干的业务拆分</li>
+<li></li>
 </ul>
 
                         
@@ -940,10 +467,58 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/08/28 09:18 上午</span>
+                    <span class="date">2019/09/13 07:24 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
+          					    <span class="posted-in"><a href='Redis%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A.html'>Redis从入门到精通</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15683292874011.html">
+                
+                  <h1>布隆过滤器</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>实现原理</h4>
+
+<ul>
+<li>一个很长的二进制向量和若干个哈希函数
+<img src="media/15683292874011/15683294091882.jpg" alt="" style="width:1004px;"/></li>
+<li>参数：m 个二进制向量，n 个预备数据，k 个 hash 函数构建布隆过滤器：n 个预备数据走一遍上面过程</li>
+<li>判断元素存在：走一遍上面过程：如果都是 1, 则在表明存在，反之不存在。</li>
+</ul>
+
+<h4>误差率</h4>
+
+<ul>
+<li><img src="media/15683292874011/15683296943543.jpg" alt="" style="width:981px;"/></li>
+<li>m/n与误差率成反比。k与误差率成反比</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/09/13 07:01 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Redis%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A.html'>Redis从入门到精通</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -967,7 +542,7 @@
 			  </div>
 			  <div class="large-6 columns">
 			<p class="text-right" style="padding-top:25px;">
-			
+			 <a href="all_63.html">&raquo; Next Page</a> 
 			</p>
 			  </div>
 			</div>

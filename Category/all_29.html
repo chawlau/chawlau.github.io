@@ -170,25 +170,20 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15669803261255.html">
+                <a class="clearlink" href="15721333620384.html">
                 
-                  <h1>模板</h1>
+                  <h1>分布式文档系统</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>类模版</h4>
+                        	<h4>写一致性</h4>
 
 <ul>
-<li>成员函数必须被实例化后才能使用</li>
-<li>类模板能内部使用并不需要提供模版参数</li>
-<li>类模板用来实例化类型名</li>
-</ul>
-
-<h4>成员函数</h4>
-
-<ul>
-<li>template&lt;&gt; </li>
+<li>put /index/type/id?consistency=quorum</li>
+<li>one：要求我们这个写操作，只要有一个primary shard是active活跃可用的，就可以执行</li>
+<li>all：要求我们这个写操作，必须所有的primary shard和replica shard都是活跃的，才可以执行这个写操作</li>
+<li>quorum：默认的值，要求所有的shard中，必须是大部分的shard都是活跃的，可用的，才可以执行这个写操作</li>
 </ul>
 
                         
@@ -198,10 +193,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/08/28 16:18 下午</span>
+                    <span class="date">2019/10/27 07:42 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          					    <span class="posted-in"><a href='ElasticSearch.html'>ElasticSearch</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -215,22 +210,33 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15669782449531.html">
+                <a class="clearlink" href="15721322567131.html">
                 
-                  <h1>对象模型之巅</h1>
+                  <h1>路由协议</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>函数模板</h4>
+                        	<h4>路由算法</h4>
 
 <ul>
-<li>针对T的类型推断，是编译器在编译的时候，根据针对funcadd的调用来确定的</li>
+<li>路由算法：shard = hash(routing) % number_of_primary_shards</li>
+<li>每次增删改查一个document的时候，都会带过来一个routing number，默认就是这个document的_id（可能是手动指定，也可能是自动生成）</li>
 </ul>
 
-<h4>成员函数实例化</h4>
+<h4>primary shard不允许修改</h4>
 
 <ul>
+<li>primary index一旦建立，不允许修改，否则查询的时候，重新hash导致之前的数据无法查询到，会导致数据丢失</li>
+<li><img src="media/15721322567131/15721327733952.jpg" alt="" style="width:871px;"/></li>
+</ul>
+
+<h4>数据存储</h4>
+
+<ul>
+<li>一个index 的数据会被分为多片，每片都在一个 shard 中。所以说，一个 document，只能存在于一个 shard 中。<br/>
+当客户端创建 document：的时候，es 比就需要决定说，这个 document 是放在这个 ndex 的哪个 shard 上<br/>
+这个过程，就称之为 document routing，数据路由。</li>
 <li></li>
 </ul>
 
@@ -241,10 +247,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/08/28 15:44 下午</span>
+                    <span class="date">2019/10/27 07:24 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='C++%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B.html'>C++对象模型</a></span>
+          					    <span class="posted-in"><a href='ElasticSearch.html'>ElasticSearch</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -258,138 +264,43 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15666360771756.html">
+                <a class="clearlink" href="15720953944724.html">
                 
-                  <h1>对象构造语义学</h1>
+                  <h1>批量查询</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>对象构造</h4>
+                        	<h4>批量查询</h4>
 
-<ul>
-<li>构造函数中你自己的代码中使用诸如memcpy或者直接操作等手段，来修改虚函数表指针的值，否则，调用虚函数时就可能造成系统崩溃；</li>
-</ul>
-
-<h4>构造函数对虚函数的调用</h4>
-
-<ul>
-<li>某个类的构造函数 中 调用一个虚函数，那么走的不是虚函数表，而是直接调用。</li>
-<li>从类中开始找，然后在父类中找</li>
-</ul>
-
-<h4>对象复制语义学，析构函数语义学</h4>
-
-<ul>
-<li>默认的对象赋值行为</li>
-</ul>
-
-<h4>析构函数语义</h4>
-
-<ul>
-<li>析构函数被合成</li>
-</ul>
-
-<h5>合成情况</h5>
-
-<ul>
-<li>继承一个基类，基类带析构函数，编译器会帮忙合成</li>
-<li>如果类成员是一个类类型成员，成员带析构函数，编译器会合成一个析构函数</li>
-</ul>
-
-<h5>析构函数被扩展</h5>
-
-<ul>
-<li>如果我们有自己的析构函数，编译器会扩展析构函数</li>
-<li>如果类成员是一个类类型成员，并且自带析构函数，编译器会扩展类A的析构函数代码</li>
-<li>先执行类A的析构函数，再执行成员函数析构函数</li>
-<li>如果继承一个基类，基类中带析构函数，编译器会扩展A类的析构函数来调用基类的析构函数</li>
-<li>虚基类扩展</li>
-</ul>
-
-<h4>局部对象和全局对象的构造和析构</h4>
-
-<ul>
-<li>全局对象构造和析构的步骤：<br/>
-a)全局对象g_aobj获得地址（编译时确定好的，内存也是编译时分配好的，内存时运行期间一直存在）<br/>
-b)把全局对象g_aobj的内存内容清0的能力（也叫静态初始化）<br/>
-c)调用全局对象g_aobj所对应的类A的构造函数</li>
-<li>如何保证静态局部对象只被构造一次</li>
-<li>编译器通过设置标记的方式</li>
-<li>如何来析构局部对象</li>
-<li>局部静态对象只会被构造一次，在调用的时候构造；在main函数执行完毕后析构</li>
-</ul>
-
-<h4>malloc</h4>
-
-<ul>
-<li>分配0个字节</li>
-</ul>
-
-<h4>new和delete进一步认识</h4>
-
-<ul>
-<li>A *pa = new A()会清零部分内存，如果有构造函数则不会清零</li>
-<li>A *pa = new A不会清零</li>
-</ul>
-
-<h4>new干了啥</h4>
-
-<ul>
-<li>operator new</li>
-<li>malloc</li>
-<li>A::A()</li>
-</ul>
-
-<h4>delete</h4>
-
-<ul>
-<li>A::~A()</li>
-<li>operator delete()</li>
-<li>free</li>
-</ul>
-
-<h4>嵌入式指针</h4>
-
-<ul>
-<li>一般应用在内存池代码</li>
-<li>成功使用有个前提条件</li>
-<li>借用了A对象占用的内存空间的前四个字节，4个字节用来链住空闲的内存块，一旦被分配</li>
-<li>出去，这个块的前四个字节就不再需要，四个字节就可以使用</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">struct obj {
-  struct obj* next; //next就是个嵌入式指针
+<pre class="line-numbers"><code class="language-cpp">GET /test_index/_mget
+{
+  &quot;docs&quot; :[
+    {
+      &quot;_id&quot; : 1
+    },
+     {
+      &quot;_id&quot; : 2
+    }
+    ]
+}
+{
+   &quot;ids&quot;: [1, 2]
 }
 </code></pre>
 
-<h4>placement new</h4>
+<h4>好处</h4>
 
 <ul>
-<li>只有new没有delete</li>
-<li>在已经分配的原始内存中初始化一个对象</li>
-<li>定位new不分配内存</li>
-<li>初始化对象</li>
-<li>在预先分配号的内存中分配一个对象</li>
-<li>new (address) 类类型</li>
+<li>可以说mget是很重要的，一般来说，在进行查询的时候，如果一次性要查询多条数据的话，那么一定要用batch批量操作的api<br/>
+尽可能减少网络开销次数，可能可以将性能提升数倍，甚至数十倍，非常非常之重要</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-text">void *memPtr = (void*)new char[sizeof(A)];
-  A* obj = new (memPtr) A();
-
-  void *memPtr2 = (void*)new char[sizeof(A)];
-  A* obj2 = new (memPtr2) A();
-
-  obj-&gt;~A();
-  obj2-&gt;~A();
-
-  delete[](void*)obj;
-  delete[](void*)obj2;
-</code></pre>
-
-<h4>多版本的operator new</h4>
+<h4>_bulk</h4>
 
 <ul>
+<li>bulk操作中，任意一个操作失败，是不会影响其他的操作的，但是在返回结果里，会告诉你异常日志</li>
+<li>bulk request会加载到内存里，如果太大的话，性能反而会下降，因此需要反复尝试一个最佳的bulk size。一般从1000~5000条数据开始，尝试逐渐增加。另外，如果看大小的话，最好是在5~15MB之间。</li>
 <li></li>
 </ul>
 
@@ -400,10 +311,10 @@ c)调用全局对象g_aobj所对应的类A的构造函数</li>
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/08/24 16:41 下午</span>
+                    <span class="date">2019/10/26 21:09 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='C++%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B.html'>C++对象模型</a></span>
+          					    <span class="posted-in"><a href='ElasticSearch.html'>ElasticSearch</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -417,164 +328,9 @@ c)调用全局对象g_aobj所对应的类A的构造函数</li>
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15669507058461.html">
+                <a class="clearlink" href="15720404242640.html">
                 
-                  <h1>SQL99连接</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>等值连接</h4>
-
-<pre class="line-numbers"><code class="language-text">SELECT player_id, a.team_id, player_name, height, team_name FROM player as a, team as b WHERE a.team_id = b.team_id
-SELECT player_id, team_id, player_name, height, team_name FROM player NATURAL JOIN team 
-
-</code></pre>
-
-<h4>Using连接</h4>
-
-<ul>
-<li>USING 指定数据表里的同名字段进行等值连接</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">SELECT player_id, team_id, player_name, height, team_name FROM player JOIN team USING(team_id)
-</code></pre>
-
-<h4>select执行语句顺序</h4>
-
-<p>1、FROM子句组装数据（包括通过ON进行连接）<br/>
-2、WHERE子句进行条件筛选<br/>
-3、GROUP BY分组 <br/>
-4、使用聚集函数进行计算； <br/>
-5、HAVING筛选分组； <br/>
-6、计算所有的表达式； <br/>
-7、SELECT 的字段；<br/>
-8、ORDER BY排序<br/>
-9、LIMIT筛选</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/28 08:05 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='SQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>SQL必知必会</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15488133858576.html">
-                
-                  <h1>无法Kill的语句</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>kill</h4>
-
-<ul>
-<li>kill query</li>
-<li>kill connection</li>
-</ul>
-
-<h4>kill query执行原理</h4>
-
-<ul>
-<li>把 session B 的运行状态改成 THD::KILL_QUERY(将变量 killed 赋值为 THD::KILL_QUERY)；</li>
-<li>给 session B 的执行线程发一个信号。让session退出等待，处理THD:KILL_QUERY</li>
-<li>等行锁时，使用的是 pthread_cond_timedwait 函数，这个等待状态可以被唤醒,等待进入InnoDB的循环过程中，没有去判断线程的状态，所以不会进入逻辑终止阶段</li>
-<li> pthread_cond_timedwait 函数，这个等待状态可以被唤醒</li>
-<li> 如果没有判断线程的状态，就不会被唤醒</li>
-</ul>
-
-<h4>kill connection</h4>
-
-<ul>
-<li>把 12 号线程状态设置为 KILL_CONNECTION；</li>
-<li>关掉 12 号线程的网络连接。</li>
-<li>线程依然是killed状态，直到满足进入InnoDB条件后，才会判断线程状态，最后进入终止逻辑状态</li>
-</ul>
-
-<h4>kill无效</h4>
-
-<ul>
-<li>线程没有执行到判断线程状态的逻辑</li>
-<li>终止逻辑耗时比较长</li>
-<li>超大事物被kill</li>
-<li>大查询回滚</li>
-<li>DDL命令执行到最后阶段</li>
-</ul>
-
-<h4>客户端</h4>
-
-<ul>
-<li>连接后操作</li>
-<li>执行 show databases；</li>
-<li>切到 db1 库，执行 show tables；</li>
-<li>把这两个命令的结果用于构建一个本地的哈希表。</li>
-</ul>
-
-<h4>客户端查询返回结果</h4>
-
-<ul>
-<li>一种是本地缓存，也就是在本地开一片内存，先把结果存起来。API 开发，对应的就是 mysql_store_result 方法。</li>
-<li>另一种是不缓存，读一个处理一个。API开发，对应的就是 mysql_use_result 方法。-quick参数</li>
-</ul>
-
-<h4>quick参数效果</h4>
-
-<ul>
-<li>第一点，就是前面提到的，跳过表名自动补全功能。</li>
-<li>第二点，mysql_store_result 需要申请本地内存来缓存查询结果，如果查询结果太大，会耗费较多的本地内存，可能会影响客户端本地机器的性能；</li>
-<li>第三点，是不会把执行命令记录到本地的命令历史文件。</li>
-</ul>
-
-<h4>kill query本质</h4>
-
-<ul>
-<li>这些“kill 不掉”的情况，其实是因为发送 kill 命令的客户端，并没有强行停止目标线程的执行，而只是设置了个状态，并唤醒对应的线程。而被 kill 的线程，需要执行到判断状态的“埋点”，才会开始进入终止逻辑阶段。并且，终止逻辑本身也是需要耗费时间的</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/01/30 09:56 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15669477064349.html">
-                
-                  <h1>删库之后怎么办</h1>
+                  <h1>搜索API</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
@@ -582,33 +338,16 @@ SELECT player_id, team_id, player_name, height, team_name FROM player NATURAL JO
                         	<h4>分类</h4>
 
 <ul>
-<li>使用 delete 语句误删数据行；</li>
-<li>使用 drop table 或者 truncate table 语句误删数据表；</li>
-<li>使用 drop database 语句误删数据库；</li>
-<li>使用 rm 命令误删整个 MySQL 实例</li>
+<li><img src="media/15720404242640/15720404618840.jpg" alt="" style="width:904px;"/></li>
 </ul>
 
-<h4>误删行</h4>
+<h4>衡量相关性</h4>
+
+<p><img src="media/15720404242640/15720406868582.jpg" alt="" style="width:694px;"/></p>
+
+<h4>URI search</h4>
 
 <ul>
-<li> binlog_format=row 和 binlog_row_image=FULL</li>
-<li> 对于 insert 语句，对应的 binlog event 类型是 Write_rows event，把它改成 Delete_rows event 即可；</li>
-<li>同理，对于 delete 语句，也是将 Delete_rows event 改为 Write_rows event；而如果是 Update_rows 的话，binlog 里面记录了数据行修改前和修改后的值，对调这两行的位置即</li>
-<li>sql_safe_updates on</li>
-</ul>
-
-<h4>误删库</h4>
-
-<ul>
-<li>如果原实例没有使用 GTID 模式，只能在应用到包含 12 点的 binlog 文件的时候，先用–stop-position 参数执行到误操作之前的日志，然后再用–start-position 从误操作之后的日志继续执行；</li>
-<li>如果实例使用了 GTID 模式，就方便多了。假设误操作命令的 GTID 是 gtid1，那么只需要执行 set gtid_next=gtid1;begin;commit; 先把这个 GTID 加到临时实例的 GTID 集合，之后按顺序执行 binlog 的时候，就会自动跳过误操作的语句</li>
-</ul>
-
-<h4>加速方法</h4>
-
-<ul>
-<li>只同步误操作的表，使用并行复制技术</li>
-<li>延迟复制从库CHANGE MASTER TO MASTER_DELAY = N</li>
 <li></li>
 </ul>
 
@@ -619,284 +358,10 @@ SELECT player_id, team_id, player_name, height, team_name FROM player NATURAL JO
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/08/28 07:15 上午</span>
+                    <span class="date">2019/10/26 05:53 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15669003383519.html">
-                
-                  <h1>类型转换构造函数，运算符，类成员指针</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>类型转换构造运算符</h4>
-
-<ul>
-<li>operator type() const</li>
-<li>type 表示要转换的类型</li>
-<li>类型转换运算符，没有形参</li>
-<li>必须定义为类的成员函数</li>
-</ul>
-
-<h4>定义函数指针</h4>
-
-<ul>
-<li>typedef void(*func)(int);</li>
-<li>using func = void(*)(int)</li>
-</ul>
-
-<h4>类成员函数指针</h4>
-
-<ul>
-<li>void (A::*ptr)(int)</li>
-<li>成员函数是属于类的，和对象没有关系</li>
-<li>(a.*ptr)(12);</li>
-</ul>
-
-<h4>静态成员函数</h4>
-
-<ul>
-<li>void (*s_ptr)(int) = &amp;A::s_func;</li>
-<li>s_ptr(1200);</li>
-</ul>
-
-<h4>类成员变量指针</h4>
-
-<ul>
-<li>int A::*t = &amp;A::m_i;</li>
-<li>并不是真正的地址，而是该成员变量的偏移量</li>
-</ul>
-
-<h4>静态成员变量</h4>
-
-<ul>
-<li>有真正的内存地址</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/27 18:05 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15668690739240.html">
-                
-                  <h1>搜索引擎的算法</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>结构</h4>
-
-<ul>
-<li>搜集 利用爬虫爬取网页。分析，主要负责网页内容抽取、分词，构建临时索引，计算 PageRank 值这几部分工作</li>
-<li>分析 主要负责网页内容抽取、分词，构建临时索引，计算 PageRank 值这几部分工作</li>
-<li>索引 主要负责网页内容抽取、分词，构建临时索引，计算 PageRank 值这几部分工作</li>
-<li>查询 查询，主要负责响应用户的请求，根据倒排索引获取相关网页，计算网页排名，返回查询结果给用户</li>
-</ul>
-
-<h4>搜集</h4>
-
-<ul>
-<li>获取页面链接  把整个页面看作一个大的字符串，我们可以利用字符串匹配算法，在这个大字符串中，搜索这样一个网页标签，然后顺序读取之间的字符串。这其实就是网页链接</li>
-<li>网页判重 利用布隆过滤器 bloom_filter.bin</li>
-<li>原始网页存储文件 </li>
-<li>网页链接及其编号的对应文件 doc_id.bin</li>
-</ul>
-
-<h4>分析</h4>
-
-<ul>
-<li>抽取文本信息</li>
-<li>分词并且创建临时索引 单词编号对应文档</li>
-<li>单词编号对应的单词</li>
-</ul>
-
-<h4>索引</h4>
-
-<ul>
-<li>临时索引构建成倒排索引</li>
-<li>归并排序将脸时索引合并成排好序的临时索引，然后顺序扫描合并成倒排索引</li>
-<li>每个单词编号在倒排索引文件中的偏移位置。我们把这个文件命名为 term_offset.bin</li>
-</ul>
-
-<h4>查询</h4>
-
-<ul>
-<li>输入某个查询文本的时候，我们先对用户输入的文本进行分词处理。假设分分词之后，我们得到 k 个单词</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/27 09:24 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15667846632853.html">
-                
-                  <h1>Redis常用数据结构</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>列表</h4>
-
-<ul>
-<li>压缩列表</li>
-<li>循环链表</li>
-<li>额外定义一个 list 结构体，来组织链表的首、尾指针，还有长度等信息</li>
-</ul>
-
-<h4>字典</h4>
-
-<ul>
-<li>使用压缩列表条件</li>
-<li>字典中保存的键和值的大小都要小于 64 字节；</li>
-<li>字典中键值对的个数要小于 512 个</li>
-<li>不满足条件就使用散列表来实现字典类型</li>
-</ul>
-
-<h4>集合</h4>
-
-<ul>
-<li>基于数组</li>
-<li>散列表</li>
-</ul>
-
-<h4>有序集合</h4>
-
-<ul>
-<li>跳表</li>
-<li>压缩表</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/26 09:57 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15667839360889.html">
-                
-                  <h1>并行算法</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>分类</h4>
-
-<ul>
-<li>归并排序并行化处理</li>
-<li>快速排序并行化处理</li>
-</ul>
-
-<h4>散列表</h4>
-
-<ul>
-<li>可以将数据随机分割成 k 份（比如 16 份），每份中的数据只有原来的 1/k，然后我们针对这 k 个小数据集合分别构建散列表。这样，散列表的维护成本就变低了。当某个小散列表的装载因子过大的时候，我们可以单独对这个散列表进行扩容，而其他散列表不需要进行扩容。</li>
-<li>只需要通过 16 个线程，并行地在这 16 个散列表中查找数据。这样的查找性能，比起一个大散列表的做法，也并不会下降，反倒有可能提高</li>
-</ul>
-
-<h4>并行字符串匹配</h4>
-
-<ul>
-<li>假设关键词的长度是 m。我们在每个小文本的结尾和开始各取 m 个字符串。前一个小文本的末尾 m 个字符和后一个小文本的开头 m 个字符，组成一个长度是 2m 的字符串。我们再拿关键词，在这个长度为 2m 的字符串中再重新查找一遍，就可以补上刚才的漏洞了</li>
-</ul>
-
-<h4>并行搜索</h4>
-
-<ul>
-<li>这两个队列分别是队列 A 和队列 B。多线程并行处理队列 A 中的顶点，并将扩展得到的顶点存储在队列 B 中。等队列 A 中的顶点都扩展完成之后，队列 A 被清空，我们再并行地扩展队列 B 中的顶点，并将扩展出来的顶点存储在队列 A。这样两个队列循环使用，就可以实现并行广度优先搜索算法。</li>
-</ul>
-
-<h4>思考</h4>
-
-<ul>
-<li>我们有 n 个任务，为了提高执行的效率，我们希望能并行执行任务，但是各个任务之间又有一定的依赖关系，如何根据依赖关系找出可以并行执行的任务</li>
-<li>拓扑排序+流水线并行执行</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/26 09:45 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
+          					    <span class="posted-in"><a href='ElasticSearch.html'>ElasticSearch</a></span>
           				   
                   </div>
                   <div class="more-right right">

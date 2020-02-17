@@ -170,324 +170,39 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15713027420690.html">
+                <a class="clearlink" href="15716203361605.html">
                 
-                  <h1>异常错误处理</h1>
+                  <h1>HTTP</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>panic &amp; os.Exit</h4>
+                        	<h4>路由规则</h4>
 
-<ul>
-<li>os.Exit退出时不会调用defer指定的函数</li>
-<li>不用输出当前调用栈信息</li>
-</ul>
+<pre class="line-numbers"><code class="language-text">package main
 
-<h4>recover</h4>
+import (
+        &quot;fmt&quot;
+        &quot;log&quot;
+        &quot;net/http&quot;
 
-<p><img src="media/15713027420690/15713033206416.jpg" alt="" style="width:615px;"/></p>
-
-<ul>
-<li>形成僵尸进程，导致health check 失效</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/17 16:59 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15713004768074.html">
-                
-                  <h1>相关接口</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>接口差异</h4>
-
-<ul>
-<li>接口为非入侵性，实现不依赖于接口定义</li>
-<li>所以接口的定义可以包含在接口使用者包内</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-go">type IntConv func(op int) int
-
-func timeSpent(inner IntConv) IntConv {
-    return func(n int) int {
-        start := time.Now()
-        ret := inner(n)
-        fmt.Println(&quot;time spent:&quot;, time.Since(start).Seconds())
-        return ret
-    }
-}
-
-func slowFun(op int) int {
-    time.Sleep(time.Second * 1)
-    return op
-}
-
-func TestFn(t *testing.T) {
-    tsSF := timeSpent(slowFun)
-    t.Log(tsSF(10))
-}
-</code></pre>
-
-<h4>扩展和复用</h4>
-
-<pre class="line-numbers"><code class="language-go">func TestDog(t *testing.T) {
-    var dog *Dog = new(Dog)
-    var p = *Pet(dog)
-    p.SpeakTo(&quot;CHao&quot;)
-    dog := new(Dog)
-
-    dog.SpeakTo(&quot;Chao&quot;)
-}
-</code></pre>
-
-<h4>go多态</h4>
-
-<pre class="line-numbers"><code class="language-go">func writeFirstProgram(p Programmer) {
-  fmt.Printf(&quot;%T %v\n&quot;, p, p.WriteHelloWorld())
-}
-p必须传指针才能实现多态
-</code></pre>
-
-<h4>空接口断言</h4>
-
-<pre class="line-numbers"><code class="language-go">func DoSomething(p interface{}) {
-    if i, ok := p.(int); ok {
-      fmt.Println(&quot;Integer&quot;, i)
-      return
-    }
-    // if s, ok := p.(string); ok {
-    //  fmt.Println(&quot;stirng&quot;, s)
-    //  return
-    // }
-    // fmt.Println(&quot;Unknow Type&quot;)
-    switch v := p.(type) {
-    case int:
-        fmt.Println(&quot;Integer&quot;, v)
-    case string:
-        fmt.Println(&quot;String&quot;, v)
-    default:
-        fmt.Println(&quot;Unknow Type&quot;)
-    }
-}
-</code></pre>
-
-<h4>接口实践</h4>
-
-<p><img src="media/15713004768074/15713026545360.jpg" alt="" style="width:767px;"/></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/17 16:21 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15712250734123.html">
-                
-                  <h1>行为的定义和实现</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>差别</h4>
-
-<p><img src="media/15712250734123/15712253092495.jpg" alt="" style="width:1343px;"/></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/16 19:24 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15386465593475.html">
-                
-                  <h1>函数详解</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>函数特点</h4>
-
-<ul>
-<li>不支持重载</li>
-<li>函数也是一种类型，函数可以赋值给变量</li>
-<li>匿名函数</li>
-<li>多返回值</li>
-</ul>
-
-<h4>函数参数传递方式</h4>
-
-<ul>
-<li>map默认就是引用，不需要*</li>
-</ul>
-
-<h4>返回值命名</h4>
-
-<pre class="line-numbers"><code class="language-text">func calc(a, b int) (sum int, avg int) {
-  sum = a + b
-  avg = (a + b) / 2
-}
-</code></pre>
-
-<h4>可变参数</h4>
-
-<pre class="line-numbers"><code class="language-text">func add(a int, arg ...int) (ret int) {
-  ret = a
-  for i := 0; i &lt; len(arg); i++ {
-    ret += arg[i]
-  }
-  return
-}
-
-func addStr(a string, arg ...string) (ret string) {
-  ret = a
-  for i := 0; i &lt; len(arg); i++ {
-    ret += arg[i]
-  }
-  return
-}
-</code></pre>
-
-<h4>defer</h4>
-
-<ul>
-<li>函数返回时，执行defer语句，用来做资源清理</li>
-<li>多个defer语句，按照先进后出的方式</li>
-<li>关闭文件句柄</li>
-<li>锁资源释放</li>
-<li><p>数据库连接释放</p>
-<pre class="line-numbers"><code class="language-text">func read() {
- conn, err := openConn()<br/>
- defer func() {<br/>
-   if conn != nil {<br/>
-     conn.Close()<br/>
-   }<br/>
- }<br/>
-}()
-</code></pre></li>
-<li><p>全局匿名函数</p>
-<pre class="line-numbers"><code class="language-text">var (
-result = func(a int, b int) int {<br/>
-  return a + b__<br/>
-}<br/>
+        &quot;github.com/julienschmidt/httprouter&quot;
 )
-</code></pre></li>
-</ul>
 
-<h4>字符串切片修改问题</h4>
-
-<pre class="line-numbers"><code class="language-text"> // 示例3。
-func modifyComplexArray(a [3][]string) [3][]string {
-  a[1][1] = &quot;s&quot;
-  //a[2] = []string{&quot;o&quot;, &quot;p&quot;, &quot;q&quot;}
-  a[2][0] = &quot;o&quot;
-  a[2][1] = &quot;p&quot;
-  a[2][2] = &quot;q&quot;
-  return a
+func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+        fmt.Fprint(w, &quot;Welcome!\n&quot;)
 }
 
-  complexArray1 := [3][]string{
-    []string{&quot;d&quot;, &quot;e&quot;, &quot;f&quot;},
-    []string{&quot;g&quot;, &quot;h&quot;, &quot;i&quot;},
-    []string{&quot;j&quot;, &quot;k&quot;, &quot;l&quot;},
-  }
-  fmt.Printf(&quot;The complex array: %v\n&quot;, complexArray1)
-  complexArray2 := modifyComplexArray(complexArray1)
-  fmt.Printf(&quot;The modified complex array: %v\n&quot;, complexArray2)
-  fmt.Printf(&quot;The original complex array: %v\n&quot;, complexArray1)
-</code></pre>
-
-<ul>
-<li>修改整个字符串不可以，但是可以一个一个修改</li>
-</ul>
-
-<h4>函数传参数和返回问题</h4>
-
-<ul>
-<li>函数真正拿到的参数值其实只是它们的副本，那么函数返回给调用方的结果值也会被复制吗？</li>
-<li>函数返回给调用方的结果值也会被复制。不过，在一般情况下，我们不用太在意。但如果函数在返回结果值之后依然保持执行并会对结果值进行修改，那么我们就需要注意了</li>
-</ul>
-
-<h5>统计耗时</h5>
-
-<pre class="line-numbers"><code class="language-go">func timeSpent(inner func(op int) int) func(op int) int {
-    return func(n int) int {
-        start := time.Now()
-        ret := inner(n)
-        fmt.Println(&quot;time spent:&quot;, time.Since(start).Seconds())
-        return ret
-    }
+func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+        fmt.Fprintf(w, &quot;hello, %s!\n&quot;, ps.ByName(&quot;name&quot;))
 }
 
-func slowFun(op int) int {
-    time.Sleep(time.Second * 1)
-    return op
-}
+func main() {
+        router := httprouter.New()
+        router.GET(&quot;/&quot;, Index)
+        router.GET(&quot;/hello/:name&quot;, Hello)
 
-func TestFn(t *testing.T) {
-    a, _ := returnMultiValues()
-    t.Log(a)
-    tsSF := timeSpent(slowFun)
-    t.Log(tsSF(10))
+        log.Fatal(http.ListenAndServe(&quot;:8080&quot;, router))
 }
 </code></pre>
 
@@ -498,7 +213,7 @@ func TestFn(t *testing.T) {
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/10/04 17:49 下午</span>
+                    <span class="date">2019/10/21 09:12 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
@@ -515,32 +230,33 @@ func TestFn(t *testing.T) {
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15712240547557.html">
+                <a class="clearlink" href="15715395755112.html">
                 
-                  <h1>string</h1>
+                  <h1>pipe-filter</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>差异</h4>
+                        	<h4>架构</h4>
 
 <ul>
-<li>与其他主要编程语⾔言的差异</li>
-<li>1. string 是数据类型，不不是引⽤用或指针类型</li>
-<li>2. string 是只读的 byte slice，len 函数可以它所包含的 byte 数</li>
-<li>3. string 的 byte 数组可以存放任何数据</li>
+<li><img src="media/15715395755112/15715401958107.jpg" alt="" style="width:998px;"/></li>
+<li>⾮非常适合与数据处理理及数据分析系统</li>
+<li>Filter封装数据处理理的功能</li>
+<li>Pipe⽤用于连接Filter传递数据或者在异步处理理过程中缓冲数据 流</li>
+<li>进程内同步调⽤用时，pipe演变为数据在⽅方法调⽤用间传递 松耦合:Filter只跟数据(格式)耦合</li>
 </ul>
 
-<h4>编码和字符</h4>
+<h4>micro kernel</h4>
 
 <ul>
-<li>1. Unicode 是⼀一种字符集(code point)</li>
-<li>2. UTF8 是 unicode 的存储实现 (转换为字节序列列的规则)</li>
+<li><img src="media/15715395755112/15715409828868.jpg" alt="" style="width:584px;"/></li>
+<li>易易于扩展</li>
+<li>错误隔离</li>
+<li>保持架构⼀一致性</li>
+<li>要点</li>
+<li>内核包含公共流程或通⽤用逻辑 将可变或可扩展部分规划为扩展点 抽象扩展点⾏行行为，定义接⼝口 利利⽤用插件进⾏行行扩展</li>
 </ul>
-
-<h4>对应关系</h4>
-
-<p><img src="media/15712240547557/15712243766768.jpg" alt="" style="width:974px;"/></p>
 
                         
                       </div>
@@ -549,7 +265,7 @@ func TestFn(t *testing.T) {
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/10/16 19:07 下午</span>
+                    <span class="date">2019/10/20 10:46 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
@@ -566,201 +282,208 @@ func TestFn(t *testing.T) {
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15387022894129.html">
+                <a class="clearlink" href="15401734228180.html">
                 
-                  <h1>递归&闭包&数组切片&map&锁</h1>
+                  <h1>反射机制</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>内置函数</h4>
+                        	<h4>类型断言</h4>
 
 <ul>
-<li>new 用来分配值类型内存</li>
-<li>make 用来分配引用类型内存</li>
-<li>... 可以用来展开数据或者切片 </li>
+<li>判断类型必须是interface{}</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-text">  a = append(a, a...)
-</code></pre>
-
-<ul>
-<li>打印堆栈//TODO</li>
-</ul>
-
-<blockquote>
-<p>... 两个用途 1 可变参数 2 展开数组或者切片</p>
-</blockquote>
-
-<h4>错误处理</h4>
-
-<ul>
-<li>panic,revocer</li>
-</ul>
-
-<h4>new,make</h4>
-
-<ul>
-<li>new出来的指针必须要用make来分配内存</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  s1 := new([]int)
-  *s1 = make([]int, 5)
-  (*s1)[0] = 100
-</code></pre>
-
-<h4>闭包</h4>
-
-<ul>
-<li>一个函数和其相关的引用的环境组合而成的实体</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">func Adder() func(int) int {
-  var x int
-  return func(delta int) int {
-    x += delta
-    return x
-  }
-}
-
-func makeSuffixFunc(suffix string) func(string) string {
-  return func(name string) string {
-    if !strings.HasSuffix(name, suffix) {
-      return name + suffix
-    }
-    return name
-  }
-}
-</code></pre>
-
-<ul>
-<li>x 相当于类中的成员变量</li>
-<li>闭包可以实现代码的重用//TODO</li>
-</ul>
-
-<h4>数组</h4>
-
-<ul>
-<li>长度是数组类型的一部分</li>
-<li>长度固定</li>
-</ul>
-
-<h4>切片</h4>
-
-<ul>
-<li>切片是数组的一个引用</li>
-<li>切片的长度可以改变</li>
-<li>cap可以求出slice最大的容量</li>
-<li>切片的内存布局和数据结构</li>
-<li>len代表可访问的元素</li>
-<li>cap代表容量
-<img src="media/15387022894129/15387237788534.jpg" alt="" style="width:483px;"/></li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  type slice struct {
-    ptr *[5]int
-    cap int 
-    len int
+<pre class="line-numbers"><code class="language-text">  var f *File
+  var b interface{} = f
+  if v, ok := b.(ReadWriter); ok {
+    fmt.Println(&quot;%v&quot;, ok, v)
   }
 </code></pre>
 
+<h4>切片和空接口切片不能直接赋值</h4>
+
+<pre class="line-numbers"><code class="language-text">  var a []int
+  var b []interface{}
+  b = a //error
+</code></pre>
+
+<h4>反射</h4>
+
 <ul>
-<li>切片的测试</li>
+<li>运行时动态获取变量的相关信息</li>
+<li>reflect.TypeOf</li>
+<li>reflect.ValueOf</li>
+<li>reflect.Value.Kind</li>
+<li>reflect.Value.Interface()</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-text">func makeSlice(s slice, cap int) slice {
-  s.ptr = new([100]int)
-  s.cap = cap
-  s.len = 0
-  return s
- }
+<h4>通过反射改变变量的值</h4>
 
-func modify(s slice) {
-  s.ptr[1] = 1000
-}
+<pre class="line-numbers"><code class="language-text">var a float64
+fv := reflect.ValueOf(&amp;a)
+fv.Elem().SetFloat(3.3)
+fmt.Printf(&quot;%v\n&quot;, a)
+</code></pre>
 
-func testSlice2() {
-  var s1 slice
-  s1 = makeSlice(s1, 10)
-  s1.ptr[0] = 100
-  modify(s1)
-  fmt.Println(s1.ptr)
+<h4>json打包原理</h4>
+
+<ul>
+<li>利用反射机制的tag来实现</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-go">tp := reflect.TypeOf(inter)
+for i := 0; i &lt; num; i++ {
+ tag := tp.Elem().Field(i).Tag.Get(&quot;json&quot;)
+ fmt.Println(&quot;tag&quot;, tag)
 }
 </code></pre>
 
-<ul>
-<li>通过make创建 var slice []type = make([]type, len)</li>
-<li>切片拷贝 copy(s2, s1）
-<img src="media/15387022894129/15712229217252.jpg" alt="" style="width:792px;"/></li>
-</ul>
+<h4>利用反射编写灵活的代码</h4>
 
-<h4>string</h4>
-
-<ul>
-<li>string底层布局，string是[]byte的切片</li>
-</ul>
-
-<p><img src="media/15387022894129/15387264795094.jpg" alt="" style="width:379px;"/></p>
-
-<ul>
-<li>string是不可变的</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">func changeString() {
-  s := &quot;我  hello world&quot;
-  s1 := []rune(s)
-  s1[1] = &#39;0&#39;
-  str := string(s1)
-  fmt.Println(str)
-}
+<pre class="line-numbers"><code class="language-go">//按名字访问结构的成员
+* reflect.ValueOf(*e).FieldByName(&quot;Name&quot;)
+// 按名字访问结构的⽅方法
+reflect.ValueOf(e).MethodByName(&quot;UpdateAge&quot;).Call([]reflect.Value{reflect.ValueOf(1)})
 </code></pre>
 
-<h4>Map</h4>
+<h4>调用方法</h4>
 
-<ul>
-<li>删除一个元素delete</li>
-<li>清空需要重新make</li>
-<li>判断一个maps是否为空</li>
-<li>map排序</li>
-</ul>
+<pre class="line-numbers"><code class="language-go">type Employee struct {
+    EmployeeID string
+    Name       string `format:&quot;normal&quot;`
+    Age        int
+}
 
-<h4>golang中的包</h4>
+func (e *Employee) UpdateAge(newVal int) {
+    e.Age = newVal
+}
 
-<ul>
-<li>golang有150个标准的包</li>
-</ul>
+type Customer struct {
+    CookieID string
+    Name     string
+    Age      int
+}
 
-<h4>线程同步</h4>
-
-<ul>
-<li>import sync</li>
-<li>互斥锁 var mu sync.Mutex</li>
-<li>读写锁 var mu sync.RWMutex</li>
-</ul>
-
-<h4>go中Set</h4>
-
-<p><img src="media/15387022894129/15712238021174.jpg" alt="" style="width:1173px;"/></p>
-
-<pre class="line-numbers"><code class="language-go">func TestMapForSet(t *testing.T) {
-    mySet := map[int]bool{}
-    mySet[1] = true
-    n := 3
-    if mySet[n] {
-        t.Logf(&quot;%d is existing&quot;, n)
+func TestInvokeByName(t *testing.T) {
+    e := &amp;Employee{&quot;1&quot;, &quot;Mike&quot;, 30}
+    //按名字获取成员
+    t.Logf(&quot;Name: value(%[1]v), Type(%[1]T) &quot;, reflect.ValueOf(*e).FieldByName(&quot;Name&quot;))
+    if nameField, ok := reflect.TypeOf(*e).FieldByName(&quot;Name&quot;); !ok {
+        t.Error(&quot;Failed to get &#39;Name&#39; field.&quot;)
     } else {
-        t.Logf(&quot;%d is not existing&quot;, n)
+        t.Log(&quot;Tag:format&quot;, nameField.Tag.Get(&quot;format&quot;))
     }
-    mySet[3] = true
-    t.Log(len(mySet))
-    delete(mySet, 1)
-    n = 1
-    if mySet[n] {
-        t.Logf(&quot;%d is existing&quot;, n)
-    } else {
-        t.Logf(&quot;%d is not existing&quot;, n)
-    }
+    reflect.ValueOf(e).MethodByName(&quot;UpdateAge&quot;).
+        Call([]reflect.Value{reflect.ValueOf(1)})
+    t.Log(&quot;Updated Age:&quot;, e)
 }
+
+</code></pre>
+
+<h4>struct tag</h4>
+
+<pre class="line-numbers"><code class="language-go">if nameField, ok := reflect.TypeOf(*e).FieldByName(&quot;Name&quot;); !ok { t.Error(&quot;Failed to get &#39;Name&#39; field.&quot;)
+} else {
+t.Log(&quot;Tag:format&quot;, nameField.Tag.Get(&quot;format&quot;))
+}
+Reflect.Type 和 Reflect.Value 都有 FieldByName ⽅方法，注意他们的区别
+</code></pre>
+
+<h4>切片和map进行比较</h4>
+
+<pre class="line-numbers"><code class="language-go">func TestDeepEqual(t *testing.T) {
+    a := map[int]string{1: &quot;one&quot;, 2: &quot;two&quot;, 3: &quot;three&quot;}
+    b := map[int]string{1: &quot;one&quot;, 2: &quot;two&quot;, 3: &quot;three&quot;}
+    //  t.Log(a == b) error
+    t.Log(&quot;a==b?&quot;, reflect.DeepEqual(a, b))
+
+    s1 := []int{1, 2, 3}
+    s2 := []int{1, 2, 3}
+    s3 := []int{2, 3, 1}
+
+    t.Log(&quot;s1 == s2?&quot;, reflect.DeepEqual(s1, s2))
+    t.Log(&quot;s1 == s3?&quot;, reflect.DeepEqual(s1, s3))
+
+    c1 := Customer{&quot;1&quot;, &quot;Mike&quot;, 40}
+    c2 := Customer{&quot;1&quot;, &quot;Mike&quot;, 40}
+    fmt.Println(c1 == c2)
+    fmt.Println(reflect.DeepEqual(c1, c2))
+}
+
+</code></pre>
+
+<h4>万能填充</h4>
+
+<pre class="line-numbers"><code class="language-go">type Employee struct {
+    EmployeeID string
+    Name       string `format:&quot;normal&quot;`
+    Age        int
+}
+
+func (e *Employee) UpdateAge(newVal int) {
+    e.Age = newVal
+}
+
+type Customer struct {
+    CookieID string
+    Name     string
+    Age      int
+}
+
+func fillBySettings(st interface{}, settings map[string]interface{}) error {
+
+    // func (v Value) Elem() Value
+    // Elem returns the value that the interface v contains or that the pointer v points to.
+    // It panics if v&#39;s Kind is not Interface or Ptr.
+    // It returns the zero Value if v is nil.
+
+    if reflect.TypeOf(st).Kind() != reflect.Ptr {
+        return errors.New(&quot;the first param should be a pointer to the struct type.&quot;)
+    }
+    // Elem() 获取指针指向的值
+    if reflect.TypeOf(st).Elem().Kind() != reflect.Struct {
+        return errors.New(&quot;the first param should be a pointer to the struct type.&quot;)
+    }
+
+    if settings == nil {
+        return errors.New(&quot;settings is nil.&quot;)
+    }
+
+    var (
+        field reflect.StructField
+        ok    bool
+    )
+
+    for k, v := range settings {
+        if field, ok = (reflect.ValueOf(st)).Elem().Type().FieldByName(k); !ok {
+            continue
+        }
+        if field.Type == reflect.TypeOf(v) {
+            vstr := reflect.ValueOf(st)
+            vstr = vstr.Elem()
+            vstr.FieldByName(k).Set(reflect.ValueOf(v))
+        }
+
+    }
+    return nil
+}
+
+func TestFillNameAndAge(t *testing.T) {
+    settings := map[string]interface{}{&quot;Name&quot;: &quot;Mike&quot;, &quot;Age&quot;: 30}
+    e := Employee{}
+    if err := fillBySettings(&amp;e, settings); err != nil {
+        t.Fatal(err)
+    }
+    t.Log(e)
+    c := new(Customer)
+    if err := fillBySettings(c, settings); err != nil {
+        t.Fatal(err)
+    }
+    t.Log(*c)
+}
+
 </code></pre>
 
                         
@@ -770,7 +493,7 @@ func testSlice2() {
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/10/05 09:18 上午</span>
+                    <span class="date">2018/10/22 09:57 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
@@ -787,147 +510,83 @@ func testSlice2() {
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15710601189403.html">
+                <a class="clearlink" href="15714924926544.html">
                 
-                  <h1>常量&数据类型</h1>
+                  <h1>测试程序</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>常量</h4>
+                        	<h4>单元测试</h4>
 
-<p><img src="media/15710601189403/15710601502836.jpg" alt="" style="width:1229px;"/></p>
-
-<ul>
-<li>位操作</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-go">const (
-  Readable = 1 &lt;&lt; iota
-  Writable
-  Executable
-)
-</code></pre>
-
-<h4>禁止类型转换</h4>
-
-<ul>
-<li>别名都不可以</li>
-</ul>
-
-<h4>类型预定义的值</h4>
-
-<ul>
-<li>math.MaxInt64</li>
-<li>math.MaxFloat64</li>
-</ul>
-
-<h4>字符串string</h4>
-
-<ul>
-<li>string == 0 来判断</li>
-</ul>
-
-<h4>数组</h4>
-
-<pre class="line-numbers"><code class="language-go">a := [...]int{1,2,3,4}
-b := [...]int{1,2,3,4}
-</code></pre>
-
-<ul>
-<li>要求数组长度，顺序，和类型一致</li>
-</ul>
-
-<h4>位操作</h4>
-
-<pre class="line-numbers"><code class="language-go">1 &amp;^ 0  -- 1
-1 &amp;^ 1  -- 0
-0 &amp;^ 1  -- 0
-0 &amp;^ 0  -- 0
-</code></pre>
-
-<h4>循环</h4>
-
-<p><img src="media/15710601189403/15710612828833.jpg" alt="" style="width:508px;"/></p>
-
-<h4>if条件</h4>
-
-<p><img src="media/15710601189403/15710613636218.jpg" alt="" style="width:1024px;"/></p>
-
-<h4>switch</h4>
-
-<pre class="line-numbers"><code class="language-go">func TestSwitchCaseCondition(t *testing.T) {
-    for i := 0; i &lt; 5; i++ {
-        switch {
-        case i%2 == 0:
-            t.Log(&quot;Even&quot;)
-        case i%2 == 1:
-            t.Log(&quot;Odd&quot;)
-        default:
-            t.Log(&quot;unknow&quot;)
+<pre class="line-numbers"><code class="language-go">func TestSquare(t *testing.T) {
+    inputs := [...]int{1, 2, 3}
+    expected := [...]int{1, 4, 9}
+    for i := 0; i &lt; len(inputs); i++ {
+        ret := square(inputs[i])
+        if ret != expected[i] {
+            t.Errorf(&quot;input is %d, the expected is %d, the actual %d&quot;,
+                inputs[i], expected[i], ret)
         }
     }
 }
+
+func TestErrorInCode(t *testing.T) {
+    fmt.Println(&quot;Start&quot;)
+    t.Error(&quot;Error&quot;)
+    fmt.Println(&quot;End&quot;)
+}
+
+func TestFailInCode(t *testing.T) {
+    fmt.Println(&quot;Start&quot;)
+    t.Fatal(&quot;Error&quot;)
+    fmt.Println(&quot;End&quot;)
+}
+
+func TestSquareWithAssert(t *testing.T) {
+    inputs := [...]int{1, 2, 3}
+    expected := [...]int{1, 4, 9}
+    for i := 0; i &lt; len(inputs); i++ {
+        ret := square(inputs[i])
+        assert.Equal(t, expected[i], ret)
+    }
+}
 </code></pre>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/14 21:35 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
+<h4>性能测试</h4>
 
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15682780301392.html">
-                
-                  <h1>中间件</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>分类</h4>
+<pre class="line-numbers"><code class="language-go">func BenchmarkConcatStringByAdd(b *testing.B) {
+
+    elems := []string{&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;, &quot;5&quot;}
+    b.ResetTimer()
+    for i := 0; i &lt; b.N; i++ {
+        ret := &quot;&quot;
+        for _, elem := range elems {
+            ret += elem
+        }
+    }
+    b.StopTimer()
+}
+
+func BenchmarkConcatStringByBytesBuffer(b *testing.B) {
+    elems := []string{&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;, &quot;5&quot;}
+    b.ResetTimer()
+    for i := 0; i &lt; b.N; i++ {
+        var buf bytes.Buffer
+
+        for _, elem := range elems {
+            buf.WriteString(elem)
+
+        }
+    }
+    b.StopTimer()
+
+}
+</code></pre>
 
 <ul>
-<li>客户端中间件</li>
-<li>Rpc访问日志</li>
-<li>负载均衡</li>
-<li>熔断限流</li>
-<li>服务端中间件</li>
-<li>服务访问日志</li>
-<li>Metrics打点</li>
-<li>限流</li>
-</ul>
-
-<h4>中间件设计</h4>
-
-<ul>
-<li><img src="media/15682780301392/15682782754056.jpg" alt="" style="width:581px;"/></li>
-<li>设计要点</li>
-<li>需要把所有中间件串联起来，依次执行</li>
-<li>每个中间件可以选择执行的时机，比如在其他中间件之前执行，或者在其他中间件之后执行</li>
-</ul>
-
-<h5>分布式限流算法</h5>
-
-<ul>
-<li>Redis</li>
-<li></li>
+<li>go test   -bench=. lsn4_test.go -benchmem</li>
+<li>测试指令</li>
 </ul>
 
                         
@@ -937,112 +596,7 @@ b := [...]int{1,2,3,4}
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/09/12 16:47 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15679316164736.html">
-                
-                  <h1>代码生成器</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>map遍历无序</h4>
-
-<h4>服务流</h4>
-
-<ul>
-<li><img src="media/15679316164736/15679356650039.jpg" alt="" style="width:860px;"/></li>
-<li>GrpcGennerator-&gt;RouterGenerator-&gt;ControllerGenerator</li>
-<li>RouterGenerator 打点统计</li>
-<li><img src="media/15679316164736/15679358942122.jpg" alt="" style="width:535px;"/></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/08 16:33 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15676689657297.html">
-                
-                  <h1>负载均衡</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>好处</h4>
-
-<ul>
-<li>服务水平可扩展</li>
-<li>稳定性大大提升</li>
-</ul>
-
-<h4>注册中心</h4>
-
-<ul>
-<li>服务的IP节点维护在客户端</li>
-<li>结合注册中心，实现节点动态增删</li>
-<li>流量调度，请求均衡的分配到服务器</li>
-</ul>
-
-<h4>MsgPack</h4>
-
-<ul>
-<li>代码自动生成</li>
-<li>msgp自动生成代码</li>
-</ul>
-
-<h4>protobuf</h4>
-
-<ul>
-<li><img src="media/15676689657297/15676739994129.jpg" alt="" style="width:1061px;"/></li>
-<li>value如果高位为0，就表示内容已经结束，后面的字节内容不属于这个value，如果是1，则继续按着len的字节数来读，直到读到高位为0或者长度结束为止</li>
-<li>packed=true存放数组TLVLVLV 数组开始和结束start group end group</li>
-<li>fixed表示字节要占满</li>
-<li>L不一定传</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/05 15:36 下午</span>
+                    <span class="date">2019/10/19 21:41 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>

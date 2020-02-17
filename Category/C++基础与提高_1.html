@@ -170,142 +170,181 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15664703415424.html">
+                <a class="clearlink" href="15700989065972.html">
                 
-                  <h1>左值和右值</h1>
+                  <h1>lambda</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>左值和右值</h4>
+                        	<h4>特点</h4>
 
 <ul>
-<li>左值 能用在赋值语句=左边的东西</li>
-<li>C++表达式要么是左值，要么是右值</li>
-<li>i = i + 1 i有右值属性，i出现在左边，拥有左值属性</li>
-<li>赋值运算符</li>
-<li>取地址</li>
-<li>string vector []左值 iter是迭代器</li>
-<li>看一个运算符在一个字面值能不能操作</li>
-<li>左值表达式 左值</li>
-<li>右值表达式 右值</li>
+<li>是个匿名函数, 可调用的代码单元</li>
+<li>返回类型可以自动推导，可以省略</li>
+<li>没有参数的时候()可以省略·</li>
 </ul>
 
-<h4>引用分类</h4>
+<pre class="line-numbers"><code class="language-cpp">auto f = [](int a)-&gt;int {
+    return a + 1;
+  };
+
+  auto f1 = [](int a) {
+    return a + 1;
+  };
+
+  auto f2 = [] {return  2;};
+</code></pre>
+
+<h4>捕获列表</h4>
 
 <ul>
-<li>左值引用 绑定到左值</li>
-<li>const引用 左值引用</li>
-<li>右值引用 绑定到右值，临时对象 </li>
+<li>捕获一定范围内的变量</li>
+<li>lambda可以捕获局部静态变量</li>
 </ul>
 
-<h4>左值引用</h4>
+<pre class="line-numbers"><code class="language-cpp">  static int i = 9;
+  auto f3 = [] {
+    return i;
+  };
+
+</code></pre>
 
 <ul>
-<li>左值引用不能绑定到右值</li>
-<li>const 左值引用可以绑定到右值</li>
+<li>[&amp;] 捕获所有外部变量</li>
 </ul>
 
-<h4>右值引用</h4>
+<pre class="line-numbers"><code class="language-cpp">  int j = 9;
+  auto f4 = [&amp;] {
+    j = 10;
+  };
+  f4();
+</code></pre>
 
 <ul>
-<li>来绑定一些临时对象和即将销毁的对象</li>
-<li>右值引用理解为对象</li>
-<li>绑定到坐值的引用，一般都不能绑定到右值</li>
-<li>&amp;&amp;代表新的数据类型</li>
-<li>提高程序运行效率，把拷贝对象变成移动对象，转换对象的所有者</li>
-<li>移动对象如何发生 移动构造函数，应付移动构造函数</li>
+<li>[=] 值使用，只能用，不能修改</li>
 </ul>
+
+<pre class="line-numbers"><code class="language-cpp">auto f5 = [=] {
+    cout &lt;&lt; &quot;j &quot; &lt;&lt; j &lt;&lt; endl;
+  };
+  f5();
+
+</code></pre>
+
+<ul>
+<li>[this] 用于类中，拥有和成员函数一样的权限</li>
+<li>[变量名] 表示按值捕获，同时不捕获其他变量，按值分隔</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">class CT {
+ public:
+  int m_i = 5;
+  void func(int x, int y) {
+    //auto ld = [this] {
+    //auto ld = [this, x, y] {
+    auto ld = [this, &amp;x, &amp;y] {
+      x = 5;
+      y = 2;
+      return m_i;
+    };
+  }
+};
+</code></pre>
+
+<ul>
+<li>[=,&amp;变量名] 按值捕获所有变量, 但按引用捕获&amp;中所指的变量，第一个都是默认捕获，隐式捕获方式，其他的是显式捕获，后面的引用方式是相反的[&amp;,x]</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp"> int x = 2, y = 3;
+  auto f6 = [=, &amp;x, &amp;y] {
+    cout &lt;&lt; &quot;j &quot; &lt;&lt; j &lt;&lt; endl;
+  };
+  f6();
+
+  auto f7 = [&amp;, x, y] {
+    cout &lt;&lt; &quot;j &quot; &lt;&lt; j &lt;&lt; endl;
+  };
+  f6();
+</code></pre>
+
+<h4>lambda表达式延迟调用易出错</h4>
+
+<pre class="line-numbers"><code class="language-cpp">  int x1 = 5;
+  auto f8 = [=] {
+    return x1;
+  };
+  x1 = 10;
+  cout &lt;&lt; f8() &lt;&lt; endl;//5
+</code></pre>
+
+<ul>
+<li>lamda表达式引用外部变量的那一刻，复制了一份存储在表达式中</li>
+<li>如果采用引用，就不会出错</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp"> int x1 = 5;
+  auto f8 = [&amp;] {
+    return x1;
+  };
+  x1 = 10;
+  cout &lt;&lt; f8() &lt;&lt; endl;//5
+</code></pre>
+
+<h4>mutable</h4>
+
+<pre class="line-numbers"><code class="language-cpp">  int x2 = 5;
+  auto f9 = [=]() mutable {
+    x2 = 7;
+    return x2;
+  };
+  cout &lt;&lt; f9() &lt;&lt; endl;
+</code></pre>
+
+<ul>
+<li>可以修改按值捕获的变量</li>
+</ul>
+
+<h4>表达式类型和存储</h4>
+
+<ul>
+<li>Closure Type</li>
+<li>闭包 函数内的函数，本质就是lambda表达式创建时运行时间对象</li>
+<li>闭包类的类型的对象，可以认为是带有operator()的类型的对象</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">int x = 5;
+auto f = [&amp;] {
+  return x;
+}
+
+function&lt;int(int)&gt; fc1 = [](int t) {return  t;};
+  cout &lt;&lt; fc1(15) &lt;&lt; endl;
+function&lt;int(int)&gt; fc2 = bind(
+      [](int t) {
+      return t;
+      },
+      16
+      );
+</code></pre>
 
 <h4>总结</h4>
 
-<ul>
-<li>返回左值引用的函数，连同赋值，下标，解引用都是左值引用 --i </li>
-<li>i-- 右值引用</li>
-<li>++i ++i直接给变量i+1,然后返回i本身</li>
-<li>i是变量，所以可以被赋值</li>
-<li>右值引用的变量本身是左值</li>
-<li>任何函数的行参都是左值func(int&amp;&amp; w) w是左值</li>
-<li>临时对象都是右值</li>
-<li>如果一个 prvalue 被绑定到一个引用上，它的生命周期则会延长到跟这个引用变量一样长。</li>
-</ul>
+<pre class="line-numbers"><code class="language-cpp">  vector&lt;int&gt; vec = {10,20,30,40,50};
+  int sum = 0;
+  for_each (vec.begin(), vec.end(), [&amp;sum](int val) {
+            sum += val;
+            cout &lt;&lt; val &lt;&lt; endl;
+            });
+  cout &lt;&lt; &quot; sum &quot; &lt;&lt; sum &lt;&lt; endl;
 
-<h4>std::move</h4>
-
-<ul>
-<li>把一个左值强制转换成右值</li>
-</ul>
-
-<h4>指分左右</h4>
-
-<p><img src="media/15808686074669/18b692072537d4ce179d3857a8a0133c.png" alt="18b692072537d4ce179d3857a8a0133"/></p>
-
-<ul>
-<li>一个 lvalue 是通常可以放在等号左边的表达式 左值</li>
-<li>一个 rvalue 是通常只能放在等号右边的表达式，右值</li>
-<li>一个 glvalue 是 generalized lvalue，广义左值</li>
-<li>一个 xvalue 是 expiring lvalue，将亡值</li>
-<li>一个 prvalue 是 pure rvalue，纯右值</li>
-</ul>
-
-<h4>对比</h4>
-
-<pre class="line-numbers"><code class="language-cpp">smart_ptr&lt;shape&gt; ptr1{new circle()};
-smart_ptr&lt;shape&gt; ptr2 = std::move(ptr1);
+  find_if (vec.begin(), vec.end(), [](int val) {
+           cout &lt;&lt; val &lt;&lt; endl;
+           if (val &gt; 15)
+              return true;
+           return false;
+           });
 </code></pre>
-
-<ul>
-<li> std::move(ptr) 就有趣点了。它的作用是把一个左值引用强制转换成一个右值引用，而并不改变其内容。从实用的角度，在我们这儿 std::move(ptr1) 等价于 static_cast<smart_ptr<shape>&amp;&amp;&gt;(ptr1)</li>
-<li> 把 std::move(ptr1) 看作是一个有名字的右值。为了跟无名的纯右值 prvalue 相区别，C++ 里目前就把这种表达式叫做 xvalue。跟左值 lvalue 不同，xvalue 仍然是不能取地址的——这点上，xvalue 和 prvalue 相同。所以，xvalue 和 prvalue 都被归为右值 rvalue</li>
-<li> <img src="media/15808686074669/15808730621501.jpg" alt="" style="width:583px;"/></li>
-</ul>
-
-<h4>字符串绑定</h4>
-
-<pre class="line-numbers"><code class="language-cpp">string str{&quot;I love china&quot;};
-  string&amp; s1{str};
-
-  //左值引用不能绑定到临时变量,临时变量被系统当右值
-  //string&amp; s2{&quot;I love china&quot;};
-  //const引用绑定到右值，执行隐式转换并放入string临时变量
-  const string&amp; s3{&quot;I love china&quot;};
-  //string&amp;&amp; s4{s3};
-  string&amp;&amp; s5{&quot;I love China&quot;};//可以绑定到一个临时变量，
-</code></pre>
-
-<h4>Move函数</h4>
-
-<pre class="line-numbers"><code class="language-cpp">  int tmp = 10;
-  int&amp; l1 = tmp;
-  int&amp;&amp; l2 = tmp * 100;
-  const int&amp; l4 = i * 100;
-  const int&amp;&amp; r5 = i * 100;
-  //成功绑定右值,但是此后r6的值和tmp没有关系
-  int&amp;&amp; r6 = tmp++;
-  tmp = 12;
-  printf(&quot; %d %d \n&quot;, r6, tmp);
-  int&amp;&amp; r7 = std::move(tmp);
-  r7 = 35;
-  printf(&quot; %d %d \n&quot;, r7, tmp);
-
-  int&amp;&amp; r8 = 100;
-  int&amp;&amp; r9 = std::move(r8);
-  printf(&quot; %d %d \n&quot;, r8, r9);
-
-  string st = &quot;Im ok&quot;;
-  //sring移动构造函数把st的内容拷贝到def，def重新开辟内存,同时把st清空
-  //string def = std::move(st);
-  //sring移动构造函数把st的内容拷贝到def，def重新开辟内存,同时把st清空
-  string&amp;&amp; sr  = std::move(st);
-  cout &lt;&lt; sr &lt;&lt; &quot; &quot; &lt;&lt; st &lt;&lt; endl;
-</code></pre>
-
-<h4>返回值优化</h4>
-
-<ul>
-<li>一个本地对象意味着这个对象会被拷贝，除非编译器发现可以做返回值优化（named return value optimization，或 NRVO</li>
-<li></li>
-</ul>
 
                         
                       </div>
@@ -314,7 +353,7 @@ smart_ptr&lt;shape&gt; ptr2 = std::move(ptr1);
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/08/22 18:39 下午</span>
+                    <span class="date">2019/10/03 18:35 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
@@ -331,108 +370,94 @@ smart_ptr&lt;shape&gt; ptr2 = std::move(ptr1);
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15656045521412.html">
+                <a class="clearlink" href="15811508963305.html">
                 
-                  <h1>函数</h1>
+                  <h1>constexpr</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>inline函数</h4>
+                        	<h4>使用</h4>
 
-<ul>
-<li>函数体很小，调用很频繁</li>
-<li>inline影响编译器，编译阶段，系统将函数调用替换为函数本体</li>
-<li>inline函数需要放在头文件</li>
-<li>代码膨胀，循环，分之，递归调用尽量不要出现在inline中</li>
-</ul>
+<pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;array&gt;
 
-<h4>C++11新特性</h4>
+using namespace std;
+constexpr int sqr(int n) {return n * n;}
 
-<ul>
-<li>constexpr 用在常量表达式的调用, 更严格的inline函数</li>
-<li>后置返回类型</li>
-</ul>
+int main() {
+    constexpr int n = sqr(3);
+    int b[n];
 
-<h4>函数杂合用法</h4>
-
-<ul>
-<li>函数返回指针和返回引用</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/12 18:09 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15687147026174.html">
-                
-                  <h1>单例设计模式</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>设计模式</h4>
-
-<ul>
-<li>开发程序中代码的写法</li>
-<li>head first</li>
-</ul>
-
-<h4>单例设计模式</h4>
-
-<pre class="line-numbers"><code class="language-cpp">std::mutex m;
- static MyCAS* GetInstance() {
-    //不代表一定没被new过，只有第一次多线程初始化的时候需要加锁，后面都不需要加锁
-    if (m_instance == nullptr) {
-      //初始化的时候才加锁
-      std::unque_lock(std::mutex) lock(m);
-      if (m_instance == nullptr) {
-        m_instance = new MyCAS();
-        static GC c1;
-      }
-      return m_instance;
-    }
-  }
-</code></pre>
-
-<h4>call_once</h4>
-
-<ul>
-<li>能够保证函数只能被调用一次</li>
-<li>call_once效率上比互斥量消耗的更少</li>
-<li>call_once需要与一个标记结合使用, std::once_flag</li>
-<li>调用call_once成功后，就把once_flag设置为已经调用状态</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">std::once_flag g_flag;
-static MyCAS* GetInstance() {
-  std::call_once(g_flag, CreateInstance);
-  return m_instance;
+    constexpr string_view sv {&quot;vi&quot;};
+    constexpr pair pr{sv[0], sv[1]};
+    constexpr array a{pr.first, pr.second};
+    constexpr int n1 = a[0];
+    constexpr int n2 = a[1];
+    cout &lt;&lt; n1 &lt;&lt; &#39; &#39; &lt;&lt; n2 &lt;&lt; &quot;\n&quot;;
 }
-static void CreateInstance() {
-    cout &lt;&lt; &quot;CreateInstance &quot; &lt;&lt; endl;
-    m_instance = new MyCAS();
+</code></pre>
+
+<ul>
+<li>如果一个类的构造函数里面只包含常量表达式、满足对 constexpr 函数的限制的话（这也意味着，里面不可以有任何动态内存分配），并且类的析构函数是平凡的，那这个类就可以被称为是一个字面类型。换一个角度想，对 constexpr 函数——包括字面类型构造函数——的要求是，得让编译器能在编译期进行计算，而不会产生任何“副作用”，比如内存分配、输入、输出等等</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2020/02/08 16:34 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15810442440467.html">
+                
+                  <h1>decltype</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>类型推导与auto一起使用</h4>
+
+<pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+template &lt;class T, class U&gt;
+auto add(T t, U u) -&gt; decltype(t + u) {
+    return t + u;
+}
+
+int foo(int&amp; i) {cout &lt;&lt; &quot;foo int&amp; i \n&quot;; return i; }
+float foo(float&amp; i) {cout &lt;&lt; &quot;foo float&amp; i \n&quot;; return i; }
+
+template &lt;class T&gt;
+auto func(T&amp; val) -&gt; decltype(foo(val)) {
+    return foo(val);
+}
+
+int main() {
+    int a = 3;
+    float b = 5.5;
+    cout &lt;&lt; add(a, b) &lt;&lt; endl;
+
+    func(a);
+    func(b);
 }
 </code></pre>
 
@@ -443,7 +468,7 @@ static void CreateInstance() {
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/09/17 18:05 下午</span>
+                    <span class="date">2020/02/07 10:57 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
@@ -460,9 +485,9 @@ static void CreateInstance() {
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15708740577150.html">
+                <a class="clearlink" href="15698082286112.html">
                 
-                  <h1>分配器&迭代器</h1>
+                  <h1>noexcept</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
@@ -470,37 +495,17 @@ static void CreateInstance() {
                         	<h4>作用</h4>
 
 <ul>
-<li>内存分配器，扮演内存池的角色，通过大量较少对malloc的调用，来节省内存，分配效率有提高</li>
-<li>缺省的alloactor没有使用内存池技术</li>
+<li>该关键字告诉编译器，函数中不会发生异常,这有利于编译器对程序做更多的优化。<br/>
+如果在运行时，noexecpt函数向外抛出了异常（如果函数内部捕捉了异常并完成处理，这种情况不算抛出异常），程序会直接终止，调用std::terminate()函数，该函数内部会调用std::abort()终止程序</li>
 </ul>
 
-<h4>其他的分配器</h4>
-
-<p><img src="media/15708740577150/15708752337942.jpg" alt="" style="width:884px;"/></p>
-
-<h4>迭代器</h4>
-
-<h5>分类</h5>
+<h4>使用情形</h4>
 
 <ul>
-<li>迭代器的移动特性以及在这个迭代器的操作</li>
-<li>迭代器表示一个位置，一般分类是依据他的跳跃能力</li>
-<li>输出型迭代器 struct output_iterator_tag;</li>
-<li>输入型迭代器 struct input_iterator_tag;</li>
-<li>前向迭代器 struct forward_iterator_tag</li>
-<li>双向迭代器 struct bidirectional_iterator_tag</li>
-<li>随机访问迭代器 struct random_access_iterator_tag
-<img src="media/15708740577150/15708760939711.jpg" alt="" style="width:778px;"/></li>
-<li>并不是所有容器都有迭代器 stack queue heap
-<img src="media/15708740577150/15708762347915.jpg" alt="" style="width:849px;"/></li>
-</ul>
-
-<h5>迭代器</h5>
-
-<p><img src="media/15708740577150/15708766232720.jpg" alt="" style="width:810px;"/></p>
-
-<ul>
-<li></li>
+<li>移动构造函数（move constructor）</li>
+<li>移动分配函数（move assignment）</li>
+<li>析构函数（destructor）。这里提一句，在新版本的编译器中，析构函数是默认加上关键字noexcept的。下面代码可以检测编译器是否给析构函数加上关键字noexcept。</li>
+<li>叶子函数（Leaf Function）。叶子函数是指在函数内部不分配栈空间，也不调用其它函数，也不存储非易失性寄存器，也不处理异常。</li>
 </ul>
 
                         
@@ -510,732 +515,7 @@ static void CreateInstance() {
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/10/12 17:54 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15694092395844.html">
-                
-                  <h1>recursive_mutex</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>概念</h4>
-
-<ul>
-<li>独占，可以递归lock，允许同一个互斥量多次被lock</li>
-<li>允许同一个线程，同一个互斥量多次被调用，效率比mutex低一些</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">std::recursive_mutex mutex1;
-std::lock_guard&lt;std::recursive_mutex&gt; s1(mutex1);
-std::lock_guard&lt;std::recursive_mutex&gt; s2(mutex1);
-//可以多次调用
-</code></pre>
-
-<h4>std::timed_mutex&amp;std::recursive_timed_mutex</h4>
-
-<ul>
-<li>try_lock_for  等待一段时间，如果规定时间内没有拿到锁，就直接走下去</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text"> for (int i = 0; i &lt; 10000; i++) {
-      //std::lock_guard&lt;std::timed_mutex&gt; s1(mutex1);
-      std::chrono::milliseconds timeout(100);
-      //mutex1.try_lock_until(chrono::steady_clock::now() + timeout)
-      if (mutex1.try_lock_for(timeout)) {
-        cout &lt;&lt; &quot;get lock&quot; &lt;&lt; endl;
-        msgRecvQueue.push_back(i);
-        cout &lt;&lt; &quot;insert ele &quot; &lt;&lt; i &lt;&lt; endl;
-        mutex1.unlock();
-      } else {
-        cout &lt;&lt; &quot;not get lock sleep &quot; &lt;&lt; endl;
-        std::this_thread::sleep_for(timeout);
-      }
-    }
-</code></pre>
-
-<ul>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/25 19:00 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15689790735625.html">
-                
-                  <h1>async、future、packaged task,promise</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>async</h4>
-
-<ul>
-<li>std::async是一个函数模版。启动一个异步任务, 返回一个future对象</li>
-<li>自动启动一个线程并开始执行对应的线程入口函数，future对象里就含有线程入口函数，可以通过调用future对象的成员函数</li>
-<li>future提供了一种访问异步操作结果的机制，就是说结果可能没有办法马上拿到，在线程执行完毕的时候，就能够拿到结果了</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">std::future&lt;int&gt; result = std::async(mythread);
-cout &lt;&lt; &quot;continue...!&quot; &lt;&lt; endl;
-cout &lt;&lt; result.get() &lt;&lt; endl;
-</code></pre>
-
-<ul>
-<li>get()函数等待线程执行结束后返回结果</li>
-<li>get只能获取一次</li>
-<li>如果没有get和wait依然等待线程执行结束后获取结果</li>
-</ul>
-
-<h5>std::launch</h5>
-
-<ul>
-<li>std::launch:deferred 表示线程入口函数调用被延迟到std::future的wait或者get函数调用才执行</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">std::future&lt;int&gt; result = std::async(std::launch::deferred, &amp;A::mythread, &amp;a, val);
-</code></pre>
-
-<ul>
-<li>如果下面不调用get或者wait，线程不会被创建</li>
-</ul>
-
-<h5>std::launch::async</h5>
-
-<pre class="line-numbers"><code class="language-text">std::future&lt;int&gt; result = std::async(std::launch::deferred, &amp;A::mythread, &amp;a, val);
-</code></pre>
-
-<ul>
-<li>std::launch::async不能和std::launch:deferred同时使用</li>
-</ul>
-
-<h4>std::packaged_task</h4>
-
-<ul>
-<li>打包任务，是一个类模板，模板参数是各种调用对象</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">std::packaged_task&lt;int(int)&gt; mypt(mythread2);
-std::thread t1(std::ref(mypt), 1);
-t1.join();
-std::future&lt;int&gt; res = mypt.get_future();
-</code></pre>
-
-<ul>
-<li>lamda</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">std::packaged_task&lt;int(int)&gt; mypt([](int mypar) {
-                                    cout &lt;&lt; &quot;thread start &quot; &lt;&lt; &quot; thread_id = &quot;
-                                    &lt;&lt; std::this_thread::get_id() &lt;&lt; endl;
-                                    cout &lt;&lt; &quot; val &quot; &lt;&lt; mypar &lt;&lt; endl;
-                                    std::chrono::seconds dura(1);
-                                    std::this_thread::sleep_for(dura);
-                                    return 5;
-                                    });
-mypt(1);                                    
-</code></pre>
-
-<h4>std::promise</h4>
-
-<ul>
-<li>通过promise保存一个值，然后在其他线程中，把这个值取出来用</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">std::promise&lt;int&gt; myprom;
-std::thread t1(mythread3, std::ref(myprom), 180);
-t1.join();
-std::future&lt;int&gt; ful = myprom.get_future();
-auto res = ful.get();
-</code></pre>
-
-<ul>
-<li>传递给另外的线程</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">void mythread4(std::future&lt;int&gt;&amp; tmp) {
-  auto res = tmp.get();
-  cout &lt;&lt; &quot;mythread4 res &quot; &lt;&lt; res &lt;&lt; endl;
-}
-std::promise&lt;int&gt; myprom;
-std::thread t1(mythread3, std::ref(myprom), 180);
-t1.join();
-std::future&lt;int&gt; ful = myprom.get_future();
-std::thread t2(mythread4, std::ref(ful));
-</code></pre>
-
-<h4>小结</h4>
-
-<ul>
-<li>我们学习这些东西的目的，并不是要把他们都用在咱们自己的实际开发中。</li>
-<li>相反，如果我们能够用最少的东西能够写出一个稳定、高效的多线程程序，更值得赞赏</li>
-<li>我们为了成长，必须要阅读一些高手些的代码，从而快速实现自己代码的积累，我们的技术就会有一个大幅度的提升 //老师更愿意将学习这些内容的理由解释为：为我们将来能够读懂高手甚至大师些的代码而铺路；</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/20 19:31 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15702694837901.html">
-                
-                  <h1>lamda陷阱</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>捕获异常</h4>
-
-<ul>
-<li>捕获列表中的：捕获外部作用域中所有变量，并作为引用在lambda 表达式中使用, 按照引用这种捕获方式，会导致 1 abda 表达式包含绑定到局部变量的引用</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">vector&lt;function&lt;bool(int)&gt;&gt; gv;
-
-void func() {
-  srand((int)time(NULL));
-
-  int tmp = rand() % 6;
-
-  gv.push_back([&amp;](int v) {
-                if (v % tmp == 0) {
-                  return true;
-                }
-                return false;
-               });
-}
-
-int main() {
-  func();
-
-  cout &lt;&lt; gv[0](10) &lt;&lt; endl;
-}
-</code></pre>
-
-<ul>
-<li>引用捕获超过范围的情形也叫引用悬空</li>
-<li>采用按值捕获可以解决引用悬空</li>
-</ul>
-
-<h4>成员变量</h4>
-
-<ul>
-<li>=是按值捕获的意思我们会认为这个[=]是按值捕获，使用我们能够访问成员变量tmp,所以我们顺理成量的认为，这里这个1ambda 表达式是所使用的tmp是按值捕获的</li>
-<li>lamda表达式的行正确与否，取決于pat対象是否存在,只有PAT对存在，这个lamda表达式行オ正确</li>
-<li>this指向对象本身，所以这里[=]捕获的是this指针值</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">vector&lt;function&lt;bool(int)&gt;&gt; gv;
-class AT {
- public:
-  vector&lt;function&lt;bool(int)&gt;&gt; gv;
-
-  int tmp = 5;
-  void addItem() {
-    gv.push_back([=](auto v) {
-                 if (v % tmp == 0) {
-                 return true;
-                 }
-                 return false;
-                 });
-  };
-};
-
-int main() {
-  func();
-
-
-  AT* pat = new AT();
-  pat-&gt;addItem();
-  delete pat;
-  cout &lt;&lt; gv[0](10) &lt;&lt; endl;
-}
-</code></pre>
-
-<ul>
-<li>使用临时变量来捕获</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">vector&lt;function&lt;bool(int)&gt;&gt; gv;
-class AT {
- public:
-  vector&lt;function&lt;bool(int)&gt;&gt; gv;
-
-  int tmp = 5;
-  void addItem() {
-    auto t_tmp = tmp;
-    gv.push_back([t_tmp](auto v) {
-                 if (v % t_tmp == 0) {
-                 return true;
-                 }
-                 return false;
-                 });
-  };
-};
-</code></pre>
-
-<h4>广义捕获</h4>
-
-<pre class="line-numbers"><code class="language-cpp">class AT {
- public:
-  vector&lt;function&lt;bool(int)&gt;&gt; gv;
-
-  int tmp = 5;
-  void addItem() {
-    gv.push_back([t_tmp = tmp](auto v) {
-                 if (v % t_tmp == 0) {
-                 return true;
-                 }
-                 return false;
-                 });
-  };
-};
-</code></pre>
-
-<h4>静态局部变量</h4>
-
-<ul>
-<li>捕获不包括静态局部变量，但是可以使用</li>
-<li>静态变量使用类似按引用捕获效果</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">vector&lt;function&lt;bool(int)&gt;&gt; gv;
-
-void func() {
-  srand((int)time(NULL));
-
-  static int tmp = 5;
-
-  gv.push_back([](auto v) {
-                cout &lt;&lt; &quot; static val &quot; &lt;&lt; tmp &lt;&lt; endl;
-                if (v % tmp == 0) {
-                  return true;
-                }
-                return false;
-               });
-  tmp++;
-}
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/05 17:58 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15700073181059.html">
-                
-                  <h1>function&& bind</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>可调用对象</h4>
-
-<ul>
-<li>函数</li>
-<li>重载()对象</li>
-</ul>
-
-<h4>可被转换的函数指针的类对象</h4>
-
-<pre class="line-numbers"><code class="language-cpp">class CT {
- public:
-  using tfptr = void(*)(int);
-
-  static void st_func(int t) {
-    cout &lt;&lt; &quot;static function &quot; &lt;&lt; t &lt;&lt; endl;
-  }
-
-  operator tfptr() {return st_func;}
-};
-int main() {
-  using ptr = void(*)(int);
-  CT ct;
-  ct(5);
-}
-</code></pre>
-
-<h4>function</h4>
-
-<ul>
-<li><p>能够通过给它指定模版参数，能够以统一的方式来处理函数</p>
-<pre class="line-numbers"><code class="language-cpp">function&lt;void(int)&gt; ptr = func;
-ptr(3);<br/>
-function&lt;void(int)&gt; ptr2 = TC::st_func;<br/>
-ptr2(12);<br/>
-TC tc;<br/>
-function&lt;void(int)&gt; ptr3 = tc;<br/>
-ptr3(12);
-</code></pre></li>
-</ul>
-
-<h4>bind</h4>
-
-<ul>
-<li>可调用对象和参数绑定到一起， 构成防函数</li>
-<li>如果是多个参数，可以部分绑定</li>
-<li>bind对预先绑定的参数是通过值传递的</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">void func(int t) {
-  cout &lt;&lt; &quot; t &quot; &lt;&lt; t &lt;&lt; endl;
-}
-
-class CT {
- public:
-  using tfptr = void(*)(int);
-
-  static void st_func(int t) {
-    cout &lt;&lt; &quot;static function &quot; &lt;&lt; t &lt;&lt; endl;
-
-  }
-
-  operator tfptr() {return st_func;}
-
-  void func(int x, int y) {
-    m_a++;
-    cout &lt;&lt; &quot;x &quot; &lt;&lt; x &lt;&lt; &quot; y &quot; &lt;&lt; y &lt;&lt; &quot; m_a &quot;&lt;&lt; m_a &lt;&lt; endl;
-  }
-
-  ~CT() { std::cout &lt;&lt; &quot; destory &quot; &lt;&lt; endl;}
-  CT() { std::cout &lt;&lt; &quot; construct &quot; &lt;&lt; endl;}
-  int m_a;
-};
-
-void bfunc(int x, int y, int z) {
-  cout &lt;&lt; &quot;x &quot; &lt;&lt; x &lt;&lt; &quot; y &quot; &lt;&lt; y &lt;&lt; &quot; z &quot; &lt;&lt; z &lt;&lt; endl;
-}
-void bfunc2(int&amp; x, int&amp; y) {
-  x++;
-  y++;
-}
-
-int main() {
-  //绑定函数bfunc的参数30，placeholders::_1表示需要f1来参数
-  auto f1 = bind(bfunc, placeholders::_1, placeholders::_1, 30);
-  bind(bfunc, placeholders::_1, placeholders::_2, 30)(5, 15);
-  f1(1);
-
-  auto f3 = bind(bfunc, placeholders::_2, placeholders::_1, 30);
-  f3(5,15);
-
-
-  int a = 2, b = 3;
-  //bind对预先绑定的参数是通过值传递的,所以a值是值传递的, 没有事先绑定的是引用传
-  //递
-  auto f4 = bind(bfunc2, a, placeholders::_1);
-  f4(b);
-  cout &lt;&lt; &quot;a &quot; &lt;&lt; a &lt;&lt; &quot; b &quot; &lt;&lt; b &lt;&lt; endl;
-
-  CT ct;
-  ct.m_a = 1;
-  //生成了防函数的临时对象，后续的func修改的是临时对象的m_a;
-  //如果传的是对象引用，则不生成临时对象
-  auto f5 = bind(&amp;CT::func, ct, placeholders::_1, placeholders::_2);
-  f5(10, 20);
-  cout &lt;&lt; &quot;ct m_a = &quot; &lt;&lt; ct.m_a &lt;&lt; endl;
-
-  function&lt;void(int,int)&gt; f6 = bind(&amp;CT::func, ct, placeholders::_1, placeholders::_2);
-  f6(10, 223);
-
-  cout &lt;&lt; &quot;=================&quot; &lt;&lt; endl;
-  CT ct1;
-  //第一次拷贝系统需要ct1产生临时对象，第二次是bind本身要返回临时对象，但是bind
-  //执行完毕后，临时对象会被释放
-  function&lt;int &amp;()&gt; f7 = bind(&amp;CT::m_a, &amp;ct1);
-  f7() = 60;
-}
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/02 17:08 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15699255854846.html">
-                
-                  <h1>forward补充&auto</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>auto类型常规推断</h4>
-
-<ul>
-<li>auto自动类型推断发生在编译器，不会影响程序性能</li>
-<li>auto定义变量必须初始化</li>
-<li>auto使用灵活</li>
-<li>auto类型推断和函数模版推断非常类似, auto相当于函数模板T</li>
-</ul>
-
-<h4>传值方式</h4>
-
-<pre class="line-numbers"><code class="language-cpp">auto xy2 = xy; //xy2=int auto=int传值方式，引用和const类型都被抛弃
-</code></pre>
-
-<ul>
-<li>传值的方式引用类型会被抛弃，const属性也会被放弃</li>
-</ul>
-
-<h4>指针或者引用</h4>
-
-<pre class="line-numbers"><code class="language-cpp">const auto *xp = &amp;x;//xp = const int*, auto = int;
-auto* xp2 = &amp;x; //xp2=int*, auto = int
-auto xp3 = &amp;x; //xp3 int*, auto int*
-</code></pre>
-
-<ul>
-<li>不会抛弃const限定，但是会丢弃引用</li>
-</ul>
-
-<h4>万能引用</h4>
-
-<pre class="line-numbers"><code class="language-cpp">auto&amp;&amp; wn = x;//auto=int&amp;, wn = int&amp;
-auto&amp;&amp; wn2 = x2;//auto=int&amp;, wn2 const int &amp;
-auto&amp;&amp; wn3 = 100;//auto=int, wn3=int&amp;&amp;
-</code></pre>
-
-<h4>auto针对数组和函数的推断</h4>
-
-<pre class="line-numbers"><code class="language-cpp">const char mystr[] = &quot;hello&quot;
-auto str = mystr //const char*
-auto&amp; str2 = str//const char (&amp;)[14]
-int a[2] = {1,2};
-auto pa = a;//auto=int*, pa=int*
-auto tmp = func;//void(*)(double,int)
-auto&amp; tmp2 = func;//void(&amp;)(double, int)
-tmp(12.3, 4);
-tmp2(12.3, 4);
-</code></pre>
-
-<h4>std::initializer_list</h4>
-
-<pre class="line-numbers"><code class="language-cpp">auto x3 = {30};//auto initializer_list
-auto x4{40};
-只适合auto，不适合模板
-= {} 有隐式类型转换
-</code></pre>
-
-<h4>auto作为函数返回类型</h4>
-
-<h4>auto不适用类型</h4>
-
-<ul>
-<li>auto不能用于函数参数</li>
-<li>普通成员变量不能是auto</li>
-<li>静态成员是可以</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">class CT {
- public:
-  static const auto i = 5; //ok
-  auto j = 5;//err
-};
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/01 18:26 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15695785151867.html">
-                
-                  <h1>模版类型推断&查看类型推断结果</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>类型推断</h4>
-
-<ul>
-<li>auto </li>
-<li>了解编译器推断类型</li>
-<li>了解C++类型推断规则</li>
-<li>依赖boost库</li>
-<li>const T &amp;tmp,&amp;是跟tmp有关</li>
-<li>若实参是引用类型，则引用类型会被忽略掉，T不会推导为引用类型</li>
-<li>当我们加入const，T也会带上const属性</li>
-<li>若T中有const，但是实参数中带有const，会消除T的const属性</li>
-</ul>
-
-<h4>万能引用</h4>
-
-<pre class="line-numbers"><code class="language-text">template&lt;typename T&gt;
-void func(T&amp;&amp; tmp){}
-int i = 18;
-const int j = i;
-const int&amp; k = i;
-func(i); //i 是左值，T = int&amp;  tmp=int&amp;
-func(j);//T = cosnt int&amp;  tmp=const int&amp;
-func(k);//T = const int&amp;  tmp=const int&amp;
-func(100) // T = int tmp=int&amp;&amp;
-</code></pre>
-
-<h4>传值方式</h4>
-
-<ul>
-<li>如果tmp类型中没有const，则实参中的const会被带入，如果tmp中有const，则T类型不会带const
-<code>
-template&lt;typename T&gt;<br/>
-void func(T tmp){}<br/>
-func(i); //i 是左值，T = int tmp=int<br/>
-func(j);//T = int  tmp=int<br/>
-func(k);//T = int  tmp=int<br/>
-char str[] = &quot;I love china&quot;<br/>
-const char *const ptr = mystr
-</code></li>
-</ul>
-
-<h4>数组做实参</h4>
-
-<pre class="line-numbers"><code class="language-text">template&lt;typename T&gt;
-void func(T tmp){}
-const char str[] = &quot;I love china&quot;
-func(str)// T = const char *, tmp = const char *
-
-
-template&lt;typename T&gt;
-void func(T&amp; tmp){}
-const char str[] = &quot;I love china&quot;
-func(str)// T = const char [14], tmp = const char(&amp;)[14]
-</code></pre>
-
-<h4>函数名做实参</h4>
-
-<pre class="line-numbers"><code class="language-text">void test(){}
-template&lt;typename T&gt;
-void func(T tmp){}// T void(*)(void) tmp void(*)(void)
-void func(T&amp;  tmp){} // T void(void) tmp = void(&amp;)void
-</code></pre>
-
-<h4>总结</h4>
-
-<ul>
-<li>推断中， 引用类型的实参的引用类型等于不存在</li>
-<li>万能引用，左值或者右值，</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/27 18:01 下午</span>
+                    <span class="date">2019/09/30 09:50 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>

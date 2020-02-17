@@ -170,192 +170,318 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15716264505052.html">
+                <a class="clearlink" href="15771449820188.html">
                 
-                  <h1>锁</h1>
+                  <h1>单一职责模式</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>并发map</h4>
+                        	<h4>单一职责划分标准</h4>
 
 <ul>
-<li>easierway/concurrent_map</li>
+<li>类中的代码行数、函数或属性过多，会影响代码的可读性和可维护性，我们就需要考虑对类进行拆分；</li>
+<li>类依赖的其他类过多，或者依赖类的其他类过多，不符合高内聚、低耦合的设计思想，我们就需要考虑对类进行拆分；</li>
+<li>私有方法过多，我们就要考虑能否将私有方法独立到新的类中，设置为 public 方法，供更多的类使用，从而提高代码的复用性；</li>
+<li>比较难给类起一个合适名字，很难用一个业务名词概括，或者只能用一些笼统的 Manager、Context 之类的词语来命名，这就说明类的职责定义得可能不够清晰；</li>
+<li>类中大量的方法都是集中操作类中的某几个属性，比如，在 UserInfo 例子中，如果一半的方法都是在操作 address 信息，那就可以考虑将这几个属性和对应的方法拆分出来</li>
 </ul>
 
-<h4>避免锁</h4>
+<h4>单一职责</h4>
 
 <ul>
-<li>减少锁的影响范围</li>
-<li>减少发⽣生锁冲突的概率</li>
-<li>sync.Map ConcurrentMap</li>
-<li>避免锁的使⽤用</li>
+<li>一个类只负责完成一个职责或者功能。不要设计大而全的类，要设计粒度小、功能单一的类。单一职责原则是为了实现代码高内聚、低耦合，提高代码的复用性、可读性、可维护性。</li>
 </ul>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/21 10:54 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15716243663482.html">
-                
-                  <h1>性能调优</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>分析指标</h4>
+<h4>耦合和内聚</h4>
 
 <ul>
-<li>Wall Time</li>
-<li>CPU Time</li>
-<li>Block Time</li>
-<li>Memory allocation GC times/time spent</li>
+<li>1 内聚和耦合其实是对一个意思（即合在一块）从相反方向的两种阐述。</li>
+<li>2 内聚是从功能相关来谈，主张高内聚。把功能高度相关的内容不必要地分离开，就降低了内聚性，成了低内聚。</li>
+<li>3 耦合是从功能无关来谈，主张低耦合。把功能明显无关的内容随意地结合起来，就增加了耦合性，成了高耦合</li>
 </ul>
 
-<h4>生成文件</h4>
+<h4>职责单一判断</h4>
 
 <ul>
-<li>go test  -bench=. -cpuprofile=cpu.prof</li>
-<li>go tool pprof cpu.prof</li>
-<li>top</li>
-<li>top -cum</li>
-<li>list function</li>
-<li></li>
+<li>类中的代码行数、函数或者属性过多；</li>
+<li>类依赖的其他类过多，或者依赖类的其他类过多；</li>
+<li>私有方法过多；比较难给类起一个合适的名字；</li>
+<li>类中大量的方法都是集中操作类中的某几个属性。</li>
 </ul>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/21 10:19 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
+<h4>对扩展开放和对修改关闭</h4>
 
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15715412406867.html">
-                
-                  <h1>Json</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>解析</h4>
+<pre class="line-numbers"><code class="language-cpp">//
+// Created by eredinliu on 2020-01-05.
+//
 
-<pre class="line-numbers"><code class="language-go">type BasicInfo struct { Name string `json:&quot;name&quot;` Age int `json:&quot;age&quot;`
-}
-type JobInfo struct {
-Skills []string `json:&quot;skills&quot;` }
-type Employee struct {
-BasicInfo BasicInfo `json:&quot;basic_info&quot;` JobInfo JobInfo `json:&quot;job_info&quot;`
-}
-</code></pre>
+#include &lt;iostream&gt;
+#include &lt;list&gt;
+using namespace std;
 
-<ul>
-<li>反射机制性能比较低</li>
-</ul>
+class AlertRule {
+public:
+    int64_t getMatchRule(string&amp; api) {
+        return 10;
+    }
+};
 
-<h4>easyjson使用</h4>
+class Notification{
+public:
+    void notify(int64_t level, const string&amp; msg) {
+        cout &lt;&lt; &quot;level &quot; &lt;&lt; level &lt;&lt; &quot; msg &quot; &lt;&lt; msg &lt;&lt; endl;
+    }
+};
 
-<ul>
-<li>easyjson -all structs.go</li>
-<li></li>
-</ul>
+class ApiStateInfo;
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/20 11:14 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
+class AlertHandle {
+public:
+    AlertHandle(AlertRule* rule, Notification* noti): _rule(rule), _noti(noti){}
 
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15716203361605.html">
-                
-                  <h1>HTTP</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>路由规则</h4>
+    virtual void check(ApiStateInfo* stateInfo) = 0;
 
-<pre class="line-numbers"><code class="language-text">package main
 
-import (
-        &quot;fmt&quot;
-        &quot;log&quot;
-        &quot;net/http&quot;
+    AlertRule* getRule() {
+        return _rule;
+    }
 
-        &quot;github.com/julienschmidt/httprouter&quot;
-)
+    Notification* getNoti() {
+        return _noti;
+    }
 
-func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-        fmt.Fprint(w, &quot;Welcome!\n&quot;)
-}
+private:
+    AlertRule* _rule;
+    Notification* _noti;
+};
 
-func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-        fmt.Fprintf(w, &quot;hello, %s!\n&quot;, ps.ByName(&quot;name&quot;))
-}
+class ApiStateInfo {
+public:
+    string api;
+    int64_t reqCount;
+    int64_t errCount;
+    int64_t duration;
+    int64_t timeOut;
+    ApiStateInfo(const string&amp; _api, int64_t _reqCount, int64_t _errCount,
+            int64_t _duration, int64_t _timeOut) : api(_api), reqCount
+            (_reqCount), errCount
+            (_errCount),duration(_duration), timeOut(_timeOut) {}
+};
 
-func main() {
-        router := httprouter.New()
-        router.GET(&quot;/&quot;, Index)
-        router.GET(&quot;/hello/:name&quot;, Hello)
+class Alert {
+public:
+    void addAlertHandle(AlertHandle* handle) {
+        this-&gt;handleList.push_back(handle);
+    }
 
-        log.Fatal(http.ListenAndServe(&quot;:8080&quot;, router))
+    void check(ApiStateInfo* stateInfo) {
+        for (auto handler : handleList) {
+            handler-&gt;check(stateInfo);
+        }
+    }
+
+private:
+    list&lt;AlertHandle*&gt; handleList{};
+};
+
+class TpsAlertHandler : public AlertHandle {
+public:
+    using AlertHandle::AlertHandle;
+
+    void check(ApiStateInfo* stateInfo) {
+        int64_t tps = stateInfo-&gt;reqCount / stateInfo-&gt;duration;
+        if (tps &gt; AlertHandle::getRule()-&gt;getMatchRule(stateInfo-&gt;api)) {
+           AlertHandle::getNoti()-&gt;notify(-1, &quot;TpsAlert Handle&quot;);
+        }
+    }
+};
+
+class ErrorAlertHandler : public AlertHandle {
+public:
+    using AlertHandle::AlertHandle;
+
+    void check(ApiStateInfo* stateInfo) {
+        if (stateInfo-&gt;errCount &gt; AlertHandle::getRule()-&gt;getMatchRule(
+                stateInfo-&gt;api)) {
+            AlertHandle::getNoti()-&gt;notify(-2, &quot;ErrAlert Handle&quot;);
+        }
+    }
+};
+
+class TimeOutAlertHandler : public AlertHandle {
+public:
+    using AlertHandle::AlertHandle;
+
+    void check(ApiStateInfo* stateInfo) {
+        if (stateInfo-&gt;timeOut &gt; AlertHandle::getRule()-&gt;getMatchRule(
+                stateInfo-&gt;api)) {
+            AlertHandle::getNoti()-&gt;notify(-3, &quot;TimeOutAlert Handle&quot;);
+        }
+    }
+};
+
+class ApplicationContext {
+public:
+    ApplicationContext() {
+        _rule = new AlertRule();
+        _noti = new Notification();
+        _alert = new Alert();
+        _alert-&gt;addAlertHandle(new TpsAlertHandler(_rule, _noti));
+        _alert-&gt;addAlertHandle(new ErrorAlertHandler(_rule, _noti));
+        _alert-&gt;addAlertHandle(new TimeOutAlertHandler(_rule, _noti));
+    }
+
+    Alert* getAlert() {
+        return _alert;
+    }
+
+private:
+    AlertRule* _rule;
+    Notification* _noti;
+    Alert* _alert;
+};
+
+int main() {
+    ApiStateInfo* stateInfo = new ApiStateInfo(&quot;Money&quot;, 10000, 20 ,30, 60);
+    ApplicationContext* ctx = new ApplicationContext();
+    ctx-&gt;getAlert()-&gt;check(stateInfo);
 }
 </code></pre>
 
+<h4>golang_demo</h4>
+
+<pre class="line-numbers"><code class="language-go">package design_pattern
+
+import &quot;fmt&quot;
+
+type AlertRule struct {
+}
+
+func (*AlertRule) getMatchRule(api string) int64 {
+    return 10;
+}
+
+type Notification struct {
+}
+
+func (*Notification) notify(level int64, msg string) {
+    fmt.Println(&quot;level&quot;, level, &quot; msg&quot;, msg)
+}
+
+type ApiStateInfo struct {
+    api string
+    reqCount, errCount, duration, timeOut  int64
+}
+
+type AlertHandle interface {
+    check(*ApiStateInfo)
+}
+
+type Alert struct {
+    handleList []AlertHandle
+}
+
+func (a *Alert) addAlertHandle(handle AlertHandle) {
+    a.handleList = append(a.handleList, handle)
+}
+
+func (a *Alert) check(info *ApiStateInfo) {
+    for _, v := range a.handleList {
+        v.check(info)
+    }
+}
+
+type TpsAlertHandler struct {
+    *AlertRule
+    *Notification
+}
+
+func (t *TpsAlertHandler) check(info *ApiStateInfo) {
+    tps := info.reqCount / info.duration
+
+    if tps &gt; t.AlertRule.getMatchRule(info.api) {
+        t.Notification.notify(-1, &quot;TpsAlert Handle&quot;)
+    }
+}
+
+type ErrorAlertHandler struct {
+    *AlertRule
+    *Notification
+}
+
+func (t *ErrorAlertHandler) check(info *ApiStateInfo) {
+    tps := info.reqCount / info.duration
+
+    if tps &gt; t.AlertRule.getMatchRule(info.api) {
+        t.Notification.notify(-2, &quot;ErrorAlert Handle&quot;)
+    }
+}
+
+type TimeOutAlertHandler struct {
+    *AlertRule
+    *Notification
+}
+
+func (t *TimeOutAlertHandler) check(info *ApiStateInfo) {
+    tps := info.reqCount / info.duration
+
+    if tps &gt; t.AlertRule.getMatchRule(info.api) {
+        t.Notification.notify(-3, &quot;TimeOutAlert Handle&quot;)
+    }
+}
+
+type ApplicationContext struct {
+    rule *AlertRule
+    noti *Notification
+    alert *Alert
+}
+
+func NewAppContext() *ApplicationContext {
+    ctx := &amp;ApplicationContext{
+        rule: &amp;AlertRule{},
+        noti: &amp;Notification{},
+        alert: &amp;Alert{},
+    }
+
+    tpsHandler := &amp;TpsAlertHandler{
+        AlertRule: ctx.rule,
+        Notification: ctx.noti,
+    }
+
+    errHandler := &amp;ErrorAlertHandler{
+        AlertRule: ctx.rule,
+        Notification: ctx.noti,
+    }
+
+    timeOutHandler := &amp;TimeOutAlertHandler{
+        AlertRule: ctx.rule,
+        Notification: ctx.noti,
+    }
+
+    ctx.alert.addAlertHandle(tpsHandler)
+    ctx.alert.addAlertHandle(errHandler)
+    ctx.alert.addAlertHandle(timeOutHandler)
+    return ctx
+}
+
+import &quot;testing&quot;
+
+func TestAlert(t *testing.T) {
+    stateInfo := &amp;ApiStateInfo{&quot;Money&quot;, 10000, 20, 30, 60}
+    ctx := NewAppContext()
+    ctx.alert.check(stateInfo)
+}
+</code></pre>
+
+<h4>指导思想</h4>
+
+<ul>
+<li>为了尽量写出扩展性好的代码，我们要时刻具备扩展意识、抽象意识、封装意识。这些“潜意识”可能比任何开发技巧都重要。</li>
+<li>提高代码扩展性 多态、依赖注入、基于接口而非实现编程，以及大部分的设计模式（比如，装饰、策略、模板、职责链、状态等）。</li>
+<li>多态、依赖注入、基于接口而非实现编程</li>
+</ul>
+
                         
                       </div>
                   </div>
@@ -363,10 +489,10 @@ func main() {
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/10/21 09:12 上午</span>
+                    <span class="date">2019/12/24 07:49 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html'>设计模式之美</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -380,19 +506,47 @@ func main() {
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15716196846642.html">
+                <a class="clearlink" href="15780204527223.html">
                 
-                  <h1>PyCharm</h1>
+                  <h1>Url</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>安装插件</h4>
+                        	<h4>url设置</h4>
 
-<ul>
-<li>启动pycharm， View-&gt;Tool Windows-&gt;Terminal 打开终端界面（一般在pycharm的左下角）</li>
-<li>pip install package</li>
-</ul>
+<pre class="line-numbers"><code class="language-python">import urllib
+import urllib2
+url = &#39;http://www.someserver.com/cgi-bin/register.cgi&#39;
+values = {&#39;name&#39; : &#39;Michael Foord&#39;,
+          &#39;location&#39; : &#39;Northampton&#39;,
+          &#39;language&#39; : &#39;Python&#39; }
+data = urllib.urlencode(values)
+req = urllib2.Request(url, data)
+response = urllib2.urlopen(req)
+the_page = response.read()
+</code></pre>
+
+<h4>协程</h4>
+
+<pre class="line-numbers"><code class="language-python">import asyncio
+
+async def compute(x, y):
+    print(&quot;Compute {} + {} ...&quot;.format(x, y))
+    await asyncio.sleep(1.0)
+    return x + y
+
+async def print_sum(x, y):
+    result = await compute(x, y)
+    print(&quot;{} + {} = {}&quot;.format(x, y, result))
+
+loop = asyncio.get_event_loop()
+print(&#39;start&#39;)
+loop.run_until_complete(print_sum(1, 2))
+print(&#39;end&#39;)
+loop.close()
+
+</code></pre>
 
                         
                       </div>
@@ -401,7 +555,7 @@ func main() {
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/10/21 09:01 上午</span>
+                    <span class="date">2020/01/03 11:00 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Python.html'>Python</a></span>
@@ -418,26 +572,20 @@ func main() {
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15716108744961.html">
+                <a class="clearlink" href="15779724922998.html">
                 
-                  <h1>PatialUpdate</h1>
+                  <h1>Admin</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>部分替换</h4>
+                        	<h4>概念</h4>
 
 <ul>
-<li>（1）应用程序先发起一个get请求，获取到document，展示到前台界面，供用户查看和修改</li>
-<li>（2）用户在前台界面修改数据，发送到后台</li>
-<li>（3）后台代码，会将用户修改的数据在内存中进行执行，然后封装好修改后的全量数据</li>
-<li>（4）然后发送PUT请求，到es中，进行全量替换</li>
-<li>（5）es将老的document标记为deleted，然后重新创建一个新的document</li>
+<li>Django admin 管理后台，是一个 django 自带的，网站后台管理平台。他主要功能是对数据库中的数据进行増删改查的操作</li>
+<li>只有管理员才可以访问 admin 后台管理平台</li>
+<li>后台管理平台是绝大多数应用服务都应必备（但不绝对）的功能</li>
 </ul>
-
-<h4>全量替换和部分替换</h4>
-
-<p><img src="media/15716108744961/15716113518172.jpg" alt="" style="width:621px;"/></p>
 
                         
                       </div>
@@ -446,10 +594,10 @@ func main() {
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/10/21 06:34 上午</span>
+                    <span class="date">2020/01/02 21:41 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='ElasticSearch.html'>ElasticSearch</a></span>
+          					    <span class="posted-in"><a href='Django.html'>Django</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -463,42 +611,90 @@ func main() {
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15716082369662.html">
+                <a class="clearlink" href="15779331096908.html">
                 
-                  <h1>并发冲突&悲观锁和乐观锁</h1>
+                  <h1>ORM</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>悲观锁</h4>
+                        	<h4>基础概念</h4>
 
 <ul>
-<li>各种情况下，都上锁</li>
+<li>全称：object relational mapping，通过使用它，我们可以直接使用 python 的方法去使用数据库。</li>
+<li>通过把表映射成类，把行作为实例，把字段作为属性，orm 在执行对象操作的时候会把对应的操作转换成数据库原生语句的方式来完成数据库开发工作</li>
 </ul>
 
-<h4>对比</h4>
+<h4>Django中的ORM</h4>
 
 <ul>
-<li>1、悲观筑的优点是：方便，直接加加锁，对应用程序来说，运明，不需要做额外的操作；缺点，并发能力很低，同一时间只能有一条线程操作效据</li>
-<li>2、乐观锁的优点是：并发能力很高，不给数据加锁，大是线程并发操作；缺点，麻颅，每次跟新的时候，都要先比对版本号，然后可能需要重新加載数据，再次修改，再写；这个过程，可能要重复好几</li>
-<li><img src="media/15716082369662/15716093688701.jpg" alt="" style="width:682px;"/></li>
+<li>在settings.py中设置数据库信息(需提前在数据库中创建库)</li>
+<li>在应用app的models.py中以类的形式定义模型</li>
+<li>通过模型在目标数据库中创建对应的表</li>
+<li>在视图函数中通过对模型的操作实现目标数据库的读写操作</li>
 </ul>
 
-<h4>es乐观锁机制</h4>
+<h4>修改modles文件</h4>
 
-<ul>
-<li><img src="media/15716082369662/15716099848850.jpg" alt="" style="width:297px;"/></li>
-</ul>
+<pre class="line-numbers"><code class="language-python">from django.db import models
 
-<pre class="line-numbers"><code class="language-go">PUT /test_index/test_type/1?version=2
-GET /test_index/test_type/1
+# Create your models here.
+class Test(models.Model):
+    name = models.CharField(max_length=20)
+    password = models.CharField(max_length=50)
+    address = models.CharField(max_length=200)
+    email = models.EmailField()
+    create_date = models.DateField()
+    age = models.IntegerField()
+    sex = models.CharField(max_length=20)
+    money = models.IntegerField()
 </code></pre>
 
-<h4>external version</h4>
+<ul>
+<li>python3 manage.py makemigrations</li>
+<li>python3 manage.py migrate</li>
+</ul>
+
+<h4>Model列方法和属性</h4>
 
 <ul>
-<li>PUT /test_index/test_type/8?version=2&amp;version_type=external</li>
-<li>PUT /test_index/test_type/8?version=3&amp;version_type=external</li>
+<li>字符串和数字类型
+<img src="media/15779331096908/15779476229341.jpg" alt="" style="width:805px;"/></li>
+</ul>
+
+<h4>数据库的增删改</h4>
+
+<pre class="line-numbers"><code class="language-python">group=Group(name=&#39;yunying&#39;, create_time=time.time())
+group.save()
+group.user.add(user)
+vars(group)
+</code></pre>
+
+<h4>查询</h4>
+
+<ul>
+<li>两种查询模式
+<img src="media/15779331096908/15779547180813.jpg" alt="" style="width:997px;"/></li>
+</ul>
+
+<h5>深入查询</h5>
+
+<ul>
+<li><img src="media/15779331096908/15779551757503.jpg" alt="" style="width:980px;"/></li>
+<li><img src="media/15779331096908/15779551942408.jpg" alt="" style="width:1206px;"/></li>
+</ul>
+
+<h5>聚合查询</h5>
+
+<ul>
+<li><img src="media/15779331096908/15779554025567.jpg" alt="" style="width:779px;"/></li>
+</ul>
+
+<h4>SQLAlchemy</h4>
+
+<ul>
+<li>常用类型
+<img src="media/15779331096908/15779566038375.jpg" alt="" style="width:832px;"/></li>
 <li></li>
 </ul>
 
@@ -509,344 +705,10 @@ GET /test_index/test_type/1
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/10/21 05:50 上午</span>
+                    <span class="date">2020/01/02 10:45 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='ElasticSearch.html'>ElasticSearch</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15716077627222.html">
-                
-                  <h1>全量替换和强制创建</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>全量替换</h4>
-
-<ul>
-<li>（1）语法与创建文档是一样的，如果document id不存在，那么就是创建；如果document id已经存在，那么就是全量替换操作，替换document的json串内容</li>
-<li>（2）document是不可变的，如果要修改document的内容，第一种方式就是全量替换，直接对document重新建立索引，替换里面所有的内容</li>
-<li>（3）es会将老的document标记为deleted，然后新增我们给定的一个document，当我们创建越来越多的document的时候，es会在适当的时机在后台自动删除标记为deleted的document</li>
-</ul>
-
-<h4>强制创建</h4>
-
-<ul>
-<li>document的强制创建</li>
-<li>（1）创建文档与全量替换的语法是一样的，有时我们只是想新建文档，不想替换文档，如果强制进行创建呢？</li>
-<li>（2）PUT /index/type/id?op_type=create，PUT /index/type/id/_create</li>
-</ul>
-
-<h4>删除</h4>
-
-<ul>
-<li>（1）DELETE /index/type/id</li>
-<li>（2）不会理解物理删除，只会将其标记为deleted，当数据越来越多的时候，在后台自动删除</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/21 05:42 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='ElasticSearch.html'>ElasticSearch</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15715395755112.html">
-                
-                  <h1>pipe-filter</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>架构</h4>
-
-<ul>
-<li><img src="media/15715395755112/15715401958107.jpg" alt="" style="width:998px;"/></li>
-<li>⾮非常适合与数据处理理及数据分析系统</li>
-<li>Filter封装数据处理理的功能</li>
-<li>Pipe⽤用于连接Filter传递数据或者在异步处理理过程中缓冲数据 流</li>
-<li>进程内同步调⽤用时，pipe演变为数据在⽅方法调⽤用间传递 松耦合:Filter只跟数据(格式)耦合</li>
-</ul>
-
-<h4>micro kernel</h4>
-
-<ul>
-<li><img src="media/15715395755112/15715409828868.jpg" alt="" style="width:584px;"/></li>
-<li>易易于扩展</li>
-<li>错误隔离</li>
-<li>保持架构⼀一致性</li>
-<li>要点</li>
-<li>内核包含公共流程或通⽤用逻辑 将可变或可扩展部分规划为扩展点 抽象扩展点⾏行行为，定义接⼝口 利利⽤用插件进⾏行行扩展</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/20 10:46 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15401734228180.html">
-                
-                  <h1>反射机制</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>类型断言</h4>
-
-<ul>
-<li>判断类型必须是interface{}</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  var f *File
-  var b interface{} = f
-  if v, ok := b.(ReadWriter); ok {
-    fmt.Println(&quot;%v&quot;, ok, v)
-  }
-</code></pre>
-
-<h4>切片和空接口切片不能直接赋值</h4>
-
-<pre class="line-numbers"><code class="language-text">  var a []int
-  var b []interface{}
-  b = a //error
-</code></pre>
-
-<h4>反射</h4>
-
-<ul>
-<li>运行时动态获取变量的相关信息</li>
-<li>reflect.TypeOf</li>
-<li>reflect.ValueOf</li>
-<li>reflect.Value.Kind</li>
-<li>reflect.Value.Interface()</li>
-</ul>
-
-<h4>通过反射改变变量的值</h4>
-
-<pre class="line-numbers"><code class="language-text">var a float64
-fv := reflect.ValueOf(&amp;a)
-fv.Elem().SetFloat(3.3)
-fmt.Printf(&quot;%v\n&quot;, a)
-</code></pre>
-
-<h4>json打包原理</h4>
-
-<ul>
-<li>利用反射机制的tag来实现</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-go">tp := reflect.TypeOf(inter)
-for i := 0; i &lt; num; i++ {
- tag := tp.Elem().Field(i).Tag.Get(&quot;json&quot;)
- fmt.Println(&quot;tag&quot;, tag)
-}
-</code></pre>
-
-<h4>利用反射编写灵活的代码</h4>
-
-<pre class="line-numbers"><code class="language-go">//按名字访问结构的成员
-* reflect.ValueOf(*e).FieldByName(&quot;Name&quot;)
-// 按名字访问结构的⽅方法
-reflect.ValueOf(e).MethodByName(&quot;UpdateAge&quot;).Call([]reflect.Value{reflect.ValueOf(1)})
-</code></pre>
-
-<h4>调用方法</h4>
-
-<pre class="line-numbers"><code class="language-go">type Employee struct {
-    EmployeeID string
-    Name       string `format:&quot;normal&quot;`
-    Age        int
-}
-
-func (e *Employee) UpdateAge(newVal int) {
-    e.Age = newVal
-}
-
-type Customer struct {
-    CookieID string
-    Name     string
-    Age      int
-}
-
-func TestInvokeByName(t *testing.T) {
-    e := &amp;Employee{&quot;1&quot;, &quot;Mike&quot;, 30}
-    //按名字获取成员
-    t.Logf(&quot;Name: value(%[1]v), Type(%[1]T) &quot;, reflect.ValueOf(*e).FieldByName(&quot;Name&quot;))
-    if nameField, ok := reflect.TypeOf(*e).FieldByName(&quot;Name&quot;); !ok {
-        t.Error(&quot;Failed to get &#39;Name&#39; field.&quot;)
-    } else {
-        t.Log(&quot;Tag:format&quot;, nameField.Tag.Get(&quot;format&quot;))
-    }
-    reflect.ValueOf(e).MethodByName(&quot;UpdateAge&quot;).
-        Call([]reflect.Value{reflect.ValueOf(1)})
-    t.Log(&quot;Updated Age:&quot;, e)
-}
-
-</code></pre>
-
-<h4>struct tag</h4>
-
-<pre class="line-numbers"><code class="language-go">if nameField, ok := reflect.TypeOf(*e).FieldByName(&quot;Name&quot;); !ok { t.Error(&quot;Failed to get &#39;Name&#39; field.&quot;)
-} else {
-t.Log(&quot;Tag:format&quot;, nameField.Tag.Get(&quot;format&quot;))
-}
-Reflect.Type 和 Reflect.Value 都有 FieldByName ⽅方法，注意他们的区别
-</code></pre>
-
-<h4>切片和map进行比较</h4>
-
-<pre class="line-numbers"><code class="language-go">func TestDeepEqual(t *testing.T) {
-    a := map[int]string{1: &quot;one&quot;, 2: &quot;two&quot;, 3: &quot;three&quot;}
-    b := map[int]string{1: &quot;one&quot;, 2: &quot;two&quot;, 3: &quot;three&quot;}
-    //  t.Log(a == b) error
-    t.Log(&quot;a==b?&quot;, reflect.DeepEqual(a, b))
-
-    s1 := []int{1, 2, 3}
-    s2 := []int{1, 2, 3}
-    s3 := []int{2, 3, 1}
-
-    t.Log(&quot;s1 == s2?&quot;, reflect.DeepEqual(s1, s2))
-    t.Log(&quot;s1 == s3?&quot;, reflect.DeepEqual(s1, s3))
-
-    c1 := Customer{&quot;1&quot;, &quot;Mike&quot;, 40}
-    c2 := Customer{&quot;1&quot;, &quot;Mike&quot;, 40}
-    fmt.Println(c1 == c2)
-    fmt.Println(reflect.DeepEqual(c1, c2))
-}
-
-</code></pre>
-
-<h4>万能填充</h4>
-
-<pre class="line-numbers"><code class="language-go">type Employee struct {
-    EmployeeID string
-    Name       string `format:&quot;normal&quot;`
-    Age        int
-}
-
-func (e *Employee) UpdateAge(newVal int) {
-    e.Age = newVal
-}
-
-type Customer struct {
-    CookieID string
-    Name     string
-    Age      int
-}
-
-func fillBySettings(st interface{}, settings map[string]interface{}) error {
-
-    // func (v Value) Elem() Value
-    // Elem returns the value that the interface v contains or that the pointer v points to.
-    // It panics if v&#39;s Kind is not Interface or Ptr.
-    // It returns the zero Value if v is nil.
-
-    if reflect.TypeOf(st).Kind() != reflect.Ptr {
-        return errors.New(&quot;the first param should be a pointer to the struct type.&quot;)
-    }
-    // Elem() 获取指针指向的值
-    if reflect.TypeOf(st).Elem().Kind() != reflect.Struct {
-        return errors.New(&quot;the first param should be a pointer to the struct type.&quot;)
-    }
-
-    if settings == nil {
-        return errors.New(&quot;settings is nil.&quot;)
-    }
-
-    var (
-        field reflect.StructField
-        ok    bool
-    )
-
-    for k, v := range settings {
-        if field, ok = (reflect.ValueOf(st)).Elem().Type().FieldByName(k); !ok {
-            continue
-        }
-        if field.Type == reflect.TypeOf(v) {
-            vstr := reflect.ValueOf(st)
-            vstr = vstr.Elem()
-            vstr.FieldByName(k).Set(reflect.ValueOf(v))
-        }
-
-    }
-    return nil
-}
-
-func TestFillNameAndAge(t *testing.T) {
-    settings := map[string]interface{}{&quot;Name&quot;: &quot;Mike&quot;, &quot;Age&quot;: 30}
-    e := Employee{}
-    if err := fillBySettings(&amp;e, settings); err != nil {
-        t.Fatal(err)
-    }
-    t.Log(e)
-    c := new(Customer)
-    if err := fillBySettings(c, settings); err != nil {
-        t.Fatal(err)
-    }
-    t.Log(*c)
-}
-
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/10/22 09:57 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
+          					    <span class="posted-in"><a href='Django.html'>Django</a></span>
           				   
                   </div>
                   <div class="more-right right">

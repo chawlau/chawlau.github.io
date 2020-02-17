@@ -170,161 +170,25 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15677236146527.html">
+                <a class="clearlink" href="15735992739195.html">
                 
-                  <h1>Sentinel</h1>
+                  <h1>对象的比较和拷贝</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>主从复制高可用</h4>
+                        	<h4>等于&amp;&amp;is</h4>
 
 <ul>
-<li>手动故障转移</li>
-<li>写能力和存储能力受限制</li>
+<li>&#39;==&#39;操作符比较对象之间的值是否相等</li>
+<li>而&#39;is&#39;操作符比较的是对象的身份标识是否相等，即它们是否是同一个对象，是否指向同一个内存地址。</li>
 </ul>
 
-<h4>主要任务</h4>
+<h4>is效率比较高</h4>
 
 <ul>
-<li>监控(Monitoring): Sentinel 会不断地检查你的主服务器和从服务器是否运作正常。<br/></li>
-<li>提醒(Notification): 当被监控的某个 Redis 服务器出现问题时， Sentinel 可以通过 API 向管理员或 者其他应用程序发送通知。</li>
-<li>自动故障迁移(Automatic failover): 当一个主服务器不能正常工作时， Sentinel 会开始一次自动故 障迁移操作， 它会将失效主服务器的其中一个从服务器升级为新的主服务器， 并让失效主服务器的其 他从服务器改为复制新的主服务器; 当客户端试图连接失效的主服务器时， 集群也会向客户端返回新 主服务器的地址， 使得集群可以使用新主服务器代替失效服务器</li>
-</ul>
-
-<h4>基本架构</h4>
-
-<ul>
-<li><img src="media/15677236146527/15677238406646.jpg" alt="" style="width:1048px;"/></li>
-<li><img src="media/15677236146527/15677240210056.jpg" alt="" style="width:1267px;"/></li>
-</ul>
-
-<h4>sentinel配置</h4>
-
-<ul>
-<li><img src="media/15677236146527/15677245915239.jpg" alt="" style="width:1044px;"/></li>
-<li>sentinel monitor mymaster 127.0.0.1 6379 1 名称为mymaster的主节点名，1表示将这个主服务器判断 为失效至少需要 1个 Sentinel 同意 (只要同意 Sentinel 的数量不达标，自动故障迁移就不会执行)</li>
-<li>down-after-milliseconds 选项指定了 Sentinel 认为服务器已经断线所需的毫秒数</li>
-<li>failover过期时间，当failover开始后，在此时间内仍然没有触发任何failover操作，当前sentinel 将会认 为此次failoer失败</li>
-<li>parallel-syncs 选项指定了在执行故障转移时， 最多可以有多少个从服务器同时对新的主服务器进行同 步， 这个数字越小， 完成故障转移所需的时间就越长。 如果从服务器被设置为允许使用过期数据集， 那么你可能不希望所有从服务器都在同一时间向新的主 服务器发送同步请求， 因为尽管复制过程的绝大部分步骤都不会阻塞从服务器， 但从服务器在载入主 服务器发来的 RDB 文件时， 仍然会造成从服务器在一段时间内不能处理命令请求: 如果全部从服务 器一起对新的主服务器进行同步， 那么就可能会造成所有从服务器在短时间内全部不可用的情况出 现。</li>
-</ul>
-
-<h4>客户端</h4>
-
-<ul>
-<li>连接sentinel</li>
-<li><img src="media/15677236146527/15677260391092.jpg" alt="" style="width:911px;"/></li>
-<li><img src="media/15677236146527/15677260637461.jpg" alt="" style="width:844px;"/></li>
-</ul>
-
-<h4>三个定时任务</h4>
-
-<ul>
-<li>每10秒每个sentinel对master和slave指向info</li>
-<li>发现slave节点</li>
-<li>确定主从关系</li>
-<li><img src="media/15677236146527/15678968542743.jpg" alt="" style="width:733px;"/></li>
-<li>每2秒每个sentinel通过master的channel频道交互信息(pub/sub)</li>
-<li><strong>sentinel</strong>:hello</li>
-<li>交互对节点的看法和自身信息</li>
-<li><img src="media/15677236146527/15678970065504.jpg" alt="" style="width:683px;"/></li>
-<li>每1s每个sentinel对其他sentinel进行ping访问</li>
-<li>心跳检测，失败判定依据</li>
-<li><img src="media/15677236146527/15678973156445.jpg" alt="" style="width:613px;"/></li>
-</ul>
-
-<h4>主观下线和客观下线</h4>
-
-<ul>
-<li>sentinel monitor mymaster 192.168.31.191 6379 2主观下限法定人数</li>
-<li>sentinel down-after-milliseconds mymaster 30000 主观超时下线判断</li>
-<li>主观下线：每个 sentinel 节点对 Redis 节点失败的“偏见</li>
-<li>客观下线：所有 sentinel 节点对 Redis 节点失败“达成共识“（超过 quorum 个统一）</li>
-<li>sentinel is-master-down-by-addr</li>
-</ul>
-
-<h4>领导者选举</h4>
-
-<ul>
-<li>原因：只有一个 sentinel 节点完成故障转移</li>
-<li>选举：通过 sentinel is- master-down-by-addr 命令都希望成为领导者</li>
-<li>每个做主观下线的 Sentinel 节点向其他 Sentinel 节点发送命令，要求将它设置为领导者收到命令的 Sentinel 节点如果没有同意通过其他 Sentinel 节点发送的命令，那么将同意该请求，否则拒绝</li>
-<li>如果该 Sentinel 节点发现自己的票数已经超过 Sentinel 集合半数且超过 quorum，那么它将成为领导者</li>
-<li>如果此过程有多个 Sentinel 节点成为了领导者，那么将等待一段时间重新进行选举。</li>
-<li><img src="media/15677236146527/15678976923488.jpg" alt="" style="width:539px;"/></li>
-</ul>
-
-<h4>故障转移</h4>
-
-<ul>
-<li>从 slave 节点中选出一个“合适的”节点作为新的 master 节点 </li>
-<li>对上面的 slave 节点执行 slaveof no oner 命令让其成为 master 节点。</li>
-<li>向剩余的 Slave 节点发送命令，让它们成为新 master 节点的 slave 节点，复制规则和 parallel- syncs 参数有关。</li>
-<li>更新对原来 master-节点配置为 slave，并保持着对其“关注“，当其恢复后命令它去复制新的 master 节点</li>
-</ul>
-
-<h4>选择合适的slave节点</h4>
-
-<ul>
-<li>选择 slave- priority (slave 节点优先级）最高的』ave 节点，如果存在则返回，不存在则继续。</li>
-<li>选择复制偏移量最大的 slave 节点（复制的最完整），如果存在则返回，不存在则继续</li>
-<li>选择 runed 最小的 slave 节点。</li>
-</ul>
-
-<h4>节点运维</h4>
-
-<ul>
-<li>主节点 </li>
-<li>从节点</li>
-<li>sentinel节点</li>
-</ul>
-
-<h4>手动故障转移</h4>
-
-<ul>
-<li><img src="media/15677236146527/15678979994184.jpg" alt="" style="width:1165px;"/></li>
-</ul>
-
-<h4>节点上线</h4>
-
-<ul>
-<li>主节点：sentinel failover 进行替换。</li>
-<li>从节点：slaveofe 即可，sentinel 节点可以感知。</li>
-<li>sentinel 节点：参考其他 sentinel 节点启动即可。</li>
-</ul>
-
-<h4>从节点的作用</h4>
-
-<ul>
-<li>副本 高可用的基础</li>
-<li>扩展 读能力</li>
-</ul>
-
-<h4>三个消息</h4>
-
-<ul>
-<li>+ switch- master：切换主节点（从节点晋升主节点</li>
-<li>+ convert-to- slave：切换从节点（原主节点降为从节点）</li>
-<li>+ sdown：主观下线。</li>
-</ul>
-
-<h4>高可用读写分离</h4>
-
-<ul>
-<li><img src="media/15677236146527/15678982480394.jpg" alt="" style="width:951px;"/></li>
-</ul>
-
-<h4>总结</h4>
-
-<ul>
-<li>故障发现、故障自动转移、配置中心、客户端通知。</li>
-<li>Redis Sentinel 中的 Sentinel=节点个数应该为大于等于 3 且最好为奇数。</li>
-<li>Redis Sentinel 中的数据节点与普通数据节点没有区别</li>
-<li>客户端初始化时连接的是 Sentinel 节点集合，不再是具体的 Redis 节点，但 Sentinel 只是配置中心不是代理</li>
-<li>Redis Sentinel 通过三个定时任务实现了 Sentinel 节点对于主节点、从节点其余 Sentinel 节点的监控。</li>
-<li>Redis Sentinel 在对节点做失败判定时分为主观下线和客观下线。</li>
-<li>看懂 Redis Sentine 故障转移日志对于 Redis Sentinel 以及问题排查非常有帮助</li>
-<li>Redis Sentinels 实现读写分离高可用可以依赖 Sentinel 节点的消息通知，获取 Redis 数据节点的状态变化</li>
+<li>&#39;is&#39;操作符不能被重载</li>
+<li>&#39;==&#39;操作符却不同，执行a == b相当于是去执行a.__eq__(b)，而 Python 大部分的数据类型都会去重载__eq__这个函数，其内部的处理通常会复杂一些。比如，对于列表，__eq__函数会去遍历列表中的元素，比较它们的顺序和值是否相等</li>
 </ul>
 
                         
@@ -334,10 +198,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/09/06 06:46 上午</span>
+                    <span class="date">2019/11/13 06:54 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Redis%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A.html'>Redis从入门到精通</a></span>
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -351,28 +215,77 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15699709788203.html">
+                <a class="clearlink" href="15735993111373.html">
                 
-                  <h1>读写分离高可用</h1>
+                  <h1>命令行</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>旧版本复制</h4>
+                        	<h4>函数使用</h4>
+
+<h5>rate</h5>
 
 <ul>
-<li>SYNC是一个非常耗费资源的操作</li>
-<li>主服务器需要执行BGSAVE命令来生成RDB文件，这个生成操作会耗费主服务器大量的的 CPU、内存和磁盘读写资源 主服务器将RDB文件发送给从服务器，这个发送操作会耗费主从服务器大量的网络带宽和流 量，并对主服务器响应命令 请求的时间产生影响:接收到RDB文件的从服务器在载入文件的过程是阻塞的，无法处理命令 请求</li>
+<li>rate(go_goroutines[1m])</li>
+<li>counter类型的数据必须使用rate和increase函数</li>
+<li>在我们的工作中 取1m 还是取5m<br/>
+这个取决于 我们对于监控数据的敏感性程度来挑选</li>
+<li>rate(1m) 是取一段时间增量的平均每秒数量</li>
+<li>rate() -&gt; CPU 内存 硬盘 IO 网络流量</li>
 </ul>
 
-<h4>新版本复制</h4>
-
-<p><img src="media/15699709788203/15699714704625.jpg" alt="" style="width:1002px;"/><br/>
-<img src="media/15699709788203/15699717831453.jpg" alt="" style="width:1039px;"/></p>
+<h5>increase</h5>
 
 <ul>
-<li>主服务的复制偏移量(replication offset)和从服务器的复制偏移量 主服务器的复制积压缓冲区(replication backlog),默认大小为1M</li>
-<li>服务器的运行ID(run ID),用于存储服务器标识，如从服务器断线重新连接，取到主服务器 的运行ID与重接后的主服务器运行ID进行对比，从而判断是执行部分重同步还是执行完 整重同步</li>
+<li>increase(1m) 则是 取一段时间增量的总量</li>
+<li>对比rate,曲线基本一致，但是纵坐标单位不一样</li>
+<li><img src="media/15725061245362/15725074004046.jpg" alt="" style="width:1631px;"/></li>
+<li>如果采样点比较少，rate函数容易断链，采用increase比较平缓</li>
+</ul>
+
+<h5>sum</h5>
+
+<ul>
+<li>sum 会把结果集的输出进行总加合</li>
+<li>sum() by (cluster_name)</li>
+<li>sum() by (instance)</li>
+</ul>
+
+<h5>topk</h5>
+
+<ul>
+<li>topk(4,rate(node_network_receive_packets_total[20m]))</li>
+<li>根据给定的数字 取数值最高 &gt;=x 的数值</li>
+<li>Topk因为对于每一个时间点 都只取前三高的数值 那么必然会造成 单个机器的采集数据不连贯,实际使用的时候 一般用topk()函数进行瞬时报警 而不是为了观察曲线图</li>
+</ul>
+
+<h5>count</h5>
+
+<ul>
+<li>count进行一些模糊的监控判断</li>
+<li>比如说 企业中有100台服务器，那么当只有10台服务器CPU高 于80%的时候 这个时候不需要报警但是 当符合80%CPU的服务器数量 超过 30台的时候 那么就 会触发报警 count()</li>
+</ul>
+
+<h5>promethus</h5>
+
+<ul>
+<li>daemonize启动</li>
+<li>--web.read-timeout=5m 链接最大等待时间</li>
+<li>--web-max-connections=512 最大链接数目</li>
+<li>--storage.tsdb.retention=15d 开始采集监控数据后 会存在内存中和硬盘中 对于保留期限的设置</li>
+<li>--storage.tsdb.path=&quot;data/&quot; 存储数据路径</li>
+<li>--query.timeout=2m</li>
+<li>--query.max-concurrency=20</li>
+</ul>
+
+<h4>配置文件</h4>
+
+<ul>
+<li>node_cpu</li>
+<li>node_memory</li>
+<li>node_disk</li>
+<li></li>
 </ul>
 
                         
@@ -382,10 +295,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/10/02 07:02 上午</span>
+                    <span class="date">2019/11/13 06:55 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html'>Redis高并发缓存</a></span>
+          					    <span class="posted-in"><a href='Prometheus.html'>Prometheus</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -399,194 +312,28 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15698861133746.html">
+                <a class="clearlink" href="15735993394297.html">
                 
-                  <h1>分布式锁</h1>
+                  <h1>Grafna</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>分布式锁是什么</h4>
+                        	<h4>监控案例</h4>
 
 <ul>
-<li>分布式锁是控制分布式系统或不同系统之间共同访问共享资源的一种锁实现</li>
-<li>如果不同的系统或同一个系统的不同主机之间共享了某个资源时，往往通过互斥来防止彼此干扰。<br/></li>
+<li>CPU使用率</li>
+<li>除去IO等待造成的CPU高之外，大部 分情况 就是 user%造成<br/>
+另外， </li>
+<li>system% 内核态的CPU 使用率 偶尔也会出现高的情况</li>
+<li>当服务器硬盘IO占用过大时，CPU会等待IO的返回进入interuptable 类型的CPU等待时间</li>
 </ul>
 
-<h4>目的</h4>
+<h4>硬盘监控</h4>
 
 <ul>
-<li>可以保证在分布式部署的应用集群中，同一个方法在同一操作只能被一台机器上的一个线程执行。</li>
-</ul>
-
-<h4>设计要求</h4>
-
-<ul>
-<li>这把锁要是一把可重入锁(避免死锁)</li>
-<li>这把锁有高可用的获取锁和释放锁功能</li>
-<li>这把锁获取锁和释放锁的性能要好</li>
-</ul>
-
-<h4>分布式锁</h4>
-
-<ul>
-<li> 分布式任务
-<img src="media/15698861133746/15699663553008.jpg" alt="" style="width:1172px;"/></li>
-</ul>
-
-<pre class="line-numbers"><code class="language-go">package main
- 
-import (
-    &quot;fmt&quot;
-    &quot;log&quot;
-    &quot;time&quot;
- 
-    &quot;github.com/garyburd/redigo/redis&quot;
-)
- 
-type Lock struct {
-    resource string
-    token    string
-    conn     redis.Conn
-    timeout  int
-}
- 
-func (lock *Lock) tryLock() (ok bool, err error) {
-    _, err = redis.String(lock.conn.Do(&quot;SET&quot;, lock.key(), lock.token, &quot;EX&quot;, int(lock.timeout), &quot;NX&quot;))
-    if err == redis.ErrNil {
-        // The lock was not successful, it already exists.
-        return false, nil
-    }
-    if err != nil {
-        return false, err
-    }
-    return true, nil
-}
- 
-func (lock *Lock) Unlock() (err error) {
-    _, err = lock.conn.Do(&quot;del&quot;, lock.key())
-    return
-}
- 
-func (lock *Lock) key() string {
-    return fmt.Sprintf(&quot;redislock:%s&quot;, lock.resource)
-}
- 
-func (lock *Lock) AddTimeout(ex_time int64) (ok bool, err error) {
-    ttl_time, err := redis.Int64(lock.conn.Do(&quot;TTL&quot;, lock.key()))
-    fmt.Println(ttl_time)
-    if err != nil {
-        log.Fatal(&quot;redis get failed:&quot;, err)
-    }
-    if ttl_time &gt; 0 {
-        fmt.Println(11)
-        _, err := redis.String(lock.conn.Do(&quot;SET&quot;, lock.key(), lock.token, &quot;EX&quot;, int(ttl_time+ex_time)))
-        if err == redis.ErrNil {
-            return false, nil
-        }
-        if err != nil {
-            return false, err
-        }
-    }
-    return false, nil
-}
- 
-func TryLock(conn redis.Conn, resource string, token string, DefaulTimeout int) (lock *Lock, ok bool, err error) {
-    return TryLockWithTimeout(conn, resource, token, DefaulTimeout)
-}
- 
-func TryLockWithTimeout(conn redis.Conn, resource string, token string, timeout int) (lock *Lock, ok bool, err error) {
-    lock = &amp;Lock{resource, token, conn, timeout}
- 
-    ok, err = lock.tryLock()
- 
-    if !ok || err != nil {
-        lock = nil
-    }
- 
-    return
-}
- 
-func main() {
-    fmt.Println(&quot;start&quot;)
-    DefaultTimeout := 10
-    conn, err := redis.Dial(&quot;tcp&quot;, &quot;localhost:6379&quot;)
- 
-    lock, ok, err := TryLock(conn, &quot;xiaoru.cc&quot;, &quot;token&quot;, int(DefaultTimeout))
-    if err != nil {
-        log.Fatal(&quot;Error while attempting lock&quot;)
-    }
-    if !ok {
-        log.Fatal(&quot;Lock&quot;)
-    }
-    lock.AddTimeout(100)
- 
-    time.Sleep(time.Duration(DefaultTimeout) * time.Second)
-    fmt.Println(&quot;end&quot;)
-    defer lock.Unlock()
-}
-</code></pre>
-
-<h4>分布式锁的缺陷</h4>
-
-<p><img src="media/15698861133746/15699675229202.jpg" alt="" style="width:1096px;"/></p>
-
-<h4>lua脚本</h4>
-
-<pre class="line-numbers"><code class="language-lua">local lockKey = KEYS[1]
---唯一随机数
-local lockValue = KEYS[2]
---失效时间，如果是当前线程，也是续期时间
-
---setnx info
-local result_1 = redis.call(&#39;SETNX&#39;, lockKey, lockValue)
-
-if result_1 == true
-then
-local result_2 = redis.call(&#39;SETEX&#39;, lockKey, 3600, lockValue)
-return result_1
-else
-return result_1
-end
-
-</code></pre>
-
-<h4>分布式锁优化</h4>
-
-<p><img src="media/15698861133746/15699692953813.jpg" alt="" style="width:1129px;"/></p>
-
-<ul>
-<li>锁都超时了，任务还没有执行完，导致AB同时执行任务</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-lua">local lockkey = KEYS[1]
---唯一随机数
-local uid = KEYS[2]
---失效时间，如果是当前线程，也是续期时间
-local time = KEYS[3]
-
-if redis.call(&#39;set&#39;,lockkey,uid,&#39;nx&#39;,&#39;px&#39;,time)==&#39;OK&#39; then
-return &#39;OK&#39;
-else
-    if redis.call(&#39;get&#39;,lockkey) == uid then
-       if redis.call(&#39;EXPIRE&#39;,lockkey,time/1000)==1 then
-       return &#39;OOKK&#39;
-       end
-    end
-end
-</code></pre>
-
-<h4>分布式锁面试</h4>
-
-<ul>
-<li>为了确保分布式锁可用，我们至少要确保锁的实现同时满足以下三个条件:</li>
-<li>互斥性。在任意时刻，只有一个客户端能持有锁。</li>
-<li>不会发生死锁。即使有一个客户端在持有锁的期间崩溃而没有主动解锁，也能保证后续其他客户端能加锁。</li>
-<li>解铃还须系铃人。加锁和解锁必须是同一个客户端，客户端自己不能把别人加的锁给解了</li>
-<li>怎么实现</li>
-<li>采用lua脚本操作分布式锁 采用setnx、setex命令连用的方式实现分布式锁</li>
-<li>解锁需要注意什么<br/>
-解铃还须系铃人。加锁和解锁必须是同一个客户端，客户端自己不能把别人加的锁给解了</li>
+<li>predict_linear()</li>
+<li>磁盘读写((rate(node_disk_read_bytes_total[1m] )+ rate(node_disk_written_bytes_total[1m])) / 1024 /1024) &gt; 0</li>
 </ul>
 
                         
@@ -596,10 +343,10 @@ end
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/10/01 07:28 上午</span>
+                    <span class="date">2019/11/13 06:55 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html'>Redis高并发缓存</a></span>
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -613,151 +360,55 @@ end
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15695408227106.html">
+                <a class="clearlink" href="15687147026174.html">
                 
-                  <h1>生产者和消费者</h1>
+                  <h1>单例设计模式</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>producer</h4>
+                        	<h4>设计模式</h4>
 
 <ul>
-<li>创建生产者对象Defaultmqproducer</li>
-<li>设置Namesrvaddr</li>
-<li>启动生产者服务</li>
+<li>开发程序中代码的写法</li>
+<li>head first</li>
 </ul>
 
-<h4>消费者</h4>
+<h4>单例设计模式</h4>
 
-<ul>
-<li>创建消费者对象 Defaultmqpush Consumer</li>
-<li>设置 Namesrvaddr 及其消费位置 Consumefrom Where </li>
-<li>进行订阅主题 subscribe</li>
-<li>注册监听并消费 registermessage Listener</li>
-</ul>
-
-<h4>集群模式</h4>
-
-<ul>
-<li>单点模式</li>
-<li>主从模式</li>
-<li>双主模式</li>
-<li>双主双从模式、多主多从模式</li>
-</ul>
-
-<h4>主从环境</h4>
-
-<ul>
-<li>主从模式环境枃建可以保障消息的即时性与可靠性</li>
-<li>投追一条消息后，关闭主节点</li>
-<li>从节点继续可以提供消费者数据进行消费，但是不能接收消息</li>
-<li>主节点上线后进行消费进度 offset 同步</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/27 07:33 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='RocketMQ.html'>RocketMQ</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15699255854846.html">
-                
-                  <h1>forward补充&auto</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>auto类型常规推断</h4>
-
-<ul>
-<li>auto自动类型推断发生在编译器，不会影响程序性能</li>
-<li>auto定义变量必须初始化</li>
-<li>auto使用灵活</li>
-<li>auto类型推断和函数模版推断非常类似, auto相当于函数模板T</li>
-</ul>
-
-<h4>传值方式</h4>
-
-<pre class="line-numbers"><code class="language-cpp">auto xy2 = xy; //xy2=int auto=int传值方式，引用和const类型都被抛弃
+<pre class="line-numbers"><code class="language-cpp">std::mutex m;
+ static MyCAS* GetInstance() {
+    //不代表一定没被new过，只有第一次多线程初始化的时候需要加锁，后面都不需要加锁
+    if (m_instance == nullptr) {
+      //初始化的时候才加锁
+      std::unque_lock(std::mutex) lock(m);
+      if (m_instance == nullptr) {
+        m_instance = new MyCAS();
+        static GC c1;
+      }
+      return m_instance;
+    }
+  }
 </code></pre>
 
-<ul>
-<li>传值的方式引用类型会被抛弃，const属性也会被放弃</li>
-</ul>
-
-<h4>指针或者引用</h4>
-
-<pre class="line-numbers"><code class="language-cpp">const auto *xp = &amp;x;//xp = const int*, auto = int;
-auto* xp2 = &amp;x; //xp2=int*, auto = int
-auto xp3 = &amp;x; //xp3 int*, auto int*
-</code></pre>
+<h4>call_once</h4>
 
 <ul>
-<li>不会抛弃const限定，但是会丢弃引用</li>
+<li>能够保证函数只能被调用一次</li>
+<li>call_once效率上比互斥量消耗的更少</li>
+<li>call_once需要与一个标记结合使用, std::once_flag</li>
+<li>调用call_once成功后，就把once_flag设置为已经调用状态</li>
 </ul>
 
-<h4>万能引用</h4>
-
-<pre class="line-numbers"><code class="language-cpp">auto&amp;&amp; wn = x;//auto=int&amp;, wn = int&amp;
-auto&amp;&amp; wn2 = x2;//auto=int&amp;, wn2 const int &amp;
-auto&amp;&amp; wn3 = 100;//auto=int, wn3=int&amp;&amp;
-</code></pre>
-
-<h4>auto针对数组和函数的推断</h4>
-
-<pre class="line-numbers"><code class="language-cpp">const char mystr[] = &quot;hello&quot;
-auto str = mystr //const char*
-auto&amp; str2 = str//const char (&amp;)[14]
-int a[2] = {1,2};
-auto pa = a;//auto=int*, pa=int*
-auto tmp = func;//void(*)(double,int)
-auto&amp; tmp2 = func;//void(&amp;)(double, int)
-tmp(12.3, 4);
-tmp2(12.3, 4);
-</code></pre>
-
-<h4>std::initializer_list</h4>
-
-<pre class="line-numbers"><code class="language-cpp">auto x3 = {30};//auto initializer_list
-auto x4{40};
-只适合auto，不适合模板
-= {} 有隐式类型转换
-</code></pre>
-
-<h4>auto作为函数返回类型</h4>
-
-<h4>auto不适用类型</h4>
-
-<ul>
-<li>auto不能用于函数参数</li>
-<li>普通成员变量不能是auto</li>
-<li>静态成员是可以</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">class CT {
- public:
-  static const auto i = 5; //ok
-  auto j = 5;//err
-};
+<pre class="line-numbers"><code class="language-cpp">std::once_flag g_flag;
+static MyCAS* GetInstance() {
+  std::call_once(g_flag, CreateInstance);
+  return m_instance;
+}
+static void CreateInstance() {
+    cout &lt;&lt; &quot;CreateInstance &quot; &lt;&lt; endl;
+    m_instance = new MyCAS();
+}
 </code></pre>
 
                         
@@ -767,922 +418,10 @@ auto x4{40};
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/10/01 18:26 下午</span>
+                    <span class="date">2019/09/17 18:05 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15679831945510.html">
-                
-                  <h1>Redis集群</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>多倍扩容</h4>
-
-<ul>
-<li><img src="media/15679831945510/15679833006813.jpg" alt="" style="width:1109px;"/></li>
-<li>引起50%的数据迁移</li>
-<li>客户端分片：哈希+取余</li>
-<li>节点伸缩：数据节点关系变化，导致数据迁移</li>
-<li>迁移数量和添加节点数量有关：建议翻倍扩容</li>
-</ul>
-
-<h4>一致性hash</h4>
-
-<ul>
-<li><img src="media/15679831945510/15679834230784.jpg" alt="" style="width:580px;"/></li>
-<li><img src="media/15679831945510/15679835069065.jpg" alt="" style="width:503px;"/></li>
-</ul>
-
-<h4>虚拟槽分区</h4>
-
-<ul>
-<li><img src="media/15679831945510/15679835629071.jpg" alt="" style="width:573px;"/></li>
-<li><img src="media/15679831945510/15679835845450.jpg" alt="" style="width:611px;"/></li>
-</ul>
-
-<h4>集群架构</h4>
-
-<ul>
-<li><img src="media/15679831945510/15679836123386.jpg" alt="" style="width:347px;"/></li>
-</ul>
-
-<h4>Redis集群架构</h4>
-
-<ul>
-<li><img src="media/15679831945510/15679836334837.jpg" alt="" style="width:439px;"/></li>
-<li>节点</li>
-<li><img src="media/15679831945510/15679836848903.jpg" alt="" style="width:544px;"/></li>
-<li>meet</li>
-<li><img src="media/15679831945510/15679837417762.jpg" alt="" style="width:801px;"/></li>
-<li>槽</li>
-<li><img src="media/15679831945510/15679837878069.jpg" alt="" style="width:895px;"/></li>
-</ul>
-
-<h4>客户端与槽</h4>
-
-<ul>
-<li><img src="media/15679831945510/15679838224134.jpg" alt="" style="width:927px;"/></li>
-</ul>
-
-<h4>cluser特性</h4>
-
-<ul>
-<li>复制</li>
-<li>高可用</li>
-<li>分片</li>
-</ul>
-
-<h4>安装</h4>
-
-<ul>
-<li>开启节点配置</li>
-<li>meet</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">redis-cli -h $master -p 6379 cluster meet $master 6380
-redis-cli -h $master -p 6379 cluster meet $node1 6379
-redis-cli -h $master -p 6379 cluster meet $node1 6380
-redis-cli -h $master -p 6379 cluster meet $node2 6379
-redis-cli -h $master -p 6379 cluster meet $node2 6380
-</code></pre>
-
-<ul>
-<li>指派槽</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">#!/bin/bash
-master=192.168.31.186
-node1=192.168.31.224
-node2=192.168.31.125
-start=$1
-last=$2
-port=$4
-h=$3
-ip=&quot;&quot;
-case $h in
-  &quot;master&quot;) ip=$master;;
-  &quot;node1&quot;) ip=$node1;;
-  &quot;node2&quot;) ip=$node2;;
-esac
-
-for slot in `seq ${start} ${last}`
-do
-  echo &quot;slot:${slot}}&quot;
-  redis-cli -h ${ip} -p ${port} cluster addslots ${slot}
-done
-./slot.sh 0 5461 master 6379 &amp;&amp; ./slot.sh 5462 10922 node1 6379  &amp;&amp; ./slot.sh 10923 10683 node2 6379
-</code></pre>
-
-<ul>
-<li>主从</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">redis-cli -p 6379 cluster replicate 1da43f4f45d110b849bdfbc0fc55dc311fa69a76
-redis-cli -p 6380 cluster replicate 261b726a6cafacddbf8f23596c738bdf4a30f085
-</code></pre>
-
-<ul>
-<li>访问</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">redis-cli -c -p 6379
-Redirected to slot [4554] located at 192.168.31.186:6379
-查看节点 redis-cli -p 6380 cluster nodes
-查看槽 redis-cli -p 6380 cluster slots
-查看信息 redis-cli -p 6380 cluster info
-
-</code></pre>
-
-<h4>一键创建集群</h4>
-
-<pre class="line-numbers"><code class="language-text">//启动节点
-master redis-server ./redis-master_6379.conf \
-&amp;&amp; redis-server ./redis-master_6380.conf
-node1 redis-server ./redis-master_6379.conf \
-&amp;&amp; redis-server ./redis-master_6380.conf
-node2 redis-server ./redis-master_6380.conf \
-&amp;&amp; redis-server ./redis-master_6381.conf
-//创建集群
-redis-cli --cluster create --cluster-replicas 1 \
-$master:6379 $master:6380 \
-$node1:6379 $node1:6380 \ 
-$node2:6380 $node2:6381
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/09 06:53 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Redis%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A.html'>Redis从入门到精通</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15445247066236.html">
-                
-                  <h1>Mysql抖动</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h5>临时关闭binlog</h5>
-
-<p>set sql_log_bin=OFF;</p>
-
-<h4>测试磁盘的IOPS</h4>
-
-<ul>
-<li> fio -filename=$filename -direct=1 -iodepth 1 -thread -rw=randrw -ioengine=psync -bs=16k -size=500M -numjobs=10 -runtime=10 -group_reporting -name=mytest</li>
-<li>机械硬盘 IOPS 1045</li>
-<li>SATA固态 IOPS 6200</li>
-<li>M2.0固态 IOPS 13000</li>
-</ul>
-
-<h4>Mysql变慢的原因</h4>
-
-<ul>
-<li>正在flush刷新脏页面</li>
-</ul>
-
-<h4>内存脏数据不淘汰的原因</h4>
-
-<ul>
-<li>一种是内存里存在，内存里就肯定是正确的结果，直接返回；</li>
-<li>另一种是内存里没有数据，就可以肯定数据文件上是正确的结果，读入内存后返回。<br/>
-这样的效率最高</li>
-</ul>
-
-<h4>内存buffer pool</h4>
-
-<ul>
-<li>第一种是，还没有使用的；</li>
-<li>第二种是，使用了并且是干净页；</li>
-<li>第三种是，使用了并且是脏页。</li>
-</ul>
-
-<h4>脏页比例的控制策略</h4>
-
-<ul>
-<li>innodb_io_capacity 和磁盘的IOPS</li>
-<li>innodb_max_dirty_pages_pct 脏页比例上限</li>
-</ul>
-
-<h4>脏页刷盘速度参考因素</h4>
-
-<ul>
-<li>脏页比例</li>
-<li>redo log写盘速度</li>
-<li>R = (脏页比例(max_dirty_pages_pact, (当前序列号 - checkpoint)N)</li>
-<li>脏页刷新速度 = innodb_io_capacity  * R%
-<img src="media/15445247066236/cc44c1d080141aa50df6a91067475374.png" alt="cc44c1d080141aa50df6a91067475374"/></li>
-<li>影响刷脏页的速度</li>
-</ul>
-
-<h4>优化</h4>
-
-<ul>
-<li>SSD不需要了 innodb_flush_neighbors = 0</li>
-</ul>
-
-<h4>确定内存脏页面</h4>
-
-<ul>
-<li>每个数据页头部有LSN，8字节，每次修改都会变大。</li>
-<li>对比这个LSN跟checkpoint 的LSN，比checkpoint小的一定是干净页</li>
-<li>flush是内存脏页直接过redo-log现在redo log 需要往前推进checkpoint，到LSN为12的这条log时，发现内存中的脏页列表里没有该页，且磁盘上该页的LSN也已经为12，则该页已刷脏，已为干净页，跳过。</li>
-<li>innodb_max_dirty_pages_pct 脏页比例</li>
-</ul>
-
-<h4>relog很小的后果</h4>
-
-<ul>
-<li>io压力不大，但是数据库性能下降 </li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/11 18:38 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15691944800581.html">
-                
-                  <h1>mysql高可用架构设计</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>复制</h4>
-
-<ul>
-<li>实现在不同服务器上的数据分布</li>
-<li>实现数据读取的负载均衡</li>
-<li>增强了数据安全性</li>
-<li>实现数据库高可用和故障切换</li>
-<li>实现数据库在线升级</li>
-</ul>
-
-<h4>binlog</h4>
-
-<h5>statement</h5>
-
-<ul>
-<li>基于段的格式
-<img src="media/15691944800581/15691948341088.jpg" alt="" style="width:1183px;"/></li>
-</ul>
-
-<h5>row</h5>
-
-<ul>
-<li>基于行的格式</li>
-<li>同-SQL 语句修改了 10000 条数据的情况下基于段的日志格式只会记录这个 SQL 语句</li>
-<li>基于行的日志会有 10000 条记录分别记录每行的数据修改</li>
-<li>使Mysql主从复制更加安全</li>
-<li>对每一行数据的修改比基于段的复制高效</li>
-<li>误操作可以通过反向处理</li>
-<li>缺点</li>
-<li>记录日志量较大binlog_row_image=full|minimal记录列|noblog</li>
-<li>full：在before和after影像中，记录所有的列值；</li>
-<li>minimal：在before和after影像中，仅仅记录被更改的以及能够唯一识别数据行的列值；</li>
-<li>noblob：在before和after影像中，记录所有的列值，但是BLOB 与 TEXT列除外（如未更改）。</li>
-</ul>
-
-<h5>mixed</h5>
-
-<ul>
-<li>根据SQL语句由系统决定在基于段和基于行的日志格式中进行选择</li>
-</ul>
-
-<h5>建议</h5>
-
-<ul>
-<li>row</li>
-<li>minimal</li>
-</ul>
-
-<h5>复制总结</h5>
-
-<h5>基于SQL语句的复制（SBR)</h5>
-
-<ul>
-<li>二进制日志格式使用的是 statement </li>
-<li>缺点</li>
-<li>对于非确定性事件，无法保证主从复制数据的一致性</li>
-<li>对于存储过程，触法器，自定义函数进行的修改也可能造成数据不一致</li>
-<li>相比于基于行的复制方式在从上执行时需要更多的行锁</li>
-</ul>
-
-<h5>基于行的复制（RBR)</h5>
-
-<ul>
-<li>二进制日志格式使用的是基于行的日志格式</li>
-<li>优点</li>
-<li>可以应用于任何 SQL 的复制包括非确定函数，存储过程等</li>
-<li>可以减少数据库锁的使用</li>
-<li>缺点</li>
-<li>要求主从数据庳的表结构相同，否则可能会中断复制</li>
-<li>无法在从服务器上单独执行触法器</li>
-</ul>
-
-<h4>复制工作方式</h4>
-
-<ul>
-<li>主将变更写入二进制日志</li>
-<li>从读取主的二进制日志变更并写入到 Relay_log 中</li>
-<li>在从上重放 relay_log 中的日志</li>
-<li>基于 SQL 段的日志是在从库上重新执行记录的 SQL 基王行的日赤则是在从库上直接应用对数据库行的修改</li>
-</ul>
-
-<h4>主配置</h4>
-
-<pre class="line-numbers"><code class="language-text">bin_log=mysql-bin
-server_id=100
-</code></pre>
-
-<h4>从服务器配置</h4>
-
-<pre class="line-numbers"><code class="language-text">bin_log=mysql-bin
-server_id=100
-relay_log=mysql-relay-bin
-log_slave_update=on //链路配置
-read_only=on //防止错误配置
-</code></pre>
-
-<h4>GTID</h4>
-
-<ul>
-<li>GTID 即全局事务 ID，其保证为每一个在主上提交的事务在复制集群中可以生成一个唯一的 ID</li>
-<li>source_id:transaction_id</li>
-<li>Create table. Select<br/>
-在事务中使用 Create temporary table 建立临时表使用关联更新事务表和非事务表都是会报错的</li>
-</ul>
-
-<h4>从服务器</h4>
-
-<pre class="line-numbers"><code class="language-text">Log-slave-updates = on read_only=on【建议】
-master info_ repository= TABLE【建议】
-relay_log_info_ repository= TABLE【建议】
-gtid_mode =on
-enforce-gtid-consistency
-</code></pre>
-
-<ul>
-<li>查询授权</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">select user,host  from user;
-show grants for shui@&#39;192.168.31.%&#39;
-</code></pre>
-
-<h4>GTID复制的优缺点</h4>
-
-<ul>
-<li>优点</li>
-<li>可以很方便的进行故障转移从库不会丢失主库上的任何修改</li>
-<li>缺点</li>
-<li>故障处理比较复杂</li>
-<li>对执行的 SQL 有一定的限制</li>
-</ul>
-
-<h4>选择复制模式要考虑的问题</h4>
-
-<ul>
-<li>所使用的MYSQL版本</li>
-<li>复制架构及主从切换的方式</li>
-<li>所使用的高可用管理组件</li>
-</ul>
-
-<h4>复制拓扑</h4>
-
-<ul>
-<li>MYSQL5.7 之前，一个从库只能有一个主库</li>
-<li>MYSQL5.7 之后支持一从多主架构</li>
-</ul>
-
-<h4>一主多从</h4>
-
-<ul>
-<li>为不同业务使用不同的从库</li>
-<li>将一台从库放到远程 IDC，用作灾备恢复</li>
-<li>分担主库的读负载，由于要复制主库的写，所以不能分担写负载</li>
-</ul>
-
-<h4>主主复制拓扑</h4>
-
-<h5>主主模式</h5>
-
-<ul>
-<li>产生数据冲突而造成复制链路的中断</li>
-<li>耗费大量的时间</li>
-<li>造成数据丟失</li>
-<li>注意事项</li>
-<li>两个主中所操作的表最好能够分开使用下面两个参数控制自增 ID 的生成</li>
-<li>auto increment increment= 2</li>
-<li>auto_increment_offset=12</li>
-</ul>
-
-<h4>主备</h4>
-
-<ul>
-<li>只有一台主服务器对外提供服务</li>
-<li>一台服务器处于只读状态并且只作为热备使用在对外提供服务的主库出现故障或是计划性的维护时才会进行切换</li>
-<li>使原来的备库成为主库，而原来的主库会成为新的备库并处理只读或是下线状态，待维护完成后重新上线</li>
-<li>注意事项</li>
-<li>确保两台服务器上的初始数据相同</li>
-<li>确保两台服务器上已经启动 biolog 并且有不同的 server id</li>
-<li>在两台服务器上启用 log_ slave_ updates 参数在初始的备库上启用 read_only</li>
-</ul>
-
-<h4>拓扑结构</h4>
-
-<p><img src="media/15691944800581/15692711891670.jpg" alt="" style="width:1026px;"/></p>
-
-<ul>
-<li>级联复制
-<img src="media/15691944800581/15692712403802.jpg" alt="" style="width:1034px;"/></li>
-</ul>
-
-<h4>复制优化</h4>
-
-<ul>
-<li>控制主库的事务大小分割大事务,大表修改无法分割</li>
-<li>二进制日志传输时间 mixed，row-&gt;set binlog_row_image=minimal;</li>
-<li>默认情况下从只有一个 SQ인L 线程，主上并发的修改在从上变成了串行</li>
-<li>在 MYSQL5.7 中可以按照逻辑时钟的方式来分配 SQL 线程</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">stop slave;
-set global slave_parallel_type=&#39;logical_clock&#39;;
-set global slave_parallel_workers=4; 
-start slave;
-</code></pre>
-
-<h4>复制常见问题</h4>
-
-<ul>
-<li>主库或从库意外宕机引起的错误</li>
-<li>使用跳过二进制日志事件</li>
-<li>注入空事务的方式先恢复中断的复制链路</li>
-<li>再使用其它方法来对比主从服务器上的数据</li>
-<li>主库的二进制日志损坏</li>
-<li>备库的中继日志</li>
-<li>在从库上进行数据修改造成的主从复制错误</li>
-<li>不唯一的 server id 或 server_uuid</li>
-<li>max_allow_packeti 设置引起的主从复制错</li>
-</ul>
-
-<h4>复制解决不了的问题</h4>
-
-<ul>
-<li>分担主数据库的写负载</li>
-<li>自动进行故障转移及主从切换</li>
-<li>提供读写分离功能</li>
-</ul>
-
-<h4>高可用</h4>
-
-<p><img src="media/15691944800581/15692724432770.jpg" alt="" style="width:723px;"/></p>
-
-<h5>避免导致系统不可用的因素，减少系统不可用的时间</h5>
-
-<ul>
-<li>建立完善的监控及报警系统</li>
-<li>对备份数据进行恢复测试</li>
-<li>正确配置数据库环境</li>
-<li>对不需要的数据进行归档和清理</li>
-</ul>
-
-<h5>增加系统冗余，保证发生系统不可用时可以尽快恢复</h5>
-
-<ul>
-<li>避免存在单点故障</li>
-<li>利用SUN共享存储或DRDB磁盘复制解决MYSQL单点故障
-<img src="media/15691944800581/15693677885166.jpg" alt="" style="width:637px;"/></li>
-<li>利用多写集群或NDB集群来解决Mysql单点故障
-<img src="media/15691944800581/15693678313849.jpg" alt="" style="width:377px;"/></li>
-<li>利用MySQL主从复制来解决MySQL单点故障</li>
-<li>问题</li>
-<li>主服务器切换后如何通知应用新的主服务器的 IP 地址</li>
-<li>如何检查 MYSQL 主服务器是否可用</li>
-<li>如何处理从服务器和新主服务器之间的那种复制关系</li>
-<li>主从切换及故障转移</li>
-</ul>
-
-<h4>MMM</h4>
-
-<ul>
-<li>监控和管理 MYSQL 的主主复制拓扑，并在当前的主服务器失效时，进行主和主备服务器之间的主从切换和故障转移等工作</li>
-<li>MMM监控 MySQL 主从复制健康情况</li>
-<li>在主库出现宕机时进行故障转移并自动配置其它从对新主的复制</li>
-<li><img src="media/15691944800581/15693682010691.jpg" alt="" style="width:888px;"/>
-<img src="media/15691944800581/15693681373072.jpg" alt="" style="width:670px;"/></li>
-<li>提供了主，写虚拟 IP，在主从服务器出现问题时可以自动迁移虚拟 IP
-<img src="media/15691944800581/15693682624344.jpg" alt="" style="width:918px;"/></li>
-</ul>
-
-<h5>需要资源</h5>
-
-<p><img src="media/15691944800581/15693682900151.jpg" alt="" style="width:947px;"/></p>
-
-<h5>部署步骤</h5>
-
-<ul>
-<li>配置主主复制及主从同步集群</li>
-<li>安装主从节点所需要的支持包</li>
-<li>安装及配置 MMM 工具集</li>
-<li>运行 MMM 监控服务测试
-<img src="media/15691944800581/15693685291641.jpg" alt="" style="width:651px;"/></li>
-<li><img src="media/15691944800581/15693685352329.jpg" alt="" style="width:883px;"/></li>
-</ul>
-
-<h5>优点</h5>
-
-<ul>
-<li>使用 PerI 脚本语言开发及完全开源</li>
-<li>提供了读写 VIP（虚拟 IP），使服务器角色的变更对前端应用透明</li>
-<li>在从服务器出现大量的主从延迟，主从链路中断时可以把这台从服务器上的读的虚拟 IP，漂移到集群中其它正常的服务器上。</li>
-<li>MMM 提供了从服务器的延迟监控</li>
-<li>MMM 提供了主数据库故障转移后从服务器对新主的重新同步功能</li>
-<li>很容易对发生故障的主数据库重新上线</li>
-</ul>
-
-<h5>缺点</h5>
-
-<ul>
-<li>发布时间比较早不支持 MYSQLI 新的复制功能</li>
-<li>不支持多线程复制功能</li>
-<li>没有读负载均衡的功能</li>
-<li>在进行主从切换时，容易造成数据丟失，重复递交事务</li>
-<li>MMM 监控服务存在单点故障</li>
-</ul>
-
-<h4>MHA</h4>
-
-<ul>
-<li>30秒内完成切换</li>
-<li>监控主数据库服务器是否可用</li>
-<li>当主 DB 不可用时，从多个从服务器中选举出新的主数据库服务器</li>
-<li>提供了主从切换和故障转移功能</li>
-</ul>
-
-<h5>主从切换流程</h5>
-
-<ul>
-<li>尝试从出现故障的主数据库保存二进制日志</li>
-<li>从多个备选从服务器中选举出新的备选主服务器</li>
-<li>在备选主服务器和其它从服务器之间同步差异二进制数据</li>
-<li>应用从原主 DB 服器上保存的二进制日志</li>
-<li>迁移集群中的其它从 DB 作为新的主 DB 的从服务器</li>
-</ul>
-
-<h5>MHA架构</h5>
-
-<p><img src="media/15691944800581/15693704382563.jpg" alt="" style="width:757px;"/></p>
-
-<ul>
-<li><img src="media/15691944800581/15693704552779.jpg" alt="" style="width:643px;"/></li>
-</ul>
-
-<h5>配置步骤</h5>
-
-<ul>
-<li>建立主从复制集群</li>
-<li>配制 MHA 管理节点</li>
-<li>使用 masterha_ check_ssh 和 masterha_ check_repl 对配置进行检验</li>
-<li>启动并测试 MHA 服务</li>
-</ul>
-
-<h4>MHA的优点和缺点</h4>
-
-<h5>优点</h5>
-
-<ul>
-<li>同样是由 Per 语言开发的开源工具</li>
-<li>可以支持基于 GTD 的复制模式</li>
-<li>MHA 在进行故障转移时更不易产生数据丟失</li>
-<li>同一个监控节点可以监控多个集群</li>
-</ul>
-
-<h5>缺点</h5>
-
-<ul>
-<li>需要编写脚本或利用第三方工具来实现 Vip 的配置</li>
-<li>MHA 启动后只会对主数据库进行监控，不能排查从服务器故障</li>
-<li>需要基于 SSH 兔认证配置，存在一定的安全隐患</li>
-<li>没有提供从服务器的读负载均衡功能</li>
-</ul>
-
-<h4>负载均衡</h4>
-
-<h4>读写分离</h4>
-
-<p><img src="media/15691944800581/15696236063092.jpg" alt="" style="width:1110px;"/></p>
-
-<h5>程序实现读写分离</h5>
-
-<ul>
-<li>优点</li>
-<li>由开发人员控制什么样查询在从库中执行，因此比较灵活</li>
-<li>由程序直接连接数据库，所以性能损耗比较少</li>
-<li>缺点</li>
-<li>增加了开发的工作量，使程序代码更加复杂</li>
-<li>人为控制，容易出现错误</li>
-</ul>
-
-<h5>中间件来实现读写分离</h5>
-
-<ul>
-<li>mysql-proxy</li>
-<li>maxScale</li>
-<li>优点</li>
-<li>由中间件根据查询语法分析，自动完成读写分离</li>
-<li>对程序透明，对于已有程序不用做任何调整</li>
-<li>缺点</li>
-<li>由于增加了中间层，所以对查询效率有损耗 消耗50%</li>
-</ul>
-
-<h5>总结</h5>
-
-<ul>
-<li>读写分离要解决的是如何在复制集群的不同角色上，去执行不同的 SQL 语句。</li>
-<li>读的负载均衡主要解决的是具有相同角色的数据库，如何共同分担相同的负载。</li>
-</ul>
-
-<h4>MaxScale</h4>
-
-<ul>
-<li>Authentication 认证插件</li>
-<li>Protocal 协议插件</li>
-<li>Router 路由插件 readconnroute readwritesplit</li>
-<li>Monitor 监控插件</li>
-<li>Filter&amp;Logging 日志和过滤插件</li>
-</ul>
-
-<h4>高可用架构</h4>
-
-<p><img src="media/15691944800581/15696250203347.jpg" alt="" style="width:1204px;"/></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/23 07:21 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E6%80%A7%E8%83%BD%E7%AE%A1%E7%90%86%E5%92%8C%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1.html'>Mysql性能管理和架构设计</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15458731180628.html">
-                
-                  <h1>语句性能差异</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>清除锁表进程</h4>
-
-<ul>
-<li>锁表和解锁表</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text"> lock table t write;
- unlock  tables;
- select blocking_pid from sys.schema_table_lock_waits;
-</code></pre>
-
-<h4>查询锁表进程</h4>
-
-<pre class="line-numbers"><code class="language-text">  select * from t sys.innodb_lock_waits where locked_table=`&#39;test&#39;.&#39;t&#39;`\G
-</code></pre>
-
-<h4>读锁比较快</h4>
-
-<pre class="line-numbers"><code class="language-text">  update t set c=c+1 where id=1;
-  start transaction with consistent snapshot;
-  select * from t where id = 1;
-  select * from t where id = 1 lock in share mode 
-</code></pre>
-
-<ul>
-<li>带 lock in share mode 的 SQL 语句，是当前读，因此会直接读到 1000001 这个结果，所以速度很快；而 select * from t where id=1 这个语句，是一致性读，因此需要从 1000001 开始，依次执行 undo log，执行了 100 万次以后，才将 1 这个结果返回。</li>
-</ul>
-
-<h4>参考阅读</h4>
-
-<ul>
-<li><a href="http://hedengcheng.com/?p=771">http://hedengcheng.com/?p=771</a></li>
-<li><a href="http://www.aneasystone.com/archives/2017/11/solving-dead-locks-two.html">http://www.aneasystone.com/archives/2017/11/solving-dead-locks-two.html</a></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/27 09:11 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15698817657509.html">
-                
-                  <h1>Mysql监控</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<ul>
-<li>MySQL 数据库我们都要监控什么</li>
-<li>怎么对这些要监控的资源进行监控</li>
-</ul>
-
-<h4>监控可用性</h4>
-
-<ul>
-<li>对数据库服务可用性进行监控</li>
-</ul>
-
-<h5>如何确认数据库是否可以通过网络连接</h5>
-
-<pre class="line-numbers"><code class="language-text">mysqladmin-umonitor_user-p h ping
-telnet ip port
-应用程序通过网络建立数据库连接
-</code></pre>
-
-<ul>
-<li>可以连接到数据库不代表可用</li>
-</ul>
-
-<h5>如何确认数据库是否可读写</h5>
-
-<ul>
-<li>检査数据库的 read_only 参数是否为 off </li>
-<li>建立监控表并对表中数据进行更行执行简单的查询</li>
-<li>select@@ version</li>
-</ul>
-
-<h5>如何监控数据库的连接数</h5>
-
-<ul>
-<li>时刻关注数据库连接数量的变化</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">show variables like &#39;max connections 
-show global status like &#39;Threads_connected&#39;
-threads connected/max connections 0.8
-</code></pre>
-
-<h4>对数据库性能进行监控</h4>
-
-<ul>
-<li>记录性能监控过程中所采集到的数据库的状态</li>
-</ul>
-
-<h5>如何计算QPS和TPS</h5>
-
-<pre class="line-numbers"><code class="language-text">* QPS=(Queries2-Queries1)(差值)/
-(Uptime_since_flush_status2- Uptime_since_flush_status1）(时间间隔)
-* TPS=((Com_insert+Com_update2+Com_delete
- (Com_insert1+Com_update1+Com_deletel))/
- (Uptimesince_flushStatus2-uptime_since_flush_statusi)
-</code></pre>
-
-<h5>如何监控数据库的并发请求数量</h5>
-
-<pre class="line-numbers"><code class="language-text">show global status like &#39;Threads_running&#39;
-</code></pre>
-
-<ul>
-<li>数据库系统的性能会随着并发处理请求数量的增加而下降</li>
-</ul>
-
-<h5>如何监控Innodb阻塞</h5>
-
-<p><img src="media/15698817657509/15698831966537.jpg" alt="" style="width:1183px;"/></p>
-
-<ul>
-<li>information_schema.innodb_lock_waits</li>
-<li>information_schema.innodb_trx</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">select connection_id() 查看连接ID
-</code></pre>
-
-<h4>对主从复制进行监控</h4>
-
-<h5>主从复制链路状态的监控</h5>
-
-<ul>
-<li>Slave_IO_Running: Yes</li>
-<li>Slave_SQL_Running: Yes</li>
-</ul>
-
-<h5>主从复制延迟的监控</h5>
-
-<ul>
-<li>show slave status</li>
-<li>Seconds_Behind_Master 0</li>
-<li>这个方法需要使用多线程的程序同时对于主从服务器的状态来进行检查</li>
-</ul>
-
-<h5>定期的确认主从复制的数据是否一致</h5>
-
-<p><img src="media/15698817657509/15698839274583.jpg" alt="" style="width:1065px;"/></p>
-
-<h4>服务器资源的监控</h4>
-
-<ul>
-<li>磁盘空间</li>
-<li>CPU 的使用情况，内存的使用情况，Swap 分区的使用情况以及网络 IO 的情况等</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/01 06:16 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E6%80%A7%E8%83%BD%E7%AE%A1%E7%90%86%E5%92%8C%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1.html'>Mysql性能管理和架构设计</a></span>
           				   
                   </div>
                   <div class="more-right right">

@@ -170,114 +170,18 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15501086782135.html">
+                <a class="clearlink" href="15701388172178.html">
                 
-                  <h1>微服务调用失败的处理手段</h1>
+                  <h1>微信红包</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>超时</h4>
+                        	<h4>业务分析</h4>
+
+<p><img src="media/15701388172178/15701390212385.jpg" alt="" style="width:971px;"/></p>
 
 <ul>
-<li>参照服务提供者线上真实的服务水平，取 P999 或者 P9999 的值，也就是以 99.9% 或者 99.99% 的调用都在多少毫秒内返回为准。</li>
-</ul>
-
-<h4>重试</h4>
-
-<h4>双发</h4>
-
-<ul>
-<li>一个简单的提高服务调用成功率的办法就是每次服务消费者要发起服务调用的时候，都同时发起两次服务调用，一方面可以提高调用的成功率，另一方面两次服务调用哪个先返回就采用哪次的返回结果</li>
-<li>备份请求”（Backup Requests），它的大致思想是服务消费者发起一次服务调用后，在给定的时间内如果没有返回请求结果，那么服务消费者就立刻发起另一次服务调用</li>
-<li>最大重试比例可以设置成 15%</li>
-</ul>
-
-<h4>熔断</h4>
-
-<ul>
-<li>熔断就是把客户端的每一次服务调用用断路器封装起来，通过断路器来监控每一次服务调用。如果某一段时间内，服务调用失败的次数达到一定阈值，那么断路器就会被触发，后续的服务调用就直接返回，也就不会再向服务提供者发起请求了。</li>
-<li>熔断中断路器</li>
-<li>Closed状态</li>
-<li>Open状态: 当服务调用失败次数达到一定阈值时，断路器就会处于开启状态，后续的服务调用就直接返回，不会向服务提供者发起请求</li>
-<li>Half Open 状态：当断路器开启后，每隔一段时间，会进入半打开状态，这时候会向服务提供者发起探测调用，以确定服务提供者是否恢复正常。如果调用成功了，断路器就关闭；如果没有成功，断路器就继续保持开启状态，并等待下一个周期重新进入半打开状态。</li>
-<li><img src="media/15501086782135/caf39c417373e0261da5717d1442958a.png" alt="caf39c417373e0261da5717d1442958a"/></li>
-</ul>
-
-<h4>Hystrix</h4>
-
-<ul>
-<li>滑动窗口包含 10 个桶，每个桶时间宽度为 1 秒，每个桶内记录了这 1 秒内所有服务调用中成功的、失败的、超时的以及被线程拒绝的次数。当新的 1 秒到来时，滑动窗口就会往前滑动，丢弃掉最旧的 1 个桶，把最新 1 个桶包含进来。</li>
-<li>0 个桶内记录的所有失败的、超时的、被线程拒绝的调用次数之和除以总的调用次数就是滑动窗口内所有服务的调用的失败率</li>
-</ul>
-
-<h4>总结</h4>
-
-<ul>
-<li>采用双发对长尾请求的场景十分有效</li>
-</ul>
-
-<h4>思考题</h4>
-
-<ul>
-<li>Hystrix 采用了线程池隔离的方式来实现不同的服务调用相互之间不影响，你认为这种方式的优缺点有哪些？</li>
-<li>（1）线程池隔离模式：使用一个线程池来存储当前的请求，线程池对请求作处理，设置任务返回处理超时时间，堆积的请求堆积入线程池队列。这种方式需要为每个依赖的服务申请线程池，有一定的资源消耗，好处是可以应对突发流量（流量洪峰来临时，处理不完可将数据存储到线程池队里慢慢处理）</li>
-<li>（2）信号量隔离模式：使用一个原子计数器（或信号量）来记录当前有多少个线程在运行，请求来先判断计数器的数值，若超过设置的最大线程个数则丢弃改类型的新请求，若不超过则执行计数操作请求来计数器+1，请求返回计数器-1。这种方式是严格的控制线程且立即返回模式，无法应对突发流量（流量洪峰来临时，处理的线程超过数量，其他的请求会直接返回，不继续去请求依赖的服务）</li>
-<li>优点：可以防止某个服务占满可以使用的线程，影响其他服务</li>
-<li>缺点：如果运行线程特别多，线程上下文切换成本较高。</li>
-</ul>
-
-<h4>幂等性</h4>
-
-<ul>
-<li>对同一个系统，使用同样的条件，一次请求和重复的多次请求对系统资源的影响是一致的</li>
-<li>MVCC</li>
-<li>去重表</li>
-<li>Token机制</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/14 09:44 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E5%BE%AE%E6%9C%8D%E5%8A%A1.html'>微服务</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15500274588408.html">
-                
-                  <h1>insert语句的锁</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>insert循环写入</h4>
-
-<ul>
-<li>导致在表 t 上做全表扫描，并且会给索引 c 上的所有间隙都加上共享的 next-key lock。所以，这个语句执行期间，其他事务不能在这个表上插入数据</li>
-<li>一边遍历数据，一边更新数据的情况，如果读出来的数据直接写回原表，就可能在遍历过程中，读到刚刚插入的记录，新插入的记录如果参与计算逻辑，就跟语义不符</li>
-</ul>
-
-<h4>insert唯一键冲突</h4>
-
-<ul>
-<li>冲突后主键和唯一健索引冲突加的都是next-key lock</li>
 <li></li>
 </ul>
 
@@ -288,10 +192,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/02/13 11:10 上午</span>
+                    <span class="date">2019/10/04 05:40 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+          					    <span class="posted-in"><a href='Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html'>Redis高并发缓存</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -305,75 +209,270 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15499416717639.html">
+                <a class="clearlink" href="15680680837389.html">
                 
-                  <h1>高性能缓存架构</h1>
+                  <h1>Redis集群深入</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>缓存穿透</h4>
+                        	<h4>伸缩原理</h4>
 
 <ul>
-<li>存储数据不存在</li>
-<li>如果查询存储系统的数据没有找到，则直接设置一个默认值（可以是空值，也可以是具体的值）存到缓存中，这样第二次读取缓存时就会获取到默认值，而不会继续访问存储系统。</li>
-<li>缓存数据生成耗费大量时间或者资源</li>
+<li><img src="media/15680680837389/15680681507398.jpg" alt="" style="width:940px;"/></li>
+<li>槽和数据在节点之间移动</li>
 </ul>
 
-<h4>缓存雪崩</h4>
+<h4>集群扩容</h4>
 
 <ul>
-<li>对缓存更新操作进行加锁保护，保证只有一个线程能够进行缓存更新，未能获取更新锁的线程要么等待锁释放后重新读取缓存，要么就返回空值或者默认值</li>
-<li>后台更新</li>
-<li>后台线程除了定时更新缓存，还要频繁地去读取缓存</li>
-<li>业务线程发现缓存失效后，通过消息队列发送一条消息通知后台线程更新缓存</li>
+<li>准备新节点</li>
+<li>加入集群</li>
+<li>迁移槽和数据</li>
 </ul>
 
-<h4>缓存热点</h4>
+<h4>加入集群</h4>
 
 <ul>
-<li>缓存热点的解决方案就是复制多份缓存副本，将请求分散到多个缓存服务器上，减轻缓存热点导致的单台缓存服务器压力</li>
+<li>为它迁移槽和数据实现扩容</li>
+<li>作为从节点负责故障转移</li>
 </ul>
 
-<h4>思考题</h4>
+<h4>迁移槽数据</h4>
 
 <ul>
-<li>所在的业务发生过哪些因为缓存导致的线上问题？采取了什么样的解决方案？效果如何？</li>
-<li>双key策略：要缓存的key过期时间是t，key1没有过期时间。每次缓存读取不到key时就返回key1的内容，然后触发一个事件。这个事件会同时更新key和key1。</li>
-<li>下线这个缓存加载功能，改造缓存加载方式，用后台进程去更新缓存，而不用业务访问加载</li>
+<li>槽迁移计算</li>
+<li>迁移数据</li>
+<li>添加从节点</li>
+<li><img src="media/15680680837389/15680687611415.jpg" alt="" style="width:876px;"/></li>
 </ul>
 
-<h4>缓存设计方案考虑的点</h4>
+<h4>数据迁移</h4>
 
 <ul>
-<li>1.什么数据应该缓存</li>
-<li>2.什么时机触发缓存和以及触发方式是什么</li>
-<li>3.缓存的层次和粒度</li>
-<li>4.缓存的命名规则和失效规则</li>
-<li>5.缓存的监控指标和故障应对方案</li>
-<li>6.可视化缓存数据如 redis 具体 key 内容和大小</li>
+<li>对目标节点发送：cluster setslot{ slot) importing{ source Nodeld}命令，让目标节点准备导入槽的数据。</li>
+<li>对源节点发送：cluster setslot{slot} migrating{ target Nodelc아命令，让源节点准备迁出槽的数据。</li>
+<li>源节点循环执行 cluster getkeysinslot{slot{ count}命令，每次获取 count 个属于槽的健</li>
+<li>在源节点上执行 migrate  (ftargetlp)  (targetport) key0{ timeout 命令把指定 key 迁移重复执行步骤 3~4 直到槽下所有的键数据迁移到目标节点。</li>
+<li>向集群内所有主节点发送 cluster setslot{ slot) node ftargetnodeld}命令，通知槽分配给目标节点。</li>
+<li><img src="media/15680680837389/15680691770164.jpg" alt="" style="width:596px;"/></li>
+<li>pipeline migrate</li>
+<li><img src="media/15680680837389/15680692695123.jpg" alt="" style="width:833px;"/></li>
 </ul>
 
-<h4>mysql缓存的局限性</h4>
+<h4>集群收缩</h4>
 
 <ul>
-<li>1. mysql第一种缓存叫sql语句结果缓存，但条件比较苛刻，程序员不可控，我们的dba线上都关闭这个功能，具体实现可以查一下</li>
-<li>2. mysql第二种缓存是innodb buffer pool，缓存的是磁盘上的分页数据，不是sql的查询结果，sql的执行过程省不了。而mc，redis这些实际上都是缓存sql的结果，两种缓存方式，性能差很远。</li>
+<li><img src="media/15680680837389/15680704949393.jpg" alt="" style="width:711px;"/></li>
+<li>cluster forget</li>
+<li>redis-trib reshard --from nodeid --to nodeid --slots nums ip port</li>
+<li>redis-trib del-node ip:port nodeid</li>
+<li>先主后从</li>
 </ul>
 
-<h4>热点数据存在相当的突发性，临时的扩容似乎也来不及，能否从缓存架构角度如何避免类似微博宕机的事件</h4>
+<h4>客户端</h4>
 
 <ul>
-<li>1. 限流</li>
-<li>2. 容器化+动态化</li>
-<li>3. 业务降级，例如限制评论</li>
+<li><img src="media/15680680837389/15680710106807.jpg" alt="" style="width:264px;"/></li>
 </ul>
 
-<h4>拓展阅读</h4>
+<h4>重定向</h4>
 
 <ul>
-<li><a href="https://github.com/qiujiayu/AutoLoadCache">https://github.com/qiujiayu/AutoLoadCache</a></li>
-<li></li>
+<li>move重定向</li>
+<li><img src="media/15680680837389/15680711361230.jpg" alt="" style="width:822px;"/></li>
+<li>ask重定向</li>
+<li><img src="media/15680680837389/15680721661878.jpg" alt="" style="width:424px;"/></li>
+<li><img src="media/15680680837389/15680722142345.jpg" alt="" style="width:874px;"/></li>
+<li>对比</li>
+<li><img src="media/15680680837389/15680722554912.jpg" alt="" style="width:450px;"/></li>
+<li>随机访问和性能</li>
+</ul>
+
+<h4>smart客户端</h4>
+
+<ul>
+<li><img src="media/15680680837389/15680724129947.jpg" alt="" style="width:785px;"/></li>
+<li><img src="media/15680680837389/15680724793536.jpg" alt="" style="width:857px;"/></li>
+</ul>
+
+<h4>批量操作</h4>
+
+<ul>
+<li>mget mset必须在同一个槽</li>
+<li>串行mget</li>
+<li>串行IO</li>
+<li><img src="media/15680680837389/15680733968971.jpg" alt="" style="width:1458px;"/></li>
+<li>并行IO</li>
+<li><img src="media/15680680837389/15680734290342.jpg" alt="" style="width:1469px;"/></li>
+<li>hash_tag</li>
+<li><img src="media/15680680837389/15680734688574.jpg" alt="" style="width:1360px;"/></li>
+<li><img src="media/15680680837389/15680734909089.jpg" alt="" style="width:1457px;"/></li>
+<li>hash_tag Redis中引入了HashTag的概念，可以让算法只对key的某一部分进行计算，让key落到相同数据分片。</li>
+</ul>
+
+<h4>故障转移</h4>
+
+<ul>
+<li>故障发现</li>
+<li>ping/pong消息实现故障发现</li>
+<li>主观下线</li>
+<li><img src="media/15680680837389/15680737537823.jpg" alt="" style="width:1091px;"/></li>
+<li>客观下线</li>
+<li><img src="media/15680680837389/15680739618953.jpg" alt="" style="width:1212px;"/></li>
+<li><img src="media/15680680837389/15680740159698.jpg" alt="" style="width:1344px;"/></li>
+</ul>
+
+<h4>故障恢复</h4>
+
+<ul>
+<li>资格检查</li>
+<li><img src="media/15680680837389/15680741572842.jpg" alt="" style="width:1308px;"/></li>
+<li>准备选举时间</li>
+<li><img src="media/15680680837389/15680741882554.jpg" alt="" style="width:966px;"/></li>
+<li>选举投票</li>
+<li><img src="media/15680680837389/15680742011334.jpg" alt="" style="width:786px;"/></li>
+<li>替换主节点</li>
+<li><img src="media/15680680837389/15680742546123.jpg" alt="" style="width:1164px;"/></li>
+</ul>
+
+<h4>集群完整性</h4>
+
+<ul>
+<li>Cluster-require- full-coverages 默认为 yes</li>
+<li>集群中 16384 个槽全部可用：保证集群完整性 17680648932 正在看</li>
+<li>节点故障或者正在故障转移 (error) CLUSTERDOWN The cluster is down</li>
+<li>大多数业务无法容忍，cluster-require- full-coverages 建议设置为 no</li>
+</ul>
+
+<h4>带宽消耗</h4>
+
+<ul>
+<li><img src="media/15680680837389/15681614212661.jpg" alt="" style="width:1370px;"/></li>
+<li>消息发送频率：节点发现与其它节点最后通信时间超过 cluster node- timeout,/2时会直接发送ping消息 0463941</li>
+<li>消息数据量：slots槽数组(2KB空间)和整个集群1/10的状态数据（10 个节点状态数据约 1 KB)</li>
+<li>节点部署的机器规模：集群分布的机器越多且每台机器划分的节点数越均匀，则集群内整体的可用带宽越高。</li>
+</ul>
+
+<h5>优化</h5>
+
+<ul>
+<li>避免多业务使用一个集群，大业务可以多集群</li>
+<li>cluster-node-timeout 带宽和故障转移速度的均衡。尽量均匀分配到多机器上</li>
+<li>保证高可用和带宽</li>
+</ul>
+
+<h4>Pub/Sub 广播</h4>
+
+<ul>
+<li><img src="media/15680680837389/15681616136157.jpg" alt="" style="width:925px;"/></li>
+<li>问题：publish 在集群每个节点广播：加重带宽</li>
+<li>解决：单独“走”一套 Redis Sentinel</li>
+</ul>
+
+<h4>数据倾斜</h4>
+
+<h5>内存不均</h5>
+
+<ul>
+<li>节点和槽分配不均</li>
+<li>redis-cli info ip:port</li>
+<li>redis-cli reshard ip:port</li>
+</ul>
+
+<h5>不同槽对应键值数量差异较大</h5>
+
+<ul>
+<li>CRC16 正常情况下比较均匀</li>
+<li>可能存在 hash_tag</li>
+<li>cluster countkeysinslot{slt}获取槽对应键值个数</li>
+</ul>
+
+<h5>包含bigkey</h5>
+
+<ul>
+<li>Bigley：例如大字符串、几百万的元素的 hash、set 等从节点：</li>
+<li>redis-cli- bigkeys</li>
+<li>优化：优化数据结构。</li>
+</ul>
+
+<h5>内存相关配置不一致</h5>
+
+<ul>
+<li>Hash-max-ziplist-value, set-max-intset-entriess </li>
+<li>优化：定期“检查”配置一致性</li>
+</ul>
+
+<h5>请求倾斜</h5>
+
+<ul>
+<li>热点 key：重要的 key 或者 bigley </li>
+<li>优化避免 bigley 热键</li>
+<li>不要用 hash_tag</li>
+<li>当一致性不高时，可以用本地缓存+MQ</li>
+</ul>
+
+<h4>集群读写分离</h4>
+
+<h5>只读连接：集群模式的从节点不接受任何读写请求</h5>
+
+<ul>
+<li>重定向到负责槽的主节点</li>
+<li>readonly 命令可以读：连接级别命令</li>
+</ul>
+
+<h5>读写分离：更加复杂</h5>
+
+<ul>
+<li>同样的问题：复制延退、读取过期数据、从节点故障</li>
+<li>修改客户端：cluster slaves{ nodeld}</li>
+</ul>
+
+<h4>数据迁移</h4>
+
+<h5>redis-trib.rb import</h5>
+
+<ul>
+<li>只能从单机迁移到集群不支持在线迁移：</li>
+<li>source 需要停写</li>
+<li>不支持断点续传</li>
+<li>单线程迁移：影响速度</li>
+</ul>
+
+<h5>在线迁移</h5>
+
+<ul>
+<li>唯品会 redis- migrate-tool </li>
+<li>豌豆英：redis-port</li>
+</ul>
+
+<h4>集群限制</h4>
+
+<ul>
+<li>Key 批量操作支持有限：例如 mget、mset 必须在一个 slot </li>
+<li>Key 事务和 Lua 支持有限：操作的 key 必须在一个节点 </li>
+<li>Key 是数据分区的最小粒度：不支持 bigkey 分区</li>
+<li>不支持多个数据库：集群模式下只有一个 db0</li>
+<li>复制只支持一层。不支持树形复制</li>
+</ul>
+
+<h4>分布式Redis</h4>
+
+<ul>
+<li>Redis Cluster：满足容量和性能的扩展性，很多业务”不需要”</li>
+<li>大多数时客户端性能会”降低”。</li>
+<li>命令无法跨节点使用：mget、keys、scan、flush、sintera 等。Lua 和事务无法跨节点使用。</li>
+<li>客户端维护更复杂：SDK 和应用本身消耗（例如更多的连接池）。</li>
+<li>很多场景 Redis Sentinel 已经足够好。</li>
+</ul>
+
+<h4>集群总结</h4>
+
+<ul>
+<li>使用 smart 客户端操作集群达到通信效率最大化，客户端内部负责计算维护键-》槽-》节点的映射，用于快速定位到目标节点。</li>
+<li>集群自动故障转移过程分为故障发现和节点恢复。节点下线分为主观下线和客观下线，当超过半数主节点认为故障节点为主观下线时标记它为客观下线状态。从节点负责对客观下线的主节点触发故障恢复流程，保证集群的可用性。</li>
+<li>开发运维常见问题包括: 超大规模集群带宽消耗,pub/sub 广播问题，集</li>
+<li>群倾斜问题，单机和集群对比等</li>
 </ul>
 
                         
@@ -383,10 +482,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/02/12 11:21 上午</span>
+                    <span class="date">2019/09/10 06:28 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E6%9E%B6%E6%9E%84.html'>架构</a></span>
+          					    <span class="posted-in"><a href='Redis%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A.html'>Redis从入门到精通</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -400,59 +499,14 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15499402437762.html">
+                <a class="clearlink" href="15701380646450.html">
                 
-                  <h1>高性能Mysql</h1>
+                  <h1>Redis持久化</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>关系数据库的弱点</h4>
-
-<ul>
-<li>关系数据库存储的是行记录，无法存储数据结构</li>
-<li>关系数据库的 schema 扩展很不方便</li>
-<li>关系数据库在大数据场景下 I/O 较高</li>
-<li>关系数据库的全文搜索功能比较弱</li>
-</ul>
-
-<h4>K-V存储</h4>
-
-<ul>
-<li>解决关系数据库无法存储数据结构的问题</li>
-<li>Redis并不支持完整的ACID事务</li>
-</ul>
-
-<h4>文档数据库</h4>
-
-<ul>
-<li>解决关系数据库强 schema 约束的问题</li>
-<li>新增字段简单</li>
-<li>历史数据不会出错</li>
-<li>可以很容易存储复杂数据</li>
-<li>文档数据库的这个特点，特别适合电商和游戏这类的业务场景</li>
-<li>不支持事务</li>
-<li>无法实现join操作</li>
-</ul>
-
-<h4>列式数据库</h4>
-
-<ul>
-<li>业务同时读取多个列时效率高，因为这些列都是按行存储在一起的，一次磁盘操作就能够把一行数据中的各个列都读取到内存中。</li>
-<li>能够一次性完成对一行中的多个列的写操作，保证了针对行数据写操作的原子性和一致性；否则如果采用列存储，可能会出现某次写操作，有的列成功了，有的列失败了，导致数据不一致</li>
-<li>离线的大数据分析和统计场景中，因为这种场景主要是针对部分列单列进行操作，且数据写入后就无须再更新删除。</li>
-</ul>
-
-<h4>全文搜索引擎</h4>
-
-<ul>
-<li>全文搜索的条件可以随意排列组合，如果通过索引来满足，则索引的数量会非常多。</li>
-<li>全文搜索的模糊匹配方式，索引无法满足，只能用 like 查询，而 like 查询是整表扫描，效率非常低。</li>
-<li>倒排索引</li>
-<li>索引对象是单词和文档</li>
-<li></li>
-</ul>
-
+                        	
                         
                       </div>
                   </div>
@@ -460,10 +514,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/02/12 10:57 上午</span>
+                    <span class="date">2019/10/04 05:27 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E6%9E%B6%E6%9E%84.html'>架构</a></span>
+          					    <span class="posted-in"><a href='Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html'>Redis高并发缓存</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -477,96 +531,130 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15499358327518.html">
+                <a class="clearlink" href="15700073181059.html">
                 
-                  <h1>Kubernetes默认调度器</h1>
+                  <h1>function&& bind</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>调度算法</h4>
+                        	<h4>可调用对象</h4>
 
 <ul>
-<li>从集群所有的节点中，根据调度算法挑选出所有可以运行该 Pod 的节点；</li>
-<li>从第一步的结果中，再根据调度算法挑选一个最符合条件的节点作为最终结果。</li>
+<li>函数</li>
+<li>重载()对象</li>
 </ul>
 
-<h4>调度流程</h4>
+<h4>可被转换的函数指针的类对象</h4>
+
+<pre class="line-numbers"><code class="language-cpp">class CT {
+ public:
+  using tfptr = void(*)(int);
+
+  static void st_func(int t) {
+    cout &lt;&lt; &quot;static function &quot; &lt;&lt; t &lt;&lt; endl;
+  }
+
+  operator tfptr() {return st_func;}
+};
+int main() {
+  using ptr = void(*)(int);
+  CT ct;
+  ct(5);
+}
+</code></pre>
+
+<h4>function</h4>
 
 <ul>
-<li><img src="media/15499358327518/90343a090a8242ad46d2f82cb6b99b9b.png" alt="90343a090a8242ad46d2f82cb6b99b9b"/></li>
-<li>Informer Path 启动informer来监听ectd的对象变化，将新的Pod添加进调度队列</li>
-<li>对调度器缓存进行更新，尽最大可能将集群信息Cache化，从根本上提高Predicate 和 Priority的效率</li>
-<li>Scheduling Path 从Scheduler Cache获取可以运行pod的宿主机列表nodes,使用Predicate获取node,然后使用priority对上述列表进行打分，选出得分最高的node作为本次的调度结果</li>
-<li>然后将Pod对象的nodeName修改为调度的Node的名字，成为Bind</li>
+<li><p>能够通过给它指定模版参数，能够以统一的方式来处理函数</p>
+<pre class="line-numbers"><code class="language-cpp">function&lt;void(int)&gt; ptr = func;
+ptr(3);<br/>
+function&lt;void(int)&gt; ptr2 = TC::st_func;<br/>
+ptr2(12);<br/>
+TC tc;<br/>
+function&lt;void(int)&gt; ptr3 = tc;<br/>
+ptr3(12);
+</code></pre></li>
 </ul>
 
-<h4>Assume和真正的绑定</h4>
+<h4>bind</h4>
 
 <ul>
-<li>Kubernetes 的默认调度器在 Bind 阶段，只会更新 Scheduler Cache 里的 Pod 和 Node 的信息，成为Assume</li>
-<li>Assume后，调度器才会创建一个 Goroutine 来异步地向 APIServer 发起更新 Pod 的请求，来真正完成 Bind 操作。</li>
+<li>可调用对象和参数绑定到一起， 构成防函数</li>
+<li>如果是多个参数，可以部分绑定</li>
+<li>bind对预先绑定的参数是通过值传递的</li>
 </ul>
 
-<h4>二次确认</h4>
+<pre class="line-numbers"><code class="language-cpp">void func(int t) {
+  cout &lt;&lt; &quot; t &quot; &lt;&lt; t &lt;&lt; endl;
+}
 
-<ul>
-<li>当一个新的 Pod 完成调度需要在某个节点上运行起来之前，该节点上的 kubelet 还会通过一个叫作 Admit 的操作来再次验证该 Pod 是否确实能够运行在该节点上。</li>
-</ul>
+class CT {
+ public:
+  using tfptr = void(*)(int);
 
-<h4>Predicates</h4>
+  static void st_func(int t) {
+    cout &lt;&lt; &quot;static function &quot; &lt;&lt; t &lt;&lt; endl;
 
-<ul>
-<li>GeneralPredicates,负责的是最基础的调度策略</li>
-<li>PodFitsHost 检查宿主机的名字是否跟Pod的spec.nodeName一致</li>
-<li>PodFitsHostPorts解决端口冲突</li>
-<li>PodMatchNodeSelector 检查的是，Pod 的 nodeSelector 或者 nodeAffinity 指定的节点，是否与待考察节点匹配</li>
-<li>Volume相关过滤策略</li>
-<li>NoDiskConflict多个 Pod 声明挂载的持久化 Volume 是否有冲突</li>
-<li>MaxPDVolumeCountPredicate 检查的条件，则是一个节点上某种类型的持久化 Volume 是不是已经超过了一定数目</li>
-<li>VolumeBindingPredicate 的规则。它负责检查的，是该 Pod 对应的 PV 的 nodeAffinity 字段，是否跟某个节点的标签相匹配</li>
-<li>宿主机相关的过滤规则</li>
-<li>PodToleratesNodeTaints，负责检查的就是我们前面经常用到的 Node 的“污点”机制。只有当 Pod 的 Toleration 字段与 Node 的 Taint 字段能够匹配的时候，这个 Pod 才能被调度到该节点上。</li>
-<li>NodeMemoryPressurePredicate，检查的是当前节点的内存是不是已经不够充足，如果是的话，那么待调度 Pod 就不能被调度到该节点上</li>
-<li>Pod 相关的过滤规则</li>
-<li>PodAffinityPredicate。这个规则的作用，是检查待调度 Pod 与 Node 上的已有 Pod 之间的亲密（affinity）和反亲密（anti-affinity）关系</li>
-</ul>
+  }
 
-<h4>Predicate</h4>
+  operator tfptr() {return st_func;}
 
-<ul>
-<li>当开始调度一个 Pod 时，Kubernetes 调度器会同时启动 16 个 Goroutine，来并发地为集群里的所有 Node 计算 Predicates，最后返回可以运行这个 Pod 的宿主机列表。</li>
-</ul>
+  void func(int x, int y) {
+    m_a++;
+    cout &lt;&lt; &quot;x &quot; &lt;&lt; x &lt;&lt; &quot; y &quot; &lt;&lt; y &lt;&lt; &quot; m_a &quot;&lt;&lt; m_a &lt;&lt; endl;
+  }
 
-<h4>Priorities</h4>
+  ~CT() { std::cout &lt;&lt; &quot; destory &quot; &lt;&lt; endl;}
+  CT() { std::cout &lt;&lt; &quot; construct &quot; &lt;&lt; endl;}
+  int m_a;
+};
 
-<ul>
-<li>LeastRequestedPriority,就是在选择空闲资源（CPU 和 Memory）最多的宿主机</li>
-<li>BalancedResourceAllocation 调度完成后，所有节点里各种资源分配最均衡的那个节点，从而避免一个节点上 CPU 被大量分配、而 Memory 大量剩余的情况</li>
-</ul>
+void bfunc(int x, int y, int z) {
+  cout &lt;&lt; &quot;x &quot; &lt;&lt; x &lt;&lt; &quot; y &quot; &lt;&lt; y &lt;&lt; &quot; z &quot; &lt;&lt; z &lt;&lt; endl;
+}
+void bfunc2(int&amp; x, int&amp; y) {
+  x++;
+  y++;
+}
 
-<h4>调度优先级和抢占机制</h4>
+int main() {
+  //绑定函数bfunc的参数30，placeholders::_1表示需要f1来参数
+  auto f1 = bind(bfunc, placeholders::_1, placeholders::_1, 30);
+  bind(bfunc, placeholders::_1, placeholders::_2, 30)(5, 15);
+  f1(1);
 
-<ul>
-<li>解决Pod调度失败时怎么解决的问题</li>
-</ul>
+  auto f3 = bind(bfunc, placeholders::_2, placeholders::_1, 30);
+  f3(5,15);
 
-<h4>抢占机制</h4>
 
-<ul>
-<li>抢占发生的原因，一定是一个高优先级的 Pod 调度失败。这一次，我们还是称这个 Pod 为“抢占者”，称被抢占的 Pod 为“牺牲者”(victims)</li>
-<li>通过两个队列完成</li>
-<li>activeQ 都是下一个调度周期需要调度的对象</li>
-<li>unschedulableQ，专门用来存放调度失败的 Pod</li>
-</ul>
+  int a = 2, b = 3;
+  //bind对预先绑定的参数是通过值传递的,所以a值是值传递的, 没有事先绑定的是引用传
+  //递
+  auto f4 = bind(bfunc2, a, placeholders::_1);
+  f4(b);
+  cout &lt;&lt; &quot;a &quot; &lt;&lt; a &lt;&lt; &quot; b &quot; &lt;&lt; b &lt;&lt; endl;
 
-<h4>调度器抢占操作</h4>
+  CT ct;
+  ct.m_a = 1;
+  //生成了防函数的临时对象，后续的func修改的是临时对象的m_a;
+  //如果传的是对象引用，则不生成临时对象
+  auto f5 = bind(&amp;CT::func, ct, placeholders::_1, placeholders::_2);
+  f5(10, 20);
+  cout &lt;&lt; &quot;ct m_a = &quot; &lt;&lt; ct.m_a &lt;&lt; endl;
 
-<ul>
-<li>第一步，调度器会检查牺牲者列表，清理这些 Pod 所携带的 nominatedNodeName 字段。</li>
-<li>第二步，调度器会把抢占者的 nominatedNodeName，设置为被抢占的 Node 的名字。</li>
-<li>第三步，调度器会开启一个 Goroutine，同步地删除牺牲者。</li>
-</ul>
+  function&lt;void(int,int)&gt; f6 = bind(&amp;CT::func, ct, placeholders::_1, placeholders::_2);
+  f6(10, 223);
+
+  cout &lt;&lt; &quot;=================&quot; &lt;&lt; endl;
+  CT ct1;
+  //第一次拷贝系统需要ct1产生临时对象，第二次是bind本身要返回临时对象，但是bind
+  //执行完毕后，临时对象会被释放
+  function&lt;int &amp;()&gt; f7 = bind(&amp;CT::m_a, &amp;ct1);
+  f7() = 60;
+}
+</code></pre>
 
                         
                       </div>
@@ -575,353 +663,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/02/12 09:43 上午</span>
+                    <span class="date">2019/10/02 17:08 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15498690715501.html">
-                
-                  <h1>Epoll原理</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>常见问题</h4>
-
-<ul>
-<li>Epoll有没有数量限制</li>
-<li>WebSocket推送的时候出现卡顿问题</li>
-<li>AIO为什么不能坐高性能网络IO</li>
-<li>用户态到内核态交互的性能低</li>
-</ul>
-
-<h4>问题</h4>
-
-<ul>
-<li>异步IO数据量太大会导致用户态溢出</li>
-<li>信号驱动IO</li>
-<li>EPOLL_SIZE是指有数据返回的事件集合</li>
-<li>epoll_create1</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/11 15:11 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15498670713472.html">
-                
-                  <h1>自增主键</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>作用</h4>
-
-<ul>
-<li>自增主键可以让主键索引尽量地保持递增顺序插入，避免了页分裂，因此索引更紧凑。</li>
-</ul>
-
-<h4>自增值的保存策略</h4>
-
-<ul>
-<li>MyISAM 引擎的自增值保存在数据文件中。</li>
-<li>InnoDB 引擎的自增值，其实是保存在了内存里，并且到了 MySQL 8.0 版本后，才有了“自增值持久化”的能力</li>
-</ul>
-
-<h4>自增值算法</h4>
-
-<ul>
-<li>从 auto_increment_offset 开始，以 auto_increment_increment 为步长，持续叠加，直到找到第一个大于 X 的值，作为新的自增值。</li>
-</ul>
-
-<h4>自增ID不连续</h4>
-
-<ul>
-<li>唯一键冲突</li>
-<li>事物回滚</li>
-<li>同一个语句去申请自增 id，每次申请到的自增 id 个数都是上一次的两倍。</li>
-</ul>
-
-<h4>自增锁的优化</h4>
-
-<ul>
-<li>主库不使用语句锁如果自增健不连续，但是从库执行语句会导致从库的自增值仍然是一致的，会导致主从不一致</li>
-<li>解决思路</li>
-<li>一种思路是，让原库的批量插入数据语句，固定生成连续的 id 值。所以，自增锁直到语句执行结束才释放，就是为了达到这个目的。</li>
-<li>另一种思路是，在 binlog 里面把插入数据的操作都如实记录进来，到备库执行的时候，不再依赖于自增主键去生成。这种情况，其实就是 innodb_autoinc_lock_mode 设置为 2，同时 binlog_format 设置为 row。</li>
-</ul>
-
-<h4>批量申请自增ID的策略</h4>
-
-<ul>
-<li>同一个语句去申请自增 id，每次申请到的自增 id 个数都是上一次的两倍。</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/11 14:37 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15498656013403.html">
-                
-                  <h1>C10K和C10M</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>并发请求问题</h4>
-
-<ul>
-<li>怎样在一个线程内处理多个请求，也就是要在一个线程内响应多个网络 I/O</li>
-<li>怎么更节省资源地处理客户请求，也就是要用更少的线程来服务这些请求</li>
-</ul>
-
-<h4>惊群问题</h4>
-
-<ul>
-<li>accept() 和 epoll_wait() 调用，还存在一个惊群的问题。换句话说，当网络 I/O 事件发生时，多个进程被同时唤醒，但实际上只有一个进程来响应这个事件，其他被唤醒的进程都会重新休眠。</li>
-<li>EPOLLEXCLUSIVE</li>
-</ul>
-
-<h4>nginx解决惊群问题</h4>
-
-<ul>
-<li> Nginx 在每个 worker 进程中，都增加一个了全局锁（accept_mutex）。这些 worker 进程需要首先竞争到锁，只有竞争到锁的进程，才会加入到 epoll 中，这样就确保只有一个 worker 子进程被唤醒</li>
-<li>所有的进程都监听相同的接口，并且开启 SO_REUSEPORT 选项，由内核负责将请求负载均衡到这些监听进程中去。这一过程如下图所示。</li>
-<li><img src="media/15498656013403/90df0945f6ce5c910ae361bf2b135bbd.png" alt="90df0945f6ce5c910ae361bf2b135bbd"/></li>
-<li>由内核确保只有一个进程被唤醒</li>
-</ul>
-
-<h4>C1000K</h4>
-
-<ul>
-<li>文件描述符的数量</li>
-<li>连接状态的跟踪（CONNTRACK）</li>
-<li>网络协议栈的缓存大小</li>
-<li>多队列网卡</li>
-<li>中断负载均衡</li>
-<li>CPU 绑定</li>
-<li>RPS/RFS（软中断负载均衡到多个 CPU 核上</li>
-<li>网络包的处理卸载（Offload）</li>
-</ul>
-
-<h4>C10M</h4>
-
-<ul>
-<li>DPDK</li>
-<li>是用户态网络的标准。它跳过内核协议栈，直接由用户态进程通过轮询的方式，来处理网络接收。
-<img src="media/15498656013403/998fd2f52f0a48a910517ada9f2bb23a.png" alt="998fd2f52f0a48a910517ada9f2bb23a"/></li>
-<li>实际工作时间远远高于查询时间</li>
-<li>在 PPS 非常高的场景中，查询时间比实际工作时间少了很多，绝大部分时间都在处理网络包，而跳过内核协议栈后，就省去了繁杂的硬中断、软中断再到 Linux 网络协议栈逐层处理的过程，应用程序可以针对应用的实际场景，有针对性地优化网络包的处理逻辑，而不需要关注所有的细节。</li>
-<li>大页、CPU 绑定、内存对齐、流水线并发等多种机制</li>
-</ul>
-
-<h4>XDP</h4>
-
-<ul>
-<li>Linux 内核提供的一种高性能网络数据路径。它允许网络包，在进入内核协议栈之前，就进行处理，也可以带来更高的性能。XDP 底层跟我们之前用到的 bcc-tools 一样，都是基于 Linux 内核的 eBPF 机制实现的。</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/11 14:13 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15497919511141.html">
-                
-                  <h1>移动网络</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>4G网络架构</h4>
-
-<ul>
-<li><img src="media/15497919511141/15497924875492.jpg" alt=""/></li>
-</ul>
-
-<h4>SCTP</h4>
-
-<ul>
-<li>eNode和MME之间的协议</li>
-<li>多宿主 SCTP 引入了联合（association）的概念，将多个接口、多条路径放到一个联合中来。当检测到一条路径失效时，协议就会通过另外一条路径来发送通信数据。应用程序甚至都不必知道发生了故障、恢复，从而提供更高的可用性和可靠性。</li>
-<li>联合分流</li>
-<li>四次握手，防止SYN攻击</li>
-<li>消息分桢</li>
-<li>断开连接，三次挥手</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/10 17:45 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE.html'>网络协议</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15493326918557.html">
-                
-                  <h1>TCP可靠传输</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>思考题</h4>
-
-<ul>
-<li>TCP函数详解</li>
-<li>NtyTCP详解</li>
-<li>为什么要用Nagle算法</li>
-<li>closewait</li>
-<li>timewait</li>
-<li>keeplive是用应用程序还是协议栈</li>
-<li>tcp_deplay设置后，为什么send不是一次发送一个包</li>
-<li>tcp拥塞算法</li>
-<li>流式套接字和数据包的区别</li>
-<li>客户端难度比服务端难度大</li>
-</ul>
-
-<h4>accept</h4>
-
-<ul>
-<li>accept实现</li>
-<li>accept的工作</li>
-<li>syn队列是服务器回完ACK后加入的</li>
-<li>Accept队列是服务器收到客户端的ACK的包后从SYN队列中取出一个加入ACCEPT队列</li>
-<li>accept功能就是从ACCEPT队列中取出一个完成三次握手的连接</li>
-<li>跟listen的fd是一一绑定的</li>
-<li><img src="media/15493326918557/15497844767435.jpg" alt="" style="width:652px;"/></li>
-</ul>
-
-<h4>connect</h4>
-
-<ul>
-<li><img src="media/15493326918557/15497849633357.jpg" alt="" style="width:659px;"/></li>
-<li>发出去syn加入队列，收到服务器ack，函数返回，并发送给服务器ACK</li>
-<li>定时器由内核维护，定时轮询socket的状态</li>
-</ul>
-
-<h4>socket和文件系统</h4>
-
-<ul>
-<li>socket--&gt;sock_map_fd--&gt;sock_alloc_file</li>
-<li>alloc socket sndbuf/rcvbuf</li>
-<li>find unused fdtable_id</li>
-<li>return unused id</li>
-<li>set fdtable_id</li>
-</ul>
-
-<h4>四次挥手</h4>
-
-<ul>
-<li>TimeWait保证对端收到最后一次ACK</li>
-<li><img src="media/15493326918557/15497899137662.jpg" alt="" style="width:703px;"/></li>
-<li>close_wait</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/05 10:11 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
           				   
                   </div>
                   <div class="more-right right">

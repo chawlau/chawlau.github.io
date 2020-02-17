@@ -170,14 +170,45 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15672088258884.html">
+                <a class="clearlink" href="15721412664832.html">
                 
-                  <h1>反范式设计</h1>
+                  <h1>搜索模式</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	
+                        	<h4>multi-index&amp;multi-type</h4>
+
+<ul>
+<li>/_search：所有索引，所有type下的所有数据都搜索出来</li>
+<li>/index1/_search：指定一个index，搜索其下所有type的数据</li>
+<li>/index1,index2/_search：同时搜索两个index下的数据</li>
+<li>/<em>1,</em>2/_search：按照通配符去匹配多个索引</li>
+<li>/index1/type1/_search：搜索一个index下指定的type的数据</li>
+<li>/index1/type1,type2/_search：可以搜索一个index下多个type的数据</li>
+<li>/index1,index2/type1,type2/_search：搜索多个index下的多个type的数据</li>
+<li>/_all/type1,type2/_search：_all，可以代表搜索所有index下的指定type的数据</li>
+</ul>
+
+<h4>分页搜索语法</h4>
+
+<ul>
+<li>GET /test_index/_search?from=5&amp;size=3</li>
+</ul>
+
+<h4>deep paging</h4>
+
+<ul>
+<li>什么叫 deep paging？值单来说，就是搜索的特别深，比如总共有 6000 条数据，每个 shard 上分了 20000 条数据每页是 10 条数据，这个时候，你要搜索到第 1000 页，实际上要拿到的是 10001~10010 大家自己思考一下，是第几条到第几条数？</li>
+<li>比文如说我们网才说的情兄下，搜索 6000 条数据中的第 100 页，实际上每个 sharda 都要内部的 2000 条数据中的第 10001~10010 条数据，拿出来，不是オ10 条，是 10010 条数据。3 个 shard 每个 shard 部返回 10010 条数据给 coordinate node, coordinate node 会收到总共 30030 条数据，然后在这些数据中进行排序，score，相关度分数，然后取到位最高的前 10 条数据，其实就是我们要的最后的第 1000 页的 10 条数据</li>
+</ul>
+
+<h4>弊端</h4>
+
+<ul>
+<li>搜索的过深的时候，就帮要在 coordinate node 上保存大星的数据，还要进行大星数据的非序，排序之后，再取出对应的那页。所以这个过程，即耗费网络带，耗表内存，还耗提 cpu。所以 deep paging 的性能问题。我们应该尽量运兔出现这种 deep paging 操作</li>
+</ul>
+
                         
                       </div>
                   </div>
@@ -185,10 +216,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/08/31 07:47 上午</span>
+                    <span class="date">2019/10/27 09:54 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='SQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>SQL必知必会</a></span>
+          					    <span class="posted-in"><a href='ElasticSearch.html'>ElasticSearch</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -202,180 +233,29 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15672079594822.html">
+                <a class="clearlink" href="15721405689873.html">
                 
-                  <h1>设计范式</h1>
+                  <h1>search机制</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>类别</h4>
+                        	<h4>搜索返回结果</h4>
 
 <ul>
-<li>1NF（第一范式）、2NF（第二范式）、3NF（第三范式）、BCNF（巴斯 - 科德范式）、4NF（第四范式）和 5NF（第五范式，又叫做完美范式</li>
+<li>took：整个搜索请求花费了多少毫秒</li>
+<li>hits.total：本次搜索，返回了几条结果</li>
+<li>hits.max_score：本次搜索的所有结果中，最大的相关度分数是多少，每一条document对于search的相关度，越相关，_score分数越大，排位越靠前</li>
+<li>hits.hits：默认查询前10条数据，完整数据，_score降序排序</li>
+<li>shards：shards fail的条件（primary和replica全部挂掉），不影响其他shard。默认情况下来说，一个搜索请求，会打到一个index的所有primary shard上去，当然了，每个primary shard都可能会有一个或多个replic shard，所以请求也可以到primary shard的其中一个replica shard上去。</li>
+<li>timeout：默认无timeout，latency平衡completeness，手动指定timeout，timeout查询执行机制</li>
 </ul>
 
-<h4>数据表中的键</h4>
+<h4>timeout机制</h4>
 
 <ul>
-<li>超键：能唯一标识元组的属性集叫做超键。</li>
-<li>候选键：如果超键不包括多余的属性，那么这个超键就是候选键。</li>
-<li>主键：用户可以从候选键中选择一个作为主键。</li>
-<li>外键：如果数据表 R1 中的某属性集不是 R1 的主键，而是另一个数据表 R2 的主键，那么这个属性集就是数据表 R1 的外键。</li>
-<li>主属性：包含在任一候选键中的属性称为主属性。</li>
-<li>非主属性：与主属性相对，指的是不包含在任何一个候选键中的属性。</li>
-</ul>
-
-<h4>2NF</h4>
-
-<ul>
-<li>2NF 指的数据表里的非主属性都要和这个数据表的候选键有完全依赖关系</li>
-<li>3NF 需要保证表中的非主属性与候选键不存在传递依赖</li>
-</ul>
-
-<h4>范式设计</h4>
-
-<ul>
-<li>降低查询效率 表太多</li>
-<li>带来插入更新和删除的问题</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/31 07:32 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='SQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>SQL必知必会</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15672075805787.html">
-                
-                  <h1>数据库调优秀</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>数据库调优的目标</h4>
-
-<ul>
-<li>运行更快，吞吐量更大</li>
-<li>日志分析</li>
-<li>用户反馈</li>
-<li>服务器资源监控</li>
-<li>数据库内部状况监控</li>
-</ul>
-
-<h4>维度</h4>
-
-<ul>
-<li>选择合适的DBMS</li>
-<li>优化表设计 三范式原则 反范式进行优化 表字段类型选择</li>
-<li>优化查询逻辑</li>
-<li>优化物理查询</li>
-</ul>
-
-<h4>使用物理缓存</h4>
-
-<ul>
-<li>redis</li>
-</ul>
-
-<h4>库级优化</h4>
-
-<ul>
-<li>数据库中的数据表过多，可以采用垂直分库的方式，将关联的数据表部署在一个数据库上。</li>
-<li>数据表中的列过多，可以采用垂直分表的方式，将数据表分拆成多张，把经常一起使用的列放到同一张表里</li>
-<li>数据表中的数据达到了亿级以上，可以考虑水平切分，将大的数据表分拆成不同的子表，每张表保持相同的表结构</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/31 07:26 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='SQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>SQL必知必会</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15671608919349.html">
-                
-                  <h1>智能指针</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>分配</h4>
-
-<ul>
-<li> auto ptr =  new auto(obj)</li>
-<li>智能指针能够帮助delete</li>
-</ul>
-
-<h4>new&amp;&amp;delete</h4>
-
-<ul>
-<li>new 如何记录分配的内存给delete使用，new内部有记录机制</li>
-</ul>
-
-<h4>申请和delete数组</h4>
-
-<ul>
-<li>多出来的4个字节针对数组元素来记录、</li>
-<li>内置类型不需要记录</li>
-</ul>
-
-<h4>智能指针</h4>
-
-<ul>
-<li>auto_ptr 被unique_ptr替代</li>
-<li>unique_ptr 独占式ptr，同一个时间只有一个指针指向对象，所有权可以移交出去</li>
-<li>shared_ptr 共享式指针，多个指针指向同一个对象</li>
-<li>weak_ptr 辅助shared_ptr</li>
-</ul>
-
-<h4>shared_ptr</h4>
-
-<ul>
-<li>释放对象</li>
-<li>shared_ptr被析构的时候</li>
-<li>shared_ptr指向其他的对象的时候</li>
-<li>不要用裸指针初始化shared_ptr</li>
-</ul>
-
-<h4>make_shared 函数模型，安全高效</h4>
-
-<ul>
+<li>Timeout 机制，指定每个 shard，就只能在 timeout 时间范目内，将搜索到的部分数据（也可能全都搜素到了），直接理解返回给 client 程序，而不是等到所有的数据全都推素出来以后再返回</li>
+<li>确保说，一次搜索请求可以在用户指定的 timeout 时长内完成。为一些时间敏感的搜素应用提供良好的支持。</li>
 <li></li>
 </ul>
 
@@ -386,10 +266,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/08/30 18:28 下午</span>
+                    <span class="date">2019/10/27 09:42 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          					    <span class="posted-in"><a href='ElasticSearch.html'>ElasticSearch</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -403,26 +283,38 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15671276305201.html">
+                <a class="clearlink" href="15721400849904.html">
                 
-                  <h1>微服务鉴权和限流</h1>
+                  <h1>Bulk api底层机制</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>快速鉴权</h4>
+                        	<h4>任意行</h4>
 
 <ul>
-<li>精确匹配 加快匹配速度，我们可以按照字符串的大小给规则排序，把它组织成有序数组这种数据结构。当要查找某个 URL 能否匹配其中某条规则的时候，我们可以采用二分查找算法，在有序数组中进行匹配</li>
-<li>前缀匹配 Trie 树中的每个节点不是存储单个字符，而是存储接口被“/”分割之后的子目录,把每个节点的子节点们，组织成有序数组这种数据结构</li>
-<li>模糊匹配  组织成有序数组或者 Trie 树（具体组织成什么结构，视具体的需求而定，是精确匹配，就组织成有序数组，是前缀匹配，就组织成 Trie 树，剩下的放入一个数组中匹配</li>
-</ul>
-
-<h4>精准限流</h4>
-
-<ul>
-<li>在任意 1s 内，接口的请求次数都不能大于 K 次。我们就维护一个大小为 K+1 的循环队列，用来记录 1s 内到来的请求。</li>
+<li>允许任意的换行，整个可读性非常棒，读起来很爽，es拿到那种标准格式的json串以后，要按照下述流程去进行处理</li>
 <li></li>
+<li>（1）将json数组解析为JSONArray对象，这个时候，整个数据，就会在内存中出现一份一模一样的拷贝，一份数据是json文本，一份数据是JSONArray对象</li>
+<li>（2）解析json数组里的每个json，对每个请求中的document进行路由</li>
+<li>（3）为路由到同一个shard上的多个请求，创建一个请求数组</li>
+<li>（4）将这个请求数组序列化</li>
+<li>（5）将序列化后的请求数组发送到对应的节点上去</li>
+</ul>
+
+<h5>任意行劣势</h5>
+
+<ul>
+<li>我们之前提到过bulk size最佳大小的那个问题，一般建议说在几千条那样，然后大小在10MB左右，所以说，可怕的事情来了。假设说现在100个bulk请求发送到了一个节点上去，然后每个请求是10MB，100个请求，就是1000MB = 1GB，然后每个请求的json都copy一份为jsonarray对象，此时内存中的占用就会翻倍，就会占用2GB的内存，甚至还不止。因为弄成jsonarray之后，还可能会多搞一些其他的数据结构，2GB+的内存占用。</li>
+</ul>
+
+<h4>一行的优势</h4>
+
+<ul>
+<li>1）不用将其转换为json对象，不会出现内存中的相同数据的拷贝，直接按照换行符切割json<br/>
+（2）对每两个一组的json，读取meta，进行document路由<br/>
+（3）直接将对应的json发送到node上去</li>
+<li>最大的优势在于，不需要将json数组解析为一个JSONArray对象，形成一份大数据的拷贝，浪费内存空间，尽可能地保证性能</li>
 </ul>
 
                         
@@ -432,10 +324,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/08/30 09:13 上午</span>
+                    <span class="date">2019/10/27 09:34 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
+          					    <span class="posted-in"><a href='ElasticSearch.html'>ElasticSearch</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -449,34 +341,42 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15670681768475.html">
+                <a class="clearlink" href="15721329525504.html">
                 
-                  <h1>websocket</h1>
+                  <h1>增删查改原理</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>协议交互</h4>
+                        	<h4>原理</h4>
 
 <ul>
-<li>upgrade</li>
-<li>switching</li>
-<li>message</li>
-<li>message</li>
+<li>（1）客户端选择一个node发送请求过去，这个node就是coordinating node（协调节点）</li>
+<li>（2）coordinating node，对document进行路由，将请求转发给对应的node（有primary shard）</li>
+<li>（3）实际的node上的primary shard处理请求，然后将数据同步到replica node</li>
+<li>（4）coordinating node，如果发现primary node和所有replica node都搞定之后，收到primary node和replica node就返回响应结果给客户端
+<img src="media/15721329525504/15721331929885.jpg" alt="" style="width:1084px;"/></li>
 </ul>
 
-<h4>传输原理</h4>
+<h4>quorum机制</h4>
 
 <ul>
-<li>复用HTTP的底层socket</li>
-<li>message被切分成多个frame传输</li>
+<li>quorum机制，写之前必须确保大多数shard都可用，int( (primary + number_of_replicas) / 2 ) + 1，当number_of_replicas&gt;1时才生效</li>
+<li>quorum不齐全时，wait，默认1分钟，timeout，100，30s</li>
+<li>等待期间，期望活跃的shard数量可以增加，最后实在不行，就会timeout<br/>
+我们其实可以在写操作的时候，加一个timeout参数，比如说put /index/type/id?timeout=30，这个就是说自己去设定quorum不齐全的时候，es的timeout时长，可以缩短，也可以增长</li>
 </ul>
 
-<h4>服务端技术选型</h4>
+<h5>条件不满足时</h5>
 
 <ul>
-<li>NodeJS 单线程模型。推送性能有限</li>
-<li> </li>
+<li><img src="media/15721329525504/15721351161712.jpg" alt="" style="width:846px;"/></li>
+</ul>
+
+<h4>请求转发的时候</h4>
+
+<ul>
+<li>特殊情况：document如果还在建立索引过程中，可能只有primary shard有，任何一个replica shard都没有，此时可能会导致无法读取到document，但是document完成索引建立之后，primary shard和replica shard就都有了</li>
 </ul>
 
                         
@@ -486,199 +386,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/08/29 16:42 下午</span>
+                    <span class="date">2019/10/27 07:35 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15670426653223.html">
-                
-                  <h1>高性能队列</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>无锁并发</h4>
-
-<ul>
-<li>生产者 </li>
-<li>往队列中添加数据之前，先申请可用空闲存储单元，并且是批量地申请连续的 n 个（n≥1）存储单元。当申请到这组连续的存储单元之后，后续往队列中添加元素，就可以不用加锁了，因为这组存储单元是这个线程独享的</li>
-<li>消费者来说，处理的过程跟生产者是类似的。它先去申请一批连续可读的存储单元（这个申请的过程也是需要加锁的），当申请到这批存储单元之后，后续的读取操作就可以不用加锁了。</li>
-<li>在写入数据之前，先加锁申请批量的空闲存储单元，之后往队列中写入数据的操作就不需要加锁了，写入的性能因此就提高了。Disruptor 对消费过程的改造，跟对生产过程的改造是类似的。它先加锁申请批量的可读取的存储单元，之后从队列中读取数据的操作也就不需要加锁了，读取的性能因此也就提高了。</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/29 09:37 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15670355245956.html">
-                
-                  <h1>基础篇总结</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>概念</h4>
-
-<ul>
-<li>列式存储适合大批量数据查询，可以降低 I/O，但如果对实时性要求高，则更适合行式存储。</li>
-</ul>
-
-<h4>count(1)&amp;count(*)&amp;count(字段)</h4>
-
-<ul>
-<li>如果想要查找具体的行，那么采用主键索引的效率更高。如果有多个二级索引，会使用 key_len 小的二级索引进行扫描。当没有二级索引的时候，才会采用主键索引来进行统计。</li>
-</ul>
-
-<h4>通配符</h4>
-
-<ul>
-<li>SELECT name FROM heros WHERE name LIKE &#39;_% 太 %&#39;</li>
-<li>_匹配任意一个字符，%匹配大于等于0个任意字符</li>
-</ul>
-
-<h4>排序</h4>
-
-<ul>
-<li> FileSort 和 Index 排序。在 Index 排序中，索引可以保证数据的有序性，不需要再进行排序，效率更高。而 FileSort 排序则一般在内存中进行排序，占用 CPU 较多。</li>
-<li> ORDER BY 子句时，应该尽量使用 Index 排序，避免使用 FileSort 排序。当然你可以使用 explain 来查看执行计划，看下优化器是否采用索引进行排序</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/29 07:38 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='SQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>SQL必知必会</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15669871482794.html">
-                
-                  <h1>Redis初识别</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>使用场景</h4>
-
-<ul>
-<li>缓存系统</li>
-<li>计数器</li>
-<li>消息队列系统</li>
-<li>排行榜</li>
-<li>社交网络</li>
-<li>实时系统</li>
-</ul>
-
-<h4>常用配置</h4>
-
-<ul>
-<li>Daemonize 是否是守护进程（noyes)</li>
-<li>port Redisi 对外端口号</li>
-<li>logfile Redis 系统日志</li>
-<li>dir Redis 工作目录</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/28 18:12 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Redis%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A.html'>Redis从入门到精通</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15669853573173.html">
-                
-                  <h1>Mysql</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>读写分离和分库分表</h4>
-
-<ul>
-<li>高可用 主主同步</li>
-<li>高并发 读写分离和分库分表</li>
-<li>自动扩容 部署机器好扩展</li>
-<li>myisam 叶子节点保存的是指针和offset</li>
-<li>innodb 数据保存在磁盘块中</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/28 17:42 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
+          					    <span class="posted-in"><a href='ElasticSearch.html'>ElasticSearch</a></span>
           				   
                   </div>
                   <div class="more-right right">

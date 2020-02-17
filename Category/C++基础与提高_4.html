@@ -170,78 +170,145 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15659499432841.html">
+                <a class="clearlink" href="15702694837901.html">
                 
-                  <h1>inline const mutable this staic</h1>
+                  <h1>lamda陷阱</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>注意</h4>
+                        	<h4>捕获异常</h4>
 
 <ul>
-<li>成员函数可以访问成员变量，不管成员是否私有</li>
+<li>捕获列表中的：捕获外部作用域中所有变量，并作为引用在lambda 表达式中使用, 按照引用这种捕获方式，会导致 1 abda 表达式包含绑定到局部变量的引用</li>
 </ul>
 
-<h4>inline</h4>
+<pre class="line-numbers"><code class="language-cpp">vector&lt;function&lt;bool(int)&gt;&gt; gv;
+
+void func() {
+  srand((int)time(NULL));
+
+  int tmp = rand() % 6;
+
+  gv.push_back([&amp;](int v) {
+                if (v % tmp == 0) {
+                  return true;
+                }
+                return false;
+               });
+}
+
+int main() {
+  func();
+
+  cout &lt;&lt; gv[0](10) &lt;&lt; endl;
+}
+</code></pre>
 
 <ul>
-<li>类中直接实现的成员函数，会被当成inline来处理，是否会处理成功取决于编译器自身</li>
+<li>引用捕获超过范围的情形也叫引用悬空</li>
+<li>采用按值捕获可以解决引用悬空</li>
 </ul>
 
-<h4>const</h4>
+<h4>成员变量</h4>
 
 <ul>
-<li>成员函数后面增加const,声明和定义都需要加const</li>
-<li>不会修改对象里任何成员变量的值</li>
-<li>常量成员函数</li>
-<li>const只能给成员函数使用</li>
+<li>=是按值捕获的意思我们会认为这个[=]是按值捕获，使用我们能够访问成员变量tmp,所以我们顺理成量的认为，这里这个1ambda 表达式是所使用的tmp是按值捕获的</li>
+<li>lamda表达式的行正确与否，取決于pat対象是否存在,只有PAT对存在，这个lamda表达式行オ正确</li>
+<li>this指向对象本身，所以这里[=]捕获的是this指针值</li>
 </ul>
 
-<h4>mutable</h4>
+<pre class="line-numbers"><code class="language-cpp">vector&lt;function&lt;bool(int)&gt;&gt; gv;
+class AT {
+ public:
+  vector&lt;function&lt;bool(int)&gt;&gt; gv;
+
+  int tmp = 5;
+  void addItem() {
+    gv.push_back([=](auto v) {
+                 if (v % tmp == 0) {
+                 return true;
+                 }
+                 return false;
+                 });
+  };
+};
+
+int main() {
+  func();
+
+
+  AT* pat = new AT();
+  pat-&gt;addItem();
+  delete pat;
+  cout &lt;&lt; gv[0](10) &lt;&lt; endl;
+}
+</code></pre>
 
 <ul>
-<li>不稳定，易改变</li>
-<li>为了突破const的限制</li>
-<li>mutable表示成员变量永远处于被修改状态</li>
+<li>使用临时变量来捕获</li>
 </ul>
 
-<h4>返回自身对象的引用</h4>
+<pre class="line-numbers"><code class="language-cpp">vector&lt;function&lt;bool(int)&gt;&gt; gv;
+class AT {
+ public:
+  vector&lt;function&lt;bool(int)&gt;&gt; gv;
+
+  int tmp = 5;
+  void addItem() {
+    auto t_tmp = tmp;
+    gv.push_back([t_tmp](auto v) {
+                 if (v % t_tmp == 0) {
+                 return true;
+                 }
+                 return false;
+                 });
+  };
+};
+</code></pre>
+
+<h4>广义捕获</h4>
+
+<pre class="line-numbers"><code class="language-cpp">class AT {
+ public:
+  vector&lt;function&lt;bool(int)&gt;&gt; gv;
+
+  int tmp = 5;
+  void addItem() {
+    gv.push_back([t_tmp = tmp](auto v) {
+                 if (v % t_tmp == 0) {
+                 return true;
+                 }
+                 return false;
+                 });
+  };
+};
+</code></pre>
+
+<h4>静态局部变量</h4>
 
 <ul>
-<li>this Time const* this</li>
+<li>捕获不包括静态局部变量，但是可以使用</li>
+<li>静态变量使用类似按引用捕获效果</li>
 </ul>
 
-<h4>静态变量</h4>
+<pre class="line-numbers"><code class="language-cpp">vector&lt;function&lt;bool(int)&gt;&gt; gv;
 
-<ul>
-<li>局部静态变量</li>
-<li>static保证只能在本文件中使用</li>
-<li>静态成员变量属于类本身</li>
-<li>静态成员变量，一般在一个.cpp源文件开头来定义这个成员变量</li>
-</ul>
+void func() {
+  srand((int)time(NULL));
 
-<h4>析构函数</h4>
+  static int tmp = 5;
 
-<ul>
-<li>函数体是销毁new出来的东西</li>
-<li>函数体之后系统接管和销毁</li>
-</ul>
-
-<h4>函数屏蔽</h4>
-
-<ul>
-<li>子类中有父类的同名函数，父类同名函数会被屏蔽</li>
-<li>访问父类同名函数 using 让父类函数以重载方式执行，所有同名函数都可以见了</li>
-</ul>
-
-<h4>析构函数写成虚函数</h4>
-
-<ul>
-<li> 父类子针new子类的对象，delete的时候不会调用派生类的析构函数</li>
-<li> 父类的析构函数写成虚函数，delete base会根据动态类型来执行析构函数</li>
-<li> 父类对非继承的成员进行操作，需要把基类的函数定义为虚函数，析构函数的定义的虚属性会被继承给子类，这样子类中的析构函数也自然成为虚函数，虽然名字和基类的不同</li>
-</ul>
+  gv.push_back([](auto v) {
+                cout &lt;&lt; &quot; static val &quot; &lt;&lt; tmp &lt;&lt; endl;
+                if (v % tmp == 0) {
+                  return true;
+                }
+                return false;
+               });
+  tmp++;
+}
+</code></pre>
 
                         
                       </div>
@@ -250,7 +317,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/08/16 18:05 下午</span>
+                    <span class="date">2019/10/05 17:58 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
@@ -267,166 +334,335 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15651732645009.html">
+                <a class="clearlink" href="15700073181059.html">
                 
-                  <h1>C++11</h1>
+                  <h1>function&& bind</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>标准</h4>
+                        	<h4>可调用对象</h4>
 
 <ul>
-<li>C++标准库</li>
-<li>新功能，新写法，取代C语言的功能和写法，积极学习新写法</li>
-<li>语法和标准程序库的学习</li>
+<li>函数</li>
+<li>重载()对象</li>
 </ul>
 
-<h4>引用</h4>
+<h4>可被转换的函数指针的类对象</h4>
 
-<ul>
-<li>引用和原变量占用同一块内存</li>
-<li>引用必须绑定到变量</li>
-</ul>
+<pre class="line-numbers"><code class="language-cpp">class CT {
+ public:
+  using tfptr = void(*)(int);
 
-<h4>常量</h4>
+  static void st_func(int t) {
+    cout &lt;&lt; &quot;static function &quot; &lt;&lt; t &lt;&lt; endl;
+  }
 
-<ul>
-<li>const可以修改</li>
-<li>constexpr编译的时候求值提升性能</li>
-<li>const 变量的初始化可以延迟到运行时，而 constexpr 变量必须在编译时进行初始化</li>
-</ul>
-
-<h4>内存分配问题</h4>
-
-<ul>
-<li>new</li>
-<li>delete</li>
-</ul>
-
-<h4>nullptr</h4>
-
-<ul>
-<li>C++11新关键字</li>
-<li>nullptr避免指针和整数的混淆</li>
-<li>NULL是0</li>
-</ul>
-
-<h4>最大最小</h4>
-
-<ul>
-<li>std::min_element</li>
-<li>std::max_element</li>
-</ul>
-
-<h4>C++11新特性</h4>
-
-<ul>
-<li><a href="http://www.stroustrup.com/C++11FAQ.html#">http://www.stroustrup.com/C++11FAQ.html#</a></li>
-</ul>
-
-<h4>隐式拷贝函数</h4>
-
-<ul>
-<li>拷贝函数 + 析构函数 自动生成拷贝赋值运算符</li>
-<li>赋值运算符 + 析构函数 </li>
-</ul>
-
-<h4>auto_ptr被unique_ptr代替</h4>
-
-<ul>
-<li>auto_ptr发生所有权转移</li>
-<li>unique_ptr不会</li>
-</ul>
-
-<h4>bind替换bind1st,bind2nd</h4>
-
-<h4>函数适配器</h4>
-
-<ul>
-<li>bind</li>
-<li>not1</li>
-<li>not2</li>
-<li>ref</li>
-<li>cref</li>
-<li>mem_fun()</li>
-</ul>
-
-<h4>动态异常声明</h4>
-
-<ul>
-<li>throw 被 noexcept</li>
-</ul>
-
-<h4>nullptr&amp;nullptr_t</h4>
-
-<ul>
-<li>能够隐式的转换任何类型的指针</li>
-</ul>
-
-<h4>constexpr</h4>
-
-<ul>
-<li>编译期间把它当成一个常量</li>
-<li>可以用于函数，数据声明， 以及类的构造函数</li>
-<li>常量表达式函数</li>
-<li>常量构造函数也有约束</li>
-</ul>
-
-<h4>auto</h4>
-
-<ul>
-<li>静态的成员编译的时候必须初始化</li>
-</ul>
-
-<h4>decltype</h4>
-
-<pre class="line-numbers"><code class="language-text">template&lt;typename T1, typename T2&gt;
-decltype(a + b) add(T1 a, T2b) {
-  auto s = a + b;
-  return s;
+  operator tfptr() {return st_func;}
+};
+int main() {
+  using ptr = void(*)(int);
+  CT ct;
+  ct(5);
 }
 </code></pre>
 
-<p>1）  如果e是一个没有带括号的标记符表达式或者类成员访问表达式，那么decltype(e)就是e所命名的实体的类型。此外，如果e是一个被重载的函数，则会导致编译时错误；<br/>
-2）  否则，假设e的类型是T，如果e是一个将亡值(xvalue)，那么decltype(e)为T&amp;&amp;；<br/>
-3）  否则，假设e的类型是T，如果e是一个左值，则decltype(e)为T&amp;；<br/>
-4）  否则，假设e的类型是T，则decltype(e)为T。</p>
-
-<h4>左值和右值</h4>
+<h4>function</h4>
 
 <ul>
-<li>分配了内存的就是左值，可以取地址</li>
-<li>右值和将亡值</li>
-<li>T&amp;&amp;右值引用</li>
-<li>所有的右值引用叠加到右值引用还是右值引用</li>
-<li>所有的其他引用类型迭代都会变成左值引用</li>
+<li><p>能够通过给它指定模版参数，能够以统一的方式来处理函数</p>
+<pre class="line-numbers"><code class="language-cpp">function&lt;void(int)&gt; ptr = func;
+ptr(3);<br/>
+function&lt;void(int)&gt; ptr2 = TC::st_func;<br/>
+ptr2(12);<br/>
+TC tc;<br/>
+function&lt;void(int)&gt; ptr3 = tc;<br/>
+ptr3(12);
+</code></pre></li>
 </ul>
 
-<h4>std::move&amp;&amp;std::forward</h4>
+<h4>bind</h4>
 
 <ul>
-<li>move左值转成右值引用</li>
-<li>forward关闭引用折叠</li>
+<li>可调用对象和参数绑定到一起， 构成防函数</li>
+<li>如果是多个参数，可以部分绑定</li>
+<li>bind对预先绑定的参数是通过值传递的</li>
 </ul>
 
-<h4>final&amp;&amp;override</h4>
+<pre class="line-numbers"><code class="language-cpp">void func(int t) {
+  cout &lt;&lt; &quot; t &quot; &lt;&lt; t &lt;&lt; endl;
+}
+
+class CT {
+ public:
+  using tfptr = void(*)(int);
+
+  static void st_func(int t) {
+    cout &lt;&lt; &quot;static function &quot; &lt;&lt; t &lt;&lt; endl;
+
+  }
+
+  operator tfptr() {return st_func;}
+
+  void func(int x, int y) {
+    m_a++;
+    cout &lt;&lt; &quot;x &quot; &lt;&lt; x &lt;&lt; &quot; y &quot; &lt;&lt; y &lt;&lt; &quot; m_a &quot;&lt;&lt; m_a &lt;&lt; endl;
+  }
+
+  ~CT() { std::cout &lt;&lt; &quot; destory &quot; &lt;&lt; endl;}
+  CT() { std::cout &lt;&lt; &quot; construct &quot; &lt;&lt; endl;}
+  int m_a;
+};
+
+void bfunc(int x, int y, int z) {
+  cout &lt;&lt; &quot;x &quot; &lt;&lt; x &lt;&lt; &quot; y &quot; &lt;&lt; y &lt;&lt; &quot; z &quot; &lt;&lt; z &lt;&lt; endl;
+}
+void bfunc2(int&amp; x, int&amp; y) {
+  x++;
+  y++;
+}
+
+int main() {
+  //绑定函数bfunc的参数30，placeholders::_1表示需要f1来参数
+  auto f1 = bind(bfunc, placeholders::_1, placeholders::_1, 30);
+  bind(bfunc, placeholders::_1, placeholders::_2, 30)(5, 15);
+  f1(1);
+
+  auto f3 = bind(bfunc, placeholders::_2, placeholders::_1, 30);
+  f3(5,15);
+
+
+  int a = 2, b = 3;
+  //bind对预先绑定的参数是通过值传递的,所以a值是值传递的, 没有事先绑定的是引用传
+  //递
+  auto f4 = bind(bfunc2, a, placeholders::_1);
+  f4(b);
+  cout &lt;&lt; &quot;a &quot; &lt;&lt; a &lt;&lt; &quot; b &quot; &lt;&lt; b &lt;&lt; endl;
+
+  CT ct;
+  ct.m_a = 1;
+  //生成了防函数的临时对象，后续的func修改的是临时对象的m_a;
+  //如果传的是对象引用，则不生成临时对象
+  auto f5 = bind(&amp;CT::func, ct, placeholders::_1, placeholders::_2);
+  f5(10, 20);
+  cout &lt;&lt; &quot;ct m_a = &quot; &lt;&lt; ct.m_a &lt;&lt; endl;
+
+  function&lt;void(int,int)&gt; f6 = bind(&amp;CT::func, ct, placeholders::_1, placeholders::_2);
+  f6(10, 223);
+
+  cout &lt;&lt; &quot;=================&quot; &lt;&lt; endl;
+  CT ct1;
+  //第一次拷贝系统需要ct1产生临时对象，第二次是bind本身要返回临时对象，但是bind
+  //执行完毕后，临时对象会被释放
+  function&lt;int &amp;()&gt; f7 = bind(&amp;CT::m_a, &amp;ct1);
+  f7() = 60;
+}
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/10/02 17:08 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15699255854846.html">
+                
+                  <h1>forward补充&auto</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>auto类型常规推断</h4>
 
 <ul>
-<li>final表示虚函数不可以重写</li>
-<li>override必须重写</li>
+<li>auto自动类型推断发生在编译器，不会影响程序性能</li>
+<li>auto定义变量必须初始化</li>
+<li>auto使用灵活</li>
+<li>auto类型推断和函数模版推断非常类似, auto相当于函数模板T</li>
 </ul>
 
-<h4>delete&amp;&amp;default</h4>
+<h4>传值方式</h4>
+
+<pre class="line-numbers"><code class="language-cpp">auto xy2 = xy; //xy2=int auto=int传值方式，引用和const类型都被抛弃
+</code></pre>
 
 <ul>
-<li>default显式声明使用编译器生成的默认构造函数</li>
-<li>delete 阻止编译器生成赋值拷贝构造函数</li>
+<li>传值的方式引用类型会被抛弃，const属性也会被放弃</li>
 </ul>
 
-<h4>移动语义</h4>
+<h4>指针或者引用</h4>
+
+<pre class="line-numbers"><code class="language-cpp">const auto *xp = &amp;x;//xp = const int*, auto = int;
+auto* xp2 = &amp;x; //xp2=int*, auto = int
+auto xp3 = &amp;x; //xp3 int*, auto int*
+</code></pre>
 
 <ul>
+<li>不会抛弃const限定，但是会丢弃引用</li>
+</ul>
+
+<h4>万能引用</h4>
+
+<pre class="line-numbers"><code class="language-cpp">auto&amp;&amp; wn = x;//auto=int&amp;, wn = int&amp;
+auto&amp;&amp; wn2 = x2;//auto=int&amp;, wn2 const int &amp;
+auto&amp;&amp; wn3 = 100;//auto=int, wn3=int&amp;&amp;
+</code></pre>
+
+<h4>auto针对数组和函数的推断</h4>
+
+<pre class="line-numbers"><code class="language-cpp">const char mystr[] = &quot;hello&quot;
+auto str = mystr //const char*
+auto&amp; str2 = str//const char (&amp;)[14]
+int a[2] = {1,2};
+auto pa = a;//auto=int*, pa=int*
+auto tmp = func;//void(*)(double,int)
+auto&amp; tmp2 = func;//void(&amp;)(double, int)
+tmp(12.3, 4);
+tmp2(12.3, 4);
+</code></pre>
+
+<h4>std::initializer_list</h4>
+
+<pre class="line-numbers"><code class="language-cpp">auto x3 = {30};//auto initializer_list
+auto x4{40};
+只适合auto，不适合模板
+= {} 有隐式类型转换
+</code></pre>
+
+<h4>auto作为函数返回类型</h4>
+
+<h4>auto不适用类型</h4>
+
+<ul>
+<li>auto不能用于函数参数</li>
+<li>普通成员变量不能是auto</li>
+<li>静态成员是可以</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">class CT {
+ public:
+  static const auto i = 5; //ok
+  auto j = 5;//err
+};
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/10/01 18:26 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15695785151867.html">
+                
+                  <h1>模版类型推断&查看类型推断结果</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>类型推断</h4>
+
+<ul>
+<li>auto </li>
+<li>了解编译器推断类型</li>
+<li>了解C++类型推断规则</li>
+<li>依赖boost库</li>
+<li>const T &amp;tmp,&amp;是跟tmp有关</li>
+<li>若实参是引用类型，则引用类型会被忽略掉，T不会推导为引用类型</li>
+<li>当我们加入const，T也会带上const属性</li>
+<li>若T中有const，但是实参数中带有const，会消除T的const属性</li>
+</ul>
+
+<h4>万能引用</h4>
+
+<pre class="line-numbers"><code class="language-text">template&lt;typename T&gt;
+void func(T&amp;&amp; tmp){}
+int i = 18;
+const int j = i;
+const int&amp; k = i;
+func(i); //i 是左值，T = int&amp;  tmp=int&amp;
+func(j);//T = cosnt int&amp;  tmp=const int&amp;
+func(k);//T = const int&amp;  tmp=const int&amp;
+func(100) // T = int tmp=int&amp;&amp;
+</code></pre>
+
+<h4>传值方式</h4>
+
+<ul>
+<li>如果tmp类型中没有const，则实参中的const会被带入，如果tmp中有const，则T类型不会带const
+<code>
+template&lt;typename T&gt;<br/>
+void func(T tmp){}<br/>
+func(i); //i 是左值，T = int tmp=int<br/>
+func(j);//T = int  tmp=int<br/>
+func(k);//T = int  tmp=int<br/>
+char str[] = &quot;I love china&quot;<br/>
+const char *const ptr = mystr
+</code></li>
+</ul>
+
+<h4>数组做实参</h4>
+
+<pre class="line-numbers"><code class="language-text">template&lt;typename T&gt;
+void func(T tmp){}
+const char str[] = &quot;I love china&quot;
+func(str)// T = const char *, tmp = const char *
+
+
+template&lt;typename T&gt;
+void func(T&amp; tmp){}
+const char str[] = &quot;I love china&quot;
+func(str)// T = const char [14], tmp = const char(&amp;)[14]
+</code></pre>
+
+<h4>函数名做实参</h4>
+
+<pre class="line-numbers"><code class="language-text">void test(){}
+template&lt;typename T&gt;
+void func(T tmp){}// T void(*)(void) tmp void(*)(void)
+void func(T&amp;  tmp){} // T void(void) tmp = void(&amp;)void
+</code></pre>
+
+<h4>总结</h4>
+
+<ul>
+<li>推断中， 引用类型的实参的引用类型等于不存在</li>
+<li>万能引用，左值或者右值，</li>
 <li></li>
 </ul>
 
@@ -437,250 +673,7 @@ decltype(a + b) add(T1 a, T2b) {
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/08/07 18:21 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15656903952504.html">
-                
-                  <h1>迭代器</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>const迭代器</h4>
-
-<ul>
-<li>const_iterator</li>
-<li>指向的值不能改变，迭代器本身可以改变</li>
-</ul>
-
-<h4>迭代器失效</h4>
-
-<ul>
-<li>改变容器容量的操作中，会引起迭代器的失效</li>
-<li>容器中增加或者删除元素，可能引起指向容器元素的指针，引用，迭代器失效</li>
-<li>插入数据就break</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/13 17:59 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15655109586523.html">
-                
-                  <h1>内存管理</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>接口</h4>
-
-<ul>
-<li>brk</li>
-<li>mmap</li>
-<li>munmap</li>
-</ul>
-
-<h4>内存碎片原因</h4>
-
-<ul>
-<li>brk分配的地址需要等到高地址内存释放以后才能释放，mmap分配的内存可以单独释放</li>
-</ul>
-
-<h4>libc是如何管理内存</h4>
-
-<ul>
-<li>ptmalloc</li>
-<li>fast bins</li>
-<li>unsorted bins</li>
-<li>大内存 large bins-&gt;mmaped chunk-&gt;main area-&gt;top chunk</li>
-</ul>
-
-<h4>ptmalloc分配</h4>
-
-<ol>
-<li>获取分配区的锁，防止多线程冲突。</li>
-<li>计算出需要分配的内存的chunk实际大小。</li>
-<li>判断chunk的大小，如果小于max_fast（64b），则取fast bins上去查询是否有适合的chunk，如果有则分配结束。</li>
-<li>chunk大小是否小于512B，如果是，则从small bins上去查找chunk，如果有合适的，则分配结束。</li>
-<li>继续从 unsorted bins上查找。如果unsorted bins上只有一个chunk并且大于待分配的chunk，则进行切割，并且剩余的chunk继续扔回unsorted bins；如果unsorted bins上有大小和待分配chunk相等的，则返回，并从unsorted bins删除；如果unsorted bins中的某一chunk大小 属于small bins的范围，则放入small bins的头部；如果unsorted bins中的某一chunk大小 属于large bins的范围，则找到合适的位置放入。</li>
-<li>从large bins中查找，找到链表头后，反向遍历此链表，直到找到第一个大小 大于待分配的chunk，然后进行切割，如果有余下的，则放入unsorted bin中去，分配则结束。</li>
-<li>如果搜索fast bins和bins都没有找到合适的chunk，那么就需要操作top chunk来进行分配了（top chunk相当于分配区的剩余内存空间）。判断top chunk大小是否满足所需chunk的大小，如果是，则从top chunk中分出一块来。</li>
-<li>如果top chunk也不能满足需求，则需要扩大top chunk。主分区上，如果分配的内存小于分配阀值（默认128k），则直接使用brk()分配一块内存；如果分配的内存大于分配阀值，则需要mmap来分配；非主分区上，则直接使用mmap来分配一块内存。通过mmap分配的内存，就会放入mmap chunk上，mmap chunk上的内存会直接回收给操作系统。</li>
-</ol>
-
-<h4>ptmalloc释放</h4>
-
-<ol>
-<li>获取分配区的锁，保证线程安全。</li>
-<li>如果free的是空指针，则返回，什么都不做。</li>
-<li>判断当前chunk是否是mmap映射区域映射的内存，如果是，则直接munmap()释放这块内存。前面的已使用chunk的数据结构中，我们可以看到有M来标识是否是mmap映射的内存。</li>
-<li>判断chunk是否与top chunk相邻，如果相邻，则直接和top chunk合并（和top chunk相邻相当于和分配区中的空闲内存块相邻）。转到步骤8</li>
-<li>如果chunk的大小大于max_fast（64b），则放入unsorted bin，并且检查是否有合并，有合并情况并且和top chunk相邻，则转到步骤8；没有合并情况则free。</li>
-<li>如果chunk的大小小于 max_fast（64b），则直接放入fast bin，fast bin并没有改变chunk的状态。没有合并情况，则free；有合并情况，转到步骤7</li>
-<li>在fast bin，如果当前chunk的下一个chunk也是空闲的，则将这两个chunk合并，放入unsorted bin上面。合并后的大小如果大于64KB，会触发进行fast bins的合并操作，fast bins中的chunk将被遍历，并与相邻的空闲chunk进行合并，合并后的chunk会被放到unsorted bin中，fast bin会变为空。合并后的chunk和topchunk相邻，则会合并到topchunk中。转到步骤8</li>
-<li>判断top chunk的大小是否大于mmap收缩阈值（默认为128KB），如果是的话，对于主分配区，则会试图归还top chunk中的一部分给操作系统。free结束。</li>
-</ol>
-
-<h4>内存池</h4>
-
-<ul>
-<li>单线程内存池</li>
-<li>多线程内存池</li>
-<li>固定内存池和可变内存池</li>
-<li>boost::pool</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/11 16:09 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15654308309759.html">
-                
-                  <h1>C程序内存管理和main函数前生今世</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>智能指针</h4>
-
-<ul>
-<li>auto_ptr</li>
-<li>unique_ptr</li>
-</ul>
-
-<h4>main函数前生今世</h4>
-
-<ul>
-<li><img src="media/15654308309759/15654337396971.jpg" alt="" style="width:654px;"/></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/10 17:53 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15650804838191.html">
-                
-                  <h1>C++基础</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>枚举类型</h4>
-
-<ul>
-<li>直接赋值整数不行</li>
-</ul>
-
-<h4>bool类型</h4>
-
-<ul>
-<li>枚举类型
-<code>
-typedef enum {<br/>
-false, true<br/>
-}bool
-</code></li>
-</ul>
-
-<h4>重载</h4>
-
-<ul>
-<li>返回值类型不同不可以构成重载</li>
-<li>参数顺序不同可以重载</li>
-<li>隐式转换尽量注意</li>
-<li>底层实现 name mangling 函数签名</li>
-<li>.h里面mangling,但是库没有改变，extern c保证头文件不被mangling</li>
-</ul>
-
-<h4>操作符重载</h4>
-
-<ul>
-<li>+号的全局重载函数</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/06 16:34 下午</span>
+                    <span class="date">2019/09/27 18:01 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
@@ -707,7 +700,7 @@ false, true<br/>
 			  </div>
 			  <div class="large-6 columns">
 			<p class="text-right" style="padding-top:25px;">
-			
+			 <a href="C++基础与提高_5.html">&raquo; Next Page</a> 
 			</p>
 			  </div>
 			</div>

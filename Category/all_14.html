@@ -170,687 +170,112 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15715292422214.html">
+                <a class="clearlink" href="15776263556217.html">
                 
-                  <h1>doc_id&source</h1>
+                  <h1>协程和异步</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>手动生成</h4>
+                        	<h4>同步</h4>
 
 <ul>
-<li>PUT 一般来说，是从某些其他的系统中，导入一些数据到es时，会采取这种方式，就是使用系统中已有数据的唯一标识，作为es中document的id</li>
+<li>指代码调用IO操作时，必须等待IO操作完成后才返回的调用方式</li>
+<li>异步是指代码调用IO操作时，不必等IO操作完成就返回的调用方式</li>
 </ul>
 
-<h4>自动生成</h4>
+<h4>阻塞和非阻塞</h4>
 
 <ul>
-<li>POST </li>
-<li>自动生成的id，长度为20个字符，URL安全，base64编码，GUID，分布式系统并行生成时不可能会发生冲突</li>
+<li>阻塞是指调用函数时候当前线程被挂起。</li>
+<li>阻塞是指调用函数时候当前线程不会被挂起，而是立即返回</li>
 </ul>
 
-<h4>PUTsource元数据和获取指定元数据</h4>
-
-<pre class="line-numbers"><code class="language-go">put /test_index/test_type/1
-{
-  &quot;test_field1&quot;: &quot;test field1&quot;,
-  &quot;test_field2&quot;: &quot;test field2&quot;
-}
-GET /test_index/test_type/1?_source=test_field1,test_field2
-
-{
-  &quot;_index&quot;: &quot;test_index&quot;,
-  &quot;_type&quot;: &quot;test_type&quot;,
-  &quot;_id&quot;: &quot;1&quot;,
-  &quot;_version&quot;: 2,
-  &quot;found&quot;: true,
-  &quot;_source&quot;: {
-    &quot;test_field2&quot;: &quot;test field2&quot;
-  }
-}
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/20 07:54 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='ElasticSearch.html'>ElasticSearch</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15715281044945.html">
-                
-                  <h1>元数据</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>index</h4>
+<h4>回调函数</h4>
 
 <ul>
-<li>_index代表一个document存放在哪个index中</li>
-<li>类似的数据放在一个索引，非类似的数据放不同索引</li>
-<li>index中包含了很多类似的document：类似是什么意思，其实指的就是说，这些document的fields很大一部分是相同的，你说你放了3个document，每个document的fields都完全不一样，这就不是类似了，就不太适合放到一个index里面去了。</li>
-<li>_type</li>
-<li>代表document属于index中的哪个类别（type）</li>
-<li>_id元数据</li>
-<li></li>
+<li>如果回调函数执行不正常该如何？</li>
+<li>如如果回调里面还要嵌套回调怎么办？</li>
+<li>要嵌套很多层怎么か？</li>
+<li>如果嵌套了多层，其中某个环节出错了会造成什么后果？</li>
+<li>如果有个数据需要被每个回调都处理怎么办？</li>
+<li>怎么使用当前函数中的局部变量？</li>
 </ul>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/20 07:35 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='ElasticSearch.html'>ElasticSearch</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15715277688744.html">
-                
-                  <h1>容错机制&选举和数据恢复</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>容错</h4>
+<h4>需求</h4>
 
 <ul>
-<li><img src="media/15715277688744/15715279093019.jpg" alt="" style="width:1065px;"/></li>
-<li>（1）9 shard，3 node</li>
-<li>（2）master node宕机，自动master选举，red</li>
-<li>（3）replica容错：新master将replica提升为primary shard，yellow</li>
-<li>（4）重启宕机node，master copy replica到该node，使用原有的shard并同步宕机后的修改，green</li>
+<li>采用同步的方式去编写异步的代码</li>
+<li>使用单线程去切换任务：</li>
+<li>线程是由操作系统切换的，单线程切换意味着我们需要程序员自己去调度任务</li>
+<li>不在需要锁，并发性高，如果单线程内切换函数，性能远高于线程切换，并发性更高</li>
 </ul>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/20 07:29 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='ElasticSearch.html'>ElasticSearch</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15715254261625.html">
-                
-                  <h1>基础架构图</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>分布式架构图</h4>
+<h4>生成器</h4>
 
 <ul>
-<li>分片机制</li>
-<li>cluster discovery（集群发现机制）</li>
-<li>shard负载均衡</li>
-<li>shard副本，请求路由，集群扩容，shard重分配
-<img src="media/15715254261625/15715256398976.jpg" alt="" style="width:1036px;"/></li>
-<li>增减或减少节点时的数据rebalance</li>
+<li> next 和 send</li>
+<li> send可以传递值进入生成器内部,同时还可以重启生成器进入到下一个yield位置</li>
 </ul>
 
-<h4>master节点</h4>
+<pre class="line-numbers"><code class="language-python">def gen_func():
+    html = yield &quot;http://projectedu.com&quot;
+    print(html)
+    yield 2
+    yield 3
+    return &#39;bobby&#39;
 
-<ul>
-<li>（1）创建或删除索引</li>
-<li>（2）增加或删除节点</li>
-</ul>
-
-<h4>节点平等的分布式架构</h4>
-
-<ul>
-<li>（1）节点对等，每个节点都能接收所有的请求</li>
-<li>（2）自动请求路由</li>
-<li>（3）响应收集</li>
-</ul>
-
-<h4>shard&amp;replica</h4>
-
-<p><img src="media/15715254261625/15715261474060.jpg" alt="" style="width:1001px;"/></p>
-
-<ul>
-<li> (1) index包含多个shard</li>
-<li>（2）每个shard都是一个最小工作单元，承载部分数据，lucene实例，完整的建立索引和处理请求的能力</li>
-<li>（3）增减节点时，shard会自动在nodes中负载均衡</li>
-<li>（4）primary shard和replica shard，每个document肯定只存在于某一个primary shard以及其对应的replica shard中，不可能存在于多个primary shard</li>
-<li>（5）replica shard是primary shard的副本，负责容错，以及承担读请求负载</li>
-<li>（6）primary shard的数量在创建索引的时候就固定了，replica shard的数量可以随时修改</li>
-<li>（7）primary shard的默认数量是5，replica默认是1，默认有10个shard，5个primary shard，5个replica shard</li>
-<li>（8）primary shard不能和自己的replica shard放在同一个节点上（否则节点宕机，primary shard和副本都丢失，起不到容错的作用），但是可以和其他primary shard的replica shard放在同一个节点上</li>
-</ul>
-
-<h4>单节点创建index</h4>
-
-<ul>
-<li>（1）单node环境下，创建一个index，有3个primary shard，3个replica shard</li>
-<li>（2）集群status是yellow</li>
-<li>（3）这个时候，只会将3个primary shard分配到仅有的一个node上去，另外3个replica shard是无法分配的</li>
-<li>（4）集群可以正常工作，但是一旦出现节点宕机，数据全部丢失，而且集群不可用，无法承接任何请求</li>
-</ul>
-
-<h4>双节点创建</h4>
-
-<ul>
-<li><img src="media/15715254261625/15715267988059.jpg" alt="" style="width:670px;"/></li>
-</ul>
-
-<h4>横向扩展和扩容</h4>
-
-<ul>
-<li>primary shard数量不可改变。只能修改repli shard</li>
-<li>（1）primary&amp;replica自动负载均衡，6个shard，3 primary，3 replica</li>
-<li>（2）每个node有更少的shard，IO/CPU/Memory资源给每个shard分配更多，每个shard性能更好</li>
-<li>（3）扩容的极限，6个shard（3 primary，3 replica），最多扩容到6台机器，每个shard可以占用单台服务器的所有资源，性能最好</li>
-<li>（4）超出扩容极限，动态修改replica数量，9个shard（3primary，6 replica），扩容到9台机器，比3台机器时，拥有3倍的读吞吐量</li>
-<li>（5）3台机器下，9个shard（3 primary，6 replica），资源更少，但是容错性更好，最多容纳2台机器宕机，6个shard只能容纳1台机器宕机</li>
-<li><img src="media/15715254261625/15715276826331.jpg" alt="" style="width:896px;"/></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/20 06:50 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='ElasticSearch.html'>ElasticSearch</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15715225044107.html">
-                
-                  <h1>聚合分析</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>统计商品数量</h4>
-
-<pre class="line-numbers"><code class="language-go">第一个分析需求：计算每个tag下的商品数量
-
-GET /ecommerce/product/_search
-{
-  &quot;aggs&quot;: {
-    &quot;group_by_tags&quot;: {
-      &quot;terms&quot;: { &quot;field&quot;: &quot;tags&quot; }
-    }
-  }
-}
-
-将文本field的fielddata属性设置为true
-
-PUT /ecommerce/_mapping/product
-{
-  &quot;properties&quot;: {
-    &quot;tags&quot;: {
-      &quot;type&quot;: &quot;text&quot;,
-      &quot;fielddata&quot;: true
-    }
-  }
-}
-</code></pre>
-
-<h4>统计商品数量</h4>
-
-<pre class="line-numbers"><code class="language-cpp">GET /ecommerce/product/_search
-{
-  &quot;size&quot;: 0,
-  &quot;query&quot;: {
-    &quot;match&quot;: {
-      &quot;name&quot;: &quot;yagao&quot;
-    }
-  },
-  &quot;aggs&quot;: {
-    &quot;all_tags&quot;: {
-      &quot;terms&quot;: {
-        &quot;field&quot;: &quot;tags&quot;
-      }
-    }
-  }
-}
-
-
-</code></pre>
-
-<h4>分组算平均值</h4>
-
-<pre class="line-numbers"><code class="language-cpp">GET /ecommerce/product/_search
-{
-    &quot;size&quot;: 0,
-    &quot;aggs&quot; : {
-        &quot;group_by_tags&quot; : {
-            &quot;terms&quot; : { &quot;field&quot; : &quot;tags&quot; },
-            &quot;aggs&quot; : {
-                &quot;avg_price&quot; : {
-                    &quot;avg&quot; : { &quot;field&quot; : &quot;price&quot; }
-                }
-            }
-        }
-    }
-}
-GET /ecommerce/product/_search
-{
-    &quot;size&quot;: 0,
-    &quot;aggs&quot; : {
-        &quot;all_tags&quot; : {
-            &quot;terms&quot; : { &quot;field&quot; : &quot;tags&quot;, &quot;order&quot;: { &quot;avg_price&quot;: &quot;desc&quot; } },
-            &quot;aggs&quot; : {
-                &quot;avg_price&quot; : {
-                    &quot;avg&quot; : { &quot;field&quot; : &quot;price&quot; }
-                }
-            }
-        }
-    }
-}
-</code></pre>
-
-<h4>区间分组</h4>
-
-<pre class="line-numbers"><code class="language-cpp">GET /ecommerce/product/_search
-{
-  &quot;size&quot;: 0,
-  &quot;aggs&quot;: {
-    &quot;group_by_price&quot;: {
-      &quot;range&quot;: {
-        &quot;field&quot;: &quot;price&quot;,
-        &quot;ranges&quot;: [
-          {
-            &quot;from&quot;: 0,
-            &quot;to&quot;: 20
-          },
-          {
-            &quot;from&quot;: 20,
-            &quot;to&quot;: 40
-          },
-          {
-            &quot;from&quot;: 40,
-            &quot;to&quot;: 50
-          }
-        ]
-      },
-      &quot;aggs&quot;: {
-        &quot;group_by_tags&quot;: {
-          &quot;terms&quot;: {
-            &quot;field&quot;: &quot;tags&quot;
-          },
-          &quot;aggs&quot;: {
-            &quot;average_price&quot;: {
-              &quot;avg&quot;: {
-                &quot;field&quot;: &quot;price&quot;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/20 06:01 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='ElasticSearch.html'>ElasticSearch</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15714924926544.html">
-                
-                  <h1>测试程序</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>单元测试</h4>
-
-<pre class="line-numbers"><code class="language-go">func TestSquare(t *testing.T) {
-    inputs := [...]int{1, 2, 3}
-    expected := [...]int{1, 4, 9}
-    for i := 0; i &lt; len(inputs); i++ {
-        ret := square(inputs[i])
-        if ret != expected[i] {
-            t.Errorf(&quot;input is %d, the expected is %d, the actual %d&quot;,
-                inputs[i], expected[i], ret)
-        }
-    }
-}
-
-func TestErrorInCode(t *testing.T) {
-    fmt.Println(&quot;Start&quot;)
-    t.Error(&quot;Error&quot;)
-    fmt.Println(&quot;End&quot;)
-}
-
-func TestFailInCode(t *testing.T) {
-    fmt.Println(&quot;Start&quot;)
-    t.Fatal(&quot;Error&quot;)
-    fmt.Println(&quot;End&quot;)
-}
-
-func TestSquareWithAssert(t *testing.T) {
-    inputs := [...]int{1, 2, 3}
-    expected := [...]int{1, 4, 9}
-    for i := 0; i &lt; len(inputs); i++ {
-        ret := square(inputs[i])
-        assert.Equal(t, expected[i], ret)
-    }
-}
-</code></pre>
-
-<h4>性能测试</h4>
-
-<pre class="line-numbers"><code class="language-go">func BenchmarkConcatStringByAdd(b *testing.B) {
-
-    elems := []string{&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;, &quot;5&quot;}
-    b.ResetTimer()
-    for i := 0; i &lt; b.N; i++ {
-        ret := &quot;&quot;
-        for _, elem := range elems {
-            ret += elem
-        }
-    }
-    b.StopTimer()
-}
-
-func BenchmarkConcatStringByBytesBuffer(b *testing.B) {
-    elems := []string{&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;, &quot;5&quot;}
-    b.ResetTimer()
-    for i := 0; i &lt; b.N; i++ {
-        var buf bytes.Buffer
-
-        for _, elem := range elems {
-            buf.WriteString(elem)
-
-        }
-    }
-    b.StopTimer()
-
-}
+if __name__ == &#39;__main__&#39;:
+    gen = gen_func()
+    url = next(gen)
+    html = &quot;bobby&quot;
+    gen.send(html)
 </code></pre>
 
 <ul>
-<li>go test   -bench=. lsn4_test.go -benchmem</li>
-<li>测试指令</li>
+<li>第一次调用send的时候不能调用一个非None值，因为生成器还没有执行到那一行代码</li>
+<li>next则可以</li>
 </ul>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/19 21:41 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
+<pre class="line-numbers"><code class="language-python">def gen_func():
+    html = yield &quot;http://projectedu.com&quot;
+    print(html)
+    yield 2
+    yield 3
+    return &#39;bobby&#39;
 
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15714913609519.html">
-                
-                  <h1>对象池</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>object_pool</h4>
-
-<pre class="line-numbers"><code class="language-go">func (p *ObjPool) GetObj(timeout time.Duration) (*ReusableObj, error) {
-    select {
-    case ret := &lt;-p.bufChan:
-        return ret, nil
-    case &lt;-time.After(timeout): //超时控制
-        return nil, errors.New(&quot;time out&quot;)
-    }
-}
+if __name__ == &#39;__main__&#39;:
+    gen = gen_func()
+    # url = next(gen)
+    gen.send(None)
+    html = &quot;bobby&quot;
+    print(gen.send(html))
 </code></pre>
 
 <ul>
-<li>对象是否简单易于创建，会不会影响性能</li>
+<li>GeneratorExit是继承BaseException, Exception</li>
 </ul>
 
-<h4>sync.Pool</h4>
+<h4>throw</h4>
 
-<ul>
-<li>对象的缓存</li>
-<li><img src="media/15714913609519/15714916922594.jpg" alt="" style="width:478px;"/></li>
-</ul>
+<pre class="line-numbers"><code class="language-python">def gen_func():
+    try:
+        html = yield &quot;http://projectedu.com&quot;
+    except Exception as e:
+        pass
+    yield 2
+    yield 3
+    return &#39;bobby&#39;
 
-<h5>获取</h5>
-
-<ul>
-<li>尝试从私有对象获取</li>
-<li>私有对象不不存在，尝试从当前 Processor 的共享池获取</li>
-<li>如果当前 Processor 共享池也是空的，那么就尝试去其他 Processor 的共享池获取</li>
-<li>如果所有⼦子池都是空的，最后就⽤用⽤用户指定的 New 函数 产⽣生⼀一个新的对象返回</li>
-</ul>
-
-<h5>放回</h5>
-
-<ul>
-<li>如果私有对象不不存在则保存为私有对象</li>
-<li>如果私有对象存在，放⼊入当前 Processor ⼦子池的共享池中</li>
-</ul>
-
-<h4>生命周期</h4>
-
-<ul>
-<li>GC 会清除 sync.pool 缓存的对象 </li>
-<li>对象的缓存有效期为下⼀一次GC 之前</li>
-</ul>
-
-<h4>总结</h4>
-
-<ul>
-<li>适合于通过复⽤用，降低复杂对象的创建和 GC 代价</li>
-<li>协程安全，会有锁的开销，每次获取对象都会有锁机制</li>
-<li>⽣生命周期受 GC 影响，不不适合于做连接池等，需⾃自⼰己管理理⽣生命周期的资源的池化</li>
-</ul>
-
-<h4>案例</h4>
-
-<pre class="line-numbers"><code class="language-go">func TestSyncPool(t *testing.T) {
-    pool := &amp;sync.Pool{
-        New: func() interface{} {
-            fmt.Println(&quot;Create a new object.&quot;)
-            return 100
-        },
-    }
-
-    v := pool.Get().(int)
-    fmt.Println(v)
-    pool.Put(3)
-    runtime.GC() //GC 会清除sync.pool中缓存的对象
-    v1, _ := pool.Get().(int)
-    fmt.Println(v1)
-}
-
-func TestSyncPoolInMultiGroutine(t *testing.T) {
-    pool := &amp;sync.Pool{
-        New: func() interface{} {
-            fmt.Println(&quot;Create a new object.&quot;)
-            return 10
-        },
-    }
-
-    pool.Put(100)
-    pool.Put(100)
-    pool.Put(100)
-
-    var wg sync.WaitGroup
-    for i := 0; i &lt; 10; i++ {
-        wg.Add(1)
-        go func(id int) {
-            fmt.Println(pool.Get())
-            wg.Done()
-        }(i)
-    }
-    wg.Wait()
-}
+if __name__ == &#39;__main__&#39;:
+    gen = gen_func()
+    print(next(gen))
+    gen.throw(Exception, &#39;download error&#39;)
+    print(next(gen))
+    gen.throw(Exception, &#39;download error&#39;)
 </code></pre>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/19 21:22 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15713868524964.html">
-                
-                  <h1>CSP并发机制</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>协程泄漏</h4>
-
-<ul>
-<li>channel--&gt;buffer channel协程泄漏</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-go">package concurrency
-
-import (
-    &quot;fmt&quot;
-    &quot;runtime&quot;
-    &quot;testing&quot;
-    &quot;time&quot;
-)
-
-func runTask(id int) string {
-    time.Sleep(10 * time.Millisecond)
-    return fmt.Sprintf(&quot;The result is from %d&quot;, id)
-}
-
-func FirstResponse() string {
-    numOfRunner := 10
-    ch := make(chan string, numOfRunner)
-    ch := make(chan string) //会有协程泄漏
-    for i := 0; i &lt; numOfRunner; i++ {
-        go func(i int) {
-            ret := runTask(i)
-            ch &lt;- ret
-        }(i)
-    }
-    return &lt;-ch
-}
-
-func TestFirstResponse(t *testing.T) {
-    t.Log(&quot;Before:&quot;, runtime.NumGoroutine())
-    t.Log(FirstResponse())
-    time.Sleep(time.Second * 1)
-    t.Log(&quot;After:&quot;, runtime.NumGoroutine())
-}
-</code></pre>
-
-<h4>所有任务完成</h4>
+<h4>yield from</h4>
 
 <ul>
 <li></li>
@@ -863,10 +288,10 @@ func TestFirstResponse(t *testing.T) {
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/10/18 16:20 下午</span>
+                    <span class="date">2019/12/29 21:32 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -880,72 +305,59 @@ func TestFirstResponse(t *testing.T) {
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15427052201715.html">
+                <a class="clearlink" href="15776927234578.html">
                 
-                  <h1>sync.WaitGroup&sync.Once</h1>
+                  <h1>路由器和视图</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>sync.Once类型值的Do方法是怎么保证只执行参数函数一次的？</h4>
+                        	<h4>创建一个web应用</h4>
 
-<ul>
-<li>atomic.LoadUint32函数来获取该字段的值，并且一旦发现该值为1就会直接返回</li>
-<li>通过单例模式来实现</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">func (o *Once) Do(f func()) {
-  if atomic.LoadUint32(&amp;o.done) == 1 {
-    return
-  }
-  // Slow-path.
-  o.m.Lock()
-  defer o.m.Unlock()
-  if o.done == 0 {
-    defer atomic.StoreUint32(&amp;o.done, 1)
-    f()
-  }
-}
+<pre class="line-numbers"><code class="language-python">django-admin startproject message_test
+python3 manage.py app
+python3 manage.py startapp app
+启动服务 python3 manage.py runserver
 </code></pre>
 
-<h4>Do的特点</h4>
+<h4>视图</h4>
 
 <ul>
-<li>第一个特点，由于Do方法只会在参数函数执行结束之后把done字段的值变为1，因此，如果参数函数的执行需要很长时间或者根本就不会结束（比如执行一些守护任务），那么就有可能会导致相关 goroutine 的同时阻塞。</li>
-<li>第二个特点，Do方法在参数函数执行结束后，对done字段的赋值用的是原子操作，并且，这一操作是被挂在defer语句中的。因此，不论参数函数的执行会以怎样的方式结束，done字段的值都会变为1。</li>
+<li>用户的请求request</li>
+<li>对用户请求的逻辑处理handler </li>
+<li>将处理后的数据返回给用户response</li>
 </ul>
 
-<h4>案例</h4>
+<pre class="line-numbers"><code class="language-python">from django.views.generic import View
+from django.http import HttpResponse
 
-<pre class="line-numbers"><code class="language-go">type Singleton struct {
-    data string
-}
+class Index(View):
+    def get(self, request, name, age):
+      print(dir(request))
+      return HttpResponse(&#39;hello django2 {0} age is {1}&#39;.format(name, age)
 
-var singleInstance *Singleton
-var once sync.Once
+from django.urls import path
+from .views import Index
 
-func GetSingletonObj() *Singleton {
-    once.Do(func() {
-        fmt.Println(&quot;Create Obj&quot;)
-        singleInstance = new(Singleton)
-    })
-    return singleInstance
-}
+urlpatterns = [
+    path(&#39;&lt;str:name&gt;/&lt;int:age&gt;&#39;, Index.as_view(), name=&#39;index&#39;)
+]
 
-func TestGetSingletonObj(t *testing.T) {
-    var wg sync.WaitGroup
-    for i := 0; i &lt; 10; i++ {
-        wg.Add(1)
-        go func() {
-            obj := GetSingletonObj()
-            fmt.Printf(&quot;%X\n&quot;, unsafe.Pointer(obj))
-            wg.Done()
-        }()
-    }
-    wg.Wait()
-}
+from django.contrib import admin
+from django.urls import path, include
+from app import urls as app_urls
 
+urlpatterns = [
+    path(&#39;admin/&#39;, admin.site.urls),
+    path(&#39;app/&#39;, include(app_urls))
+]
 </code></pre>
+
+<h4>MTV组织模型</h4>
+
+<ul>
+<li><img src="media/15776927234578/image.png" alt="image"/></li>
+</ul>
 
                         
                       </div>
@@ -954,10 +366,10 @@ func TestGetSingletonObj(t *testing.T) {
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/11/20 17:13 下午</span>
+                    <span class="date">2019/12/30 15:58 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
+          					    <span class="posted-in"><a href='Django.html'>Django</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -971,16 +383,42 @@ func TestGetSingletonObj(t *testing.T) {
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15714751523207.html">
+                <a class="clearlink" href="15776883477052.html">
                 
-                  <h1>搜索方式</h1>
+                  <h1>Web&Django</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>检索方式</h4>
+                        	<h4>后端服务器框架</h4>
 
-<pre class="line-numbers"><code class="language-text">GET /ecommerce/_search
+<ul>
+<li><img src="media/15776883477052/15776883825722.jpg" alt="" style="width:1013px;"/></li>
+</ul>
+
+<h4>MVT结构</h4>
+
+<ul>
+<li><img src="media/15776883477052/15776886800484.jpg" alt="" style="width:981px;"/></li>
+</ul>
+
+<h4>模块</h4>
+
+<ul>
+<li><img src="media/15776883477052/15776887096421.jpg" alt="" style="width:1058px;"/></li>
+<li><img src="media/15776883477052/15776887263831.jpg" alt="" style="width:1076px;"/></li>
+</ul>
+
+<h4>Django基础命令</h4>
+
+<pre class="line-numbers"><code class="language-python">django-admin startproject 项目名-&gt;创建一个django项目
+python manage.py startapp 应用名-&gt;项目中创建一个应用
+Python manage.py shell -&gt; 进入调试代码的调试模式
+python manage.py makemigrations -&gt; 数据库创建更改文件
+python manage.py migrate -&gt; 同步到数据库进行更新
+python manage.py flush -&gt; 清空数据库
+python manage.py runserver 0.0.0.0:8000 -&gt; 启动开发服务器
+python manage.py + 回车 可查看更多命令
 </code></pre>
 
                         
@@ -990,10 +428,49 @@ func TestGetSingletonObj(t *testing.T) {
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/10/19 16:52 下午</span>
+                    <span class="date">2019/12/30 14:45 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='ElasticSearch.html'>ElasticSearch</a></span>
+          					    <span class="posted-in"><a href='Django.html'>Django</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15776093141221.html">
+                
+                  <h1>常见性能数字</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>存储</h4>
+
+<ul>
+<li>IO读写延迟。一般是用 4 KB 大小的 IO 做基准来测试</li>
+<li>IO带宽，一般是针对比较大的IO而言</li>
+<li>IOPS，就是每秒钟可以读写多少个小的随机 1 O</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/12/29 16:48 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%80%A7%E8%83%BD%E5%B7%A5%E7%A8%8B%E9%AB%98%E6%89%8B%E8%AF%BE.html'>性能工程高手课</a></span>
           				   
                   </div>
                   <div class="more-right right">

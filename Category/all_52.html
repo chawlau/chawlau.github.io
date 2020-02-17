@@ -170,324 +170,67 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15491817683393.html">
+                <a class="clearlink" href="15700585529718.html">
                 
-                  <h1>识别复杂度</h1>
+                  <h1>Redis 集群</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>复杂度来源</h4>
+                        	<h4>一致性保证</h4>
 
 <ul>
-<li>高性能</li>
-<li>高可用</li>
-<li>可扩展</li>
+<li>主节点对命令的复制工作发生在返回命令回复之后， 因为如果每次处理命令请求都需要等待复制操作 完成的话， 那么主节点处理命令请求的速度将极大地降低 —— 我们必须在性能和一致性之间做出权 衡。 注意:Redis 集群可能会在将来提供同步写的方法。 Redis 集群另外一种可能会丢失命令的情况 是集群出现了网络分区， 并且一个客户端与至少包括一个主节点在内的少数实例被孤立。</li>
 </ul>
 
-<h4>设计</h4>
+<h4>分片重哈希</h4>
 
 <ul>
-<li>TPS和QPS取峰值的3倍</li>
-<li>消息队列的复杂性</li>
-<li>高性能消息读取、高可用消息写入、高可用消息存储、高可用消息读取</li>
+<li>添加一个新的主节点</li>
 </ul>
 
-<h4>设计方案</h4>
-
-<ul>
-<li>高可用的主备方案、集群方案，高性能的负载均衡、多路复用，可扩展的分层、插件化</li>
-<li>高可用消息存储和读取可以采用mongo和redis 这么高的gps很难保证消息不丢 那么可以采用有消息确认机制和消息回溯的MQ 或者自研rpc的时候考虑消息发送失败的时候重新选择节点然后落盘</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/03 16:16 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%9E%B6%E6%9E%84.html'>架构</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15491759931516.html">
-                
-                  <h1>微服务监控</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>开源监控系统种类</h4>
-
-<ul>
-<li>以ELK为代表的集中式日志解决方案，</li>
-<li>及Graphite、TICK和Prometheus等为代表的时序数据库解决方案</li>
-</ul>
-
-<h4>Beats</h4>
-
-<ul>
-<li>Packetbeat，用来收集网络流量数据。</li>
-<li>Topbeat，用来收集系统、进程的 CPU 和内存使用情况等数据。</li>
-<li>Filebeat，用来收集文件数据。</li>
-<li>Winlogbeat，用来收集 Windows 事件日志收据。</li>
-</ul>
-
-<h4>Graphite</h4>
-
-<ul>
-<li>Carbon：主要作用是接收被监控节点的连接，收集各个指标的数据，将这些数据写入 carbon-cache 并最终持久化到 Whisper 存储文件中去。</li>
-<li>Whisper：一个简单的时序数据库，主要作用是存储时间序列数据，可以按照不同的时间粒度来存储数据，比如 1 分钟 1 个点、5 分钟 1 个点、15 分钟 1 个点三个精度来存储监控数据。</li>
-<li>Graphite-Web：一个 Web App，其主要功能绘制报表与展示，即数据展示</li>
-<li><img src="media/15491759931516/fc78b78efe3c2cb52f478e61a9ebbc11.png" alt="fc78b78efe3c2cb52f478e61a9ebb"/></li>
-</ul>
-
-<h4>Tick</h4>
-
-<ul>
-<li>Telegraf 负责数据收集，InfluxDB 负责数据存储，Chronograf 负责数据展示，Kapacitor 负责数据告警。</li>
-<li><img src="media/15491759931516/6e5c85e68f0eff409f70f17f846d5335.png" alt="6e5c85e68f0eff409f70f17f846d5335"/></li>
-</ul>
-
-<h4>美团CAT</h4>
-
-<ul>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/03 14:39 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E5%BE%AE%E6%9C%8D%E5%8A%A1.html'>微服务</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15491707031049.html">
-                
-                  <h1>kubenetas资源管理模型</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>CPU和内存资源</h4>
-
-<ul>
-<li>Kubernetes 里 Pod 的 CPU 和内存资源，实际上还要分为 limits 和 requests 两种情况</li>
-<li>在调度的时候，kube-scheduler 只会按照 requests 的值进行计算。而在真正设置 Cgroups 限制的时候，kubelet 则会按照 limits 的值来进行设置。</li>
-</ul>
-
-<h4>三类资源分配</h4>
-
-<ul>
-<li>当 Pod 里的每一个 Container 都同时设置了 requests 和 limits，并且 requests 和 limits 值相等的时候，这个 Pod 就属于 Guaranteed 类别</li>
-<li>当 Pod 不满足 Guaranteed 的条件，但至少有一个 Container 设置了 requests。那么这个 Pod 就会被划分到 Burstable 类别</li>
-<li>如果一个 Pod 既没有设置 requests，也没有设置 limits，那么它的 QoS 类别就是 BestEffort</li>
-<li>QoS 划分的主要应用场景，是当宿主机资源紧张的时候，kubelet 对 Pod 进行 Eviction（即资源回收）时需要用到的。</li>
-</ul>
-
-<h4>Qos回收资源</h4>
-
-<ul>
-<li>BestEffort</li>
-<li>Burstable</li>
-<li>Guaranteed</li>
-</ul>
-
-<h4>Cpu设置</h4>
-
-<ul>
-<li>首先，你的 Pod 必须是 Guaranteed 的 QoS 类型；</li>
-<li>然后，你只需要将 Pod 的 CPU 资源的 requests 和 limits 设置为同一个相等的整数值即可。</li>
-</ul>
-
-<h4>为什么宿主机进入 MemoryPressure 或者 DiskPressure 状态后，新的 Pod 就不会被调度到这台宿主机上呢？</h4>
-
-<ul>
-<li>通过给主机打上污点taint</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/03 13:11 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15491554909210.html">
-                
-                  <h1>Service&Ingress</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>Ingress</h4>
-
-<ul>
-<li>全局的、为了代理不同后端 Service 而设置的负载均衡服务，就是 Kubernetes 里的 Ingress 服务。</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/03 08:58 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15490122357421.html">
-                
-                  <h1>从外界连通Service与Service调试“三板斧”</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h5>NodePort</h5>
-
-<ul>
-<li>配置spec.type=NodePort</li>
-<li>IP包离开宿主机发到目的Pod时，对IP包做一次SNAT</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">-A KUBE-POSTROUTING -m comment --comment &quot;kubernetes service traffic requiring SNAT&quot; -m mark --mark 0x4000/0x4000 -j MASQUERADE
+<pre class="line-numbers"><code class="language-text">./redis-trib.rb add-node 127.0.0.1:7006 127.0.0.1:7000
 </code></pre>
 
 <ul>
-<li>Pod 需要明确知道所有请求来源设置spec.externalTrafficPolicy=local</li>
+<li>添加一个新的从节点</li>
 </ul>
 
-<h4>LoadBalancer</h4>
-
-<h4>ExternalName</h4>
-
-<h4>故障检测</h4>
-
-<ul>
-<li>检查 Kubernetes 自己的 Master 节点的 Service DNS 是否正常，Pod内执行nslookup kubernetes.default</li>
-<li>检查kube-dns的运行日志和状态</li>
-<li>检查服务是否有endpoints</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/01 17:10 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15490071556861.html">
-                
-                  <h1>Service、DNS与服务发现</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>Service工作原理</h4>
-
-<ul>
-<li> kube-proxy 组件，加上 iptables 来共同实现的</li>
-<li> iptables-save</li>
-<li> service-cluster-ip只是一条 iptables 规则上的配置，并没有真正的网络设备，所以你 ping 这个地址，是不会有任何响应的。</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">-A KUBE-SVC-DPS3HM6JILO2T4WM -m comment --comment &quot;test/hostnames:default&quot; -m statistic --mode random --probability 0.33332999982 -j KUBE-SEP-DPVQIFXK4PIYVROG
--A KUBE-SVC-DPS3HM6JILO2T4WM -m comment --comment &quot;test/hostnames:default&quot; -m statistic --mode random --probability 0.50000000000 -j KUBE-SEP-IDFIHXEZVXF2N5Y3
--A KUBE-SVC-DPS3HM6JILO2T4WM -m comment --comment &quot;test/hostnames:default&quot; -j KUBE-SEP-GOWOXQVBZIZRJUVW
--A KUBE-SEP-DPVQIFXK4PIYVROG -p tcp -m comment --comment &quot;test/hostnames:default&quot; -m tcp -j DNAT --to-destination 10.128.125.67:9376
--A KUBE-SEP-GOWOXQVBZIZRJUVW -p tcp -m comment --comment &quot;test/hostnames:default&quot; -m tcp -j DNAT --to-destination 10.128.31.30:9376
--A KUBE-SEP-IDFIHXEZVXF2N5Y3 -p tcp -m comment --comment &quot;test/hostnames:default&quot; -m tcp -j DNAT --to-destination 10.128.177.159:9376
+<pre class="line-numbers"><code class="language-text">./redis-trib.rb add-node --slave 127.0.0.1:7006 127.0.0.1:7000
 </code></pre>
 
-<h4>IPVS</h4>
+<ul>
+<li>移除一个节点</li>
+</ul>
 
-<h4>DNS</h4>
+<pre class="line-numbers"><code class="language-text">./redis-trib.rb del-node 127.0.0.1:7000 &lt;node-id&gt; 
+</code></pre>
+
+<p>第一个参数是任意一个节点的地址,第二个节点是你想要移 除的节点地址。</p>
+
+<h4>集群问题</h4>
+
+<p><img src="media/15700585529718/15700600532398.jpg" alt="" style="width:1192px;"/></p>
+
+<h4>分片问题</h4>
 
 <ul>
-<li>ClusterIP 模式的 Service 为你提供的，就是一个 Pod 的稳定的 IP 地址，即 VIP。并且，这里 Pod 和 Service 的关系是可以通过 Label 确定的。</li>
-<li>Headless Service 为你提供的，则是一个 Pod 的稳定的 DNS 名字，并且，这个名字是可以通过 Pod 名字和 Service 名字拼接出来的。</li>
+<li>水平切分于垂直切分相比，相对来说稍微复杂一些。因为要将同一个表中的不同数据拆分到不同的数据 库中。 分片是一种基于数据库分成若干片段的传统概念扩容技术，它将数据库分割成多个碎片并将这 些碎片放置在不同的服务器上。</li>
+<li>垂直切分的最大特点就是规则简单，实施也更为方便，尤其适合各业务之间的耦合度非常低，相互影响很小，业务逻辑非常清晰的系统。按照业务维度将不同数据放入不同的表</li>
+</ul>
+
+<h4>一致性hash算法</h4>
+
+<p><img src="media/15700585529718/15700606333480.jpg" alt="" style="width:1150px;"/></p>
+
+<ul>
+<li>hash环上顺时针从整数0开始，一直到最大正整数，我们根据四个ip计算的hash值肯定会落到这个hash 环上的某一个点，至此我们把服务器的四个ip映射到了一致性hash环</li>
+<li> 当用户在客户端进行请求时候，首先根据hash(用户id)计算路由规则(hash值)，然后看hash值落到了 hash环的那个地方，根据hash值在hash环上的位置顺时针找距离最近的ip作为路由ip</li>
+</ul>
+
+<h4>一致性HASH算法虚拟节点</h4>
+
+<ul>
 <li></li>
 </ul>
 
@@ -498,10 +241,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/02/01 15:45 下午</span>
+                    <span class="date">2019/10/03 07:22 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
+          					    <span class="posted-in"><a href='Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html'>Redis高并发缓存</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -515,118 +258,120 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15489915615746.html">
+                <a class="clearlink" href="15599783184679.html">
                 
-                  <h1>RPC调用</h1>
+                  <h1>基准测试和性能测试</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>解决的问题</h4>
+                        	<h4>基准测试的目的</h4>
 
 <ul>
-<li>问题一：如何规定远程调用的语法？</li>
-<li>问题二：如果传递参数？</li>
-<li>问题三：如何表示数据？</li>
-<li>问题四：如何知道一个服务端都实现了哪些远程调用？从哪个端口可以访问这个远程调用？</li>
-<li>问题五：发生了错误、重传、丢包、性能等问题怎么办？</li>
+<li>建立mysql服务器的性能基准线</li>
+<li>模拟比当前系统更高的负载，找出系统的扩展瓶劲</li>
+<li>测试不同硬件，软件和操作系统</li>
+<li>证明新的硬件设备是否配置正确</li>
 </ul>
 
-<h4>协议约定问题</h4>
+<h4>基准测试常见指标</h4>
 
 <ul>
-<li><img src="media/15489915615746/8534c52daf3682cd1cfe5a3375ec9525.jpg" alt="8534c52daf3682cd1cfe5a3375e"/></li>
-<li>用户层 专注业务逻辑处理</li>
-<li>Stub 处理双方约定好的语法语义</li>
-<li>RPCRuntime 处理高性能的传输，以及网络的错误和异常</li>
+<li>TPS</li>
+<li>QPS</li>
+<li>响应时间
+<ul>
+<li>平均响应时间，最小响应时间，最大响应时间，各时间响应百分比</li>
+</ul></li>
+<li>并发量</li>
+<li>正在工作中的并发的操作数或同事工作的数量</li>
 </ul>
 
-<h4>RPC</h4>
+<h4>计划和设计基准测试</h4>
 
 <ul>
-<li>处理的数据类型</li>
-<li>Boolean</li>
-<li>变长类型数据</li>
-<li>变长数组</li>
-<li>链表</li>
+<li>整个系统还是单一组件</li>
+<li>使用什么样的数据</li>
 </ul>
 
-<h4>协议约定</h4>
+<h4>基准测试的步骤</h4>
 
 <ul>
-<li>TLV Tag,Length,Value</li>
+<li>准备基准测试数据和收集脚本</li>
+<li>运行基准测试</li>
+<li>保存以及分析基准测试结果</li>
 </ul>
 
-<h4>网络传输</h4>
+<h4>基准测试的问题</h4>
 
 <ul>
-<li>单向RPC</li>
-<li>服务流式RPC</li>
-<li>客户流式RPC</li>
-<li>双向流式RPC</li>
+<li>使用生产环境数据，只使用了部分数据</li>
+<li>多用户场景，只做单用户测试</li>
+<li>单服务器上测试分布式应用</li>
+<li>反复执行同一个查询，容易命中缓存，无法反应真实的查询性能</li>
 </ul>
 
-<h4>服务发现和服务治理</h4>
+<h4>mysqlslap</h4>
 
 <ul>
-<li>Envoy负载均衡器</li>
-<li>配置路由策略</li>
-<li>负载均衡策略</li>
-<li>Serivce Mesh，也即应用之间的相互调用全部由 Envoy 进行代理，服务之间的治理也被 Envoy 进行代理，完全将服务治理抽象出来，到平台层解决</li>
+<li>可以模拟服务器负载，并输出相关统计信息可以指定也可以自动生成查询语句</li>
+<li>常用参数说明</li>
 </ul>
 
-<h4>Service Mesh 的时候，我们说了，希望 Envoy 能够在服务不感知的情况下，将服务之间的调用全部代理了的内部原理</h4>
+<pre class="line-numbers"><code class="language-mysql">--auto-generate-sql由系统自动生成SQL脚本进行测试
+--auto-generate-sql-add-autoincrement在牛成的表中增加自增ID
+--auto-generate sql-load-type指定测试中使用的询类型
+--auto-generate sql-write number指定初始化数据时生成的数据量
+--concurrency指定并发线程的数量
+--engine 指定要测试表的存储引擎，可以用逗号分割多个存储引擎
+--no-drop 指定不清理测试数据
+--iterations 指定测试运行的次数
+--number-of-queries 指定每一个线程执行的查询数量
+--debug-info 指定输出额外的内存和CPU统计信息
+--number-int-cols 指定测试表中包含INT类型列的数量
+--number-char-cols 指定测试表中包含的varchar 类型的数量
+--create-schema 指定了用于执行测试的数据库的名字
+--query 用于指定自定义 SQL 的脚本
+--only-print 并不运行测试脚本，而是把生成的脚本打
+</code></pre>
+
+<h4>测试案例</h4>
+
+<pre class="line-numbers"><code class="language-text">mysqlslap --concurrency=1,50,100,200 --iterations=3 --number-int-cols=5 --number-char-cols=5 --auto-generate-sql --auto-generate-sql-add-autoincrement --engine=myisam,innodb --number-of-queries=10 --create-schema=sbtest -uroot -pL19880901c-
+</code></pre>
+
+<h4>sysbench</h4>
+
+<h5>常用参数</h5>
 
 <ul>
-<li>容器系统中，是通过 sidecar 模式来解决的，服务容器都是直接和 envoy sidecar 互通，envoy 的配置变化，网络拓扑的改变对服务容器都是不可感知的。service mesh 还更进一步的发展，istio 和 conduit，他们都是在 sidecar 基础上，又加了一个总的数据控制平面，来加强 service mesh 的掌控能力。</li>
-<li></li>
+<li>test 用于指定所要执行的测试类型，支持以下参数 Fileid 文件系统 O 性能測试 cpu cpu&#39;性能试 memory 内存性能观试 oltp 测试要指定具体的 lua 脚本</li>
 </ul>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/01 11:26 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE.html'>网络协议</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
+<pre class="line-numbers"><code class="language-sql">mysqa-db 用于指定执行基准测试的数据库名
+mysql-table-engine 用于指定所使用的存储引擎
+oltp-tables-count 执行测试的表的数量
+oltp-table-size 指定每个表中的数据行数
+num-threads 指定测试的并发线程数量
+max-time 指定最大的测试时间
+report- -interval指定间隔多长时间输出一次统计信息
+mysq-user 指定执行测试的 MYSQL 用户
+-mysqlpassword 指定执行测试的 MYSQL 用户的密码
+prepare 用于准备测试数据
+run 用于实际进行测试
+cleanup 用于清理测试数据
+</code></pre>
 
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15489893285277.html">
-                
-                  <h1>容器网络隔离</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>NetWorkPolicy</h4>
+<h4>测试案例</h4>
 
-<ul>
-<li>ingress 流入</li>
-<li>egress 流出</li>
-<li>CNI 网络插件，都维护着一个 NetworkPolicy Controller，通过控制循环的方式对 NetworkPolicy 对象的增删改查做出响应，然后在宿主机上完成 iptables 规则的配置工作</li>
-<li>Kubernetes 网络插件对 Pod 进行隔离，其实是靠在宿主机上生成 NetworkPolicy 对应的 iptable 规则来实现的</li>
-<li>网络插件还需要想办法，将所有对被隔离 Pod 的访问请求，都转发到上述 KUBE-NWPLCY-CHAIN 规则上去进行匹配。并且，如果匹配不通过，这个请求应该被“拒绝”。</li>
-</ul>
+<pre class="line-numbers"><code class="language-text">sysbench --test=cpu --cpu-max-prime=10000 run
+sysbench --test-fileio --num-thread=8 --init-rng=on --file-total-size=5G \
+--file-test-mode=rndrw --report-interval=1s
+</code></pre>
 
-<h4>自定义iptables规则</h4>
+<h5>mysql性能测试</h5>
 
-<pre class="line-numbers"><code class="language-text">iptables -A KUBE-POD-SPECIFIC-FW-CHAIN -j KUBE-NWPLCY-CHAIN
-iptables -A KUBE-POD-SPECIFIC-FW-CHAIN -j REJECT --reject-with icmp-port-unreachable
+<pre class="line-numbers"><code class="language-text">sysbench ./oltp.lua --mysql-host=192.168.31.186 --mysql-port=3306 --mysql-user=root --mysql-password=&quot;L19880901c-&quot; --mysq1-table-engine=innodb --oltp-tables-count=10 --oltp-table-size=100000 --threads=10 --time=120 --report-interval=10 prepare
 </code></pre>
 
                         
@@ -636,10 +381,10 @@ iptables -A KUBE-POD-SPECIFIC-FW-CHAIN -j REJECT --reject-with icmp-port-unreach
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/02/01 10:48 上午</span>
+                    <span class="date">2019/06/08 15:18 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
+          					    <span class="posted-in"><a href='Mysql%E6%80%A7%E8%83%BD%E7%AE%A1%E7%90%86%E5%92%8C%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1.html'>Mysql性能管理和架构设计</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -653,43 +398,162 @@ iptables -A KUBE-POD-SPECIFIC-FW-CHAIN -j REJECT --reject-with icmp-port-unreach
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15489830169180.html">
+                <a class="clearlink" href="15677236146527.html">
                 
-                  <h1>Join语句优化</h1>
+                  <h1>Sentinel</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>Multi-Range Read</h4>
+                        	<h4>主从复制高可用</h4>
 
 <ul>
-<li>根据索引 a，定位到满足条件的记录，将 id 值放入 read_rnd_buffer 中 ;</li>
-<li>将 read_rnd_buffer 中的 id 进行递增排序；</li>
-<li>排序后的 id 数组，依次到主键 id 索引中查记录，并作为结果返回</li>
-<li>read_rnd_buffer由read_rnd_buffer_length</li>
-<li>优化核心原因</li>
-<li>MRR 能够提升性能的核心在于，这条查询语句在索引 a 上做的是一个范围查询（也就是说，这是一个多值查询），可以得到足够多的主键 id。这样通过排序以后，再去主键索引查数据，才能体现出“顺序性”的优势。</li>
+<li>手动故障转移</li>
+<li>写能力和存储能力受限制</li>
 </ul>
 
-<h4>Batched Key Access</h4>
+<h4>主要任务</h4>
 
 <ul>
-<li>NLJ的优化一次性驱动表多取出索引值跟被驱动表进行多行匹配</li>
-<li>BNL优化把</li>
-<li>表 t2 中满足条件的数据放在临时表 tmp_t 中；</li>
-<li>给临时表 tmp_t 的字段 b 加上索引；</li>
-<li>让表 t1 和 tmp_t 做 join 操作。</li>
+<li>监控(Monitoring): Sentinel 会不断地检查你的主服务器和从服务器是否运作正常。<br/></li>
+<li>提醒(Notification): 当被监控的某个 Redis 服务器出现问题时， Sentinel 可以通过 API 向管理员或 者其他应用程序发送通知。</li>
+<li>自动故障迁移(Automatic failover): 当一个主服务器不能正常工作时， Sentinel 会开始一次自动故 障迁移操作， 它会将失效主服务器的其中一个从服务器升级为新的主服务器， 并让失效主服务器的其 他从服务器改为复制新的主服务器; 当客户端试图连接失效的主服务器时， 集群也会向客户端返回新 主服务器的地址， 使得集群可以使用新主服务器代替失效服务器</li>
 </ul>
 
-<h4>SQL操练语句</h4>
+<h4>基本架构</h4>
 
-<pre class="line-numbers"><code class="language-text">explain select * from t2 where a&gt;=100 and a&lt;=200;
-explain select * from t1 join t2 on (t1.b=t2.b) where t2.b&gt;=1 and t2.b&lt;=2000;
-优化BNL
-create temporary table temp_t(id int primary key, a int, b int, index(b))engine=innodb;
-insert into temp_t select * from t2 where b&gt;=1 and b&lt;=2000;
-select * from t1 join temp_t on (t1.b=temp_t.b);
-</code></pre>
+<ul>
+<li><img src="media/15677236146527/15677238406646.jpg" alt="" style="width:1048px;"/></li>
+<li><img src="media/15677236146527/15677240210056.jpg" alt="" style="width:1267px;"/></li>
+</ul>
+
+<h4>sentinel配置</h4>
+
+<ul>
+<li><img src="media/15677236146527/15677245915239.jpg" alt="" style="width:1044px;"/></li>
+<li>sentinel monitor mymaster 127.0.0.1 6379 1 名称为mymaster的主节点名，1表示将这个主服务器判断 为失效至少需要 1个 Sentinel 同意 (只要同意 Sentinel 的数量不达标，自动故障迁移就不会执行)</li>
+<li>down-after-milliseconds 选项指定了 Sentinel 认为服务器已经断线所需的毫秒数</li>
+<li>failover过期时间，当failover开始后，在此时间内仍然没有触发任何failover操作，当前sentinel 将会认 为此次failoer失败</li>
+<li>parallel-syncs 选项指定了在执行故障转移时， 最多可以有多少个从服务器同时对新的主服务器进行同 步， 这个数字越小， 完成故障转移所需的时间就越长。 如果从服务器被设置为允许使用过期数据集， 那么你可能不希望所有从服务器都在同一时间向新的主 服务器发送同步请求， 因为尽管复制过程的绝大部分步骤都不会阻塞从服务器， 但从服务器在载入主 服务器发来的 RDB 文件时， 仍然会造成从服务器在一段时间内不能处理命令请求: 如果全部从服务 器一起对新的主服务器进行同步， 那么就可能会造成所有从服务器在短时间内全部不可用的情况出 现。</li>
+</ul>
+
+<h4>客户端</h4>
+
+<ul>
+<li>连接sentinel</li>
+<li><img src="media/15677236146527/15677260391092.jpg" alt="" style="width:911px;"/></li>
+<li><img src="media/15677236146527/15677260637461.jpg" alt="" style="width:844px;"/></li>
+</ul>
+
+<h4>三个定时任务</h4>
+
+<ul>
+<li>每10秒每个sentinel对master和slave指向info</li>
+<li>发现slave节点</li>
+<li>确定主从关系</li>
+<li><img src="media/15677236146527/15678968542743.jpg" alt="" style="width:733px;"/></li>
+<li>每2秒每个sentinel通过master的channel频道交互信息(pub/sub)</li>
+<li><strong>sentinel</strong>:hello</li>
+<li>交互对节点的看法和自身信息</li>
+<li><img src="media/15677236146527/15678970065504.jpg" alt="" style="width:683px;"/></li>
+<li>每1s每个sentinel对其他sentinel进行ping访问</li>
+<li>心跳检测，失败判定依据</li>
+<li><img src="media/15677236146527/15678973156445.jpg" alt="" style="width:613px;"/></li>
+</ul>
+
+<h4>主观下线和客观下线</h4>
+
+<ul>
+<li>sentinel monitor mymaster 192.168.31.191 6379 2主观下限法定人数</li>
+<li>sentinel down-after-milliseconds mymaster 30000 主观超时下线判断</li>
+<li>主观下线：每个 sentinel 节点对 Redis 节点失败的“偏见</li>
+<li>客观下线：所有 sentinel 节点对 Redis 节点失败“达成共识“（超过 quorum 个统一）</li>
+<li>sentinel is-master-down-by-addr</li>
+</ul>
+
+<h4>领导者选举</h4>
+
+<ul>
+<li>原因：只有一个 sentinel 节点完成故障转移</li>
+<li>选举：通过 sentinel is- master-down-by-addr 命令都希望成为领导者</li>
+<li>每个做主观下线的 Sentinel 节点向其他 Sentinel 节点发送命令，要求将它设置为领导者收到命令的 Sentinel 节点如果没有同意通过其他 Sentinel 节点发送的命令，那么将同意该请求，否则拒绝</li>
+<li>如果该 Sentinel 节点发现自己的票数已经超过 Sentinel 集合半数且超过 quorum，那么它将成为领导者</li>
+<li>如果此过程有多个 Sentinel 节点成为了领导者，那么将等待一段时间重新进行选举。</li>
+<li><img src="media/15677236146527/15678976923488.jpg" alt="" style="width:539px;"/></li>
+</ul>
+
+<h4>故障转移</h4>
+
+<ul>
+<li>从 slave 节点中选出一个“合适的”节点作为新的 master 节点 </li>
+<li>对上面的 slave 节点执行 slaveof no oner 命令让其成为 master 节点。</li>
+<li>向剩余的 Slave 节点发送命令，让它们成为新 master 节点的 slave 节点，复制规则和 parallel- syncs 参数有关。</li>
+<li>更新对原来 master-节点配置为 slave，并保持着对其“关注“，当其恢复后命令它去复制新的 master 节点</li>
+</ul>
+
+<h4>选择合适的slave节点</h4>
+
+<ul>
+<li>选择 slave- priority (slave 节点优先级）最高的』ave 节点，如果存在则返回，不存在则继续。</li>
+<li>选择复制偏移量最大的 slave 节点（复制的最完整），如果存在则返回，不存在则继续</li>
+<li>选择 runed 最小的 slave 节点。</li>
+</ul>
+
+<h4>节点运维</h4>
+
+<ul>
+<li>主节点 </li>
+<li>从节点</li>
+<li>sentinel节点</li>
+</ul>
+
+<h4>手动故障转移</h4>
+
+<ul>
+<li><img src="media/15677236146527/15678979994184.jpg" alt="" style="width:1165px;"/></li>
+</ul>
+
+<h4>节点上线</h4>
+
+<ul>
+<li>主节点：sentinel failover 进行替换。</li>
+<li>从节点：slaveofe 即可，sentinel 节点可以感知。</li>
+<li>sentinel 节点：参考其他 sentinel 节点启动即可。</li>
+</ul>
+
+<h4>从节点的作用</h4>
+
+<ul>
+<li>副本 高可用的基础</li>
+<li>扩展 读能力</li>
+</ul>
+
+<h4>三个消息</h4>
+
+<ul>
+<li>+ switch- master：切换主节点（从节点晋升主节点</li>
+<li>+ convert-to- slave：切换从节点（原主节点降为从节点）</li>
+<li>+ sdown：主观下线。</li>
+</ul>
+
+<h4>高可用读写分离</h4>
+
+<ul>
+<li><img src="media/15677236146527/15678982480394.jpg" alt="" style="width:951px;"/></li>
+</ul>
+
+<h4>总结</h4>
+
+<ul>
+<li>故障发现、故障自动转移、配置中心、客户端通知。</li>
+<li>Redis Sentinel 中的 Sentinel=节点个数应该为大于等于 3 且最好为奇数。</li>
+<li>Redis Sentinel 中的数据节点与普通数据节点没有区别</li>
+<li>客户端初始化时连接的是 Sentinel 节点集合，不再是具体的 Redis 节点，但 Sentinel 只是配置中心不是代理</li>
+<li>Redis Sentinel 通过三个定时任务实现了 Sentinel 节点对于主节点、从节点其余 Sentinel 节点的监控。</li>
+<li>Redis Sentinel 在对节点做失败判定时分为主观下线和客观下线。</li>
+<li>看懂 Redis Sentine 故障转移日志对于 Redis Sentinel 以及问题排查非常有帮助</li>
+<li>Redis Sentinels 实现读写分离高可用可以依赖 Sentinel 节点的消息通知，获取 Redis 数据节点的状态变化</li>
+</ul>
 
                         
                       </div>
@@ -698,10 +562,10 @@ select * from t1 join temp_t on (t1.b=temp_t.b);
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/02/01 09:03 上午</span>
+                    <span class="date">2019/09/06 06:46 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+          					    <span class="posted-in"><a href='Redis%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A.html'>Redis从入门到精通</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -715,35 +579,28 @@ select * from t1 join temp_t on (t1.b=temp_t.b);
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15489819871248.html">
+                <a class="clearlink" href="15699709788203.html">
                 
-                  <h1>Linux问题答疑</h1>
+                  <h1>读写分离高可用</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>阻塞、非阻塞 I/O 与同步、异步 I/O 的区别和联系</h4>
+                        	<h4>旧版本复制</h4>
 
 <ul>
-<li>所谓阻塞 I/O，是指应用程序在执行 I/O 操作后，如果没有获得响应，就会阻塞当前线程，不能执行其他任务。</li>
-<li>所谓非阻塞 I/O，是指应用程序在执行 I/O 操作后，不会阻塞当前的线程，可以继续执行其他的任务。</li>
-<li>所谓同步 I/O，是指收到 I/O 请求后，系统不会立刻响应应用程序；等到处理完成，系统才会通过<strong><em>系统调用</em></strong>的方式，告诉应用程序 I/O 结果。</li>
-<li>所谓异步 I/O，是指收到 I/O 请求后，系统会先告诉应用程序 I/O 请求已经收到，随后再去异步处理；等处理完成后，系统再通<strong><em>过事件通知</em></strong>的方式，告诉应用程序结果。</li>
+<li>SYNC是一个非常耗费资源的操作</li>
+<li>主服务器需要执行BGSAVE命令来生成RDB文件，这个生成操作会耗费主服务器大量的的 CPU、内存和磁盘读写资源 主服务器将RDB文件发送给从服务器，这个发送操作会耗费主从服务器大量的网络带宽和流 量，并对主服务器响应命令 请求的时间产生影响:接收到RDB文件的从服务器在载入文件的过程是阻塞的，无法处理命令 请求</li>
 </ul>
 
-<h4>执行 find 命令时，会不会导致系统的缓存升高呢？如果会导致，升高的又是哪种类型的缓存呢</h4>
+<h4>新版本复制</h4>
+
+<p><img src="media/15699709788203/15699714704625.jpg" alt="" style="width:1002px;"/><br/>
+<img src="media/15699709788203/15699717831453.jpg" alt="" style="width:1039px;"/></p>
 
 <ul>
-<li>会导致系统缓存升高</li>
-<li>文件名以及文件之间的目录关系，都放在目录项缓存中。而这是一个基于内存的数据结构，会根据需要动态构建。所以，查找文件时，Linux 就会动态构建不在缓存中的目录项结构，导致 dentry 缓存升高。</li>
-<li>inode cacahe&amp;dentry&amp;proc inode cache</li>
-</ul>
-
-<h4>磁盘IO延迟</h4>
-
-<ul>
-<li>MySQL 的 MyISAM 引擎，本身并不缓存数据，而要依赖系统缓存来加速磁盘 I/O 的访问。一旦系统中还有其他应用同时运行，MyISAM 引擎就很难充分利用系统缓存。因为系统缓存可能被其他应用程序占用，甚至直接被清理掉。InnoDB同时缓存索引和数据</li>
-<li></li>
+<li>主服务的复制偏移量(replication offset)和从服务器的复制偏移量 主服务器的复制积压缓冲区(replication backlog),默认大小为1M</li>
+<li>服务器的运行ID(run ID),用于存储服务器标识，如从服务器断线重新连接，取到主服务器 的运行ID与重接后的主服务器运行ID进行对比，从而判断是执行部分重同步还是执行完 整重同步</li>
 </ul>
 
                         
@@ -753,10 +610,10 @@ select * from t1 join temp_t on (t1.b=temp_t.b);
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/02/01 08:46 上午</span>
+                    <span class="date">2019/10/02 07:02 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          					    <span class="posted-in"><a href='Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html'>Redis高并发缓存</a></span>
           				   
                   </div>
                   <div class="more-right right">

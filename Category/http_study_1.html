@@ -170,68 +170,37 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15636677045874.html">
+                <a class="clearlink" href="15636807947044.html">
                 
-                  <h1>大文件传输</h1>
+                  <h1>缓存代理</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>切分文件</h4>
+                        	<h4>区分客户端和代理</h4>
 
 <ul>
-<li>Transfer-Encoding: chunked</li>
-<li>Transfer-Encoding: chunked和Content-Length这两个字段是互斥的，不能同时出现</li>
+<li>private 表示缓存只能在客户端保存，是用户“私有”的，不能放在代理上与别人共享。</li>
+<li>public 缓存完全开放，谁都可以存，谁都可以用</li>
+<li>proxy-revalidate只要求代理的缓存过期后必须验证，客户端不必回源</li>
+<li>no-transform禁止对缓存的数据进行优化</li>
 </ul>
 
-<h4>分块请求</h4>
+<h4>缓存属性</h4>
 
 <ul>
-<li>请求是Range </li>
-<li>相应 Content-Range 响应状态码是206 Partial Content</li>
-<li>bytes x-y/length 实际偏移量和资源总大小</li>
+<li>max-stale max-stale”的意思是如果代理上的缓存过期了也可以接受，但不能过期太多，超过 x 秒也会不要</li>
+<li>min-fresh 意思是缓存必须有效，而且必须在 x 秒后依然有效</li>
+<li>only-if-cached 只接受代理缓存的数据，不接受源服务器的响应</li>
+<li>vary版本协商问题</li>
+<li>purge清理缓存</li>
 </ul>
 
-<h4>多段下载</h4>
+<h4>nginx对缓存的处理</h4>
 
 <ul>
-<li>先发个 HEAD，看服务器是否支持范围请求，同时获取文件的大小；</li>
-<li>开 N 个线程，每个线程使用 Range 字段划分出各自负责下载的片段，发请求传输数据；</li>
-<li>下载意外中断也不怕，不必重头再来一遍，只要根据上次的下载记录，用 Range 请求剩下的那一部分就可以了。</li>
-</ul>
-
-<h4>一次请求多个范围</h4>
-
-<ul>
-<li>multipart/byteranges</li>
-<li>使用bounday分隔符隔开</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">HTTP/1.1 206 Partial Content
-Content-Type: multipart/byteranges; boundary=00000000001
-Content-Length: 189
-Connection: keep-alive
-Accept-Ranges: bytes
-
-
---00000000001
-Content-Type: text/plain
-Content-Range: bytes 0-9/96
-
-// this is
---00000000001
-Content-Type: text/plain
-Content-Range: bytes 20-29/96
-
-ext json d
---00000000001--
-</code></pre>
-
-<h4>思考题</h4>
-
-<ul>
-<li>被 gzip 的文件执行范围请求，比如“Range: bytes=10-19”，那么这个范围是应用于原文件还是压缩后的文件</li>
-<li>原来的文件是gzip的，那就正确。如果原文件是文本，而是在传输过程中被压缩，那么就应用于压缩前的数据</li>
+<li>将Vary的头部摘要写入缓存，不仅比较URI，也比较摘要</li>
+<li></li>
 </ul>
 
                         
@@ -241,7 +210,7 @@ ext json d
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/07/21 08:08 上午</span>
+                    <span class="date">2019/07/21 11:46 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='http_study.html'>http_study</a></span>
@@ -258,49 +227,21 @@ ext json d
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15636667114719.html">
+                <a class="clearlink" href="15636795429516.html">
                 
-                  <h1>HTTP 实体数据</h1>
+                  <h1>代理</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>类别 MIME type</h4>
+                        	<h4>代理功能</h4>
 
 <ul>
-<li>Multipurpose Internet Mail Extensions MIME</li>
-<li>text</li>
-<li>image</li>
-<li>audio/video</li>
-<li>application</li>
-</ul>
-
-<h4>压缩算法Encoding type</h4>
-
-<ul>
-<li>gzip</li>
-<li>deflate</li>
-<li>br HTTP优化的新压缩算法</li>
-</ul>
-
-<h4>内容协商</h4>
-
-<ul>
-<li>Accept-Encoding 客户端支持的压缩格式</li>
-<li>Content-Encoding 服务器端支持的压缩格式</li>
-<li>Accept-Language 自然语言</li>
-<li>Content-Language 实际语言</li>
-<li>Vary表示服务器依据了 Accept-Encoding、User-Agent 和 Accept 这三个头字段，然后决定了发回的响应报文</li>
-</ul>
-
-<h4>请求头</h4>
-
-<pre class="line-numbers"><code class="language-text">Accept-Encoding: gzip, deflate;q=1.0, *;q=0.5, br;q=0
-</code></pre>
-
-<ul>
-<li>服务器优先按照gzip和deflate压缩，否则用其他压缩算法，但是不用brotli算法</li>
-<li></li>
+<li>健康检查：使用“心跳”等机制监控后端服务器，发现有故障就及时“踢出”集群，保证服务高可用；</li>
+<li>安全防护：保护被代理的后端服务器，限制 IP 地址或流量，抵御网络攻击和过载；</li>
+<li>加密卸载：对外网使用 SSL/TLS 加密通信认证，而在安全的内网不加密，消除加解密成本；</li>
+<li>数据过滤：拦截上下行的数据，任意指定策略修改请求或者响应；</li>
+<li>内容缓存</li>
 </ul>
 
                         
@@ -310,7 +251,130 @@ ext json d
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/07/21 07:51 上午</span>
+                    <span class="date">2019/07/21 11:25 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='http_study.html'>http_study</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15636770588929.html">
+                
+                  <h1>HTTP缓存控制</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>服务器控制</h4>
+
+<ul>
+<li>no_store：不允许缓存，用于某些变化非常频繁的数据，例如秒杀页面；</li>
+<li>no_cache：它的字面含义容易与 no_store 搞混，实际的意思并不是不允许缓存，而是可以缓存，但在使用之前必须要去服务器验证是否过期，是否有最新的版本；</li>
+<li>must-revalidate：又是一个和 no_cache 相似的词，它的意思是如果缓存不过期就可以继续使用，但过期了如果还想用就必须去服务器验证。</li>
+<li><img src="media/15636770588929/8a67535620ab9c7764560363f83982b2.png" alt="8a67535620ab9c7764560363f83982b2"/></li>
+</ul>
+
+<h4>cache-control</h4>
+
+<ul>
+<li>客户端和服务端都有</li>
+</ul>
+
+<h4>控制缓存</h4>
+
+<ul>
+<li>client if-Modified-Since和If-None-Match</li>
+<li>server Last-modified和ETag</li>
+<li>Last-modified最后的修改时间</li>
+<li>ETag是实体标签（Entity Tag）的缩写，是资源的一个唯一标识，主要是用来解决修改时间无法准确区分文件变化的问题</li>
+<li>强 ETag 要求资源在字节级别必须完全相符，弱 ETag 在值前有个“W/”标记，只要求资源在语义上没有变化，但内部可能会有部分发生了改变</li>
+</ul>
+
+<h4>注意</h4>
+
+<ul>
+<li>no_cache等同于max-age=0,must-revalidate</li>
+<li>如果只有last-modified，没有Cache-Control和Expires，使用启发算法计算缓存时间</li>
+<li>nginx的etag计算是修改时间+长度</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/07/21 10:44 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='http_study.html'>http_study</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15636698741259.html">
+                
+                  <h1>Cookie机制</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>工作流程</h4>
+
+<ul>
+<li>request Cookie</li>
+<li>response Set-Cookie</li>
+</ul>
+
+<h4>生存周期</h4>
+
+<ul>
+<li>“Expires”俗称“过期时间”，用的是绝对时间点，可以理解为“截止日期”（deadline）。</li>
+<li>“Max-Age”用的是相对时间，单位是秒，浏览器用收到报文的时间点再加上 Max-Age，就可以得到失效的绝对时间。</li>
+</ul>
+
+<h4>作用域</h4>
+
+<ul>
+<li>让浏览器仅发送给特定的服务器和 URI，避免被其他网站盗用</li>
+<li>Domain，HTTPOnly</li>
+</ul>
+
+<h4>基本用途</h4>
+
+<ul>
+<li>身份识别，实现有状态的会话事务</li>
+<li>Cookie设置为0，服务器0秒就让Cookie失效，即立即失效，服务器不存Cookie。</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/07/21 08:44 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='http_study.html'>http_study</a></span>
@@ -337,7 +401,7 @@ ext json d
 			  </div>
 			  <div class="large-6 columns">
 			<p class="text-right" style="padding-top:25px;">
-			
+			 <a href="http_study_2.html">&raquo; Next Page</a> 
 			</p>
 			  </div>
 			</div>

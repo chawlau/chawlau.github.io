@@ -170,102 +170,56 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15672468334916.html">
+                <a class="clearlink" href="15687147026174.html">
                 
-                  <h1>shared_ptr常用操作</h1>
+                  <h1>单例设计模式</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>引用计数增加</h4>
+                        	<h4>设计模式</h4>
 
 <ul>
-<li>每个shared_ptr都会记录其他的shared_ptr指向对象</li>
-<li>智能当成实参在函数里传递会增加</li>
-<li>如果是引用则不增加</li>
-<li>返回值返回</li>
+<li>开发程序中代码的写法</li>
+<li>head first</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-text">void func(shared_ptr&lt;int&gt;&amp; ptr);不增加
-void func(shared_ptr&lt;int&gt; ptr);//增加
-shared_ptr&lt;int&gt; func2(shared_ptr&lt;int&gt;&amp; ptr)//增加
+<h4>单例设计模式</h4>
+
+<pre class="line-numbers"><code class="language-cpp">std::mutex m;
+ static MyCAS* GetInstance() {
+    //不代表一定没被new过，只有第一次多线程初始化的时候需要加锁，后面都不需要加锁
+    if (m_instance == nullptr) {
+      //初始化的时候才加锁
+      std::unque_lock(std::mutex) lock(m);
+      if (m_instance == nullptr) {
+        m_instance = new MyCAS();
+        static GC c1;
+      }
+      return m_instance;
+    }
+  }
 </code></pre>
 
-<h4>引用计数减少</h4>
+<h4>call_once</h4>
 
 <ul>
-<li>局部的shared_ptr离开其作用域</li>
-<li>指向其他对象</li>
+<li>能够保证函数只能被调用一次</li>
+<li>call_once效率上比互斥量消耗的更少</li>
+<li>call_once需要与一个标记结合使用, std::once_flag</li>
+<li>调用call_once成功后，就把once_flag设置为已经调用状态</li>
 </ul>
 
-<h4>常用操作</h4>
-
-<ul>
-<li>use_count</li>
-<li>unique</li>
-</ul>
-
-<h4>reset</h4>
-
-<ul>
-<li>若pi是唯一指向该对象的指针，那么释放pi指向的对象，pi置空，否则引用计数减q，不释放对象，同时pi置空</li>
-<li>reset带参数的话</li>
-<li>空指针也可以用reset，指向新的对象</li>
-</ul>
-
-<h4>get</h4>
-
-<ul>
-<li>返回裸指针</li>
-<li>如果智能指针释放了对象，裸指针也就无效了</li>
-<li>第三方函数就是需要裸指针</li>
-</ul>
-
-<h4>swap</h4>
-
-<ul>
-<li>交换两个智能指针的对象</li>
-</ul>
-
-<h4>nullptr</h4>
-
-<ul>
-<li>将指向的对象引用计数减去1，若为0，释放智能指针指向的对象</li>
-</ul>
-
-<h4>指定删除器和数组问题</h4>
-
-<ul>
-<li>默认将delete作为资源析构方式</li>
-<li>我们可以指定自己的删除器来取代系统提供的默认的删除器</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">void  myDelete(int* p) {
-  cout &lt;&lt; __func__ &lt;&lt; endl;
-  delete p;
+<pre class="line-numbers"><code class="language-cpp">std::once_flag g_flag;
+static MyCAS* GetInstance() {
+  std::call_once(g_flag, CreateInstance);
+  return m_instance;
 }
-shared_ptr&lt;int&gt; p11(new int(12345), myDelete);
-  shared_ptr&lt;int&gt; p12(p11);
-  p12.reset();
-  p11.reset();
+static void CreateInstance() {
+    cout &lt;&lt; &quot;CreateInstance &quot; &lt;&lt; endl;
+    m_instance = new MyCAS();
+}
 </code></pre>
-
-<ul>
-<li>系统默认删除器处理不了数组</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">* shared_ptr&lt;A&gt; pA(new A[10]);//系统释放PA是delete pA所指向的裸指针，而不delete[]pA
-* defalut_delete
-* shared_ptr&lt;A&gt; pB(new A[10], default_delete&lt;A[]&gt;());
-* shared_ptr&lt;A[]&gt; pC(new A[10]);
-</code></pre>
-
-<h4>指定删除器额外说明</h4>
-
-<ul>
-<li>shared_ptr指定的删除器不同，但是指向的类型的相同</li>
-<li>可以放入同一个容器</li>
-</ul>
 
                         
                       </div>
@@ -274,7 +228,7 @@ shared_ptr&lt;int&gt; p11(new int(12345), myDelete);
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/08/31 18:20 下午</span>
+                    <span class="date">2019/09/17 18:05 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
@@ -291,97 +245,47 @@ shared_ptr&lt;int&gt; p11(new int(12345), myDelete);
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15677684117226.html">
+                <a class="clearlink" href="15708740577150.html">
                 
-                  <h1>unique_ptr</h1>
+                  <h1>分配器&迭代器</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>概述</h4>
+                        	<h4>作用</h4>
 
 <ul>
-<li>独占式的，专属所有权，同一时刻，只能有一个unique_ptr指针指向这块对象</li>
-<li>当这个unique_ptr被销毁的时候，它所指向的对象也被销毁</li>
+<li>内存分配器，扮演内存池的角色，通过大量较少对malloc的调用，来节省内存，分配效率有提高</li>
+<li>缺省的alloactor没有使用内存池技术</li>
 </ul>
 
-<h4>make_unique</h4>
+<h4>其他的分配器</h4>
+
+<p><img src="media/15708740577150/15708752337942.jpg" alt="" style="width:884px;"/></p>
+
+<h4>迭代器</h4>
+
+<h5>分类</h5>
 
 <ul>
-<li>c++14才有</li>
-<li>不支持指定的删除器语法</li>
+<li>迭代器的移动特性以及在这个迭代器的操作</li>
+<li>迭代器表示一个位置，一般分类是依据他的跳跃能力</li>
+<li>输出型迭代器 struct output_iterator_tag;</li>
+<li>输入型迭代器 struct input_iterator_tag;</li>
+<li>前向迭代器 struct forward_iterator_tag</li>
+<li>双向迭代器 struct bidirectional_iterator_tag</li>
+<li>随机访问迭代器 struct random_access_iterator_tag
+<img src="media/15708740577150/15708760939711.jpg" alt="" style="width:778px;"/></li>
+<li>并不是所有容器都有迭代器 stack queue heap
+<img src="media/15708740577150/15708762347915.jpg" alt="" style="width:849px;"/></li>
 </ul>
 
-<h4>不支持的操作</h4>
+<h5>迭代器</h5>
+
+<p><img src="media/15708740577150/15708766232720.jpg" alt="" style="width:810px;"/></p>
 
 <ul>
-<li>unique_ptr<string> ps1(new string(&quot;I love China&quot;));</li>
-<li>unique_ptr<string> ps2(ps1)</li>
-<li>拷贝，赋值</li>
-</ul>
-
-<h4>移动语义</h4>
-
-<ul>
-<li>unique_ptr<int> ps5 = std::move(pi3);</li>
-</ul>
-
-<h4>release()</h4>
-
-<ul>
-<li>放弃指针控制权，返回裸指针，将该指针置空</li>
-<li>裸指针可以释放，可以delete, 也可以初始化另外的智能指针</li>
-<li>直接release会导致内存泄露</li>
-<li>int* tmp = p5.release();</li>
-<li>delete tmp</li>
-</ul>
-
-<h4>reset</h4>
-
-<ul>
-<li>不带参数，释放智能指针所指向的对象，并且将智能指针置为空</li>
-<li>带参数 释放智能指针所指向的对象，并且将智能指针指向新对象</li>
-<li>pi2.reset(p5.release());</li>
-</ul>
-
-<h4>nullptr</h4>
-
-<ul>
-<li>释放智能指针指向的对象，并将智能指针置空</li>
-</ul>
-
-<h4>指向数组</h4>
-
-<ul>
-<li>unique_ptr<A> ptr(new A[10]) A没有析构函数，正常</li>
-<li>有析构函数，会导致异常</li>
-</ul>
-
-<h4>get()</h4>
-
-<ul>
-<li>有些函数的参数需要内置的裸指针</li>
-<li>get的指针千万不要delete</li>
-</ul>
-
-<h4>swap</h4>
-
-<ul>
-<li>交换智能指针指向的对象</li>
-</ul>
-
-<h4>智能指针作为判断条件</h4>
-
-<ul>
-<li>if (ptr)</li>
-</ul>
-
-<h4>转换为shared_ptr</h4>
-
-<ul>
-<li>shared_ptr有个显式的构造函数。用于将shared_ptr转换为unique_ptr</li>
-<li>临时对象都是右值</li>
-<li>unique_ptr没有控制块</li>
+<li></li>
 </ul>
 
                         
@@ -391,7 +295,7 @@ shared_ptr&lt;int&gt; p11(new int(12345), myDelete);
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/09/06 19:13 下午</span>
+                    <span class="date">2019/10/12 17:54 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
@@ -408,132 +312,9 @@ shared_ptr&lt;int&gt; p11(new int(12345), myDelete);
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15676787915607.html">
+                <a class="clearlink" href="15694092395844.html">
                 
-                  <h1>Shared_ptr使用场景，陷阱和性能分析</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>使用场景</h4>
-
-<ul>
-<li>临时局部变量返回</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">shared_ptr&lt;int&gt; create(int val) {
-  return make_shared&lt;int&gt;(val);
-}
-
-shared_ptr&lt;int&gt;func(int val) {
-  shared_ptr&lt;int&gt; ptr = create(5);
-  return ptr;
-}
-ptr返回的引用计数没有增加
-</code></pre>
-
-<ul>
-<li>不允许隐式转换</li>
-<li>裸指针绑定到shared_ptr后，管理权限就交给智能指针了，不能再操作裸指针</li>
-</ul>
-
-<h4>注意</h4>
-
-<ul>
-<li>不要delete get()返回的指针</li>
-<li>不能随便释放get返回的指针</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  shared_ptr&lt;int&gt; p1(p);
-  shared_ptr&lt;int&gt; p2(p); //p2p1无关联，导致p1p2内存被释放两次
-  shared_ptr&lt;int&gt; p1(new int);
-  shared_ptr&lt;int&gt; p2(p1); //这种写法p1p2互通，使用同一个控制块kkk
-</code></pre>
-
-<h4>this返回</h4>
-
-<ul>
-<li>不要把this作为shared_ptr返回</li>
-<li>裸指针初始化多个智能指针会导致指向同一内存，但是不是同一控制块</li>
-<li>enable_shared_from_this</li>
-<li>shared_from_this</li>
-<li>enable_shared_from_this中又个weak_ptr监视this，shared_from_this,嗲用了lock方法，让引用计数+1，同时返回shared_ptr</li>
-</ul>
-
-<h4>性能说明</h4>
-
-<ul>
-<li>shared_ptr weak_ptr是裸指针的两倍</li>
-<li>第一个指针指向智能指针所指向的对象</li>
-<li>第二个指针指向的是控制块</li>
-<li>1）指向对象的强引用计数shared_ptr</li>
-<li>2) 指向对象的弱引用计数weak_ptr</li>
-<li>3) 删除器指针 内存分配器</li>
-<li>控制块是由第一个指向对象的shared_ptr创建的</li>
-</ul>
-
-<h4>控制块创建时机</h4>
-
-<ul>
-<li>make_shared 分配并且初始化一个对象，返回对象的shared_ptr</li>
-</ul>
-
-<h4>裸指针初始化shared_ptr</h4>
-
-<ul>
-<li>int* p = new  int;</li>
-<li>shared_ptr<int> p1(p)</li>
-<li>shared_ptr<int> p2(p)</li>
-<li>不允许，会产生多个控制块，就有多个引用计数，导致析构多次</li>
-</ul>
-
-<h4>移动语义</h4>
-
-<ul>
-<li>shared_ptr<int> p1(new int(100))</li>
-<li>shared_ptr<int> p2(std::move(p1))</li>
-<li>移动构造一个新的智能指针对象p2,p1就不再指向该对象，引用计数依旧是一</li>
-<li>shared_ptr<int> p3</li>
-<li>p3 = std::move(p2)</li>
-<li>移动赋值运算符比拷贝构造函数快</li>
-</ul>
-
-<h4>使用建议</h4>
-
-<ul>
-<li>分配器解决内存分配</li>
-<li>优先使用make_shared</li>
-<li>shared_ptr<string> s1(new string(&quot;new&quot;)) 分配两次内存</li>
-<li>auto ps2 = make_shared<string>(&quot;new&quot;) 分配一次内存 </li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/05 18:19 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15675915694548.html">
-                
-                  <h1>Weak_ptr</h1>
+                  <h1>recursive_mutex</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
@@ -541,401 +322,39 @@ ptr返回的引用计数没有增加
                         	<h4>概念</h4>
 
 <ul>
-<li>weak_ptr弱 强 shared_ptr</li>
-<li>智能指针，指向由shared_ptr管理的对象</li>
-<li>不控制对象的生命周期，不会改变引用计数</li>
-<li>构造和析构不会增加引用计数</li>
-<li>shared_ptr要释放对象的时候照常释放，不管是否有weak_ptr</li>
-<li>weak_ptr 监视shared_ptr的生命周期，是shared_ptr的扩充</li>
-<li>不是独立的智能指针。不能用来操作所指向的资源，监视对象是否存在</li>
+<li>独占，可以递归lock，允许同一个互斥量多次被lock</li>
+<li>允许同一个线程，同一个互斥量多次被调用，效率比mutex低一些</li>
 </ul>
 
-<h4>常规操作</h4>
+<pre class="line-numbers"><code class="language-text">std::recursive_mutex mutex1;
+std::lock_guard&lt;std::recursive_mutex&gt; s1(mutex1);
+std::lock_guard&lt;std::recursive_mutex&gt; s2(mutex1);
+//可以多次调用
+</code></pre>
+
+<h4>std::timed_mutex&amp;std::recursive_timed_mutex</h4>
 
 <ul>
-<li>weak_ptr不能直接来访问对象</li>
-<li>需要lock来访问，如果存在，lock就返回一个对象的shared_ptr指针</li>
-<li>如果不存在，就返回一个空的shared_ptr</li>
-<li>weak_ptr能够判断对象是否存在</li>
+<li>try_lock_for  等待一段时间，如果规定时间内没有拿到锁，就直接走下去</li>
 </ul>
 
-<h4>常用指针</h4>
-
-<ul>
-<li>use_count 获取对象强引用的数量</li>
-<li>expired 是否过期，如果use_count=0,对象不存在，观测对象的资源是否被释放</li>
-<li>reset 将弱引用指针设置为空，不影响强引用，</li>
-</ul>
-
-<h4>尺寸问题</h4>
-
-<ul>
-<li>weak_ptr和shared_ptr一样大。裸指针的两倍</li>
-<li>第一个指针指向智能指向对象</li>
-<li>第二个指针指向shared_ptr生成的控制块</li>
-<li><img src="media/15675915694548/15675935853040.jpg" alt="" style="width:898px;"/></li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/04 18:06 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15671608919349.html">
-                
-                  <h1>智能指针</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>分配</h4>
-
-<ul>
-<li> auto ptr =  new auto(obj)</li>
-<li>智能指针能够帮助delete</li>
-</ul>
-
-<h4>new&amp;&amp;delete</h4>
-
-<ul>
-<li>new 如何记录分配的内存给delete使用，new内部有记录机制</li>
-</ul>
-
-<h4>申请和delete数组</h4>
-
-<ul>
-<li>多出来的4个字节针对数组元素来记录、</li>
-<li>内置类型不需要记录</li>
-</ul>
-
-<h4>智能指针</h4>
-
-<ul>
-<li>auto_ptr 被unique_ptr替代</li>
-<li>unique_ptr 独占式ptr，同一个时间只有一个指针指向对象，所有权可以移交出去</li>
-<li>shared_ptr 共享式指针，多个指针指向同一个对象</li>
-<li>weak_ptr 辅助shared_ptr</li>
-</ul>
-
-<h4>shared_ptr</h4>
-
-<ul>
-<li>释放对象</li>
-<li>shared_ptr被析构的时候</li>
-<li>shared_ptr指向其他的对象的时候</li>
-<li>不要用裸指针初始化shared_ptr</li>
-</ul>
-
-<h4>make_shared 函数模型，安全高效</h4>
-
-<ul>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/30 18:28 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15669803261255.html">
-                
-                  <h1>模板</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>类模版</h4>
-
-<ul>
-<li>成员函数必须被实例化后才能使用</li>
-<li>类模板能内部使用并不需要提供模版参数</li>
-<li>类模板用来实例化类型名</li>
-</ul>
-
-<h4>成员函数</h4>
-
-<ul>
-<li>template&lt;&gt; </li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/28 16:18 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15669003383519.html">
-                
-                  <h1>类型转换构造函数，运算符，类成员指针</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>类型转换构造运算符</h4>
-
-<ul>
-<li>operator type() const</li>
-<li>type 表示要转换的类型</li>
-<li>类型转换运算符，没有形参</li>
-<li>必须定义为类的成员函数</li>
-</ul>
-
-<h4>定义函数指针</h4>
-
-<ul>
-<li>typedef void(*func)(int);</li>
-<li>using func = void(*)(int)</li>
-</ul>
-
-<h4>类成员函数指针</h4>
-
-<ul>
-<li>void (A::*ptr)(int)</li>
-<li>成员函数是属于类的，和对象没有关系</li>
-<li>(a.*ptr)(12);</li>
-</ul>
-
-<h4>静态成员函数</h4>
-
-<ul>
-<li>void (*s_ptr)(int) = &amp;A::s_func;</li>
-<li>s_ptr(1200);</li>
-</ul>
-
-<h4>类成员变量指针</h4>
-
-<ul>
-<li>int A::*t = &amp;A::m_i;</li>
-<li>并不是真正的地址，而是该成员变量的偏移量</li>
-</ul>
-
-<h4>静态成员变量</h4>
-
-<ul>
-<li>有真正的内存地址</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/27 18:05 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15666414947293.html">
-                
-                  <h1>临时对象深入探讨，解析，提高性能手段</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>临时对象的概念</h4>
-
-<ul>
-<li>右值引用范围内，临时对象不会被释放</li>
-<li> 代码书写问题产生的，统一称为临时变量</li>
-</ul>
-
-<h4>产生临时对象的情况和解决</h4>
-
-<ul>
-<li>以传值的方式给函数传递参数</li>
-<li>类型转换生成的临时对象，隐式临时对象，保证函数调用成功</li>
-<li>函数返回对象的时候</li>
-<li>C++只会为const引用(const string&amp; str)产生临时变量，</li>
-<li>CTmp tm3 = Double(sum1);tm3直接接管了临时对象</li>
-<li>CTmp&amp;&amp; tm3 = Double(sum1); 右值引用成功接管了临时对象</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/24 18:11 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15664699170964.html">
-                
-                  <h1>继承关系</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>final</h4>
-
-<ul>
-<li>不能再继续继承下去</li>
-</ul>
-
-<h4>静态类型和动态类型</h4>
-
-<ul>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/22 18:31 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15663826839072.html">
-                
-                  <h1>RTTI dynamic_cat typeid 虚函数表</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>RTTI</h4>
-
-<ul>
-<li>运行时类型识别</li>
-<li>dynamic_cast 能够将基类的指针转为派生类的指针或者引用</li>
-<li>typeid 返回指针或者引用指向的实际类型</li>
-<li>想让RTTI正常工作，基类中必须有虚函数，只有虚函数存在才会使用动态类型</li>
-<li>对于引用会抛出std::bad_cast</li>
-</ul>
-
-<h4>typeid</h4>
-
-<ul>
-<li>拿到对象类型信息，typeid返回常量对象的引用，对象类型是const std::typeinfo&amp;</li>
-<li>主要是为了比较两个指针指向的类型是否相同</li>
-<li>指针定义的类型相同。不管new的是啥, typeid都相等</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">Human* h1 = new Men;
-Human* h2 = new Women;
-typeid(h1) == typeid(h2)
+<pre class="line-numbers"><code class="language-text"> for (int i = 0; i &lt; 10000; i++) {
+      //std::lock_guard&lt;std::timed_mutex&gt; s1(mutex1);
+      std::chrono::milliseconds timeout(100);
+      //mutex1.try_lock_until(chrono::steady_clock::now() + timeout)
+      if (mutex1.try_lock_for(timeout)) {
+        cout &lt;&lt; &quot;get lock&quot; &lt;&lt; endl;
+        msgRecvQueue.push_back(i);
+        cout &lt;&lt; &quot;insert ele &quot; &lt;&lt; i &lt;&lt; endl;
+        mutex1.unlock();
+      } else {
+        cout &lt;&lt; &quot;not get lock sleep &quot; &lt;&lt; endl;
+        std::this_thread::sleep_for(timeout);
+      }
+    }
 </code></pre>
 
 <ul>
-<li>指针指向的类型是否相同</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">Men* h1 = new Men;
-Woman* h2 = new Men;
-typeid(*h1) == typeid(*h2)
-</code></pre>
-
-<ul>
-<li> 只有基类有虚函数的时候，编译器才会对表达式求值得</li>
-</ul>
-
-<h4>typeinfo</h4>
-
-<ul>
 <li></li>
 </ul>
 
@@ -946,7 +365,142 @@ typeid(*h1) == typeid(*h2)
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/08/21 18:18 下午</span>
+                    <span class="date">2019/09/25 19:00 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15689790735625.html">
+                
+                  <h1>async、future、packaged task,promise</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>async</h4>
+
+<ul>
+<li>std::async是一个函数模版。启动一个异步任务, 返回一个future对象</li>
+<li>自动启动一个线程并开始执行对应的线程入口函数，future对象里就含有线程入口函数，可以通过调用future对象的成员函数</li>
+<li>future提供了一种访问异步操作结果的机制，就是说结果可能没有办法马上拿到，在线程执行完毕的时候，就能够拿到结果了</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">std::future&lt;int&gt; result = std::async(mythread);
+cout &lt;&lt; &quot;continue...!&quot; &lt;&lt; endl;
+cout &lt;&lt; result.get() &lt;&lt; endl;
+</code></pre>
+
+<ul>
+<li>get()函数等待线程执行结束后返回结果</li>
+<li>get只能获取一次</li>
+<li>如果没有get和wait依然等待线程执行结束后获取结果</li>
+</ul>
+
+<h5>std::launch</h5>
+
+<ul>
+<li>std::launch:deferred 表示线程入口函数调用被延迟到std::future的wait或者get函数调用才执行</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">std::future&lt;int&gt; result = std::async(std::launch::deferred, &amp;A::mythread, &amp;a, val);
+</code></pre>
+
+<ul>
+<li>如果下面不调用get或者wait，线程不会被创建</li>
+</ul>
+
+<h5>std::launch::async</h5>
+
+<pre class="line-numbers"><code class="language-text">std::future&lt;int&gt; result = std::async(std::launch::deferred, &amp;A::mythread, &amp;a, val);
+</code></pre>
+
+<ul>
+<li>std::launch::async不能和std::launch:deferred同时使用</li>
+</ul>
+
+<h4>std::packaged_task</h4>
+
+<ul>
+<li>打包任务，是一个类模板，模板参数是各种调用对象</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">std::packaged_task&lt;int(int)&gt; mypt(mythread2);
+std::thread t1(std::ref(mypt), 1);
+t1.join();
+std::future&lt;int&gt; res = mypt.get_future();
+</code></pre>
+
+<ul>
+<li>lamda</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">std::packaged_task&lt;int(int)&gt; mypt([](int mypar) {
+                                    cout &lt;&lt; &quot;thread start &quot; &lt;&lt; &quot; thread_id = &quot;
+                                    &lt;&lt; std::this_thread::get_id() &lt;&lt; endl;
+                                    cout &lt;&lt; &quot; val &quot; &lt;&lt; mypar &lt;&lt; endl;
+                                    std::chrono::seconds dura(1);
+                                    std::this_thread::sleep_for(dura);
+                                    return 5;
+                                    });
+mypt(1);                                    
+</code></pre>
+
+<h4>std::promise</h4>
+
+<ul>
+<li>通过promise保存一个值，然后在其他线程中，把这个值取出来用</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">std::promise&lt;int&gt; myprom;
+std::thread t1(mythread3, std::ref(myprom), 180);
+t1.join();
+std::future&lt;int&gt; ful = myprom.get_future();
+auto res = ful.get();
+</code></pre>
+
+<ul>
+<li>传递给另外的线程</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">void mythread4(std::future&lt;int&gt;&amp; tmp) {
+  auto res = tmp.get();
+  cout &lt;&lt; &quot;mythread4 res &quot; &lt;&lt; res &lt;&lt; endl;
+}
+std::promise&lt;int&gt; myprom;
+std::thread t1(mythread3, std::ref(myprom), 180);
+t1.join();
+std::future&lt;int&gt; ful = myprom.get_future();
+std::thread t2(mythread4, std::ref(ful));
+</code></pre>
+
+<h4>小结</h4>
+
+<ul>
+<li>我们学习这些东西的目的，并不是要把他们都用在咱们自己的实际开发中。</li>
+<li>相反，如果我们能够用最少的东西能够写出一个稳定、高效的多线程程序，更值得赞赏</li>
+<li>我们为了成长，必须要阅读一些高手些的代码，从而快速实现自己代码的积累，我们的技术就会有一个大幅度的提升 //老师更愿意将学习这些内容的理由解释为：为我们将来能够读懂高手甚至大师些的代码而铺路；</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/09/20 19:31 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>

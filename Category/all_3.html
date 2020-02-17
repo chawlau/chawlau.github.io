@@ -170,57 +170,38 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15734280261866.html">
+                <a class="clearlink" href="15812339995025.html">
                 
-                  <h1>Singleton</h1>
+                  <h1>定时任务</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>案例</h4>
+                        	<h4>定时器循环任务</h4>
 
-<pre class="line-numbers"><code class="language-cpp">std::mutex m;
- static MyCAS* GetInstance() {
-    //不代表一定没被new过，只有第一次多线程初始化的时候需要加锁，后面都不需要加锁
-    if (m_instance == nullptr) {
-      //初始化的时候才加锁
-      std::unque_lock(std::mutex) lock(m);
-      if (m_instance == nullptr) {
-        m_instance = new MyCAS();
-        static GC c1;
-      }
-      return m_instance;
-    }
-  }
+<pre class="line-numbers"><code class="language-python">import time
+import datetime
+from apscheduler.schedulers.blocking import BlockingScheduler
 
-</code></pre>
+def func():
+   now = datetime.datetime.now()
+   ts = now.strftime(&#39;%Y-%m-%d %H:%M:%S&#39;)
+   print(&#39;do func time :&#39;,ts)
 
-<ul>
-<li>存在内存reorder, 加volatitle没有</li>
-</ul>
+def func2():
+ #耗时2S
+   now = datetime.datetime.now()
+   ts = now.strftime(&#39;%Y-%m-%d %H:%M:%S&#39;)
+   print(&#39;do func2 time：&#39;,ts)
 
-<h4>golang_demo</h4>
-
-<pre class="line-numbers"><code class="language-go">//Singleton 是单例模式类
-type Singleton struct{}
-
-var singleton *Singleton
-var once sync.Once
-
-//GetInstance 用于获取单例模式对象
-func GetInstance() *Singleton {
-        once.Do(func() {
-                singleton = &amp;Singleton{}
-        })
-
-        return singleton
-}
-
-func GetInstance() *Singleton {
-        once.Do(func() {
-                singleton = &amp;Singletion()
-        })
-}
+def dojob():
+ #创建调度器：BlockingScheduler
+ scheduler = BlockingScheduler()
+ #添加任务,时间间隔2S
+ scheduler.add_job(func, &#39;interval&#39;, seconds=2, id=&#39;test_job1&#39;)
+ #添加任务,时间间隔5S
+ scheduler.add_job(func2, &#39;interval&#39;, seconds=3, id=&#39;test_job2&#39;)
+ scheduler.start()
 </code></pre>
 
                         
@@ -230,10 +211,10 @@ func GetInstance() *Singleton {
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/11/11 07:20 上午</span>
+                    <span class="date">2020/02/09 15:39 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -247,9 +228,72 @@ func GetInstance() *Singleton {
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15729950422631.html">
+                <a class="clearlink" href="15812158642858.html">
                 
-                  <h1>Abstract factory</h1>
+                  <h1>积分系统</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>开发工作</h4>
+
+<ul>
+<li>接口设计</li>
+<li>数据库设计</li>
+<li>业务模型设计</li>
+</ul>
+
+<h4>分层架构</h4>
+
+<ul>
+<li>Contoller 层、Service 层、Repository 层</li>
+<li>Repository 层基于数据库表，而数据库表改动的可能性很小 Entity</li>
+<li>Controller 层提供适配给外部使用的接口，代码经常会变动 View Object</li>
+<li>Service层  Business Object</li>
+</ul>
+
+<h4>设计原则和思想</h4>
+
+<ul>
+<li><img src="media/15812158642858/15812161751517.jpg" alt="" style="width:667px;"/></li>
+</ul>
+
+<h4>功能划分</h4>
+
+<ul>
+<li>根据给定的时间区间，从数据库中拉取数据；</li>
+<li>根据原始数据，计算得到统计数据；</li>
+<li>将统计数据显示到终端（命令行或邮件）；</li>
+<li>定时触发以上 3 个过程的执行。</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2020/02/09 10:37 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html'>设计模式之美</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15734291005727.html">
+                
+                  <h1>Flyweight</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
@@ -257,184 +301,90 @@ func GetInstance() *Singleton {
                         	<h4>动机</h4>
 
 <ul>
-<li>在软件系统中，经常面临着“一系列相互依赖的对象”的创建工作；同时，由于需求的变化，往往存在更多系列对象的创建工作。</li>
-<li>如何应对这种变化？如何绕过常规的对象创建方法（new），提供种“封裝机制“来避免客户程序和这种多系列具体对象创建工作“的紧耦合？</li>
+<li>在软件系统采用纯粹对象方案的问题在于大量细粒度的对象会很快充斥在系统中，从而带来很高的运行时代价一一主要指内存需求方面的代价。</li>
+<li>如何在避免大量细粒度对象问题的同时，让外部客户程序仍然能够透明地使用面向对象的方式来进行操作？</li>
 </ul>
 
-<h4>模式定义</h4>
+<h4>结构</h4>
 
 <ul>
-<li>提供一个接口，让该接口负责创建一系列“相关或者相互依赖的对象”，无需指定它们具体的类。</li>
+<li><img src="media/15734291005727/15734293143425.jpg" alt="" style="width:664px;"/></li>
 </ul>
-
-<h4>结构图</h4>
-
-<p><img src="media/15729950422631/15809876460184.jpg" alt="" style="width:812px;"/></p>
 
 <h4>要点总结</h4>
 
 <ul>
-<li>如果没有应对多系列对象构建”的需求变化，则没有必要使用abstract Factory/模式,这时候使用简单的工厂完全可以。</li>
-<li>系列对象”指的是在某一特定系列下的对象之间有相互依赖、或作用的关系。不同系列的对象之间不能相互依赖。</li>
-<li>Abstract Factory 模式主要在于应对“新系列的需求变动。其缺点在于难以应对“新对象”的需求变动。</li>
-<li>抽象工厂是工厂方法模式的升级版本，工厂方法不能解决具有二级分类的产品的创建问题，抽象工厂就是用来解决这个问题的</li>
-<li>模式稳定的部分就是缺点</li>
+<li><p>面向对象很好地解决了抽象性的问题，但是作为一个运行在机器中的程序实体，我们需要考虑对象的代价问题。Flyweight 主要解决面向对象的代价问题，一般不触及面向对象的抽象性问题。</p></li>
+<li><p>Flyweight 采用对象共享的做法来降低系统中对象的个数，从而降低细粒度对象给系统带来的内存压力。在具体实现方面，要注意对象状态的处理。</p></li>
+<li><p>对象的数量太大从而导致对象内存开销加大ー一什么样的数量才算大？这需要我们仔细的根据具体应用情况进行评估，而不能凭空臆断。</p></li>
 </ul>
-
-<h4>cpp_demo</h4>
-
-<pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
-
-class Article {
- public:
-  virtual void produce() = 0;
-};
-
-class Video {
- public:
-  virtual void produce() = 0;
-};
-
-class CourseFactory {
- public:
-  virtual Video* getVideo() = 0;
-  virtual Article* getArticle()= 0;
-};
-
-class JavaArticle : public Article {
- public:
-  void produce() {
-    std::cout &lt;&lt; &quot; JavaArticl produce&quot; &lt;&lt; std::endl;
-  }
-};
-
-class JavaVideo : public Video {
- public:
-  void produce() {
-    std::cout &lt;&lt; &quot; JavaVideo produce&quot; &lt;&lt; std::endl;
-  }
-};
-class JavaCourseFactory : public CourseFactory {
- public:
-  Video* getVideo() {
-    return new JavaVideo();
-  }
-  Article* getArticle() {
-    return new JavaArticle();
-  }
-};
-
-class PythonArticle : public Article {
- public:
-  void produce() {
-    std::cout &lt;&lt; &quot; PythonArticl produce&quot; &lt;&lt; std::endl;
-  }
-};
-
-class PythonVideo : public Video {
- public:
-  void produce() {
-    std::cout &lt;&lt; &quot; PythonVideo produce&quot; &lt;&lt; std::endl;
-  }
-};
-
-class PythonCourseFactory : public CourseFactory {
- public:
-  Video* getVideo() {
-    return new PythonVideo();
-  }
-  Article* getArticle() {
-    return new PythonArticle();
-  }
-};
-int main() {
-  CourseFactory* f1 = new JavaCourseFactory();
-  Video* v1 = f1-&gt;getVideo();
-  Article* a1 = f1-&gt;getArticle();
-  v1-&gt;produce();
-  a1-&gt;produce();
-
-  CourseFactory* f2 = new PythonCourseFactory();
-  Video* v2 = f2-&gt;getVideo();
-  Article* a2 = f2-&gt;getArticle();
-  v2-&gt;produce();
-  a2-&gt;produce();
-}
-</code></pre>
 
 <h4>golang_demo</h4>
 
-<pre class="line-numbers"><code class="language-go">package abstractfactory
+<pre class="line-numbers"><code class="language-go">package design_pattern
 
 import &quot;fmt&quot;
 
-type Article interface {
-        produce()
+type WebUser struct {
+    name string
 }
 
-type Video interface {
-        produce()
+type WebSite interface {
+    Use(*WebUser)
 }
 
-type CourseFactory interface {
-        getVideo() Video
-        getArticle() Article
+type ConcreteWebsite struct {
+    name string
 }
 
-type JavaArticle struct{}
-
-func (j *JavaArticle) produce() {
-        fmt.Println(&quot;JavaArticle produce&quot;)
+func (c *ConcreteWebsite) Use(user *WebUser) {
+    fmt.Println(&quot;Web type &quot;, c.name, &quot; UserName &quot;, user.name)
 }
 
-type JavaVideo struct{}
-
-func (j *JavaVideo) produce() {
-        fmt.Println(&quot;JavaVideo produce&quot;)
+type NetWebSite struct {
+    *ConcreteWebsite
 }
 
-type JavaCourseFactory struct{}
-
-func (jc *JavaCourseFactory) getVideo() Video {
-        return &amp;JavaVideo{}
+func NewNetWebsite(name string) WebSite {
+    return &amp;NetWebSite{
+        ConcreteWebsite: &amp;ConcreteWebsite{name: name},
+    }
 }
 
-func (jc *JavaCourseFactory) getArticle() Article {
-        return &amp;JavaArticle{}
-}
-type PythonArticle struct{}
-
-func (p *PythonArticle) produce() {
-        fmt.Println(&quot;PythonArticle produce&quot;)
+type WebFactory struct {
+    factory map[string]WebSite
 }
 
-type PythonVideo struct{}
-
-func (p *PythonVideo) produce() {
-        fmt.Println(&quot;PythonVideo produce&quot;)
+func NewWebFactory() *WebFactory {
+    return &amp;WebFactory {
+        factory: make(map[string]WebSite),
+    }
 }
 
-type PythonCourseFactory struct{}
+func (w *WebFactory) GetWebsiteCategory(key string) WebSite {
+    if _, ok := w.factory[key]; !ok {
+        webSite := NewNetWebsite(key)
+        w.factory[key] = webSite
+        println(&quot;create new product&quot;)
+    }
 
-func (py *PythonCourseFactory) getVideo() Video {
-        return &amp;PythonVideo{}
+    return w.factory[key]
 }
 
-func (py *PythonCourseFactory) getArticle() Article {
-        return &amp;PythonArticle{}
-}
-import &quot;testing&quot;
+func TestFlyWeight(t *testing.T) {
+    factory := NewWebFactory()
 
-func getArticleAndVideo(factory CourseFactory) {
-        factory.getArticle().produce()
-        factory.getVideo().produce()
-}
+    f1 := factory.GetWebsiteCategory(&quot;product show&quot;)
+    f1.Use(&amp;WebUser{&quot;ming&quot;})
 
-func TestABSFactory(t *testing.T) {
-        var f1 CourseFactory = &amp;JavaCourseFactory{}
-        getArticleAndVideo(f1)
-        var f2 CourseFactory = &amp;PythonCourseFactory{}
-        getArticleAndVideo(f2)
+    f2 := factory.GetWebsiteCategory(&quot;product show&quot;)
+    f2.Use(&amp;WebUser{&quot;zong&quot;})
+
+    f3 := factory.GetWebsiteCategory(&quot;discus&quot;)
+    f3.Use(&amp;WebUser{&quot;jim&quot;})
+
+    f4 := factory.GetWebsiteCategory(&quot;discus&quot;)
+    f4.Use(&amp;WebUser{&quot;bob&quot;})
 }
 </code></pre>
 
@@ -442,94 +392,49 @@ func TestABSFactory(t *testing.T) {
 
 <pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
 
-class Article(metaclass=ABCMeta):
-    
-    def produce(self):
+class WebUser(object):
+
+    def __init__(self, name):
+        self.name = name
+
+
+class WebSite(metaclass=ABCMeta):
+
+    @abstractmethod
+    def use(self, user):
         pass
-    
-class Video(metaclass=ABCMeta):
-    
-    def produce(self):
-        pass
-    
-class CourseFactory(metaclass=ABCMeta):
-    
-    def get_article(self):
-        pass
-    
-    def get_video(self):
-        pass
-    
-class JavaArticle(Article):
-    
-    def produce(self):
-        print(type(self).__name__, &quot; produce&quot;)
+
+class ConcreteWebsite(WebSite):
+
+    def __init__(self, name):
+        self.name = name
+
+    def use(self, user):
+        print(&#39;Web type {} {}&#39;.format(self.name, user.name))
 
 
-class JavaVideo(Video):
+class WebFactory(object):
 
-    def produce(self):
-        print(type(self).__name__, &quot; produce&quot;)
-        
-class JavaCourseFactory(CourseFactory):
-    
-    def get_article(self):
-        return JavaArticle()
-    
-    def get_video(self):
-        return JavaVideo()
+    def __init__(self):
+        self.factory = {}
 
-
-class CppArticle(Article):
-
-    def produce(self):
-        print(type(self).__name__, &quot; produce&quot;)
-
-
-class CppVideo(Video):
-
-    def produce(self):
-        print(type(self).__name__, &quot; produce&quot;)
-
-
-class CppCourseFactory(CourseFactory):
-
-    def get_article(self):
-        return CppArticle()
-
-    def get_video(self):
-        return CppVideo()
-
-
-class PythonArticle(Article):
-
-    def produce(self):
-        print(type(self).__name__, &quot; produce&quot;)
-
-
-class PythonVideo(Video):
-
-    def produce(self):
-        print(type(self).__name__, &quot; produce&quot;)
-
-
-class PythonCourseFactory(CourseFactory):
-
-    def get_article(self):
-        return PythonArticle()
-
-    def get_video(self):
-        return PythonVideo()
+    def get_website_category(self, key):
+        if key not in self.factory:
+            print(&#39;create new website&#39;)
+            self.factory[key] = ConcreteWebsite(key)
+        return self.factory[key]
 
 if __name__ == &#39;__main__&#39;:
+   factory = WebFactory()
 
-    java = JavaCourseFactory()
-    java.get_video().produce()
-    java.get_article().produce()
+   f1 = factory.get_website_category(&quot;product show&quot;)
+   f1.use(WebUser(&#39;ming&#39;))
 
-    cpp = CppCourseFactory()
-    cpp.get_article().produce()
-    cpp.get_video().produce()
+   f2 = factory.get_website_category(&quot;product show&quot;)
+   f2.use(WebUser(&#39;ming&#39;))
+
+   f3 = factory.get_website_category(&quot;discus&quot;)
+   f3.use(WebUser(&#39;ming&#39;))
 </code></pre>
 
                         
@@ -539,7 +444,7 @@ if __name__ == &#39;__main__&#39;:
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/11/06 07:04 上午</span>
+                    <span class="date">2019/11/11 07:38 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
@@ -556,177 +461,118 @@ if __name__ == &#39;__main__&#39;:
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15729049211046.html">
+                <a class="clearlink" href="15736874304748.html">
                 
-                  <h1>Factory</h1>
+                  <h1>Facade</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>典型模式</h4>
+                        	<h4>接口隔离模式</h4>
 
 <ul>
-<li>通过“对象创建”模式绕开 new，来避免对象创建（new）过程中所导致的紧耦合（依赖具体类），从而支持对象创建的稳定。它是接口抽象之后的第一步工作。</li>
+<li>在组件构建过程中，某些接口之间直接的依赖常常会带来很多题、甚至根本无法实现。采用添加一层间接（稳定）接口，来隔离本来互相紧密关联的接口是一种常见的解決方案。</li>
 </ul>
 
-<h4>典型模式</h4>
+<h4>系统间耦合的复杂度</h4>
 
 <ul>
-<li>Factory Method</li>
-<li>Abstract Factory</li>
-<li>Prototype</li>
-<li>Builder</li>
+<li>方案的问题在于组件的客户和组件中各种复杂的子系统有了过多的耦合，随着外部客户程序和各子系统的演化，这种过多的耦合面临很多变化的挑战。</li>
 </ul>
 
-<h4>定义</h4>
+<h4>结构</h4>
 
 <ul>
-<li>定义ー个用于创建对象的接口，让子类决定实例化哪一个类 Factory Method 使得一个类的实例化延迟（目的：解耦，手段：虚函数）到子类。</li>
+<li><img src="media/15736874304748/15807223678610.jpg" alt="" style="width:636px;"/></li>
 </ul>
 
-<h4>结构图</h4>
-
-<p><img src="media/15729049211046/15809845877086.jpg" alt="" style="width:728px;"/></p>
-
-<h4>总结</h4>
+<h4>要点总结</h4>
 
 <ul>
-<li>Factory Method 模式用于隔离类对象的使用者和具体类型之间的耦合关系。面对一个经常变化的具体类型，紧耦合关系（new）会导致软件的脆弱。</li>
-<li>Factory Methodi 模式通过面向对象的手法，将所要创建的具体对象工作延迟到子类，从而实现一种扩展（而非更改）的策略，较好地解决了这种紧耦合关系。</li>
-<li>Factory Method 模式解决“单个对象”的需求变化。缺点在于要求创 建方法/参数相同。</li>
+<li>从客户程序的角度来看，Facade 模式简化了整个组件系统的接口对于组件内部与外部客户程序来说达到了种“解耦”果内部学系统的程何雯化不会影到 Facades 接口的变</li>
+<li>Facade 设计模式更注重从架构的层次去看整个系统，而不是单个类的层次。Facade 很多时候更是一种架构</li>
+<li>Facade 设计模式并非、个集装箱，可以任意地放进任何多个对象。Facade 模式中组件的内部应该是、相互合关比较大的一系列组件”，而不是简单的功能集合</li>
 </ul>
 
 <h4>cpp_demo</h4>
 
-<pre class="line-numbers"><code class="language-cpp">class Video {
- public:
-  virtual void produce() = 0;
+<pre class="line-numbers"><code class="language-cpp">//
+// Created by 刘超 on 2019-11-14.
+//
+#include &lt;iostream&gt;
+
+class SubSystem1 {
+public:
+    SubSystem1() {}
+    ~SubSystem1() {}
+
+    void Operation() {std::cout &lt;&lt; &quot;Subsystem1 operation...&quot; &lt;&lt; std::endl;}
 };
 
-class VideoFactory {
- public:
-  virtual Video* getVideo() = 0;
+class SubSystem2 {
+public:
+    SubSystem2() {}
+    ~SubSystem2() {}
+    void Operation() {std::cout &lt;&lt; &quot;Subsystem2 operation...&quot; &lt;&lt; std::endl;}
 };
 
-class FEVideo : public Video {
- public:
-  void produce() {
-    std::cout &lt;&lt; &quot; FE video &quot; &lt;&lt; std::endl;
-  }
-};
+class Facade {
+public:
+    Facade() {
+        sub1 = new SubSystem1();
+        sub2 = new SubSystem2();
+    }
 
-class FEVideoFactory : public VideoFactory {
- public:
-  Video* getVideo() {
-    return new FEVideo();
-  }
-};
-
-class JavaVideo : public Video {
- public:
-  void produce() {
-    std::cout &lt;&lt; &quot; Java video &quot; &lt;&lt; std::endl;
-  }
-};
-class JavaVideoFactory : public VideoFactory {
- public:
-  Video* getVideo() {
-    return new JavaVideo();
-  }
-};
-
-class PythonVideo : public Video {
- public:
-  void produce() {
-    std::cout &lt;&lt; &quot; Python video &quot; &lt;&lt; std::endl;
-  }
-};
-
-class PythonVideoFactory : public VideoFactory {
- public:
-  Video* getVideo() {
-    return new PythonVideo();
-  }
+    ~Facade();
+    void OperatonWrapper() {
+        sub1-&gt;Operation();
+        sub2-&gt;Operation();
+    }
+    SubSystem1* sub1;
+    SubSystem2* sub2;
 };
 
 int main() {
-  VideoFactory* f1 = new PythonVideoFactory();
-  VideoFactory* f2 = new JavaVideoFactory();
-  VideoFactory* f3 = new FEVideoFactory();
-  Video* v1 = f1-&gt;getVideo();
-  Video* v2 = f2-&gt;getVideo();
-  Video* v3 = f3-&gt;getVideo();
-  v1-&gt;produce();
-  v2-&gt;produce();
-  v3-&gt;produce();
+    Facade* f =  new Facade();
+    f-&gt;OperatonWrapper();
 }
 </code></pre>
 
-<h4>golang_demo</h4>
+<h4>go_demo</h4>
 
 <pre class="line-numbers"><code class="language-go">package desian_pattern_practise
 
 import &quot;reflect&quot;
 
-type Video interface {
-    Produce()
+type Subsystem1 struct {
 }
 
-type VideoFactory interface {
-    GetVideo() Video
+func (s *Subsystem1) Operation() {
+    println(reflect.TypeOf(s).String() + &quot; Operation&quot;)
 }
 
-type CppVideo struct {
+type Subsystem2 struct {
 }
 
-func (c *CppVideo) Produce() {
-    println(reflect.TypeOf(c).String(), &quot;Produce&quot;)
+func (s *Subsystem2) Operation() {
+    println(reflect.TypeOf(s).String() + &quot; Operation&quot;)
 }
 
-type CppFactory struct {
+type Facade struct {
+    sub1 *Subsystem1
+    sub2 *Subsystem2
 }
 
-func (c *CppFactory) GetVideo() Video {
-    return &amp;CppVideo{}
+func (f *Facade) Operation() {
+    f.sub1.Operation()
+    f.sub2.Operation()
 }
 
-type JavaVideo struct {
-}
-
-func (c *JavaVideo) Produce() {
-    println(reflect.TypeOf(c).String(), &quot;Produce&quot;)
-}
-
-type JavaFactory struct {
-}
-
-func (c *JavaFactory) GetVideo() Video {
-    return &amp;JavaVideo{}
-}
-
-type PythonVideo struct {
-}
-
-func (c *PythonVideo) Produce() {
-    println(reflect.TypeOf(c).String(), &quot;Produce&quot;)
-}
-
-type PythonFactory struct {
-}
-
-func (c *PythonFactory) GetVideo() Video {
-    return &amp;PythonVideo{}
-}
-
-func TestCppFactory_GetVideo(t *testing.T) {
-    py := &amp;PythonFactory{}
-    py.GetVideo().Produce()
-
-    cpp := &amp;CppFactory{}
-    cpp.GetVideo().Produce()
-
-    java := &amp;JavaFactory{}
-    java.GetVideo().Produce()
+func NewFacade() *Facade {
+    return &amp;Facade{
+        sub1: &amp;Subsystem1{},
+        sub2: &amp;Subsystem2{},
+    }
 }
 </code></pre>
 
@@ -734,1291 +580,29 @@ func TestCppFactory_GetVideo(t *testing.T) {
 
 <pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
 
-class Video(metaclass=ABCMeta):
-    def produce(self):
-        pass
+class SubSystem1(object):
 
-class VideoFactory(metaclass=ABCMeta):
+    def operation(self):
+        print(&#39;Subsystem1 operation&#39;)
 
-    def get_video(self):
-        pass
+class SubSystem2(object):
 
-class CppVideo(Video):
+    def operation(self):
+        print(&#39;Subsystem2 operation&#39;)
 
-    def produce(self):
-        print(type(self).__name__, &quot; produce&quot;)
-        
-class CppFactory(VideoFactory):
-    
-    def get_video(self):
-        return CppVideo()
-
-
-class JavaVideo(Video):
-
-    def produce(self):
-        print(type(self).__name__, &quot; produce&quot;)
-
-
-class JavaFactory(VideoFactory):
-
-    def get_video(self):
-        return JavaVideo()
-
-
-class PythonVideo(Video):
-
-    def produce(self):
-        print(type(self).__name__, &quot; produce&quot;)
-
-
-class PythonFactory(VideoFactory):
-
-    def get_video(self):
-        return PythonVideo()
-
-if __name__ == &#39;__main__&#39;:
-    cpp = CppFactory()
-    cpp.get_video().produce()
-
-    java = JavaFactory()
-    java.get_video().produce()
-
-    python = PythonFactory()
-    python.get_video().produce()
-</code></pre>
-
-<h4>golang_demo</h4>
-
-<pre class="line-numbers"><code class="language-go">import &quot;fmt&quot;
-type ICar interface {
-    Name()
-}
-
-type Factory interface {
-    CreateCar() ICar
-}
-
-type BenzCar struct {
-}
-
-func (bc *BenzCar) Name() {
-    fmt.Println(&quot;BenzCar Create&quot;)
-}
-
-type BenzFactory struct{}
-
-func (b *BenzFactory) CreateCar() ICar {
-    return &amp;BenzCar{}
-}
-
-type BmwCar struct {
-    ICar
-}
-
-func (bc *BmwCar) Name() {
-    fmt.Println(&quot;BmwCar Create&quot;)
-}
-
-type BmwFactory struct{}
-
-func (b *BmwFactory) CreateCar() ICar {
-    return &amp;BmwCar{}
-}
-
-type AudiCar struct {
-    ICar
-}
-
-func (bc *AudiCar) Name() {
-    fmt.Println(&quot;AudiCar Create&quot;)
-}
-
-type AudiFactory struct{}
-
-func (b *AudiFactory) CreateCar() ICar {
-    return &amp;AudiCar{}
-}
-
-func TestAudiFactory_CreateCar(t *testing.T) {
-    audi := &amp;AudiFactory{}
-    audi.CreateCar().Name()
-
-    bmw := &amp;BmwFactory{}
-    bmw.CreateCar().Name()
-
-    benz := &amp;BenzFactory{}
-    benz.CreateCar().Name()
-}
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/05 06:02 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15667286771718.html">
-                
-                  <h1>对象移动，移动构造函数，移动赋值运算符</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>对象移动</h4>
-
-<ul>
-<li>A移动给B，A对象就不能用了</li>
-<li>移动 不是从一块地址移动到另外一个地址，只是所有权变更</li>
-<li>移动构造函数Time::Time(const Time&amp;&amp; time)</li>
-</ul>
-
-<h4>完成的功能</h4>
-
-<ul>
-<li>完成必要的内存移动，斩断原对象和内存的关系</li>
-<li>确保移动后源对象即使销毁也没有问题，B&lt;-A 确保不再使用A，而是应该去使用B</li>
-<li>noexcept 提高编译器效率</li>
-</ul>
-
-<h4>合成的移动操作</h4>
-
-<ul>
-<li>有自己的拷贝构造函数，拷贝赋值运算符，或者自己的析构，编译器不会为其合成</li>
-<li>没有自己的拷贝构造函数，拷贝赋值运算符，或者自己的析构</li>
-<li>只有一个类没定义任何自己版本的拷贝构造函数，并且非静态成员都可以移动，</li>
-<li>内置类型是可以移动</li>
-<li>类类型的成员，这个类必须要有对应的移动操作的函数</li>
-</ul>
-
-<h4>容器移动构造函数</h4>
-
-<pre class="line-numbers"><code class="language-cpp">//
-// Created by eredinliu on 2020-02-06.
-//
-
-
-#include &lt;iostream&gt;
-#include &lt;vector&gt;
-
-using namespace std;
-
-class Obj1 {
-public:
-    Obj1()
-    {
-        cout &lt;&lt; &quot;Obj1()\n&quot;;
-    }
-    Obj1(const Obj1&amp;)
-    {
-        cout &lt;&lt; &quot;Obj1(const Obj1&amp;)\n&quot;;
-    }
-    Obj1(Obj1&amp;&amp;)
-    {
-        cout &lt;&lt; &quot;Obj1(Obj1&amp;&amp;)\n&quot;;
-    }
-};
-
-class Obj2 {
-public:
-    Obj2()
-    {
-        cout &lt;&lt; &quot;Obj2()\n&quot;;
-    }
-    Obj2(const Obj2&amp;)
-    {
-        cout &lt;&lt; &quot;Obj2(const Obj2&amp;)\n&quot;;
-    }
-    Obj2(Obj2&amp;&amp;) noexcept
-    {
-        cout &lt;&lt; &quot;Obj2(Obj2&amp;&amp;)\n&quot;;
-    }
-};
-
-int main()
-{
-    vector&lt;Obj1&gt; v1;
-    v1.reserve(2);
-    v1.emplace_back();
-    v1.emplace_back();
-    v1.emplace_back();
-
-    cout &lt;&lt; &quot; ==================\n&quot;;
-    vector&lt;Obj2&gt; v2;
-    v2.reserve(2);
-    v2.emplace_back();
-    v2.emplace_back();
-    v2.emplace_back();
-}
-</code></pre>
-
-<ul>
-<li>vector 通常保证强异常安全性，如果元素类型没有提供一个保证不抛异常的移动构造函数，vector 通常会使用拷贝构造函数。因此，对于拷贝代价较高的自定义元素类型，我们应当定义移动构造函数，并标其为 noexcept，或只在容器中放置对象的智能指针。</li>
-<li>emplace_back系列函数是为了提升容器的性能而设计的</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/25 18:24 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15696667375372.html">
-                
-                  <h1>引用折叠&转发&完美转发&forward</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>引用折叠</h4>
-
-<pre class="line-numbers"><code class="language-cpp">template&lt;typename T&gt;
-void func(T &amp;&amp;tmp)
-
-int main(){
-  int i = 18;
-  func(i); //i左值 T int&amp; tmp int&amp;
-  func(100);//i 右值  T int tmp int&amp;&amp;
-  void func(int&amp; &amp;&amp;tmp) {} 
-  void func(int&amp; tmp) {} //编译器展现出来的
-}
-</code></pre>
-
-<ul>
-<li>引用折叠</li>
-<li>左值引用&amp;, 右值引用&amp;&amp;</li>
-<li>T是第一组左值引用， &amp;&amp;tmp第二组右值引用</li>
-</ul>
-
-<table>
-<thead>
-<tr>
-<th style="text-align: center">第一组</th>
-<th style="text-align: center">第二组</th>
-<th style="text-align: center">结果</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td style="text-align: center">&amp;左值引用</td>
-<td style="text-align: center">&amp;左值引用</td>
-<td style="text-align: center">&amp;左值引用</td>
-</tr>
-<tr>
-<td style="text-align: center">&amp;左值引用</td>
-<td style="text-align: center">&amp;&amp;右值引用</td>
-<td style="text-align: center">&amp;左值引用</td>
-</tr>
-<tr>
-<td style="text-align: center">&amp;&amp;右值引用</td>
-<td style="text-align: center">&amp;左值引用</td>
-<td style="text-align: center">&amp;左值引用</td>
-</tr>
-<tr>
-<td style="text-align: center">&amp;&amp;右值引用</td>
-<td style="text-align: center">&amp;&amp;右值引用</td>
-<td style="text-align: center">&amp;&amp;右值引用</td>
-</tr>
-</tbody>
-</table>
-
-<ul>
-<li>折叠规则，只要有任意一个引用为左值引用，结果就是左值引用，否则就是右值引用</li>
-</ul>
-
-<h4>引用的引用</h4>
-
-<pre class="line-numbers"><code class="language-cpp">int b = 500;
-int &amp;rb = b;
-int &amp; &amp;rrb = b; //引用的引用，两个&amp;之间有空格
-</code></pre>
-
-<ul>
-<li>引用的引用是非法的</li>
-<li>编译器内部推断</li>
-</ul>
-
-<h4>转发和完美转发</h4>
-
-<ul>
-<li>函数模版把收到的参数以及这些参数的类型转发给其他函数</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">void func2(int t1, int&amp; t2) {
-  cout &lt;&lt; &quot; t1 + t2 &quot; &lt;&lt; t1 + t2 &lt;&lt; endl;
-  t2++;
-}
-template&lt;typename F, typename T1, typename T2&gt;
-void func(F f, T1 t1, T2&amp;&amp; t2) {
-  f(t1, t2)
-}
-</code></pre>
-
-<ul>
-<li>要保持t2的引用属性，T2改成万能引用T2&amp;&amp;，可以推导所有的实参类型</li>
-<li>T2改成T2&amp;不能保留左值或者右值属性</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp"> int&amp;&amp; rval = 80;//右值引用必须要绑定右值, &amp;&amp;rval是右值引用,但是rval本身是个左值
-  func3(rval, j);//err
-  func3(80, j);//right
-</code></pre>
-
-<h4>完美转发</h4>
-
-<pre class="line-numbers"><code class="language-cpp">void func3(int&amp;&amp; t1, int&amp; t2) {
-  cout &lt;&lt; &quot; t1 + t2 &quot; &lt;&lt; t1 + t2 &lt;&lt; endl;
-  t2++;
-}
-
-template&lt;typename F, typename T1, typename T2&gt;
-void func(F f, T1&amp;&amp; t1, T2&amp;&amp; t2) { //t1是左值, 形参都是左值
-   f(forward&lt;T1&gt;(t1), forward&lt;T2&gt;(t2));
-}
-
-int main() {
-  int i = 20, j = 30;
-  func(func2, i, j);
-  func3(70, j);
-  cout &lt;&lt; &quot; j &quot; &lt;&lt; j &lt;&lt; endl;
-
-  int&amp;&amp; rval = 80;//右值引用必须要绑定右值, &amp;&amp;rval是右值引用,但是rval本身是个左值
-  //func3(rval, j);
-  func(func3, 80, j);
-}
-</code></pre>
-
-<ul>
-<li>接受任意实参的函数模板</li>
-<li>目标函数会接收到与转发函数所收到的完全相同</li>
-<li>std::forward</li>
-<li>发挥作用的条件</li>
-<li>调用模板函数，模板函数参数是万能引用类型，模版函数负责转发</li>
-<li>std::forward的能力就是按照参数本来的类型转发</li>
-<li>实参如果原来是左值，forward还是按照原来的类型处理</li>
-<li>实参如果原来是右值，形参变成了左值，forward会把左值信息还原为右值</li>
-<li>万能引用会保存实参的左值右值的信息，</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">void func4(int &amp;t) {
-  cout&lt;&lt; &quot;left  value &quot; &lt;&lt; endl;
-}
-
-void func4(int &amp;&amp;t) {
-  cout&lt;&lt; &quot;right  value &quot; &lt;&lt; endl;
-}
-
-template &lt;typename T&gt;
-void testF(T&amp;&amp; t) {
-  func4(t);
-  func4(forward&lt;T&gt;(t));
-  func4(move(t));//move是左值转右值。
-}
-</code></pre>
-
-<ul>
-<li>forward是有条件的转发，左值转右值</li>
-<li>move无条件强制类型转换成右值</li>
-</ul>
-
-<h4>万能引用</h4>
-
-<ul>
-<li>可以合并代码，达到简化代码的效果</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">class shape {};
-class circle : public shape {};
-void foo(const shape&amp;)
-{
-    puts(&quot;foo(const shape&amp;)&quot;);
-}
-
-void foo(shape&amp;&amp;)
-{
-    puts(&quot;foo(shape&amp;&amp;)&quot;);
-}
-
-//void bar(const shape&amp; s)
-//{
-//    puts(&quot;bar(const shape&amp;)&quot;);
-//    foo(s);
-//}
-//
-//void bar(shape&amp;&amp; s)
-//{
-//    puts(&quot;bar(shape&amp;&amp;)&quot;);
-//    foo(move(s));
-//}
-
-
-template &lt;typename T&gt;
-void bar(T&amp;&amp; s)
-{
-    foo(std::forward&lt;T&gt;(s));
-}
-
-int main()
-{
-    circle temp;
-    bar(temp);
-    bar(circle());
-}
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/28 18:32 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15664703415424.html">
-                
-                  <h1>左值和右值</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>左值和右值</h4>
-
-<ul>
-<li>左值 能用在赋值语句=左边的东西</li>
-<li>C++表达式要么是左值，要么是右值</li>
-<li>i = i + 1 i有右值属性，i出现在左边，拥有左值属性</li>
-<li>赋值运算符</li>
-<li>取地址</li>
-<li>string vector []左值 iter是迭代器</li>
-<li>看一个运算符在一个字面值能不能操作</li>
-<li>左值表达式 左值</li>
-<li>右值表达式 右值</li>
-</ul>
-
-<h4>引用分类</h4>
-
-<ul>
-<li>左值引用 绑定到左值</li>
-<li>const引用 左值引用</li>
-<li>右值引用 绑定到右值，临时对象 </li>
-</ul>
-
-<h4>左值引用</h4>
-
-<ul>
-<li>左值引用不能绑定到右值</li>
-<li>const 左值引用可以绑定到右值</li>
-</ul>
-
-<h4>右值引用</h4>
-
-<ul>
-<li>来绑定一些临时对象和即将销毁的对象</li>
-<li>右值引用理解为对象</li>
-<li>绑定到坐值的引用，一般都不能绑定到右值</li>
-<li>&amp;&amp;代表新的数据类型</li>
-<li>提高程序运行效率，把拷贝对象变成移动对象，转换对象的所有者</li>
-<li>移动对象如何发生 移动构造函数，应付移动构造函数</li>
-</ul>
-
-<h4>总结</h4>
-
-<ul>
-<li>返回左值引用的函数，连同赋值，下标，解引用都是左值引用 --i </li>
-<li>i-- 右值引用</li>
-<li>++i ++i直接给变量i+1,然后返回i本身</li>
-<li>i是变量，所以可以被赋值</li>
-<li>右值引用的变量本身是左值</li>
-<li>任何函数的行参都是左值func(int&amp;&amp; w) w是左值</li>
-<li>临时对象都是右值</li>
-<li>如果一个 prvalue 被绑定到一个引用上，它的生命周期则会延长到跟这个引用变量一样长。</li>
-</ul>
-
-<h4>std::move</h4>
-
-<ul>
-<li>把一个左值强制转换成右值</li>
-</ul>
-
-<h4>指分左右</h4>
-
-<p><img src="media/15808686074669/18b692072537d4ce179d3857a8a0133c.png" alt="18b692072537d4ce179d3857a8a0133"/></p>
-
-<ul>
-<li>一个 lvalue 是通常可以放在等号左边的表达式 左值</li>
-<li>一个 rvalue 是通常只能放在等号右边的表达式，右值</li>
-<li>一个 glvalue 是 generalized lvalue，广义左值</li>
-<li>一个 xvalue 是 expiring lvalue，将亡值</li>
-<li>一个 prvalue 是 pure rvalue，纯右值</li>
-</ul>
-
-<h4>对比</h4>
-
-<pre class="line-numbers"><code class="language-cpp">smart_ptr&lt;shape&gt; ptr1{new circle()};
-smart_ptr&lt;shape&gt; ptr2 = std::move(ptr1);
-</code></pre>
-
-<ul>
-<li> std::move(ptr) 就有趣点了。它的作用是把一个左值引用强制转换成一个右值引用，而并不改变其内容。从实用的角度，在我们这儿 std::move(ptr1) 等价于 static_cast<smart_ptr<shape>&amp;&amp;&gt;(ptr1)</li>
-<li> 把 std::move(ptr1) 看作是一个有名字的右值。为了跟无名的纯右值 prvalue 相区别，C++ 里目前就把这种表达式叫做 xvalue。跟左值 lvalue 不同，xvalue 仍然是不能取地址的——这点上，xvalue 和 prvalue 相同。所以，xvalue 和 prvalue 都被归为右值 rvalue</li>
-<li> <img src="media/15808686074669/15808730621501.jpg" alt="" style="width:583px;"/></li>
-</ul>
-
-<h4>字符串绑定</h4>
-
-<pre class="line-numbers"><code class="language-cpp">string str{&quot;I love china&quot;};
-  string&amp; s1{str};
-
-  //左值引用不能绑定到临时变量,临时变量被系统当右值
-  //string&amp; s2{&quot;I love china&quot;};
-  //const引用绑定到右值，执行隐式转换并放入string临时变量
-  const string&amp; s3{&quot;I love china&quot;};
-  //string&amp;&amp; s4{s3};
-  string&amp;&amp; s5{&quot;I love China&quot;};//可以绑定到一个临时变量，
-</code></pre>
-
-<h4>Move函数</h4>
-
-<pre class="line-numbers"><code class="language-cpp">  int tmp = 10;
-  int&amp; l1 = tmp;
-  int&amp;&amp; l2 = tmp * 100;
-  const int&amp; l4 = i * 100;
-  const int&amp;&amp; r5 = i * 100;
-  //成功绑定右值,但是此后r6的值和tmp没有关系
-  int&amp;&amp; r6 = tmp++;
-  tmp = 12;
-  printf(&quot; %d %d \n&quot;, r6, tmp);
-  int&amp;&amp; r7 = std::move(tmp);
-  r7 = 35;
-  printf(&quot; %d %d \n&quot;, r7, tmp);
-
-  int&amp;&amp; r8 = 100;
-  int&amp;&amp; r9 = std::move(r8);
-  printf(&quot; %d %d \n&quot;, r8, r9);
-
-  string st = &quot;Im ok&quot;;
-  //sring移动构造函数把st的内容拷贝到def，def重新开辟内存,同时把st清空
-  //string def = std::move(st);
-  //sring移动构造函数把st的内容拷贝到def，def重新开辟内存,同时把st清空
-  string&amp;&amp; sr  = std::move(st);
-  cout &lt;&lt; sr &lt;&lt; &quot; &quot; &lt;&lt; st &lt;&lt; endl;
-</code></pre>
-
-<h4>返回值优化</h4>
-
-<ul>
-<li>一个本地对象意味着这个对象会被拷贝，除非编译器发现可以做返回值优化（named return value optimization，或 NRVO</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/22 18:39 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15656045521412.html">
-                
-                  <h1>函数</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>inline函数</h4>
-
-<ul>
-<li>函数体很小，调用很频繁</li>
-<li>inline影响编译器，编译阶段，系统将函数调用替换为函数本体</li>
-<li>inline函数需要放在头文件</li>
-<li>代码膨胀，循环，分之，递归调用尽量不要出现在inline中</li>
-</ul>
-
-<h4>C++11新特性</h4>
-
-<ul>
-<li>constexpr 用在常量表达式的调用, 更严格的inline函数</li>
-<li>后置返回类型</li>
-</ul>
-
-<h4>函数杂合用法</h4>
-
-<ul>
-<li>函数返回指针和返回引用</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/12 18:09 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15732604734698.html">
-                
-                  <h1>Builder</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>动机</h4>
-
-<ul>
-<li><p>在软件系统中，有时候面临着一个复杂对象的创建工作，其通常由各个部分的子对象用一定的算法构成；由于需求的变化，这个复杂对象的各个部分经常面临着剧烈的变化，但是将它们组合在一起的算法却相对稳定。</p></li>
-<li><p>如何应对这种变化？如何提供一种封装机制”来隔离出“复杂对象的各个部分“的变化，从而保持系统中的“稳定构建算法”不随着需求改变而改变？</p></li>
-</ul>
-
-<h4>模式定义</h4>
-
-<ul>
-<li>将一个复杂对象的构建与其表示相分离，使得同样的构建过程（稳定）可以创建不同的表示（变化）</li>
-</ul>
-
-<h4>结构</h4>
-
-<ul>
-<li><img src="media/15732604734698/15807942028063.jpg" alt="" style="width:677px;"/></li>
-</ul>
-
-<h4>要点总结</h4>
-
-<ul>
-<li><p>Builder 模式主要用于“分步骤构建一个复杂的对象”。在这其中“分步骤“是一个稳定的算法，而复杂对象的各个部分则经常变化</p></li>
-<li><p>变化点在哪里，封装哪里- Builder 模式主要在于应对“复杂对象各个部分”的频繁需求变动。其缺点在于难以应对“分步骤构建算法”的需求变动。</p></li>
-</ul>
-
-<h4>和其他模式区别</h4>
-
-<ul>
-<li>factory模式关注的是整个产品整体对象的产生，成品的生成。builder模式关注的产品的创建过程和细节，一步一步的由各个子部件构建成一个成品</li>
-<li>composite 关注的对象内部的组成结构，强调的是部分与整体的关系，builder模式关注的是对象的创建过程，由一个一个的子部件构建一个成品的过程</li>
-</ul>
-
-<h4>cpp_demo</h4>
-
-<pre class="line-numbers"><code class="language-cpp">//
-// Created by eredinliu on 2020-02-04.
-//
-
-#include &lt;iostream&gt;
-#include &lt;list&gt;
-#include &lt;map&gt;
-
-using namespace std;
-
-class IPart {
-public:
-    IPart(const string&amp; name) : name_(name) {}
-    string Name() {
-        return this-&gt;name_;
-    }
-
-protected:
-    string name_;
-};
-
-class CPU : public IPart {
-public:
-    CPU(const string&amp; name) : IPart(name) {}
-};
-
-class MainBoard : public IPart {
-public:
-    MainBoard(const string&amp; name) : IPart(name) {}
-};
-
-class Ram : public IPart {
-public:
-    Ram(const string&amp; name) : IPart(name) {}
-};
-
-class VideoCard : public IPart {
-public:
-    VideoCard(const string&amp; name) : IPart(name) {}
-};
-
-class Computer {
-public:
-    Computer(const string&amp; name, map&lt;string, IPart*&gt; components)
-    : name_(name), components_(components) {}
-
-    string Name() {
-        return this-&gt;name_;
-    }
-
-    virtual void Feature() = 0;
-protected:
-    string name_;
-    map&lt;string, IPart*&gt; components_;
-};
-
-class MacBook : public Computer {
-public:
-
-    MacBook(const string&amp; name, map&lt;string, IPart*&gt; components)
-            : Computer(name, components) {}
-
-    void Feature() {
-        cout &lt;&lt; &quot;I&#39;m MacBook computer &quot; &lt;&lt; this-&gt;name_ &lt;&lt; endl;
-    }
-};
-
-class ThinkPad : public Computer {
-public:
-
-    ThinkPad(const string&amp; name, map&lt;string, IPart*&gt; components)
-            : Computer(name, components) {}
-
-    void Feature() {
-        cout &lt;&lt; &quot;I&#39;m ThinkPad computer &quot; &lt;&lt; this-&gt;name_ &lt;&lt; endl;
-    }
-};
-
-class IBuilder {
-public:
-    virtual void BuildCpu() = 0;
-    virtual void BuildMainBoard() = 0;
-    virtual void BuildRam() = 0;
-    virtual void BuildVideoCard() = 0;
-    Computer* GetResult() {
-        return this-&gt;computer;
-    }
-    IBuilder(Computer* com) : computer(com) {}
-
-protected:
-    Computer* computer;
-};
-
-class MacBookBuilder : public IBuilder {
-public:
-
-    MacBookBuilder(Computer* com) : IBuilder(com) {}
-
-    void BuildCpu() {
-        cout &lt;&lt; typeid(this).name() &lt;&lt; &quot; BuildCPU&quot; &lt;&lt;endl;
-    }
-
-    void BuildMainBoard() {
-        cout &lt;&lt; typeid(this).name() &lt;&lt; &quot; BuildMainBoard&quot; &lt;&lt;endl;
-    }
-
-    void BuildRam() {
-        cout &lt;&lt; typeid(this).name() &lt;&lt; &quot; BuildRam&quot; &lt;&lt;endl;
-    }
-
-    void BuildVideoCard() {
-        cout &lt;&lt; typeid(this).name() &lt;&lt; &quot; BuildVideoCard&quot; &lt;&lt;endl;
-    }
-};
-
-class ThinkPadBuilder : public IBuilder {
-public:
-    ThinkPadBuilder(Computer* com) : IBuilder(com) {}
-
-    void BuildCpu() {
-        cout &lt;&lt; typeid(this).name() &lt;&lt; &quot; BuildCPU&quot; &lt;&lt;endl;
-    }
-
-    void BuildMainBoard() {
-        cout &lt;&lt; typeid(this).name() &lt;&lt; &quot; BuildMainBoard&quot; &lt;&lt;endl;
-    }
-
-    void BuildRam() {
-        cout &lt;&lt; typeid(this).name() &lt;&lt; &quot; BuildRam&quot; &lt;&lt;endl;
-    }
-
-    void BuildVideoCard() {
-        cout &lt;&lt; typeid(this).name() &lt;&lt; &quot; BuildVideoCard&quot; &lt;&lt;endl;
-    }
-};
-
-class Director {
-public:
-    void Create(IBuilder* builder) {
-        builder-&gt;BuildCpu();
-        builder-&gt;BuildMainBoard();
-        builder-&gt;BuildRam();
-        builder-&gt;BuildVideoCard();
-    }
-};
-
-int main() {
-    map&lt;string, IPart*&gt; components;
-    components[&quot;cpu&quot;] = new CPU(&quot;i5-6200u&quot;);
-    components[&quot;board&quot;] = new MainBoard(&quot;Intel DH5700D&quot;);
-    components[&quot;ram&quot;] = new Ram(&quot;DDR4&quot;);
-    components[&quot;card&quot;] = new VideoCard(&quot;NVIDIA Geforce 920MAX&quot;);
-
-    Computer* think_pad = new ThinkPad(&quot;think_pad&quot;, components);
-    IBuilder* builder = new ThinkPadBuilder(think_pad);
-    Director* director = new Director();
-    director-&gt;Create(builder);
-    Computer* c1 = builder-&gt;GetResult();
-    c1-&gt;Feature();
-}
-</code></pre>
-
-<h4>golang_demo</h4>
-
-<pre class="line-numbers"><code class="language-go">package desian_pattern_practise
-
-import &quot;reflect&quot;
-
-type IComputer interface {
-    Feature()
-}
-
-type IPart interface {
-    Name() string
-}
-
-type ICPU struct {
-    name string
-}
-
-func (i *ICPU) Name() string {
-    return &quot;CPU&quot;
-}
-
-
-type IMainBoards struct {
-    name string
-}
-
-func (i *IMainBoards) Name() string {
-    return &quot;MainBoards&quot;
-}
-
-type Ram struct {
-    name string
-}
-
-func (i *Ram) Name() string {
-    return &quot;Ram&quot;
-}
-
-type IVideoCard struct {
-    name string
-}
-
-func (i *IVideoCard) Name() string {
-    return &quot;VideoCard&quot;
-}
-
-type Computer struct {
-    name string
-    components map[string]IPart
-}
-
-func (c *Computer) Name() string {
-    return c.name
-}
-
-type ThinkPad struct {
-    *Computer
-}
-
-func (t *ThinkPad) Feature() {
-    println(&quot;I&#39;m ThinkPad computer &quot;, t.name)
-}
-
-type MacBook struct {
-    *Computer
-}
-
-func (m *MacBook) Feature() {
-    println(&quot;I&#39;m MacBook computer &quot;, m.name)
-}
-
-type CBuilder interface {
-    BuildCpu()
-    BuildMainBoard()
-    BuildRam()
-    BuildVideoCard()
-    GetResult() IComputer
-}
-
-type MacBookBuilder struct {
-    computer IComputer
-}
-
-func NewMacBookBuilder(components map[string]IPart) *MacBookBuilder {
-    return &amp;MacBookBuilder{
-        computer: &amp;MacBook{
-            Computer: &amp;Computer{
-                name: &quot;MacBook&quot;,
-                components: components,
-            },
-        },
-    }
-}
-
-func (t *MacBookBuilder) BuildCpu() {
-    println(reflect.TypeOf(t).String() + &quot; BuildCpu&quot;)
-}
-
-func (t *MacBookBuilder) BuildMainBoard() {
-    println(reflect.TypeOf(t).String() + &quot; BuildMainBoard&quot;)
-}
-
-func (t *MacBookBuilder) BuildRam() {
-    println(reflect.TypeOf(t).String() + &quot; BuildRam&quot;)
-}
-func (t *MacBookBuilder) BuildVideoCard() {
-    println(reflect.TypeOf(t).String() + &quot; BuildVideoCard&quot;)
-}
-
-func (t *MacBookBuilder) GetResult() IComputer {
-    return t.computer
-}
-
-func NewThinkPadBuilder(components map[string]IPart) *ThinkPadBuilder {
-    return &amp;ThinkPadBuilder{
-        computer: &amp;ThinkPad{
-            Computer: &amp;Computer{
-                name: &quot;ThinkPad&quot;,
-                components: components,
-            },
-        },
-    }
-}
-
-type ThinkPadBuilder struct {
-    computer IComputer
-}
-
-func (t *ThinkPadBuilder) BuildCpu() {
-    println(reflect.TypeOf(t).String() + &quot; BuildCpu&quot;)
-}
-
-func (t *ThinkPadBuilder) BuildMainBoard() {
-    println(reflect.TypeOf(t).String() + &quot; BuildMainBoard&quot;)
-}
-
-func (t *ThinkPadBuilder) BuildRam() {
-    println(reflect.TypeOf(t).String() + &quot; BuildRam&quot;)
-}
-func (t *ThinkPadBuilder) BuildVideoCard() {
-    println(reflect.TypeOf(t).String() + &quot; BuildVideoCard&quot;)
-}
-
-func (t *ThinkPadBuilder) GetResult() IComputer {
-    return t.computer
-}
-
-type Director struct {}
-
-func (d *Director) Create(builder CBuilder) {
-    builder.BuildCpu()
-    builder.BuildMainBoard()
-    builder.BuildRam()
-    builder.BuildVideoCard()
-}
-
-func TestComputer_Name(t *testing.T) {
-    components := make(map[string]IPart)
-    components[&quot;cpu&quot;] = &amp;ICPU{&quot;i5-6200u&quot;}
-    components[&quot;board&quot;] = &amp;IMainBoards{&quot;Intel DH5700D&quot;}
-    components[&quot;ram&quot;] = &amp;Ram{&quot;DDR4&quot;}
-    components[&quot;card&quot;] = &amp;IVideoCard{&quot;NVIDIA Geforce 920MAX&quot;}
-    thinkpad := NewThinkPadBuilder(components)
-    director := &amp;Director{}
-    director.Create(thinkpad)
-    c1 := thinkpad.GetResult()
-    c1.Feature()
-    println(render.Render(c1))
-
-    components2 := make(map[string]IPart)
-    components2[&quot;cpu&quot;] = &amp;ICPU{&quot;i7-8700H&quot;}
-    components2[&quot;board&quot;] = &amp;IMainBoards{&quot;ASUS TUF B450M-PRO GAMING&quot;}
-    components2[&quot;ram&quot;] = &amp;Ram{&quot;16 GB 2400 MHz DDR4&quot;}
-    components2[&quot;card&quot;] = &amp;IVideoCard{&quot;Radeon Pro 555X 4 GB&quot;}
-    macbook := NewMacBookBuilder(components2)
-    director.Create(macbook)
-    c2 := macbook.GetResult()
-    c2.Feature()
-    println(render.Render(c2))
-}
-</code></pre>
-
-<h4>python_demo</h4>
-
-<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
-
-class Toy(metaclass=ABCMeta):
-
-    def __init__(self, name):
-        self._name = name
-        self.__component = []
-
-    def get_name(self):
-        return self._name
-
-    def add_component(self, component):
-        self.__component.append(component)
-
-    @abstractmethod
-    def feature(self):
-        pass
-
-class Car(Toy):
-
-    def feature(self):
-        print(&#39;Im {}, I can quickly run...&#39;.format(self._name))
-
-class Manor(Toy):
-
-    def feature(self):
-        print(&#39;Im {}, you can come and have fun ...&#39;.format(self._name))
-
-class ToyBuilder(metaclass=ABCMeta):
-
-    @abstractmethod
-    def build_product(self):
-        pass
-
-class CarBuilder(ToyBuilder):
-
-    def build_product(self):
-        car = Car(&quot;mini_car&quot;)
-        print(&quot;mini_car is build&quot;)
-        car.add_component(&quot;wheel&quot;)
-        car.add_component(&quot;body&quot;)
-        car.add_component(&quot;motivator&quot;)
-        car.add_component(&quot;steer&quot;)
-        return car
-
-class ManorBuilder(ToyBuilder):
-
-    def build_product(self):
-        manor = Manor(&quot;mini_car&quot;)
-        print(&quot;manor is build&quot;)
-        manor.add_component(&quot;guardroom&quot;)
-        manor.add_component(&quot;bedroom&quot;)
-        manor.add_component(&quot;study&quot;)
-        manor.add_component(&quot;kitchen&quot;)
-        return manor
-
-class BuilderMgr(object):
+class Facade(object):
 
     def __init__(self):
-        self.__car_builder = CarBuilder()
-        self.__manor_builder = ManorBuilder()
+        self.sub1 = SubSystem1()
+        self.sub2 = SubSystem2()
 
-    def build_car(self, num):
-        products = []
-        count = 0
-        while count &lt; num:
-            car = self.__car_builder.build_product()
-            products.append(car)
-            count += 1
-            print(&#39;build {} car name {}&#39;.format(count, car.get_name()))
-
-        return products
-
-    def build_manor(self, num):
-        products = []
-        count = 0
-        while count &lt; num:
-            manor = self.__manor_builder.build_product()
-            products.append(manor)
-            count += 1
-            print(&#39;build {} manor name {}&#39;.format(count, manor.get_name()))
-
-        return products
+    def operation_wrapper(self):
+        self.sub1.operation()
+        self.sub2.operation()
 
 if __name__ == &#39;__main__&#39;:
-
-    build_mgr = BuilderMgr()
-    build_mgr.build_car(2)
-    build_mgr.build_manor(4)
-</code></pre>
-
-<h4>python_demo2</h4>
-
-<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
-
-
-class IBuilder(metaclass=ABCMeta):
-
-    @abstractmethod
-    def BuildCpu(self):
-        pass
-
-    @abstractmethod
-    def BuildMainBoard(self):
-        pass
-
-    @abstractmethod
-    def BuildRam(self):
-        pass
-
-    @abstractmethod
-    def BuildVideoCard(self):
-        pass
-
-    @abstractmethod
-    def GetResult(self):
-        pass
-
-class Director(object):
-
-    def create(self, builder):
-        builder.BuildCpu()
-        builder.BuildMainBoard()
-        builder.BuildRam()
-        builder.BuildVideoCard()
-
-class Computer(object):
-
-    def __init__(self):
-        self.cpu, self.m_board, self.ram, self.video_card  = &#39;&#39;,&#39;&#39;,&#39;&#39;,&#39;&#39;
-    def __str__(self):
-        return &quot;cpu {} board {} ram {} video_card {}&quot;.format(self.cpu,
-                                                            self.m_board,
-                                                            self.ram,
-                                                            self.video_card)
-
-class MacBuilder(IBuilder):
-
-    def __init__(self):
-        self.computer = Computer()
-
-    def BuildCpu(self):
-        self.computer.cpu = &quot;I7-8897H&quot;
-
-    def BuildMainBoard(self):
-        self.computer.m_board = &quot;ASUS-1919&quot;
-
-    def BuildRam(self):
-        self.computer.ram = &quot;16 GB 2400 MHz DDR4&quot;
-
-    def BuildVideoCard(self):
-        self.computer.video_card = &quot;Radeon Pro 555X 4 GB&quot;
-
-    def GetResult(self):
-        return self.computer
-
-
-class SurfaceBuilder(IBuilder):
-
-    def __init__(self):
-        self.computer = Computer()
-
-    def BuildCpu(self):
-        self.computer.cpu = &quot;I5-8897U&quot;
-
-    def BuildMainBoard(self):
-        self.computer.m_board = &quot;Intel-1919&quot;
-
-    def BuildRam(self):
-        self.computer.ram = &quot;Kingston 32 GB 3200 MHz DDR4&quot;
-
-    def BuildVideoCard(self):
-        self.computer.video_card = &quot;Iris Plus i5&quot;
-
-    def GetResult(self):
-        return self.computer
-
-if __name__ == &#39;__main__&#39;:
-    d = Director()
-    b1 = MacBuilder()
-    d.create(b1)
-
-    b2 = SurfaceBuilder()
-    d.create(b2)
-
-    print(b1.GetResult())
-    print(b2.GetResult())
+    facade = Facade()
+    facade.operation_wrapper()
 </code></pre>
 
                         
@@ -2028,734 +612,7 @@ if __name__ == &#39;__main__&#39;:
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/11/09 08:47 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15755898090270.html">
-                
-                  <h1>Composite</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>Composite</h4>
-
-<ul>
-<li>常常有一些组件在内部具有特定的数据结构，如果让客户程序依赖这些特定的数据结构，将极大地破坏组件的复用。这时候，将这些特定数据结构封装在内部，在外部提供统一的接口，来实现与特定数据结构无关的访问，是一种行之有效的解决方案。</li>
-</ul>
-
-<h4>动机</h4>
-
-<ul>
-<li>在软件在某些情況下，客户代码过多地依赖于对象容器复杂的内部实现结构，对象容器内部实现结构（而非抽象接口）的变化将引起客户代码的频繁变化，带来了代码的维护性、扩展性等弊端。</li>
-<li>如何将“客户代码与复杂的对象容器结构”解耦？让对象容器自己来实现自身的复杂结构，从而使得客户代码就像处理简单对象样来处理复杂的对象容器？</li>
-</ul>
-
-<h4>结构</h4>
-
-<ul>
-<li><img src="media/15755898090270/15807244643257.jpg" alt="" style="width:828px;"/></li>
-</ul>
-
-<h4>要点</h4>
-
-<ul>
-<li>Composite 模式采用树形结构来实现普遍存在的对象容器从 i 致地く意用）处運对案和对象容器无需笑心处的是单个的对象，还的对象容器。</li>
-<li>将“客户代码与复杂的对象容器结构“解耦是 Composite 的核心，解耦之后，客户代码将与纯粹的抽象接口-而非对象容器的内部实现机构-产生依赖，从而更能应对变化</li>
-<li>Composite模式在具体实现中，可以让父对象中的子对象反向追溯；如果父对象有频繁的遍历需求，可使用缓存技巧来改善效率。</li>
-</ul>
-
-<h4>Cpp_demo</h4>
-
-<pre class="line-numbers"><code class="language-cpp">//
-// Created by 刘超 on 2019-12-06.
-//
-
-#include &lt;iostream&gt;
-#include &lt;vector&gt;
-#include &lt;list&gt;
-
-using namespace std;
-
-class Component {
-public:
-    virtual ~Component(){};
-    virtual void Operation() = 0;
-};
-
-class Composite : public Component {
-public:
-    Composite(const string&amp; _name) : name(_name) {}
-    ~Composite() {}
-
-    void Operation() {
-        for (auto&amp; iter : comList) {
-            std::cout &lt;&lt; &quot;Composite Operation&quot; &lt;&lt; std::endl;
-            iter-&gt;Operation();
-        }
-    }
-    void Add(Component* com) {
-        comList.push_back(com);
-    }
-    void Remove(Component* com) {
-        comList.remove(com);
-    }
-
-private:
-    list&lt;Component*&gt; comList;
-    string name;
-};
-
-class Leaf : public Component {
-public:
-    Leaf(const string&amp; name) : _name(name) {}
-    ~Leaf() {
-        cout &lt;&lt; &quot;Leaf::~leaf()&quot; &lt;&lt; endl;
-    }
-    void Operation() {
-        std::cout &lt;&lt; name &lt;&lt; &quot; Operation&quot; &lt;&lt; std::endl;
-    }
-
-private:
-    string _name;
-};
-
-int main() {
-    Composite* root = new Composite(&quot;root&quot;);
-    Composite* node1 = new Composite(&quot;node1&quot;);
-    Composite* node2 = new Composite(&quot;node2&quot;);
-    Composite* node3 = new Composite(&quot;node3&quot;);
-    Composite* node4 = new Composite(&quot;node4&quot;);
-    Leaf* lf1 = new Leaf(&quot;lf1&quot;);
-    Leaf* lf2 = new Leaf(&quot;lf2&quot;);
-
-    root-&gt;Add(node1);
-    node1-&gt;Add(node2);
-    node2-&gt;Add(lf1);
-
-    root-&gt;Add(node3);
-    node3-&gt;Add(node4);
-    node4-&gt;Add(lf2);
-    root-&gt;Operation();
-}
-</code></pre>
-
-<h4>golang_demo</h4>
-
-<pre class="line-numbers"><code class="language-go">package design_pattern
-
-import (
-    &quot;fmt&quot;
-)
-
-type IComponent interface {
-    Display(dep int)
-}
-
-func (l *Leaf) Display(dep int) {
-    fmt.Println(RetString(dep) + l.name)
-}
-
-type Leaf struct {
-    name string
-}
-
-func RetString(depth int) string {
-    var ret []byte
-    for i := 0; i &lt; depth; i++ {
-        ret = append(ret, &#39;-&#39;)
-    }
-
-    return string(ret)
-}
-
-func NewLeaf(name string) *Leaf {
-    return &amp;Leaf{name: name}
-}
-
-type Composite struct {
-    name string
-    comList map[IComponent]bool
-}
-
-func NewComposite(name string) *Composite {
-    return  &amp;Composite{
-        comList: make(map[IComponent]bool),
-        name: name,
-    }
-}
-
-func (c *Composite) Add(i IComponent) {
-    c.comList[i] = true
-}
-
-func (c *Composite) Remove(i IComponent) {
-    delete(c.comList, i)
-}
-
-func (c *Composite) Display(dep int) {
-
-    fmt.Println(RetString(dep) + c.name)
-    for k, _ := range c.comList {
-        k.Display(dep + 1)
-    }
-}
-</code></pre>
-
-<h4>python_code</h4>
-
-<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
-
-class Component(metaclass=ABCMeta):
-
-    @abstractmethod
-    def display(self):
-        pass
-
-class Composite(Component):
-
-    def __init__(self, name):
-        self.com_list = []
-        self.__name = name
-
-    def add(self, com):
-        self.com_list.append(com)
-
-    def remove(self, com):
-        self.com_list.remove(com)
-
-    def display(self):
-        print(&#39;{} display&#39;.format(self.__name))
-        for com in self.com_list:
-            com.display()
-
-class Leaf(Component):
-
-    def __init__(self, name):
-        self.__name = name
-
-    def display(self):
-        print(&#39;{} display&#39;.format(self.__name))
-
-if __name__ == &#39;__main__&#39;:
-    root = Composite(&quot;root&quot;)
-
-    node1 = Composite(&quot;node1&quot;)
-    node2 = Composite(&quot;node2&quot;)
-    node3 = Composite(&quot;node3&quot;)
-    node4 = Composite(&quot;node4&quot;)
-
-    lf1 = Leaf(&quot;lf1&quot;)
-    lf2 = Leaf(&quot;lf2&quot;)
-    lf3 = Leaf(&quot;lf3&quot;)
-
-    root.add(node1)
-    node1.add(node2)
-    node2.add(lf1)
-
-    root.add(node3)
-    node3.add(node4)
-    node4.add(lf2)
-
-    root.add(node4)
-
-    root.display()
-
-    print(&quot;=============================&quot;)
-    root.remove(node1)
-    root.display()
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/12/06 07:50 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15730795693761.html">
-                
-                  <h1>Clone</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>模式定义</h4>
-
-<ul>
-<li>使用原型实例指定创建对象的种类，然后通过拷贝这些原型来创建新的对象。</li>
-</ul>
-
-<h4>结构</h4>
-
-<p><img src="media/15730795693761/15806429826202.jpg" alt="" style="width:719px;"/></p>
-
-<h4>动机</h4>
-
-<ul>
-<li>在软件系统中，经常面临着“某些结构复杂的对象“的创建工作；由于需求的变化，这些对象经常面临着剧烈的变化，但是它们却拥有七较稳定一致的接口。</li>
-<li>如何应对这种变化？如何向“客户程序（使用这些对象的程序）“隔离出“这些易变对象”，从而使得“依赖这些易变对象的客户程序”不随着需求改变而改变？</li>
-</ul>
-
-<h4>要点总结</h4>
-
-<ul>
-<li>Prototype 模式同样用于隔离类对象的使用者和具体类型（易变类）之间的耦合关系，它同样要求这些“易变类”拥有“稳定的接口“”。</li>
-<li>Prototype 模式对于“如何创建易变类的实体对象”“采用“原型克隆”的方法来做，它使得我们可以非常灵活地动态创建“拥有某些稳定接口“的新对象一一所需工作仅仅是注册一个新类的对象（即原型然后在任何需要的地方 Clone。</li>
-<li>Prototype 模式中的 Clone 方法可以利用某些框架中的序列化来实现深拷贝。</li>
-</ul>
-
-<h4>cpp_demo</h4>
-
-<pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
-
-using namespace std;
-
-class Monkey {
- public:
-  Monkey() {}
-
-  virtual Monkey* Clone() = 0;
-  virtual void Play() = 0;
-};
-
-class Goku : public Monkey {
- public:
-  Goku(const string&amp; name) : _name(name) {}
-  Goku(const Goku&amp; other) {_name = other._name;}
-  ~Goku() {}
-
-  Monkey* Clone() {
-    return new Goku(*this);
-  }
-
-  void Play() {std::cout &lt;&lt; &quot; Goku Playing&quot; &lt;&lt; std::endl;}
-  string _name;
-};
-
-int main() {
-  Monkey* m = new Goku(&quot;QitianDasheng&quot;);
-  Monkey* m1 = m-&gt;Clone();
-  Monkey* m2 = m-&gt;Clone();
-  Monkey* m3 = m-&gt;Clone();
-  m1-&gt;Play();
-  m2-&gt;Play();
-  m3-&gt;Play();
-}
-</code></pre>
-
-<h3>golang_demo</h3>
-
-<pre class="line-numbers"><code class="language-go">package prototype
-
-import &quot;fmt&quot;
-
-type Monkey interface {
-        Clone() Monkey
-        Play()
-}
-
-type Goku struct{}
-
-func (g *Goku) Clone() Monkey {
-        return &amp;Goku{}
-}
-
-func (g *Goku) Play() {
-        fmt.Println(&quot;Goku Play&quot;)
-}
-func TestPrototype(t *testing.T) {
-        var m Monkey = &amp;Goku{}
-        m1 := m.Clone()
-        m2 := m.Clone()
-        m3 := m.Clone()
-        m1.Play()
-        m2.Play()
-        m3.Play()
-}
-</code></pre>
-
-<h4>python_code</h4>
-
-<pre class="line-numbers"><code class="language-python">
-from abc import ABCMeta, abstractmethod
-
-class Prototype(metaclass=ABCMeta):
-    @abstractmethod
-    def clone(self):
-        pass
-        
-import copy
-
-
-class Knight(object):
-    def __init__(self, level):
-        self.unit_type = &quot;knight&quot;
-
-        file_name = &quot;./{}_{}.dat&quot;.format(self.unit_type, level)
-        print(file_name)
-        with open(file_name, &#39;r&#39;) as parameter_file:
-            lines = parameter_file.read().split(&quot;\n&quot;)
-            self.life = lines[0]
-            self.attack_power = lines[1]
-            self.attack_range = lines[2]
-            self.weapon = lines[3]
-            self.speed = lines[4]
-
-    def __str__(self):
-        return &quot;Life: {0} Speed: {1} &quot; \
-               &quot; Attack Power: {2}&quot; \
-               &quot; Attack Range: {3}&quot; \
-               &quot; Weapon: {4}&quot; \
-               &quot; Type: {5}&quot;.format(self.life,
-                                   self.speed,
-                                   self.attack_power,
-                                   self.attack_range,
-                                   self.weapon,
-                                   self.unit_type)
-
-    def clone(self):
-        return copy.deepcopy(self)
-
-
-class Archer(object):
-    def __init__(self, level):
-        self.unit_type = &quot;archer&quot;
-
-        file_name = &quot;./{}_{}.dat&quot;.format(self.unit_type, level)
-        print(file_name)
-        with open(file_name, &#39;r&#39;) as parameter_file:
-            lines = parameter_file.read().split(&quot;\n&quot;)
-            self.life = lines[0]
-            self.attack_power = lines[1]
-            self.attack_range = lines[2]
-            self.weapon = lines[3]
-            self.speed = lines[4]
-
-    def __str__(self):
-        return &quot;Life: {0} Speed: {1} &quot; \
-               &quot; Attack Power: {2}&quot; \
-               &quot; Attack Range: {3}&quot; \
-               &quot; Weapon: {4}&quot; \
-               &quot; Type: {5}&quot;.format(self.life,
-                                   self.speed,
-                                   self.attack_power,
-                                   self.attack_range,
-                                   self.weapon,
-                                   self.unit_type)
-
-    def clone(self):
-        return copy.deepcopy(self)
-
-
-class Barracks(object):
-
-    def __init__(self):
-        self.units = {
-            &quot;knight&quot;: {
-                1: Knight(1),
-            },
-            &quot;archer&quot;: {
-                2: Archer(2),
-            }
-        }
-
-    def build_units(self, unit_type, level):
-        return self.units[unit_type][level].clone()
-
-
-if __name__ == &#39;__main__&#39;:
-    barracks = Barracks()
-    archer1 = barracks.build_units(&quot;archer&quot;, 2)
-    knight1 = barracks.build_units(&quot;knight&quot;, 1)
-    print(&#39;knight {}&#39;.format(knight1))
-    print(&#39;archer {}&#39;.format(archer1))
-</code></pre>
-
-<h4>建筑者和简历</h4>
-
-<pre class="line-numbers"><code class="language-go">package design_pattern
-
-type ProtoType interface {
-    clone() ProtoType
-}
-
-type Knight struct {
-    Name,Weapon string
-}
-
-func (k *Knight) clone() ProtoType {
-    knight := (*k)
-    return &amp;knight
-}
-
-func (k *Knight) setWeapon(weapon string) {
-    k.Weapon = weapon
-}
-
-type Archer struct {
-    Name,Weapon string
-}
-
-func (r *Archer) clone() ProtoType {
-    archer := (*r)
-    return &amp;archer
-}
-
-type Barracks struct {
-    units map[string]interface{}
-}
-
-func NewBarracks() *Barracks {
-    return &amp;Barracks{
-        units: make(map[string]interface{}),
-    }
-}
-
-func (b *Barracks) Add(name string, types ProtoType) {
-    b.units[name] = types
-}
-
-func (b *Barracks) Build(name string) ProtoType {
-    return b.units[name].(ProtoType).clone()
-}
-
-type WorkExperience struct {
-    date, company string
-}
-
-
-func (w *WorkExperience) clone() ProtoType {
-    work := (*w)
-    return &amp;work
-}
-
-type PersonInfo struct {
-    name, sex, age string
-}
-
-type Resume struct {
-    name, sex, age string
-    work *WorkExperience
-}
-
-func (r *Resume) clone() ProtoType {
-    resume := &amp;Resume{
-        name: r.name,
-    }
-    return resume
-}
-
-func (r *Resume) setPerson(sex, age string) {
-    r.sex, r.age = sex, age
-}
-
-func (r *Resume) setWork(date, company string) {
-    r.work = &amp;WorkExperience{}
-    r.work.date, r.work.company = date, company
-}
-
-package design_pattern
-
-import (
-    &quot;fmt&quot;
-    &quot;testing&quot;
-)
-
-func TestPrototype(t *testing.T) {
-    barracks := NewBarracks()
-    knight := &amp;Knight{&quot;knight&quot;, &quot;long bow&quot;}
-    archer := &amp;Archer{&quot;archer&quot;, &quot;short bow&quot;}
-    barracks.Add(&quot;knight&quot;, knight)
-    barracks.Add(&quot;archer&quot;, archer)
-
-    k1 := barracks.Build(&quot;knight&quot;)
-    a1 := barracks.Build(&quot;archer&quot;)
-    k2 := barracks.Build(&quot;knight&quot;)
-    a2 := barracks.Build(&quot;archer&quot;)
-    fmt.Println(k1, a1)
-    fmt.Println(k2, a2)
-}
-
-func TestResume(t *testing.T) {
-    var resume ProtoType = &amp;Resume{name : &quot;a&quot;}
-    resume.(*Resume).setPerson(&quot;male&quot;, &quot;29&quot;)
-    resume.(*Resume).setWork(&quot;2019-02-01&quot;, &quot;apple&quot;)
-
-    resume2 := resume.clone()
-    resume2.(*Resume).setPerson(&quot;male&quot;, &quot;30&quot;)
-    resume2.(*Resume).setWork(&quot;2019-02-17&quot;, &quot;alia&quot;)
-    fmt.Println(resume, resume2)
-}
-</code></pre>
-
-<h4>cpp_code</h4>
-
-<pre class="line-numbers"><code class="language-cpp">//
-// Created by eredinliu on 2020-02-02.
-//
-
-#include &lt;iostream&gt;
-
-using namespace std;
-
-class IClone {
-public:
-    virtual IClone* Clone() = 0;
-    virtual void Show() = 0;
-    virtual void Coding() = 0;
-    IClone() {}
-};
-
-class Person : public IClone {
-public:
-    Person(const string&amp; name, __const string&amp; age) : name_(name), age_(age) {}
-
-    IClone* Clone() {
-        IClone* copy = new Person(this-&gt;name_, this-&gt;age_);
-        return copy;
-    }
-
-    void Show() {
-        cout &lt;&lt; &quot;I&#39;m &quot; &lt;&lt; this-&gt;name_ &lt;&lt; &quot; age &quot; &lt;&lt; this-&gt;age_ &lt;&lt; endl;
-    }
-
-    void Coding() {
-        cout &lt;&lt; &quot;I&#39;m programmer, coding change world \n&quot;;
-    }
-
-private:
-    string name_, age_;
-};
-
-int main() {
-    IClone* person = new Person(&quot;tony&quot;, &quot;27&quot;);
-
-    IClone* clone = person-&gt;Clone();
-    clone-&gt;Coding();
-    clone-&gt;Show();
-}
-</code></pre>
-
-<h4>golang_code</h4>
-
-<pre class="line-numbers"><code class="language-go">package desian_pattern_practise
-
-
-type IClone interface {
-    Clone() IClone
-    Show()
-    Coding()
-}
-
-type Career struct {
-    name, age string
-}
-
-func (c *Career) Show() {
-    println(&quot;I&#39;m&quot;, c.name, &quot;Age&quot;, c.age)
-}
-
-func (c *Career) Coding() {
-    println(&quot;I&#39;m programmer, coding change world&quot;)
-}
-
-func (c *Career) Clone() IClone {
-    return &amp;Career{
-        name: c.name,
-        age: c.age,
-    }
-}
-
-func TestCareer_Clone(t *testing.T) {
-    career := &amp;Career{&quot;ming&quot;, &quot;IT&quot;}
-
-    var c1 IClone = career.Clone()
-    c1.Show()
-    c1.Coding()
-}
-</code></pre>
-
-<h4>python_code</h4>
-
-<pre class="line-numbers"><code class="language-python">from copy import copy, deepcopy
-
-class Clone(object):
-
-    def clone(self):
-        return copy(self)
-
-    def deep_clone(self):
-        return deepcopy(self)
-
-class Person(Clone):
-
-    def __init__(self, name, age):
-        self.__name = name
-        self.__age = age
-
-    def show(self):
-        print(&quot;I&#39;m {} age {}&quot;.format(self.__name, self.__age))
-
-    def coding(self):
-        print(&quot;I&#39;m programmer, coding change world&quot;)
-
-    def reading(self):
-        print(&#39;reading make me happy&#39;)
-
-    def fall_love(self):
-        print(&#39;fall in love&#39;)
-
-if __name__ == &#39;__main__&#39;:
-
-    tony = Person(&#39;tony&#39;, 27)
-    tony.show()
-    tony.coding()
-
-    tony1 = tony.clone()
-    tony.show()
-    tony.coding()
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/07 06:32 上午</span>
+                    <span class="date">2019/11/14 07:23 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>

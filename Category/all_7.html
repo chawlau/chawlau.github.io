@@ -170,239 +170,680 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15758501024510.html">
+                <a class="clearlink" href="15726534242869.html">
                 
-                  <h1>多线程同步</h1>
+                  <h1>Observer</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>死锁情况</h4>
-
-<pre class="line-numbers"><code class="language-python">#2. 锁会引起死锁
-#死锁的情况 A（a，b）
-A(a、b)
-acquire (a)
-acquire (b)
-
-B(a、b)
-acquire (a)
-acquire (b)
-</code></pre>
-
-<h4>可重入的锁</h4>
+                        	<h4>组件协作模式</h4>
 
 <ul>
-<li>同一个线程里面，可以连续调用多次acquire,一定要注意acquire的次数</li>
-<li>RLock可重入锁</li>
+<li><img src="media/15726534242869/15726538652702.jpg" alt="" style="width:930px;"/></li>
 </ul>
 
-<pre class="line-numbers"><code class="language-python">from threading import Lock, RLock, Condition
-
-total = 0
-lock = RLock()
-
-def add():
-    global lock
-    global total
-    for i in range(10000):
-        lock.acquire()
-        lock.acquire()
-        total += 1
-        lock.release()
-        lock.release()
-
-def desc():
-    global total
-    global lock
-    for i in range(10000):
-        # lock.acquire()
-        lock.acquire()
-        total -= 1
-        lock.release()
-        # lock.release()
-
-import threading
-
-thread1 = threading.Thread(target=add)
-thread2 = threading.Thread(target=desc)
-
-thread1.start()
-thread2.start()
-thread2.join()
-thread2.join()
-print(&quot;total {}&quot;.format(total))
-</code></pre>
-
-<h4>协同</h4>
-
-<pre class="line-numbers"><code class="language-python">import threading
-
-class XiaoAi(threading.Thread):
-    def __init__(self, lock):
-        super().__init__(name=&quot;xiaoai&quot;)
-        self.lock = lock
-
-    def run(self):
-        self.lock.acquire()
-        print(&quot;{}. at &quot;.format(self.name))
-        self.lock.release()
-
-        self.lock.acquire()
-        print(&quot;{}. ok &quot;.format(self.name))
-        self.lock.release()
-
-class TianMao(threading.Thread):
-    def __init__(self, lock):
-        super().__init__(name=&quot;tiaomao&quot;)
-        self.lock = lock
-
-    def run(self):
-        self.lock.acquire()
-        print(&quot;{} : xiaoai roomate&quot;.format(self.name))
-        self.lock.release()
-
-        self.lock.acquire()
-        print(&quot;{} : let&#39;s talk&quot;.format(self.name))
-        self.lock.release()
-
-if __name__ == &#39;__main__&#39;:
-    lock = threading.Lock()
-    thread1 = XiaoAi(lock)
-    thread2 = TianMao(lock)
-    thread1.start()
-    thread2.start()
-    thread1.join()
-    thread2.join()
-</code></pre>
+<h4>多重继承</h4>
 
 <ul>
-<li>condition启动顺序很重要,在调用with cond之后才能调用wait或者notify方法</li>
-<li>condition有两层锁， 一把底层锁会在线程调用了wait方法的时候释放， 上面的锁会在每次调用wait的时候分配一把并放入到cond的等待队列中，等到notify方法的唤醒<br/>
-xiaoai.start()</li>
+<li>一个是主的继承类</li>
+<li>其他都是抽象的接口</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-python">import threading
+<h4>模式定义</h4>
 
-class XiaoAi(threading.Thread):
-    def __init__(self, cond):
-        super().__init__(name=&quot;xiaoai&quot;)
-        self.cond = cond
+<ul>
+<li>定义对象间的一种一对多（变化）的依赖关系，以便当一个对象（Subject）的状态发生改变时，所有依赖于它的对象都得到通知并自动更新。</li>
+</ul>
 
-    def run(self):
-        with self.cond:
-            self.cond.wait()
-            print(&#39;{}: 在 &#39;.format(self.name))
-            self.cond.notify()
+<h4>结构</h4>
 
-            self.cond.wait()
-            print(&#39;{}: 好阿 &#39;.format(self.name))
-            self.cond.notify()
+<ul>
+<li><img src="media/15726534242869/15726577987603.jpg" alt="" style="width:887px;"/></li>
+<li><img src="media/15726534242869/15801778196036.jpg" alt="" style="width:972px;"/></li>
+<li>Subject和Object是稳定的</li>
+<li>ConcreteSubject和ConcreteObserver</li>
+</ul>
 
-            self.cond.wait()
-            print(&#39;{}: 君住长江尾 &#39;.format(self.name))
-            self.cond.notify()
+<h4>要点总结</h4>
 
-            self.cond.wait()
-            print(&#39;{}: 共饮长江水 &#39;.format(self.name))
-            self.cond.notify()
+<ul>
+<li><p>使用面向对象的抽象，Observer 模式使得我们可以独立地改变目标与观察者，从而使二者之间的依赖关系达致松耦合。</p></li>
+<li><p>目标发送通知时，无需指定观察者，通知（可以携带通知信息作</p></li>
+<li><p>为参数）会自动传播。</p></li>
+<li><p>观察者自己決定是否需要订阋通知，目标对象对此无所知。Observers 模式是基于事件的 UI 框架中非常常用的设计模式，也是</p></li>
+<li><p>MVC 模式的一个重要组成部分。</p></li>
+</ul>
 
-            self.cond.wait()
-            print(&#39;{}: 此恨何时已 &#39;.format(self.name))
-            self.cond.notify()
+<h4>code</h4>
 
-            self.cond.wait()
-            print(&#39;{}: 定不负相思意 &#39;.format(self.name))
-            self.cond.notify()
+<pre class="line-numbers"><code class="language-go">package observer
 
-class TianMao(threading.Thread):
-    def __init__(self, cond):
-        super().__init__(name=&quot;天猫精灵&quot;)
-        self.cond = cond
+import &quot;fmt&quot;
 
-    def run(self):
-        with self.cond:
-            print(&#39;{}: 小爱同学 &#39;.format(self.name))
-            self.cond.notify()
-            self.cond.wait()
+type Subject struct {
+    observers []Observer
+    context   string
+}
 
-            print(&#39;{}: 我们来对古诗吧 &#39;.format(self.name))
-            self.cond.notify()
-            self.cond.wait()
+func NewSubject() *Subject {
+    return &amp;Subject{
+        observers: make([]Observer, 0),
+    }
+}
 
-            print(&#39;{}: 我住长江头 &#39;.format(self.name))
-            self.cond.notify()
-            self.cond.wait()
+func (s *Subject) Attach(o Observer) {
+    s.observers = append(s.observers, o)
+}
 
-            print(&#39;{}: 日日思君不见君 &#39;.format(self.name))
-            self.cond.notify()
-            self.cond.wait()
+func (s *Subject) notify() {
+    for _, o := range s.observers {
+        o.Update(s)
+    }
+}
 
-            print(&#39;{}: 此水几时休 &#39;.format(self.name))
-            self.cond.notify()
-            self.cond.wait()
+func (s *Subject) UpdateContext(context string) {
+    s.context = context
+    s.notify()
+}
 
-            print(&#39;{}: 只愿君心似我心 &#39;.format(self.name))
-            self.cond.notify()
-            self.cond.wait()
+type Observer interface {
+    Update(*Subject)
+}
+
+type Reader struct {
+    name string
+}
+
+func NewReader(name string) *Reader {
+    return &amp;Reader{
+        name: name,
+    }
+}
+
+func (r *Reader) Update(s *Subject) {
+    fmt.Printf(&quot;%s receive %s\n&quot;, r.name, s.context)
+}
+
+package observer
+
+func ExampleObserver() {
+    subject := NewSubject()
+    reader1 := NewReader(&quot;reader1&quot;)
+    reader2 := NewReader(&quot;reader2&quot;)
+    reader3 := NewReader(&quot;reader3&quot;)
+    subject.Attach(reader1)
+    subject.Attach(reader2)
+    subject.Attach(reader3)
+
+    subject.UpdateContext(&quot;observer mode&quot;)
+    // Output:
+    // reader1 receive observer mode
+    // reader2 receive observer mode
+    // reader3 receive observer mode
+}
+</code></pre>
+
+<h4>python_demo</h4>
+
+<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
+
+
+class Subject(metaclass=ABCMeta):
+    @abstractmethod
+    def attach(self, observer):
+        pass
+
+    @abstractmethod
+    def notify(self):
+        pass
+
+
+class Boss(Subject):
+
+    def __init__(self):
+        self.observers = []
+        self.action = &#39;&#39;
+
+    def attach(self, observer):
+        self.observers.append(observer)
+
+    def notify(self):
+        for val in self.observers:
+            val.update()
+
+    def set_section(self):
+        self.action = &#39;Boss is come back&#39;
+
+
+class IObject(metaclass=ABCMeta):
+    @abstractmethod
+    def update(self):
+        pass
+
+    def __init__(self, name, subject):
+        self.name, self.subject = name, subject
+
+
+class StockObserver(IObject):
+
+    def update(self):
+        print(&#39;{} close stock and work {}&#39;.format(self.name,
+                                                  self.subject.action))
+
+
+class NBAObserver(IObject):
+
+    def update(self):
+        print(&#39;{} close NBA and work {}&#39;.format(self.name,
+                                                  self.subject.action))
 
 if __name__ == &#39;__main__&#39;:
-    from concurrent import futures
-    cond = threading.Condition()
-    xiaoai = XiaoAi(cond)
-    tianmao = TianMao(cond)
+    boss = Boss()
 
-    xiaoai.start()
-    tianmao.start()
+    observer1 = StockObserver(&quot;Jim&quot;, boss)
+    observer2 = NBAObserver(&quot;Bob&quot;, boss)
+
+    boss.attach(observer1)
+    boss.attach(observer2)
+
+    boss.set_section()
+    boss.notify()
 </code></pre>
 
-<h4>ThreadPoolExcutor</h4>
+<h4>python_demo3</h4>
 
-<pre class="line-numbers"><code class="language-python">from concurrent.futures import ThreadPoolExecutor, as_completed, wait, FIRST_COMPLETED
-from concurrent.futures import Future
-from multiprocessing import Pool
+<pre class="line-numbers"><code class="language-python">from  abc import ABCMeta, abstractmethod
 
+class Observable(object):
 
-import time
+    def __init__(self):
+        self.__observers = []
 
-def get_html(times):
-    time.sleep(times)
-    print(&#39;get page {} process&#39;.format(times))
-    return times
+    def add(self, observer):
+        self.__observers.append(observer)
 
-executor = ThreadPoolExecutor(max_workers=2)
+    def remove(self, observer):
+        self.__observers.remove(observer)
+
+    def notify(self, object=0):
+        for o in self.__observers:
+            o.update(self, object)
+
+class WaterHeater(Observable):
+
+    def __init__(self):
+        super().__init__()
+        self.__temperature = 25
+
+    def get_temperature(self):
+        return self.__temperature
+
+    def set_temperature(self, temp):
+        self.__temperature = temp
+        print(&quot;current temperature is {} C&quot;.format(self.__temperature))
+        self.notify()
+
+class Observer(metaclass=ABCMeta):
+
+    @abstractmethod
+    def update(self, observable, object=0):
+        pass
+
+class WasingMode(Observer):
+
+    def update(self, observable, object=0):
+        if isinstance(observable, WaterHeater) and observable.get_temperature()\
+                &gt;=50 and observable.get_temperature() &lt;= 70:
+            print(&#39;water temperature is suit for bath&#39;)
+
+class DrinkingMode(Observer):
+
+    def update(self, observable, object):
+        if isinstance(observable, WaterHeater) and observable.get_temperature()\
+                &gt;= 100:
+            print(&#39;water temperature is suit for drink&#39;)
+
+def test_water():
+    water = WaterHeater()
+    wash_mode = WasingMode()
+    drink_mode = DrinkingMode()
+    water.add(wash_mode)
+    water.add(drink_mode)
+    water.set_temperature(40)
+    water.set_temperature(60)
+    water.set_temperature(100)
+
+#test_water()
+
+class Account(Observable):
+    ip_region = {
+        &quot;104.47.18.9&quot;: &#39;hangzhou&#39;,
+        &#39;67.218.147.69&#39;: &#39;LA&#39;,
+        &#39;33.12.33.123&#39;: &#39;shanghai&#39;
+    }
+    def __init__(self):
+        super().__init__()
+        self.__ip = {}
+        self.__region = {}
+
+    def login(self, name, ip):
+        region = self.__get_region(ip)
+        if self.__is_long_distance(name, region):
+            self.notify({&#39;name&#39;: name, &#39;ip&#39;:ip, &#39;region&#39;:region})
+        self.__region[name] = region
+        self.__ip = ip
+
+    def __get_region(self, ip):
+        region = Account.ip_region.get(ip)
+        return &#39;&#39; if region is None else region
+
+    def __is_long_distance(self, name, region):
+        latest_region = self.__region.get(name)
+        return latest_region is not None and latest_region != region
+
+class SmsSender(Observer):
+
+    def update(self, observable, object):
+        print(&#39;msg send name {} region {} login ip {} &#39;.format(
+            object[&#39;name&#39;], object[&#39;region&#39;], object[&#39;ip&#39;]))
+
+class MailSender(Observer):
+
+    def update(self, observable, object):
+        print(&#39;mail send name {} region {} login ip {}&#39;.format(
+            object[&#39;name&#39;], object[&#39;region&#39;], object[&#39;ip&#39;]
+        ))
+
+def test_region():
+    account = Account()
+    account.add(SmsSender())
+    account.add(MailSender())
+    account.login(&#39;Tony&#39;, &#39;104.47.18.9&#39;)
+    account.login(&#39;Tony&#39;, &#39;67.218.147.69&#39;)
+    account.login(&#39;Tony&#39;, &#39;33.12.33.123&#39;)
+
+test_region()
 </code></pre>
 
-<h5>执行任务获取结果</h5>
+<h4>golang_demo</h4>
 
-<pre class="line-numbers"><code class="language-python">task1 = executor.submit(get_html, (3))
-task2 = executor.submit(get_html, (2))
-#
-print(task1.result())
-print(task2.cancel()) //取消结果
+<pre class="line-numbers"><code class="language-go">package desian_pattern_practise
+
+type ISubject interface {
+    Attach(IObserver)
+    Detach(IObserver)
+    Notify()
+}
+
+type IObserver interface {
+    Update()
+}
+
+type Observer struct {
+    sub ISubject
+}
+
+type Subject struct {
+    observer map[IObserver]bool
+    temp float64
+}
+
+func (w *Subject) Attach(IObserver IObserver) {
+    w.observer[IObserver] = true
+}
+
+func (w *Subject) Detach(IObserver IObserver) {
+    delete(w.observer, IObserver)
+}
+
+func (w *Subject) Notify() {
+    for k, _ := range w.observer {
+        k.Update()
+    }
+}
+
+type WaterHeater struct {
+    *Subject
+    temp float64
+}
+
+func NewWaterHeater() *WaterHeater {
+    return &amp;WaterHeater {
+        Subject: &amp;Subject{
+            observer: make(map[IObserver]bool),
+        },
+        temp: 25.0,
+    }
+}
+
+func (w *WaterHeater) SetTemperature(temp float64) {
+    w.temp = temp
+    w.Notify()
+}
+
+type WashingMode struct {
+    *Observer
+}
+
+func NewWashingMode(sub ISubject) *WashingMode {
+    return &amp;WashingMode{
+        Observer: &amp;Observer{sub},
+    }
+}
+
+func (w *WashingMode) Update() {
+    if w.sub.(*WaterHeater).temp &gt;= 50 &amp;&amp;  w.sub.(*WaterHeater).temp &lt;= 70 {
+        println(&quot;Subject temperature is suitable for bath&quot;)
+    }
+}
+
+
+type DrinkingMode struct {
+    *Observer
+}
+
+func (w *DrinkingMode) Update() {
+    if w.sub.(*WaterHeater).temp &gt;= 100 {
+        println(&quot;Subject temperature is suitable for drink&quot;)
+    }
+}
+
+func NewDrinkingMode(sub ISubject) *DrinkingMode {
+    return &amp;DrinkingMode{
+        Observer: &amp;Observer{sub},
+    }
+}
+
+var ip_region = map[string]string {
+ &quot;104.47.18.9&quot;: &quot;hangzhou&quot;,
+ &quot;67.218.147.69&quot;: &quot;LA&quot;,
+ &quot;33.12.33.123&quot;: &quot;shanghai&quot;,
+}
+
+type Account struct {
+    *Subject
+    ip string
+    region map[string]string
+}
+
+func (a *Account) Login(name, ip string) {
+    region, ok := ip_region[ip]
+
+    if !ok {
+        println(&quot;not in record&quot;)
+        return
+    }
+
+    if a.isLongDistance(name, region) {
+        a.region[name] = region
+        a.ip = ip
+        a.Notify()
+        return
+    }
+
+    a.region[name] = region
+    a.ip = ip
+}
+
+func NewAccount() *Account {
+    return &amp;Account{
+        Subject: &amp;Subject{
+            observer: make(map[IObserver]bool),
+        },
+        region: make(map[string]string),
+    }
+}
+
+
+func (a *Account) isLongDistance(name, region string) bool {
+    if val, ok := a.region[name]; ok {
+        return val != region
+    }
+    return false
+}
+
+type SmsSender struct {
+    *Observer
+}
+
+func (s *SmsSender) Update() {
+    ip := s.sub.(*Account).ip
+    var name, region string
+    for k, v := range s.sub.(*Account).region {
+        name, region = k, v
+    }
+    println(&quot;msg send name &quot;, name, &quot; ip &quot;, ip, &quot; region &quot;, region)
+}
+
+func NewSmsSender(sub ISubject) *SmsSender {
+    return  &amp;SmsSender{
+        Observer: &amp;Observer{sub},
+    }
+}
+
+type MailSender struct {
+    *Observer
+}
+
+func (s *MailSender) Update() {
+    ip := s.sub.(*Account).ip
+    var name, region string
+    for k, v := range s.sub.(*Account).region {
+        name, region = k, v
+    }
+    println(&quot;mail send name &quot;, name, &quot; ip &quot;, ip, &quot; region &quot;, region)
+}
+
+func NewMailSender(sub ISubject) *MailSender {
+    return  &amp;MailSender{
+        Observer: &amp;Observer{sub},
+    }
+}
+
+func TestDrinkingMode_Update(t *testing.T) {
+    water := NewWaterHeater()
+
+    washMode := NewWashingMode(water)
+    drinkingMode := NewDrinkingMode(water)
+    water.Attach(washMode)
+    water.Attach(drinkingMode)
+    water.SetTemperature(40)
+    water.SetTemperature(60)
+    water.SetTemperature(100)
+}
+
+func TestAccount(t *testing.T) {
+    account := NewAccount()
+    sms := NewSmsSender(account)
+    mail := NewMailSender(account)
+    account.Attach(sms)
+    account.Attach(mail)
+    account.Login(&quot;Tony&quot;, &quot;104.47.18.9&quot;)
+    account.Login(&quot;Tony&quot;, &quot;67.218.147.69&quot;)
+    account.Login(&quot;Tony&quot;, &quot;33.12.33.123&quot;)
+}
+
 </code></pre>
 
-<h5>多任务</h5>
+<h4>cpp_code</h4>
 
-<pre class="line-numbers"><code class="language-python">urls = [3, 2, 4]
+<pre class="line-numbers"><code class="language-cpp">//
+// Created by eredinliu on 2020-01-28.
+//
 
-all_task = [executor.submit(get_html, (url)) for url in urls]
+#include &lt;iostream&gt;
+#include &lt;list&gt;
+#include &lt;map&gt;
 
-for future in as_completed(all_task):
-    data = future.result()
-    print(&#39;get {} page&#39;.format(data))
+using namespace std;
+
+class Observable;
+
+class Observer {
+public:
+    virtual void Update(Observable*) = 0;
+};
+
+class Observable {
+public:
+    std::list&lt;Observer*&gt; observers;
+
+public:
+    void Add(Observer* obj) {
+        this-&gt;observers.push_back(obj);
+    }
+
+    void Remove(Observer* obj) {
+        this-&gt;observers.remove(obj);
+    }
+
+    void Notify() {
+        for (auto&amp; it : this-&gt;observers) {
+            it-&gt;Update(this);
+        }
+    }
+};
+
+class WaterHeater : public  Observable {
+private:
+    float temperature = 25;
+
+public:
+    float GetTemperature() {
+        return this-&gt;temperature;
+    }
+
+    void SetTemperature(float val) {
+        this-&gt;temperature = val;
+        this-&gt;Notify();
+        cout &lt;&lt; &quot; current temperatue &quot; &lt;&lt; this-&gt;temperature &lt;&lt; &quot; C&quot; &lt;&lt; endl;
+    }
+};
+
+class WashingMode : public Observer {
+public:
+    void Update(Observable* obj) {
+        WaterHeater* waterHeater = reinterpret_cast&lt;WaterHeater*&gt;(obj);
+        if (waterHeater-&gt;GetTemperature() &gt;= 50 &amp;&amp;
+            waterHeater-&gt;GetTemperature() &lt;=70) {
+            cout &lt;&lt; &quot;temperature suitable for bath&quot; &lt;&lt; endl;
+        }
+    }
+};
+
+class DrinkingMode: public Observer {
+public:
+    void Update(Observable* obj) {
+        WaterHeater* waterHeater = reinterpret_cast&lt;WaterHeater*&gt;(obj);
+        if (waterHeater-&gt;GetTemperature() &gt;= 100) {
+            cout &lt;&lt; &quot;temperature suitable for drinking&quot; &lt;&lt; endl;
+        }
+    }
+};
+
+map&lt;string, string&gt; ip_region  {
+        {&quot;104.47.18.9&quot;, &quot;hangzhou&quot;},
+        {&quot;67.218.147.69&quot;, &quot;LA&quot;},
+        {&quot;33.12.33.123&quot;, &quot;shanghai&quot;}
+};
+
+class Account : public Observable {
+public:
+    void Login(const string&amp; name, const string&amp; ip) {
+        if (ip_region.count(ip) &lt;= 0) {
+            cout &lt;&lt; &quot;not in record&quot; &lt;&lt; endl;
+            return;
+        }
+
+        string region = ip_region[ip];
+        if (isLongDistance(name, region)) {
+            this-&gt;region[name] = region;
+            this-&gt;ip = ip;
+            this-&gt;Notify();
+        }
 
 
-#通过excutor获取已经完成的task
-for data in executor.map(get_html, urls):
-    print(&#39;get {} page&#39;.format(data))
-</code></pre>
+        this-&gt;region[name] = region;
+        this-&gt;ip = ip;
+    }
 
-<h5>wait获取结果</h5>
+    bool isLongDistance(const string&amp; name, string&amp; region) {
+        if (this-&gt;region.count(name) &gt; 0) {
+            return this-&gt;region[name] != region;
+        }
+        return false;
+    }
 
-<pre class="line-numbers"><code class="language-python">#wait
-wait(all_task, return_when=FIRST_COMPLETED)
-print(&#39;main&#39;)
+    map&lt;string, string&gt; GetRegion(){
+        return this-&gt;region;
+    }
+
+    const string GetIP() {
+        return this-&gt;ip;
+    }
+
+private:
+    map&lt;string, string&gt; region;
+    string ip;
+};
+
+class SmsSender : public Observer {
+public:
+    void Update(Observable* obj) {
+        Account* account = reinterpret_cast&lt;Account*&gt;(obj);
+        auto ip = account-&gt;GetIP();
+        string name, region;
+
+        for (auto&amp; it : account-&gt;GetRegion()) {
+            name, region = it.first, it.second;
+        }
+
+        cout &lt;&lt; &quot;msg send name &quot; &lt;&lt; name &lt;&lt; &quot; ip &quot; &lt;&lt; ip &lt;&lt; &quot; region&quot; &lt;&lt;
+        region &lt;&lt; endl;
+    }
+};
+
+class MailSender : public Observer {
+public:
+    void Update(Observable* obj) {
+        Account* account = reinterpret_cast&lt;Account*&gt;(obj);
+        auto ip = account-&gt;GetIP();
+        string name, region;
+
+        for (auto&amp; it : account-&gt;GetRegion()) {
+            name, region = it.first, it.second;
+        }
+
+        cout &lt;&lt; &quot;mail send name &quot; &lt;&lt; name &lt;&lt; &quot; ip &quot; &lt;&lt; ip &lt;&lt; &quot; region&quot; &lt;&lt;
+        region &lt;&lt; endl;
+    }
+};
+
+int main() {
+    WaterHeater* waterHeater = new WaterHeater();
+    Observer* washingMode = new WashingMode();
+    Observer* drinkingMode = new DrinkingMode();
+    waterHeater-&gt;Add(washingMode);
+    waterHeater-&gt;Add(drinkingMode);
+    waterHeater-&gt;SetTemperature(40);
+    waterHeater-&gt;SetTemperature(60);
+    waterHeater-&gt;SetTemperature(100);
+    waterHeater-&gt;Remove(drinkingMode);
+    waterHeater-&gt;SetTemperature(102);
+
+
+
+    Account* account = new Account();
+    Observer* sms = new SmsSender();
+    Observer* mail = new MailSender();
+    account-&gt;Add(sms);
+    account-&gt;Add(mail);
+    account-&gt;Login(&quot;Tony&quot;, &quot;104.47.18.9&quot;);
+    account-&gt;Login(&quot;Tony&quot;, &quot;67.218.147.69&quot;);
+    account-&gt;Remove(mail);
+    account-&gt;Login(&quot;Tony&quot;, &quot;33.12.33.123&quot;);
+}
 </code></pre>
 
                         
@@ -412,10 +853,10 @@ print(&#39;main&#39;)
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/12/09 08:08 上午</span>
+                    <span class="date">2019/11/02 08:10 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -429,518 +870,637 @@ print(&#39;main&#39;)
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15758463705532.html">
+                <a class="clearlink" href="15727410293846.html">
                 
-                  <h1>GIL</h1>
+                  <h1>Decorate</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>概念</h4>
+                        	<h4>单一指责模式</h4>
 
 <ul>
-<li>全局解释器锁</li>
-<li>CPython</li>
-<li>GIL使得同一时刻只有一个线程在一个CPU上执行字节码</li>
-<li>无法将多个线程映射到多个CPU上执行</li>
+<li>在软件组件的设计中，如果责任划分的不清晰，使用继承得到的结果往往是随着需求的变化，子类急剧膨胀，同时充斥着重复代码，这时候的关键是划清责任</li>
+<li>典型模式</li>
+<li>decorator</li>
+<li>bridge</li>
 </ul>
 
-<h4>释放的时机</h4>
+<h4>动机</h4>
 
 <ul>
-<li>根据执行字节码的行数或者执行的时间片来进行释放</li>
-<li>遇到IO操作的时候释放</li>
+<li>在某些情况下我们可能会“过度地使用继承来扩展对象的功能”，由于继承为类型引人的静态特质，使得这种扩展方式缺乏灵活性；并且随着子类的增多（扩展功能的增多），各种子类的组合（扩展功能的组合）会导致更多子类的膨胀</li>
+<li>如何使“对象功能的扩展“能够根据需要来动态地实现？同时避免“扩展功能的増多”带来的子类膨胀问题？从而使得任何“功能扩展变化“所导致的影响将为最低？</li>
 </ul>
 
-<h4>线程调度</h4>
+<h4>demo</h4>
 
 <ul>
-<li>对于IO操作来说，多线程和多进程性能差别不大</li>
+<li><img src="media/15727410293846/15727411990518.jpg" alt="" style="width:535px;"/></li>
+<li><img src="media/15727410293846/15727415664698.jpg" alt="" style="width:1092px;"/></li>
+<li><img src="media/15727410293846/15727417495967.jpg" alt="" style="width:674px;"/></li>
+<li><img src="media/15727410293846/15727424291605.jpg" alt="" style="width:626px;"/></li>
 </ul>
 
-<h4>thread_demo</h4>
+<h4>结构</h4>
 
-<pre class="line-numbers"><code class="language-python">import time
-import threading
+<p><img src="media/15727410293846/15805306433109.jpg" alt="" style="width:886px;"/></p>
 
+<h4>slide</h4>
 
-def get_detail_html(url):
-    print(&quot;get detail html started&quot;)
-    time.sleep(2)
-    print(&quot;get detail html end&quot;)
+<ul>
+<li>编译时共用</li>
+<li>运行时多态</li>
+<li>运行时装配</li>
+<li><img src="media/15727410293846/15727426290997.jpg" alt="" style="width:666px;"/></li>
+</ul>
 
+<h5>重构之后</h5>
 
-def get_detail_url(url):
-    print(&quot;get detail url started&quot;)
-    time.sleep(2)
-    print(&quot;get detail url end&quot;)
+<p><img src="media/15727410293846/15727429404116.jpg" alt="" style="width:1015px;"/></p>
 
-if __name__ == &quot;__main__&quot;:
-   thread1 = threading.Thread(target=get_detail_html, args=(&quot;&quot;,))
-   thread2 = threading.Thread(target=get_detail_url, args=(&quot;&quot;,))
-   thread1.setDaemon(True)
-   # thread2.setDaemon(True)
-   start_time = time.time()
-   thread1.start()
-   thread2.start()
+<h4>要点总结</h4>
 
-   print(&quot;last time : {}&quot;.format(time.time() - start_time))
+<ul>
+<li><p>通过采用组合而非继承的手法，Decorator 模式实现了在运行时动态扩展对象功能的能力，而且可以根据需要扩展多个功能。避免了使用继承带来的“灵活性差”和“多子类衍生问题”。</p></li>
+<li><p>Decorator 类在接口上表现为 is- a Componenti 的继承关系，即 Decorator 类继承了 Component 类所具有的接口。但在实现上又表现为 has- a Component 的组合关系，即 Decorator 类又使用了另外个 Component 类。</p></li>
+<li><p>Decorator/模式的目的并非解决“多子类衍生的多继承”问题，Decorator 模式应用的要点在于解决“主体类在多个方向上的扩展功能”一是为“装饰”的含义</p></li>
+</ul>
+
+<h4>装饰器的标示</h4>
+
+<ul>
+<li><img src="media/15727410293846/15727461029717.jpg" alt="" style="width:586px;"/></li>
+<li>同时继承和组合</li>
+</ul>
+
+<h4>golang-demo</h4>
+
+<pre class="line-numbers"><code class="language-go">package decorator
+
+type Component interface {
+    Calc() int
+}
+
+type ConcreteComponent struct{}
+
+func (*ConcreteComponent) Calc() int {
+    return 0
+}
+
+type MulDecorator struct {
+    Component
+    num int
+}
+
+func WarpMulDecorator(c Component, num int) Component {
+    return &amp;MulDecorator{
+        Component: c,
+        num:       num,
+    }
+}
+
+func (d *MulDecorator) Calc() int {
+    return d.Component.Calc() * d.num
+}
+
+type AddDecorator struct {
+    Component
+    num int
+}
+
+func WarpAddDecorator(c Component, num int) Component {
+    return &amp;AddDecorator{
+        Component: c,
+        num:       num,
+    }
+}
+
+func (d *AddDecorator) Calc() int {
+    return d.Component.Calc() + d.num
+}
+
+package decorator
+
+import &quot;fmt&quot;
+
+func ExampleDecorator() {
+    var c Component = &amp;ConcreteComponent{}
+    c = WarpAddDecorator(c, 10)
+    c = WarpMulDecorator(c, 8)
+    res := c.Calc()
+
+    fmt.Printf(&quot;res %d\n&quot;, res)
+    // Output:
+    // res 80
+}
 </code></pre>
 
-<h4>thread_join</h4>
+<h4>golang_demo2</h4>
 
-<pre class="line-numbers"><code class="language-python">def get_detail_html(url):
-    print(&quot;get detail html started&quot;)
-    time.sleep(2)
-    print(&quot;get detail html end&quot;)
+<pre class="line-numbers"><code class="language-go">type IMachine interface {
+    show()
+}
+
+type Machine struct {
+    name string
+}
+
+func (m *Machine) show() {
+}
+
+type AirCondition struct {
+    *Machine
+}
+
+func (a *AirCondition) show() {
+    println(&quot;machine name is &quot; + a.name)
+}
+
+func NewAirCondition(name string) *AirCondition {
+    return &amp;AirCondition{
+        Machine: &amp;Machine{
+            name: name,
+        },
+    }
+}
+
+type Television struct {
+    *Machine
+}
+
+func (t *Television) show() {
+    println(&quot;machine name is &quot; + t.name)
+}
+
+func NewTelevision(name string) *Television {
+    return &amp;Television{
+        Machine: &amp;Machine{
+            name: name,
+        },
+    }
+}
+
+type Decorator struct {
+    IMachine
+}
+
+func (d *Decorator) show() {
+    println(reflect.TypeOf(d.IMachine).String() + &quot; show&quot;)
+}
+
+func NewDecorator(m IMachine) *Decorator {
+    return &amp;Decorator{
+        IMachine: m,
+    }
+}
+
+type AirDecorator struct {
+    *Decorator
+}
+
+func (a *AirDecorator) show() {
+    a.external()
+    a.IMachine.show()
+}
+
+func (a *AirDecorator) external() {
+    println(&quot;AirDecorator external function&quot;)
+}
+
+func NewAirDecorator(m IMachine) *AirDecorator {
+    return &amp;AirDecorator{
+        Decorator: NewDecorator(m),
+    }
+}
 
 
-def get_detail_url(url):
-    print(&quot;get detail url started&quot;)
-    time.sleep(4)
-    print(&quot;get detail url end&quot;)
+type TeleDecorator struct {
+    *Decorator
+}
 
-if __name__ == &quot;__main__&quot;:
-   thread1 = threading.Thread(target=get_detail_html, args=(&quot;&quot;,))
-   thread2 = threading.Thread(target=get_detail_url, args=(&quot;&quot;,))
-   # thread1.setDaemon(True)
-   # thread2.setDaemon(True)
-   start_time = time.time()
-   thread1.start()
-   thread2.start()
-   thread1.join()
-   thread2.join()
+func (a *TeleDecorator) show() {
+    a.external()
+    a.IMachine.show()
+}
 
-   print(&quot;last time : {}&quot;.format(time.time() - start_time))
+func (a *TeleDecorator) external() {
+    println(&quot;TeleDecorator external function&quot;)
+}
+
+func NewTeleDecorator(m IMachine) *TeleDecorator {
+    return &amp;TeleDecorator{
+        Decorator: NewDecorator(m),
+    }
+}
+
+func TestMachineDecorator(t *testing.T) {
+    air := NewAirCondition(&quot;air&quot;)
+    dec1 := NewAirDecorator(air)
+    dec1.show()
+
+    tele := NewTelevision(&quot;tele&quot;)
+    dec2 := NewTeleDecorator(tele)
+    dec2.show()
+}
 </code></pre>
-
-<ul>
-<li>deque在字节码的层面是安全的</li>
-</ul>
-
-<h4>集成Thread来实现多线程</h4>
-
-<pre class="line-numbers"><code class="language-python">import time
-import threading
-
-class GetDetailHtml(threading.Thread):
-    def __init__(self, name):
-        super().__init__(name=name)
-
-    def run(self):
-        print(&quot;get detail html started&quot;)
-        time.sleep(2)
-        print(&quot;get detail html end&quot;)
-
-class GetDetailUrl(threading.Thread):
-    def __init__(self, name):
-        super().__init__(name=name)
-
-    def run(self):
-        print(&quot;get detail url started&quot;)
-        time.sleep(4)
-        print(&quot;get detail url end&quot;)
-
-if __name__ == &quot;__main__&quot;:
-    thread1 = GetDetailHtml(&quot;get_detail_html&quot;)
-    thread2 = GetDetailUrl(&quot;get_detail_url&quot;)
-    start_time = time.time()
-    thread1.start()
-    thread2.start()
-    thread1.join()
-    thread2.join()
-
-    print(&quot;last time : {}&quot;.format(time.time() - start_time))
-
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/12/09 07:06 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15752419123800.html">
-                
-                  <h1>组合和继承</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>组合的优势</h4>
-
-<ul>
-<li>利用组合（composition）、接口、委托（delegation）三个技术手段，一块儿来解决刚刚继承存在的问题</li>
-</ul>
-
-<h4>继承的劣势</h4>
-
-<ul>
-<li>继承是面向对象的四大特性之一，用来表示类之间的 is-a 关系，可以解决代码复用的问题。虽然继承有诸多作用，但继承层次过深、过复杂，也会影响到代码的可维护性。在这种情况下，我们应该尽量少用，甚至不用继承</li>
-</ul>
-
-<h4>组合的优势</h4>
-
-<ul>
-<li>继承主要有三个作用：表示 is-a 关系，支持多态特性，代码复用。而这三个作用都可以通过组合、接口、委托三个技术手段来达成。除此之外，利用组合还能解决层次过深、过复杂的继承关系影响代码可维护性的问题。</li>
-</ul>
-
-<h4>继承和组合的判断</h4>
-
-<ul>
-<li>如果类之间的继承结构稳定，层次比较浅，关系不复杂，我们就可以大胆地使用继承。反之，我们就尽量使用组合来替代继承</li>
-</ul>
 
 <h4>cpp_demo</h4>
 
 <pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
-class Flyable {
-public:
-    virtual void fly() = 0;
+
+class Machine
+{
+ public:
+  std::string _name;
+ public:
+  Machine(std::string tmp) :_name(tmp){}
+  Machine(){}
+  virtual void show() = 0;
 };
 
-class Tweetable {
-public:
-    virtual void tweet() = 0;
+class AirCondition:public Machine
+{
+ public:
+  AirCondition(std::string name):Machine(name){}
+  AirCondition(){}
+  virtual void show()
+  {
+    std::cout&lt;&lt;&quot;machine name is &quot; &lt;&lt; _name &lt;&lt; std::endl;
+  }
 };
 
-class EggLayable {
-public:
-    virtual void layEgg() = 0;
+class Television:public Machine
+{
+ public:
+  Television(std::string name):Machine(name){}
+  Television(){}
+  virtual void show()
+  {
+    std::cout&lt;&lt;&quot;machine name is &quot; &lt;&lt; _name &lt;&lt; std::endl;
+  }
+};
+class Decorator:public Machine
+{
+ protected:
+  Machine* _person;   //要进行装饰的类
+ public:
+  Decorator(Machine* tmp)
+  {
+    _person = tmp;
+  }
+
+  virtual void show()
+  {
+    _person-&gt;show();
+  }
 };
 
-class FlyAbility : public Flyable {
-public:
-    void fly() {
-        std::cout &lt;&lt; &quot;Fly Ability &quot; &lt;&lt; std::endl;
-    }
+class AirDecorator :public Decorator
+{
+ public:
+  AirDecorator(Machine *tmp):Decorator(tmp){}
+  virtual void show()
+  {
+    this-&gt;ExternalFunction();
+    Decorator::show();
+  }
+
+  void ExternalFunction() //额外功能
+  {
+    std::cout &lt;&lt; &quot;AirDecorator ExternalFunction &quot; &lt;&lt; std::endl;
+  }
+};
+class TeleDecorator :public Decorator
+{
+ public:
+  TeleDecorator(Machine *tmp):Decorator(tmp){}
+  virtual void show()
+  {
+    this-&gt;ExternalFunction();
+    Decorator::show();
+  }
+
+  void ExternalFunction() //额外功能
+  {
+    std::cout &lt;&lt; &quot;TeleDecorator ExternalFunction &quot; &lt;&lt; std::endl;
+  }
 };
 
-class TweetAbility: public Tweetable {
-public:
-    void tweet() {
-        std::cout &lt;&lt; &quot;TweetAbility&quot; &lt;&lt; std::endl;
-    }
-};
+int main()
+{
+  Machine *air = new AirCondition(&quot;air&quot;);
+  Decorator * dec1 = new AirDecorator(air);
 
-class EggLayAbility: public EggLayable {
-public:
-    void layEgg() {
-        std::cout &lt;&lt; &quot;EggLayAbility&quot; &lt;&lt; std::endl;
-    }
-};
+  dec1-&gt;show();
 
-class Ostrich : public Tweetable, public  EggLayable {
-private:
-    EggLayAbility* eggLayAbility;
-    TweetAbility* tweetAbility;
-public:
-    void tweet() {
-        tweetAbility-&gt;tweet();
-    }
+  Machine *tele = new Television(&quot;tele&quot;);
+  Decorator * dec2 = new TeleDecorator(tele);
 
-    void layEgg() {
-        eggLayAbility-&gt;layEgg();
-    }
-
-    Ostrich() {
-        eggLayAbility = new EggLayAbility();
-        tweetAbility = new TweetAbility();
-    }
-};
-
-int main() {
-    Ostrich* os = new Ostrich();
-    os-&gt;tweet();
-    os-&gt;layEgg();
+  dec2-&gt;show();
 }
 </code></pre>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/12/02 07:11 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html'>设计模式之美</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
+<h4>python_code</h4>
 
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15752402085375.html">
-                
-                  <h1>基于接口而非实现编程</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>设计原则</h4>
+<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
 
-<ul>
-<li>越抽象、越顶层、越脱离具体某一实现的设计，越能提高代码的灵活性，越能应对未来的需求变化。好的代码设计，不仅能应对当下的需求，而且在将来需求发生变化的时候，仍然能够在不破坏原有代码设计的情况下灵活应对。</li>
-</ul>
+class Machine(metaclass=ABCMeta):
 
-<h4>设计要点</h4>
+    @abstractmethod
+    def show(self):
+        pass
 
-<ul>
-<li>函数的命名不能暴露任何实现细节。比如，前面提到的 uploadToAliyun() 就不符合要求，应该改为去掉 aliyun 这样的字眼，改为更加抽象的命名方式，比如：upload()。</li>
-<li>封装具体的实现细节。比如，跟阿里云相关的特殊上传（或下载）流程不应该暴露给调用者。我们对上传（或下载）流程进行封装，对外提供一个包裹所有上传（或下载）细节的方法，给调用者使用。</li>
-<li>为实现类定义抽象的接口。具体的实现类都依赖统一的接口定义，遵从一致的上传功能协议。使用者依赖接口，而不是具体的实现类来编程。</li>
-<li>抽象意识、封装意识、接口意识</li>
-<li></li>
-</ul>
+    def __init__(self, name):
+        self.name = name
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/12/02 06:43 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html'>设计模式之美</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
+class AirCondition(Machine):
 
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15751681913786.html">
-                
-                  <h1>封装和抽象和继承多态</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>继承的作用</h4>
+    def __init__(self, name):
+        super().__init__(name)
 
-<ul>
-<li>继承最大的一个好处就是代码复用。假如两个类有一些相同的属性和方法，我们就可以将这些相同的部分，抽取到父类中，让两个子类继承父类。这样，两个子类就可以重用父类中的代码，避免代码重复写多遍。不过，这一点也并不是继承所独有的，我们也可以通过其他方式来解决这个代码复用的问题，比如利用组合关系而不是继承关系</li>
-</ul>
+    def show(self):
+        print(&quot;machine name is {}&quot;.format(self.name))
 
-<h4>接口和抽象类</h4>
 
-<ul>
-<li>抽象类更多的是为了代码复用，而接口就更侧重于解耦。接口是对行为的一种抽象，相当于一组协议或者契约</li>
-</ul>
+class Television(Machine):
 
-<h4>抽象模拟接口</h4>
+    def __init__(self, name):
+        super().__init__(name)
 
-<pre class="line-numbers"><code class="language-cpp">class Strategy { // 用抽象类模拟接口
-  public:
-    ~Strategy();
-    virtual void algorithm()=0;
-  protected:
-    Strategy();
-};
+    def show(self):
+        print(&#39;machine name is {}&#39;.format(self.name))
+
+class Decorator(Machine):
+
+    def __init__(self, machine):
+        self.machine = machine
+
+    def show(self):
+        self.machine.show()
+
+class AirDecorator(Decorator):
+
+    def __init__(self, machine):
+        super().__init__(machine)
+
+    def show(self):
+        self.external_function()
+        super().show()
+
+    def external_function(self):
+        print(&#39;air decorator external function&#39;)
+
+class TeleDecorator(Decorator):
+
+    def __init__(self, machine):
+        super().__init__(machine)
+
+    def show(self):
+        self.external_function()
+        super().show()
+
+    def external_function(self):
+        print(&#39;tele decorator external function&#39;)
+
+if __name__ == &#39;__main__&#39;:
+    air = AirCondition(&#39;air&#39;)
+    dec1 = AirDecorator(air)
+    dec1.show()
+
+    tele = Television(&#39;tele&#39;)
+    dec2 = TeleDecorator(tele)
+    dec2.show()
 </code></pre>
 
-<ul>
-<li>抽象类 Strategy 没有定义任何属性，并且所有的方法都声明为 virtual 类型（等同于 Java 中的 abstract 关键字），这样，所有的方法都不能有代码实现，并且所有继承这个抽象类的子类，都要实现这些方法。从语法特性上来看，这个抽象类就相当于一个接口。</li>
-</ul>
+<h4>golang_demo</h4>
 
-<h4>抽象类和接口</h4>
+<pre class="line-numbers"><code class="language-go">package desian_pattern_practise
 
-<ul>
-<li>判断的标准很简单。如果我们要表示一种 is-a 的关系，并且是为了解决代码复用的问题，我们就用抽象类；如果我们要表示一种 has-a 关系，并且是为了解决抽象而非代码复用的问题，那我们就可以使用接口</li>
-</ul>
+import (
+    &quot;fmt&quot;
+    &quot;reflect&quot;
+)
 
-<h4>附件上传服务器实现</h4>
+type IPerson interface {
+    Wear()
+}
 
-<ul>
-<li>需求：支持上传、下载、删除以及文件的存储，存储的话需要支持存本地和云端，涉及附件上传的业务点有十几个。</li>
-<li>设计思路：</li>
-<li>接口设计：上传、下载、删除是公共行为，抽象到接口中</li>
-<li>2、存储方法是一大块公共代码，写到抽象类里面</li>
-<li>3、每个业务的附件上传子类实现接口、继承抽象类</li>
-</ul>
+type Person struct {
+    name string
+}
 
-<h4>接口属性</h4>
+func (p *Person) Wear() {
+}
 
-<ul>
-<li>接口不能包含属性（也就是成员变量）。接口只能声明方法，方法不能包含代码实现。类实现接口的时候，必须实现接口中声明的所有方法。</li>
-</ul>
+type Engineer struct {
+    *Person
+    skill string
+}
 
-<pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
-#include &lt;list&gt;
+func (e *Engineer) Wear() {
+    fmt.Println(reflect.TypeOf(e).String(), &quot;I&#39;m&quot;, e.name, &quot;skill&quot;, e.skill)
+}
 
-class RpcReq {
-public:
-    RpcReq() {}
-};
-
-class Filter {
-public:
-    virtual void doFilter(RpcReq req) = 0;
-};
-
-class AuthencationFilter : public Filter {
-public:
-    void doFilter(RpcReq req) { std::cout &lt;&lt; &quot;AuthencationFilter&quot; &lt;&lt; std::endl;}
-};
-
-class RateLimitFilter : public Filter {
-public:
-    void doFilter(RpcReq req) { std::cout &lt;&lt; &quot;RateLimitFilter&quot; &lt;&lt; std::endl; }
-};
-
-class Application {
-private:
-    std::list&lt;Filter*&gt; filters;
-
-public:
-    void handleRequest(RpcReq req) {
-        for (auto filter : filters) {
-            filter-&gt;doFilter(req);
-        }
+func NewEngineer(name, skill string) *Engineer {
+    return &amp;Engineer{
+        Person: &amp;Person{
+            name: name,
+        },
+        skill: skill,
     }
+}
 
-    void AddFilter(Filter* filter) {
-        filters.push_back(filter);
+type Teacher struct {
+    *Person
+    title string
+}
+
+func (e *Teacher) Wear() {
+    fmt.Println(reflect.TypeOf(e).String(),&quot;I&#39;m&quot;, e.name, &quot;title&quot;, e.title)
+}
+
+func (e *Teacher) NewTeacher(name, title string) *Teacher {
+    return &amp;Teacher{
+        Person: &amp;Person{
+            name: name,
+        },
+        title: title,
     }
-};
+}
 
-int main() {
-    Application* app = new Application();
-    app-&gt;AddFilter(new AuthencationFilter());
-    app-&gt;AddFilter(new RateLimitFilter());
-    RpcReq req;
-    app-&gt;handleRequest(req);
+type Decorator struct {
+    IPerson
+}
+
+func (d *Decorator) Wear() {
+    println(reflect.TypeOf(d.IPerson).String() + &quot; Wear&quot;)
+    d.IPerson.Wear()
+}
+
+type CasualPan struct {
+    *Decorator
+}
+
+func (c *CasualPan) Wear() {
+    c.Decorator.Wear()
+    c.Decorate()
+}
+
+func (c *CasualPan) Decorate() {
+    println(&quot;CasualPan&quot;)
+}
+
+func NewCasualPan(person IPerson) *CasualPan {
+    return &amp;CasualPan{
+        Decorator: &amp;Decorator{
+            IPerson: person,
+        },
+    }
+}
+
+type Belt struct {
+    *Decorator
+}
+
+func (c *Belt) Wear() {
+    c.Decorator.Wear()
+    c.Decorate()
+}
+
+func (c *Belt) Decorate() {
+    println(&quot;Belt&quot;)
+}
+
+func NewBelt(person IPerson) *Belt {
+    return &amp;Belt{
+        Decorator: &amp;Decorator{
+            IPerson: person,
+        },
+    }
+}
+
+
+type LeatherShoes struct {
+    *Decorator
+}
+
+func (c *LeatherShoes) Wear() {
+    c.Decorator.Wear()
+    c.Decorate()
+}
+
+func (c *LeatherShoes) Decorate() {
+    println(&quot;LeatherShoes&quot;)
+}
+
+func NewLeatherShoes(person IPerson) *LeatherShoes {
+    return &amp;LeatherShoes{
+        Decorator: &amp;Decorator{
+            IPerson: person,
+        },
+    }
+}
+
+package desian_pattern_practise
+
+import &quot;testing&quot;
+
+func TestDecorator_Wear(t *testing.T) {
+    engineer := NewEngineer(&quot;ming&quot;, &quot;Golang&quot;)
+    pant := NewCasualPan(engineer)
+    belt := NewBelt(pant)
+    shoes := NewLeatherShoes(belt)
+    shoes.Wear()
 }
 </code></pre>
 
-<h4>日志</h4>
+<h3>cpp_demo</h3>
 
 <pre class="line-numbers"><code class="language-cpp">//
-// Created by 刘超 on 2019-12-01.
+// Created by eredinliu on 2020-02-01.
 //
 
 #include &lt;iostream&gt;
 
 using namespace std;
 
-class Level {
-private:
-    int value_;
+class Person {
 public:
-    Level(int val = 2) : value_(val) {}
+    virtual void Wear() { cout &lt;&lt; &quot;person wear&quot; &lt;&lt; endl; }
 
-    int intValue() {
-        return value_;
-    }
-};
+    Person(const string&amp; name) : name_(name) {}
 
-class Logger {
-public:
-    string _name;
-    bool _enabled;
-    Level *_minLevel;
-public:
-    Logger(string name, bool enabled, Level *minLevel) : _name(name),
-                                                         _enabled(enabled),
-                                                         _minLevel(minLevel) {
-    }
-
-    void log(string message) {
-        if (!isLoggable()) return;
-        doLog(message);
-    }
-
-    virtual void doLog(string message) = 0;
+    Person() {}
 
 protected:
-    bool isLoggable() {
-        return _enabled &amp;&amp; (_minLevel-&gt;intValue() &lt;= 3);
-    }
+    string name_;
 };
 
-class Writer {
+class Engineer : public Person {
+
 public:
-    void write(string msg) {
-        std::cout &lt;&lt; msg &lt;&lt; std::endl;
-    }
-};
+    Engineer(const string&amp; name, const string&amp; skill) : Person(name),
+    skill_(skill) {}
 
-class FileLogger : public Logger {
+    string&amp; GetSkill() {return this-&gt;skill_;}
+
+    void Wear() {
+        cout &lt;&lt; &quot;I&#39;m &quot; &lt;&lt; name_ &lt;&lt; &quot; engineer &quot; &lt;&lt; name_ &lt;&lt; endl;
+        Person::Wear();
+    }
 private:
-    Writer *fileWriter;
+    string skill_;
+};
+
+class Decorator : public  Person {
 public:
-    FileLogger(string name, bool enabled, Level *minLevel)
-            : Logger(name, enabled, minLevel), fileWriter(new Writer()) {
+    Decorator(Person* person) : decorated_(person) {}
+
+    void Wear() {
+        this-&gt;decorated_-&gt;Wear();
+        this-&gt;Decorate();
     }
 
-    void doLog(string message) {
-        fileWriter-&gt;write(message);
+    virtual void Decorate() = 0;
+
+protected:
+    Person* decorated_;
+};
+
+class CasualPant : public Decorator {
+public:
+    CasualPant(Person* person) : Decorator(person) {}
+
+    void Decorate() {
+        cout &lt;&lt; &quot;CasualPant&quot; &lt;&lt; endl;
     }
 };
 
-class MessageQueueClient {
+class Belt : public Decorator {
 public:
-    void send(string msg) {
-        std::cout &lt;&lt; msg &lt;&lt; std::endl;
+    Belt(Person* person) : Decorator(person) {}
+
+    void Decorate() {
+        cout &lt;&lt; &quot;Belt&quot; &lt;&lt; endl;
     }
 };
 
-class MessageQueueLogger : public Logger {
-private:
-    MessageQueueClient *_client;
+class LeatherShoes : public Decorator {
 public:
-    MessageQueueLogger(string name, bool enabled, Level *minLevel)
-            : Logger(name, enabled, minLevel),
-              _client(new MessageQueueClient()) {
-    }
+    LeatherShoes(Person* person) : Decorator(person) {}
 
-    void doLog(string message) {
-        _client-&gt;send(message);
+    void Decorate() {
+        cout &lt;&lt; &quot;LeatherShoes&quot; &lt;&lt; endl;
     }
 };
 
 int main() {
-    Logger* fileLog = new FileLogger(&quot;file&quot;, true, new Level());
-    Logger* mqLog
-            = new MessageQueueLogger(&quot;kafka&quot;, true, new Level());
-    fileLog-&gt;doLog(&quot;file logger&quot;);
-    mqLog-&gt;doLog(&quot;kafka mq logger&quot;);
+    Person* tony = new Engineer(&quot;engineer&quot;, &quot;Go&quot;);
+    Person* pant = new CasualPant(tony);
+    Person* belt = new Belt(pant);
+    Person* shoes = new LeatherShoes(belt);
+    shoes-&gt;Wear();
 }
 </code></pre>
 
@@ -951,10 +1511,10 @@ int main() {
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/12/01 10:43 上午</span>
+                    <span class="date">2019/11/03 08:30 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html'>设计模式之美</a></span>
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -968,93 +1528,57 @@ int main() {
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15745422969850.html">
+                <a class="clearlink" href="15734280261866.html">
                 
-                  <h1>自定义序列类</h1>
+                  <h1>Singleton</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>序列协议</h4>
+                        	<h4>案例</h4>
+
+<pre class="line-numbers"><code class="language-cpp">std::mutex m;
+ static MyCAS* GetInstance() {
+    //不代表一定没被new过，只有第一次多线程初始化的时候需要加锁，后面都不需要加锁
+    if (m_instance == nullptr) {
+      //初始化的时候才加锁
+      std::unque_lock(std::mutex) lock(m);
+      if (m_instance == nullptr) {
+        m_instance = new MyCAS();
+        static GC c1;
+      }
+      return m_instance;
+    }
+  }
+
+</code></pre>
 
 <ul>
-<li><img src="media/15745422969850/15745424374141.jpg" alt="" style="width:663px;"/></li>
+<li>存在内存reorder, 加volatitle没有</li>
 </ul>
 
-<h4>add</h4>
+<h4>golang_demo</h4>
 
-<pre class="line-numbers"><code class="language-python">a += (3, 4)
-a += [3, 4]
-通过魔法函数__iadd__来实现，内部通过extends实现
-a = [1, 2]
-c = a + [3, 4]
-print(c)
+<pre class="line-numbers"><code class="language-go">//Singleton 是单例模式类
+type Singleton struct{}
 
-a += (3, 4)
-a.extend(range(3))//迭代相加每个元素
-a.append((1, 2)) //直接加上整个元组
-a.append([1, 2]) //直接加上整个列表
-print(a)
-</code></pre>
+var singleton *Singleton
+var once sync.Once
 
-<h4>可切片的对象</h4>
+//GetInstance 用于获取单例模式对象
+func GetInstance() *Singleton {
+        once.Do(func() {
+                singleton = &amp;Singleton{}
+        })
 
-<pre class="line-numbers"><code class="language-python">import numbers
+        return singleton
+}
 
-class Group:
-    def __init__(self, group_name, company_name, staffs):
-        self.group_name = group_name
-        self.company_name = company_name
-        self.staffs = staffs
-
-    def __reversed__(self):
-        self.staffs.reverse()
-
-    def __getitem__(self, item):
-        cls = type(self)
-        if isinstance(item, slice):
-            return cls(group_name=self.group_name, company_name=self.company_name, staffs=self.staffs[item])
-        elif isinstance(item, slice):
-            return cls(group_name=self.group_name, company_name=self.company_name, staffs=[self.staffs[item]])
-
-    def __len__(self):
-        return len(self.staffs)
-
-    def __iter__(self):
-        return iter(self.staffs)
-
-    def __contains__(self, item):
-        if item in self.staffs:
-            return True
-        else:
-            return False
-
-staffs = [&quot;bobby1&quot;, &quot;imooc&quot;, &quot;bobby2&quot;, &quot;bobby3&quot;]
-
-group = Group(company_name=&quot;imooc&quot;, group_name=&quot;user&quot;, staffs=staffs)
-reversed(group)
-
-for user in group:
-    print(user)
-</code></pre>
-
-<h4>维持升序排列</h4>
-
-<pre class="line-numbers"><code class="language-python">#用来处理已排序的序列，用来维持已排序的序列， 升序
-import bisect
-
-from  collections import deque
-
-inter_list = deque()
-bisect.insort(inter_list, 3)
-bisect.insort(inter_list, 2)
-bisect.insort(inter_list, 5)
-bisect.insort(inter_list, 1)
-bisect.insort(inter_list, 6)
-
-print(bisect.bisect_left(inter_list, 3))
-
-print(inter_list)
+func GetInstance() *Singleton {
+        once.Do(func() {
+                singleton = &amp;Singletion()
+        })
+}
 </code></pre>
 
                         
@@ -1064,10 +1588,10 @@ print(inter_list)
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/11/24 04:51 上午</span>
+                    <span class="date">2019/11/11 07:20 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -1081,314 +1605,289 @@ print(inter_list)
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15723060364617.html">
+                <a class="clearlink" href="15729950422631.html">
                 
-                  <h1>仿函数</h1>
+                  <h1>Abstract factory</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>算术运算和逻辑运算</h4>
+                        	<h4>动机</h4>
 
 <ul>
-<li> <img src="media/15723060364617/15723060642492.jpg" alt="" style="width:864px;"/></li>
-<li><img src="media/15723060364617/15723061972480.jpg" alt="" style="width:701px;"/></li>
+<li>在软件系统中，经常面临着“一系列相互依赖的对象”的创建工作；同时，由于需求的变化，往往存在更多系列对象的创建工作。</li>
+<li>如何应对这种变化？如何绕过常规的对象创建方法（new），提供种“封裝机制“来避免客户程序和这种多系列具体对象创建工作“的紧耦合？</li>
 </ul>
 
-<h4>融入STL条件</h4>
+<h4>模式定义</h4>
 
 <ul>
-<li><img src="media/15723060364617/15723065078186.jpg" alt="" style="width:886px;"/></li>
-<li>继承binary_function<T, T, bool> </li>
-<li><img src="media/15723060364617/15723066558246.jpg" alt="" style="width:919px;"/></li>
-<li>unary_function 一个操作数 如果作为父类，有人继承的话，大小是零</li>
-<li>binary_function 两个操作数 1个字节</li>
-<li></li>
+<li>提供一个接口，让该接口负责创建一系列“相关或者相互依赖的对象”，无需指定它们具体的类。</li>
 </ul>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/29 07:40 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E5%80%99%E6%8D%B7STL.html'>候捷STL</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
+<h4>结构图</h4>
 
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15671534121507.html">
-                
-                  <h1>微服务架构</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>访问日志</h4>
+<p><img src="media/15729950422631/15809876460184.jpg" alt="" style="width:812px;"/></p>
+
+<h4>要点总结</h4>
 
 <ul>
-<li>通过中间件来解决</li>
-<li>日志中间版本</li>
-<li>v.1.7.1</li>
+<li>如果没有应对多系列对象构建”的需求变化，则没有必要使用abstract Factory/模式,这时候使用简单的工厂完全可以。</li>
+<li>系列对象”指的是在某一特定系列下的对象之间有相互依赖、或作用的关系。不同系列的对象之间不能相互依赖。</li>
+<li>Abstract Factory 模式主要在于应对“新系列的需求变动。其缺点在于难以应对“新对象”的需求变动。</li>
+<li>抽象工厂是工厂方法模式的升级版本，工厂方法不能解决具有二级分类的产品的创建问题，抽象工厂就是用来解决这个问题的</li>
+<li>模式稳定的部分就是缺点</li>
 </ul>
 
-<h4>代码生成器优化</h4>
+<h4>cpp_demo</h4>
 
-<pre class="line-numbers"><code class="language-go">exist := util.IsFileExist(filename) controller_generator.go 44
-exist := util.IsFileExist(filename) main_generator.go  18
+<pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
+
+class Article {
+ public:
+  virtual void produce() = 0;
+};
+
+class Video {
+ public:
+  virtual void produce() = 0;
+};
+
+class CourseFactory {
+ public:
+  virtual Video* getVideo() = 0;
+  virtual Article* getArticle()= 0;
+};
+
+class JavaArticle : public Article {
+ public:
+  void produce() {
+    std::cout &lt;&lt; &quot; JavaArticl produce&quot; &lt;&lt; std::endl;
+  }
+};
+
+class JavaVideo : public Video {
+ public:
+  void produce() {
+    std::cout &lt;&lt; &quot; JavaVideo produce&quot; &lt;&lt; std::endl;
+  }
+};
+class JavaCourseFactory : public CourseFactory {
+ public:
+  Video* getVideo() {
+    return new JavaVideo();
+  }
+  Article* getArticle() {
+    return new JavaArticle();
+  }
+};
+
+class PythonArticle : public Article {
+ public:
+  void produce() {
+    std::cout &lt;&lt; &quot; PythonArticl produce&quot; &lt;&lt; std::endl;
+  }
+};
+
+class PythonVideo : public Video {
+ public:
+  void produce() {
+    std::cout &lt;&lt; &quot; PythonVideo produce&quot; &lt;&lt; std::endl;
+  }
+};
+
+class PythonCourseFactory : public CourseFactory {
+ public:
+  Video* getVideo() {
+    return new PythonVideo();
+  }
+  Article* getArticle() {
+    return new PythonArticle();
+  }
+};
+int main() {
+  CourseFactory* f1 = new JavaCourseFactory();
+  Video* v1 = f1-&gt;getVideo();
+  Article* a1 = f1-&gt;getArticle();
+  v1-&gt;produce();
+  a1-&gt;produce();
+
+  CourseFactory* f2 = new PythonCourseFactory();
+  Video* v2 = f2-&gt;getVideo();
+  Article* a2 = f2-&gt;getArticle();
+  v2-&gt;produce();
+  a2-&gt;produce();
+}
 </code></pre>
 
-<h4>分布式追踪</h4>
+<h4>golang_demo</h4>
 
-<ul>
-<li>v1.9.2</li>
-<li>元信息从grpc获取</li>
-<li></li>
-</ul>
+<pre class="line-numbers"><code class="language-go">package abstractfactory
 
-<h4>解决ETCD冲突</h4>
+import &quot;fmt&quot;
 
-<ul>
-<li>rm -rf $GOPATH/src/go.etcd.io/etcd/vendor/golang.org/x/net/trace</li>
-</ul>
+type Article interface {
+        produce()
+}
 
-<h4>安装go1.13</h4>
+type Video interface {
+        produce()
+}
 
-<ul>
-<li>wget <a href="https://dl.google.com/go/go1.13.linux-amd64.tar.gz">https://dl.google.com/go/go1.13.linux-amd64.tar.gz</a></li>
-<li>tar -C /usr/local -xzf go1.13.linux-amd64.tar.gz</li>
-<li><a href="https://madneal.com/post/gproxy/">https://madneal.com/post/gproxy/</a></li>
-</ul>
+type CourseFactory interface {
+        getVideo() Video
+        getArticle() Article
+}
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/30 16:23 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
+type JavaArticle struct{}
 
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15739426575118.html">
-                
-                  <h1>抽象基类</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>作用</h4>
+func (j *JavaArticle) produce() {
+        fmt.Println(&quot;JavaArticle produce&quot;)
+}
 
-<ul>
-<li>类型判断</li>
-<li>接口实现</li>
-</ul>
+type JavaVideo struct{}
 
-<h4>类对象数组</h4>
+func (j *JavaVideo) produce() {
+        fmt.Println(&quot;JavaVideo produce&quot;)
+}
 
-<pre class="line-numbers"><code class="language-python">class Cat(object):
-    def say(self):
-        print(&quot;i am a cat&quot;)
+type JavaCourseFactory struct{}
 
+func (jc *JavaCourseFactory) getVideo() Video {
+        return &amp;JavaVideo{}
+}
 
-class Dog(object):
-    def say(self):
-        print(&quot;i am a dog&quot;)
+func (jc *JavaCourseFactory) getArticle() Article {
+        return &amp;JavaArticle{}
+}
+type PythonArticle struct{}
 
+func (p *PythonArticle) produce() {
+        fmt.Println(&quot;PythonArticle produce&quot;)
+}
 
-class Duck(object):
-    def say(self):
-        print(&quot;i am a duck&quot;)
+type PythonVideo struct{}
 
+func (p *PythonVideo) produce() {
+        fmt.Println(&quot;PythonVideo produce&quot;)
+}
 
-anaimal_list = [Cat, Dog, Duck]
-for anaimal in anaimal_list:
-    anaimal().say()
+type PythonCourseFactory struct{}
+
+func (py *PythonCourseFactory) getVideo() Video {
+        return &amp;PythonVideo{}
+}
+
+func (py *PythonCourseFactory) getArticle() Article {
+        return &amp;PythonArticle{}
+}
+import &quot;testing&quot;
+
+func getArticleAndVideo(factory CourseFactory) {
+        factory.getArticle().produce()
+        factory.getVideo().produce()
+}
+
+func TestABSFactory(t *testing.T) {
+        var f1 CourseFactory = &amp;JavaCourseFactory{}
+        getArticleAndVideo(f1)
+        var f2 CourseFactory = &amp;PythonCourseFactory{}
+        getArticleAndVideo(f2)
+}
 </code></pre>
 
-<h4>扩展类</h4>
+<h4>python_code</h4>
 
-<ul>
-<li>只要继承了魔法函数getitem就可以</li>
-</ul>
+<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
 
-<pre class="line-numbers"><code class="language-python">class Company(object):
-    def __init__(self, employee_list):
-        self.employee = employee_list
-
-    def __getitem__(self, item):
-        return self.employee[item]
-
-    def __len__(self):
-        return len(self.employee)
-
-
-com = Company([&#39;tom&#39;, &#39;jack&#39;, &#39;jsdon&#39;])
-a = [&#39;b1&#39;, &#39;b2&#39;]
-b = [&#39;b2&#39;, &#39;b3&#39;]
-name_tuple = [&#39;b3&#39;, &#39;b4&#39;]
-name_set = set()
-name_set.add(&#39;b5&#39;)
-name_set.add(&#39;b6&#39;)
-a.extend(com)
-print(a)
-</code></pre>
-
-<h4>强制子类必须实现接口</h4>
-
-<pre class="line-numbers"><code class="language-python">class CacheBase(metaclass=abc.ABCMeta):
-    @abc.abstractmethod
-    def get(self, key):
+class Article(metaclass=ABCMeta):
+    
+    def produce(self):
         pass
-
-    @abc.abstractmethod
-    def set(self, key, value):
+    
+class Video(metaclass=ABCMeta):
+    
+    def produce(self):
         pass
+    
+class CourseFactory(metaclass=ABCMeta):
+    
+    def get_article(self):
+        pass
+    
+    def get_video(self):
+        pass
+    
+class JavaArticle(Article):
+    
+    def produce(self):
+        print(type(self).__name__, &quot; produce&quot;)
 
-class RedisCache(CacheBase):
-    def set(self, key, value):
-        print(&quot;hello&quot;)
 
-    def get(self, key):
-        print(&#39;hello&#39;)
-</code></pre>
+class JavaVideo(Video):
 
-<h4>instance&amp;type</h4>
-
-<ul>
-<li>is是判断类别</li>
-<li>==是判断值</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-python">class A:
-    pass
-
-class B(A):
-    pass
-
-b = B()
-
-print(isinstance(b, B))
-print(isinstance(b, A))
-
-print(type(b) is B)
-print(type(b) is A) #二者的ID不想等
-print(id(b))
-print(id(B))
-</code></pre>
-
-<h4>Mro算法</h4>
-
-<ul>
-<li><img src="media/15739426575118/15739464120394.jpg" alt="" style="width:913px;"/></li>
-<li>C3算法</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/17 06:17 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
+    def produce(self):
+        print(type(self).__name__, &quot; produce&quot;)
         
-			<div class="article">
-                <a class="clearlink" href="15738723543218.html">
-                
-                  <h1>魔法函数</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>概念</h4>
+class JavaCourseFactory(CourseFactory):
+    
+    def get_article(self):
+        return JavaArticle()
+    
+    def get_video(self):
+        return JavaVideo()
 
-<ul>
-<li>python内置</li>
-</ul>
 
-<pre class="line-numbers"><code class="language-python">class Company(object):
-    def __init__(self, employee_list):
-       self.employee = employee_list
+class CppArticle(Article):
 
-    def __getitem__(self, item):
-        return self.employee[item]
+    def produce(self):
+        print(type(self).__name__, &quot; produce&quot;)
 
-company = Company([&#39;tom&#39;, &#39;jack&#39;, &#39;jsdon&#39;])
 
-for em in company:
-    print(em)
-</code></pre>
+class CppVideo(Video):
 
-<h4>python数据模型</h4>
+    def produce(self):
+        print(type(self).__name__, &quot; produce&quot;)
 
-<pre class="line-numbers"><code class="language-python">class Company(object):
-    def __init__(self, employee_list):
-       self.employee = employee_list
 
-    def __getitem__(self, item):
-        return self.employee[item]
+class CppCourseFactory(CourseFactory):
 
-    def __len__(self):
-        return len(self.employee)
+    def get_article(self):
+        return CppArticle()
 
-company = Company([&#39;tom&#39;, &#39;jack&#39;, &#39;jsdon&#39;])
+    def get_video(self):
+        return CppVideo()
 
-# company1 = company[:2]
-# for em in company1:
-#     print(em)
 
-print(len(company))
-</code></pre>
+class PythonArticle(Article):
 
-<h4>魔法函数</h4>
+    def produce(self):
+        print(type(self).__name__, &quot; produce&quot;)
 
-<ul>
-<li><img src="media/15738723543218/15738740515573.jpg" alt="" style="width:278px;"/></li>
-</ul>
 
-<pre class="line-numbers"><code class="language-python">__subclasshook__ 魔法函数
+class PythonVideo(Video):
+
+    def produce(self):
+        print(type(self).__name__, &quot; produce&quot;)
+
+
+class PythonCourseFactory(CourseFactory):
+
+    def get_article(self):
+        return PythonArticle()
+
+    def get_video(self):
+        return PythonVideo()
+
+if __name__ == &#39;__main__&#39;:
+
+    java = JavaCourseFactory()
+    java.get_video().produce()
+    java.get_article().produce()
+
+    cpp = CppCourseFactory()
+    cpp.get_article().produce()
+    cpp.get_video().produce()
 </code></pre>
 
                         
@@ -1398,10 +1897,10 @@ print(len(company))
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/11/16 10:45 上午</span>
+                    <span class="date">2019/11/06 07:04 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
           				   
                   </div>
                   <div class="more-right right">

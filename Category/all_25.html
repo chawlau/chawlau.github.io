@@ -170,136 +170,245 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15683306595324.html">
+                <a class="clearlink" href="15728246052216.html">
                 
-                  <h1>Redis开发规范</h1>
+                  <h1>异常处理</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>键值设计</h4>
+                        	<h4>异常</h4>
 
-<ul>
-<li>可读性和可管理性</li>
-<li>以业务名（或数据库名）为前缀(防止 key 冲突),用冒号分割比如业务名表名，比如ugc:video:1</li>
-<li>简洁性</li>
-<li>保证语义的前提下，控制 key 的长度，当 key 较多时，内存占用也不容忽=</li>
-<li>不要包含特殊字符 反例：包含空格、换行、单双引号以及其他转义字符</li>
-</ul>
+<pre class="line-numbers"><code class="language-python">
+try:
+    s = input(&#39;please enter two numbers separated by comma: &#39;)
+    num1 = int(s.split(&#39;,&#39;)[0].strip())
+    num2 = int(s.split(&#39;,&#39;)[1].strip())
+    ... 
+except ValueError as err:
+    print(&#39;Value Error: {}&#39;.format(err))
 
-<h4>内部编码</h4>
-
-<ul>
-<li>embstr</li>
-<li><img src="media/15683306595324/15683312158728.jpg" alt="" style="width:1260px;"/></li>
-<li>raw</li>
-<li>int</li>
-</ul>
-
-<h4>Value设计</h4>
-
-<h5>拒绝bigkey</h5>
-
-<ul>
-<li>string 类型控制在 10 KB 以内</li>
-<li>hash、list、set、zset 元素个数不要超过 5000</li>
-<li>网络阻塞
-<img src="media/15683306595324/15683314237064.jpg" alt="" style="width:1165px;"/></li>
-<li>集群节点数据不均衡
-<img src="media/15683306595324/15683315102980.jpg" alt="" style="width:1055px;"/></li>
-<li>Rediss阻塞</li>
-<li>频繁序列化：应用服务器 CPU 消耗
-<img src="media/15683306595324/15683315993529.jpg" alt="" style="width:1020px;"/></li>
-<li>慢查询
-<img src="media/15683306595324/15683314878389.jpg" alt="" style="width:1105px;"/></li>
-</ul>
-
-<h5>发现bigkey</h5>
-
-<ul>
-<li>应用方的发现</li>
-<li>redis-cli --bigkeys 建议在slave节点</li>
-<li>scan + debug object</li>
-<li>主动报警：网络流量监控，客户端监控</li>
-<li>内核热点key问题优化</li>
-<li>建立堆
-<img src="media/15683306595324/15683319818275.jpg" alt="" style="width:833px;"/></li>
-</ul>
-
-<h5>bigkey删除</h5>
-
-<ul>
-<li>注意隐性删除
-<img src="media/15683306595324/15683324454924.jpg" alt="" style="width:1217px;"/></li>
-<li>过期事件删除导致阻塞，不会在主节点慢查询日志，在从节点慢查询有</li>
-<li>lazy delete</li>
-<li>通过scan 进行子删除</li>
-</ul>
-
-<h5>bigkey预防</h5>
-
-<ul>
-<li>优化数据结构</li>
-<li>优化数据结构：例如二级拆分</li>
-<li>物理隔离或者万兆网卡：不是治标方案</li>
-<li>命令优化：例如 hgetall-~ hmget、scan </li>
-<li>报警和定期优化</li>
-</ul>
-
-<h5>bigkey总结</h5>
-
-<ul>
-<li>牢记 Reds 单线程特性</li>
-<li>选择合理的数据结构和命令</li>
-<li>凊楚自身OPS</li>
-<li>了解 bigley 的危害</li>
-</ul>
-
-<h5>选择合适的数据结构</h5>
-
-<ul>
-<li><img src="media/15683306595324/15683328513846.jpg" alt="" style="width:1141px;"/>
-<img src="media/15683306595324/15683329353848.jpg" alt="" style="width:1005px;"/></li>
-<li><img src="media/15683306595324/15683329738070.jpg" alt="" style="width:1370px;"/>
-<img src="media/15683306595324/15683330641058.jpg" alt="" style="width:1043px;"/></li>
-</ul>
-
-<h4>键值生命周期</h4>
-
-<ul>
-<li>Redis不是垃圾桶</li>
-<li>idletime</li>
-<li>周期数据需要设置过期时间，object idletime key可以找垃圾 key-value</li>
-<li>过期时间不宜集中：缓存穿透和雪崩等问题</li>
-</ul>
-
-<h4>命令优化</h4>
-
-<ul>
-<li>O (N）以上命令关注 N 的数量 例如：hgetal、lange、smembers、zrange、sinter 等并非不能使用，但是需要明确 N 的值。有遍历的需求可以使用 hscan、sscan、zscan 代替。</li>
-<li>禁止线上使用 keys、flushall、flushes 等，通过 redis 的 rename 机制禁掉命令，或者使用 scan 的方式渐进式处理。</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">rename-command FLUSHALL &quot;&quot;
-rename-command FLUSHDB  &quot;&quot;
-rename-command CONFIG   &quot;&quot;
-rename-command KEYS &quot;&quot;
+print(&#39;continue&#39;)
 </code></pre>
 
 <ul>
-<li>合理使用select </li>
-<li>redis事务弱 不支持回滚</li>
-<li>集群版本（自研和官方）要求一次事务操作的 key 必须在一个 slot 上（可以使用 hashtag 功能解決）</li>
-<li>redis集群版本在lua上有特殊要求</li>
-<li>必要使用monitor命令，不能长时间使用</li>
-<li><img src="media/15683306595324/15683338191048.jpg" alt="" style="width:832px;"/></li>
+<li>是在最后一个 except block，声明其处理的异常类型是 Exception。Exception 是其他所有非系统异常的基类，能够匹配任意非系统异常,如果多个 except 声明的异常类型都与实际相匹配，那么只有最前面的 except block 会被执行，其他则被忽略</li>
 </ul>
 
-<h5>客户端优化</h5>
+<pre class="line-numbers"><code class="language-python">
+try:
+    s = input(&#39;please enter two numbers separated by comma: &#39;)
+    num1 = int(s.split(&#39;,&#39;)[0].strip())
+    num2 = int(s.split(&#39;,&#39;)[1].strip())
+    ...
+except ValueError as err:
+    print(&#39;Value Error: {}&#39;.format(err))
+except IndexError as err:
+    print(&#39;Index Error: {}&#39;.format(err))
+except Exception as err:
+    print(&#39;Other error: {}&#39;.format(err))
+
+print(&#39;continue&#39;)
+</code></pre>
+
+<h4>finally</h4>
 
 <ul>
-<li>避免多个应用使用一个redis实例</li>
-<li>不想干的业务拆分</li>
+<li>finally，经常和 try、except 放在一起来用。无论发生什么情况，finally block 中的语句都会被执行，哪怕前面的 try 和 excep block 中使用了 return 语句。</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">
+import sys
+try:
+    f = open(&#39;file.txt&#39;, &#39;r&#39;)
+    .... # some data processing
+except OSError as err:
+    print(&#39;OS error: {}&#39;.format(err))
+except:
+    print(&#39;Unexpected error:&#39;, sys.exc_info()[0])
+finally:
+    f.close()
+</code></pre>
+
+<h4>多异常处理</h4>
+
+<pre class="line-numbers"><code class="language-python">
+try:
+    db = DB.connect(&#39;&lt;db path&gt;&#39;) # 可能会抛出异常
+    raw_data = DB.queryData(&#39;&lt;viewer_id&gt;&#39;) # 可能会抛出异常
+except (DBConnectionError, DBQueryDataError) err:
+    print(&#39;Error: {}&#39;.format(err))
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/04 07:43 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15727842506087.html">
+                
+                  <h1>输入输出&json</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>输入输出</h4>
+
+<pre class="line-numbers"><code class="language-python">import re
+
+def parse(text):
+    text = re.sub(r&#39;[^\w]&#39;, &#39; &#39;, text)
+
+    text = text.lower()
+
+    word_list = text.split(&#39; &#39;)
+
+    word_list = filter(None, word_list)
+
+    word_cnt = {}
+
+    for word in word_list:
+        if word not in word_cnt:
+            word_cnt[word] = 0
+        word_cnt[word] += 1
+
+    sorted_word_cnt = sorted(word_cnt.items(), key=lambda kv : kv[1], reverse=True)
+
+    return sorted_word_cnt
+
+def main():
+  with open(&#39;./demo.txt&#39;, &#39;r&#39;) as fin:
+    text = fin.read()
+
+  word_and_freq = parse(text)
+
+  print(word_and_freq)
+
+  with open(&#39;./out.txt&#39;, &#39;w&#39;) as fout:
+      for word, freq in word_and_freq:
+          fout.write(&#39;{}{}\n&#39;.format(word, freq))
+
+
+if __name__ == &#39;__main__&#39;:
+    main()
+</code></pre>
+
+<h4>json</h4>
+
+<ul>
+<li>json.dumps() 这个函数，接受 Python 的基本数据类型，然后将其序列化为 string</li>
+<li>json.loads() 这个函数，接受一个合法字符串，然后将其反序列化为 Python 的基本数据类型。</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">import json
+
+params = {
+    &#39;symbol&#39; : &#39;123456&#39;,
+    &#39;type&#39;: &#39;limit&#39;,
+    &#39;price&#39;: 123.4,
+    &#39;amount&#39;: 23
+}
+
+json_str = json.dumps(params)
+
+print(json_str)
+
+print(&#39;json_str {} params {}&#39;.format(type(json_str), params))
+
+origin_params = json.loads(json_str)
+
+print(&#39;type origin={}, origin={}&#39;.format(type(origin_params), origin_params))
+</code></pre>
+
+<h4>for&amp;while</h4>
+
+<ul>
+<li>range() 函数是直接由 C 语言写的，调用它速度非常快。而 while 循环中的“i += 1”这个操作，得通过 Python 的解释器间接调用底层的 C 语言；并且这个简单的操作，又涉及到了对象的创建和删除（因为 i 是整型，是 immutable，i += 1 相当于 i = new int(i + 1)）。所以，显然，for 循环的效率更胜一筹</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">
+i = 0
+while i &lt; 1000000:
+    i += 1
+
+for i in range(0, 1000000):
+    pass
+</code></pre>
+
+<h4>条件与循环的复用</h4>
+
+<pre class="line-numbers"><code class="language-python">expression for item in iterable if condition
+
+[(xx, yy) for xx in x for yy in y if xx != yy]
+</code></pre>
+
+<h4>demo</h4>
+
+<pre class="line-numbers"><code class="language-python">attributes = [&#39;name&#39;, &#39;dob&#39;, &#39;gender&#39;]
+values = [[&#39;jason&#39;, &#39;2000-01-01&#39;, &#39;male&#39;],
+[&#39;mike&#39;, &#39;1999-01-01&#39;, &#39;male&#39;],
+[&#39;nancy&#39;, &#39;2001-02-01&#39;, &#39;female&#39;]
+]
+
+res = [dict(zip(attributes, value)) for value in values]
+print(res)
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/03 20:30 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15726839005959.html">
+                
+                  <h1>基础数据类型</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>字符串不可变</h4>
+
+<ul>
+<li>使用加法操作符&#39;+=&#39;的字符串拼接方法。因为它是一个例外，打破了字符串不可变的特性。</li>
+<li>type就是判断类型</li>
 <li></li>
 </ul>
 
@@ -310,10 +419,10 @@ rename-command KEYS &quot;&quot;
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/09/13 07:24 上午</span>
+                    <span class="date">2019/11/02 16:38 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Redis%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A.html'>Redis从入门到精通</a></span>
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -327,28 +436,77 @@ rename-command KEYS &quot;&quot;
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15683292874011.html">
+                <a class="clearlink" href="15724781541212.html">
                 
-                  <h1>布隆过滤器</h1>
+                  <h1>面向对象设计原则</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>实现原理</h4>
+                        	<h4>面向对象设计</h4>
 
 <ul>
-<li>一个很长的二进制向量和若干个哈希函数
-<img src="media/15683292874011/15683294091882.jpg" alt="" style="width:1004px;"/></li>
-<li>参数：m 个二进制向量，n 个预备数据，k 个 hash 函数构建布隆过滤器：n 个预备数据走一遍上面过程</li>
-<li>判断元素存在：走一遍上面过程：如果都是 1, 则在表明存在，反之不存在。</li>
+<li>变化是复用的</li>
+<li>抵御变化</li>
 </ul>
 
-<h4>误差率</h4>
+<h4>认知</h4>
 
 <ul>
-<li><img src="media/15683292874011/15683296943543.jpg" alt="" style="width:981px;"/></li>
-<li>m/n与误差率成反比。k与误差率成反比</li>
-<li></li>
+<li>从语言实现层面来看，对象封装了代码和数据。</li>
+<li>从规格层面讲，对象是一系列可被使用的公共接口</li>
+<li>从概念层面讲，对象是某种拥有责任的抽象。</li>
+</ul>
+
+<h4>设计原则</h4>
+
+<h5>依赖倒置原则（DIP)</h5>
+
+<ul>
+<li>高层模块（稳定不应该依赖于低层模块（变化） 二者都依赖于抽象（稳定）</li>
+<li>抽象不应该依赖于实现细节，实现细节应该依赖于抽象</li>
+<li><img src="media/15724781541212/15724788990425.jpg" alt="" style="width:714px;"/></li>
+</ul>
+
+<h5>开放封闭原则</h5>
+
+<ul>
+<li>对扩展开放，对更改封闭。</li>
+<li>类模块应该是可扩展的，但是不可修改。</li>
+</ul>
+
+<h5>单一职责原则（SRP)</h5>
+
+<ul>
+<li>一个类应该仅有一个引起它变化的原因</li>
+<li>变化的方向隐含着类的责任。</li>
+</ul>
+
+<h5>Liskov 替换原则（LSP)</h5>
+
+<ul>
+<li>子类必须能够替換它们的基类（IS-A）。继承表达类型抽象。</li>
+</ul>
+
+<h4>接口隔离原则（ISP)</h4>
+
+<p>・不应该强迫客户程序依赖它们不用的方法。・接口应该小而完备</p>
+
+<h5>优先使用组合</h5>
+
+<ul>
+<li>继承破坏了封装性，子类父类耦合高</li>
+</ul>
+
+<h5>封装变化点</h5>
+
+<h5>针对接口编程</h5>
+
+<ul>
+<li>针对接口编程，而不是针对实现编程</li>
+<li>不将变量类型声明为某个特定的具体类，而是声明为某个接口。</li>
+<li>客户程序无需获知对象的具体类型，只需要知道对象所具有的接口。</li>
+<li>減少系统中各部分的依赖关系，从而实现“高内聚、松耦合的类型设计方案。</li>
 </ul>
 
                         
@@ -358,462 +516,10 @@ rename-command KEYS &quot;&quot;
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/09/13 07:01 上午</span>
+                    <span class="date">2019/10/31 07:29 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Redis%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A.html'>Redis从入门到精通</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15682829786509.html">
-                
-                  <h1>线程启动 join detach</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>线程启动</h4>
-
-<ul>
-<li>thread是标准库的类</li>
-<li>join 加入汇合 阻塞主线程，让主线程等待子线程执行完毕，主线程执行完，join完毕，主线程就执行</li>
-</ul>
-
-<h5>detach()</h5>
-
-<ul>
-<li>传统多线程主线程要等待子线程执行完毕，然后自己再退出</li>
-<li>主线程不和子线程会和了，主线程和子线程分道扬镳</li>
-<li>detach()之后，与主线程关联的thread对象就会失去与主线程的关联</li>
-<li>子线程就会驻留在后台运行，子线程就会被c++运行时库接管</li>
-<li>detach会导致线程失去控制，不能再join</li>
-</ul>
-
-<h4>joinable（）</h4>
-
-<ul>
-<li>判断是否可以成join, detach</li>
-</ul>
-
-<h4>其他可调用对象</h4>
-
-<ul>
-<li>用类对象创建的线程，一旦主线程执行结束了，这个对象是被复制进新创建的线程中</li>
-<li>执行完主线程后，ta会被销毁。但是所复制的对象依旧存在</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/12 18:09 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15682514641307.html">
-                
-                  <h1>贪心算法</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>实现</h4>
-
-<ul>
-<li>leet_455</li>
-<li><img src="media/15682514641307/15682518263627.jpg" alt="" style="width:614px;"/></li>
-<li>leet_392</li>
-</ul>
-
-<h4>贪心和动态规划</h4>
-
-<ul>
-<li>leet_435</li>
-<li><img src="media/15682514641307/15682540246962.jpg" alt="" style="width:939px;"/></li>
-</ul>
-
-<h4>贪心选择性质</h4>
-
-<ul>
-<li>如果无法使用贪心算法，举出反例</li>
-<li>如何证明贪心算法的正确性</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/12 09:24 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E7%8E%A9%E8%BD%AC%E7%AE%97%E6%B3%95.html'>玩转算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15682448177563.html">
-                
-                  <h1>套接字关闭</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>close函数</h4>
-
-<ul>
-<li>同时关闭两个方向的数据流</li>
-</ul>
-
-<h4>shutdown</h4>
-
-<ul>
-<li>SHUT_RD(0)：关闭连接的“读”这个方向，对该套接字进行读操作直接返回 EOF。从数据角度来看，套接字上接收缓冲区已有的数据将被丢弃，如果再有新的数据流到达，会对数据进行 ACK，然后悄悄地丢弃。也就是说，对端还是会接收到 ACK，在这种情况下根本不知道数据已经被丢弃了。</li>
-<li>SHUT_WR(1)：关闭连接的“写”这个方向，这就是常被称为”半关闭“的连接。此时，不管套接字引用计数的值是多少，都会直接关闭连接的写方向。套接字上发送缓冲区已有的数据将被立即发送出去，并发送一个 FIN 报文给对端。应用程序如果对该套接字进行写操作会报错。</li>
-<li>SHUT_RDWR(2)：相当于 SHUT_RD 和 SHUT_WR 操作各一次，关闭套接字的读和写两个方向</li>
-</ul>
-
-<h4>shutdown和close差别</h4>
-
-<ul>
-<li>close 会关闭连接，并释放所有连接对应的资源，而 shutdown 并不会释放掉套接字和所有的资源</li>
-<li>close 存在引用计数的概念，并不一定导致该套接字不可用；shutdown 则不管引用计数，直接使得该套接字不可用，如果有别的进程企图使用该套接字，将会受到影响</li>
-<li>close 的引用计数导致不一定会发出 FIN 结束报文，而 shutdown 则总是会发出 FIN 结束报文，这在我们打算关闭连接通知对端的时候，是非常重要的</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/12 07:33 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98.html'>网络编程实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15682444524618.html">
-                
-                  <h1>Timewait</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>作用</h4>
-
-<ul>
-<li>这样做是为了确保最后的 ACK 能让被动关闭方接收，从而帮助其正常关闭</li>
-<li>连接“化身”和报文迷走有关系，为了让旧连接的重复分节在网络中自然消失</li>
-<li>经过 2MSL 这个时间，足以让两个方向上的分组都被丢弃，使得原来连接的分组在网络中都自然消失，再出现的分组一定都是新化身所产生的</li>
-<li>2MSL 的时间是从主机 1 接收到 FIN 后发送 ACK 开始计时的；如果在 TIME_WAIT 时间内，因为主机 1 的 ACK 没有传输到主机 2，主机 1 又接收到了主机 2 重发的 FIN 报文，那么 2MSL 时间将重新计时</li>
-</ul>
-
-<h4>TimeWait优化</h4>
-
-<ul>
-<li>net.ipv4.tcp_max_tw_buckets</li>
-<li>调低 TCP_TIMEWAIT_LEN</li>
-<li>linger.l_onff 1 l_linger 0 调过四次挥手</li>
-<li>net.ipv4.tcp_tw_reuse 连接发起放</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/12 07:27 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98.html'>网络编程实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15682443156541.html">
-                
-                  <h1>UDP连接</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>作用</h4>
-
-<ul>
-<li>让应用程序接收异步错误信息</li>
-<li>UDP 套接字进行 connect 操作，将 UDP 套接字建立了”上下文“，该套接字和服务器端的地址和端口产生了联系，正是这种绑定关系给了操作系统内核必要的信息，能够将操作系统内核收到的信息和对应的套接字进行关联、</li>
-<li>帮助操作系统内核从容建立了（UDP 套接字——目的地址 + 端口）之间的映射关系，当收到一个 ICMP 不可达报文时，操作系统内核可以从映射表中找出是哪个 UDP 套接字拥有该目的地址和端口</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/12 07:25 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98.html'>网络编程实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15682425776152.html">
-                
-                  <h1>MVCC机制</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>解决幻读</h4>
-
-<ul>
-<li>MVCC+Next-Key Lock</li>
-</ul>
-
-<h4>MVCC解决问题</h4>
-
-<ul>
-<li>读写之间阻塞的问题，通过 MVCC 可以让读写互相不阻塞，即读不阻塞写，写不阻塞读，这样就可以提升事务并发处理能力。</li>
-<li>降低了死锁的概率。这是因为 MVCC 采用了乐观锁的方式，读取数据时并不需要加锁，对于写操作，也只锁定必要的行。</li>
-<li>解决一致性读的问题</li>
-</ul>
-
-<h4>MVCC实现</h4>
-
-<ul>
-<li>事务版本号</li>
-<li>行记录中隐藏列 db_row_id db_trx_id db_roll_ptr</li>
-<li>Undo Log</li>
-<li>表空间中包含多个段，数据段、索引段、回滚段</li>
-</ul>
-
-<h4>ReadView工作机制</h4>
-
-<ul>
-<li>trx_ids，系统当前正在活跃的事务 ID 集合。</li>
-<li>low_limit_id，活跃的事务中最大的事务 ID。</li>
-<li>up_limit_id，活跃的事务中最小的事务 ID。</li>
-<li>creator_trx_id，创建这个 Read View 的事务 ID。</li>
-<li>trx_id &lt; up_limit_id 可见</li>
-<li>trx_id &gt; low_limit_id 不可见</li>
-<li> up_limit_id &lt; trx_id &lt; low_limit_id 如果trx_id in trx_ids 去回滚段中找</li>
-<li> trx_id not in trx_ids 事务已经提交 </li>
-</ul>
-
-<h4>读提交和可重复读的区别</h4>
-
-<ul>
-<li>“读已提交”时，每次SELECT操作都创建Read View，无论SELECT是否相同，所以可能出现前后两次读到的结果不等，即不可重复读。</li>
-<li>“可重复读”时，首次SELECT操作才创建Read View并复用给后续的相同SELECT操作，前后两次读到的结果一定相等，避免了不可重复读。</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/12 06:56 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='SQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>SQL必知必会</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15682421778195.html">
-                
-                  <h1>查询索引</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>三星索引</h4>
-
-<ul>
-<li>在 WHERE 条件语句中，找到所有等值谓词中的条件列，将它们作为索引片中的开始列；</li>
-<li>将 GROUP BY 和 ORDER BY 中的列加入到索引中；</li>
-<li>将 SELECT 字段中剩余的列加入到索引片中。
-<img src="media/15682421778195/15682422351660.jpg" alt="" style="width:547px;"/></li>
-</ul>
-
-<h4>考虑因子</h4>
-
-<ul>
-<li>索引会增加磁盘压力和缓冲池</li>
-<li>索引维护也需要成本</li>
-</ul>
-
-<h4>如何设计索引</h4>
-
-<ul>
-<li>索引数不能过多</li>
-<li>在索引片中，我们也需要控制索引列的数量，通常情况下我们将 WHERE 里的条件列添加到索引中，而 SELECT 中的非条件列则不需要添加。除非 SELECT 中的非条件列数少，并且该字段会经常使用到</li>
-<li>单列索引和复合索引的长度也需要控制，在 MySQL InnoDB 中，系统默认单个索引长度最大为 767 bytes，如果单列索引长度超过了这个限制，就会取前缀索引，也就是取前 255 字符。</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/12 06:49 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='SQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>SQL必知必会</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15682405698391.html">
-                
-                  <h1>数据页的角度理解B+树</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>存储结构</h4>
-
-<ul>
-<li><img src="media/15682405698391/112d7669450e3968e63e9de524ab13b7.jpg" alt="112d7669450e3968e63e9de524ab13b7"/></li>
-<li>一个表空间包括了一个或多个段，一个段包括了一个或多个区，一个区包括了多个页，而一个页中可以有多行记录</li>
-<li>区大小是64*16KB</li>
-<li>创建一张表时会创建一个表段，创建一个索引时会创建一个索引段</li>
-<li>表空间从管理上可以划分为系统表空间、用户表空间、撤销表空间、临时表空间等</li>
-</ul>
-
-<h4>数据页结构</h4>
-
-<p><img src="media/15682405698391/9490bd9641f6a9be208a6d6b2d1b1353.jpg" alt="9490bd9641f6a9be208a6d6b2d1b1353"/></p>
-
-<ul>
-<li>文件头中有两个字段，分别是 FIL_PAGE_PREV 和 FIL_PAGE_NEXT，它们的作用相当于指针，分别指向上一个数据页和下一个数据页。连接起来的页相当于一个双向的链表</li>
-<li>数据页之间不需要是物理上的连续，而是逻辑上的连续</li>
-<li>数据页内数据的物理存放顺序与索引顺序是一致的</li>
-</ul>
-
-<h4>数据页检索</h4>
-
-<p><img src="media/15682405698391/ccfaffc92b9414db3fe68d2ad9df2577.jpg" alt="ccfaffc92b9414db3fe68d2ad9df2577"/></p>
-
-<ul>
-<li>页目录，它起到了记录的索引作用，因为在页中，记录是以单向链表的形式进行存储的。单向链表的特点就是插入、删除非常方便，但是检索效率不高，最差的情况下需要遍历链表上的所有节点才能完成检索，因此在页目录中提供了二分查找的方式，用来提高记录的检索效率</li>
-</ul>
-
-<h4>查询成本</h4>
-
-<ul>
-<li>last_query_cost 需要的数据页面</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/12 06:22 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='SQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>SQL必知必会</a></span>
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
           				   
                   </div>
                   <div class="more-right right">

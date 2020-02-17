@@ -170,440 +170,180 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15735992285022.html">
+                <a class="clearlink" href="15780204527223.html">
                 
-                  <h1>元组和列表</h1>
+                  <h1>Url</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>内部实现</h4>
+                        	<h4>url设置</h4>
 
-<pre class="line-numbers"><code class="language-c">#ifndef Py_LIMITED_API
-typedef struct {
-    PyObject_VAR_HEAD
-    PyObject **ob_item;
-    Py_ssize_t allocated;
-} PyListObject;
-typedef struct {
-    PyObject_VAR_HEAD
-    PyObject *ob_item[1];
-} PyTupleObject;
+<pre class="line-numbers"><code class="language-python">import urllib
+import urllib2
+url = &#39;http://www.someserver.com/cgi-bin/register.cgi&#39;
+values = {&#39;name&#39; : &#39;Michael Foord&#39;,
+          &#39;location&#39; : &#39;Northampton&#39;,
+          &#39;language&#39; : &#39;Python&#39; }
+data = urllib.urlencode(values)
+req = urllib2.Request(url, data)
+response = urllib2.urlopen(req)
+the_page = response.read()
 </code></pre>
 
-<h4>hash表</h4>
-
-<pre class="line-numbers"><code class="language-c">Indices
-----------------------------------------------------
-None | index | None | None | index | None | index ...
-----------------------------------------------------
-Entries
---------------------
-hash0   key0  value0
----------------------
-hash1   key1  value1
----------------------
-hash2   key2  value2
----------------------
-        ...
----------------------
-
-</code></pre>
-
-<ul>
-<li>旧的Hash表越来越稀疏</li>
-</ul>
-
-<h4>全局变量修改</h4>
-
-<pre class="line-numbers"><code class="language-python">x = [1]
-
-def func2():
-    x.append(2)
-func2()
-print(x)
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/13 06:53 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15735992739195.html">
-                
-                  <h1>对象的比较和拷贝</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>等于&amp;&amp;is</h4>
-
-<ul>
-<li>&#39;==&#39;操作符比较对象之间的值是否相等</li>
-<li>而&#39;is&#39;操作符比较的是对象的身份标识是否相等，即它们是否是同一个对象，是否指向同一个内存地址。</li>
-</ul>
-
-<h4>is效率比较高</h4>
-
-<ul>
-<li>&#39;is&#39;操作符不能被重载</li>
-<li>&#39;==&#39;操作符却不同，执行a == b相当于是去执行a.__eq__(b)，而 Python 大部分的数据类型都会去重载__eq__这个函数，其内部的处理通常会复杂一些。比如，对于列表，__eq__函数会去遍历列表中的元素，比较它们的顺序和值是否相等</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/13 06:54 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15735993394297.html">
-                
-                  <h1>Grafna</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>监控案例</h4>
-
-<ul>
-<li>CPU使用率</li>
-<li>除去IO等待造成的CPU高之外，大部 分情况 就是 user%造成<br/>
-另外， </li>
-<li>system% 内核态的CPU 使用率 偶尔也会出现高的情况</li>
-<li>当服务器硬盘IO占用过大时，CPU会等待IO的返回进入interuptable 类型的CPU等待时间</li>
-</ul>
-
-<h4>硬盘监控</h4>
-
-<ul>
-<li>predict_linear()</li>
-<li>磁盘读写((rate(node_disk_read_bytes_total[1m] )+ rate(node_disk_written_bytes_total[1m])) / 1024 /1024) &gt; 0</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/13 06:55 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15734246276075.html">
-                
-                  <h1>GC原则</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>查看引用计数</h4>
-
-<ul>
-<li>sys.getrefcount() 这个函数，可以查看一个变量的引用次数。这段代码本身应该很好理解，不过别忘了，getrefcount 本身也会引入一次计数。</li>
-<li>在函数调用发生的时候，会产生额外的两次引用，一次来自函数栈，另一个是函数参数。</li>
-</ul>
-
-<h4>循环引用</h4>
-
-<pre class="line-numbers"><code class="language-python">
-import gc
-
-def func():
-    show_memory_info(&#39;initial&#39;)
-    a = [i for i in range(10000000)]
-    b = [i for i in range(10000000)]
-    show_memory_info(&#39;after a, b created&#39;)
-    a.append(b)
-    b.append(a)
-
-func()
-gc.collect()
-show_memory_info(&#39;finished&#39;)
-</code></pre>
-
-<h4>回收机制</h4>
-
-<h5>标记清除</h5>
-
-<ul>
-<li>对于一个有向图，如果从一个节点出发进行遍历，并标记其经过的所有节点；那么，在遍历结束后，所有没有被标记的节点，我们就称之为不可达节点。显而易见，这些节点的存在是没有任何意义的，自然的，我们就需要对它们进行垃圾回收。</li>
-<li>mark-sweep 使用双向链表维护了一个数据结构，并且只考虑容器类的对象（只有容器类对象才有可能产生循环引用）</li>
-</ul>
-
-<h5>分代收集算法</h5>
-
-<ul>
-<li>Python 将所有对象分为三代。刚刚创立的对象是第 0 代；经过一次垃圾回收后，依然存在的对象，便会依次从上一代挪到下一代。而每一代启动自动垃圾回收的阈值，则是可以单独指定的。当垃圾回收器中新增对象减去删除对象达到相应的阈值时，就会对这一代对象启动垃圾回收</li>
-</ul>
-
-<h4>引用计数</h4>
-
-<ul>
-<li>引用计数是其中最简单的实现，不过切记，这只是充分非必要条件，因为循环引用需要通过不可达判定，来确定是否可以回收</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/11 06:23 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15733756280245.html">
-                
-                  <h1>GIL</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>引入GIL原因</h4>
-
-<ul>
-<li>CPython  引进 GIL 其实主要就是这么两个原因：一是设计者为了规避类似于内存管理这样的复杂的竞争风险问题（race condition）；二是因为 CPython 大量使用 C 语言库，但大部分 C 语言库都不是原生线程安全的（线程安全会降低性能和增加复杂度）。</li>
-</ul>
-
-<h4>工作流程</h4>
-
-<ul>
-<li>一个 GIL 在 Python 程序的工作示例。其中，Thread 1、2、3 轮流执行，每一个线程在开始执行时，都会锁住 GIL，以阻止别的线程执行；同样的，每一个线程执行完一段后，会释放 GIL，以允许别的线程开始利用资源</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/10 16:47 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15733738151028.html">
-                
-                  <h1>Asyncio</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>多线程缺陷</h4>
-
-<ul>
-<li>比如，多线程运行过程容易被打断，因此有可能出现 race condition 的情况；再如，线程切换本身存在一定的损耗，线程数不能无限增加，因此，如果你的 I/O 操作非常 heavy，多线程很有可能满足不了高效率、高质量的需求。</li>
-</ul>
-
-<h4>多线程还是AsyncIO</h4>
-
-<ul>
-<li>如果是 I/O bound，并且 I/O 操作很慢，需要很多任务 / 线程协同实现，那么使用 Asyncio 更合适。</li>
-<li>如果是 I/O bound，但是 I/O 操作很快，只需要有限数量的任务 / 线程，那么使用多线程就可以了。</li>
-<li>如果是 CPU bound，则需要使用多进程来提高程序运行效率。</li>
-</ul>
-
-<h4>总结</h4>
-
-<ul>
-<li>不同于多线程，Asyncio 是单线程的，但其内部 event loop 的机制，可以让它并发地运行多个不同的任务，并且比多线程享有更大的自主控制权。Asyncio 中的任务，在运行过程中不会被打断，因此不会出现 race condition 的情况。尤其是在 I/O 操作 heavy 的场景下，Asyncio 比多线程的运行效率更高。因为 Asyncio 内部任务切换的损耗，远比线程切换的损耗要小；并且 Asyncio 可以开启的任务数量，也比多线程中的线程数量多得多。</li>
-</ul>
-
-<h4>demo</h4>
+<h4>协程</h4>
 
 <pre class="line-numbers"><code class="language-python">import asyncio
-import aiohttp
-import time
 
-async def download_one(url):
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url) as resp:
-            print(&#39;Read {} from {}&#39;.format(resp.content_length, url))
+async def compute(x, y):
+    print(&quot;Compute {} + {} ...&quot;.format(x, y))
+    await asyncio.sleep(1.0)
+    return x + y
 
-async def download_all(sites):
-    tasks = [asyncio.create_task(download_one(site)) for site in sites]
-    await asyncio.gather(*tasks)
+async def print_sum(x, y):
+    result = await compute(x, y)
+    print(&quot;{} + {} = {}&quot;.format(x, y, result))
 
-def main():
-    sites = [
-      &#39;https://www.baidu.com&#39;,
-      &#39;https://www.taobao.com&#39;,
-      &#39;https://www.jd.com&#39;,
-      &#39;https://www.tencent.com/zh-cn/index.html&#39;
-    ]
-    start_time = time.perf_counter()
-    asyncio.run(download_all(sites))
-    end_time = time.perf_counter()
-    print(&#39;Download {} sites in {} seconds&#39;.format(len(sites), end_time - start_time))
+loop = asyncio.get_event_loop()
+print(&#39;start&#39;)
+loop.run_until_complete(print_sum(1, 2))
+print(&#39;end&#39;)
+loop.close()
+
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2020/01/03 11:00 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15776263556217.html">
+                
+                  <h1>协程和异步</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>同步</h4>
+
+<ul>
+<li>指代码调用IO操作时，必须等待IO操作完成后才返回的调用方式</li>
+<li>异步是指代码调用IO操作时，不必等IO操作完成就返回的调用方式</li>
+</ul>
+
+<h4>阻塞和非阻塞</h4>
+
+<ul>
+<li>阻塞是指调用函数时候当前线程被挂起。</li>
+<li>阻塞是指调用函数时候当前线程不会被挂起，而是立即返回</li>
+</ul>
+
+<h4>回调函数</h4>
+
+<ul>
+<li>如果回调函数执行不正常该如何？</li>
+<li>如如果回调里面还要嵌套回调怎么办？</li>
+<li>要嵌套很多层怎么か？</li>
+<li>如果嵌套了多层，其中某个环节出错了会造成什么后果？</li>
+<li>如果有个数据需要被每个回调都处理怎么办？</li>
+<li>怎么使用当前函数中的局部变量？</li>
+</ul>
+
+<h4>需求</h4>
+
+<ul>
+<li>采用同步的方式去编写异步的代码</li>
+<li>使用单线程去切换任务：</li>
+<li>线程是由操作系统切换的，单线程切换意味着我们需要程序员自己去调度任务</li>
+<li>不在需要锁，并发性高，如果单线程内切换函数，性能远高于线程切换，并发性更高</li>
+</ul>
+
+<h4>生成器</h4>
+
+<ul>
+<li> next 和 send</li>
+<li> send可以传递值进入生成器内部,同时还可以重启生成器进入到下一个yield位置</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">def gen_func():
+    html = yield &quot;http://projectedu.com&quot;
+    print(html)
+    yield 2
+    yield 3
+    return &#39;bobby&#39;
 
 if __name__ == &#39;__main__&#39;:
-        main()
+    gen = gen_func()
+    url = next(gen)
+    html = &quot;bobby&quot;
+    gen.send(html)
 </code></pre>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/10 16:16 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
+<ul>
+<li>第一次调用send的时候不能调用一个非None值，因为生成器还没有执行到那一行代码</li>
+<li>next则可以</li>
+</ul>
 
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15733711698710.html">
-                
-                  <h1>Future</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>并发执行</h4>
-
-<pre class="line-numbers"><code class="language-python">import requests
-import time
-import threading
-import concurrent.futures
-
-def download_one(url):
-    resp = requests.get(url)
-    print(&#39;Read {} from {}&#39;.format(len(resp.content), url))
-//串行执行
-def download_all(sites):
-    for site in sites:
-        download_one(site)
-//多线程版本
-def download_all_t(sites):
-     with concurrent.futures.ThreadPoolExecutor(max_workers=5) as excutor:
-            excutor.map(download_one, sites)
-//多进程版本
-def download_all_p(sites):
-   with concurrent.futures.ProcessPoolExecutor() as excutor:
-        excutor.map(download_one, sites)
-//futures
-def download_all_f(sites):
-    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
-        to_do = []
-        for site in sites:
-            future = executor.submit(download_one, site)
-            to_do.append(future)
-        for future in concurrent.futures.as_completed(to_do):
-            future.result()
-
-def main():
-    sites = [
-        &#39;https://www.baidu.com&#39;,
-        &#39;https://www.taobao.com&#39;,
-        &#39;https://www.jd.com&#39;,
-        &#39;https://www.tencent.com/zh-cn/index.html&#39;,
-    ]
-    start_time = time.perf_counter()
-    download_all_f(sites)
-    end_time = time.perf_counter()
-    print(&#39;Download {} sites in {} seconds&#39;.format(len(sites), end_time - start_time))
-
+<pre class="line-numbers"><code class="language-python">def gen_func():
+    html = yield &quot;http://projectedu.com&quot;
+    print(html)
+    yield 2
+    yield 3
+    return &#39;bobby&#39;
 
 if __name__ == &#39;__main__&#39;:
-    main()
+    gen = gen_func()
+    # url = next(gen)
+    gen.send(None)
+    html = &quot;bobby&quot;
+    print(gen.send(html))
 </code></pre>
 
-<h4>为什么多线程每次只能有一个线程执行</h4>
+<ul>
+<li>GeneratorExit是继承BaseException, Exception</li>
+</ul>
+
+<h4>throw</h4>
+
+<pre class="line-numbers"><code class="language-python">def gen_func():
+    try:
+        html = yield &quot;http://projectedu.com&quot;
+    except Exception as e:
+        pass
+    yield 2
+    yield 3
+    return &#39;bobby&#39;
+
+if __name__ == &#39;__main__&#39;:
+    gen = gen_func()
+    print(next(gen))
+    gen.throw(Exception, &#39;download error&#39;)
+    print(next(gen))
+    gen.throw(Exception, &#39;download error&#39;)
+</code></pre>
+
+<h4>yield from</h4>
 
 <ul>
-<li>Python 的解释器并不是线程安全的，为了解决由此带来的 race condition 等问题，Python 便引入了全局解释器锁，也就是同一时刻，只允许一个线程执行。当然，在执行 I/O 操作时，如果一个线程被 block 了，全局解释器锁便会被释放，从而让另一个线程能够继续执行。</li>
 <li></li>
 </ul>
 
@@ -614,7 +354,7 @@ if __name__ == &#39;__main__&#39;:
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/11/10 15:32 下午</span>
+                    <span class="date">2019/12/29 21:32 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Python.html'>Python</a></span>
@@ -631,116 +371,126 @@ if __name__ == &#39;__main__&#39;:
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15733419433426.html">
+                <a class="clearlink" href="15768019255107.html">
                 
-                  <h1>Python协程</h1>
+                  <h1>进程间通讯</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>协程执行方法</h4>
+                        	<h4>三类queue</h4>
+
+<pre class="line-numbers"><code class="language-python">from multiprocessing import Process, Queue
+from queue import Queue
+from multiprocessing import Manager
+</code></pre>
+
+<h4>进程间通讯</h4>
+
+<pre class="line-numbers"><code class="language-python">import time
+from multiprocessing import Process, Queue, Pool, Manager, Pipe
+
+
+def producer(queue):
+    queue.put(&quot;a&quot;)
+    time.sleep(2)
+
+def consumer(queue):
+    time.sleep(2)
+    data = queue.get()
+    print(data)
+
+if __name__ == &quot;__main__&quot;:
+    queue = Queue(10)
+    my_producer = Process(target=producer, args=(queue,))
+    my_consumer = Process(target=consumer, args=(queue,))
+    my_producer.start()
+    my_consumer.start()
+    my_producer.join()
+    my_consumer.join()
+</code></pre>
+
+<h4>进程池间通讯</h4>
+
+<pre class="line-numbers"><code class="language-python">import time
+from multiprocessing import Process, Queue, Pool
+# from queue import Queue
+from multiprocessing import Manager
+
+Manager().Queue()
+
+def producer(queue):
+    queue.put(&#39;a&#39;)
+    time.sleep(2)
+
+def consumer(queue):
+    time.sleep(2)
+    data = queue.get()
+    print(data)
+
+if __name__ == &#39;__main__&#39;:
+    queue = Manager().Queue(10)
+    pool = Pool(2)
+
+    pool.apply_async(producer, args=(queue,))
+    pool.apply_async(consumer, args=(queue,))
+
+    pool.close()
+    pool.join()
+</code></pre>
+
+<h4>Pipe通讯</h4>
+
+<pre class="line-numbers"><code class="language-python">import time
+from multiprocessing import Process, Queue, Pool, Manager, Pipe
+
+def producer(pipe):
+    pipe.send(&#39;bobby&#39;)
+    pipe.send(&#39;ok&#39;)
+    pipe.send(&#39;hello&#39;)
+
+def consumer(pipe):
+    print(pipe.recv())
+    print(pipe.recv())
+    print(pipe.recv())
+
+if __name__ == &#39;__main__&#39;:
+    recv_pipe, send_pipe = Pipe()
+    my_pro = Process(target=producer, args=(send_pipe,))
+    my_con = Process(target=consumer, args=(recv_pipe,))
+
+    my_pro.start()
+    my_con.start()
+    my_pro.join()
+    my_pro.join()
+</code></pre>
 
 <ul>
-<li>await 进入被调用的协程函数，执行完毕返回后再继续，而这也是 await 的字面意思。</li>
-<li>asyncio.create_task() 来创建任务</li>
-<li>asyncio.run 来触发运行</li>
+<li>pipe性能是高于queue</li>
 </ul>
 
-<h4>执行</h4>
+<h4>共享内存</h4>
 
-<pre class="line-numbers"><code class="language-python">import asyncio
-import time
+<pre class="line-numbers"><code class="language-python">import time
+from multiprocessing import Process, Queue, Pool, Manager, Pipe
 
-async def crawl_page(url):
-    print(&#39;crawling {}&#39;.format(url))
-    sleep_time = int(url.split(&#39;_&#39;)[-1])
-    await  asyncio.sleep(sleep_time)
-    print(&#39;OK {}&#39;.format(url))
+def add_data(p_dict, key, value):
+    p_dict[key] = value
 
-async def main(urls):
-    tasks = [asyncio.create_task(crawl_page(url)) for url in urls]
-    for task in tasks:
-        await task
-async def main(urls):
-    tasks = [asyncio.create_task(crawl_page(url)) for url in urls]
-    await asyncio.gather(*tasks)
+if __name__ == &#39;__main__&#39;:
+    progress_dict = Manager().dict()
 
-start = time.time()
-asyncio.run(main([&#39;url_1&#39;, &#39;url_2&#39;, &#39;url_3&#39;, &#39;url_4&#39;]))
-end = time.time()
-print(end-start)
-</code></pre>
+    first_pro = Process(target=add_data, args=(progress_dict, &quot;bobby1&quot;, 22))
+    second_pro = Process(target=add_data, args=(progress_dict, &quot;bobby2&quot;, 23))
+    third_pro = Process(target=add_data, args=(progress_dict, &quot;bobby3&quot;, 24))
 
-<h4>取消协程</h4>
-
-<pre class="line-numbers"><code class="language-python">import asyncio
-import time
-
-async def worker_1():
-    await asyncio.sleep(1)
-    return 1
-
-async def worker_2():
-    await asyncio.sleep(2)
-    return 2 / 0
-
-async def worker_3():
-    await asyncio.sleep(3)
-    return 3
-
-async def main():
-    task_1 = asyncio.create_task(worker_1())
-    task_2 = asyncio.create_task(worker_2())
-    task_3 = asyncio.create_task(worker_3())
-
-    await asyncio.sleep(2)
-    task_3.cancel()
-
-    res = await asyncio.gather(task_1, task_2, task_3, return_exceptions=True)
-    print(res)
-
-start = time.time()
-asyncio.run(main())
-end = time.time()
-print(end-start)
-</code></pre>
-
-<h4>生产者和消费者模型</h4>
-
-<pre class="line-numbers"><code class="language-python">import asyncio
-import time
-import random
-
-async def consumer(queue, id):
-    while True:
-        val = await queue.get()
-        print(&#39;{} get a val {}&#39;.format(id, val))
-        await asyncio.sleep(1)
-
-async def producer(queue, id):
-    for i in range(5):
-        val = random.randint(1, 10)
-        await queue.put(val)
-        print(&#39;{} put a val: {}&#39;.format(id, val))
-        await asyncio.sleep(1)
-
-async def main():
-    queue = asyncio.Queue()
-    con1 = asyncio.create_task(consumer(queue, &#39;con1&#39;))
-    con2 = asyncio.create_task(consumer(queue, &#39;con2&#39;))
-    pro1 = asyncio.create_task(producer(queue, &#39;pro1&#39;))
-    pro2 = asyncio.create_task(producer(queue, &#39;pro2&#39;))
-
-    await  asyncio.sleep(10)
-    con1.cancel()
-    con2.cancel()
-
-    await asyncio.gather(con1, con2, pro1, pro2, return_exceptions=True)
-
-start = time.time()
-asyncio.run(main())
-end = time.time()
-print(end-start)
+    first_pro.start()
+    second_pro.start()
+    third_pro.start()
+    first_pro.join()
+    second_pro.join()
+    third_pro.join()
+    print(progress_dict)
 </code></pre>
 
                         
@@ -750,7 +500,7 @@ print(end-start)
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/11/10 07:25 上午</span>
+                    <span class="date">2019/12/20 08:32 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Python.html'>Python</a></span>
@@ -767,58 +517,71 @@ print(end-start)
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15732683266177.html">
+                <a class="clearlink" href="15768004391774.html">
                 
-                  <h1>迭代器和生成器</h1>
+                  <h1>多进程同步</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>迭代器</h4>
+                        	<h4>多进程</h4>
 
-<pre class="line-numbers"><code class="language-python">list_1 = [i for i in range(100000000)]
-list_2 = (i for i in range(100000000))
+<pre class="line-numbers"><code class="language-python">import multiprocessing
+
+import time
+
+def get_html(n):
+    time.sleep(n)
+    print(&#39;sub_progress success&#39;)
+    return n
+
+if __name__ == &#39;__main__&#39;:
+    progress = multiprocessing.Process(target=get_html, args=(2,))
+    print(progress.pid)
+    progress.start()
+    print(progress.pid)
+    progress.join()
+    print(&#39;main progress end&#39;)
 </code></pre>
 
-<ul>
-<li>迭代器是一个有限集合，生成器则可以成为一个无限集。</li>
-</ul>
+<h4>进城池获取结果</h4>
 
-<h4>对比</h4>
+<pre class="line-numbers"><code class="language-python">import multiprocessing
 
-<pre class="line-numbers"><code class="language-python">def index_normal(L, target):
-    result = []
-    for i, num in enumerate(L):
-        if num == target:
-            result.append(i)
-    return result
+import time
 
-print(list(index_normal([1, 6, 2, 4, 5, 2, 8, 6, 3, 2], 2)))
+def get_html(n):
+    time.sleep(n)
+    print(&#39;sub_progress success&#39;)
+    return n
 
-def index_generator(L, target):
-    for  i, num in enumerate(L):
-        if num == target:
-            yield  i
-
-print(list(index_generator([1, 6, 2, 4, 5, 2, 8, 6, 3, 2], 2)))
+if __name__ == &#39;__main__&#39;:
+    pool = multiprocessing.Pool(multiprocessing.cpu_count())
+    result = pool.apply_async(get_html, args=(3,))
+    pool.close()
+    pool.join() //前面必须有close
+    print(result.get())
 </code></pre>
 
-<h4>最长公共子序列</h4>
+<h4>imap&amp;imap_unordered</h4>
 
-<pre class="line-numbers"><code class="language-python">def is_sub(a, b):
-     b = iter(b)
-     return all(i in b for i in a)
+<pre class="line-numbers"><code class="language-python">import multiprocessing
+import  time
+def get_html(n):
+    time.sleep(n)
+    print(&#39;sub_process sucess&#39;)
+    return n
 
-print(is_sub([1, 3, 5], [1, 2, 3, 4, 5]))
-print(is_sub([1, 4, 3], [1, 2, 3, 4, 5]))
+if __name__ == &#39;__main__&#39;:
+    pool = multiprocessing.Pool(multiprocessing.cpu_count())
+
+//不按顺序输出结果，谁先完成，谁先输出
+    for result in pool.imap_unordered(get_html, [1,5,3]):
+        print(&#39;{} sleep success&#39;.format(result))
+//按照列表顺序输出结果
+    for result in pool.imap(get_html, [1, 5, 3]):
+        print(&#39;{} sleep success&#39;.format(result))
 </code></pre>
-
-<h4>思考题</h4>
-
-<ul>
-<li>对于一个有限元素的生成器，如果迭代完成后，继续调用 next() ，会发生什么呢？生成器可以遍历多次吗</li>
-<li></li>
-</ul>
 
                         
                       </div>
@@ -827,188 +590,7 @@ print(is_sub([1, 4, 3], [1, 2, 3, 4, 5]))
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/11/09 10:58 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15730847611468.html">
-                
-                  <h1>装饰器</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>装饰器demo</h4>
-
-<pre class="line-numbers"><code class="language-python">def my_deco(func):                        
-    def wrapper():                        
-        print(&#39;wrapper of decorator&#39;)     
-        func()                            
-    return wrapper
-
-@my_deco                                  
-def greet():                              
-    print(&#39;hello world&#39;)
-
-#greet = my_deco(greet)
-
-greet()
-</code></pre>
-
-<h4>带参数装饰器</h4>
-
-<pre class="line-numbers"><code class="language-python">
-def my_decorator(func):
-    def wrapper(message):
-        print(&#39;wrapper of decorator&#39;)
-        func(message)
-    return wrapper
-
-
-@my_decorator
-def greet(message):
-    print(message)
-
-
-greet(&#39;hello world&#39;)
-</code></pre>
-
-<h4>控制执行次数</h4>
-
-<pre class="line-numbers"><code class="language-python">def repeat(num):                                           
-    def deco2(func):                                       
-        def wrapper(*args, **kwargs):                      
-            for i in range(num):                           
-                print(&#39;wrapper of decorator&#39;)              
-                func(*args, **kwargs)                      
-        return wrapper                                     
-    return deco2
-
-@repeat(4)                                                 
-def greet2(msg):                                           
-    print(msg)                                             
-                                                           
-greet2(&#39;time deco&#39;)                                        
-</code></pre>
-
-<h4>保留原函数元数据信息</h4>
-
-<pre class="line-numbers"><code class="language-python">def deco1(func):                       
-    @functools.wraps(func)             
-    def wrapper(msg):                  
-        print(&quot;wrapper of decorator&quot;)  
-        func(msg)                      
-    return wrapper
-
-@deco1                                 
-def greet1(msg):                       
-    print(msg)
-
-print(greet1.__name__)
-</code></pre>
-
-<h4>类装饰器</h4>
-
-<pre class="line-numbers"><code class="language-python">
-class Count:
-    def __init__(self, func):
-        self.func = func
-        self.num_calls = 0
-
-    def __call__(self, *args, **kwargs):
-        self.num_calls += 1
-        print(&#39;num of calls is: {}&#39;.format(self.num_calls))
-        return self.func(*args, **kwargs)
-
-@Count
-def example():
-    print(&quot;hello world&quot;)
-
-example()
-
-</code></pre>
-
-<h4>叠加装饰器</h4>
-
-<pre class="line-numbers"><code class="language-python">
-import functools
-
-def my_decorator1(func):
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        print(&#39;execute decorator1&#39;)
-        func(*args, **kwargs)
-    return wrapper
-
-
-def my_decorator2(func):
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        print(&#39;execute decorator2&#39;)
-        func(*args, **kwargs)
-    return wrapper
-
-
-@my_decorator1
-@my_decorator2
-def greet(message):
-    print(message)
-
-greet(&#39;hello world&#39;)
-</code></pre>
-
-<h4>应用</h4>
-
-<ul>
-<li>统计耗时</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-python">def log_execution_time(func):
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        start = time.perf_counter()
-        res = func(*args, **kwargs)
-        end = time.perf_counter()
-        print(&#39;{} took {} ms&#39;.format(func.__name__, (end - start) * 1000))
-        return res
-
-    return wrapper
-
-
-@log_execution_time
-def calculate_similarity(items):
-    print(items)
-
-calculate_similarity(&#39;hello world&#39;)
-</code></pre>
-
-<h4>缓存装饰器</h4>
-
-<ul>
-<li>LRU cache，在 Python 中的表示形式是@lru_cache。@lru_cache会缓存进程中的函数参数和结果，当缓存满了以后，会删除 least recenly used 的数据</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/07 07:59 上午</span>
+                    <span class="date">2019/12/20 08:07 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Python.html'>Python</a></span>

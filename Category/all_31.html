@@ -170,78 +170,359 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15484069315619.html">
+                <a class="clearlink" href="15708463915098.html">
                 
-                  <h1>读写分离</h1>
+                  <h1>Etcd</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>过期读优化方案</h4>
+                        	<h4>对比</h4>
+
+<p><img src="media/15708463915098/15708464367950.jpg" alt="" style="width:1479px;"/></p>
 
 <ul>
-<li>强制走主库方案；</li>
-<li>sleep 方案；</li>
-<li>判断主备无延迟方案；</li>
-<li>配合 semi-sync 方案；</li>
-<li>等主库位点方案；</li>
-<li>等 GTID 方案。</li>
+<li><img src="media/15708463915098/15719107081661.jpg" alt="" style="width:1708px;"/></li>
 </ul>
 
-<h4>对比位点</h4>
+<h4>MVCC</h4>
 
 <ul>
-<li>Master_Log_File 和 Relay_Master_Log_File、Read_Master_Log_Pos 和 Exec_Master_Log_Pos</li>
+<li><img src="media/15708463915098/15708465094763.jpg" alt="" style="width:1492px;"/></li>
 </ul>
 
-<h4>GTID 集合确保主备无延迟</h4>
+<h4>数据存储</h4>
+
+<p><img src="media/15708463915098/15708466612817.jpg" alt="" style="width:1417px;"/></p>
+
+<h4>命令行</h4>
 
 <ul>
-<li>Auto_Position=1 ，表示这对主备关系使用了 GTID 协议。</li>
-<li>Retrieved_Gtid_Set，是备库收到的所有日志的 GTID 集合；</li>
-<li>Executed_Gtid_Set，是备库所有已经执行完成的 GTID 集合。</li>
+<li>etcdctl get &quot;&quot; --prefix=true</li>
+<li>etcdctl del &quot;&quot; --prefix=true</li>
 </ul>
 
-<h4>semi-sync</h4>
+<h4>etcdAPI</h4>
+
+<p><img src="media/15708463915098/15708480943917.jpg" alt="" style="width:469px;"/></p>
 
 <ul>
-<li>半同步设计</li>
-<li>事务提交的时候，主库把 binlog 发给从库；</li>
-<li>从库收到 binlog 以后，发回给主库一个 ack，表示收到了；</li>
-<li>主库收到这个 ack 以后，才能给客户端返回“事务完成”的确认。</li>
+<li>header
+<img src="media/15708463915098/15708481882498.jpg" alt="" style="width:773px;"/></li>
+<li>keyvalue
+<img src="media/15708463915098/15708482182058.jpg" alt="" style="width:788px;"/></li>
+<li>keyrange
+<img src="media/15708463915098/15708487068511.jpg" alt="" style="width:841px;"/></li>
+<li>kv
+<img src="media/15708463915098/15708486683352.jpg" alt="" style="width:896px;"/></li>
+<li>TXn API
+<img src="media/15708463915098/15708527202806.jpg" alt="" style="width:860px;"/>
+<img src="media/15708463915098/15708527736250.jpg" alt="" style="width:878px;"/></li>
+<li>Watch API
+<img src="media/15708463915098/15708530972955.jpg" alt="" style="width:898px;"/></li>
+<li>Lease API
+<img src="media/15708463915098/15708533513999.jpg" alt="" style="width:842px;"/></li>
 </ul>
 
-<h4>semi-sync存在的问题</h4>
+<pre class="line-numbers"><code class="language-go">package etcd_code
+
+import (
+    &quot;context&quot;
+    &quot;fmt&quot;
+    v3 &quot;go.etcd.io/etcd/clientv3&quot;
+    &quot;testing&quot;
+)
+
+func printGetResponse(r *v3.GetResponse) {
+    fmt.Printf(&quot;response header: %q\n&quot;, r.Header)
+    fmt.Printf(&quot;kvs: %v\n&quot;, r.Kvs)
+    fmt.Printf(&quot;more: %t\n&quot;, r.More)
+    fmt.Printf(&quot;count: %d\n&quot;, r.Count)
+}
+
+// Run beforehand:
+//  etcdctl put TestGet 1
+func TestGet(t *testing.T) {
+    cli := newClient(t)
+    defer cli.Close()
+
+    key := &quot;TestGet&quot;
+
+    response, err := cli.Get(context.Background(), key)
+    if err != nil {
+        t.Fatal(err)
+    }
+    printGetResponse(response)
+}
+
+// Run beforehand:
+//  etcdctl put TestGetWithPrefix 1
+//  etcdctl put TestGetWithPrefix2 2
+func TestGetWithPrefix(t *testing.T) {
+    cli := newClient(t)
+    defer cli.Close()
+
+    keyPrefix := &quot;TestGetWithPrefix&quot;
+    response, err := cli.Get(context.Background(), keyPrefix, v3.WithPrefix())
+    if err != nil {
+        t.Fatal(err)
+    }
+    printGetResponse(response)
+}
+
+// Run beforehand:
+//  etcdctl put TestGetWithRange 1
+//  etcdctl put TestGetWithRange2 2
+func TestGetWithRange(t *testing.T) {
+    cli := newClient(t)
+    defer cli.Close()
+
+    response, err := cli.Get(context.Background(), &quot;TestGetWithRange&quot;, v3.WithRange(&quot;TestGetWithRange2\x00&quot;))
+    if err != nil {
+        t.Fatal(err)
+    }
+    printGetResponse(response)
+}
+
+// Run beforehand:
+//  etcdctl put TestGetWithSerializable 1
+func TestGetWithSerializable(t *testing.T) {
+    cli := newClient(t)
+    defer cli.Close()
+
+    key := &quot;TestGetWithSerializable&quot;
+    response, err := cli.Get(context.Background(), key, v3.WithSerializable())
+    if err != nil {
+        t.Fatal(err)
+    }
+    printGetResponse(response)
+}
+
+func TestPut(t *testing.T) {
+    cli := newClient(t)
+    defer cli.Close()
+
+    key := &quot;TestPut&quot;
+    response, err := cli.Put(context.Background(), key, &quot;1&quot;, v3.WithPrevKV())
+    if err != nil {
+        t.Fatal(err)
+    }
+    fmt.Printf(&quot;header: %q\n&quot;, response.Header)
+    fmt.Printf(&quot;prev_kv: %q\n&quot;, response.PrevKv)
+}
+
+// Run beforehand:
+//  etcdctl put TestDelete 1
+func TestDelete(t *testing.T) {
+    cli := newClient(t)
+    defer cli.Close()
+
+    key := &quot;TestDelete&quot;
+    response, err := cli.Delete(context.Background(), key)
+    if err != nil {
+        t.Fatal(err)
+    }
+    fmt.Printf(&quot;header: %v\n&quot;, response.Header)
+    fmt.Printf(&quot;deleted: %d\n&quot;, response.Deleted)
+    fmt.Printf(&quot;pre_kvs: %v\n&quot;, response.PrevKvs)
+}
+
+// Run beforehand:
+//  etcdctl put TestTxn 1
+func TestTxn(t *testing.T) {
+    cli := newClient(t)
+    defer cli.Close()
+
+    key := &quot;TestTxn&quot;
+    thenValue := &quot;then&quot;
+
+    ctx := context.Background()
+    _, err := cli.Txn(ctx).
+        If(v3.Compare(v3.Value(key), &quot;&lt;&quot;, &quot;2&quot;)).
+        Then(v3.OpPut(key, thenValue)).
+        Else(v3.OpPut(key, &quot;else&quot;)).
+        Commit()
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    // Return &quot;then&quot;
+    gresp, err := cli.Get(ctx, key)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if l := len(gresp.Kvs); l != 1 {
+        t.Errorf(&quot;expeected 1 key-value, but got %d key-values\n&quot;, l)
+    }
+
+    if value := string(gresp.Kvs[0].Value); value != &quot;then&quot; {
+        t.Errorf(&quot;expected value %s, but got %s\n&quot;, thenValue, value)
+    }
+
+    for _, ev := range gresp.Kvs {
+        fmt.Printf(&quot;%s: %s\n&quot;, ev.Key, ev.Value)
+    }
+    //delete(cli, key, t)
+}
+
+func TestTxnOpOrder(t *testing.T) {
+    cli := newClient(t)
+    defer cli.Close()
+    key := &quot;TestTxnOpOrder&quot;
+
+    ctx := context.Background()
+    // If CreateRevision is 0, it means that the key does not exist.
+    cmp := v3.Compare(v3.CreateRevision(key), &quot;=&quot;, 0)
+    put := v3.OpPut(key, &quot;1&quot;)
+    get := v3.OpGet(key)
+
+    // Get Put
+    resp, err := cli.Txn(ctx).If(cmp).Then(get, put).Commit()
+    if err != nil {
+        t.Fatal(err)
+    }
+    printTxnResponse(resp)
+    if l := len(resp.Responses[0].GetResponseRange().Kvs); l != 0 {
+        t.Errorf(&quot;expeected 0 key-value, but got %d key-values\n&quot;, l)
+    }
+    delete(ctx, cli, key, t)
+
+    // Put Get
+    resp, err = cli.Txn(ctx).If(cmp).Then(put, get).Commit()
+    if err != nil {
+        t.Fatal(err)
+    }
+    printTxnResponse(resp)
+    if l := len(resp.Responses[1].GetResponseRange().Kvs); l != 1 {
+        t.Errorf(&quot;expeected 1 key-value, but got %d key-values\n&quot;, l)
+    }
+    delete(ctx, cli, key, t)
+}
+
+func TestTxnMultis(t *testing.T) {
+    cli := newClient(t)
+    defer cli.Close()
+    ctx := context.Background()
+
+    keyPrefix := &quot;TestTxnMultis&quot;
+    keys := []string{keyPrefix + &quot;1&quot;, keyPrefix + &quot;2&quot;}
+    var cmps [2]v3.Cmp
+    var puts [2]v3.Op
+    var gets [2]v3.Op
+    for i := 0; i &lt; 2; i++ {
+        val := string(i + 1)
+        cmps[i] = v3.Compare(v3.CreateRevision(keys[i]), &quot;=&quot;, 0)
+        puts[i] = v3.OpPut(keys[i], val)
+        gets[i] = v3.OpGet(keys[i])
+    }
+
+    // Executes two Puts
+    tresp, err := cli.Txn(ctx).If(cmps[:]...).Then(puts[:]...).Else(gets[:]...).Commit()
+    if err != nil {
+        t.Fatal(t)
+    }
+    if !tresp.Succeeded {
+        t.Fatal(&quot;Txn should succeed, but failed&quot;)
+    }
+
+    // Executes two Gets
+    tresp, err = cli.Txn(ctx).If(cmps[:]...).Then(puts[:]...).Else(gets[:]...).Commit()
+    if err != nil {
+        t.Fatal(t)
+    }
+    if tresp.Succeeded {
+        t.Fatal(&quot;Txn should fail, but succeeded&quot;)
+    }
+    for i := 0; i &lt; 2; i++ {
+        if count := tresp.Responses[i].GetResponseRange().Count; count != 1 {
+            t.Errorf(&quot;expected 1 value for key %s, but got %d value&quot;, keys[0], count)
+        }
+    }
+
+    // Execute two Deletes
+    tresp, err = cli.Txn(ctx).Then(v3.OpDelete(keys[0]), v3.OpDelete(keys[1])).Commit();
+    if err != nil {
+        t.Fatal(err)
+    }
+    for _, r := range tresp.Responses {
+        if deleted := r.GetResponseDeleteRange().Deleted; deleted != 1 {
+            t.Fatalf(&quot;expected to delete 1 key-value, but deleted %d key-value&quot;, deleted)
+        }
+    }
+    gresp, err := cli.Get(ctx, keyPrefix, v3.WithPrefix())
+    if gresp.Count != 0 {
+        t.Errorf(&quot;expected 0 key-values, bot got %d&quot;, gresp.Count)
+    }
+}
+
+func printTxnResponse(resp *v3.TxnResponse) {
+    fmt.Printf(&quot;response header: %q\n&quot;, resp.Header)
+    fmt.Printf(&quot;succeeded: %t\n&quot;, resp.Succeeded)
+}
+
+// version revision test
+func TestVersionAndRevision(t *testing.T) {
+    cli := newClient(t)
+    defer cli.Close()
+    key := &quot;TestVersionAndRevision&quot;
+    ctx := context.Background()
+
+    put(ctx, cli, key, t)
+    get(ctx, cli, key, t)
+    put(ctx, cli, key, t)
+    get(ctx, cli, key, t)
+    delete(ctx, cli, key, t)
+
+    put(ctx, cli, key, t)
+    get(ctx, cli, key, t)
+    put(ctx, cli, key, t)
+    get(ctx, cli, key, t)
+}
+
+func put(ctx context.Context, cli *v3.Client, key string, t *testing.T) {
+    fmt.Println(&quot;Put&quot;)
+    response, err := cli.Put(ctx, key, &quot;one&quot;, v3.WithPrevKV())
+    if err != nil {
+        t.Fatal(err)
+    }
+    fmt.Printf(&quot;put revision: %d\n&quot;, response.Header.Revision)
+    fmt.Printf(&quot;prev_kv: %v\n\n&quot;, response.PrevKv)
+}
+
+func get(ctx context.Context, cli *v3.Client, key string, t *testing.T) {
+    fmt.Println(&quot;Get&quot;)
+    response, err := cli.Get(ctx, key, v3.WithPrevKV())
+    if err != nil {
+        t.Fatal(err)
+    }
+    fmt.Printf(&quot;get revision: %d\n&quot;, response.Header.Revision)
+    fmt.Printf(&quot;kvs: %v\n\n&quot;, response.Kvs)
+}
+
+func delete(ctx context.Context, cli *v3.Client, key string, t *testing.T) {
+    fmt.Println(&quot;Delete&quot;)
+    response, err := cli.Delete(ctx, key, v3.WithPrevKV())
+    if err != nil {
+        t.Fatal(err)
+    }
+    fmt.Printf(&quot;delete revision: %d\n&quot;, response.Header.Revision)
+    fmt.Printf(&quot;deleted: %d\n&quot;, response.Deleted)
+    fmt.Printf(&quot;prev_kvs: %v\n\n&quot;, response.PrevKvs)
+}
+</code></pre>
+
+<h4>分布式队列</h4>
 
 <ul>
-<li>一主多从的时候，在某些从库执行查询请求会存在过期读的现象；</li>
-<li>在持续延迟的情况下，可能出现过度等待的问题。</li>
+<li><img src="media/15708463915098/15708535657472.jpg" alt="" style="width:1605px;"/></li>
 </ul>
 
-<h4>等待位点方案</h4>
+<h4>分布式锁</h4>
 
 <ul>
-<li>trx1 事务更新完成后，马上执行 show master status 得到当前主库执行到的 File 和 Position；</li>
-<li>选定一个从库执行查询语句；</li>
-<li>在从库上执行 select master_pos_wait(File, Position, 1)；</li>
-<li>如果返回值是 &gt;=0 的正整数，则在这个从库执行查询语句；如果 1 秒内 master_pos_wait 返回一个大于等于 0 的整数，就确保了从库上执行的这个查询结果一定包含了 trx1 的数据。</li>
-<li>否则，到主库执行查询语句。 </li>
-</ul>
-
-<h4>等待gtid方案</h4>
-
-<ul>
-<li>trx1 事务更新完成后，从返回包直接获取这个事务的 GTID，记为 gtid1；</li>
-<li>选定一个从库执行查询语句；</li>
-<li>在从库上执行 select wait_for_executed_gtid_set(gtid1, 1)；</li>
-<li>如果返回值是 0，则在这个从库执行查询语句；</li>
-<li>否则，到主库执行查询语句。</li>
-</ul>
-
-<h4>事物更新完直接获取GTID</h4>
-
-<ul>
-<li>参数 session_track_gtids 设置为 OWN_GTID，然后通过 API 接口mysql_session_track_get_first 从返回包解析出 GTID </li>
+<li><img src="media/15708463915098/15708538122564.jpg" alt="" style="width:1471px;"/></li>
+<li><img src="media/15708463915098/15708538552096.jpg" alt="" style="width:1418px;"/></li>
 <li></li>
 </ul>
 
@@ -252,600 +533,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/01/25 17:02 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15662228481979.html">
-                
-                  <h1>WAF</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>威胁</h4>
-
-<ul>
-<li>DDOs攻击 发起大量无效请求</li>
-<li>SQL注入</li>
-<li>HTTP头注入</li>
-<li>跨站脚本攻击</li>
-</ul>
-
-<h4>WAF</h4>
-
-<ul>
-<li>工作在七层 HTTP入侵检测和防御机制</li>
-<li>IP 黑名单和白名单，拒绝黑名单上地址的访问，或者只允许白名单上的用户访问；</li>
-<li>URI 黑名单和白名单，与 IP 黑白名单类似，允许或禁止对某些 URI 的访问；</li>
-<li>防护 DDoS 攻击，对特定的 IP 地址限连限速；</li>
-<li>过滤请求报文，防御“代码注入”攻击；</li>
-<li>过滤响应报文，防御敏感信息外泄；</li>
-<li>审计日志，记录所有检测到的入侵操作</li>
-</ul>
-
-<h4>本质</h4>
-
-<ul>
-<li>模式匹配和数据过滤</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/19 21:54 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='http_study.html'>http_study</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15658570800232.html">
-                
-                  <h1>数据语义学</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>变量绑定</h4>
-
-<ul>
-<li>编译器对成员函数的解析，是在类定义完毕以后开始，对类成员变量的解析和绑定，是在类定义完成之后发生的，只有类定义完毕后，编译器才能看到类A中的成员变量</li>
-<li>::引用全局的myvar的变量</li>
-</ul>
-
-<h4>成员函数</h4>
-
-<ul>
-<li>成员函数参数类型在编译器第一个遇到类型的时候绑定的</li>
-<li>为了尽早的看到类型type，类型定义typedef一定要挪到类中的最早定义</li>
-</ul>
-
-<h4>进程内存空间布局</h4>
-
-<ul>
-<li>nm查看</li>
-<li>类的静态成员变量也存在数据段</li>
-</ul>
-
-<h4>字节对齐</h4>
-
-<pre class="line-numbers"><code class="language-text">#pragma pack(1) 不对齐
-#pragma pack() 取消不对齐，继续对齐
-</code></pre>
-
-<h4>成员变量偏移值</h4>
-
-<ul>
-<li>&amp;class::m_val</li>
-</ul>
-
-<h4>静态成员变量存取</h4>
-
-<ul>
-<li>静态成员变量地址始终不变，写入了可执行文件</li>
-</ul>
-
-<h4>非静态成员变量</h4>
-
-<ul>
-<li>类对象的首地址加上成员变量的偏移值</li>
-</ul>
-
-<h4>数据成员布局</h4>
-
-<ul>
-<li>成员边界填充</li>
-<li>引入继承关系，会带来额外的内存空间的开销</li>
-<li>对象中会产生虚函数表指针vptr</li>
-<li>增加或者扩展构造函数，增加给虚函数表指针的vptr赋值的代码</li>
-<li>多重继续，子类继续2个父类，如果子类还有自己的虚函数的话和第一个基类共用vptr</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">class Base {
- public:
-  int m_bi;
-  char m_b;
-  char m_c;
-  char m_d;
-};
-sizeof(Base)=8字节，填充一个字节
-
-class Base {
- public:
-  int m_bi;
-  char m_b;
-};
-
-class Base2 : public Base {
- public:
-  char m_c;
-};
-
-class Base3 : public Base2 {
- public:
-  char m_d;
-};
-</code></pre>
-
-<ul>
-<li><img src="media/15658570800232/15659459670117.jpg" alt="" style="width:1206px;"/></li>
-<li>内存拷贝要谨慎Base2拷贝到Base3，会产生内存拷贝</li>
-</ul>
-
-<h5>单一继承父类不带虚函数的成员布局</h5>
-
-<ul>
-<li><img src="media/15658570800232/15659491477127.jpg" alt="" style="width:337px;"/>、</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">(gdb) p  obj
-$1 = (Base3) {
-  &lt;Base&gt; = {
-    m_bi = 1
-  },
-  members of Base3:
-  _vptr.Base3 = 0x400a80 &lt;vtable for Base3+16&gt;,
-  m_i = 2,
-  m_j = 3
-}
-(gdb) x/12x  &amp;obj
-0x7fffffffdee0: 0x00400a80      0x00000000      0x00000001      0x00000002
-0x7fffffffdef0: 0x00000003      0x00000000      0x00400740      0x00000000
-0x7fffffffdf00: 0xffffdff0      0x00007fff      0x00000000      0x00000000
-</code></pre>
-
-<ul>
-<li>依靠偏移值不能绘制真正的数据布局</li>
-<li>vptr一直置顶</li>
-</ul>
-
-<h4>多重继承</h4>
-
-<ul>
-<li><img src="media/15658570800232/15660333053268.jpg" alt="" style="width:473px;"/></li>
-<li>访问Base1不用跳，访问Base2变量this指针要偏移</li>
-<li>先继承就顶格</li>
-<li>this指针的调整都是编译器自动调整和偏移</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">(gdb) x/20d bs2
-0x7fffffffdee0: 4197896 0       12      3
-0x7fffffffdef0: 6       0       -8480   32767
-0x7fffffffdf00: -8208   32767   0       0
-0x7fffffffdf10: 0       0       -148827179      32767
-0x7fffffffdf20: 0       32      -8200   32767
-(gdb) x/20d &amp;obj
-0x7fffffffded0: 4197864 0       9       0
-0x7fffffffdee0: 4197896 0       12      3
-0x7fffffffdef0: 6       0       -8480   32767
-0x7fffffffdf00: -8208   32767   0       0
-0x7fffffffdf10: 0       0       -148827179      32767
-Derived obj;
-Base2* bs2 = &amp;obj;
-Base2* bs2 = (Base2*)(((char*)&amp;obj) + sizeof(Base1))
-Base1* bs1 = &amp;obj;
-bs1和bs2的地址并不相同
-bs2指向的是bs2子对象的指针
-</code></pre>
-
-<h4>虚基类中</h4>
-
-<ul>
-<li>传统多重继承，空间问题，效率问题，二义性</li>
-<li>让grand只被继承一次，在孙子类中只有一份</li>
-</ul>
-
-<h4>虚基类</h4>
-
-<ul>
-<li>虚基类表</li>
-<li>虚基类表指针</li>
-<li>虚继承后，A1,A2会被插入一个虚基类表指针，C1会继承两个表指针</li>
-<li><img src="media/15658570800232/15661179666970.jpg" alt="" style="width:725px;"/></li>
-<li><img src="media/15658570800232/15661193718967.jpg" alt="" style="width:427px;"/></li>
-<li>虚基类表记录偏移来找到虚基类子对象</li>
-<li>虚基类表指针成员变量的首地址 + 偏移量 = 虚基类对象首地址</li>
-</ul>
-
-<h4>观察各种继承</h4>
-
-<ul>
-<li>虚基类表的偏移值</li>
-<li>虚基类表中的偏移量按照继承顺序来存放</li>
-<li>虚基类子对象一直放在最下面</li>
-</ul>
-
-<h4>虚基类1-4字节分析</h4>
-
-<ul>
-<li>虚基类表指针成员变量的首地址，和本对象A1首地址的偏移量，也就是虚基类表指针 - A1的对象的首地址</li>
-<li>只有对虚基类成员进行赋值的时候，才会用到虚基类</li>
-</ul>
-
-<h4>三层结构虚基类表内容分析</h4>
-
-<ul>
-<li><img src="media/15658570800232/15662039845414.jpg" alt="" style="width:743px;"/></li>
-<li>虚基类在编译的时候已经固定了</li>
-<li>vptr2基本没用到只用到vptr1</li>
-<li>访问虚基类的成员变量要比普通成员变量慢</li>
-</ul>
-
-<h4>成员变量地址，偏移和指针</h4>
-
-<h4>成员变量偏移值和偏移指针</h4>
-
-<ul>
-<li>和具体对象没有关系</li>
-<li>成员变量指针保存的是一个偏移值，不是实际内存地址</li>
-<li>没有指向任何数据成员的指针</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">int main() {
-  Obj obj;
-  obj.m_i = obj.m_j = obj.m_k = 0;
-  printf(&quot;mi = %p \n&quot;, &amp;obj.m_i);
-
-  Obj* p = &amp;obj;
-  printf(&quot;mi = %p \n&quot;, p-&gt;m_i);
-  printf(&quot;mj = %p \n&quot;, p-&gt;m_j);
-
-  int* p1 = &amp;obj.m_i;
-  int* p2 = &amp;obj.m_j;
-
-  *p1 = 15;
-  *p2 = 30;
-  printf(&quot;p1 = %p  p1 val %d \n&quot;, p1, *p1);
-  printf(&quot;p2 = %p  p2 val %d \n&quot;, p2, *p2);
-
-  printf(&quot;m_i offset %d \n&quot;, &amp;Obj::m_i);
-  printf(&quot;m_j offset %d \n&quot;, &amp;Obj::m_j);
-  printf(&quot;m_k offset %d \n&quot;, &amp;Obj::m_k);
-
-
-  int Obj::*ptr = &amp;Obj::m_i;
-  printf(&quot;m_k offset %d \n&quot;, ptr);
-  obj.*ptr = 13;
-  p-&gt;*ptr = 20;
-  ptr = nullptr; 编译器会把ptr设置为-1
-  ptr += 1//不允许
-}
-</code></pre>
-
-<ul>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/15 16:18 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B.html'>C++对象模型</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15661792809222.html">
-                
-                  <h1>B+树</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>常见数据结构优缺点</h4>
-
-<ul>
-<li>散列表的查询性能很好，时间复杂度是 O(1)。但是，散列表不能支持按照区间快速查找数据。所以，散列表不能满足我们的需求</li>
-<li>平衡二叉查找树。尽管平衡二叉查找树查询的性能也很高，时间复杂度是 O(logn)。而且，对树进行中序遍历，我们还可以得到一个从小到大有序的数据序列，但这仍然不足以支持按照区间快速查找数据</li>
-<li>跳表是在链表之上加上多层索引构成的。它支持快速地插入、查找、删除数据，对应的时间复杂度是 O(logn)。并且，跳表也支持按照区间快速地查找数据。我们只需要定位到区间起点值对应在链表中的结点，然后从这个结点开始，顺序遍历链表，直到区间终点对应的结点为止，这期间遍历得到的数据就是满足区间值的数据</li>
-</ul>
-
-<h4>改造二叉树</h4>
-
-<ul>
-<li>树中的节点并不存储数据本身，而是只是作为索引。除此之外，我们把每个叶子节点串在一条链表上，链表中的数据是从小到大有序的</li>
-<li>磁盘 IO 操作非常耗时，所以我们优化的重点就是尽量减少磁盘 IO 操作，也就是，尽量降低树的高度</li>
-<li>内存和磁盘的数据读取都是按页来的</li>
-<li>选择m的时候，尽量让每个节点等于一个页的大小，如果超过m的话，就要将页面进行分裂</li>
-<li>每个节点的子节点都比较少，势必会影响索引的效率， B+ 树中，这个阈值等于 m/2。如果某个节点的子节点个数小于 m/2，我们就将它跟相邻的兄弟节点合并</li>
-</ul>
-
-<h4>B树木</h4>
-
-<ul>
-<li>B 树只是一个每个节点的子节点个数不能小于 m/2 的 m 叉树</li>
-<li>B+ 树中，将叶子节点串起来的链表，是双向链表方便asc和desc</li>
-<li>B+ 树查询效率更稳定。因为 B+ 树每次只有访问到叶子节点才能找到对应的数据，而在 B 树中，非叶子节点也会存储数据，这样就会造成查询效率不稳定的情况，有时候访问到了非叶子节点就可以找到关键字，而有时需要访问到叶子节点才能找到关键字</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/19 09:48 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15659624980235.html">
-                
-                  <h1>zookeeper简介</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>功能</h4>
-
-<ul>
-<li>中间件 提供协调服务</li>
-<li>分布式系统，发挥其优势，可以为大数据服务</li>
-<li>支持java和c语言</li>
-</ul>
-
-<h4>分布式系统特性</h4>
-
-<ul>
-<li>一致性</li>
-<li>原子性</li>
-<li>单一视图</li>
-<li>可靠性 每次对zk的操作状态都保存在服务端</li>
-<li>实时性 客户端可以读取zk服务端的最新数据</li>
-</ul>
-
-<h4>zk目录</h4>
-
-<ul>
-<li>docs 文档</li>
-<li>cfg配置</li>
-<li>tickTime 用于计算的时间单元</li>
-<li>initLimit 节点同步到master节点的时间</li>
-<li>synLimit 心跳时间</li>
-</ul>
-
-<h4>基本模型</h4>
-
-<ul>
-<li>树形结构来区分目录</li>
-<li>每一个节点为znode</li>
-<li>临时节点和永久节点</li>
-<li>zk节点都有各自的版本号</li>
-<li>节点数据发生变化，节点的版本号会累加(乐观锁)</li>
-<li>删除修改过时节点，版本号不匹配会报错</li>
-<li>zk节点存储的数据不适宜过大，几K</li>
-<li>节点可以设置权限acl，控制用户的访问</li>
-</ul>
-
-<h4>zookeeper作用</h4>
-
-<ul>
-<li>master节点选举</li>
-<li>统一配置文件管理，比如修改了redis统一配置</li>
-<li>分布与订阅，发布者把数据存在znode上，订阅者会读取这个数据</li>
-<li>分布式锁，分布式环境中不同进程之间争夺资源，类似多线程的锁</li>
-<li>集群管理，保证数据的强一致性</li>
-</ul>
-
-<h4>常用命令行</h4>
-
-<ul>
-<li>ls ls2</li>
-<li>ls2 查看状态信息</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">cZxid = 0x0 创建的id
-ctime = Thu Jan 01 08:00:00 CST 1970
-mZxid = 0x0
-mtime = Thu Jan 01 08:00:00 CST 1970
-pZxid = 0x50000002f 子节点的id
-cversion = 18 子节点
-dataVersion = 0 当前节点的数据版本号
-aclVersion = 0 
-ephemeralOwner = 0x0
-dataLength = 0
-numChildren = 12
-</code></pre>
-
-<h4>session基本原理</h4>
-
-<ul>
-<li>客户端和服务器之间的连接存在会话</li>
-<li>每个会话都可以设置一个超时时间</li>
-<li>心跳结束，session则过期</li>
-<li>session过期，临时节点znode全部会被抛弃</li>
-<li>心跳机制 客户端向服务端的ping包</li>
-</ul>
-
-<h4>常用命令</h4>
-
-<ul>
-<li>create -e path data</li>
-<li>临时节点 ephemeralOwner = 0x1000a643cae0002，临时节点会在时效性结束后被删除</li>
-<li>持久节点 ephemeralOwner = 0x0</li>
-<li>顺序节点 create -s /imooc/sec seq</li>
-<li>set path data 乐观锁</li>
-</ul>
-
-<h4>watch机制</h4>
-
-<ul>
-<li>针对每个节点的操作，都会有一个监督者，watcher</li>
-<li>当监控的某个对象znode发生了变化，则触发watcher事件</li>
-<li>zk的watcher是一次性的，触发后立即销毁</li>
-<li>父子节点增删改都能够出发其watcher</li>
-<li>watcher事件也不同</li>
-<li>子节点创建事件</li>
-<li>子节点删除事件</li>
-<li>子节点数据变化事件</li>
-</ul>
-
-<h4>父节点事件</h4>
-
-<ul>
-<li>get </li>
-<li>NodeCreate</li>
-<li>NodeDataChanged</li>
-<li>NodeDeleted</li>
-</ul>
-
-<h4>子节点事件</h4>
-
-<ul>
-<li>ls 创建子节点 NodeChildrenChanged</li>
-<li>ls 删除子节点 NodeChildrenChanged</li>
-<li>ls 修改子节点不触发事件 必须set -s /imooc/xyz 9090</li>
-</ul>
-
-<h4>wathcher资源配置</h4>
-
-<ul>
-<li>统一资源配置</li>
-</ul>
-
-<h3>ACL权限控制</h3>
-
-<ul>
-<li>getAcl </li>
-<li>setAcl</li>
-<li>addauth 输入认证授权信息</li>
-<li>Zk 的 ac 通过【scheme: id: permissions】来构成权限列表 scheme：代表采用的某种权限机制 d：代表允许访问的用户 permissions：权限组合字符串</li>
-<li>world </li>
-<li>auth 认证登录</li>
-<li>digest需要对密码加密才能访问</li>
-</ul>
-
-<h4>permissions</h4>
-
-<ul>
-<li>crdwa</li>
-<li>create</li>
-<li>read</li>
-<li>write</li>
-<li>delete</li>
-<li>admin 设置权限</li>
-</ul>
-
-<h4>digest</h4>
-
-<ul>
-<li>addauth digest imooc:imooc</li>
-<li>setAcl /names/imooc  auth:imooc:imooc:adrwa</li>
-<li>设置 setAcl -s /names/test digest:imooc:XwEDaL3J0JQGkRQzM0DpO6zMzZs=:cdra</li>
-<li>登录 addauth digest imooc:imooc</li>
-<li>获取数据 get /names/test</li>
-</ul>
-
-<h4>ip</h4>
-
-<ul>
-<li>setAcl /names/ip ip:192.168.31.224:cdrwa</li>
-<li>getAcl -s /names/ip</li>
-</ul>
-
-<h4>acl常用场景</h4>
-
-<ul>
-<li>开发和测试环境分离</li>
-<li>生产环境可以控制指定ip的服务可以访问相关节点，防止混乱</li>
-</ul>
-
-<h4>zk四字命令</h4>
-
-<ul>
-<li>echo stat | nc master 2181</li>
-<li>echo ruok | nc master 2181</li>
-<li>echo dump | nc master 2181 临时节点</li>
-<li>cons 连接信息</li>
-<li>mntr 健康信息</li>
-<li>wchs watch信息</li>
-<li>wchc与wchp session 与 watch 及 path 与 watch 信息</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/16 21:34 下午</span>
+                    <span class="date">2019/10/12 10:13 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Zookeeper.html'>Zookeeper</a></span>
@@ -862,541 +550,302 @@ numChildren = 12
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15651732645009.html">
+                <a class="clearlink" href="15570152728743.html">
                 
-                  <h1>C++11</h1>
+                  <h1>进程主动调度</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>标准</h4>
+                        	<h4>进程上下文切换</h4>
 
 <ul>
-<li>C++标准库</li>
-<li>新功能，新写法，取代C语言的功能和写法，积极学习新写法</li>
-<li>语法和标准程序库的学习</li>
+<li>切换进程空间 虚拟内存</li>
+<li>切换寄存器和CPU上下文</li>
 </ul>
 
-<h4>引用</h4>
+<h4>TSS和TR</h4>
 
 <ul>
-<li>引用和原变量占用同一块内存</li>
-<li>引用必须绑定到变量</li>
+<li> TSS（Task State Segment，任务状态段）结构</li>
+<li> 寄存器 TR（Task Register，任务寄存器）</li>
 </ul>
 
-<h4>常量</h4>
+<h4>进程调度流程图</h4>
+
+<p><img src="media/15570152728743/9f4433e82c78ed5cd4399b4b116a9064.png" alt="9f4433e82c78ed5cd4399b4b116a9064"/></p>
+
+<h4>进程切换本质</h4>
 
 <ul>
-<li>const可以修改</li>
-<li>constexpr编译的时候求值提升性能</li>
-<li>const 变量的初始化可以延迟到运行时，而 constexpr 变量必须在编译时进行初始化</li>
+<li>进程切换，就是将某个进程的 thread_struct 里面的寄存器的值，写入到 CPU 的 TR 指向的 tss_struct，对于 CPU 来讲，这就算是完成了切换。</li>
+<li></li>
 </ul>
 
-<h4>内存分配问题</h4>
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/05/05 08:14 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15718897954416.html">
+                
+                  <h1>错误处理</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>accept</h4>
 
 <ul>
-<li>new</li>
-<li>delete</li>
+<li>阻塞慢应用</li>
+<li>会被系统信号打断 errno = EINTR ECONNABORTED</li>
 </ul>
 
-<h4>nullptr</h4>
+<h4>read</h4>
 
 <ul>
-<li>C++11新关键字</li>
-<li>nullptr避免指针和整数的混淆</li>
-<li>NULL是0</li>
+<li>&gt; 0 实际读到的字节数 1 == buf 1024  2 &gt; buf 56</li>
+<li>= 0 有EOF，到达文件末尾，读到文件末尾，对端关闭</li>
+<li>-1 出现异常</li>
+<li>1 errno == EINTR 被信号中断 重启或者退出</li>
+<li>2 errno == EAGIN(EWOULDBLOCK) 非阻塞方式读，没有数据</li>
+<li>3 others 错误</li>
 </ul>
 
-<h4>最大最小</h4>
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/10/24 12:03 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98.html'>网络编程实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15687637976768.html">
+                
+                  <h1>消息可靠性投递</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>导航</h4>
 
 <ul>
-<li>std::min_element</li>
-<li>std::max_element</li>
+<li>消息如何保障 100%的投递成功？</li>
+<li>幂等性概念详解</li>
+<li>在海量订单产生的业务高峰期，如何避免消息的重复消费问题？</li>
+<li>Confirm 确认消息、Return 返回消息</li>
+<li>自定义消费者</li>
+<li>消息的 ACK 与重回队列</li>
+<li>消息的限流</li>
+<li>TTL 消息</li>
 </ul>
 
-<h4>C++11新特性</h4>
+<h4>消息有序性</h4>
 
 <ul>
-<li><a href="http://www.stroustrup.com/C++11FAQ.html#">http://www.stroustrup.com/C++11FAQ.html#</a></li>
+<li>exclude</li>
+<li>如果消息不能路由到queue，消息就会被丢弃</li>
 </ul>
 
-<h4>隐式拷贝函数</h4>
+<h4>可靠性投递</h4>
 
 <ul>
-<li>拷贝函数 + 析构函数 自动生成拷贝赋值运算符</li>
-<li>赋值运算符 + 析构函数 </li>
+<li>保障消息的成功发出</li>
+<li>保障 MQ 节点的成功接收</li>
+<li>发送端收到 MQ 节点（Broker）确认应答</li>
+<li>完善的消息进行补偿机制</li>
 </ul>
 
-<h4>auto_ptr被unique_ptr代替</h4>
+<h5>消息落库，对消息状态进行打标</h5>
+
+<p><img src="media/15687637976768/15687639498887.jpg" alt="" style="width:1249px;"/></p>
+
+<h5>业务消息落库</h5>
+
+<p><img src="media/15687637976768/15687640188248.jpg" alt="" style="width:1300px;"/></p>
+
+<h4>幂等性</h4>
 
 <ul>
-<li>auto_ptr发生所有权转移</li>
-<li>unique_ptr不会</li>
+<li>多次操作结果都是一样的</li>
+<li><img src="media/15687637976768/15717869014026.jpg" alt="" style="width:779px;"/></li>
 </ul>
 
-<h4>bind替换bind1st,bind2nd</h4>
-
-<h4>函数适配器</h4>
+<h5>唯一ID+指纹码机制，利用数据库主键去重利用</h5>
 
 <ul>
-<li>bind</li>
-<li>not1</li>
-<li>not2</li>
-<li>ref</li>
-<li>cref</li>
-<li>mem_fun()</li>
+<li>唯一 ID+指纹码机制，利用数据库主键去重</li>
+<li>SELECT COUNT (1) FROM T ORDER WHERE D=唯一 ID+指纹码</li>
+<li>好处：实现简单</li>
+<li>坏处：高并发下有数据库写入的性能瓶颈</li>
+<li>解决方案：跟进 ID 进行分库分表进行算法路由</li>
 </ul>
 
-<h4>动态异常声明</h4>
+<h5>Redise 的原子性去实现</h5>
 
 <ul>
-<li>throw 被 noexcept</li>
+<li>使用 Redis 进行幂等，需要考虑的问题</li>
+<li>第一：我们是否要进行数据落库，如果落库的话，关键解決的问题是数据库和缓存如何做到原子性？</li>
+<li>第二：如果不进行落库，那么都存储到缓存中，如何设置定时同步的策略？</li>
 </ul>
 
-<h4>nullptr&amp;nullptr_t</h4>
+<h4>Confirm机制</h4>
 
 <ul>
-<li>能够隐式的转换任何类型的指针</li>
+<li>消息的确认，是指生产者投递消息后，如果 Brokerl 收到消息，则会给我们生产者一个应答。</li>
+<li>生产者进行接收应答，用来确定这条消息是否正常的发送到 Broker，这种方式也是消息的可靠性投递的核心保障！</li>
+<li><img src="media/15687637976768/15687655634522.jpg" alt="" style="width:1141px;"/></li>
+<li>第一步：在 channel 上开启确认模式：Confirm</li>
+<li>第二步：在 channel 上添加监听：NotifyConfirm(ack, nack chan uint64) 监听成功和失败的返回结果，根据具体的结果对消息进行重新发送、或记录日志等后续处理！</li>
+<li>如果ACK和NACK都没有，利用定时任务抓去做中间状态进行补偿</li>
 </ul>
 
-<h4>constexpr</h4>
+<h4>Exchange</h4>
 
 <ul>
-<li>编译期间把它当成一个常量</li>
-<li>可以用于函数，数据声明， 以及类的构造函数</li>
-<li>常量表达式函数</li>
-<li>常量构造函数也有约束</li>
+<li>在客户端和服务端声明都可以</li>
+<li>如果声明的时候路由key不一样，则会生成两个</li>
+<li></li>
 </ul>
 
-<h4>auto</h4>
+<h4>Return消息机制</h4>
 
 <ul>
-<li>静态的成员编译的时候必须初始化</li>
+<li>Return Listener 用于处理一些不可路由的消息</li>
+<li>我们的消息生产者，通过指定一个 Exchange 和 Routingkey，把消息送达到某一个队列中去，然后我们的消费者监听队列，进行消费处理操作！</li>
+<li>但是在某些情况下，如果我们在发送消息的时候，当前的 exchange不存在或者指定的路由 key 略由不到，这个时候如果我们需要监听这种不可达的消息，就要使用 Return Listener</li>
+<li>Mandatory：如果为 true，则监听器会接收到路由不可达的消息，然后进行后续处理，如果为 false，那么 brokers 端自动删除该消息</li>
+<li><img src="media/15687637976768/15688492958280.jpg" alt="" style="width:943px;"/></li>
 </ul>
 
-<h4>decltype</h4>
+<h4>消费端限流</h4>
 
-<pre class="line-numbers"><code class="language-text">template&lt;typename T1, typename T2&gt;
-decltype(a + b) add(T1 a, T2b) {
-  auto s = a + b;
-  return s;
+<ul>
+<li>Rabbit MQ 提供了一种 qos（服务质量保证）功能，即在非自动确认消息的前提下，如果一定数目的消息（通过基于 Consume 或者 channeli 设置 Qos 的值）未被确认前，不进行消费新的消息。</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">type basicQos struct {
+  PrefetchSize  uint32 0不做限制
+  PrefetchCount uint16 一次处理多少条消息
+  Global        bool //channel true consumer false
 }
 </code></pre>
 
-<p>1）  如果e是一个没有带括号的标记符表达式或者类成员访问表达式，那么decltype(e)就是e所命名的实体的类型。此外，如果e是一个被重载的函数，则会导致编译时错误；<br/>
-2）  否则，假设e的类型是T，如果e是一个将亡值(xvalue)，那么decltype(e)为T&amp;&amp;；<br/>
-3）  否则，假设e的类型是T，如果e是一个左值，则decltype(e)为T&amp;；<br/>
-4）  否则，假设e的类型是T，则decltype(e)为T。</p>
-
-<h4>左值和右值</h4>
-
 <ul>
-<li>分配了内存的就是左值，可以取地址</li>
-<li>右值和将亡值</li>
-<li>T&amp;&amp;右值引用</li>
-<li>所有的右值引用叠加到右值引用还是右值引用</li>
-<li>所有的其他引用类型迭代都会变成左值引用</li>
+<li>Prefetchsize: 0</li>
+<li>Prefetch Count：会告诉 Rabbitmq 不要同时给一个消费者推送多于 N 个消息，即一旦有 N 个消息还没有 ack，则该 consumer 将 block 掉，直到有消息 ack</li>
+<li>global: true\false 是否将上面设置应用于 channel简单点说，就是上面限制是 chann인l 级别的还是 consumer client级别</li>
+<li>autoAck设置为false</li>
 </ul>
 
-<h4>std::move&amp;&amp;std::forward</h4>
+<h4>消费端ACK和重回队列</h4>
 
 <ul>
-<li>move左值转成右值引用</li>
-<li>forward关闭引用折叠</li>
+<li>消费端的手工 ACK 和 NACK， NACK保证消息重回队列</li>
+<li>消费端进行消费的时候，如果由于业务异常我们可以进行日志的记<br/>
+录，然后进行补偿</li>
+<li>如果由于服务器宕机等严重问题，那我们就需要手工进行 ACK 保障消费端消费成功</li>
 </ul>
 
-<h4>final&amp;&amp;override</h4>
+<h5>重回队列</h5>
 
 <ul>
-<li>final表示虚函数不可以重写</li>
-<li>override必须重写</li>
+<li>消费端重回队列是为了对没有处理成功的消息，把消息重新会递给Broker</li>
+<li>一般我们在实际应用中，都会关闭重回队列，也就是设置为 False</li>
 </ul>
 
-<h4>delete&amp;&amp;default</h4>
-
-<ul>
-<li>default显式声明使用编译器生成的默认构造函数</li>
-<li>delete 阻止编译器生成赋值拷贝构造函数</li>
-</ul>
-
-<h4>移动语义</h4>
-
-<ul>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/07 18:21 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15660857101922.html">
-                
-                  <h1>sql函数</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>分类</h4>
-
-<ul>
-<li>算术函数</li>
-<li>字符串函数</li>
-<li>日期函数</li>
-<li>转换函数</li>
-</ul>
-
-<h4>算术函数</h4>
-
-<ul>
-<li>ABS</li>
-<li>MOD</li>
-<li>ROUND</li>
-</ul>
-
-<h4>日期函数</h4>
-
-<ul>
-<li><p><img src="media/15660857101922/3dec8d799b1363d38df34ed3fdd29045.png" alt="3dec8d799b1363d38df34ed3fdd29045"/></p></li>
-<li><p>datetime类型和string类型比较不安全</p></li>
-<li><p>无法确认 birthdate 的数据类型是字符串，还是 datetime 类型，如果你想对日期部分进行比较，那么使用DATE(birthdate)来进行比较是更安全的</p></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/18 07:48 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='SQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>SQL必知必会</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15660842826043.html">
-                
-                  <h1>表设计原则</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>三少一多</h4>
-
-<ul>
-<li>数据表个数越少越好</li>
-<li>数据表的字段个数越少越好</li>
-<li>数据表中联合主键的字段个数越少越好</li>
-<li>使用主键越多越好</li>
-</ul>
-
-<h4>执行顺序</h4>
-
-<ul>
-<li>SELECT ... FROM ... WHERE ... GROUP BY (聚集函数)... HAVING ... ORDER BY ...</li>
-<li>首先先通过 CROSS JOIN 求笛卡尔积，相当于得到虚拟表 vt（virtual table）1-1；</li>
-<li>通过 ON 进行筛选，在虚拟表 vt1-1 的基础上进行筛选，得到虚拟表 vt1-2；</li>
-<li>添加外部行。如果我们使用的是左连接、右链接或者全连接，就会涉及到外部行，也就是在虚拟表 vt1-2 的基础上增加外部行，得到虚拟表 vt1-3</li>
-<li>FROM &gt; WHERE &gt; GROUP BY &gt; HAVING &gt; SELECT 的字段 &gt; DISTINCT &gt; ORDER BY &gt; LIMIT</li>
-<li>每个步骤都会产生虚拟表</li>
-</ul>
-
-<h4>执行效率</h4>
-
-<ul>
-<li>COUNT(*) = COUNT(1) &gt; COUNT(字段)</li>
-<li>COUNT(*)和COUNT(1)本质上没有区别，执行的复杂度都是O(N)，也就是采用全表扫描，进行循环+计数的方式进行统计。</li>
-<li>count(*)和count(1)一般要建立二级索引</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/18 07:24 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='SQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>SQL必知必会</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15660840293357.html">
-                
-                  <h1>SQL 执行方式</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>mysql架构</h4>
-
-<ul>
-<li><img src="media/15660840293357/c4b24ef2377e0d233af69925b0d7139e.png" alt="c4b24ef2377e0d233af69925b0d7139e"/></li>
-</ul>
-
-<h4>sql层架构</h4>
-
-<ul>
-<li><img src="media/15660840293357/30819813cc9d53714c08527e282ede79-2.jpg" alt="30819813cc9d53714c08527e282ede79-2"/></li>
-<li>查询缓存：Server 如果在查询缓存中发现了这条 SQL 语句，就会直接将结果返回给客户端；如果没有，就进入到解析器阶段。需要说明的是，因为查询缓存往往效率不高，所以在 MySQL8.0 之后就抛弃了这个功能。</li>
-<li>解析器：在解析器中对 SQL 语句进行语法分析、语义分析。</li>
-<li>优化器：在优化器中会确定 SQL 语句的执行路径，比如是根据全表检索，还是根据索引来检索等。</li>
-<li>执行器：在执行之前需要判断该用户是否具备权限，如果具备权限就执行 SQL 查询并返回结果。在 MySQL8.0 以下的版本，如果设置了查询缓存，这时会将查询结果进行缓存</li>
-</ul>
-
-<h4>sql执行分析</h4>
-
-<ul>
-<li>set profiling = 1;</li>
-<li>show profile</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/18 07:20 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='SQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>SQL必知必会</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15646523320655.html">
-                
-                  <h1>zmq为什么高效</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>性能</h4>
-
-<ul>
-<li>RTT</li>
-<li>TPS</li>
-<li>关闭Nagle算法，关闭网卡中断汇聚在一个cpu，提高IO吞吐能力上，开启网络接口的多队列功能，这样，每个队列就可以用不同的中断号，调度到不同 CPU 上执行</li>
-<li>区别大小消息，零拷贝 92字节为临界点</li>
-<li>批量发送和接收消息</li>
-<li>非同步零数据CPU迁移的并发编程 通过管道</li>
-<li>无锁算法</li>
-</ul>
-
-<h4>线程间共享数据</h4>
-
-<ul>
-<li>send(cmd)</li>
-<li>socket</li>
-<li>socketpair</li>
-<li>信号 pipe</li>
-<li>eventfd</li>
-</ul>
-
-<h5>架构</h5>
-
-<ul>
-<li><img src="media/15646523320655/15646568568348.jpg" alt=""/></li>
-<li>engine负责对底层事件发送和接收解码和内核打交道，依赖poller</li>
-<li>poller 对epoll进行封装</li>
-<li>pipes inbound 和 outbound 读写两个管道</li>
-<li>mailbox就是对pipe的封装，两个线程之间发送数据</li>
-<li>session 管理每个连接，管理客户端连接</li>
-<li>session和engine绑定到每个io thread</li>
-<li>zmq_socket可以对应多个客户端，通过算法将session和engine绑定到io_thread</li>
-<li>poller监听到数据会把socketfd发给listener处理，listener会创建engine和session</li>
-<li>读事件发生poller-&gt;engine-&gt;内核拷贝数据-&gt;session-&gt;inbound-&gt;api接口读取数据</li>
-<li>写事件是engine从session中读取消息</li>
-</ul>
-
-<h4>消息内存管理</h4>
-
-<ul>
-<li>短消息vsm直接初始化在栈上</li>
-<li>zmq_msg_t-&gt;msg_t</li>
-<li>move 就是删除引用计数</li>
-<li></li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">   union {
-    struct {
-      metadata_t *metadata;
-      unsigned char unused [msg_t_size - (8 + sizeof (metadata_t *) + 2)];
-      unsigned char type;
-      unsigned char flags;
-    } base;
-    struct {
-      metadata_t *metadata;
-      unsigned char data [max_vsm_size];
-      unsigned char size;
-      unsigned char type;
-      unsigned char flags;
-    } vsm;
-    struct {
-      metadata_t *metadata;
-      content_t *content;
-      unsigned char unused [msg_t_size - (8 + sizeof (metadata_t *) + sizeof (content_t*) + 2)];
-      unsigned char type;
-      unsigned char flags;
-    } lmsg;
-    struct {
-      metadata_t *metadata;
-      void* data;
-      size_t size;
-      unsigned char unused
-          [msg_t_size - (8 + sizeof (metadata_t *) + sizeof (void*) + sizeof (size_t) + 2)];
-      unsigned char type;
-      unsigned char flags;
-    } cmsg;
-    struct {
-      metadata_t *metadata;
-      unsigned char unused [msg_t_size - (8 + sizeof (metadata_t *) + 2)];
-      unsigned char type;
-      unsigned char flags;
-    } delimiter;
-  } u;
-</code></pre>
-
-<p><img src="media/15646523320655/15646582517066.jpg" alt="" style="width:705px;"/></p>
-
-<ul>
-<li>zmq_msg_move 做了一个引用计数</li>
-</ul>
-
-<h4>multipart message</h4>
-
-<ul>
-<li>小消息第一个字节是长度</li>
-<li>大消息分多帧发送，最后一个帧发送空</li>
-<li>超过一个字节的长度，帧第一个字节是0xffff，然后扩充到8个字节</li>
-<li>ZMQ_SNDMORE</li>
-<li></li>
-<li><img src="media/15646523320655/15646590611577.jpg" alt="" style="width:936px;"/></li>
-</ul>
-
-<h4>动态调整批量发送</h4>
-
-<ul>
-<li>outbound和inbound是收发队列</li>
-<li>out_batch_size = 8192 bytes</li>
-<li>有多条消息就合并，没有也立即发送</li>
-<li>8192让tcp尽量有数据发送</li>
-<li>stream_engine</li>
-</ul>
-
-<h4>高效线程的IO</h4>
-
-<ul>
-<li>IO密集型一般线程数目是CPU数目的两倍</li>
-<li>计算密集型跟cpu数目一样
-<img src="media/15646523320655/15649055233553.jpg" alt="" style="width:586px;"/></li>
-<li>统计流量的事情丢给用户</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">zmq::io_thread_t *zmq::ctx_t::choose_io_thread (uint64_t affinity_)
-{
-  if (_io_threads.empty ())
-    return NULL;
-
-  //  Find the I/O thread with minimum load.
-  int min_load = -1;
-  io_thread_t *selected_io_thread = NULL;
-  for (io_threads_t::size_type i = 0; i != _io_threads.size (); i++) {
-    if (!affinity_ || (affinity_ &amp; (uint64_t (1) &lt;&lt; i))) {
-      int load = _io_threads[i]-&gt;get_load ();
-      if (selected_io_thread == NULL || load &lt; min_load) {
-        min_load = load;
-        selected_io_thread = _io_threads[i];
-      }
-    }
-  }
-  return selected_io_thread;
+<pre class="line-numbers"><code class="language-text">type basicNack struct {
+  DeliveryTag uint64
+  Multiple    bool
+  Requeue     bool
 }
+type basicAck struct {
+  DeliveryTag uint64
+  Multiple    bool
+}
+Nack(tag uint64, multiple bool, requeue bool)
+multiple 是否批量
+requeue 是否重回队列
+Ack(tag uint64, multiple bool)
 </code></pre>
 
-<h4>Mailbox</h4>
+<h4>TTL队列/消息</h4>
 
 <ul>
-<li>eventfd 事件fd效果等同于socketpair,可以添加到epoll中来</li>
-<li>slot(mailbox)-&gt;io_thread对应数组某个位置</li>
-<li>socket线程和io_thread交换数据</li>
-<li>通过mailbox命令让io_thread绑定poller,session,engine</li>
-<li>signaler_t make_fdpair -&gt; eventfdj</li>
-<li>socket的mailbox和iothread中一一对应</li>
-<li>mailbox第一次send 1激活邮箱</li>
-<li>io_thread中的poller有处理mailbox中的signaler_t信号</li>
-<li>然后poller中收到1后从管道中读数据</li>
-<li>signaler封装一个socketpair对</li>
+<li>TTL 是 Time To Live 的缩写，也就是生存时间</li>
+<li>Rabbitmq 支持消息的过期时间，在消息发送时可以进行指定</li>
+<li>Rabbitmq 支持队列的过期时间，从消息入队列开始计算，只要超过了队列的超时时间配置，那么消息会自动的清除</li>
+<li>针对队列</li>
+<li>expiration针对单个消息</li>
 </ul>
 
-<h4>Mailbox发送消息流程</h4>
+<h4>死信队列</h4>
 
 <ul>
-<li><img src="media/15646523320655/15660010884535.jpg" alt="" style="width:628px;"/></li>
-<li></li>
+<li>死信队列：DLX, Dead- Letter- Exchange</li>
+<li>利用 DLX，当消息在一个队列中变成死信（dead message）之后</li>
+<li>它能被重新 publish 到另一个 Exchange，这个 Exchange 就是 DLX</li>
+<li><img src="media/15687637976768/15718066699196.jpg" alt="" style="width:1159px;"/></li>
 </ul>
 
-<h4>高效IO编程</h4>
+<h5>分类</h5>
 
 <ul>
-<li>高低水位HWM过载落盘 低水位从磁盘载入</li>
-<li>大师级的线程池的设计</li>
-<li></li>
+<li>消息被拒绝（basic. Reject/ basic. Nack）并且 requeue= false 消息 TTL 过期队列达到最大长度</li>
+<li>DLX 也是一个正常的 Exchange，和一般的 xchange 没有区別，它能在任何的队列上被指定，实际上就是设置某个队列的属性。</li>
+<li>当这个队列中有死信时，Rabbitmq 就会自动的将这个消息重新发布到设置的 Exchange 上去，进而被路由到另一个队列</li>
+<li>可以监听这个队列中消息做相应的处理，这个特性可以弥补 Rabbitmq 3.0 以前支持的 immediate 参数的功能。</li>
+</ul>
+
+<h5>设置</h5>
+
+<ul>
+<li>首先需要设置死信队列的 exchange 和 queue，然后进行绑定</li>
+<li>Exchange: dlx. Exchange</li>
+<li>Queue dlxqueue v Routing Key: #</li>
+<li>arguments.Put(&quot;x-dead-letter-exchange&quot;, dlx.exchange&quot;)</li>
+<li>这样消息在过期、requeue、队列在达到最大长度时，消息就可以直接路由到死信队列！</li>
+</ul>
+
+<h4>总结</h4>
+
+<ul>
+<li>本章节主要和大家一起学习了 Rabbitmqp 的高级特性，首先介绍了互联网大厂在实际使用中是如何保障 100%的消息投递成功和幕等性的，以及对 Rabbitmqf 的确认消息、返回消息、ACK 与重回队列、消息的限流，以及对超时时间、死信队列的使用</li>
 </ul>
 
                         
@@ -1406,10 +855,10 @@ decltype(a + b) add(T1 a, T2b) {
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/08/01 17:38 下午</span>
+                    <span class="date">2019/09/18 07:43 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
+          					    <span class="posted-in"><a href='RabbitMQ.html'>RabbitMQ</a></span>
           				   
                   </div>
                   <div class="more-right right">

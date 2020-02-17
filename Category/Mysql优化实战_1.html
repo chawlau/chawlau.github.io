@@ -170,38 +170,77 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15453606137574.html">
+                <a class="clearlink" href="15488133858576.html">
                 
-                  <h1>如何正确的显示随机信息</h1>
+                  <h1>无法Kill的语句</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>原始算法</h4>
-
-<pre class="line-numbers"><code class="language-text">mysql&gt; select word from words order by rand() limit 3;
-</code></pre>
-
-<h4>优化算法1</h4>
-
-<pre class="line-numbers"><code class="language-text">mysql&gt; select max(id),min(id) into @M,@N from t ;
-set @X= floor((@M-@N+1)*rand() + @N);
-select * from t where id &gt;= @X limit 1;
-</code></pre>
+                        	<h4>kill</h4>
 
 <ul>
-<li>有概率不均匀的问题</li>
+<li>kill query</li>
+<li>kill connection</li>
 </ul>
 
-<h4>算法2</h4>
+<h4>kill query执行原理</h4>
 
-<pre class="line-numbers"><code class="language-text">mysql&gt; select count(*) into @C from t;
-set @Y = floor(@C * rand());
-set @sql = concat(&quot;select * from t limit &quot;, @Y, &quot;,1&quot;);
-prepare stmt from @sql;
-execute stmt;
-DEALLOCATE prepare stmt;
-</code></pre>
+<ul>
+<li>把 session B 的运行状态改成 THD::KILL_QUERY(将变量 killed 赋值为 THD::KILL_QUERY)；</li>
+<li>给 session B 的执行线程发一个信号。让session退出等待，处理THD:KILL_QUERY</li>
+<li>等行锁时，使用的是 pthread_cond_timedwait 函数，这个等待状态可以被唤醒,等待进入InnoDB的循环过程中，没有去判断线程的状态，所以不会进入逻辑终止阶段</li>
+<li> pthread_cond_timedwait 函数，这个等待状态可以被唤醒</li>
+<li> 如果没有判断线程的状态，就不会被唤醒</li>
+</ul>
+
+<h4>kill connection</h4>
+
+<ul>
+<li>把 12 号线程状态设置为 KILL_CONNECTION；</li>
+<li>关掉 12 号线程的网络连接。</li>
+<li>线程依然是killed状态，直到满足进入InnoDB条件后，才会判断线程状态，最后进入终止逻辑状态</li>
+</ul>
+
+<h4>kill无效</h4>
+
+<ul>
+<li>线程没有执行到判断线程状态的逻辑</li>
+<li>终止逻辑耗时比较长</li>
+<li>超大事物被kill</li>
+<li>大查询回滚</li>
+<li>DDL命令执行到最后阶段</li>
+</ul>
+
+<h4>客户端</h4>
+
+<ul>
+<li>连接后操作</li>
+<li>执行 show databases；</li>
+<li>切到 db1 库，执行 show tables；</li>
+<li>把这两个命令的结果用于构建一个本地的哈希表。</li>
+</ul>
+
+<h4>客户端查询返回结果</h4>
+
+<ul>
+<li>一种是本地缓存，也就是在本地开一片内存，先把结果存起来。API 开发，对应的就是 mysql_store_result 方法。</li>
+<li>另一种是不缓存，读一个处理一个。API开发，对应的就是 mysql_use_result 方法。-quick参数</li>
+</ul>
+
+<h4>quick参数效果</h4>
+
+<ul>
+<li>第一点，就是前面提到的，跳过表名自动补全功能。</li>
+<li>第二点，mysql_store_result 需要申请本地内存来缓存查询结果，如果查询结果太大，会耗费较多的本地内存，可能会影响客户端本地机器的性能；</li>
+<li>第三点，是不会把执行命令记录到本地的命令历史文件。</li>
+</ul>
+
+<h4>kill query本质</h4>
+
+<ul>
+<li>这些“kill 不掉”的情况，其实是因为发送 kill 命令的客户端，并没有强行停止目标线程的执行，而只是设置了个状态，并唤醒对应的线程。而被 kill 的线程，需要执行到判断状态的“埋点”，才会开始进入终止逻辑阶段。并且，终止逻辑本身也是需要耗费时间的</li>
+</ul>
 
                         
                       </div>
@@ -210,7 +249,7 @@ DEALLOCATE prepare stmt;
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/12/21 10:50 上午</span>
+                    <span class="date">2019/01/30 09:56 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
@@ -227,95 +266,43 @@ DEALLOCATE prepare stmt;
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15446898518323.html">
+                <a class="clearlink" href="15669477064349.html">
                 
-                  <h1>Mysql表数据删除</h1>
+                  <h1>删库之后怎么办</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>为什么表数据删掉一半，表文件大小不变</h4>
+                        	<h4>分类</h4>
 
 <ul>
-<li>innodb_file_per_table ON</li>
-<li>表数据既可以存在共享表空间里，也可以是单独的文件</li>
-<li>innodb_file_per_table off 放在共享表空间中，即使表删掉了空间也是不会回收的</li>
-<li>innodb_file_per_table ON 一个表单独存储为一个文件, drop table就可以删除
-<img src="media/15446898518323/15576336952657.jpg" alt="" style="width:629px;"/></li>
+<li>使用 delete 语句误删数据行；</li>
+<li>使用 drop table 或者 truncate table 语句误删数据表；</li>
+<li>使用 drop database 语句误删数据库；</li>
+<li>使用 rm 命令误删整个 MySQL 实例</li>
 </ul>
 
-<h4>复用</h4>
+<h4>误删行</h4>
 
 <ul>
-<li>数据页复用和记录的复用</li>
-<li>记录复用的条件是插入的新纪录必须满足之前的纪录的主键限制条件</li>
-<li>数据页复用则没有条件限制</li>
-<li>delete命令只是把纪录的位置或者数据页标记了可复用</li>
-<li>没有使用的空间叫空洞
-<img src="media/15446898518323/15576337049446.jpg" alt="" style="width:588px;"/></li>
+<li> binlog_format=row 和 binlog_row_image=FULL</li>
+<li> 对于 insert 语句，对应的 binlog event 类型是 Write_rows event，把它改成 Delete_rows event 即可；</li>
+<li>同理，对于 delete 语句，也是将 Delete_rows event 改为 Write_rows event；而如果是 Update_rows 的话，binlog 里面记录了数据行修改前和修改后的值，对调这两行的位置即</li>
+<li>sql_safe_updates on</li>
 </ul>
 
-<h4>数据空洞</h4>
+<h4>误删库</h4>
 
 <ul>
-<li>不止是删除数据会造成空洞，插入数据也会。</li>
-<li>如果数据是按照索引递增顺序插入的，那么索引是紧凑的。但如果数据是随机插入的，就可能造成索引的数据页分裂。</li>
+<li>如果原实例没有使用 GTID 模式，只能在应用到包含 12 点的 binlog 文件的时候，先用–stop-position 参数执行到误操作之前的日志，然后再用–start-position 从误操作之后的日志继续执行；</li>
+<li>如果实例使用了 GTID 模式，就方便多了。假设误操作命令的 GTID 是 gtid1，那么只需要执行 set gtid_next=gtid1;begin;commit; 先把这个 GTID 加到临时实例的 GTID 集合，之后按顺序执行 binlog 的时候，就会自动跳过误操作的语句</li>
 </ul>
 
-<h4>重建表</h4>
+<h4>加速方法</h4>
 
 <ul>
-<li>重建表可以去除数据空洞</li>
-<li>建立一个临时文件，扫描表 A 主键的所有数据页；</li>
-<li>用数据页中表 A 的记录生成 B+ 树，存储到临时文件中；</li>
-<li>生成临时文件的过程中，将所有对 A 的操作记录在一个日志文件（row log）中，对应的是图中 state2 的状态；</li>
-<li>临时文件生成后，将日志文件中的操作应用到临时文件，得到一个逻辑数据上与表 A 相同的数据文件，对应的就是图中 state3 的状态；</li>
-<li>用临时文件替换表 A 的数据文件。</li>
-<li>MDL读锁可以限制DDL修改表结构
-<img src="media/15446898518323/15576337131980.jpg" alt="" style="width:538px;"/></li>
-</ul>
-
-<h4>Online和inplace本质区别</h4>
-
-<ul>
-<li>inplace表示在 innodb引擎完成所有操作,对 server层是透明的。 inplace操作不一定是online的,如MsQL8.0的添加全文索引和空间索引。而 online的一定是 inplace的。</li>
-<li>copy 对于不支持online的ddl操作采用copy方式，比如修改列类型，删除主键，修改字符集等，这些操作都会导致记录格式发生变化</li>
-</ul>
-
-<h4>Online DDL</h4>
-
-<p><img src="media/15446898518323/15446935517519.jpg" alt=""/><br/>
-<img src="media/15446898518323/15576343430209.jpg" alt="" style="width:649px;"/></p>
-
-<h4>若干问题</h4>
-
-<ul>
-<li>Online Add Index是否支持Unique索引？<br/>
-确切的答案是：支持，InnoDB支持Online创建Unique索引。<br/>
-既然支持，就会面临Check Duplicate Key的问题。Row Log中如果存在与索引中相同的键值怎么处理？怎么检测是否存在相同键值？<br/>
-InnoDB解决此问题的方案也比较简介易懂。其维护了一个row_merge_dup_t的数据结构，存储了在Row log重放过程中遇到的违反唯一性冲突的Row Log。应用完Row Log之后，外部判断是否存在Unique冲突(有多少Unique冲突，均会记录)，Online创建Unique索引失败。</li>
-<li>Online与数据一致性如何兼得？<br/>
-实际上，online ddl并非整个过程都是online，在prepare阶段和commit阶段都会持有MDL-Exclusive锁，禁止读写；而在整个ddl执行阶段，允许读写。由于prepare和commit阶段相对于ddl执行阶段时间特别短，因此基本可以认为是全程online的。Prepare阶段和commit阶段的禁止读写，主要是为了保证数据一致性。Prepare阶段需要生成row_log对象和修改内存的字典；Commit阶段，禁止读写后，重做最后一部分增量，然后提交，保证数据一致。</li>
-<li>如何实现server层和innodb层一致性？<br/>
-在prepare阶段，server层会生成一个临时的frm文件，里面包含了新表的格式；innodb层生成了临时的ibd文件(rebuild方式)；在ddl执行阶段，将数据从原表拷贝到临时ibd文件，并且将row_log增量应用到临时ibd文件；在commit阶段，innodb层修改表的数据字典，然后提交；最后innodb层和mysql层面分别重命名frm和idb文件。</li>
-<li>Row Log是什么样的结构，如何组织的？<br/>
-在Online Add Index过程中，并发DML产生的修改，被记录在Row Log中。首先，Row Log不是InnoDB的Redo Log，而是每个正在被Online创建的索引的独占结构。<br/>
-Online创建索引，遵循的是先创建索引数据字典，后填充数据的方式。因此，当索引数据字典创建成功之后，新的DML操作就可以读取此索引，尝试进行更新。但是，由于索引结构上的status状态为ONLINE_INDEX_CREATION，因此这些更新不能直接应用到新索引上，而是放入Row Log之中，等待被重放到索引之上。<br/>
-Row Log中，以Block的方式管理DML操作内容的存放。一个Block的大小为由参数innodb_sort_buffer_size控制，默认大小为1M (1048576)。初始化阶段，Row Log申请两个这样的Block。</li>
-</ul>
-
-<h4>三种重建表的方式区别</h4>
-
-<ul>
-<li>optimize table（alter table + alter table）</li>
-<li>alter table  其实不是重建表，只是对表的索引信息做重新统计，没有修改数据，这个过程中加了 MDL 读锁</li>
-<li>alter table 重建表</li>
-</ul>
-
-<h4>参考资料</h4>
-
-<ul>
-<li><a href="https://blog.51cto.com/fengfeng688/1956827">https://blog.51cto.com/fengfeng688/1956827</a></li>
+<li>只同步误操作的表，使用并行复制技术</li>
+<li>延迟复制从库CHANGE MASTER TO MASTER_DELAY = N</li>
 <li></li>
 </ul>
 
@@ -326,7 +313,7 @@ Row Log中，以Block的方式管理DML操作内容的存放。一个Block的大
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/12/13 16:30 下午</span>
+                    <span class="date">2019/08/28 07:15 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
@@ -343,162 +330,78 @@ Row Log中，以Block的方式管理DML操作内容的存放。一个Block的大
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15439799166687.html">
+                <a class="clearlink" href="15484069315619.html">
                 
-                  <h1>Mysql选错索引</h1>
+                  <h1>读写分离</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>mysql选择索引依据</h4>
+                        	<h4>过期读优化方案</h4>
 
 <ul>
-<li>扫描行数</li>
-<li>是否使用临时表</li>
-<li>是否排序</li>
+<li>强制走主库方案；</li>
+<li>sleep 方案；</li>
+<li>判断主备无延迟方案；</li>
+<li>配合 semi-sync 方案；</li>
+<li>等主库位点方案；</li>
+<li>等 GTID 方案。</li>
 </ul>
 
-<h4>Mysql获取索引基数</h4>
+<h4>对比位点</h4>
 
 <ul>
-<li>采样统计的时候，InnoDB 默认会选择 N 个数据页，统计这些页面上的不同值，得到一个平均值，然后乘以这个索引的页面数，就得到了这个索引的基数。</li>
-<li>而数据表是会持续更新的，索引统计信息也不会固定不变。所以，当变更的数据行数超过 1/M 的时候，会自动触发重新做一次索引统计。</li>
-<li>设置为 on 的时候，表示统计信息会持久化存储。这时，默认的 N 是 20，M 是 10。</li>
-<li>设置为 off 的时候，表示统计信息只存储在内存中。这时，默认的 N 是 8，M 是 16。</li>
+<li>Master_Log_File 和 Relay_Master_Log_File、Read_Master_Log_Pos 和 Exec_Master_Log_Pos</li>
 </ul>
 
-<h4>索引选择不准确矫正</h4>
+<h4>GTID 集合确保主备无延迟</h4>
 
 <ul>
-<li>索引统计信息不准确导致的问题，你可以用 analyze table 来解决。</li>
-<li>优化器误判的情况，你可以在应用端用force index来强行指定索引</li>
-<li>也可以通过修改语句来引导优化器</li>
-<li>还可以通过增加或者删除索引来绕过这个问题</li>
+<li>Auto_Position=1 ，表示这对主备关系使用了 GTID 协议。</li>
+<li>Retrieved_Gtid_Set，是备库收到的所有日志的 GTID 集合；</li>
+<li>Executed_Gtid_Set，是备库所有已经执行完成的 GTID 集合。</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-text"> CREATE TABLE `t` (
-  `id` int(11) NOT NULL,
-  `a` int(11) DEFAULT NULL,
-  `b` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `a` (`a`),
-  KEY `b` (`b`)
-) ENGINE=InnoDB
-</code></pre>
-
-<h4>开启慢查询日志</h4>
-
-<pre class="line-numbers"><code class="language-text">  show variables like &#39;log_%&#39;;
-  set sql_long_query=0;
-  set global long_query_time=0;
-  show variables like &quot;%slow%&quot;;
-  set slow_query_log=&#39;ON&#39;;
-  show variables like &quot;%slow%&quot;;
-</code></pre>
-
-<h4>查询优化</h4>
-
-<pre class="line-numbers"><code class="language-text">mysql&gt; select * from t where a between 10000 and 20000 and b between 50000 and 100000 order by b limit 1;
-Empty set (0.05 sec)
-
-mysql&gt; select * from t force index(a) where a between 10000 and 20000 and b between 50000 and 100000 order by b limit 1;
-Empty set (0.02 sec)
-</code></pre>
-
-<h4>清空查询缓存</h4>
-
-<pre class="line-numbers"><code class="language-text"> reset query cache;
-</code></pre>
-
-<h4>选择错误索引原因</h4>
+<h4>semi-sync</h4>
 
 <ul>
-<li>每次从索引 a 上拿到一个值，都要回到主键索引上查出整行数据，这个代价优化器也要算进去的。如果选择扫描 10 万行，是直接在主键索引上扫描的，没有额外的代价。优化器会估算这两个选择的代价，从结果看来，优化器认为直接扫描主键索引更快。当然，从执行时间看来，这个选择并不是最优的。</li>
+<li>半同步设计</li>
+<li>事务提交的时候，主库把 binlog 发给从库；</li>
+<li>从库收到 binlog 以后，发回给主库一个 ack，表示收到了；</li>
+<li>主库收到这个 ack 以后，才能给客户端返回“事务完成”的确认。</li>
 </ul>
 
-<h4>优化错误索引</h4>
+<h4>semi-sync存在的问题</h4>
 
 <ul>
-<li>force index</li>
-<li>修改语句，引导mysql使用我们期望的索引</li>
-<li>新建合适的索引或者删掉误用的索引</li>
-<li>使用analze table 来解决</li>
+<li>一主多从的时候，在某些从库执行查询请求会存在过期读的现象；</li>
+<li>在持续延迟的情况下，可能出现过度等待的问题。</li>
 </ul>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/05 11:18 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15438265348573.html">
-                
-                  <h1>普通索引和唯一索引</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>InnoDB读取数据</h4>
+<h4>等待位点方案</h4>
 
 <ul>
-<li>InnoDB 的数据是按数据页为单位来读写的。也就是说，当需要读一条记录的时候，并不是将这个记录本身从磁盘读出来，而是以页为单位，将其整体读入内存。在 InnoDB 中，每个数据页的大小默认是 16KB。</li>
-<li>因为引擎是按页读写的，所以说，当找到 k=5 的记录的时候，它所在的数据页就都在内存里了。那么，对于普通索引来说，要多做的那一次“查找和判断下一条记录”的操作，就只需要一次指针寻找和一次计算。</li>
-<li>当然，如果 k=5 这个记录刚好是这个数据页的最后一个记录，那么要取下一个记录，必须读取下一个数据页，这个操作会稍微复杂一些。</li>
+<li>trx1 事务更新完成后，马上执行 show master status 得到当前主库执行到的 File 和 Position；</li>
+<li>选定一个从库执行查询语句；</li>
+<li>在从库上执行 select master_pos_wait(File, Position, 1)；</li>
+<li>如果返回值是 &gt;=0 的正整数，则在这个从库执行查询语句；如果 1 秒内 master_pos_wait 返回一个大于等于 0 的整数，就确保了从库上执行的这个查询结果一定包含了 trx1 的数据。</li>
+<li>否则，到主库执行查询语句。 </li>
 </ul>
 
-<h4>change buffer</h4>
+<h4>等待gtid方案</h4>
 
 <ul>
-<li>change buffer 在内存中有拷贝，也会被写入到磁盘上</li>
-<li>对于唯一索引来说，所有的更新操作都要先判断这个操作是否违反唯一性约束,必须要把数据页载入内存才能实现</li>
-<li>purge 的时候是真正进行数据更新的时刻，而 change buffer 的主要目的就是将记录的变更动作缓存下来，所以在一个数据页做 purge 之前，change buffer 记录的变更越多（也就是这个页面上要更新的次数越多），收益就越大。</li>
-<li>访问这个数据页会触发 purge 外，系统有后台线程会定期 purge。在数据库正常关闭（shutdown）的过程中，也会执行 purge 操作。</li>
-<li>更新后紧跟着这个记录的查询，change buffer应该关闭，其他情况下应该打开</li>
-<li>操作流程</li>
+<li>trx1 事务更新完成后，从返回包直接获取这个事务的 GTID，记为 gtid1；</li>
+<li>选定一个从库执行查询语句；</li>
+<li>在从库上执行 select wait_for_executed_gtid_set(gtid1, 1)；</li>
+<li>如果返回值是 0，则在这个从库执行查询语句；</li>
+<li>否则，到主库执行查询语句。</li>
 </ul>
 
-<p><img src="media/15438265348573/15562408037391.jpg" alt="" style="width:583px;"/></p>
-
-<h4>redo log 和 binlog的区别</h4>
+<h4>事物更新完直接获取GTID</h4>
 
 <ul>
-<li>redo log 是 InnoDB 引擎特有的；binlog 是 MySQL 的 Server 层实现的，所有引擎都可以使用。</li>
-<li>redo log 是物理日志，记录的是修改；binlog 是逻辑日志，记录的是这个语句的原始操作逻辑</li>
-<li>redo log 是循环写的，空间固定会用完；binlog 是可以追加写入的。“追加写”是指 binlog 文件写到一定大小后会切换到下一个，并不会覆盖以前的日志。</li>
-</ul>
-
-<h4>redo log 和change buffer</h4>
-
-<ul>
-<li>redo log 主要节省的是随机写磁盘的 IO 消耗（转成顺序写）</li>
-<li>而 change buffer 主要节省的则是随机读磁盘的 IO 消耗。</li>
-</ul>
-
-<h4>change buffer的merge的流程</h4>
-
-<ul>
-<li>从磁盘读入数据页到内存（老版本的数据页）；</li>
-<li>从 change buffer 里找出这个数据页的 change buffer 记录 (可能有多个），依次应用，得到新版数据页；</li>
-<li>写 redo log。这个 redo log 包含了数据的变更和 change buffer 的变更。</li>
-<li>数据页和内存的数据需要线程定时刷新回磁盘</li>
+<li>参数 session_track_gtids 设置为 OWN_GTID，然后通过 API 接口mysql_session_track_get_first 从返回包解析出 GTID </li>
 <li></li>
 </ul>
 
@@ -509,7 +412,7 @@ Empty set (0.02 sec)
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/12/03 16:42 下午</span>
+                    <span class="date">2019/01/25 17:02 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
@@ -526,158 +429,43 @@ Empty set (0.02 sec)
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15429441476069.html">
+                <a class="clearlink" href="15476969920876.html">
                 
-                  <h1>索引</h1>
+                  <h1>Mysql主备一致</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>事物回滚日志的删除</h4>
+                        	<h4>delete导致主备不一致</h4>
 
 <ul>
-<li>当没有事务再需要用到这些回滚日志时，回滚日志会被删除。</li>
+<li>在主库执行这条 SQL 语句的时候，用的是索引 a；而在备库执行这条 SQL 语句的时候，却使用了索引 t_modified。主从选择的索引不一样</li>
+<li>线上binlog格式设置为mixed</li>
 </ul>
 
-<h4>长事物</h4>
+<h4>row格式好处</h4>
 
 <ul>
-<li>这个事务提交之前，数据库里面它可能用到的回滚记录都必须保留，这就会导致大量占用存储空间。</li>
-<li>长事务还占用锁资源，也可能拖垮整个库</li>
-<li>set autocommit=1</li>
-</ul>
-
-<h4>怎么避免长事物</h4>
-
-<h5>开发端</h5>
-
-<ul>
-<li>确认是否使用了set autocommit=1。</li>
-<li>确认是否有不必要的只读事务。</li>
-<li>通过 SET MAX_EXECUTION_TIME 命令，来控制每个语句执行的最长时间，避免单个语句意外执行太长时间。</li>
-</ul>
-
-<h5>数据库端</h5>
-
-<ul>
-<li>监控 information_schema.Innodb_trx 表，设置长事务阈值，超过就报警 / 或者 kill；</li>
-<li>Percona 的 pt-kill</li>
-<li>在业务功能测试阶段要求输出所有的 general_log，分析日志行为提前发现问题；</li>
-</ul>
-
-<h4>自增主键的好处</h4>
-
-<ul>
-<li>每次插入一条新记录，都是追加操作，都不涉及到挪动其他记录，也不会触发叶子节点的分裂。</li>
-<li>业务逻辑的字段做主键，则往往不容易保证有序插入，这样写数据成本相对较高</li>
-<li>插入数据如果是在某个数据满了页的首尾，为了减少数据移动和页分裂，会先去前后两个页看看是否满了，如果没满会先将数据放到前后两个页上</li>
-</ul>
-
-<h4>适合业务字段直接做主键的</h4>
-
-<ul>
-<li>只有一个索引</li>
-<li>该索引必须是唯一索引</li>
-</ul>
-
-<h4>Page内部定位行数据</h4>
-
-<ul>
-<li>内部有个有序数组，二分法</li>
-</ul>
-
-<h4>最左前缀原则</h4>
-
-<ul>
-<li>最左前缀可以是联合索引的最左 N 个字段，也可以是字符串索引的最左 M 个字符</li>
-</ul>
-
-<h4>索引下推</h4>
-
-<ul>
-<li>在二级索引中进行条件判断，无须从主键索引中回表拿到数据再进行判断</li>
+<li>恢复数据比较快</li>
+<li>Flashback工具</li>
+<li>binlog的日志解析出来不能直接拷贝执行</li>
+<li>记录操作的记录的主键真实的值</li>
 <li></li>
 </ul>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/11/23 11:35 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15510593691478.html">
-                
-                  <h1>Mysql自增ID用完</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>表定义的自增ID</h4>
+<h4>循环复制问题</h4>
 
 <ul>
-<li>表定义的自增值达到上限后的逻辑是：再申请下一个 id 时，得到的值保持不变。</li>
+<li> log_slave_updates=on可以让备库执行relay log后生成binlog</li>
 </ul>
 
-<h4>InnoDB 系统自增 row_id</h4>
+<h4>线上生产库非双一</h4>
 
 <ul>
-<li>InnoDB维护全局的dict_sys.row_id</li>
-</ul>
-
-<h4>Xid</h4>
-
-<ul>
-<li>redo log 和 binlog 相配合的时候，一个共同的字段叫作 Xid</li>
-<li>Mysql内部维护global_query_id赋值给query_id,然后把query_id赋值给Xid</li>
-<li> MySQL 重启之后会重新生成新的 binlog 文件，这就保证了，同一个 binlog 文件里，Xid 一定是惟一的</li>
-</ul>
-
-<h4>innodb trx_id</h4>
-
-<ul>
-<li>InnoDB 内部维护了一个 max_trx_id 全局变量，每次需要申请一个新的 trx_id 时，就获得 max_trx_id 的当前值，然后并将 max_trx_id 加 1</li>
-<li>trx_id不止加1</li>
-<li>update 和 delete 语句除了事务本身，还涉及到标记删除旧数据，也就是要把数据放到 purge 队列里等待后续物理删除，这个操作也会把 max_trx_id+1， 因此在一个事务中至少加 2；</li>
-<li>InnoDB 的后台操作，比如表的索引信息统计这类操作，也是会启动内部事务的，因此你可能看到，trx_id 值并不是按照加 1 递增的。</li>
-<li>只读查询的trx_id=trx变量指针2<sup>48</sup></li>
-<li>好处</li>
-<li>一个好处是，这样做可以减小事务视图里面活跃事务数组的大小</li>
-<li>另一个好处是，可以减少 trx_id 的申请次数</li>
-</ul>
-
-<h4>thread_id</h4>
-
-<ul>
-<li>系统保存了一个全局变量 thread_id_counter，每新建一个连接，就将 thread_id_counter 赋值给这个新连接的线程变量。</li>
-<li>thread_id_counter 定义的大小是 4 个字节，因此达到 232-1 后，它就会重置为 0</li>
-</ul>
-
-<h4>总结</h4>
-
-<ul>
-<li>表的自增 id 达到上限后，再申请时它的值就不会改变，进而导致继续插入数据时报主键冲突的错误。</li>
-<li>row_id 达到上限后，则会归 0 再重新递增，如果出现相同的 row_id，后写的数据会覆盖之前的数据。</li>
-<li>Xid 只需要不在同一个 binlog 文件中出现重复值即可。虽然理论上会出现重复值，但是概率极小，可以忽略不计。</li>
-<li>InnoDB 的 max_trx_id 递增值每次 MySQL 重启都会被保存起来，所以我们文章中提到的脏读的例子就是一个必现的 bug，好在留给我们的时间还很充裕。</li>
-<li>thread_id 是我们使用中最常见的，而且也是处理得最好的一个自增 id 逻辑了</li>
+<li>业务高峰期。一般如果有预知的高峰期，DBA 会有预案，把主库设置成“非双 1”。</li>
+<li>备库延迟，为了让备库尽快赶上主库。</li>
+<li>用备份恢复主库的副本，应用 binlog 的过程，这个跟上一种场景类似。</li>
+<li>批量导入数据的时候。</li>
 </ul>
 
                         
@@ -687,352 +475,7 @@ Empty set (0.02 sec)
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/02/25 09:49 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15509987141953.html">
-                
-                  <h1>分区表</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>分区表和手工分表</h4>
-
-<ul>
-<li>分区表和手工分表，一个是由 server 层来决定使用哪个分区，一个是由应用层代码来决定使用哪个分表</li>
-</ul>
-
-<h4>MyISAM和Innodb</h4>
-
-<ul>
-<li>MyISAM 分区表使用的分区策略，我们称为通用分区策略（generic partitioning），每次访问分区都由 server 层控制</li>
-<li>InnoDB 引擎引入了本地分区策略（native partitioning）。这个策略是在 InnoDB 内部自己管理打开分区的行为</li>
-</ul>
-
-<h4>truncate和delete</h4>
-
-<ul>
-<li>delete和truncate table的最大区别是delete可以通过WHERE语句选择要删除的记录。但执行得速度不快。而且还可以返回被删除的记录数。而truncate table无法删除指定的记录，而且不能返回被删除的记录。但它执行得非常快。</li>
-</ul>
-
-<h4>分区表行为</h4>
-
-<ul>
-<li>MySQL 在第一次打开分区表的时候，需要访问所有的分区；</li>
-<li>在 server 层，认为这是同一张表，因此所有分区共用同一个 MDL 锁；</li>
-<li>在引擎层，认为这是不同的表，因此 MDL 锁之后的执行过程，会根据分区表规则，只访问必要的分区。</li>
-</ul>
-
-<h4>应用场景</h4>
-
-<ul>
-<li>分区表的一个显而易见的优势是对业务透明，相对于用户分表来说，使用分区表的业务代码更简洁。还有，分区表可以很方便的清理历史数据。</li>
-</ul>
-
-<h4>分区</h4>
-
-<ul>
-<li>范围分区</li>
-<li>hash分区</li>
-<li>list分区</li>
-</ul>
-
-<h4>注意事项</h4>
-
-<ul>
-<li>不要创建太多的分区</li>
-<li>分区不是越细越好</li>
-<li>分区不需要预留太多</li>
-</ul>
-
-<h4>经典分区分表的场景</h4>
-
-<ul>
-<li>zabbix历史数据表的改造,利用存储过程创建和改造</li>
-<li>后台数据的分析汇总,比如日志数据,便于清理</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/24 16:58 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15504520906439.html">
-                
-                  <h1>Mysql权限</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>全局权限</h4>
-
-<ul>
-<li>磁盘上，将 mysql.user 表里，用户’ua’@’%&#39;这一行的所有表示权限的字段的值都修改为‘Y’；</li>
-<li>内存里，从数组 acl_users 中找到这个用户对应的对象，将 access 值（权限位）修改为二进制的“全 1”</li>
-</ul>
-
-<h4>db权限</h4>
-
-<ul>
-<li>磁盘上，往 mysql.db 表中插入了一行记录，所有权限位字段设置为“Y”；</li>
-<li>内存里，增加一个对象到数组 acl_dbs 中，这个对象的权限位为“全 1”。</li>
-</ul>
-
-<h4>flush privileges原理</h4>
-
-<ul>
-<li>flush privileges 命令会清空 acl_users 数组，然后从 mysql.user 表中读取数据重新加载，重新构造一个 acl_users 数组。也就是说，以数据表中的数据为准，会将全局权限内存数组重新加载一遍。</li>
-<li>flush privileges 命令会清空 acl_users 数组，然后从 mysql.user 表中读取数据重新加载，重新构造一个 acl_users 数组。也就是说，以数据表中的数据为准，会将全局权限内存数组重新加载一遍</li>
-</ul>
-
-<h4>flush privileges使用场景</h4>
-
-<ul>
-<li>当数据表中的权限数据跟内存中的权限数据不一致的时候，flush privileges 语句可以用来重建内存数据，达到一致状态。</li>
-<li>直接操作系统表是不规范的操作</li>
-</ul>
-
-<h4>权限范围和修改策略总结</h4>
-
-<ul>
-<li><img src="media/15504520906439/d1885ed1ly1g0ab2twmjaj21gs0js78u.jpg" alt="d1885ed1ly1g0ab2twmjaj21gs0js78u"/></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/18 09:08 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15501977764557.html">
-                
-                  <h1>mysql复制</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>load data</h4>
-
-<ul>
-<li>不加“local”，是读取服务端的文件，这个文件必须在 secure_file_priv 指定的目录或子目录下；</li>
-<li>加上“local”，读取的是客户端的文件，只要 mysql 客户端有访问这个文件的权限即可。这时候，MySQL 客户端会先把本地文件传给服务端，然后执行上述的 load data 流程。</li>
-</ul>
-
-<h4>物理复制表结构</h4>
-
-<ul>
-<li>执行 create table r like t，创建一个相同表结构的空表；</li>
-<li>执行 alter table r discard tablespace，这时候 r.ibd 文件会被删除；</li>
-<li>执行 flush table t for export，这时候 db1 目录下会生成一个 t.cfg 文件；</li>
-<li>在 db1 目录下执行 cp t.cfg r.cfg; cp t.ibd r.ibd；这两个命令；</li>
-<li>执行 unlock tables，这时候 t.cfg 文件会被删除；</li>
-<li>执行 alter table r import tablespace，将这个 r.ibd 文件作为表 r 的新的表空间，由于这个文件的数据内容和 t.ibd 是相同的，所以表 r 中就有了和表 t 相同的数据。</li>
-</ul>
-
-<h4>对比</h4>
-
-<ul>
-<li>物理拷贝必须全表拷贝</li>
-<li>需要到服务器上拷贝</li>
-<li>源表和目标表都是InnoDB引擎才能使用</li>
-<li>mysqldump 不能使用join比较复杂的where条件写法</li>
-<li>select 每次智能导出一张表的数据，表结构也需要另外的语句单独备份</li>
-<li>逻辑备份可以跨引擎使用</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/15 10:29 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15481513628351.html">
-                
-                  <h1>主库出问题</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>主备切换</h4>
-
-<p><img src="media/15481513628351/aadb3b956d1ffc13ac46515a7d619e79.png" alt="aadb3b956d1ffc13ac46515a7d619e79"/></p>
-
-<pre class="line-numbers"><code class="language-text"> CHANGE MASTER TO 
-MASTER_HOST=$host_name 
-MASTER_PORT=$port 
-MASTER_USER=$user_name 
-MASTER_PASSWORD=$password 
-MASTER_LOG_FILE=$master_log_name 
-MASTER_LOG_POS=$master_log_pos  
-</code></pre>
-
-<ul>
-<li>MASTER_LOG_FILE和MASTER_LOG_POS就是主库对应的文件名和日志偏移量就是同步位点</li>
-</ul>
-
-<h4>主备切换错误</h4>
-
-<ul>
-<li>主动跳过一个事物</li>
-<li>set global sql_slave_skip_counter=1;</li>
-<li>start slave;</li>
-<li>跳过指定的错误</li>
-<li>slave_skip_errors=1032,1062</li>
-</ul>
-
-<h4>GTID和在线DDL</h4>
-
-<ul>
-<li>互为主备关系的库X是主库，Y是从库</li>
-<li>在实例 X 上执行 stop slave。</li>
-<li>在实例 Y 上执行 DDL 语句。注意，这里并不需要关闭 binlog。</li>
-<li>执行完成后，查出这个 DDL 语句对应的 GTID，并记为 server_uuid_of_Y:gno。</li>
-<li>到实例 X 上执行以下语句序列：</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">set GTID_NEXT=&quot;3c8f3ed7-f85e-11e8-b414-fa163e483aea:1002077&quot;;
-begin;
-commit;
-set gtid_next=automatic;
-start slave;
-</code></pre>
-
-<h4>mysql主从复制的配置</h4>
-
-<pre class="line-numbers"><code class="language-text">[mysqld]
-#
-# Remove leading # and set to the amount of RAM for the most important data
-# cache in MySQL. Start at 70% of total RAM for dedicated server, else 10%.
-# innodb_buffer_pool_size = 128M
-#
-# Remove leading # to turn on a very important data integrity option: logging
-# changes to the binary log between backups.
-#log_bin=ON
-#log_bin_basename=/var/lib/mysql/mysql-bin
-#log_bin_index=/var/lib/mysql/mysql-bin.index
-server-id=1
-log-bin=/var/lib/mysql/mysql-binlog.log
-#
-# Remove leading # to set options mainly useful for reporting servers.
-# The server defaults are faster for transactions and fast SELECTs.
-# Adjust sizes as needed, experiment to find the optimal values.
-# join_buffer_size = 128M
-# sort_buffer_size = 2M
-# read_rnd_buffer_size = 2M
-datadir=/var/lib/mysql
-socket=/var/lib/mysql/mysql.sock
-
-# Disabling symbolic-links is recommended to prevent assorted security risks
-symbolic-links=0
-
-log-error=/var/log/mysqld.log
-pid-file=/var/run/mysqld/mysqld.pid
-long_query_time=0
-slow_query_log=ON
-slow_query_log_file=/var/lib/mysql/host4-slow.log
-
-server_id=100
-binlog-ignore-db=mysql
-log-bin=edu-mysql-bin
-binlog_cache_size=1M
-binlog_format=mixed
-expire_logs_days=7
-slave_skip_errors=1062
-gtid_mode = ON
-enforce_gtid_consistency = ON
-</code></pre>
-
-<h4>slave跳过指定事物</h4>
-
-<pre class="line-numbers"><code class="language-text">show slave status;
-Executed_Gtid_Set: 94b06c13-1f09-11e5-97ea-000c29c8caec:1-10
-stop slave;
-set gtid_next=&#39;3c8f3ed7-f85e-11e8-b414-fa163e483aea:6&#39;;
-begin;
-commit;
-set gtid_next=automatic;
-start slave;
-show slave status;
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/01/22 18:02 下午</span>
+                    <span class="date">2019/01/17 11:49 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>

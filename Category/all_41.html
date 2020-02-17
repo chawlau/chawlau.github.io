@@ -170,638 +170,138 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15600468057572.html">
+                <a class="clearlink" href="15386465593475.html">
                 
-                  <h1>可执行文件的装载和进程</h1>
+                  <h1>函数详解</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>进程的建立</h4>
+                        	<h4>函数特点</h4>
 
 <ul>
-<li>创建一个独立的虚拟地址空间</li>
-<li>读取可执行文件头，并且建立虚拟空间与可执行文件的映射关系</li>
-<li>将cpu的指令寄存器的设置成可执行的文件的入口地址, ELF文件头的入口地址</li>
+<li>不支持重载</li>
+<li>函数也是一种类型，函数可以赋值给变量</li>
+<li>匿名函数</li>
+<li>多返回值</li>
 </ul>
 
-<h4>页错误</h4>
+<h4>函数参数传递方式</h4>
 
 <ul>
-<li><img src="media/15600468057572/15600478741302.jpg" alt="" style="width:534px;"/></li>
+<li>map默认就是引用，不需要*</li>
 </ul>
 
-<h4>ELF文件链接视图和执行视图</h4>
+<h4>返回值命名</h4>
 
-<ul>
-<li>Section是从链接视图划分ELF</li>
-<li>Segment是从执行视图划分ELF</li>
-<li>相同属性的Section会被归类到一个segment，映射到同一个VMA</li>
-</ul>
-
-<h4>总结</h4>
-
-<ul>
-<li>操作系统通过给进程空间划分为一个一个VMA来管理进程虚拟空间，依据原则是相同权限属性和相同映像文件映射成一个VMA</li>
-</ul>
-
-<h4>装载过程</h4>
-
-<ul>
-<li>load_elf_binary</li>
-<li>load_script</li>
-</ul>
-
-<h4>装载过程</h4>
-
-<ul>
-<li>检查ELF可执行文件格式的有效性，比如魔数、程序头表中段<br/>
-(Segment)的数量。</li>
-<li>寻找动态链技的.interp段，设置动态链接器路径(与动态链接有关，具体<br/>
-只读数据。</li>
-<li>根据ELF文件的程序表头的描述，对ELF文件进行映射，代码，数据，只读数据</li>
-<li>初始化ELF文件进程环境</li>
-<li>将系统调用的返回地址修改成对于静态链接的ELF可执行文件的入口点，对于动态链接的<br/>
-ELF可执行文件，这个程序入口就是动态连接器</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/06/09 10:20 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E7%A8%8B%E5%BA%8F%E5%91%98%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB.html'>程序员的自我修养</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15438859299782.html">
-                
-                  <h1>Kafka架构</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>系统结构图</h4>
-
-<ul>
-<li>Producer</li>
-<li>Broker</li>
-<li>Consumer</li>
-<li>Zookeeper</li>
-<li><img src="media/15438859299782/15438861838653.jpg" alt=""/></li>
-</ul>
-
-<h4>Topic&amp;Partition</h4>
-
-<ul>
-<li>一个Topic包含一个或者多个Partition</li>
-<li>每个消息都只属于一个topic</li>
-<li>produer和consumer都要指定topic</li>
-</ul>
-
-<h4>Partition</h4>
-
-<ul>
-<li>一个Partion只分布于一个Broker</li>
-<li>一个Partion对应一个文件夹</li>
-<li>一个Partion包含多个Segment</li>
-<li>一个Segment对应一个文件</li>
-<li>Segment由一个个不可变记录组成</li>
-<li>记录只会append到Segment中，不会被单独删除或者修改</li>
-<li>清除过期日志时，直接删除一个或者多个Segment</li>
-<li>创建新topic</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text"> ./kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 3 --partitions 3 --topic docker-log
-</code></pre>
-
-<h4>Sync Produer</h4>
-
-<ul>
-<li>低延迟</li>
-<li>低吞吐率</li>
-<li>无数据丢失</li>
-</ul>
-
-<h4>Aync Produer</h4>
-
-<ul>
-<li>高延迟</li>
-<li>高吞吐率</li>
-<li>可能有数据丢失</li>
-</ul>
-
-<h4>kafka设计目的</h4>
-
-<ul>
-<li>提供一套 API 实现生产者和消费者；</li>
-<li>降低网络传输和磁盘存储开销；</li>
-<li>实现高伸缩性架构。</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/04 09:12 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Kafka.html'>Kafka</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15599834967204.html">
-                
-                  <h1>静态链接</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>common块</h4>
-
-<pre class="line-numbers"><code class="language-text">__attribute__((nocommon))
-</code></pre>
-
-<h4>全局构造和析构</h4>
-
-<ul>
-<li>程序入口是__start</li>
-<li>程序特定操作在main函数之前执行</li>
-<li>.init</li>
-<li>程序在main函数之后执行</li>
-<li>.fini</li>
-</ul>
-
-<h4>静态库链接</h4>
-
-<ul>
-<li>ar -t libc.a</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/06/08 16:44 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E7%A8%8B%E5%BA%8F%E5%91%98%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB.html'>程序员的自我修养</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15481479427093.html">
-                
-                  <h1>IO延迟很高</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>追踪流程</h4>
-
-<ul>
-<li>top</li>
-<li>iowait</li>
-<li>iostat -d -x 1</li>
-<li>pidstat -d 1</li>
-<li>strace -fp pid</li>
-</ul>
-
-<h4>filetop</h4>
-
-<ul>
-<li>主要跟踪内核中文件的读写情况，并输出线程 ID（TID）、读写大小、读写类型以及文件名称。</li>
-<li>eBPF内核追踪的原理</li>
-</ul>
-
-<h4>opensnoop</h4>
-
-<ul>
-<li>动态追踪内核中的open系统调用</li>
-</ul>
-
-<h4>追踪流程</h4>
-
-<ul>
-<li>top</li>
-<li>iostat</li>
-<li>pidstat</li>
-<li>strace</li>
-<li>lsof</li>
-<li>filetop</li>
-<li>opensnoop</li>
-<li>通过文件找到正在操作的数据库和表</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/01/22 17:05 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15453606137574.html">
-                
-                  <h1>如何正确的显示随机信息</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>原始算法</h4>
-
-<pre class="line-numbers"><code class="language-text">mysql&gt; select word from words order by rand() limit 3;
-</code></pre>
-
-<h4>优化算法1</h4>
-
-<pre class="line-numbers"><code class="language-text">mysql&gt; select max(id),min(id) into @M,@N from t ;
-set @X= floor((@M-@N+1)*rand() + @N);
-select * from t where id &gt;= @X limit 1;
-</code></pre>
-
-<ul>
-<li>有概率不均匀的问题</li>
-</ul>
-
-<h4>算法2</h4>
-
-<pre class="line-numbers"><code class="language-text">mysql&gt; select count(*) into @C from t;
-set @Y = floor(@C * rand());
-set @sql = concat(&quot;select * from t limit &quot;, @Y, &quot;,1&quot;);
-prepare stmt from @sql;
-execute stmt;
-DEALLOCATE prepare stmt;
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/21 10:50 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15598996042993.html">
-                
-                  <h1>链接</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>符号</h4>
-
-<ul>
-<li>函数和变量统称为符号</li>
-<li>函数名和变量名成为符号名</li>
-<li>符号值就是地址</li>
-</ul>
-
-<h5>分类</h5>
-
-<ul>
-<li>本目标文件的全局符号</li>
-<li>本目标文件引用的全局符号</li>
-<li>段名</li>
-<li>局部符号</li>
-<li>行号</li>
-</ul>
-
-<h4>符号修饰和函数签名</h4>
-
-<ul>
-<li>C++处理C语言函数会修改函数符号，链接器无法与C中的函数符号相连接</li>
-<li>解决方案</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">#ifdef __cplusplus
-extern &quot;C&quot; {
-#endif
-void *memset(void*, int, size_t);
-#ifdef __cplusplus
+<pre class="line-numbers"><code class="language-text">func calc(a, b int) (sum int, avg int) {
+  sum = a + b
+  avg = (a + b) / 2
 }
-#endif
 </code></pre>
 
-<h4>强符号和弱符号</h4>
+<h4>可变参数</h4>
 
-<ul>
-<li>strong symbol</li>
-<li>weak symbol</li>
-<li>强符号不允许多次被定义</li>
-<li>强符号覆盖弱符号</li>
-<li>多个弱符号选择空间最大的那个</li>
-</ul>
+<pre class="line-numbers"><code class="language-text">func add(a int, arg ...int) (ret int) {
+  ret = a
+  for i := 0; i &lt; len(arg); i++ {
+    ret += arg[i]
+  }
+  return
+}
 
-<pre class="line-numbers"><code class="language-text"> __attribute__((weakref))声明弱引用
+func addStr(a string, arg ...string) (ret string) {
+  ret = a
+  for i := 0; i &lt; len(arg); i++ {
+    ret += arg[i]
+  }
+  return
+}
 </code></pre>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/06/07 17:26 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E7%A8%8B%E5%BA%8F%E5%91%98%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB.html'>程序员的自我修养</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15598754748661.html">
-                
-                  <h1>输入和输出</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>设备分类</h4>
+<h4>defer</h4>
 
 <ul>
-<li>块设备</li>
-<li>字符设备</li>
+<li>函数返回时，执行defer语句，用来做资源清理</li>
+<li>多个defer语句，按照先进后出的方式</li>
+<li>关闭文件句柄</li>
+<li>锁资源释放</li>
+<li><p>数据库连接释放</p>
+<pre class="line-numbers"><code class="language-text">func read() {
+ conn, err := openConn()<br/>
+ defer func() {<br/>
+   if conn != nil {<br/>
+     conn.Close()<br/>
+   }<br/>
+ }<br/>
+}()
+</code></pre></li>
+<li><p>全局匿名函数</p>
+<pre class="line-numbers"><code class="language-text">var (
+result = func(a int, b int) int {<br/>
+  return a + b__<br/>
+}<br/>
+)
+</code></pre></li>
 </ul>
 
-<h4>软中断和硬中断</h4>
+<h4>字符串切片修改问题</h4>
 
-<ul>
-<li>代码调用INT指令触发</li>
-<li>硬件通过中断控制器发生</li>
-</ul>
+<pre class="line-numbers"><code class="language-text"> // 示例3。
+func modifyComplexArray(a [3][]string) [3][]string {
+  a[1][1] = &quot;s&quot;
+  //a[2] = []string{&quot;o&quot;, &quot;p&quot;, &quot;q&quot;}
+  a[2][0] = &quot;o&quot;
+  a[2][1] = &quot;p&quot;
+  a[2][2] = &quot;q&quot;
+  return a
+}
 
-<h4>DMA</h4>
-
-<ul>
-<li><img src="media/15598754748661/1ef05750bc9ff87a3330104802965335.jpeg" alt="1ef05750bc9ff87a3330104802965335"/></li>
-</ul>
-
-<h4>设备展示</h4>
-
-<p><img src="media/15598754748661/6234738aac8d5897449e1a541d557090.jpg" alt="6234738aac8d5897449e1a541d557090"/></p>
-
-<h4>总结</h4>
-
-<p><img src="media/15598754748661/80e152fe768e3cb4c84be62ad8d6d07f.jpg" alt="80e152fe768e3cb4c84be62ad8d6d07f"/></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/06/07 10:44 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15596925556710.html">
-                
-                  <h1>文件缓存</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>系统调用和虚拟文件层</h4>
-
-<ul>
-<li>vfs_read-&gt;__vfs_read</li>
-<li>vfs_write-&gt;__vfs_write</li>
-</ul>
-
-<h4>文件I/O类型</h4>
-
-<ul>
-<li>缓存I/O</li>
-<li>直接IO</li>
-</ul>
-
-<h4>address_space</h4>
-
-<ul>
-<li>文件和内存页面进行关联</li>
-<li>ext4_direct_IO-&gt;__blockdev_direct_IO-&gt;do_blockdev_direct_IO</li>
-</ul>
-
-<h4>带缓存的写入操作</h4>
-
-<ul>
-<li>对于每一页，先调用 address_space 的 write_begin 做一些准备；</li>
-<li>调用 iov_iter_copy_from_user_atomic，将写入的内容从用户态拷贝到内核态的页中；</li>
-<li>调用 address_space 的 write_end 完成写操作；</li>
-<li>调用 balance_dirty_pages_ratelimited，看脏页是否太多，需要写回硬盘。所谓脏页，就是写入到缓存，但是还没有写入到硬盘的页面。</li>
-</ul>
-
-<h4>ext4模式</h4>
-
-<ul>
-<li>日志模式</li>
-<li>order模式</li>
-<li>writeback</li>
-</ul>
-
-<h4>缓存页面</h4>
-
-<ul>
-<li>struct file-&gt;struct address_space-&gt;radix tree基数树-&gt;关联所有与文件相关的缓存</li>
-</ul>
-
-<h4>回写场景</h4>
-
-<ul>
-<li>调用 balance_dirty_pages_ratelimited</li>
-<li>用户主动调用 sync，将缓存刷到硬盘上去，最终会调用 wakeup_flusher_threads，同步脏页；</li>
-<li>当内存十分紧张，以至于无法分配页面的时候，会调用 free_more_memory，最终会调用 wakeup_flusher_threads，释放脏页；</li>
-<li>脏页已经更新了较长时间，时间上超过了 timer，需要及时回写，保持内存和磁盘上数据一致性</li>
-</ul>
-
-<h4>总结</h4>
-
-<ul>
-<li><img src="media/15596925556710/0c49a870b9e6441381fec8d9bf3dee65.png" alt="0c49a870b9e6441381fec8d9bf3dee65"/></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/06/05 07:55 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15595632940014.html">
-                
-                  <h1>虚拟文件系统</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>文件系统结构</h4>
-
-<ul>
-<li><img src="media/15595632940014/3c506edf93b15341da3db658e9970773.jpg" alt="3c506edf93b15341da3db658e9970773"/></li>
-</ul>
-
-<h4>挂载文件系统</h4>
-
-<ul>
-<li>do_mount-&gt;do_new_mount-&gt;vfs_kern_mount</li>
-<li>mnt_parent 是装载点所在的父文件系统，mnt_mountpoint 是装载点在父文件系统中的 dentry；struct dentry 表示目录，并和目录的 inode 关联；mnt_root 是当前文件系统根目录的 dentry，mnt_sb 是指向超级块的指针</li>
-</ul>
-
-<h4>打开文件</h4>
-
-<ul>
-<li>task_struct 中，有一个指针 files，类型是 files_struct</li>
-<li>文件描述符列表的每一项都是一个指向 struct file 的指针，也就是说，每打开一个文件，都会有一个 struct file 对应</li>
-<li>do_sys_open 中调用 do_filp_open，就是创建这个 struct file 结构，然后 fd_install(fd, f) 是将文件描述符和这个结构关联起来
-<img src="media/15595632940014/15596071070507.jpg" alt="" style="width:706px;"/></li>
-</ul>
-
-<h4>path_openat</h4>
-
-<ul>
-<li>get_empty_filp 生成一个 struct file 结构；</li>
-<li>path_init 初始化 nameidata，准备开始节点路径查找；</li>
-<li>link_path_walk 对于路径名逐层进行节点路径查找，这里面有一个大的循环，用“/”分隔逐层处理；</li>
-<li>do_last 获取文件对应的 inode 对象，并且初始化 file 对象。</li>
-</ul>
-
-<h4>总结</h4>
-
-<p><img src="media/15595632940014/8070294bacd74e0ac5ccc5ac88be1bb9.png" alt="8070294bacd74e0ac5ccc5ac88be1bb9"/></p>
-
-<h4>strace 追踪</h4>
-
-<pre class="line-numbers"><code class="language-text">execve(&quot;/bin/mount&quot;, [&quot;mount&quot;, &quot;/dev/sdc&quot;, &quot;/test_flash&quot;], [/* 26 vars */]) = 0
-open(&quot;/lib64/libmount.so.1&quot;, O_RDONLY|O_CLOEXEC) = 3
-lstat(&quot;/run/mount/utab&quot;, 0x7ffebb0a8130) = -1 ENOENT (No such file or directory)
-mkdir(&quot;/run/mount&quot;, 0755)               = -1 EEXIST (File exists)
-stat(&quot;/run/mount/utab&quot;, 0x7ffebb0a8020) = -1 ENOENT (No such file or directory)
-stat(&quot;/run/mount&quot;, {st_mode=S_IFDIR|0755, st_size=40, ...}) = 0
-access(&quot;/run/mount&quot;, R_OK|W_OK)         = 0
-stat(&quot;/sbin/mount.ext4&quot;, 0x7ffebb0a6fc0) = -1 ENOENT (No such file or directory)
-stat(&quot;/sbin/fs.d/mount.ext4&quot;, 0x7ffebb0a6fc0) = -1 ENOENT (No such file or directory)
-stat(&quot;/sbin/fs/mount.ext4&quot;, 0x7ffebb0a6fc0) = -1 ENOENT (No such file or directory)
-mount(&quot;/dev/sdc&quot;, &quot;/test_flash&quot;, &quot;ext4&quot;, MS_MGC_VAL, NULL) = 0
+  complexArray1 := [3][]string{
+    []string{&quot;d&quot;, &quot;e&quot;, &quot;f&quot;},
+    []string{&quot;g&quot;, &quot;h&quot;, &quot;i&quot;},
+    []string{&quot;j&quot;, &quot;k&quot;, &quot;l&quot;},
+  }
+  fmt.Printf(&quot;The complex array: %v\n&quot;, complexArray1)
+  complexArray2 := modifyComplexArray(complexArray1)
+  fmt.Printf(&quot;The modified complex array: %v\n&quot;, complexArray2)
+  fmt.Printf(&quot;The original complex array: %v\n&quot;, complexArray1)
 </code></pre>
 
 <ul>
-<li></li>
+<li>修改整个字符串不可以，但是可以一个一个修改</li>
 </ul>
+
+<h4>函数传参数和返回问题</h4>
+
+<ul>
+<li>函数真正拿到的参数值其实只是它们的副本，那么函数返回给调用方的结果值也会被复制吗？</li>
+<li>函数返回给调用方的结果值也会被复制。不过，在一般情况下，我们不用太在意。但如果函数在返回结果值之后依然保持执行并会对结果值进行修改，那么我们就需要注意了</li>
+</ul>
+
+<h5>统计耗时</h5>
+
+<pre class="line-numbers"><code class="language-go">func timeSpent(inner func(op int) int) func(op int) int {
+    return func(n int) int {
+        start := time.Now()
+        ret := inner(n)
+        fmt.Println(&quot;time spent:&quot;, time.Since(start).Seconds())
+        return ret
+    }
+}
+
+func slowFun(op int) int {
+    time.Sleep(time.Second * 1)
+    return op
+}
+
+func TestFn(t *testing.T) {
+    a, _ := returnMultiValues()
+    t.Log(a)
+    tsSF := timeSpent(slowFun)
+    t.Log(tsSF(10))
+}
+</code></pre>
 
                         
                       </div>
@@ -810,10 +310,10 @@ mount(&quot;/dev/sdc&quot;, &quot;/test_flash&quot;, &quot;ext4&quot;, MS_MGC_VA
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/06/03 20:01 下午</span>
+                    <span class="date">2018/10/04 17:49 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
+          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -827,42 +327,32 @@ mount(&quot;/dev/sdc&quot;, &quot;/test_flash&quot;, &quot;ext4&quot;, MS_MGC_VA
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15465653633816.html">
+                <a class="clearlink" href="15712240547557.html">
                 
-                  <h1>白话容器基础</h1>
+                  <h1>string</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>容器核心</h4>
+                        	<h4>差异</h4>
 
 <ul>
-<li>容器技术的核心功能，就是通过约束和修改进程的动态表现，从而为其创造出一个“边界”</li>
-<li>Cgroups 技术是用来制造约束的主要手段</li>
-<li>Namespace 技术则是用来修改进程视图的主要方法</li>
+<li>与其他主要编程语⾔言的差异</li>
+<li>1. string 是数据类型，不不是引⽤用或指针类型</li>
+<li>2. string 是只读的 byte slice，len 函数可以它所包含的 byte 数</li>
+<li>3. string 的 byte 数组可以存放任何数据</li>
 </ul>
 
-<h4>容器本质</h4>
+<h4>编码和字符</h4>
 
 <ul>
-<li>进程所需要启用的一组Namespace参数。容器就只能看到当前Namespace所限定的资源、文件、设备、状态，或者配置。</li>
-<li>vm是硬件级别的隔离，有虚拟硬件</li>
-<li>docker守护进程的作用，响应用户的api，持有跟容器打交道的pipe,io等</li>
+<li>1. Unicode 是⼀一种字符集(code point)</li>
+<li>2. UTF8 是 unicode 的存储实现 (转换为字节序列列的规则)</li>
 </ul>
 
-<h4>容器优势</h4>
+<h4>对应关系</h4>
 
-<ul>
-<li>敏捷和高性能</li>
-<li>不能完全隔离</li>
-<li>namespace不能隔离时间</li>
-</ul>
-
-<h4>安全加固技术</h4>
-
-<ul>
-<li>Seccomp</li>
-</ul>
+<p><img src="media/15712240547557/15712243766768.jpg" alt="" style="width:974px;"/></p>
 
                         
                       </div>
@@ -871,10 +361,991 @@ mount(&quot;/dev/sdc&quot;, &quot;/test_flash&quot;, &quot;ext4&quot;, MS_MGC_VA
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/01/04 09:29 上午</span>
+                    <span class="date">2019/10/16 19:07 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
+          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15387022894129.html">
+                
+                  <h1>递归&闭包&数组切片&map&锁</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>内置函数</h4>
+
+<ul>
+<li>new 用来分配值类型内存</li>
+<li>make 用来分配引用类型内存</li>
+<li>... 可以用来展开数据或者切片 </li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">  a = append(a, a...)
+</code></pre>
+
+<ul>
+<li>打印堆栈//TODO</li>
+</ul>
+
+<blockquote>
+<p>... 两个用途 1 可变参数 2 展开数组或者切片</p>
+</blockquote>
+
+<h4>错误处理</h4>
+
+<ul>
+<li>panic,revocer</li>
+</ul>
+
+<h4>new,make</h4>
+
+<ul>
+<li>new出来的指针必须要用make来分配内存</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">  s1 := new([]int)
+  *s1 = make([]int, 5)
+  (*s1)[0] = 100
+</code></pre>
+
+<h4>闭包</h4>
+
+<ul>
+<li>一个函数和其相关的引用的环境组合而成的实体</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">func Adder() func(int) int {
+  var x int
+  return func(delta int) int {
+    x += delta
+    return x
+  }
+}
+
+func makeSuffixFunc(suffix string) func(string) string {
+  return func(name string) string {
+    if !strings.HasSuffix(name, suffix) {
+      return name + suffix
+    }
+    return name
+  }
+}
+</code></pre>
+
+<ul>
+<li>x 相当于类中的成员变量</li>
+<li>闭包可以实现代码的重用//TODO</li>
+</ul>
+
+<h4>数组</h4>
+
+<ul>
+<li>长度是数组类型的一部分</li>
+<li>长度固定</li>
+</ul>
+
+<h4>切片</h4>
+
+<ul>
+<li>切片是数组的一个引用</li>
+<li>切片的长度可以改变</li>
+<li>cap可以求出slice最大的容量</li>
+<li>切片的内存布局和数据结构</li>
+<li>len代表可访问的元素</li>
+<li>cap代表容量
+<img src="media/15387022894129/15387237788534.jpg" alt="" style="width:483px;"/></li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">  type slice struct {
+    ptr *[5]int
+    cap int 
+    len int
+  }
+</code></pre>
+
+<ul>
+<li>切片的测试</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">func makeSlice(s slice, cap int) slice {
+  s.ptr = new([100]int)
+  s.cap = cap
+  s.len = 0
+  return s
+ }
+
+func modify(s slice) {
+  s.ptr[1] = 1000
+}
+
+func testSlice2() {
+  var s1 slice
+  s1 = makeSlice(s1, 10)
+  s1.ptr[0] = 100
+  modify(s1)
+  fmt.Println(s1.ptr)
+}
+</code></pre>
+
+<ul>
+<li>通过make创建 var slice []type = make([]type, len)</li>
+<li>切片拷贝 copy(s2, s1）
+<img src="media/15387022894129/15712229217252.jpg" alt="" style="width:792px;"/></li>
+</ul>
+
+<h4>string</h4>
+
+<ul>
+<li>string底层布局，string是[]byte的切片</li>
+</ul>
+
+<p><img src="media/15387022894129/15387264795094.jpg" alt="" style="width:379px;"/></p>
+
+<ul>
+<li>string是不可变的</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">func changeString() {
+  s := &quot;我  hello world&quot;
+  s1 := []rune(s)
+  s1[1] = &#39;0&#39;
+  str := string(s1)
+  fmt.Println(str)
+}
+</code></pre>
+
+<h4>Map</h4>
+
+<ul>
+<li>删除一个元素delete</li>
+<li>清空需要重新make</li>
+<li>判断一个maps是否为空</li>
+<li>map排序</li>
+</ul>
+
+<h4>golang中的包</h4>
+
+<ul>
+<li>golang有150个标准的包</li>
+</ul>
+
+<h4>线程同步</h4>
+
+<ul>
+<li>import sync</li>
+<li>互斥锁 var mu sync.Mutex</li>
+<li>读写锁 var mu sync.RWMutex</li>
+</ul>
+
+<h4>go中Set</h4>
+
+<p><img src="media/15387022894129/15712238021174.jpg" alt="" style="width:1173px;"/></p>
+
+<pre class="line-numbers"><code class="language-go">func TestMapForSet(t *testing.T) {
+    mySet := map[int]bool{}
+    mySet[1] = true
+    n := 3
+    if mySet[n] {
+        t.Logf(&quot;%d is existing&quot;, n)
+    } else {
+        t.Logf(&quot;%d is not existing&quot;, n)
+    }
+    mySet[3] = true
+    t.Log(len(mySet))
+    delete(mySet, 1)
+    n = 1
+    if mySet[n] {
+        t.Logf(&quot;%d is existing&quot;, n)
+    } else {
+        t.Logf(&quot;%d is not existing&quot;, n)
+    }
+}
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/10/05 09:18 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15647133717861.html">
+                
+                  <h1>查找表</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>两类</h4>
+
+<ul>
+<li>查找有无</li>
+<li>查找对应关系</li>
+<li>有序和查找是关联</li>
+<li>如果数组有序</li>
+<li>leet_349</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given two arrays, write a function to compute their intersection.
+class Solution {
+public:
+    vector&lt;int&gt; intersection(vector&lt;int&gt;&amp; nums1, vector&lt;int&gt;&amp; nums2) {
+        set&lt;int&gt; s(nums1.begin(), nums1.end()), res;
+        for (auto a : nums2) {
+            if (s.count(a)) res.insert(a);
+        }
+        return vector&lt;int&gt;(res.begin(), res.end());
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_350</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given two arrays, write a function to compute their intersection.
+
+Example 1:
+
+Input: nums1 = [1,2,2,1], nums2 = [2,2]
+Output: [2,2]
+class Solution {
+public:
+    vector&lt;int&gt; intersect(vector&lt;int&gt;&amp; nums1, vector&lt;int&gt;&amp; nums2) {
+        unordered_map&lt;int, int&gt; m;
+        vector&lt;int&gt; res;
+        for (auto a : nums1) ++m[a];
+        for (auto a : nums2) {
+            if (m[a]-- &gt; 0) res.push_back(a);
+        }
+        return res;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_242</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">For example,
+s = &quot;anagram&quot;, t = &quot;nagaram&quot;, return true.
+s = &quot;rat&quot;, t = &quot;car&quot;, return false.
+
+class Solution {
+public:
+    bool isAnagram(string s, string t) {
+        if (s.size() != t.size()) return false;
+        int m[26] = {0};
+        for (int i = 0; i &lt; s.size(); ++i) ++m[s[i] - &#39;a&#39;];
+        for (int i = 0; i &lt; t.size(); ++i) {
+            if (--m[t[i] - &#39;a&#39;] &lt; 0) return false;
+        }
+        return true;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_202</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Write an algorithm to determine if a number is &quot;happy&quot;.
+
+A happy number is a number defined by the following process: Starting with any positive integer, replace the number by the sum of the squares of its digits, and repeat the process until the number equals 1 (where it will stay), or it loops endlessly in a cycle which does not include 1. Those numbers for which this process ends in 1 are happy numbers.
+
+Example: 
+
+Input: 19
+Output: true
+Explanation: 
+1^2 + 9^2 = 82
+8^2 + 2^2 = 68
+6^2 + 8^2 = 100
+1^2 + 0^2 + 0^2 = 1
+class Solution {
+public:
+    bool isHappy(int n) {
+        while (n != 1 &amp;&amp; n != 4) {
+            int sum = 0;
+            while (n) {
+                sum += (n % 10) * (n % 10);
+                n /= 10;
+            }
+            n = sum;
+        }
+        return n == 1;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_290</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a pattern and a string str, find if str follows the same pattern.
+
+Here follow means a full match, such that there is a bijection between a letter in pattern and a non-empty word in str.
+
+Example 1:
+
+Input: pattern = &quot;abba&quot;, str = &quot;dog cat cat dog&quot;
+Output: true
+Example 2:
+
+Input:pattern = &quot;abba&quot;, str = &quot;dog cat cat fish&quot;
+Output: false
+class Solution {
+public:
+    bool wordPattern(string pattern, string str) {
+        unordered_map&lt;char, int&gt; m1;
+        unordered_map&lt;string, int&gt; m2;
+        istringstream in(str);
+        int i = 0, n = pattern.size();
+        for (string word; in &gt;&gt; word; ++i) {
+            if (i == n || m1[pattern[i]] != m2[word]) return false;
+            m1[pattern[i]] = m2[word] = i + 1;
+        }
+        return i == n;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_205</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given two strings  s  and  t , determine if they are isomorphic.
+
+Two strings are isomorphic if the characters in  s  can be replaced to get  t.
+
+All occurrences of a character must be replaced with another character while preserving the order of characters. No two characters may map to the same character but a character may map to itself.
+
+Example 1:
+
+Input: _s_ = &quot;egg&quot;, _t =_&quot;add&quot;
+Output: true
+class Solution {
+public:
+    bool isIsomorphic(string s, string t) {
+        int m1[256] = {0}, m2[256] = {0}, n = s.size();
+        for (int i = 0; i &lt; n; ++i) {
+            if (m1[s[i]] != m2[t[i]]) return false;
+            m1[s[i]] = i + 1;
+            m2[t[i]] = i + 1;
+        }
+        return true;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_451</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Input:
+&quot;tree&quot;
+
+Output:
+&quot;eert&quot;
+
+Explanation:
+&#39;e&#39; appears twice while &#39;r&#39; and &#39;t&#39; both appear once.
+So &#39;e&#39; must appear before both &#39;r&#39; and &#39;t&#39;. Therefore &quot;eetr&quot; is also a valid answer.
+class Solution {
+public:
+    string frequencySort(string s) {
+        string res;
+        vector&lt;string&gt; v(s.size() + 1);
+        unordered_map&lt;char, int&gt; m;
+        for (char c : s) ++m[c];
+        for (auto &amp;a : m) {
+            v[a.second].append(a.second, a.first);
+        }
+        for (int i = s.size(); i &gt; 0; --i) {
+            if (!v[i].empty()) res.append(v[i]);
+        }
+        return res;
+    }
+};
+</code></pre>
+
+<h4>两数求和</h4>
+
+<ul>
+<li>leet_1 排序后,双索引对撞</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">class Solution {
+public:
+    vector&lt;int&gt; twoSum(vector&lt;int&gt;&amp; nums, int target) {
+        unordered_map&lt;int, int&gt; m;
+        for (int i = 0; i &lt; nums.size(); ++i) {
+            if (m.count(target - nums[i])) {
+                return {i, m[target - nums[i]]};
+            }
+            m[nums[i]] = i;
+        }
+        return {};
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_15</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given an array  S  of  n  integers, are there elements  a ,  b ,  c  in  S  such that  a  +  b  +  c  = 0? Find all unique triplets in the array which gives the sum of zero.
+
+Note:
+
+Elements in a triplet ( a , b , c ) must be in non-descending order. (ie,  a  ≤  b  ≤  c )
+The solution set must not contain duplicate triplets.
+ 
+
+    For example, given array S = {-1 0 1 2 -1 -4},
+
+    A solution set is:
+    (-1, 0, 1)
+    (-1, -1, 2)
+class Solution {
+public:
+    vector&lt;vector&lt;int&gt;&gt; threeSum(vector&lt;int&gt;&amp; nums) {
+        vector&lt;vector&lt;int&gt;&gt; res;
+        sort(nums.begin(), nums.end());
+        if (nums.empty() || nums.back() &lt; 0 || nums.front() &gt; 0) return {};
+        for (int k = 0; k &lt; (int)nums.size() - 2; ++k) {
+            if (nums[k] &gt; 0) break;
+            if (k &gt; 0 &amp;&amp; nums[k] == nums[k - 1]) continue;
+            int target = 0 - nums[k], i = k + 1, j = (int)nums.size() - 1;
+            while (i &lt; j) {
+                if (nums[i] + nums[j] == target) {
+                    res.push_back({nums[k], nums[i], nums[j]});
+                    while (i &lt; j &amp;&amp; nums[i] == nums[i + 1]) ++i;
+                    while (i &lt; j &amp;&amp; nums[j] == nums[j - 1]) --j;
+                    ++i; --j;
+                } else if (nums[i] + nums[j] &lt; target) ++i;
+                else --j;
+            }
+        }
+        return res;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_18</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given an array S of n integers, are there elements a , b , c , and d in S such that a + b + c + d = target? Find all unique quadruplets in the array which gives the sum of target.
+
+Note:
+
+Elements in a quadruplet ( a , b , c , d ) must be in non-descending order. (ie, a ≤ b ≤ c ≤ d )
+
+The solution set must not contain duplicate quadruplets.
+
+For example, given array S = {1 0 -1 0 -2 2}, and target = 0.
+
+A solution set is:
+(-1,  0, 0, 1)
+(-2, -1, 1, 2)
+(-2,  0, 0, 2)
+class Solution {
+public:
+    vector&lt;vector&lt;int&gt;&gt; fourSum(vector&lt;int&gt; &amp;nums, int target) {
+        vector&lt;vector&lt;int&gt;&gt; res;
+        int n = nums.size();
+        sort(nums.begin(), nums.end());
+        for (int i = 0; i &lt; n - 3; ++i) {
+            if (i &gt; 0 &amp;&amp; nums[i] == nums[i - 1]) continue;
+            for (int j = i + 1; j &lt; n - 2; ++j) {
+                if (j &gt; i + 1 &amp;&amp; nums[j] == nums[j - 1]) continue;
+                int left = j + 1, right = n - 1;
+                while (left &lt; right) {
+                    int sum = nums[i] + nums[j] + nums[left] + nums[right];
+                    if (sum == target) {
+                        vector&lt;int&gt; out{nums[i], nums[j], nums[left], nums[right]};
+                        res.push_back(out);
+                        while (left &lt; right &amp;&amp; nums[left] == nums[left + 1]) ++left;
+                        while (left &lt; right &amp;&amp; nums[right] == nums[right - 1]) --right;
+                        ++left; --right;
+                    } else if (sum &lt; target) ++left;
+                    else --right;
+                }
+            }
+        }
+        return res;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_16</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given array nums = [-1, 2, 1, -4], and target = 1.
+The sum that is closest to the target is 2. (-1 + 2 + 1 = 2).
+class Solution {
+public:
+    int threeSumClosest(vector&lt;int&gt;&amp; nums, int target) {
+        int closest = nums[0] + nums[1] + nums[2];
+        int diff = abs(closest - target);
+        sort(nums.begin(), nums.end());
+        for (int i = 0; i &lt; nums.size() - 2; ++i) {
+            int left = i + 1, right = nums.size() - 1;
+            while (left &lt; right) {
+                int sum = nums[i] + nums[left] + nums[right];
+                int newDiff = abs(sum - target);
+                if (diff &gt; newDiff) {
+                    diff = newDiff;
+                    closest = sum;
+                }
+                if (sum &lt; target) ++left;
+                else --right;
+            }
+        }
+        return closest;
+    }
+};
+</code></pre>
+
+<h4>动态规划</h4>
+
+<ul>
+<li>leet120 Triangle</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">class Solution {
+public:
+    int minimumTotal(vector&lt;vector&lt;int&gt;&gt;&amp; triangle) {
+        vector&lt;int&gt; dp(triangle.back());
+        for (int i = (int)triangle.size() - 2; i &gt;= 0; --i) {
+            for (int j = 0; j &lt;= i; ++j) {
+                dp[j] = min(dp[j], dp[j + 1]) + triangle[i][j];
+            }
+        }
+        return dp[0];
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet64 minium path sum</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a m x n grid filled with non-negative numbers, find a path from top left to bottom right which minimizes the sum of all numbers along its path.
+
+Note: You can only move either down or right at any point in time.
+
+Example:
+
+Input:
+[
+  [1,3,1],
+  [1,5,1],
+  [4,2,1]
+]
+Output: 7
+Explanation: Because the path 1→3→1→1→1 minimizes the sum.
+class Solution {
+public:
+    int minPathSum(vector&lt;vector&lt;int&gt; &gt; &amp;grid) {
+        int m = grid.size(), n = grid[0].size();
+        int dp[m][n];
+        dp[0][0] = grid[0][0];
+        for (int i = 1; i &lt; m; ++i) dp[i][0] = grid[i][0] + dp[i - 1][0];
+        for (int i = 1; i &lt; n; ++i) dp[0][i] = grid[0][i] + dp[0][i - 1];
+        for (int i = 1; i &lt; m; ++i) {
+            for (int j = 1; j &lt; n; ++j) {
+                dp[i][j] = grid[i][j] + min(dp[i - 1][j], dp[i][j - 1]);
+            }
+        }
+        return dp[m - 1][n - 1];
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet343 integer break</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a positive integer  n , break it into the sum of at least two positive integers and maximize the product of those integers. Return the maximum product you can get.
+
+Example 1:
+
+Input: 2
+Output: 1
+Explanation: 2 = 1 + 1, 1 × 1 = 1.
+class Solution {
+public:
+    int integerBreak(int n) {
+        vector&lt;int&gt; dp(n + 1, 1);
+        for (int i = 3; i &lt;= n; ++i) {
+            for (int j = 1; j &lt; i; ++j) {
+                dp[i] = max(dp[i], max(j * (i - j), j * dp[i - j]));
+            }
+        }
+        return dp[n];
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet279 perfect squares</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given a positive integer  n , find the least number of perfect square numbers (for example, 1, 4, 9, 16, ...) which sum to  n.
+
+Example 1:
+
+Input: _n_ = 12
+Output: 3 
+Explanation: 12 = 4 + 4 + 4.
+Example 2:
+
+Input: _n_ = 13
+Output: 2
+Explanation: 13 = 4 + 9.
+class Solution {
+public:
+    int numSquares(int n) {
+        vector&lt;int&gt; dp(n + 1, INT_MAX);
+        dp[0] = 0;
+        for (int i = 0; i &lt;= n; ++i) {
+            for (int j = 1; i + j * j &lt;= n; ++j) {
+                dp[i + j * j] = min(dp[i + j * j], dp[i] + 1);
+            }
+        }
+        return dp.back();
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet91 decode ways</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">A message containing letters from A-Z is being encoded to numbers using the following mapping:
+
+&#39;A&#39; -&gt; 1
+&#39;B&#39; -&gt; 2
+...
+&#39;Z&#39; -&gt; 26
+Given a non-empty string containing only digits, determine the total number of ways to decode it.
+
+Example 1:
+
+Input: &quot;12&quot;
+Output: 2
+Explanation: It could be decoded as &quot;AB&quot; (1 2) or &quot;L&quot; (12).
+，在遍历的过程中，对每个数字首先判断其是否为0，若是则将 dp[i] 赋为0，若不是，赋上 dp[i-1] 的值，然后看数组前一位是否存在，如果存在且满足前一位是1，或者和当前位一起组成的两位数不大于 26，则当前 dp[i] 值加上 dp[i - 2]。最终返回 dp 数组的最后一个值即可
+dp[i] = dp[i-1] + dp[i-2]
+class Solution {
+public:
+    int numDecodings(string s) {
+        if (s.empty() || s[0] == &#39;0&#39;) return 0;
+        vector&lt;int&gt; dp(s.size() + 1, 0);
+        dp[0] = 1;
+        for (int i = 1; i &lt; dp.size(); ++i) {
+            if (s[i - 1] != &#39;0&#39;) dp[i] += dp[i - 1];
+            if (i &gt;= 2 &amp;&amp; s.substr(i - 2, 2) &lt;= &quot;26&quot; &amp;&amp; s.substr(i - 2, 2) &gt;= &quot;10&quot;) {
+                dp[i] += dp[i - 2];
+            }
+        }
+        return dp.back();
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet62 unique path</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">A robot is located at the top-left corner of a  m  x  n  grid (marked &#39;Start&#39; in the diagram below).
+
+The robot can only move either down or right at any point in time. The robot is trying to reach the bottom-right corner of the grid (marked &#39;Finish&#39; in the diagram below).
+
+How many possible unique paths are there?
+class Solution {
+public:
+    int uniquePaths(int m, int n) {
+        vector&lt;int&gt; dp(n, 1);
+        for (int i = 1; i &lt; m; ++i) {
+            for (int j = 1; j &lt; n; ++j) {
+                dp[j] += dp[j - 1]; 
+            }
+        }
+        return dp[n - 1];
+    }
+};
+````
+* leet63 unique path
+
+```C++
+这里还需要初始化 dp 数组的某个值，使得其能正常累加。当起点不是障碍物时，其 dp 值应该为1，即dp[1][1] = 1，由于其是由 dp[0][1] + dp[1][0] 更新而来，所以二者中任意一个初始化为1即可。由于之后 LeetCode 更新了这道题的 test case，使得使用 int 型的 dp 数组会有溢出的错误，所以改为使用 long 型的数组来避免 overflow，代码如下
+class Solution {
+public:
+    int uniquePathsWithObstacles(vector&lt;vector&lt;int&gt;&gt;&amp; obstacleGrid) {
+        if (obstacleGrid.empty() || obstacleGrid[0].empty() || obstacleGrid[0][0] == 1) return 0;
+        int m = obstacleGrid.size(), n = obstacleGrid[0].size();
+        vector&lt;vector&lt;long&gt;&gt; dp(m + 1, vector&lt;long&gt;(n + 1, 0));
+        dp[0][1] = 1;
+        for (int i = 1; i &lt;= m; ++i) {
+            for (int j = 1; j &lt;= n; ++j) {
+                if (obstacleGrid[i - 1][j - 1] != 0) continue;
+                dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+            }
+        }
+        return dp[m][n];
+    }
+};
+class Solution {
+public:
+    int uniquePathsWithObstacles(vector&lt;vector&lt;int&gt;&gt;&amp; obstacleGrid) {
+        if (obstacleGrid.empty() || obstacleGrid[0].empty() || obstacleGrid[0][0] == 1) return 0;
+        int m = obstacleGrid.size(), n = obstacleGrid[0].size();
+        vector&lt;long&gt; dp(n, 0);
+        dp[0] = 1;
+        for (int i = 0; i &lt; m; ++i) {
+            for (int j = 0; j &lt; n; ++j) {
+                if (obstacleGrid[i][j] == 1) dp[j] = 0;
+                else if (j &gt; 0) dp[j] += dp[j - 1];
+            }
+        }
+        return dp[n - 1];
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet673</li>
+</ul>
+
+<h4>查找</h4>
+
+<ul>
+<li>leet_350</li>
+<li>leet_49</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given an array of strings, group anagrams together.
+
+Example:
+
+Input: [&quot;eat&quot;, &quot;tea&quot;, &quot;tan&quot;, &quot;ate&quot;, &quot;nat&quot;, &quot;bat&quot;],
+Output:
+[
+  [&quot;ate&quot;,&quot;eat&quot;,&quot;tea&quot;],
+  [&quot;nat&quot;,&quot;tan&quot;],
+  [&quot;bat&quot;]
+]
+class Solution {
+public:
+    vector&lt;vector&lt;string&gt;&gt; groupAnagrams(vector&lt;string&gt;&amp; strs) {
+        vector&lt;vector&lt;string&gt;&gt; res;
+        unordered_map&lt;string, vector&lt;string&gt;&gt; m;
+        for (string str : strs) {
+            vector&lt;int&gt; cnt(26, 0);
+            string t = &quot;&quot;;
+            for (char c : str) ++cnt[c - &#39;a&#39;];
+            for (int d : cnt) t += to_string(d) + &quot;/&quot;;
+            m[t].push_back(str);
+        }
+        for (auto a : m) {
+            res.push_back(a.second);
+        }
+        return res;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_447 </li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given n points in the plane that are all pairwise distinct, a &quot;boomerang&quot; is a tuple of points (i, j, k) such that the distance between i and j equals the distance between i and k ( the order of the tuple matters ).
+
+Find the number of boomerangs. You may assume that n will be at most 500 and coordinates of points are all in the range [-10000, 10000] (inclusive).
+
+Example:
+
+**Input:**
+[[0,0],[1,0],[2,0]]
+
+**Output:**
+2
+
+**Explanation:**
+The two boomerangs are **[[1,0],[0,0],[2,0]]** and **[[1,0],[2,0],[0,0]]**
+class Solution {
+public:
+    int numberOfBoomerangs(vector&lt;pair&lt;int, int&gt;&gt;&amp; points) {
+        int res = 0;
+        for (int i = 0; i &lt; points.size(); ++i) {
+            unordered_map&lt;int, int&gt; m;
+            for (int j = 0; j &lt; points.size(); ++j) {
+                int a = points[i].first - points[j].first;
+                int b = points[i].second - points[j].second;
+                ++m[a * a + b * b];
+            }
+            for (auto it = m.begin(); it != m.end(); ++it) {
+                res += it-&gt;second * (it-&gt;second - 1);
+            }
+        }
+        return res;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_149 点坐标的表示 整数 浮点数 </li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given  n  points on a 2D plane, find the maximum number of points that lie on the same straight line.
+
+Example 1:
+
+Input: [[1,1],[2,2],[3,3]]
+Output: 3
+Explanation:
+^
+|
+|        o
+|     o
+|  o  
++-------------&gt;
+0  1  2  3  4
+class Solution {
+public:
+    int maxPoints(vector&lt;Point&gt;&amp; points) {
+        int res = 0;
+        for (int i = 0; i &lt; points.size(); ++i) {
+            map&lt;pair&lt;int, int&gt;, int&gt; m;
+            int duplicate = 1;
+            for (int j = i + 1; j &lt; points.size(); ++j) {
+                if (points[i].x == points[j].x &amp;&amp; points[i].y == points[j].y) {
+                    ++duplicate; continue;
+                } 
+                int dx = points[j].x - points[i].x;
+                int dy = points[j].y - points[i].y;
+                int d = gcd(dx, dy);
+                ++m[{dx / d, dy / d}];
+            }
+            res = max(res, duplicate);
+            for (auto it = m.begin(); it != m.end(); ++it) {
+                res = max(res, it-&gt;second + duplicate);
+            }
+        }
+        return res;
+    }
+    int gcd(int a, int b) {
+        return (b == 0) ? a : gcd(b, a % b);
+    }
+};
+</code></pre>
+
+<h4>滑动窗口和查找</h4>
+
+<ul>
+<li>leet_217</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given an array of integers, find if the array contains any duplicates. Your function should return true if any value appears at least twice in the array, and it should return false if every element is distinct.
+class Solution {
+public:
+    bool containsDuplicate(vector&lt;int&gt;&amp; nums) {
+        unordered_map&lt;int, int&gt; m;
+        for (int i = 0; i &lt; nums.size(); ++i) {
+            if (m.find(nums[i]) != m.end()) return true;
+            ++m[nums[i]];
+        }
+        return false;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_219</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given an array of integers and an integer k, return true if and only if there are two distinct indices i and j in the array such that nums[i] = nums[j] and the difference between i and j is at most k. (Old Version)
+
+Given an array of integers and an integer k , find out whether there are two distinct indices i and j in the array such that nums[i] = nums[j] and the difference between i and j is at most k. (New Version)
+class Solution {
+public:
+    bool containsNearbyDuplicate(vector&lt;int&gt;&amp; nums, int k) {
+        unordered_map&lt;int, int&gt; m;
+        for (int i = 0; i &lt; nums.size(); ++i) {
+            if (m.find(nums[i]) != m.end() &amp;&amp; i - m[nums[i]] &lt;= k) return true;
+            else m[nums[i]] = i;
+        }
+        return false;
+    }
+};
+</code></pre>
+
+<ul>
+<li>leet_220</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Given an array of integers, find out whether there are two distinct indices i and j in the array such that the difference between nums[i] and nums[j] is at most t and the difference between i and j is at most k.
+class Solution {
+public:
+    bool containsNearbyAlmostDuplicate(vector&lt;int&gt;&amp; nums, int k, int t) {
+      map&lt;long long, int&gt; m;
+      int j = 0;
+      for (int i = 0; i &lt; nums.size(); i++) {
+        if (i - j &gt; k) m.erase(nums[j++]);
+        auto a = m.lower_bound((long long)nums[i] - t);
+        if (a != m.end() &amp;&amp; abs(a-&gt;first - nums[i]) &lt;= t) return true;
+        m[nums[i]] = i;
+      }
+      return false;
+    }
+};
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/08/02 10:36 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E7%8E%A9%E8%BD%AC%E7%AE%97%E6%B3%95.html'>玩转算法</a></span>
           				   
                   </div>
                   <div class="more-right right">

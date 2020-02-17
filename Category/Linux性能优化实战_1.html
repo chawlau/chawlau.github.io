@@ -170,347 +170,27 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15435593108560.html">
+                <a class="clearlink" href="15486383451378.html">
                 
-                  <h1>CPU使用率</h1>
+                  <h1>Redis延迟高</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>节拍率</h4>
+                        	<h4>strace</h4>
 
 <ul>
-<li>为了维护 CPU 时间，Linux 通过事先定义的节拍率（内核中表示为 HZ），触发时间中断，并使用全局变量 Jiffies 记录了开机以来的节拍数</li>
-<li>nice 低优先级用户态CPU时间，就是进程的nice值被调整被1~19之间时的CPU时间</li>
-<li> steal 当前系统运行虚拟机的时候，被虚拟机占用的CPU时间</li>
+<li>strace -f -T -tt -p pid</li>
+<li>-f 表示跟踪子进程和子线程，-T 表示显示系统调用的时长，-tt 表示显示跟踪时间</li>
+<li>PID=$(docker inspect --format {{.State.Pid}} app)</li>
 </ul>
 
-<h4>CPU使用率</h4>
+<h4>nsenter</h4>
 
 <ul>
-<li>CPU使用率 = 1 - (空闲时间/总CPU时间)</li>
-<li>平均CPU使用率 = 1 - (空间时间new - 空闲时间old)/(总cpu时间new - 总空闲时间old)</li>
-</ul>
-
-<h4>PID不停的在变，CPU使用率高</h4>
-
-<ul>
-<li>要么是这些进程在不停地重启，要么就是全新的进程，这无非也就两个原因：</li>
-<li>第一个原因，进程在不停地崩溃重启，比如因为段错误、配置错误等等，这时，进程在退出后可能又被监控系统自动重启了。</li>
-<li>第二个原因，这些进程都是短时进程，也就是在其他应用内部通过 exec 调用的外面命令。这些命令一般都只运行很短的时间就会结束，你很难用 top 这种间隔时间比较长的工具发现</li>
-</ul>
-
-<h4>查看父进程</h4>
-
-<ul>
-<li>pstree | grep stress</li>
-<li>短时进程</li>
-</ul>
-
-<h4>execsnoop</h4>
-
-<pre class="line-numbers"><code class="language-text">  #!/bin/bash
-#
-# execsnoop - trace process exec() with arguments.
-#             Written using Linux ftrace.
-#
-# This shows the execution of new processes, especially short-lived ones that
-# can be missed by sampling tools such as top(1).
-#
-# USAGE: ./execsnoop [-hrt] [-n name]
-#
-# REQUIREMENTS: FTRACE and KPROBE CONFIG, sched:sched_process_fork tracepoint,
-# and either the sys_execve, stub_execve or do_execve kernel function. You may
-# already have these on recent kernels. And awk.
-#
-# This traces exec() from the fork()-&gt;exec() sequence, which means it won&#39;t
-# catch new processes that only fork(). With the -r option, it will also catch
-# processes that re-exec. It makes a best-effort attempt to retrieve the program
-# arguments and PPID; if these are unavailable, 0 and &quot;[?]&quot; are printed
-# respectively. There is also a limit to the number of arguments printed (by
-# default, 8), which can be increased using -a.
-#
-# This implementation is designed to work on older kernel versions, and without
-# kernel debuginfo. It works by dynamic tracing an execve kernel function to
-# read the arguments from the %si register. The sys_execve function is tried
-# first, then stub_execve and do_execve. The sched:sched_process_fork
-# tracepoint is used to get the PPID. This program is a workaround that should be
-# improved in the future when other kernel capabilities are made available. If
-# you need a more reliable tool now, then consider other tracing alternatives
-# (eg, SystemTap). This tool is really a proof of concept to see what ftrace can
-# currently do.
-#
-# From perf-tools: https://github.com/brendangregg/perf-tools
-#
-# See the execsnoop(8) man page (in perf-tools) for more info.
-#
-# COPYRIGHT: Copyright (c) 2014 Brendan Gregg.
-#
-#  This program is free software; you can redistribute it and/or
-#  modify it under the terms of the GNU General Public License
-#  as published by the Free Software Foundation; either version 2
-#  of the License, or (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software Foundation,
-#  Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-#
-#  (http://www.gnu.org/copyleft/gpl.html)
-#
-# 07-Jul-2014   Brendan Gregg   Created this.
-
-### default variables
-tracing=/sys/kernel/debug/tracing
-flock=/var/tmp/.ftrace-lock; wroteflock=0
-opt_duration=0; duration=; opt_name=0; name=; opt_time=0; opt_reexec=0
-opt_argc=0; argc=8; max_argc=16; ftext=
-trap &#39;:&#39; INT QUIT TERM PIPE HUP # sends execution to end tracing section
-
-function usage {
-    cat &lt;&lt;-END &gt;&amp;2
-    USAGE: execsnoop [-hrt] [-a argc] [-d secs] [name]
-                     -d seconds      # trace duration, and use buffers
-                     -a argc         # max args to show (default 8)
-                     -r              # include re-execs
-                     -t              # include time (seconds)
-                     -h              # this usage message
-                     name            # process name to match (REs allowed)
-      eg,
-           execsnoop                 # watch exec()s live (unbuffered)
-           execsnoop -d 1            # trace 1 sec (buffered)
-           execsnoop grep            # trace process names containing grep
-           execsnoop &#39;udevd$&#39;        # process names ending in &quot;udevd&quot;
-
-    See the man page and example file for more info.
-END
-    exit
-}
-
-function warn {
-    if ! eval &quot;$@&quot;; then
-        echo &gt;&amp;2 &quot;WARNING: command failed \&quot;$@\&quot;&quot;
-    fi
-}
-
-function end {
-    # disable tracing
-    echo 2&gt;/dev/null
-    echo &quot;Ending tracing...&quot; 2&gt;/dev/null
-    cd $tracing
-    warn &quot;echo 0 &gt; events/kprobes/$kname/enable&quot;
-    warn &quot;echo 0 &gt; events/sched/sched_process_fork/enable&quot;
-    warn &quot;echo -:$kname &gt;&gt; kprobe_events&quot;
-    warn &quot;echo &gt; trace&quot;
-    (( wroteflock )) &amp;&amp; warn &quot;rm $flock&quot;
-}
-
-function die {
-    echo &gt;&amp;2 &quot;$@&quot;
-    exit 1
-}
-
-function edie {
-    # die with a quiet end()
-    echo &gt;&amp;2 &quot;$@&quot;
-    exec &gt;/dev/null 2&gt;&amp;1
-    end
-    exit 1
-}
-
-### process options
-while getopts a:d:hrt opt
-do
-    case $opt in
-    a)  opt_argc=1; argc=$OPTARG ;;
-    d)  opt_duration=1; duration=$OPTARG ;;
-    r)  opt_reexec=1 ;;
-    t)  opt_time=1 ;;
-    h|?)    usage ;;
-    esac
-done
-shift $(( $OPTIND - 1 ))
-if (( $# )); then
-    opt_name=1
-    name=$1
-    shift
-fi
-(( $# )) &amp;&amp; usage
-
-### option logic
-(( opt_pid &amp;&amp; opt_name )) &amp;&amp; die &quot;ERROR: use either -p or -n.&quot;
-(( opt_pid )) &amp;&amp; ftext=&quot; issued by PID $pid&quot;
-(( opt_name )) &amp;&amp; ftext=&quot; issued by process name \&quot;$name\&quot;&quot;
-(( opt_file )) &amp;&amp; ftext=&quot;$ftext for filenames containing \&quot;$file\&quot;&quot;
-(( opt_argc &amp;&amp; argc &gt; max_argc )) &amp;&amp; die &quot;ERROR: max -a argc is $max_argc.&quot;
-if (( opt_duration )); then
-    echo &quot;Tracing exec()s$ftext for $duration seconds (buffered)...&quot;
-else
-    echo &quot;Tracing exec()s$ftext. Ctrl-C to end.&quot;
-fi
-
-### select awk
-if (( opt_duration )); then
-    [[ -x /usr/bin/mawk ]] &amp;&amp; awk=mawk || awk=awk
-else
-    # workarounds for mawk/gawk fflush behavior
-    if [[ -x /usr/bin/gawk ]]; then
-        awk=gawk
-    elif [[ -x /usr/bin/mawk ]]; then
-        awk=&quot;mawk -W interactive&quot;
-    else
-        awk=awk
-    fi
-fi
-
-### check permissions
-cd $tracing || die &quot;ERROR: accessing tracing. Root user? Kernel has FTRACE?
-    debugfs mounted? (mount -t debugfs debugfs /sys/kernel/debug)&quot;
-
-### ftrace lock
-[[ -e $flock ]] &amp;&amp; die &quot;ERROR: ftrace may be in use by PID $(cat $flock) $flock&quot;
-echo $$ &gt; $flock || die &quot;ERROR: unable to write $flock.&quot;
-wroteflock=1
-
-### build probe
-if [[ -x /usr/bin/getconf ]]; then
-    bits=$(getconf LONG_BIT)
-else
-    bits=64
-    [[ $(uname -m) == i* ]] &amp;&amp; bits=32
-fi
-(( offset = bits / 8 ))
-function makeprobe {
-    func=$1
-    kname=execsnoop_$func
-    kprobe=&quot;p:$kname $func&quot;
-    i=0
-    while (( i &lt; argc + 1 )); do
-        # p:kname do_execve +0(+0(%si)):string +0(+8(%si)):string ...
-        kprobe=&quot;$kprobe +0(+$(( i * offset ))(%si)):string&quot;
-        (( i++ ))
-    done
-}
-# try in this order: sys_execve, stub_execve, do_execve
-makeprobe sys_execve
-
-### setup and begin tracing
-echo nop &gt; current_tracer
-if ! echo $kprobe &gt;&gt; kprobe_events 2&gt;/dev/null; then
-    makeprobe stub_execve
-    if ! echo $kprobe &gt;&gt; kprobe_events 2&gt;/dev/null; then
-        makeprobe do_execve
-        if ! echo $kprobe &gt;&gt; kprobe_events 2&gt;/dev/null; then
-            edie &quot;ERROR: adding a kprobe for execve. Exiting.&quot;
-        fi
-    fi
-fi
-if ! echo 1 &gt; events/kprobes/$kname/enable; then
-    edie &quot;ERROR: enabling kprobe for execve. Exiting.&quot;
-fi
-if ! echo 1 &gt; events/sched/sched_process_fork/enable; then
-    edie &quot;ERROR: enabling sched:sched_process_fork tracepoint. Exiting.&quot;
-fi
-echo &quot;Instrumenting $func&quot;
-(( opt_time )) &amp;&amp; printf &quot;%-16s &quot; &quot;TIMEs&quot;
-printf &quot;%6s %6s %s\n&quot; &quot;PID&quot; &quot;PPID&quot; &quot;ARGS&quot;
-
-#
-# Determine output format. It may be one of the following (newest first):
-#           TASK-PID   CPU#  ||||    TIMESTAMP  FUNCTION
-#           TASK-PID    CPU#    TIMESTAMP  FUNCTION
-# To differentiate between them, the number of header fields is counted,
-# and an offset set, to skip the extra column when needed.
-#
-offset=$($awk &#39;BEGIN { o = 0; }
-    $1 == &quot;#&quot; &amp;&amp; $2 ~ /TASK/ &amp;&amp; NF == 6 { o = 1; }
-    $2 ~ /TASK/ { print o; exit }&#39; trace)
-
-### print trace buffer
-warn &quot;echo &gt; trace&quot;
-( if (( opt_duration )); then
-    # wait then dump buffer
-    sleep $duration
-    cat -v trace
-else
-    # print buffer live
-    cat -v trace_pipe
-fi ) | $awk -v o=$offset -v opt_name=$opt_name -v name=$name \
-    -v opt_duration=$opt_duration -v opt_time=$opt_time -v kname=$kname \
-    -v opt_reexec=$opt_reexec &#39;
-    # common fields
-    $1 != &quot;#&quot; {
-        # task name can contain dashes
-        comm = pid = $1
-        sub(/-[0-9][0-9]*/, &quot;&quot;, comm)
-        sub(/.*-/, &quot;&quot;, pid)
-    }
-
-    $1 != &quot;#&quot; &amp;&amp; $(4+o) ~ /sched_process_fork/ {
-        cpid=$0
-        sub(/.* child_pid=/, &quot;&quot;, cpid)
-        sub(/ .*/, &quot;&quot;, cpid)
-        getppid[cpid] = pid
-        delete seen[pid]
-    }
-
-    $1 != &quot;#&quot; &amp;&amp; $(4+o) ~ kname {
-        if (seen[pid])
-            next
-        if (opt_name &amp;&amp; comm !~ name)
-            next
-
-        #
-        # examples:
-        # ... arg1=&quot;/bin/echo&quot; arg2=&quot;1&quot; arg3=&quot;2&quot; arg4=&quot;3&quot; ...
-        # ... arg1=&quot;sleep&quot; arg2=&quot;2&quot; arg3=(fault) arg4=&quot;&quot; ...
-        # ... arg1=&quot;&quot; arg2=(fault) arg3=&quot;&quot; arg4=&quot;&quot; ...
-        # the last example is uncommon, and may be a race.
-        #
-        if ($0 ~ /arg1=&quot;&quot;/) {
-            args = comm &quot; [?]&quot;
-        } else {
-            args=$0
-            sub(/ arg[0-9]*=\(fault\).*/, &quot;&quot;, args)
-            sub(/.*arg1=&quot;/, &quot;&quot;, args)
-            gsub(/&quot; arg[0-9]*=&quot;/, &quot; &quot;, args)
-            sub(/&quot;$/, &quot;&quot;, args)
-            if ($0 !~ /\(fault\)/)
-                args = args &quot; [...]&quot;
-        }
-
-        if (opt_time) {
-            time = $(3+o); sub(&quot;:&quot;, &quot;&quot;, time)
-            printf &quot;%-16s &quot;, time
-        }
-        printf &quot;%6s %6d %s\n&quot;, pid, getppid[pid], args
-        if (!opt_duration)
-            fflush()
-        if (!opt_reexec) {
-            seen[pid] = 1
-            delete getppid[pid]
-        }
-    }
-
-    $0 ~ /LOST.*EVENT[S]/ { print &quot;WARNING: &quot; $0 &gt; &quot;/dev/stderr&quot; }
-&#39;
-
-### end tracing
-end
-</code></pre>
-
-<ul>
-<li>基于内核BPF技术实现</li>
-</ul>
-
-<h4>拓展阅读</h4>
-
-<ul>
-<li><a href="http://blog.bruceding.com/420.html">http://blog.bruceding.com/420.html</a> </li>
+<li>nsenter --target $PID --net -- lsof -i</li>
+<li>进程iowait高，磁盘iowait不高，说明是单个进程使用了一些blocking的磁盘打开方式，比如每次都fsync</li>
+<li>strace -f -e指定系统调用</li>
 <li></li>
 </ul>
 
@@ -521,7 +201,7 @@ end
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/11/30 14:28 下午</span>
+                    <span class="date">2019/01/28 09:19 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
@@ -538,44 +218,55 @@ end
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15457876165545.html">
+                <a class="clearlink" href="15500241034354.html">
                 
-                  <h1>Linux buffer和cache</h1>
+                  <h1>评估系统的网络性能</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>buffer和cache</h4>
+                        	<h4>性能测试</h4>
 
 <ul>
-<li>Buffers 是内核缓冲区用到的内存，对应的是 /proc/meminfo 中的 Buffers 值。</li>
-<li>Cache 是内核页缓存和 Slab 用到的内存，对应的是 /proc/meminfo 中的 Cached 与 SReclaimable 之和。</li>
-<li>Buffers 是对原始磁盘块的临时存储，也就是用来缓存磁盘的数据，通常不会特别大（20MB 左右）。这样，内核就可以把分散的写集中起来，统一优化磁盘的写入，比如可以把多次小的写合并成单次大的写等等。</li>
-<li>Cached 是从磁盘读取文件的页缓存，也就是用来缓存从文件读取的数据。这样，下次访问这些文件数据时，就可以直接从内存中快速获取，而不需要再次访问缓慢的磁盘。</li>
-<li>SReclaimable 是 Slab 的一部分。Slab 包括两部分，其中的可回收部分，用 </li>
-<li>SReclaimable 记录；而不可回收部分，用 SUnreclaim 记录。</li>
+<li>带宽</li>
+<li>吞吐量</li>
+<li>延迟</li>
+<li>PPS</li>
+<li></li>
 </ul>
 
-<h4>结论</h4>
+<h4>各协议层的性能</h4>
 
 <ul>
-<li>Buffer 既可以用作“将要写入磁盘数据的缓存”，也可以用作“从磁盘读取数据的缓存”。</li>
-<li>Cache 既可以用作“从文件读取数据的页缓存”，也可以用作“写文件的页缓存”。</li>
+<li>web应用层 测试http/https</li>
+<li>服务器 tcp/udp</li>
+<li>交换机和路由器 PPS 网络层的转发性能</li>
 </ul>
 
-<h4>思考</h4>
+<h5>网络接口层</h5>
 
 <ul>
-<li>如何统计出所有进程的物理内存使用量呢？</li>
+<li>pktgen测试PPS</li>
 </ul>
 
-<h4>利用缓存来提升效率</h4>
+<h4>TCP和UDP</h4>
 
 <ul>
-<li>缓存命中率</li>
-<li>cachestat 提供了整个系统缓存的读写命中情况。</li>
-<li>cachetop 提供了每个进程的缓存命中情况。</li>
-<li>strace -p $(pgrep app) 查看进行的系统调用</li>
+<li>iperf</li>
+<li>netperf</li>
+</ul>
+
+<h4>http</h4>
+
+<ul>
+<li>ab</li>
+<li>webbench</li>
+</ul>
+
+<h4>应用负载请求</h4>
+
+<ul>
+<li>wrk</li>
 <li></li>
 </ul>
 
@@ -586,7 +277,7 @@ end
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/12/26 09:26 上午</span>
+                    <span class="date">2019/02/13 10:15 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
@@ -603,198 +294,148 @@ end
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15464093479091.html">
+                <a class="clearlink" href="15481479427093.html">
                 
-                  <h1>内存泄露实战</h1>
+                  <h1>IO延迟很高</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>导致内存泄露的内存段</h4>
+                        	<h4>追踪流程</h4>
 
 <ul>
-<li>堆内存</li>
-<li>内存映射段，包括动态连接库和共享内存，其中共享内存由程序动态分配和管理，如果忘了回收也会导致内存泄露</li>
+<li>top</li>
+<li>iowait</li>
+<li>iostat -d -x 1</li>
+<li>pidstat -d 1</li>
+<li>strace -fp pid</li>
 </ul>
 
-<h4>使用memleak</h4>
+<h4>filetop</h4>
 
 <ul>
-<li>/usr/share/bcc/tools/memleak -p $(pidof main) -a</li>
-<li>显示如下</li>
+<li>主要跟踪内核中文件的读写情况，并输出线程 ID（TID）、读写大小、读写类型以及文件名称。</li>
+<li>eBPF内核追踪的原理</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-text">  [22:44:58] Top 10 stacks with outstanding allocations:
-</code></pre>
+<h4>opensnoop</h4>
 
 <ul>
-<li>表示没有内存泄露</li>
+<li>动态追踪内核中的open系统调用</li>
 </ul>
 
-<h4>脏页回收</h4>
+<h4>追踪流程</h4>
 
 <ul>
-<li>fsync</li>
-<li>pdflush</li>
+<li>top</li>
+<li>iostat</li>
+<li>pidstat</li>
+<li>strace</li>
+<li>lsof</li>
+<li>filetop</li>
+<li>opensnoop</li>
+<li>通过文件找到正在操作的数据库和表</li>
+<li></li>
 </ul>
 
-<h4>堆内存</h4>
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/01/22 17:05 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
 
-<ul>
-<li>就是应用程序动态分配的堆内存，也就是匿名页</li>
-</ul>
-
-<h4>内存回收</h4>
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15576250906291.html">
+                
+                  <h1>Swap内存</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>回收场景</h4>
 
 <ul>
 <li>直接内存回收</li>
-<li>定期内存回收 kswapd0</li>
+<li>内核线程回收 kswapd0</li>
 </ul>
 
-<h4>定期内存回收</h4>
+<h5>三种水位</h5>
 
 <ul>
 <li>页最小阈值（pages_min）</li>
 <li>页低阈值（pages_low）</li>
-<li>页高阈值（pages_high）</li>
-<li>剩余内存 pages_free 表示。</li>
+<li>页高阈值（pages_high
+<img src="media/15576250906291/c1054f1e71037795c6f290e670b29120.png" alt="c1054f1e71037795c6f290e670b29120"/></li>
 </ul>
 
-<h4>匿名页和文件页</h4>
+<h4>NUMA和Swap</h4>
+
+<ul>
+<li>NUMA 架构下，多个处理器被划分到不同 Node 上，且每个 Node 都拥有自己的本地内存空间。</li>
+<li>Node 内部的内存空间，实际上又可以进一步分为不同的内存域（Zone），比如直接内存访问区（DMA）、普通内存区（NORMAL）、伪内存区（MOVABLE）
+<img src="media/15576250906291/be6cabdecc2ec98893f67ebd5b9aead9.png" alt="be6cabdecc2ec98893f67ebd5b9aead9"/></li>
+</ul>
+
+<h5>回收内存模式</h5>
+
+<ul>
+<li>/proc/sys/vm/zone_reclaim_mode</li>
+<li>0 可以从其他 Node 寻找空闲内存，也可以从本地回收内存</li>
+<li>1、2、4 都表示只回收本地内存，2 表示可以回写脏数据回收内存，4 表示可以用 Swap 方式回收内存</li>
+</ul>
+
+<h4>文件页面和匿名页面</h4>
 
 <ul>
 <li>对文件页的回收，当然就是直接回收缓存，或者把脏页写回磁盘后再回收。</li>
-<li>而对匿名页的回收，其实就是通过 Swap 机制，把它们写入磁盘后再释放内存。</li>
-<li>swappiness来控制匿名页和文件页的回收，数值越大，越积极使用Swap</li>
+<li>而对匿名页的回收，其实就是通过 Swap 机制，把它们写入磁盘后再释放内存 </li>
 </ul>
 
-<h4>内存指标动态监控</h4>
+<h4>回收比例</h4>
 
 <ul>
-<li>perf record -e kmem:* -p 27027 -g -- sleep 100</li>
-<li>perf script -i perf.data &amp;&gt; perf.unfold</li>
-<li>./stackcollapse-perf.pl perf.unfold &amp;&gt; perf.folded</li>
-<li>./flamegraph.pl perf.folded &gt; perf.svg</li>
-<li>perf script | ./stackcollapse-perf.pl | ./flamegraph.pl &gt; process.svg</li>
-<li></li>
+<li>/proc/sys/vm/swappiness</li>
 </ul>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/01/02 14:09 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15546809549290.html">
-                
-                  <h1>Linux性能优化总结</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>性能问题的来源</h4>
+<h4>swap 类型</h4>
 
 <ul>
-<li>资源瓶颈的分析思路，跟系统资源瓶颈是一样的。</li>
-<li>依赖服务的瓶颈，可以使用全链路跟踪系统，进行快速定位。</li>
-<li>应用自身的问题，则可以通过系统调用、热点函数，或者应用自身的指标和日志等，进行分析定位。</li>
+<li>swap分区</li>
+<li>swap文件</li>
+<li>kbcommit，表示当前系统负载需要的内存。它实际上是为了保证系统内存不溢出，对需要内存的估计值。%commit，就是这个值相对总内存的百分比。</li>
+<li>kbactive，表示活跃内存，也就是最近使用过的内存，一般不会被系统回收。</li>
+<li>kbinact，表示非活跃内存，也就是不常访问的内存，有可能会被系统回收。</li>
 </ul>
 
-<h4>CPU优化</h4>
+<h4>清空buffer和cache</h4>
 
 <ul>
-<li>进程绑定CPU, 把进程绑定到一个或者多个 CPU 上，充分利用 CPU 缓存的本地性，并减少进程间的相互影响。</li>
-<li>中断程序多CPU负载均衡，以便在发生大量中断时，可以充分利用多CPU的优势分摊负载。</li>
-<li>使用 Cgroups 等方法，为进程设置资源限制，避免个别进程消耗过多的CPU。</li>
-<li>为核心应用程序设置更高的优先级，减少低优先级任务的影响。</li>
+<li>sync; echo 1 &gt; /proc/sys/vm/drop_caches;</li>
+<li>echo 2 &gt; /proc/sys/vm/drop_caches;</li>
+<li>echo 3 &gt; /proc/sys/vm/drop_caches;</li>
 </ul>
 
-<h4>内存优化</h4>
+<h4>观察系统内存变化</h4>
 
 <ul>
-<li>禁止Swap</li>
-<li>使用 Cgroups 等方法，为进程设置内存限制</li>
-<li>核心应用，还应该降低 oom_score，避免被OOM杀死</li>
-</ul>
-
-<h4>磁盘和文件系统IO</h4>
-
-<ul>
-<li>使用SSD，使用RAID提升IO性能</li>
-<li>选择合适的I/O调度算法，SSD和虚拟机磁盘使用Noop，数据库应用使用deadline算法</li>
-<li>优化文件系统和磁盘的缓存和缓冲区</li>
-</ul>
-
-<h4>网络优化</h4>
-
-<h5>内核资源和网络协议</h5>
-
-<ul>
-<li>增大套接字缓冲区、连接跟踪表、最大半连接数、最大文件描述符数、本地端口范围等内核资源配额</li>
-<li>减少TIMEOUT超时时间、SYN+ACK 重传数、Keepalive 探测时间等异常处理参数</li>
-<li>开启端口复用、反向地址校验，并调整 MTU 大小等降低内核的负担</li>
-</ul>
-
-<h5>反向地址校验</h5>
-
-<ul>
-<li>就是在一个网卡收到数据包后，把源地址和目标地址对调后查找路由出口，从而得到反身后路由出口。然后根据反向路由出口进行过滤。</li>
-<li>当rp_filter的值为1时，要求反向路由的出口必须与数据包的入口网卡是同一块，否则就会丢弃数据包。</li>
-<li>当rp_filter的值为2时，要求反向路由必须是可达的，如果反路由不可达，则会丢弃数据包。</li>
-</ul>
-
-<h6>作用</h6>
-
-<ul>
-<li>减少DDoS攻击<br/>
-校验数据包的反向路径，如果反向路径不合适，则直接丢弃数据包，避免过多的无效连接消耗系统资源。</li>
-<li>防止IP Spoofing<br/>
-校验数据包的反向路径，如果客户端伪造的源IP地址对应的反向路径不在路由表中，或者反向路径不是最佳路径，则直接丢弃数据包，不会向伪造IP的客户端回复响应</li>
-</ul>
-
-<h5>网络接口</h5>
-
-<ul>
-<li>CPU 上执行的工作，卸载到网卡中执行，开启网卡的 GRO、GSO、RSS、VXLAN </li>
-<li>开启网络接口的多队列功能，这样，每个队列就可以用不同的中断号，调度到不同 CPU 上执行</li>
-<li>增大网络接口的缓冲区大小以及队列长度等，提升网络传输的吞吐量</li>
-</ul>
-
-<h5>极限性能</h5>
-
-<ul>
-<li>DPDK 技术，跳过内核协议栈，直接由用户态进程用轮询的方式，来处理网络请求</li>
-<li>大页、CPU 绑定、内存对齐、流水线并发等多种机制，优化网络包的处理效率。</li>
-<li>增大网络接口的缓冲区大小以及队列长度等，提升网络传输的吞吐量</li>
-</ul>
-
-<h4>应用程序优化</h4>
-
-<ul>
-<li>从 CPU 使用的角度来说，简化代码、优化算法、异步处理以及编译器优化等，都是常用的降低 CPU 使用率的方法</li>
-<li>数据访问的角度来说，使用缓存、写时复制、增加 I/O 尺寸等，都是常用的减少磁盘 I/O 的方法，</li>
-<li>内存管理的角度来说，使用大页、内存池等方法，可以预先分配内存，减少内存的动态分配，从而更好地内存访问性能</li>
-<li>网络的角度来说，使用 I/O 多路复用、长连接代替短连接、DNS 缓存等方法，可以优化网络 I/O 并减少网络请求数，从而减少网络延时带来的性能问题</li>
-<li>从进程的工作模型来说，异步处理、多线程或多进程等，可以充分利用每一个 CPU 的处理能力，从而提高应用程序的吞吐能力</li>
-<li>架构层面 消息队列、CDN、负载均衡等各种方法，来优化应用程序的架构，将原来单机要承担的任务，调度到多台服务器中并行处理</li>
+<li>watch -d grep -A 15 &#39;Normal&#39; /proc/zoneinfo</li>
 </ul>
 
                         
@@ -804,586 +445,7 @@ end
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/04/08 07:49 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15548549378624.html">
-                
-                  <h1>容器性能分析</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>容器冷启动性能分析</h4>
-
-<ul>
-<li>ServerLess服务启动流程</li>
-<li>事件触发（比如收到新的 HTTP 调用请求）</li>
-<li>资源调度</li>
-<li>镜像拉取 缓存热点镜像</li>
-<li>网络配置 网络资源预分配加速</li>
-<li>启动应用 复用预先创建好的容器</li>
-</ul>
-
-<h4>CPU火焰图和内存火焰图的区别</h4>
-
-<ul>
-<li>对 CPU 火焰图来说，采集的数据主要是消耗 CPU 的函数；</li>
-<li>而对内存火焰图来说，采集的数据主要是内存分配、释放、换页等内存管理函数。</li>
-</ul>
-
-<h4>perf probe</h4>
-
-<ul>
-<li>需要编译时候增加g选项</li>
-</ul>
-
-<h4>RED法则监控微服务</h4>
-
-<ul>
-<li>请求数（Rate）、错误数（Errors）以及响应时间（Duration）</li>
-<li>RED 方法适用于微服务应用的监控，而 USE 方法适用于系统资源的监控。</li>
-</ul>
-
-<h4>理解内核</h4>
-
-<ul>
-<li><a href="https://elixir.bootlin.com/">https://elixir.bootlin.com/</a> 内核函数</li>
-<li><a href="https://github.com/iovisor/bcc">https://github.com/iovisor/bcc</a> BCC工具</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/04/10 08:08 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15546825457183.html">
-                
-                  <h1>Linux性能工具总结</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>CPU性能工具</h4>
-
-<ul>
-<li>主要性能指标</li>
-<li>CPU使用率</li>
-<li>平均负载</li>
-<li>上下文切换</li>
-<li>CPU缓存命中率
-<img src="media/15546825457183/9a211905538faffb5b3221ee01776a69.png" alt="9a211905538faffb5b3221ee01776a69"/><img src="media/15546825457183/28cb85011289f83804c51c1fb275dab0.png" alt="28cb85011289f83804c51c1fb275dab0"/></li>
-</ul>
-
-<h4>内存性能工具</h4>
-
-<ul>
-<li>系统内存指标</li>
-<li>进程内存指标</li>
-<li>SWAP
-<img src="media/15546825457183/ee36f73b9213063b3bcdaed2245944c0.png" alt="ee36f73b9213063b3bcdaed2245944c0"/>
-<img src="media/15546825457183/79ad5caf0a2c105b7e9ce77877d493f8.png" alt="79ad5caf0a2c105b7e9ce77877d493f8"/></li>
-</ul>
-
-<h4>磁盘IO性能工具</h4>
-
-<ul>
-<li>文件系统的使用、缓存和缓冲区的使用</li>
-<li>磁盘 I/O 的使用率、吞吐量和延迟等
-<img src="media/15546825457183/723431a944034b51a9ef13a8a1d4d03b.png" alt="723431a944034b51a9ef13a8a1d4d03b"/>
-<img src="media/15546825457183/c232dcb4185f7b7ba95c126889cf6fa3.png" alt="c232dcb4185f7b7ba95c126889cf6fa3"/></li>
-</ul>
-
-<h4>网络性能工具</h4>
-
-<p><img src="media/15546825457183/37d04c213acfa650bd7467e3000356a4.png" alt="37d04c213acfa650bd7467e3000356a4"/><br/>
-<img src="media/15546825457183/5dde213baffd7811ab73c82883b2a75d.png" alt="5dde213baffd7811ab73c82883b2a75d"/></p>
-
-<h4>基准测试工具</h4>
-
-<p><img src="media/15546825457183/f094f489049602e1058e02edc708e6e9.png" alt="f094f489049602e1058e02edc708e6e9"/></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/04/08 08:15 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15538161650708.html">
-                
-                  <h1>系统监控的思路</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>USE法则</h4>
-
-<ul>
-<li>使用率，表示资源用于服务的时间或容量百分比。100% 的使用率，表示容量已经用尽或者全部时间都用于服务。</li>
-<li>饱和度，表示资源的繁忙程度，通常与等待队列的长度相关。100% 的饱和度，表示资源无法接受更多的请求。</li>
-<li>错误数表示发生错误的事件个数。错误数越多，表明系统的问题越严重。
-<img src="media/15538161650708/ccd7a9350c270c0168bad6cc8d0b8aee.png" alt="ccd7a9350c270c0168bad6cc8d0b8aee"/></li>
-<li>适用系统资源的监控</li>
-</ul>
-
-<h4>应用程序的性能监控</h4>
-
-<ul>
-<li>请求数</li>
-<li>错误率</li>
-<li>响应时间</li>
-</ul>
-
-<h4>指标</h4>
-
-<ul>
-<li>应用进程的资源使用情况，比如进程占用的 CPU、内存、磁盘 I/O、网络等。</li>
-<li>应用程序之间调用情况，比如调用频率、错误数、延时等</li>
-<li>应用程序内部核心逻辑的运行情况，比如关键环节的耗时以及执行过程中的错误等</li>
-</ul>
-
-<h4>Jaeger调用链</h4>
-
-<ul>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/03/29 07:36 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15533912218590.html">
-                
-                  <h1>内核动态追踪</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>动态追踪技术</h4>
-
-<ul>
-<li>动态追踪技术，通过探针机制，来采集内核或者应用程序的运行信息，从而可以不用修改内核和应用程序的代码，就获得丰富的信息，帮你分析、定位想要排查的问题。</li>
-</ul>
-
-<h4>DTrace工作原理</h4>
-
-<ul>
-<li>它的运行常驻在内核中，用户可以通过 dtrace 命令，把 D 语言编写的追踪脚本，提交到内核中的运行时来执行。</li>
-</ul>
-
-<h4>动态追踪的机制</h4>
-
-<ul>
-<li>Dtrace 和 SystemTap 都会把用户传入的追踪处理函数（一般称为 Action），关联到被称为探针的检测点上。这些探针，实际上也就是各种动态追踪技术所依赖的事件源</li>
-</ul>
-
-<h4>事件源</h4>
-
-<ul>
-<li>硬件事件通常由性能监控计数器 PMC（Performance Monitoring Counter）产生，包括了各种硬件的性能情况，比如 CPU 的缓存、指令周期、分支预测等等</li>
-<li>静态探针，是指事先在代码中定义好，并编译到应用程序或者内核中的探针，静态探针包括内核中的跟踪点（tracepoints）和 USDT（Userland Statically Defined Tracing）探针。</li>
-<li>动态探针 则是指没有事先在代码中定义，但却可以在运行时动态添加的探针 
-<ul>
-<li>kprobes 用来跟踪内核态的函数，包括用于函数调用的 kprobe 和用于函数返回的 kretprobe。</li>
-<li>uprobes 用来跟踪用户态的函数，包括用于函数调用的 uprobe 和用于函数返回的 uretprobe。</li>
-</ul></li>
-</ul>
-
-<h4>Linux追踪机制</h4>
-
-<ul>
-<li>ftrace</li>
-<li>perf</li>
-<li>eBPF(Berkeley Packet Filter)</li>
-<li>容器分析 sysdig</li>
-<li>SystemTap和BCC(BPF Compiler Collection)</li>
-</ul>
-
-<h4>strace的缺点</h4>
-
-<ul>
-<li>由于 ptrace 是系统调用，就需要在内核态和用户态切换。当事件数量比较多时，繁忙的切换必然会影响原有服务的性能；</li>
-<li>ptrace 需要借助 SIGSTOP 信号挂起目标进程。这种信号控制和进程挂起，会影响目标进程的行为。</li>
-</ul>
-
-<h4>ftrace</h4>
-
-<ul>
-<li>function 表示跟踪函数的执行，function_graph 则是跟踪函数的调用关系，追踪函数的执行过程</li>
-<li> trace-cmd record -p function_graph -g do_sys_open -O funcgraph-proc ls</li>
-<li> trace-cmd report</li>
-</ul>
-
-<h4>拓展阅读</h4>
-
-<ul>
-<li><a href="https://leezhenghui.github.io/linux/2019/03/05/exploring-usdt-on-linux.html">https://leezhenghui.github.io/linux/2019/03/05/exploring-usdt-on-linux.html</a></li>
-</ul>
-
-<h4>perf添加探针</h4>
-
-<pre class="line-numbers"><code class="language-text">perf probe --add do_sys_open
-perf record -e probe:do_sys_open -aR sleep 10
-perf script
-</code></pre>
-
-<ul>
-<li>追踪用户空间的库函数</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text"># 为 /bin/bash 添加 readline 探针
-$ perf probe -x /bin/bash &#39;readline%return +0($retval):string’
-# 采样记录
-$ perf record -e probe_bash:readline__return -aR sleep 5
-# 查看结果
-$ perf script
-# 跟踪完成后删除探针
-$ perf probe --del probe_bash:readline__return
-</code></pre>
-
-<h4>eBPF和BCC</h4>
-
-<ul>
-<li>eBPF工作原理
-<img src="media/15533912218590/15533978673142.jpg" alt=""/></li>
-<li>从用户跟踪程序生成 BPF 字节码；</li>
-<li>加载到内核中运行；</li>
-<li>向用户空间输出结果。</li>
-</ul>
-
-<h4>SystemTap和sysdig</h4>
-
-<ul>
-<li> sysdig = strace + tcpdump + htop + iftop + lsof + docker inspect。</li>
-</ul>
-
-<h4>使用方法</h4>
-
-<ul>
-<li>在不需要很高灵活性的场景中，使用 perf 对性能事件进行采样，然后再配合火焰图辅助分析，就是最常用的一种方法；</li>
-<li>而需要对事件或函数调用进行统计分析（比如观察不同大小的 I/O 分布）时，就要用 SystemTap 或者 eBPF，通过一些自定义的脚本来进行数据处理。</li>
-</ul>
-
-<h4>sysdig监控容器</h4>
-
-<ul>
-<li>容器</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">查看机器上运行的容器列表及其资源使用情况
-sudo csysdig -vcontainers 
-查看容器上下文的进程列表 sudo csysdig -pc 
-查看运行在wordpress1容器里CPU的使用率
-sudo sysdig -pc -c topprocs_cpu container.name=wordpress1
-查看运行在wordpress1容器里网络带宽的使用率
-sudo sysdig -pc -c topprocs_net container.name=wordpress1
-查看在wordpress1容器里使用网络带宽最多的进程
- sudo sysdig -pc -c topprocs_net container.name=wordpress1
-查看在wordpress1 容器里占用 I/O 字节最多的文件
-sudo sysdig -pc -c topfiles_bytes container.name=wordpress1
-查看在wordpress1 容器里网络连接的排名情况
-sudo sysdig -pc -c topconns container.name=wordpress1
-显示wordpress1容器里所有命令执行的情况
-sudo sysdig -pc -c spy_users container.name=wordpress1
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/03/24 09:33 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15510586495458.html">
-                
-                  <h1>优化NAT性能</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>原理</h4>
-
-<ul>
-<li>NAT 技术可以重写 IP 数据包的源 IP 或者目的 IP，被普遍地用来解决公网 IP 地址短缺的问题。它的主要原理就是，网络中的多台主机，通过共享同一个公网 IP 地址，来访问外网资源</li>
-</ul>
-
-<h4>NAT类型</h4>
-
-<ul>
-<li>静态 NAT，即内网 IP 与公网 IP 是一对一的永久映射关系；</li>
-<li>动态 NAT，即内网 IP 从公网 IP 池中，动态选择一个进行映射；</li>
-<li>网络地址端口转换 NAPT（Network Address and Port Translation），即把内网 IP 映射到公网 IP 的不同端口上，让多个内网 IP 可以共享同一个公网 IP 地址。</li>
-</ul>
-
-<h4>NAPT类型</h4>
-
-<ul>
-<li>原地址转换SNAT</li>
-<li>目的地址转换DNAT</li>
-<li>双向地址转换SNAT和DNAT</li>
-</ul>
-
-<h4>NAT表内置的三个链</h4>
-
-<ul>
-<li>PREROUTING，用于路由判断前所执行的规则，比如，对接收到的数据包进行 DNAT。</li>
-<li>POSTROUTING，用于路由判断后所执行的规则，比如，对发送或转发的数据包进行 SNAT 或 MASQUERADE。</li>
-<li>OUTPUT，类似于 PREROUTING，但只处理从本机发送出去的包</li>
-</ul>
-
-<h4>SNAT</h4>
-
-<ul>
-<li>是为一个子网统一配置 SNAT，并由 Linux 选择默认的出口 IP。这实际上就是经常说的 MASQUERADE</li>
-<li>iptables -t nat -A POSTROUTING -s 192.168.0.0/16 -j MASQUERADE</li>
-<li>是为具体的 IP 地址配置 SNAT，并指定转换后的源地址</li>
-<li>iptables -t nat -A POSTROUTING -s 192.168.0.2 -j SNAT --to-source 100.100.100.100</li>
-</ul>
-
-<h4>DNAT</h4>
-
-<ul>
-<li>DNAT 需要在 nat 表的 PREROUTING 或者 OUTPUT 链中配置，其中， PREROUTING 链更常用一些</li>
-</ul>
-
-<h4>双向地址转换</h4>
-
-<ul>
-<li>同时添加 SNAT 和 DNAT 规则，为公网 IP 和内网 IP 实现一对一的映射关系</li>
-<li>iptables -t nat -A POSTROUTING -s 192.168.0.2 -j SNAT --to-source 100.100.100.100</li>
-<li>iptables -t nat -A PREROUTING -d 100.100.100.100 -j DNAT --to-destination 192.168.0.2</li>
-<li>开启转发功能</li>
-<li>net.ipv4.ip_forward = 1</li>
-</ul>
-
-<h4>问题</h4>
-
-<ul>
-<li>假设现在有一台 Linux 服务器，使用了 MASQUERADE 的方式，为内网的所有 IP 提供出口访问功能。那么，<br/>
-当多个内网 IP 地址的端口号相同时，MASQUERADE 还可以正常工作吗？<br/>
-如果内网 IP 地址数量或请求数比较多，这种方式有没有什么隐患呢？</li>
-</ul>
-
-<h4>安装systemtap</h4>
-
-<ul>
-<li>wget  <a href="http://debuginfo.centos.org/7/x86_64/kernel-debuginfo-3.10.0-957.5.1.el7.x86_64.rpm">http://debuginfo.centos.org/7/x86_64/kernel-debuginfo-3.10.0-957.5.1.el7.x86_64.rpm</a>  &amp;&amp; wget <a href="http://debuginfo.centos.org/7/x86_64/kernel-debuginfo-common-x86_64-3.10.0-957.5.1.el7.x86_64.rpm">http://debuginfo.centos.org/7/x86_64/kernel-debuginfo-common-x86_64-3.10.0-957.5.1.el7.x86_64.rpm</a></li>
-<li> yum -y install systemtap-devel</li>
-<li>测试</li>
-<li>stap -v -e &#39;probe vfs.read {printf(&quot;read performed\n&quot;); exit()}&#39;</li>
-<li>ab安装yum -y install httpd-tools</li>
-<li>启动内核追踪模块 stap --all-modules dropwatch.stp</li>
-</ul>
-
-<h4>测试镜像</h4>
-
-<ul>
-<li>docker run --name nginx_nat --privileged -p 8080:8080 -itd feisky/nginx:nat</li>
-<li>docker run --name nginx-hostnet --privileged --network=host -itd feisky/nginx:80</li>
-</ul>
-
-<h4>抓内核分析</h4>
-
-<ul>
-<li><img src="media/15510586495458/15512346465837.jpg" alt=""/></li>
-</ul>
-
-<h4>nf_hook_slow</h4>
-
-<ul>
-<li>第一，接收网络包时，在连接跟踪表中查找连接，并为新的连接分配跟踪对象（Bucket）。</li>
-<li>第二，在 Linux 网桥中转发包。这是因为案例 Nginx 是一个 Docker 容器，而容器的网络通过网桥来实现；</li>
-<li>第三，接收网络包时，执行 DNAT，即把 8080 端口收到的包转发给容器。</li>
-<li>net.netfilter.nf_conntrack_count，表示当前连接跟踪数；</li>
-<li>net.netfilter.nf_conntrack_max，表示最大连接跟踪数；</li>
-<li>net.netfilter.nf_conntrack_buckets，表示连接跟踪表的大小。</li>
-</ul>
-
-<h4>统计数据</h4>
-
-<ul>
-<li>统计总的连接追踪数</li>
-<li>conntrack -L -o extended | wc -l</li>
-<li>统计 TCP 协议各个状态的连接跟踪数</li>
-<li>conntrack -L -o extended | awk &#39;/<sup>.<em>tcp.</em>$/</sup> {sum[$6]++} END {for(i in sum) print i, sum[i]}&#39;</li>
-<li>统计各个源 IP 的连接跟踪数</li>
-<li>conntrack -L -o extended | awk &#39;{print $7}&#39; | cut -d &quot;=&quot; -f 2 | sort | uniq -c | sort -nr | head -n 10</li>
-</ul>
-
-<h4>优化</h4>
-
-<ul>
-<li>sysctl -w net.netfilter.nf_conntrack_max=131072</li>
-<li>echo 65536 &gt; /sys/module/nf_conntrack/parameters/hashsize</li>
-<li>使用无状态NAT比如tc或者DPDK开发</li>
-</ul>
-
-<h4>NAT扩展阅读</h4>
-
-<ul>
-<li><a href="https://mp.weixin.qq.com/s/VYBs8iqf0HsNg9WAxktzYQ">https://mp.weixin.qq.com/s/VYBs8iqf0HsNg9WAxktzYQ</a></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/25 09:37 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15535587417006.html">
-                
-                  <h1>服务吞吐量下降</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>连接数优化</h4>
-
-<pre class="line-numbers"><code class="language-text">ss -s 查看TCP连接数目
-timewait内核中的连接跟踪模块导致timewait
-查看内核处理溢出的情况 dmesg | tail 
-查看连接追踪数 
-sysctl net.netfilter.nf_conntrack_max 
-sysctl net.netfilter.nf_conntrack_count
-</code></pre>
-
-<h4>工作进程优化</h4>
-
-<pre class="line-numbers"><code class="language-text">查看容器日志 docker logs phpfpm --tail 5
-设置容器子进程最大进程数目
-</code></pre>
-
-<h4>套接字优化</h4>
-
-<pre class="line-numbers"><code class="language-text">查看套接字丢包情况 netstat -s | grep socket，观察socket overflowed和sockets dropped
-查看套接字队列大小 ss -ltnp
-查看全连接队列 net.ipv4.tcp_max_syn_backlog
-设置系统的套接字监听队列 sysctl net.core.somaxconn
-</code></pre>
-
-<h4>端口号优化</h4>
-
-<pre class="line-numbers"><code class="language-text">查看系统配置的临时端口号范围 sysctl net.ipv4.ip_local_port_range 
-配置系统的临时端口号范围 sysctl -w net.ipv4.ip_local_port_range
-打开端口重用 sysctl -w net.ipv4.tcp_tw_reuse=1
-inet_hash_connect()分配临时端口的函数
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/03/26 08:05 上午</span>
+                    <span class="date">2019/05/12 09:38 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>

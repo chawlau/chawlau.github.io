@@ -170,202 +170,41 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15659185120492.html">
+                <a class="clearlink" href="15652717124568.html">
                 
-                  <h1>垃圾短信过滤</h1>
+                  <h1>TSL连接过程</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/16 09:21 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15637866905737.html">
-                
-                  <h1>内存池</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>考虑方面</h4>
+                        	<h4>子协议</h4>
 
 <ul>
-<li>减少内存碎片</li>
-<li>提高效率</li>
-<li>避免内存泄漏</li>
+<li>记录协议</li>
+<li>警报协议</li>
+<li>握手协议</li>
+<li>变更密码规范协议</li>
 </ul>
 
-<h4>内存池考虑</h4>
+<h4>握手流程</h4>
 
 <ul>
-<li>线程安全</li>
-<li>尺寸固定</li>
+<li>client random params</li>
+<li>server random params </li>
+<li>密码套件</li>
+<li>ECDHE算法</li>
 </ul>
 
-<h4>kfifo的内存池</h4>
+<h4>TLS1.3</h4>
 
 <ul>
-<li>ringbuffer_from_dev</li>
+<li>前向安全</li>
 </ul>
 
-<h4>应用层协议</h4>
+<h4>验证CA的流程</h4>
 
 <ul>
-<li>TLV</li>
-</ul>
-
-<h4>boost pool</h4>
-
-<ul>
-<li>pfirst管理空闲内存，使用内存踢出去</li>
-<li>重栽运算符</li>
-</ul>
-
-<h4>zmq的内存池</h4>
-
-<ul>
-<li> 传输层和应用层更简单的接口</li>
-<li> 尽量少的申请内存，尽量使用即将释放的内存</li>
-<li> 一个读线程，一个写线程，读写之间使用无锁解决互斥</li>
-<li> 批量写入，预取机制，提高效率</li>
-</ul>
-
-<h4>chunk_t</h4>
-
-<ul>
-<li>begin_chunk 读取的块 begin_pos 读取的位置</li>
-<li>back_chunk 写入的块 back_pos 写入的位置</li>
-<li>end_chunk 指向新申请的内存块 </li>
-<li>push()只是申请了空间</li>
-<li>chunk_t *sc = spare_chunk.xchg (NULL); 拿取一个值，然后用NULL去填充</li>
-<li>back()是存储了数据</li>
-<li>begin_pos 正在读取的位置 begin_pos = N 时说明已经全部释放了，所以直接使用物理释放</li>
-<li>back_pos 写的位置</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">inline void pop ()
-    {
-        if (++_begin_pos == N) {
-            chunk_t *o = _begin_chunk;
-            _begin_chunk = _begin_chunk-&gt;next;
-            _begin_chunk-&gt;prev = NULL;
-            _begin_pos = 0;
-
-            //将内存块和空闲内存块进行置换，同时将置换出来的内存块释放掉
-            chunk_t *cs = _spare_chunk.xchg (o);
-            free (cs);
-        }
-    }
-
-</code></pre>
-
-<h4>ypipe_t</h4>
-
-<h5>flush</h5>
-
-<pre class="line-numbers"><code class="language-text">  inline bool flush ()
-  {
-    //  If there are no un-flushed items, do nothing.
-    if (_w == _f)
-      return true;
-
-    //  Try to set &#39;c&#39; to &#39;f&#39;.
-    if (_c.cas (_w, _f) != _w) {
-      //  Compare-and-swap was unseccessful because &#39;c&#39; is NULL.
-      //  This means that the reader is asleep. Therefore we don&#39;t
-      //  care about thread-safeness and update c in non-atomic
-      //  manner. We&#39;ll return false to let the caller know
-      //  that reader is sleeping.
-      _c.set (_f);
-      _w = _f;
-      return false;
-    }
-
-    //  Reader is alive. Nothing special to do now. Just move
-    //  the &#39;first un-flushed item&#39; pointer to &#39;f&#39;.
-    _w = _f;
-    return true;
-  }
-   inline void write (const T &amp;value_, bool incomplete_)
-        {
-            //  Place the value to the queue, add new terminator element.
-            queue.back () = value_;
-            queue.push ();
-
-            //  Move the &quot;flush up to here&quot; poiter.
-            if (!incomplete_)
-                f = &amp;queue.back ();
-        }
-</code></pre>
-
-<p><img src="media/15637866905737/15640480390126.jpg" alt=""/><br/>
-<img src="media/15637866905737/15640480483880.jpg" alt=""/></p>
-
-<h5>read</h5>
-
-<pre class="line-numbers"><code class="language-text">r指针没有指向begin_pos说明已经预读好了
- inline bool read (T *value_)
-    {
-        //  Try to prefetch a value.
-        if (!check_read ())
-            return false;
-
-        //  There was at least one value prefetched.
-        //  Return it to the caller.
-        *value_ = _queue.front ();
-        _queue.pop ();
-        return true;
-    }
-    
-    inline bool check_read ()
-    {
-      //  Was the value prefetched already? If so, return.
-      if (&amp;_queue.front () != _r &amp;&amp; _r)
-        return true;
-
-      _r = _c.cas (&amp;_queue.front (), NULL);
-      //_c=NULL, _r-&gt;_c的位置
-
-      //  If there are no elements prefetched, exit.
-      //  During pipe&#39;s lifetime r should never be NULL, however,
-      //  it can happen during pipe shutdown when items
-      //  are being deallocated.
-      if (&amp;_queue.front () == _r || !_r)
-        return false;
-
-      //  There was at least one value prefetched.
-      return true;
-    }
-</code></pre>
-
-<p><img src="media/15637866905737/15640481057426.jpg" alt=""/><br/>
-<img src="media/15637866905737/15640481129653.jpg" alt=""/></p>
-
-<ul>
-<li>f刷新指针</li>
-<li></li>
+<li>服务器返回的是证书链（不包括根证书，根证书预置在浏览器中），然后浏览器就可以使用信任的根证书（根公钥）解析证书链的根证书得到一级证书的公钥+摘要验签，然后拿一级证书的公钥解密一级证书拿到二级证书的公钥和摘要验签，再然后拿二级证书的公钥解密二级证书得到服务器的公钥和摘要验签，验证过程就结束了</li>
 </ul>
 
                         
@@ -375,544 +214,247 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/07/22 17:11 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15656810044878.html">
-                
-                  <h1>虚函数</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>虚表指针位置</h4>
-
-<ul>
-<li>位于对象内存的开头</li>
-</ul>
-
-<h4>总结</h4>
-
-<ul>
-<li>一个类只有包含虚函数才会存在虚函数表，同属于一个类的对象共享虚函数表，但是有各种的vptr，所指向的虚函数表是一样的</li>
-<li>父类中有虚函数，就等于子类中有虚函数</li>
-<li>只要在父类中是虚函数，在子类中不写virtual，依旧是虚函数</li>
-<li>不管是父类还是子类，只会有一个虚函数表</li>
-<li>子类中是否有多个虚函数表呢？//todo</li>
-<li>如果子类中完全没有新的虚函数，则我们认为子类的虚函数表内容和父类完全相同，在内存中不同位置</li>
-<li>虚函数表的每一项保存着一个虚函数的首地址，但是如果子类的虚函数表项和父类的表项目代表同一个函数，</li>
-<li>Base base = derive,编译器并没有把子类的虚函数表指针覆盖base对象的虚函数表指针</li>
-<li>面向对象和基于对象概念</li>
-<li>OB执行速度很快，因为函数调用不需要运行时决定</li>
-</ul>
-
-<h4>多继承</h4>
-
-<ul>
-<li>类中有多个基类，则有多个虚函数表指针，对应各个基类的vptr按继承顺序依次放在类的内存空间中，且子类与第一个基类共用第一个vptr，第二个基类有自己的vptr</li>
-<li><img src="media/15656810044878/15657741993732.jpg" alt="" style="width:939px;"/></li>
-<li>子类对象ins有两个虚函数表指针，vptr1, vptr2</li>
-<li>子类中的虚函数覆盖了父类中的同名虚函数，</li>
-</ul>
-
-<h4>vptr工具</h4>
-
-<ul>
-<li>g++ -fdump-class-hierarchy -fsyntax-only obj15.cpp</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">Vtable for Derived
-Derived::_ZTV7Derived: 12u entries
-0     (int (*)(...))0
-8     (int (*)(...))(&amp; _ZTI7Derived)
-16    (int (*)(...))Derived::f
-24    (int (*)(...))Base1::g
-32    (int (*)(...))Derived::i
-40    (int (*)(...))Derived::mh
-48    (int (*)(...))Derived::mi
-56    (int (*)(...))Derived::mj
-64    (int (*)(...))-8
-72    (int (*)(...))(&amp; _ZTI7Derived)
-80    (int (*)(...))Base2::h
-88    (int (*)(...))Derived::_ZThn8_N7Derived1iEv
-
-Class Derived
-   size=16 align=8
-   base size=16 base align=8
-Derived (0x0x7fd61ba60380) 0
-    vptr=((&amp; Derived::_ZTV7Derived) + 16u)
-  Base1 (0x0x7fd61b9a1780) 0 nearly-empty
-      primary-for Derived (0x0x7fd61ba60380)
-  Base2 (0x0x7fd61b9a17e0) 8 nearly-empty
-      vptr=((&amp; Derived::_ZTV7Derived) + 80u
-</code></pre>
-
-<h4>vptr创建</h4>
-
-<ul>
-<li>vptr跟着对象，对象创建出来就创建了</li>
-<li>构造函数中有给vptr赋值信息</li>
-</ul>
-
-<h4>虚函数表</h4>
-
-<ul>
-<li>虚函数表是编译器在编译期间生成的目标文件，为每一个类确定的虚函数表的vtbl的内容</li>
-<li>在编译期间添加给vptr赋值的代码信息</li>
-<li><img src="media/15656810044878/processmem.png" alt="processme"/></li>
-</ul>
-
-<h4>单纯的类</h4>
-
-<ul>
-<li>编译器向类内部增加一些不可见但是真实存在的成员变量</li>
-<li>有这种变量的类，就不单纯了</li>
-<li>隐藏的成员变量增加或者使用的时机在构造函数之前执行</li>
-<li>普通函数地址和虚函数地址在编译的时候就确定好的</li>
-<li>静态联合编译和动态联合编译</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/13 15:23 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B.html'>C++对象模型</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15658312584569.html">
-                
-                  <h1>位图</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>位图</h4>
-
-<ul>
-<li>要求数字的范围不是很大</li>
-</ul>
-
-<h4>布隆过滤器</h4>
-
-<ul>
-<li>我们使用 K 个哈希函数，对同一个数字进行求哈希值，那会得到 K 个不同的哈希值</li>
-<li>将对应的BitMap设置为true，用K个二进制位来表示一个数字的存在</li>
-</ul>
-
-<h4>布隆过滤器和三列表对比</h4>
-
-<ul>
-<li>布隆过滤器用多个哈希函数对同一个网页链接进行处理，CPU 只需要将网页链接从内存中读取一次，进行多次哈希计算，理论上讲这组操作是 CPU 密集型的。而在散列表的处理方式中，需要读取散列冲突拉链的多个网页链接，分别跟待判重的网页链接，进行字符串匹配。这个操作涉及很多内存数据的读取，所以是内存密集型的。我们知道 CPU 计算可能是要比内存访问更快速的，所以，理论上讲，布隆过滤器的判重方式，更加快速</li>
-</ul>
-
-<h4>扩容</h4>
-
-<ul>
-<li>布隆过滤器的误判率，主要跟哈希函数的个数、位图的大小有关。当我们往布隆过滤器中不停地加入数据之后，位图中不是 true 的位置就越来越少了，误判率就越来越高了</li>
-<li>当布隆过滤器中，数据个数与位图大小的比例超过某个阈值的时候，我们就重新申请一个新的位图 </li>
-</ul>
-
-<h4>拓展</h4>
-
-<ul>
-<li>Java BitSet</li>
-<li>Guava工具包</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/15 09:07 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15657035262111.html">
-                
-                  <h1>存储虚拟化</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>virtio</h4>
-
-<ul>
-<li>virtio 负责对于虚拟机提供统一的接口</li>
-<li><img src="media/15657035262111/1e13ffd5ac846c52739291cb489d0233.png" alt="1e13ffd5ac846c52739291cb489d0233"/></li>
-</ul>
-
-<h4>架构四层</h4>
-
-<ul>
-<li>虚拟机里面的 virtio 前端，针对不同类型的设备有不同的驱动程序，但是接口都是统一的</li>
-<li>在宿主机的 qemu 里面，实现 virtio 后端的逻辑，主要就是操作硬件的设备</li>
-<li>virtio 的前端和后端之间，有一个通信层，里面包含virtio 层和virtio-ring 层</li>
-</ul>
-
-<h4>总结</h4>
-
-<ul>
-<li>前端有前端的块设备驱动 Front-end driver，在客户机的内核里面，它符合普通设备驱动的格式，对外通过 VFS 暴露文件系统接口给客户机里面的应用。这一部分这一节我们没有讲，放在下一节解析。</li>
-<li>后端有后端的设备驱动 Back-end driver，在宿主机的 qemu 进程中，当收到客户机的写入请求的时候，调用文件系统的 write 函数，写入宿主机的 VFS 文件系统，最终写到物理硬盘设备上的 qcow2 文件。</li>
-<li>中间的队列用于前端和后端之间传输数据，在前端的设备驱动和后端的设备驱动，都有类似的数据结构 virt-queue 来管理这些队列</li>
-<li><img src="media/15657035262111/1f0c3043a11d6ea1a802f7d0f3b0b34b.jpg" alt="1f0c3043a11d6ea1a802f7d0f3b0b34b"/></li>
-</ul>
-
-<h4>前端设备驱动virtio_blk</h4>
-
-<ul>
-<li><p>virtqueue 是一个介于客户机前端和 qemu 后端的一个结构，用于在这两端之间传递数据</p>
-<pre class="line-numbers"><code class="language-text">struct vring_virtqueue {
-struct virtqueue vq;<br/>
-/* Actual memory layout for this queue */<br/>
-struct vring vring;<br/>
-......<br/>
-}
-</code></pre>
-<ul>
-<li>struct virtio_device 里面有一个 struct vring_virtqueue，在 struct vring_virtqueue 里面有一个 struct vring</li>
-<li><img src="media/15657035262111/49414d5acc81933b66410bbba102b0db.jpg" alt="49414d5acc81933b66410bbba102b0db"/></li>
-</ul></li>
-</ul>
-
-<h4>总结</h4>
-
-<ul>
-<li><img src="media/15657035262111/79ad143a3149ea36bc80219940d7d00c.jpg" alt="79ad143a3149ea36bc80219940d7d00"/></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/13 21:38 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15657025865667.html">
-                
-                  <h1>kafka工具</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>生产者和消费者性能测试</h4>
-
-<ul>
-<li>kafka-producer-perf-test.sh --topic test1 --num-records 10000000 --throughput -1 --record-size 1024 --producer-props bootstrap.servers=master:9092 acks=-1 linger.ms=2000 compression.type=lz4</li>
-<li>kafka-consumer-perf-test.sh --broker-list master:9092 --messages 10000000 --topic test1</li>
-</ul>
-
-<h4>查看消息主题的总数</h4>
-
-<ul>
-<li>kafka-run-class.sh kafka.tools.GetOffsetShell --broker-list master:9092 --time -2 --topic test1</li>
-<li>kafka-run-class.sh kafka.tools.GetOffsetShell --broker-list master:9092 --time -1 --topic test1</li>
-</ul>
-
-<h4>消息文件数据</h4>
-
-<ul>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/13 21:23 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Kafka.html'>Kafka</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15656903952504.html">
-                
-                  <h1>迭代器</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>const迭代器</h4>
-
-<ul>
-<li>const_iterator</li>
-<li>指向的值不能改变，迭代器本身可以改变</li>
-</ul>
-
-<h4>迭代器失效</h4>
-
-<ul>
-<li>改变容器容量的操作中，会引起迭代器的失效</li>
-<li>容器中增加或者删除元素，可能引起指向容器元素的指针，引用，迭代器失效</li>
-<li>插入数据就break</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/13 17:59 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15476969920876.html">
-                
-                  <h1>Mysql主备一致</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>delete导致主备不一致</h4>
-
-<ul>
-<li>在主库执行这条 SQL 语句的时候，用的是索引 a；而在备库执行这条 SQL 语句的时候，却使用了索引 t_modified。主从选择的索引不一样</li>
-<li>线上binlog格式设置为mixed</li>
-</ul>
-
-<h4>row格式好处</h4>
-
-<ul>
-<li>恢复数据比较快</li>
-<li>Flashback工具</li>
-<li>binlog的日志解析出来不能直接拷贝执行</li>
-<li>记录操作的记录的主键真实的值</li>
-<li></li>
-</ul>
-
-<h4>循环复制问题</h4>
-
-<ul>
-<li> log_slave_updates=on可以让备库执行relay log后生成binlog</li>
-</ul>
-
-<h4>线上生产库非双一</h4>
-
-<ul>
-<li>业务高峰期。一般如果有预知的高峰期，DBA 会有预案，把主库设置成“非双 1”。</li>
-<li>备库延迟，为了让备库尽快赶上主库。</li>
-<li>用备份恢复主库的副本，应用 binlog 的过程，这个跟上一种场景类似。</li>
-<li>批量导入数据的时候。</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/01/17 11:49 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15656163148085.html">
-                
-                  <h1>重设消费者位移</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>消息引擎</h4>
-
-<ul>
-<li>它是基于日志结构（log-based）的消息引擎，消费者在消费消息时，仅仅是从磁盘文件上读取数据而已，是只读的操作，因此消费者不会删除消息数据。同时，由于位移数据是由消费者控制的，因此它能够很容易地修改位移的值，实现重复消费历史数据的功能。</li>
-</ul>
-
-<h4>重设位移策略</h4>
-
-<ul>
-<li>位移维度</li>
-<li>时间维度</li>
-</ul>
-
-<h4>各种策略</h4>
-
-<ul>
-<li><img src="media/15656163148085/eb469122e5af2c9f6baebb173b56bed5.jpeg" alt="eb469122e5af2c9f6baebb173b56bed5"/></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/12 21:25 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Kafka.html'>Kafka</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15656152109472.html">
-                
-                  <h1>HTTP2</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>头部压缩</h4>
-
-<ul>
-<li>HPACK算法 在客户端和服务器两端建立“字典”，用索引号表示重复的字符串，还釆用哈夫曼编码来压缩整数和字符串，可以达到 50%~90% 的高压缩率</li>
-<li>有状态的压缩算法</li>
-</ul>
-
-<h4>二进制格式</h4>
-
-<ul>
-<li>数据帧 HEADERS DATA</li>
-<li>控制帧 SETTINGS PINg PRIORITY</li>
-</ul>
-
-<h4>虚拟的流</h4>
-
-<ul>
-<li>一个连接多路复用</li>
-<li>多个请求 / 响应之间没有了顺序关系，不需要排队等待，也就不会再出现“队头阻塞”问题，降低了延迟，大幅度提高了连接的利用率</li>
-<li>流是可并发的，一个 HTTP/2 连接上可以同时发出多个流传输数据，也就是并发多请求，实现“多路复用”</li>
-<li>流是双向的，一个流里面客户端和服务器都可以发送或接收数据帧，也就是一个“请求 - 应答”来回</li>
-<li>流 ID 不能重用，只能顺序递增，客户端发起的 ID 是奇数，服务器端发起的 ID 是偶数</li>
-</ul>
-
-<h4>流状态切换</h4>
-
-<ul>
-<li></li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/12 21:06 下午</span>
+                    <span class="date">2019/08/08 21:41 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='http_study.html'>http_study</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15432005577683.html">
+                
+                  <h1>strings&byte op</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>与string值相比，strings.Builder类型的值有哪些优势？</h4>
+
+<ul>
+<li>已经存在的内容不变，但是可以拼接更多的内容</li>
+<li>减少了内存分配和内容拷贝的次数</li>
+<li>可将内容重置，可重用值</li>
+</ul>
+
+<h4>string.Builder</h4>
+
+<ul>
+<li>Write</li>
+<li>WriteByte</li>
+<li>WriteRune</li>
+<li>WriteString</li>
+</ul>
+
+<h4>string.Builder约束</h4>
+
+<ul>
+<li>绝不共享Builder值以及它的指针值。</li>
+</ul>
+
+<h4>为什么说strings.Reader类型的值可以高效地读取字符串？</h4>
+
+<ul>
+<li>Reader值可以让我们很方便地读取一个字符串中的内容。它的高效主要体现在它对字符串的读取机制上。在读取的过程中，Reader值会保存已读取的字节的计数，也称已读计数。</li>
+</ul>
+
+<h4>byte.Buffer</h4>
+
+<ul>
+<li>使用字节切片作为内容机器</li>
+<li>int类型代表已读字节的计数</li>
+<li>Buffer值的长度是未读内容的长度，而不是已存内容的总长度。它与在当前值之上的读操作和写操作都有关系</li>
+<li>Buffer值的容量指的是它的内容容器（也就是那个字节切片）的容量，它只与在当前值之上的写操作有关，并会随着内容的写入而不断增长。</li>
+</ul>
+
+<h4>byte.Buffer已读计数的作用</h4>
+
+<ul>
+<li>读取内容时，相应方法会依据已读计数找到未读部分，并在读取后更新计数。</li>
+<li>写入内容时，如需扩容，相应方法会根据已读计数实现扩容策略。</li>
+<li>截断内容时，相应方法截掉的是已读计数代表索引之后的未读部分。</li>
+<li>读回退时，相应方法需要用已读计数记录回退点。</li>
+<li>重置内容时，相应方法会把已读计数置为0。</li>
+<li>导出内容时，相应方法只会导出已读计数代表的索引之后的未读部分。</li>
+<li>获取长度时，相应方法会依据已读计数和内容容器的长度，计算未读部分的长度并返回。</li>
+</ul>
+
+<h4>对比strings.Builder和bytes.Buffer的String方法，并判断哪一个更高效？原因是什么？</h4>
+
+<ul>
+<li>strings.Builder String方法中*(*string)(unsafe.Pointer(&amp;b.buf)) 是直接取得buf的地址然后转换成string返回。而bytes.Buffer的String方法是 string(b.buf[b.off:])然后对buf进行操作</li>
+</ul>
+
+<h4>案例</h4>
+
+<pre class="line-numbers"><code class="language-go">const numbers = 100
+
+func BenchmarkSprintf(b *testing.B) {
+    b.ResetTimer()
+    for idx := 0; idx &lt; b.N; idx++ {
+        var s string
+        for i := 0; i &lt; numbers; i++ {
+            s = fmt.Sprintf(&quot;%v%v&quot;, s, i)
+        }
+    }
+    b.StopTimer()
+}
+
+func BenchmarkStringBuilder(b *testing.B) {
+    b.ResetTimer()
+    for idx := 0; idx &lt; b.N; idx++ {
+        var builder strings.Builder
+        for i := 0; i &lt; numbers; i++ {
+            builder.WriteString(strconv.Itoa(i))
+
+        }
+        _ = builder.String()
+    }
+    b.StopTimer()
+}
+
+func BenchmarkBytesBuf(b *testing.B) {
+    b.ResetTimer()
+    for idx := 0; idx &lt; b.N; idx++ {
+        var buf bytes.Buffer
+        for i := 0; i &lt; numbers; i++ {
+            buf.WriteString(strconv.Itoa(i))
+        }
+        _ = buf.String()
+    }
+    b.StopTimer()
+}
+
+func BenchmarkStringAdd(b *testing.B) {
+    b.ResetTimer()
+    for idx := 0; idx &lt; b.N; idx++ {
+        var s string
+        for i := 0; i &lt; numbers; i++ {
+            s += strconv.Itoa(i)
+        }
+
+    }
+    b.StopTimer()
+}
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/11/26 10:49 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15716264505052.html">
+                
+                  <h1>锁</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>并发map</h4>
+
+<ul>
+<li>easierway/concurrent_map</li>
+</ul>
+
+<h4>避免锁</h4>
+
+<ul>
+<li>减少锁的影响范围</li>
+<li>减少发⽣生锁冲突的概率</li>
+<li>sync.Map ConcurrentMap</li>
+<li>避免锁的使⽤用</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/10/21 10:54 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15716243663482.html">
+                
+                  <h1>性能调优</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>分析指标</h4>
+
+<ul>
+<li>Wall Time</li>
+<li>CPU Time</li>
+<li>Block Time</li>
+<li>Memory allocation GC times/time spent</li>
+</ul>
+
+<h4>生成文件</h4>
+
+<ul>
+<li>go test  -bench=. -cpuprofile=cpu.prof</li>
+<li>go tool pprof cpu.prof</li>
+<li>top</li>
+<li>top -cum</li>
+<li>list function</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/10/21 10:19 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
           				   
                   </div>
                   <div class="more-right right">

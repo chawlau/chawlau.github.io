@@ -170,54 +170,46 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15688569818300.html">
+                <a class="clearlink" href="15730785241033.html">
                 
-                  <h1>堆和堆排序</h1>
+                  <h1>设计模式和面向对象关系</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>HeapSort</h4>
+                        	<h4>设计原则</h4>
 
 <ul>
-<li>动态选择优先级最高的执行</li>
-<li><img src="media/15688569818300/15688571040833.jpg" alt="" style="width:1255px;"/></li>
-<li><img src="media/15688569818300/15688572769813.jpg" alt="" style="width:809px;"/></li>
+<li>SOLID 原则 -SRP 单一职责原则SOLID 原则</li>
+<li>OCP 开闭原则SOLID 原则</li>
+<li>LSP 里式替换原则SOLID 原则</li>
+<li>ISP 接口隔离原则SOLID 原则</li>
+<li>DIP 依赖倒置原则DRY 原则、KISS 原则、YAGNI 原则、LOD 法则</li>
 </ul>
 
-<h4>堆实现</h4>
+<h4>设计模式分类</h4>
+
+<h5>创建型</h5>
 
 <ul>
-<li>所有节点必须集中在左侧</li>
-<li><img src="media/15688569818300/15688596478108.jpg" alt="" style="width:1285px;"/></li>
-<li>堆的swap可以优化，只需要赋值索引就行</li>
-<li><img src="media/15688569818300/15688617956191.jpg" alt="" style="width:1172px;"/></li>
-<li><img src="media/15688569818300/15688622826789.jpg" alt="" style="width:1227px;"/></li>
+<li>常用的有：单例模式、工厂模式（工厂方法和抽象工厂）、建造者模式。不常用的有：原型模式。</li>
 </ul>
 
-<h4>排序算法总结</h4>
+<h5>结构型</h5>
 
 <ul>
-<li><img src="media/15688569818300/15689463910061.jpg" alt="" style="width:1333px;"/></li>
+<li>常用的有：代理模式、桥接模式、装饰者模式、适配器模式。不常用的有：门面模式、组合模式、享元模式。</li>
 </ul>
 
-<h4>排序算法的稳定性</h4>
+<h5>行为型</h5>
 
 <ul>
-<li><img src="media/15688569818300/15689466241946.jpg" alt="" style="width:1075px;"/></li>
-<li><img src="media/15688569818300/15689467064780.jpg" alt="" style="width:1279px;"/></li>
+<li>常用的有：观察者模式、模板模式、策略模式、职责链模式、迭代器模式、状态模式。不常用的有：访问者模式、备忘录模式、命令模式、解释器模式、中介模式。</li>
 </ul>
 
-<h4>堆相关的其他问题</h4>
+<h4>总结</h4>
 
-<ul>
-<li>多路归并排序</li>
-<li><img src="media/15688569818300/15689483164750.jpg" alt="" style="width:1343px;"/></li>
-<li>最大最小队列</li>
-<li>二项堆</li>
-<li>斐波拉契堆</li>
-<li></li>
-</ul>
+<p><img src="media/15730785241033/f3262ef8152517d3b11bfc3f2d2b12d3.png" alt="f3262ef8152517d3b11bfc3f2d2b12d3"/></p>
 
                         
                       </div>
@@ -226,10 +218,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/09/19 09:36 上午</span>
+                    <span class="date">2019/11/07 06:15 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E8%BF%9B%E9%98%B6.html'>数据结构和算法进阶</a></span>
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -243,162 +235,54 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15684274789884.html">
+                <a class="clearlink" href="15430293574294.html">
                 
-                  <h1>归并排序</h1>
+                  <h1>sync.Map</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>归并</h4>
-
-<p><img src="media/15684274789884/15684274905662.jpg" alt="" style="width:1265px;"/></p>
-
-<h4>自底向上归并</h4>
+                        	<h4>并发安全字典对键的类型有要求吗</h4>
 
 <ul>
-<li><img src="media/15684274789884/15687764345838.jpg" alt="" style="width:1189px;"/></li>
-<li>对链表本身实现O(nlogn)自底向上归并排序</li>
+<li>有要求。键的实际类型不能是函数类型、字典类型和切片类型</li>
+<li>由于这些键值的实际类型只有在程序运行期间才能够确定，所以 Go 语言编译器是无法在编译期对它们进行检查的，不正确的键值实际类型肯定会引发 panic</li>
+<li>应该在每次操作并发安全字典的时候，都去显式地检查键值的实际类型。无论是存、取还是删，都应该如此。</li>
 </ul>
 
-<h4>快速排序</h4>
+<h4>使用sync.map</h4>
 
-<ul>
-<li><img src="media/15684274789884/15687766791126.jpg" alt="" style="width:1286px;"/></li>
-<li><img src="media/15684274789884/15684302165224.jpg" alt="" style="width:1186px;"/></li>
-<li>大量重复元素</li>
-<li><img src="media/15684274789884/15687783129131.jpg" alt="" style="width:1251px;"/></li>
-<li><img src="media/15684274789884/15684324666269.jpg" alt="" style="width:1309px;"/></li>
-<li>改进</li>
-<li><img src="media/15684274789884/15684328508598.jpg" alt="" style="width:1218px;"/></li>
-</ul>
-
-<h4>三路快速排序</h4>
-
-<ul>
-<li><img src="media/15684274789884/15686014565335.jpg" alt="" style="width:1419px;"/></li>
-</ul>
-
-<h4>归并排序和快速排序的衍生问题</h4>
-
-<ul>
-<li>分治算法</li>
-<li>逆序对 leet_493</li>
-<li><img src="media/15684274789884/15686036071423.jpg" alt="" style="width:1391px;"/></li>
-<li>取出数组中n大的元素 </li>
-<li><img src="media/15684274789884/15686037767144.jpg" alt="" style="width:1403px;"/></li>
-<li><img src="media/15684274789884/15686038189790.jpg" alt="" style="width:1010px;"/></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/14 10:17 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E8%BF%9B%E9%98%B6.html'>数据结构和算法进阶</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15685466530997.html">
-                
-                  <h1>unique_lock</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>用法</h4>
-
-<ul>
-<li>unique_lock类模版, 一般lock_guard</li>
-<li>灵活，但是效率差一点，内存多占一点</li>
-</ul>
-
-<h4>参数</h4>
-
-<ul>
-<li>std::adopt_lock 表示互斥量已经被lock, 线程已经拥有了锁的所有权</li>
-</ul>
-
-<h4>try_to_lock</h4>
-
-<ul>
-<li>执行前提不能锁住mutex</li>
-<li>try_to_lock去锁定mutex，如果没有锁定mutex，会立即返回，并不会阻塞</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">std::unique_lock&lt;std::mutex&gt; s1(mutex1, std::try_to_lock);
-if (!s1.owns_lock()) {
-  cout &lt;&lt; &quot; do else thing &quot;  &lt;&lt; endl;
-  continue;
+<pre class="line-numbers"><code class="language-text">type IntStrMap struct {
+ m sync.Map
+}
+func (iMap *IntStrMap) Range(f func(key int, value string) bool) {
+ f1 := func(key, value interface{}) bool {
+  return f(key.(int), value.(string))
+ }
+ iMap.m.Range(f1)
 }
 </code></pre>
 
-<h4>defer_lock</h4>
+<h4>怎样保证并发安全字典中的键和值的类型正确性？</h4>
 
 <ul>
-<li>不能自己先lock，否则会报异常</li>
-<li>并没有给mutex加锁，初始化了一个没有加锁的mutex</li>
+<li>通过封装sync.map，添加reflect.Type来判断key和value来使用</li>
 </ul>
 
-<h4>unique_lock成员函数</h4>
-
-<pre class="line-numbers"><code class="language-text">std::unique_lock&lt;std::mutex&gt; s1(mutex1, std::defer_lock);
-s1.lock()
-//执行非共享代码
-s1.unlock()
-</code></pre>
+<h4>并发字典如何做到尽量避免安全锁</h4>
 
 <ul>
-<li>引入s1.unlock()想灵活处理一些非共享代码</li>
-<li>try_lock 尝试给互斥量加锁，如果不成功，不阻塞</li>
+<li>使用大量原子操作来读取键和值</li>
+<li>这两个字典在存储键和值的时候都只会存入它们的某个指针，而不是基本值。</li>
+<li>只读字典和脏字典之间是会互相转换的。在脏字典中查找键值对次数足够多的时候，sync.Map会把脏字典直接作为只读字典，保存在它的read字段中，然后把代表脏字典的dirty字段的值置为nil。</li>
+<li>读操作有很多但写操作却很少的情况下，并发安全字典的性能往往会更好。</li>
+<li>性能影响 新增键值对 &gt; 删除 &gt; 修改</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-text">if (!s1.try_lock()) {cout &lt;&lt; &quot; do else thing &quot; &lt;&lt; endl; continue;}
-</code></pre>
+<h4>sync.Map修改value</h4>
 
 <ul>
-<li>release() 返回管理的mutex指针，并释放所有权，unique_lock和mutex不再关联</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">std::unique_lock&lt;std::mutex&gt; s1(mutex1);
-mutex* ptr = s1.release();
-//业务代码
-ptr.unlock
-</code></pre>
-
-<ul>
-<li>如果原来mutex处于加锁状态，需要是按那个，有时候unlock是需要灵活控制代码粒度</li>
-<li>unique_lock所有权可以转移给其他的unique_lock,不能复制</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">//1 std::move
-std::unique_lock&lt;std::mutex&gt; s1(mutex1);
-std::unique_lock&lt;std::mutex&gt; s2(s1);
-//2 function return
-std::unique_lock&lt;mutex&gt; ret_lock () {
-  std::unique_lock&lt;mutex&gt; tmp(mutex1);
-  return tmp;
-}
-函数返回一个局部的unique_lock对象是可以的，会让系统临时生成
-unique_lock移动构造函数
-</code></pre>
-
-<ul>
+<li>只读字典虽然不会增减其中的键，但却允许变更其中的键所对应的值。所以，它并不是传统意义上的快照，它的只读特性只是对于其中键的集合而言的。</li>
 <li></li>
 </ul>
 
@@ -409,67 +293,7 @@ unique_lock移动构造函数
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/09/15 19:24 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15682780301392.html">
-                
-                  <h1>中间件</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>分类</h4>
-
-<ul>
-<li>客户端中间件</li>
-<li>Rpc访问日志</li>
-<li>负载均衡</li>
-<li>熔断限流</li>
-<li>服务端中间件</li>
-<li>服务访问日志</li>
-<li>Metrics打点</li>
-<li>限流</li>
-</ul>
-
-<h4>中间件设计</h4>
-
-<ul>
-<li><img src="media/15682780301392/15682782754056.jpg" alt="" style="width:581px;"/></li>
-<li>设计要点</li>
-<li>需要把所有中间件串联起来，依次执行</li>
-<li>每个中间件可以选择执行的时机，比如在其他中间件之前执行，或者在其他中间件之后执行</li>
-</ul>
-
-<h5>分布式限流算法</h5>
-
-<ul>
-<li>Redis</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/12 16:47 下午</span>
+                    <span class="date">2018/11/24 11:15 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
@@ -486,567 +310,91 @@ unique_lock移动构造函数
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15685431648523.html">
+                <a class="clearlink" href="15396722232631.html">
                 
-                  <h1>互斥量用法&死锁</h1>
+                  <h1>interface</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>互斥量使用</h4>
+                        	<h4>接口变量赋值后发生什么</h4>
 
 <ul>
-<li>lock</li>
-<li>unlock</li>
-<li>std::lock_guard</li>
-<li>std::lock_guard<a href="std::mutex">std::mutex</a> sg(my_mutex);</li>
-<li>必须在析构的时候解锁，不够灵活加{}提前析构</li>
+<li>接口被赋予实际值之前，他的值是nil</li>
+<li>接口赋值后，变量动态类型和动态值一起被存储在一个专用的数据结构里iface</li>
+<li>iface有两个指针，一个指向类型信息，一个指向动态值的指针</li>
 </ul>
 
-<h4>死锁</h4>
-
-<ul>
-<li>至少两把锁 </li>
-<li>解决方案</li>
-<li>保证互斥量上锁的顺序一致</li>
-</ul>
-
-<h4>std::lock函数模版</h4>
-
-<ul>
-<li>一次锁住两或者两个以上的互斥量，至少两个</li>
-<li>不存在因为多个线程中，因为锁的顺序问题导致死锁的风险问题</li>
-<li>如果互斥量一个没锁住，就等待，只有等所有互斥量都锁住，才能往下走</li>
-<li>要么都锁住，要么都没锁住，如果只锁了一个，另外没锁成功，则立即把已经锁住的解锁</li>
-<li>建议一个一个锁</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">std::lock(mutex1, mutex2);
-mutex1.unlock();
-mutex2.unlock();
-</code></pre>
-
-<h4>std::lock_guard&amp;</h4>
-
-<pre class="line-numbers"><code class="language-text">std::lock(mutex1, mutex2);
-std::lock_guard&lt;std::mutex&gt; s1(mutex1, std::adopt_lock);
-std::lock_guard&lt;std::mutex&gt; s2(mutex2, std::adopt_lock);
-</code></pre>
-
-<ul>
-<li>std::adopt_lock表示互斥量已经lock过了</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/15 18:26 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15685011552675.html">
-                
-                  <h1>消息中间件</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>主流中间件</h4>
-
-<ul>
-<li>kafka 对消息的重复、丢失、错误没有严格要求 专注高性能</li>
-<li>RocketMQ 事务 </li>
-<li>NameServer源代码</li>
-<li>RabbitMQ 数据一致性 稳定性 可靠性要求很高， 性能和吞吐量在其次</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/15 06:45 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='RabbitMQ.html'>RabbitMQ</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15602501379556.html">
-                
-                  <h1>动态链接</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>fPIC</h4>
-
-<ul>
-<li>把指令中那些需要被修改的部分分离出来，跟数据部分放在一起，这样指令部分就可以保持不变，而数据部分可以在每个进程中拥有一个副本。这种方案就是目前被称为地址无关代码（PIC, Position independent Code）的技术。</li>
-<li>动态链接模块被装载映射至虚拟空间后，指令部分是在多个进程之间共享的，由于装载时重定位的方法需要修改指令，所以没有办法做到同一份指令被多个进程共享</li>
-</ul>
-
-<h4>共享对象模块的地址引用</h4>
-
-<ul>
-<li>模块内部引用和模块外部引用</li>
-<li>按照不同的引用方式又可以分为指令引用和数据访问</li>
-</ul>
-
-<h4>动态库访问原理</h4>
-
-<p><img src="media/15602501379556/15684206512381.jpg" alt="" style="width:862px;"/></p>
-
-<h4>依赖库</h4>
-
-<ul>
-<li>VDSO(Virtual Dynamically-linked Shared Object)</li>
-<li>内核虚拟共享对象linux-vdso.so.1</li>
-<li>它将内核态的调用映射到用户态的地址空间中, 使得调用开销更小, 路径更好.</li>
-<li>较新的内核提供了进程随机地址化功能, linux-vdso.so.1的地址每次cat /proc/self/maps都会变化</li>
-</ul>
-
-<h4>引用外部函数</h4>
-
-<ul>
-<li>如果是在静态模块中，按照静态链接的规则重定位</li>
-<li>如果是动态共享对象中的函数，链接器将这个符号的引用标记为一个动态链接的符号</li>
-<li>链接器解析的时候发现动态符号，可以做动态引用</li>
-</ul>
-
-<h4>装载时重定位</h4>
-
-<ul>
-<li>基地址重置</li>
-</ul>
-
-<h4>引用方式</h4>
-
-<ul>
-<li>模块内部函数跳转</li>
-<li>模块内部数据访问</li>
-<li>模块外部函数调用、跳转</li>
-<li>模块外部数据访问</li>
-</ul>
-
-<h4>模块内部跳转</h4>
-
-<ul>
-<li>基于寄存器的相对调用，不需要重定位</li>
-</ul>
-
-<h4>模块内部数据访问</h4>
-
-<ul>
-<li>获取PC寄存器的值，然后加上偏移量访问相应变量</li>
-</ul>
-
-<h4>模块外部数据访问</h4>
-
-<ul>
-<li><img src="media/15602501379556/15605664830807.jpg" alt="" style="width:592px;"/></li>
-</ul>
-
-<h4>模块间跳转</h4>
-
-<ul>
-<li>通过Got中函数的相对位置跳转</li>
-</ul>
-
-<h4>共享模块全局变量</h4>
-
-<ul>
-<li>一个模块引用了定义在共享对象的全局变量的时候，全部当作其他模块引用处理
-<img src="media/15602501379556/15605672406780.jpg" alt="" style="width:385px;"/></li>
-</ul>
-
-<h4>数据段地址无关性</h4>
-
-<ul>
-<li>绝对地址引用，编译器和链接器产生重定位表，包含了类型的重定位入口</li>
-</ul>
-
-<h4>延迟绑定</h4>
-
-<ul>
-<li>动态链接访问全局和静态数据需要GOT定位和间接跳转</li>
-<li>链接工作是在运行时完成</li>
-</ul>
-
-<h4>PLT原理</h4>
-
-<ul>
-<li>函数符号引用在重定位表rel.plt的下标</li>
-<li>模块ID压栈
-<img src="media/15602501379556/15605680932671.jpg" alt="" style="width:547px;"/></li>
-</ul>
-
-<h4>加载原理</h4>
-
-<ul>
-<li>读取可执行文件的头部，检查合法性</li>
-<li>从头部的header读取各个segment，映射到进程虚拟空间</li>
-</ul>
-
-<h4>动态符号表</h4>
-
-<ul>
-<li>.dynsym</li>
-<li>.symtab 包含所有符号</li>
-</ul>
-
-<h4>装载时重定位</h4>
-
-<ul>
-<li>.rel.dyn 数据，函数非-fPIC编译时也在回dyn中</li>
-<li>.rel.plt 函数引用</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/06/11 18:48 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E7%A8%8B%E5%BA%8F%E5%91%98%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB.html'>程序员的自我修养</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15684126501705.html">
-                
-                  <h1>Redis内存优化</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>分类</h4>
-
-<ul>
-<li>内存消耗</li>
-<li>内存管理</li>
-<li>内存优化</li>
-</ul>
-
-<h4>内存消耗</h4>
-
-<h5>内存使用统计</h5>
-
-<ul>
-<li><img src="media/15684126501705/15684129019117.jpg" alt="" style="width:838px;"/></li>
-</ul>
-
-<h5>内存消耗划分</h5>
-
-<ul>
-<li><img src="media/15684126501705/15684131184915.jpg" alt="" style="width:652px;"/></li>
-<li><img src="media/15684126501705/15684132303294.jpg" alt="" style="width:1016px;"/></li>
-</ul>
-
-<h4>客户端缓冲区</h4>
-
-<ul>
-<li>普通客户端</li>
-<li>slave客户端</li>
-<li>pubsub客户端</li>
-</ul>
-
-<h4>输入缓冲区</h4>
-
-<ul>
-<li><img src="media/15684126501705/15684134149671.jpg" alt="" style="width:942px;"/></li>
-</ul>
-
-<h5>输出缓冲区</h5>
-
-<ul>
-<li>client-output-buffer-limit </li>
-<li>class 缓冲区类型</li>
-<li>hard limit 超出会立即被关闭</li>
-<li>soft limit soft seconds 超出规定缓冲区多长时间会被关闭</li>
-<li><img src="media/15684126501705/15684135327774.jpg" alt="" style="width:991px;"/></li>
-</ul>
-
-<h5>普通客户端缓冲区</h5>
-
-<ul>
-<li>默认：client-output-buffer-limit normal 0 0 0 </li>
-<li>默认：没有限制客户端缓冲</li>
-<li>注意：防止大的命令或者 monitor。
-<img src="media/15684126501705/15684137639534.jpg" alt="" style="width:688px;"/></li>
-</ul>
-
-<h5>slave客户端缓冲区</h5>
-
-<ul>
-<li>默认: client-output-buffer-limit slave 256 mb 64 mb 60 </li>
-<li>阻塞：主从延迟较高，或者从节点过多</li>
-<li>注意：主从网络，从节点不要超过 2 个</li>
-</ul>
-
-<h5>pubsub缓冲区</h5>
-
-<ul>
-<li>默认: client-output-buffer-limit pubsub 32 mb 8 mb 60 </li>
-<li>阻塞：生产大于消费</li>
-<li>注意：根据实际场景适当调试。</li>
-<li>client list</li>
-<li>info clients</li>
-</ul>
-
-<h5>复制缓冲区</h5>
-
-<ul>
-<li><img src="media/15684126501705/15684141557235.jpg" alt="" style="width:902px;"/></li>
-</ul>
-
-<h5>AOF缓冲区</h5>
-
-<ul>
-<li><img src="media/15684126501705/15684143425032.jpg" alt="" style="width:810px;"/></li>
-</ul>
-
-<h4>对象内存</h4>
-
-<ul>
-<li>Key：不要过长，量大不容忽视 redis3: embstr39 字节）</li>
-<li>value: ziplist、Intset=等优化方式。</li>
-</ul>
-
-<h4>内存碎片</h4>
-
-<ul>
-<li>jemalloc</li>
-<li>优化方式</li>
-<li>避免频繁更新操作：append、strange 等</li>
-<li>安全重启，例如 Redis sentinela 和 redis clusters 等。</li>
-</ul>
-
-<h4>子进程内存消耗</h4>
-
-<ul>
-<li>必然存在：fork (bgsave 和 bgrewriteaof）</li>
-<li>优化方式</li>
-<li>去掉 THP 特性：2.6.38 增加的特性。</li>
-<li>观察写入量：copy-on-wite overcommit_memory=1</li>
-</ul>
-
-<h4>内存管理</h4>
-
-<ul>
-<li><img src="media/15684126501705/15684147691788.jpg" alt="" style="width:576px;"/></li>
-<li><img src="media/15684126501705/15684148021357.jpg" alt="" style="width:840px;"/></li>
-<li>config set maxmemory </li>
-<li>config rewrite</li>
-</ul>
-
-<h4>内存回收策略</h4>
-
-<h5>删除过期键值</h5>
-
-<ul>
-<li>惰性删除：访诃 key-&gt; expired dict-&gt; del key</li>
-<li>定时删除：每秒运行 10 次，采样删除。</li>
-<li><img src="media/15684126501705/15684151011606.jpg" alt="" style="width:654px;"/></li>
-</ul>
-
-<h5>内存溢出策略</h5>
-
-<ul>
-<li>超过 naxmemory 后触发相应策略，由 naxmemory- policy 控制。</li>
-<li>Noeviction：默认策略，不会删除任何数据，拒绝所有写入操作并返回端错误信息“(error) OOM command not allowed when used memory“此时 Redis 只响应读操作由 maxmemory- policy 控制。</li>
-<li>Volatile-ru：根据 LRU 算法删除设置了超时属性（expire）的键，直到腾出足够空间为止。如果没有可删除的键对象，回退到 noevictioni 策略</li>
-<li>Allkeys-ru：根据 LR∪算法删除犍，不管数据有没有设置超时属性，直到腾出足够空间为止</li>
-<li>Allkeys- random：随机删除所有键，直到腾出足够空间为止。</li>
-<li>Volatile- randon：随机删除过期键，直到腾出足够空间为止。</li>
-<li>volatile-ttl：根据键值对象的属性，删除最近将要过期数据。如果没有，回退到 noevlction 策略。</li>
-</ul>
-
-<h4>内存优化</h4>
-
-<ul>
-<li><img src="media/15684126501705/15684153398835.jpg" alt="" style="width:654px;"/></li>
-</ul>
-
-<h5>合理选择数据结构</h5>
-
-<ul>
-<li><img src="media/15684126501705/15684155535712.jpg" alt="" style="width:1126px;"/></li>
-<li><img src="media/15684126501705/15684156519630.jpg" alt="" style="width:972px;"/></li>
-<li><img src="media/15684126501705/15684157234123.jpg" alt="" style="width:832px;"/></li>
-</ul>
-
-<h5>ziplist</h5>
-
-<p><img src="media/15684126501705/15684158423380.jpg" alt="" style="width:1116px;"/></p>
-
-<h4>内存暴增案例</h4>
-
-<ul>
-<li><img src="media/15684126501705/15684160379094.jpg" alt="" style="width:871px;"/></li>
-<li>批量写入</li>
-<li>主从不一致 dbsize dbsize</li>
-<li>redis-cli client list | grep -v &quot;omem=0&quot;</li>
-<li>找到对应的业务方直接处理掉</li>
-<li>预防</li>
-<li>线上redis禁用monitor</li>
-<li>适度限制缓冲区大小</li>
-<li>理解monitor的原理</li>
-<li>cachecloud可以直接监控到</li>
-</ul>
-
-<h4>其他方法</h4>
-
-<ul>
-<li>不要忽视key长度</li>
-<li>序列化和压缩方法</li>
-</ul>
-
-<h4>需不需要Redis</h4>
-
-<ul>
-<li>数据 大数据 冷数据</li>
-<li>功能性 关系行 消息队列</li>
-</ul>
-
-<h4>总结</h4>
-
-<ul>
-<li>内存是宝贵资源。</li>
-<li>结合场景选择和优化数据结构。</li>
-<li>序列化是有成本的。</li>
-<li>不要忽视键长度。</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/14 06:10 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Redis%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A.html'>Redis从入门到精通</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15683697645245.html">
-                
-                  <h1>线程传参</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>临时对象</h4>
-
-<ul>
-<li>参数不能传引用和指针</li>
-<li>线程传参传字符串</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">//void myprint(const int&amp; i, char* buf) {
-//存在主线程被回收,char* buf还没有转成string
-void myprint(const int&amp; i, const string&amp; buf) {
-  cout &lt;&lt; &quot; i &quot; &lt;&lt; i &lt;&lt; endl;
-  cout &lt;&lt; &quot;buf &quot; &lt;&lt; buf &lt;&lt; endl;
+<h4>接口之间的组合</h4>
+
+<pre class="line-numbers"><code class="language-go">type Animal interface {
+    ScientificName() string
+    Category() string
 }
-thread th(myprint, var, A(var));
-thread th(myprint, var, string(buf));
-</code></pre>
 
-<ul>
-<li>创建线程的同时传递临时对象是可行的</li>
-<li>保证在主线程被回收前</li>
-<li>thread传递值，传递类对象避免隐式类型转换， 全部在创建线程的时候构建出来</li>
-<li>不使用detach，使用join</li>
-</ul>
-
-<h4>临时对象作为线程参数</h4>
-
-<ul>
-<li>获取线程id， this_thread::get_id()来获取</li>
-<li>临时对象构造时机捕获</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">void myprint2(const A&amp; buf) {
-  cout &lt;&lt; &quot;buf &quot; &lt;&lt; &amp;buf &lt;&lt; &quot; thread_id &quot; &lt;&lt; this_thread::get_id() &lt;&lt; endl;
+type Pet interface {
+    Animal
+    Name() string
 }
-thread th2(myprint2, var);
+</code></pre>
+
+<h4>转型和判断类型</h4>
+
+<pre class="line-numbers"><code class="language-go">reflect.TypeOf(pet).String() //判断类型
+interface{}(pet).(Dog) //转型
+</code></pre>
+
+<h5>接口静态类型和动态类型</h5>
+
+<ul>
+<li>静态类型就是接口名的类型</li>
+<li>动态类型就是动态变量的类型</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-go">  type InterfaceStructure struct {
+    pt uintptr // 到值类型的指针
+    pv uintptr // 到值内容的指针
+}
+</code></pre>
+
+<h4>nil复制给接口变量</h4>
+
+<ul>
+<li>nil 的实现类型赋给了接口变量，该变量接口仍然可以调用该接口的方法吗</li>
+</ul>
+
+<h4>自定义error</h4>
+
+<pre class="line-numbers"><code class="language-go">  type RedisError string
+  Error() string { return &quot;Redis Error: &quot; + string(err) }
 </code></pre>
 
 <ul>
-<li>使用临时对象构建线程，是在主线程中构建完成</li>
+<li>自定义结构体error</li>
 </ul>
 
-<h4>传递类对象和智能指针</h4>
-
-<ul>
-<li>std::ref 可以使用非const拷贝构造函数</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">unique_ptr&lt;int&gt; u_ptr(new int(100));
-thread th3(myprint3, std::move(u_ptr));
+<pre class="line-numbers"><code class="language-go">package main
+import (
+//  &quot;fmt&quot;
+)
+type PathError struct {
+    Op   string
+    Path string
+    err string
+}
+func (e *PathError) Error() string {
+    return e.Op + &quot; &quot; + e.Path + &quot;: &quot; + e.Err.Error()
+}
+func test() error {
+    return &amp;PathError{
+        Op:   &quot;op&quot;,
+        Path: &quot;path&quot;,
+    }
+}
+func main() {
+    test()
+}
 </code></pre>
-
-<h4>成员函数指针做线程函数</h4>
-
-<ul>
-<li></li>
-</ul>
 
                         
                       </div>
@@ -1055,10 +403,10 @@ thread th3(myprint3, std::move(u_ptr));
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/09/13 18:16 下午</span>
+                    <span class="date">2018/10/16 14:43 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -1072,49 +420,73 @@ thread th3(myprint3, std::move(u_ptr));
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15355258133696.html">
+                <a class="clearlink" href="15728255199604.html">
                 
-                  <h1>Docker存储卷</h1>
+                  <h1>自定义函数和匿名函数</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>写实复制</h4>
+                        	<h4>函数定义</h4>
 
 <ul>
-<li><img src="media/15355258133696/15355259487972.jpg" alt=""/></li>
-<li>mount --bind</li>
-<li><img src="m%5Bweb%E7%AB%99%E7%82%B9%E5%92%8Cnginx%5D(media/15355258133696/web%E7%AB%99%E7%82%B9%E5%92%8Cnginx.md)edia/15355258133696/15355271868297.jpg" alt=""/></li>
+<li>def 是可执行语句，这意味着函数直到被调用前，都是不存在的。当程序调用函数时，def 语句才会创建一个新的函数对象，并赋予其名字。</li>
+<li>主程序调用函数时，必须保证这个函数此前已经定义过，不然就会报错</li>
+<li>如果我们在函数内部调用其他函数，函数间哪个声明在前、哪个在后就无所谓，因为 def 是可执行语句，函数在调用之前都不存在，我们只需保证调用时，所需的函数都已经声明定义：</li>
 </ul>
 
-<h4>存储机制</h4>
-
-<p><img src="media/15355258133696/15355282809804.jpg" alt=""/></p>
+<h4>参数类型</h4>
 
 <ul>
-<li>联合挂载文件系统</li>
+<li>Python 不用考虑输入的数据类型，而是将其交给具体的代码去判断执行，同样的一个函数（比如这边的相加函数 my_sum()），可以同时应用在整型、列表、字符串等等的操作中。</li>
 </ul>
 
-<h4>两种卷</h4>
+<h4>局部变量</h4>
 
 <ul>
-<li> Bind mount volume</li>
-<li> Docker-managed volume</li>
-<li> docker run -it -name bbox1 -v /data busybox</li>
-<li><img src="media/15355258133696/15355329411052.jpg" alt="" style="width:374px;"/></li>
-<li></li>
+<li>不能在函数内部随意改变全局变量的值。</li>
+<li>要在函数内部改变全局变量的值，就必须加上 global 这个声明</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-cpp">docker run --name nginx --network container:infracon --volumes-from infracon -it --rm busybox
+<pre class="line-numbers"><code class="language-python">MIN_VLAUE = 1
+MAX_VLAUE = 10
+
+def check(value):
+    if value &lt; MIN_VLAUE or value &gt; MAX_VLAUE:
+        global MIN_VLAUE
+        MIN_VLAUE += 1
+        raise Exception(&#39;check fails&#39;)
+    else:
+        print(&#39;check ok&#39;)
+
+
+def main():
+    check(3)
+
+if __name__ == &#39;__main__&#39;:
+    main()
 </code></pre>
 
 <ul>
-<li>docker容器编排compose</li>
+<li>告诉 Python 解释器，函数内部的变量 MIN_VALUE，就是之前定义的全局变量，并不是新的全局变量，也不是局部变量。这样，程序就可以在函数内部访问全局变量，并修改它的值了。</li>
+<li>对于嵌套函数来说，内部函数可以访问外部函数定义的变量，但是无法修改，若要修改，必须加上 nonlocal 这个关键字</li>
 </ul>
 
-<h4>挂载本地配置文件</h4>
+<h4>闭包</h4>
 
-<pre class="line-numbers"><code class="language-text">docker run --name prometheus -d   -p 9090:9090   -v /home/liuchao/Downloads/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml   prom/prometheus   --config.file=/etc/prometheus/prometheus.yml
+<pre class="line-numbers"><code class="language-python">def nth_power(ex):
+    def exon_of(base):
+        return base ** ex
+    return exon_of
+
+def main():
+    sq = nth_power(2)
+    cub = nth_power(3)
+    print(sq(2))
+    print(cub(3))
+
+if __name__ == &#39;__main__&#39;:
+    main()
 </code></pre>
 
                         
@@ -1124,10 +496,10 @@ thread th3(myprint3, std::move(u_ptr));
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/08/29 14:56 下午</span>
+                    <span class="date">2019/11/04 07:58 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
           				   
                   </div>
                   <div class="more-right right">

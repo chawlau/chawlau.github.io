@@ -170,113 +170,100 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15677204712236.html">
+                <a class="clearlink" href="15723916352790.html">
                 
-                  <h1>Redis复制的原理和优化</h1>
+                  <h1>not1&bind</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>主从复制</h4>
+                        	<h4>取反</h4>
 
 <ul>
-<li>单机</li>
-<li>机器故障</li>
-<li>容量瓶颈</li>
-<li>QPS瓶颈</li>
+<li>not1(bind2nd(less<int>(), 40)));</li>
+<li>compose组合复杂的条件</li>
 </ul>
 
-<h4>作用</h4>
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/10/30 07:27 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E5%80%99%E6%8D%B7STL.html'>候捷STL</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15723071129548.html">
+                
+                  <h1>适配器</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>Adapters</h4>
 
 <ul>
-<li>数据副本</li>
-<li>扩展读性能</li>
-<li>数据流是单向</li>
+<li><img src="media/15723071129548/15723071584800.jpg" alt="" style="width:801px;"/></li>
 </ul>
 
-<h4>配置</h4>
+<h4>三种适配器</h4>
 
 <ul>
-<li>slaveof host port</li>
-<li>slaveof no one </li>
-<li>slave-read-only yes</li>
-<li>info replication</li>
-<li>flushall</li>
+<li>容器适配器</li>
+<li>迭代器适配器</li>
+<li>仿函数适配器</li>
 </ul>
 
-<h4>全量复制</h4>
+<h4>容器适配器</h4>
 
 <ul>
-<li>redis-cli  info server | grep run</li>
-<li>offset 偏移量</li>
-<li><img src="media/15677204712236/15677223368713.jpg" alt="" style="width:818px;"/></li>
-<li>开销</li>
-<li>bgsave</li>
-<li>RDB文件网络传输时间</li>
-<li>从节点清空数据时间</li>
-<li>加载RDB的时间</li>
-<li>可能的AOF重写</li>
+<li><img src="media/15723071129548/15723075551933.jpg" alt="" style="width:989px;"/></li>
 </ul>
 
-<h4>部分复制</h4>
+<h4>函数适配器</h4>
 
 <ul>
-<li><img src="media/15677204712236/15677225231997.jpg" alt="" style="width:683px;"/></li>
+<li><img src="media/15723071129548/15723076807947.jpg" alt="" style="width:1034px;"/></li>
+<li>less对应Operator op</li>
+<li>40对应typename Operation::second argument_type value</li>
+<li>Operation进行类型检测</li>
+<li>将参数存起来，以备后面使用</li>
 </ul>
 
-<h4>故障处理</h4>
+<h5>适配器回答三个问题</h5>
 
 <ul>
-<li>salve故障</li>
-<li>master故障 slaveof no none </li>
-<li>sentinel</li>
+<li>第一实参type是什么</li>
+<li>第二实参type是什么</li>
+<li>二者比较完后的type是什么</li>
 </ul>
 
-<h4>开发和运维的问题</h4>
+<h5>可适配条件</h5>
 
 <ul>
-<li>读写分离</li>
-<li>主从配置不一致</li>
-<li>规避全量复制</li>
-<li>规避复制风暴</li>
+<li>binary_function</li>
+<li>unary_fucntion</li>
 </ul>
 
-<h4>读写分离</h4>
+<h4>新型适配器</h4>
 
 <ul>
-<li>复制数据延迟</li>
-<li>读到过期数据</li>
-<li>清除过期数据 懒惰 定期采样清理</li>
-<li>从节点故障</li>
-</ul>
-
-<h4>配置不一致</h4>
-
-<ul>
-<li>maxmemory不一致</li>
-<li>数据结构优化参数 hash-max-ziplist-entries 内存不一致</li>
-</ul>
-
-<h4>规避全量复制</h4>
-
-<ul>
-<li>第一次全量复制</li>
-<li>小主节点，低峰</li>
-<li>节点运行ID不匹配</li>
-<li>主节点重启 运行ID变化</li>
-<li>故障转移</li>
-<li>复制积压缓冲区不足</li>
-<li>网络中断 部分复制无法满足</li>
-<li>增大复制缓冲区配置rel_backlog_size 网络增强</li>
-</ul>
-
-<h4>规避复制风暴</h4>
-
-<ul>
-<li>主节点重启，多从节点复制</li>
-<li>更换复制拓扑</li>
-<li>单机器复制风暴</li>
-<li><img src="media/15677204712236/15677235584490.jpg" alt="" style="width:764px;"/></li>
+<li>bind</li>
 <li></li>
 </ul>
 
@@ -287,10 +274,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/09/06 05:54 上午</span>
+                    <span class="date">2019/10/29 07:58 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Redis%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A.html'>Redis从入门到精通</a></span>
+          					    <span class="posted-in"><a href='%E5%80%99%E6%8D%B7STL.html'>候捷STL</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -304,451 +291,73 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15677194643630.html">
+                <a class="clearlink" href="15713949412054.html">
                 
-                  <h1>Redis常见问题</h1>
+                  <h1>算法</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>fork操作</h4>
+                        	<h4>结构图</h4>
+
+<p><img src="media/15713949412054/15715453122734.jpg" alt="" style="width:427px;"/></p>
+
+<h4>iterator</h4>
+
+<p><img src="media/15713949412054/15715455629718.jpg" alt="" style="width:1057px;"/></p>
+
+<h4>迭代器对算法影响</h4>
 
 <ul>
-<li>同步操作</li>
-<li>与内存量有关，内存越大，耗时越长</li>
-<li>info: latest_fork_usec</li>
+<li><img src="media/15716560292736/15716563657075.jpg" alt="" style="width:1042px;"/></li>
+<li>根据迭代器的分类来调用次函数</li>
+<li>主函数配合辅助函数</li>
+<li>distance</li>
+<li>advance</li>
 </ul>
 
-<h4>改善fork</h4>
+<h4>copy</h4>
 
 <ul>
-<li>优先使用物理机</li>
-<li>控制redis最大可用内存maxmemory</li>
-<li>合理配置linux内存分配策略: vm.overcommit_memory=1</li>
-<li>降低fork频率</li>
+<li><img src="media/15716560292736/15716569518022.jpg" alt="" style="width:1017px;"/></li>
+<li><img src="media/15713949412054/15716573005059.jpg" alt="" style="width:745px;"/></li>
 </ul>
 
-<h4>子进程开销和优化</h4>
+<h4>accumulate</h4>
 
 <ul>
-<li>RDB和AOF文件生成，属于CPU密集型</li>
-<li>不做CPU绑定，不和CPU密集型部署</li>
-<li>内存</li>
-<li>开销 copy-on-write</li>
-<li>echo never &gt; /sys/kernel/mm/transparent_hugepage/enabled</li>
-<li>硬盘</li>
-<li>AOF和RDB文件写入，可以结合iostat, iotop分析</li>
-<li>不要和高硬盘负载服务在一起  存储和消息队列</li>
-<li>no-appendfsync-on-rewrite = yes</li>
-<li>根据写入量决定磁盘类型</li>
-<li>单机多实例持久化目录可以考虑分盘</li>
+<li><img src="media/15713949412054/15720002023243.jpg" alt="" style="width:1065px;"/></li>
+<li><img src="media/15713949412054/15720003899707.jpg" alt="" style="width:629px;"/></li>
 </ul>
 
-<h4>AOG追加阻塞</h4>
+<h4>replace&amp;replace_if&amp;replace</h4>
+
+<h4>count&amp;count_if</h4>
 
 <ul>
-<li><img src="media/15677194643630/15677203315569.jpg" alt="" style="width:524px;"/></li>
-<li>Redis日志</li>
-<li>info persistence</li>
+<li>如果容器带count，用自带的</li>
+<li>不带count用算法的</li>
+<li>带count是一个字典结构，关联容器</li>
 </ul>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/06 05:37 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Redis%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A.html'>Redis从入门到精通</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15676343759084.html">
-                
-                  <h1>持久化</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>作用</h4>
+<h4>rebegin&amp;rend</h4>
 
 <ul>
-<li>数据落盘</li>
+<li><img src="media/15713949412054/15721473356416.jpg" alt="" style="width:891px;"/></li>
 </ul>
 
-<h4>持久化</h4>
+<h4>binary_search</h4>
 
 <ul>
-<li>快照</li>
-<li>写日志</li>
+<li><img src="media/15713949412054/15721476188458.jpg" alt="" style="width:342px;"/></li>
+<li>lower_bound能够插入的最低点</li>
+<li>upper_bound能够插入的最高点</li>
+<li><img src="media/15713949412054/15721477967350.jpg" alt="" style="width:349px;"/></li>
 </ul>
 
-<h4>RDB</h4>
+<h4>防函数</h4>
 
 <ul>
-<li>触发机制 save 同步阻塞</li>
-<li>bgsave 异步</li>
-<li>自动 </li>
-</ul>
-
-<h4>save</h4>
-
-<ul>
-<li>文件策略 存在老的RDB文件，新替换老的 O(n)</li>
-</ul>
-
-<h4>bgsave</h4>
-
-<ul>
-<li><img src="media/15676343759084/15676348508243.jpg" alt="" style="width:992px;"/></li>
-<li>fork 会阻塞redis</li>
-<li><img src="media/15676343759084/15676348836006.jpg" alt="" style="width:679px;"/></li>
-<li>对比</li>
-<li><img src="media/15676343759084/15676349032928.jpg" alt="" style="width:835px;"/></li>
-</ul>
-
-<h4>自动生成RDB</h4>
-
-<ul>
-<li><img src="media/15676343759084/15676350374860.jpg" alt="" style="width:1000px;"/></li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">stop-writes-on-bgsave-error yes
-rdbcompression yes
-rdbchecksum yes
-save 900 1
-save 300 10
-save 60 10000 关闭
-dbfilename dump-${port}.rdb
-dir /bigdiskpath
-</code></pre>
-
-<h4>触发机制</h4>
-
-<ul>
-<li>全量复制</li>
-<li>debug reload</li>
-<li>shutdown</li>
-<li>info memory</li>
-</ul>
-
-<h4>总结</h4>
-
-<ul>
-<li><img src="media/15676343759084/15676366419362.jpg" alt="" style="width:770px;"/></li>
-</ul>
-
-<h4>RDB不足</h4>
-
-<ul>
-<li><img src="media/15676343759084/15676366801557.jpg" alt="" style="width:651px;"/></li>
-<li><img src="media/15676343759084/15676367423139.jpg" alt="" style="width:496px;"/></li>
-<li></li>
-</ul>
-
-<h4>AOF</h4>
-
-<ul>
-<li>always 每条命令</li>
-<li>everysec 每秒</li>
-<li>no OS决定刷盘</li>
-<li><img src="media/15676343759084/15676370952837.jpg" alt="" style="width:866px;"/></li>
-<li>重写</li>
-<li>过期重复命令优化</li>
-<li>减少磁盘占用</li>
-<li>加速恢复速度</li>
-<li>bgrewriteaof 内存中操作</li>
-<li><img src="media/15676343759084/15676373872232.jpg" alt="" style="width:986px;"/></li>
-<li>auto-aof-rewrite-min-size</li>
-<li>auto-aof-rewrite-percentage</li>
-<li><img src="media/15676343759084/15676374645536.jpg" alt="" style="width:859px;"/></li>
-<li>重写流程</li>
-<li><img src="media/15676343759084/15676375084556.jpg" alt="" style="width:486px;"/></li>
-<li><img src="media/15676343759084/15676377478770.jpg" alt="" style="width:738px;"/></li>
-<li>no-appendfsync-on-rewrite重写的时候不要进行aof操作</li>
-<li>aof-load-truncated yes是否忽略错误</li>
-</ul>
-
-<h4>RDB和AOF</h4>
-
-<ul>
-<li>RDB 关</li>
-<li>集中管理</li>
-<li>主从 从开</li>
-<li>AOF 开 缓存和存储</li>
-<li>AOF重写集中管理</li>
-<li>everysec</li>
-</ul>
-
-<h4>最佳策略</h4>
-
-<ul>
-<li>小分片</li>
-<li>缓存和存储</li>
-<li>监控 磁盘 内存 负载 网络</li>
-<li>足够的内存</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/05 05:59 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Redis%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A.html'>Redis从入门到精通</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15676689657297.html">
-                
-                  <h1>负载均衡</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>好处</h4>
-
-<ul>
-<li>服务水平可扩展</li>
-<li>稳定性大大提升</li>
-</ul>
-
-<h4>注册中心</h4>
-
-<ul>
-<li>服务的IP节点维护在客户端</li>
-<li>结合注册中心，实现节点动态增删</li>
-<li>流量调度，请求均衡的分配到服务器</li>
-</ul>
-
-<h4>MsgPack</h4>
-
-<ul>
-<li>代码自动生成</li>
-<li>msgp自动生成代码</li>
-</ul>
-
-<h4>protobuf</h4>
-
-<ul>
-<li><img src="media/15676689657297/15676739994129.jpg" alt="" style="width:1061px;"/></li>
-<li>value如果高位为0，就表示内容已经结束，后面的字节内容不属于这个value，如果是1，则继续按着len的字节数来读，直到读到高位为0或者长度结束为止</li>
-<li>packed=true存放数组TLVLVLV 数组开始和结束start group end group</li>
-<li>fixed表示字节要占满</li>
-<li>L不一定传</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/05 15:36 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15675554762979.html">
-                
-                  <h1>瑞士军刀</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>用途</h4>
-
-<ul>
-<li>慢查询</li>
-<li>pipeline</li>
-<li>发布订阅</li>
-<li>Bitemap</li>
-<li>HyperLogLog</li>
-<li>GEO</li>
-</ul>
-
-<h4>慢查询</h4>
-
-<ul>
-<li><img src="media/15675554762979/15675555810775.jpg" alt="" style="width:769px;"/></li>
-<li>慢查询发生在第三个阶段</li>
-<li>客户端超时不一定是慢查询</li>
-<li>但是慢查询是客户端超时的一个可能因素</li>
-<li>两个配置 slowlog-max-len 长度 1000</li>
-<li>slowlog-log-slower-than 时间 1ms</li>
-<li>获取慢查询</li>
-<li>slowlog get 获取慢查询信息</li>
-<li>slowlog len 长度</li>
-<li>slowlog reset 清空队列长度</li>
-</ul>
-
-<h4>pipeline</h4>
-
-<ul>
-<li>原生M操作是原子</li>
-<li>pipeline拆分成多个pipeline子命令</li>
-<li><img src="media/15675554762979/15675567423105.jpg" alt="" style="width:733px;"/></li>
-</ul>
-
-<h4>发布订阅</h4>
-
-<ul>
-<li>subscribe sohu:tv</li>
-<li>publish sohu:tv &quot;Ok&quot;</li>
-<li>pubsub numsub channel 给定频道的订阅数量</li>
-<li>pubsun channels  订阅的频道</li>
-</ul>
-
-<h4>消息队列</h4>
-
-<ul>
-<li><img src="media/15675554762979/15675579167018.jpg" alt="" style="width:1142px;"/></li>
-</ul>
-
-<h4>Bitmap</h4>
-
-<ul>
-<li>字符串对应的二进制位</li>
-<li>setbit key offset value</li>
-<li>offer超出中间都会补0</li>
-<li>bitcount key 指定区间1的个数</li>
-<li>bitop op destkey key1 key2</li>
-<li>bitpos key target start end</li>
-<li>独立用户统计</li>
-<li>使用</li>
-<li>注意setbit偏移量有较大损耗</li>
-<li>位图不是绝对的好</li>
-</ul>
-
-<h4>HyperLogLog</h4>
-
-<ul>
-<li>极小的空间完成数量统计</li>
-<li>本质还是字符串</li>
-<li><img src="media/15675554762979/15675588762892.jpg" alt="" style="width:1016px;"/></li>
-<li><img src="media/15675554762979/15675593839617.jpg" alt="" style="width:989px;"/></li>
-</ul>
-
-<h4>GEO</h4>
-
-<ul>
-<li>地理位置信息</li>
-<li>geoadd</li>
-<li>geopos</li>
-<li>geodist</li>
-<li>geodist city:loc tianjin beijing km</li>
-<li>georadiusbymember key beijing 150 km</li>
-<li>type geoKey zset</li>
-<li>没有删除zrem</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/04 08:04 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Redis%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A.html'>Redis从入门到精通</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15675915694548.html">
-                
-                  <h1>Weak_ptr</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>概念</h4>
-
-<ul>
-<li>weak_ptr弱 强 shared_ptr</li>
-<li>智能指针，指向由shared_ptr管理的对象</li>
-<li>不控制对象的生命周期，不会改变引用计数</li>
-<li>构造和析构不会增加引用计数</li>
-<li>shared_ptr要释放对象的时候照常释放，不管是否有weak_ptr</li>
-<li>weak_ptr 监视shared_ptr的生命周期，是shared_ptr的扩充</li>
-<li>不是独立的智能指针。不能用来操作所指向的资源，监视对象是否存在</li>
-</ul>
-
-<h4>常规操作</h4>
-
-<ul>
-<li>weak_ptr不能直接来访问对象</li>
-<li>需要lock来访问，如果存在，lock就返回一个对象的shared_ptr指针</li>
-<li>如果不存在，就返回一个空的shared_ptr</li>
-<li>weak_ptr能够判断对象是否存在</li>
-</ul>
-
-<h4>常用指针</h4>
-
-<ul>
-<li>use_count 获取对象强引用的数量</li>
-<li>expired 是否过期，如果use_count=0,对象不存在，观测对象的资源是否被释放</li>
-<li>reset 将弱引用指针设置为空，不影响强引用，</li>
-</ul>
-
-<h4>尺寸问题</h4>
-
-<ul>
-<li>weak_ptr和shared_ptr一样大。裸指针的两倍</li>
-<li>第一个指针指向智能指向对象</li>
-<li>第二个指针指向shared_ptr生成的控制块</li>
-<li><img src="media/15675915694548/15675935853040.jpg" alt="" style="width:898px;"/></li>
 <li></li>
 </ul>
 
@@ -759,10 +368,10 @@ dir /bigdiskpath
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/09/04 18:06 下午</span>
+                    <span class="date">2019/10/18 18:35 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          					    <span class="posted-in"><a href='%E5%80%99%E6%8D%B7STL.html'>候捷STL</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -776,22 +385,44 @@ dir /bigdiskpath
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15675851611934.html">
+                <a class="clearlink" href="15721446385015.html">
                 
-                  <h1>DNS服务发现</h1>
+                  <h1>Query String</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>基于SDK的服务发现</h4>
+                        	<h4>搜索</h4>
 
 <ul>
-<li>不影响主流程</li>
-<li>节点准时更新</li>
-<li>ETCD的qps只有几千</li>
-<li>ectd的请求聚合成一个请求</li>
-<li></li>
+<li>GET /test_index/_search?q=-producer:gaolujie</li>
+<li>GET /test_index/_search?q=+producer:gaolujie</li>
 </ul>
+
+<h4>_all metadata</h4>
+
+<ul>
+<li>2、_all metadata的原理和作用</li>
+</ul>
+
+<p>GET /test_index/test_type/_search?q=test</p>
+
+<p>直接可以搜索所有的field，任意一个field包含指定的关键字就可以搜索出来。我们在进行中搜索的时候，难道是对document中的每一个field都进行一次搜索吗？不是的</p>
+
+<p>es中的_all元数据，在建立索引的时候，我们插入一条document，它里面包含了多个field，此时，es会自动将多个field的值，全部用字符串的方式串联起来，变成一个长的字符串，作为_all field的值，同时建立索引</p>
+
+<p>后面如果在搜索的时候，没有对某个field指定搜索，就默认搜索_all field，其中是包含了所有field的值的</p>
+
+<p>举个例子</p>
+
+<p>{<br/>
+  &quot;name&quot;: &quot;jack&quot;,<br/>
+  &quot;age&quot;: 26,<br/>
+  &quot;email&quot;: &quot;<a href="mailto:jack@sina.com">jack@sina.com</a>&quot;,<br/>
+  &quot;address&quot;: &quot;guamgzhou&quot;<br/>
+}</p>
+
+<p>&quot;jack 26 <a href="mailto:jack@sina.com">jack@sina.com</a> guangzhou&quot;，作为这一条document的_all field的值，同时进行分词后建立对应的倒排索引</p>
 
                         
                       </div>
@@ -800,398 +431,10 @@ dir /bigdiskpath
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/09/04 16:19 下午</span>
+                    <span class="date">2019/10/27 10:50 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15672961867952.html">
-                
-                  <h1>API使用</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>通用命令</h4>
-
-<ul>
-<li>keys</li>
-<li>dbsize</li>
-<li>exists key</li>
-<li>del </li>
-<li>expire key seconds</li>
-<li>type key</li>
-</ul>
-
-<h4>keys使用</h4>
-
-<ul>
-<li>热备从节点</li>
-<li>scan scan 0 match a* count 1000</li>
-</ul>
-
-<h4>expire&amp;ttl&amp;persist</h4>
-
-<ul>
-<li>expire key seconds</li>
-<li>ttl key -1 表示不过期 -2 表示key不存在</li>
-<li>persist key</li>
-</ul>
-
-<h4>数据结构和内部编码</h4>
-
-<ul>
-<li><img src="media/15672961867952/15672976833894.jpg" alt="" style="width:554px;"/></li>
-<li><img src="media/15672961867952/15672977531575.jpg" alt="" style="width:1146px;"/></li>
-</ul>
-
-<h4>单线程为什么快</h4>
-
-<ul>
-<li>纯内存</li>
-<li>非阻塞IO</li>
-<li>避免线程切换和竞态消耗</li>
-</ul>
-
-<h4>单线程注意事项</h4>
-
-<ul>
-<li>一次只运行一条命令</li>
-<li>拒绝长慢命令</li>
-<li>keys flushall flushdb slow lua script multi/exec opreate big value</li>
-<li>fsync file descriptor</li>
-<li>close file descriptor</li>
-</ul>
-
-<h4>字符串</h4>
-
-<ul>
-<li>缓存</li>
-<li>分布式锁</li>
-<li>计数器</li>
-<li>incr decr incrby decrby</li>
-<li>网页访问量 incr user_id:pageview</li>
-<li>set key value 不管key是否存在都设置</li>
-<li>setnx key value 不存在才设置</li>
-<li>set key value xx 存在才设置</li>
-<li>mget k1 k2 k3</li>
-<li>mset k1 k2 k3</li>
-<li>getset 设置新值获取旧值</li>
-<li>append key value</li>
-<li>strlen 长度</li>
-<li>incrbyfloat</li>
-<li>getrange</li>
-<li>setrange</li>
-</ul>
-
-<h4>hash</h4>
-
-<ul>
-<li>hset</li>
-<li>hset</li>
-<li>hdel</li>
-<li>hexists 是否存在</li>
-<li>hlen 获取field数量</li>
-<li>hmset key</li>
-<li>hmget key</li>
-<li>页面访问 hincrby userinfo pageview count</li>
-<li>hgetall</li>
-<li>hvals</li>
-<li>hkeys</li>
-<li>string hash对比</li>
-</ul>
-
-<table>
-<thead>
-<tr>
-<th style="text-align: center">get</th>
-<th style="text-align: center">hget</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td style="text-align: center">set setnx</td>
-<td style="text-align: center">hset hsetnx</td>
-</tr>
-<tr>
-<td style="text-align: center">del</td>
-<td style="text-align: center">hdel</td>
-</tr>
-<tr>
-<td style="text-align: center">incr incrby decr decrby</td>
-<td style="text-align: center">hincrby</td>
-</tr>
-<tr>
-<td style="text-align: center">mset</td>
-<td style="text-align: center">hmset</td>
-</tr>
-<tr>
-<td style="text-align: center">mget</td>
-<td style="text-align: center">hmget</td>
-</tr>
-</tbody>
-</table>
-
-<ul>
-<li>设置用户属性方案对比</li>
-</ul>
-
-<table>
-<thead>
-<tr>
-<th style="text-align: center">命令</th>
-<th style="text-align: center">优点</th>
-<th style="text-align: center">缺点</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td style="text-align: center">string v1</td>
-<td style="text-align: center">编程简单 节约内存</td>
-<td style="text-align: center">序列化开销 设置属性要操作整个数据</td>
-</tr>
-<tr>
-<td style="text-align: center">string v2</td>
-<td style="text-align: center">直观 可以部分更新</td>
-<td style="text-align: center">内存占用较大 key比较分散</td>
-</tr>
-<tr>
-<td style="text-align: center">hash</td>
-<td style="text-align: center">直观 节省空间 可以部分更新</td>
-<td style="text-align: center">编程复杂 ttl二级属性不好控制</td>
-</tr>
-</tbody>
-</table>
-
-<ul>
-<li>总结</li>
-<li><img src="media/15672961867952/15673809313094.jpg" alt="" style="width:583px;"/></li>
-</ul>
-
-<h4>list</h4>
-
-<ul>
-<li>有序</li>
-<li>可以重复</li>
-<li>lpush list a b c  c-&gt;b-&gt;a</li>
-<li>rpush list a b c  a-&gt;b-&gt;c</li>
-<li>lrange list 0 3 遍历pos a-&gt;b-&gt;c</li>
-<li>linsert list after c d a-&gt;b-&gt;c-&gt;d</li>
-<li>linsert list before a -1 -1-&gt;a-&gt;b-&gt;c-&gt;d</li>
-<li>rpop list -1-&gt;a-&gt;b-&gt;c</li>
-<li>lpop list a-&gt;b-&gt;c</li>
-<li>lrem</li>
-<li><img src="media/15672961867952/15673819474415.jpg" alt="" style="width:711px;"/></li>
-<li>lrem list2 -2 c 从右到左</li>
-<li>lrem list2 2 c 从左到右</li>
-<li>lrem list2 0 c 全部删除</li>
-<li>ltrim list2 0 5 保留指定范围内的元素</li>
-<li>ldel会阻塞redis, ltrim不会</li>
-<li>lindex list2 0 获取置顶索引的值</li>
-<li>llen 列表长度</li>
-<li>lset 设置指定索引值 </li>
-<li>blpop</li>
-<li>prpop </li>
-<li><img src="media/15672961867952/15673825684355.jpg" alt="" style="width:834px;"/></li>
-<li>组合功能</li>
-<li><img src="media/15672961867952/15673826098214.jpg" alt="" style="width:685px;"/></li>
-</ul>
-
-<h4>集合</h4>
-
-<ul>
-<li>无序</li>
-<li>无重复</li>
-<li>集合间操作</li>
-<li>sadd</li>
-<li>srem</li>
-<li>scard userinfo 集合长度</li>
-<li>sismember userinfo name 集合成员是否存在</li>
-<li>srandmember userinfo 随机访问集合成员</li>
-<li>smembers userinfo 全部成员</li>
-<li>spop随机弹出成员</li>
-<li>sdiff</li>
-<li>sunion</li>
-<li>sinter</li>
-<li>实战</li>
-<li><img src="media/15672961867952/15673834571882.jpg" alt="" style="width:605px;"/></li>
-</ul>
-
-<h4>zset</h4>
-
-<ul>
-<li><img src="media/15672961867952/15675533554609.jpg" alt="" style="width:847px;"/></li>
-<li><img src="media/15672961867952/15675533752025.jpg" alt="" style="width:834px;"/></li>
-<li>zadd key score ele O(logN)</li>
-<li>zrem key ele</li>
-<li>zscore key ele 返回分数</li>
-<li>zrank key ele 获取排名</li>
-<li>zrange key 0 -1 打印全部的ele</li>
-<li>zrange key 0 -1 withscores 打印全部的ele和scores</li>
-<li>zrangebyscore key min max 指定区间的ele</li>
-<li>zremrangebyrank 根据排名删除</li>
-<li>zremrangebyscore 根据分数范围删除</li>
-<li>zrevrnak</li>
-<li>zrevrange</li>
-<li>zrevrangebyscore</li>
-<li>zinterstore</li>
-<li>zunionstore</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/01 08:03 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Redis%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A.html'>Redis从入门到精通</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15672947850405.html">
-                
-                  <h1>短地址服务</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>哈希算法</h4>
-
-<ul>
-<li>MurmurHash算法将url变成<a href="http://t.cn/181338494">http://t.cn/181338494</a></li>
-<li>在网址 URL 中，常用的合法字符有 0～9、a～z、A～Z 这样 62 个字符。为了让哈希值表示起来尽可能短，我们可以将 10 进制的哈希值转化成 62 进制<a href="http://t.cn/181338494--%3Ehttp://t.cn/cgSqq">http://t.cn/181338494--&gt;http://t.cn/cgSqq</a></li>
-</ul>
-
-<h4>哈希冲突</h4>
-
-<ul>
-<li>url-&gt;murmur-&gt;url-short-&gt;Mysql-&gt;url+拼接字段-&gt;hash</li>
-<li>访问的时候将mysql中的拼接字段去掉，然后将不包含特殊字符的url返回给浏览器</li>
-</ul>
-
-<h4>优化哈希算法</h4>
-
-<ul>
-<li>添加sql唯一索引</li>
-<li>布隆过滤器</li>
-</ul>
-
-<h4>自增ID生成短地址</h4>
-
-<ul>
-<li>从 ID 生成器中取一个号码，然后将其转化成 62 进制表示法，拼接到短网址服务的域名</li>
-</ul>
-
-<h4>高性能的ID生成器</h4>
-
-<ul>
-<li> ID 生成器装多个前置发号器。我们批量地给每个前置发号器发送 ID 号码。当我们接受到短网址生成请求的时候，就选择一个前置发号器来取号码</li>
-<li> 直接实现多个 ID 生成器同时服务。为了保证每个 ID 生成器生成的 ID 不重复。我们要求每个 ID 生成器按照一定的规则，来生成 ID 号码。比如，第一个 ID 生成器只能生成尾号为 0 的，第二个只能生成尾号为 1 的，</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/01 07:39 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15488164275301.html">
-                
-                  <h1>查询和内存</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>取发数据流程</h4>
-
-<ul>
-<li>获取一行，写到 net_buffer 中。这块内存的大小是由参数 net_buffer_length 定义的，默认是 16k。</li>
-<li>重复获取行，直到 net_buffer 写满，调用网络接口发出去。</li>
-<li>如果发送成功，就清空 net_buffer，然后继续取下一行，并写入 net_buffer。</li>
-<li>如果发送函数返回 EAGAIN 或 WSAEWOULDBLOCK，就表示本地网络栈（socket send buffer）写满了，进入等待。直到网络栈重新可写，再继续发送。
-<img src="media/15488164275301/a027c300d7dde8cea4fad8f34b670ebd.jpg" alt="a027c300d7dde8cea4fad8f34b670ebd"/></li>
-</ul>
-
-<h4>Buffer Pool的内存改进版LRU算法</h4>
-
-<ul>
-<li><img src="media/15488164275301/25e18920dd204cf99eec2d62755fe99e.png" alt="25e18920dd204cf99eec2d62755fe99e"/></li>
-</ul>
-
-<h4>查询区别</h4>
-
-<ul>
-<li> mysql_use_result 方法。这个方法是读一行处理一行</li>
-<li> mysql_store_result 这个接口，直接把查询结果保存到本地内存</li>
-</ul>
-
-<h4>查询语句的状态变化</h4>
-
-<ul>
-<li>MySQL 查询语句进入执行阶段后，首先把状态设置成“Sending data”；</li>
-<li>发送执行结果的列相关的信息（meta data) 给客户端；</li>
-<li>再继续执行语句的流程；</li>
-<li>执行完成后，把状态设置成空字符串</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/01/30 10:47 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+          					    <span class="posted-in"><a href='ElasticSearch.html'>ElasticSearch</a></span>
           				   
                   </div>
                   <div class="more-right right">

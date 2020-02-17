@@ -170,30 +170,25 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15420788724296.html">
+                <a class="clearlink" href="15401943381467.html">
                 
-                  <h1>sync.Cond</h1>
+                  <h1>if&for&switch</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>作用</h4>
+                        	<h4>range</h4>
 
 <ul>
-<li>协调想要访问共享资源的协程的，用来通知呗互斥锁阻塞的线程</li>
+<li>range表达式只会在for语句开始执行时被求值一次</li>
+<li>range表达式的求值结果会被复制，被迭代的对象是range表达式结果值的副本</li>
 </ul>
 
-<h4>cond work witch mutex</h4>
+<h4>switch和case关系</h4>
 
 <ul>
-<li>sync.Cond不是开箱即用的，需要初始化</li>
-</ul>
-
-<h4>question</h4>
-
-<ul>
-<li>*sync.Cond类型的值可以被传递吗？那sync.Cond呢</li>
-<li></li>
+<li>switch 的case语句在case子句上的选择是唯一的，不允许有case中子表达式和其他case子表达式值想等的情况</li>
+<li>只要switch表达式的结果值与某个case表达式中的任意一个子表达式的结果值相等，该case表达式所属的case子句就会被选中</li>
 </ul>
 
                         
@@ -203,7 +198,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/11/13 11:14 上午</span>
+                    <span class="date">2018/10/22 15:45 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
@@ -220,98 +215,49 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15420735925937.html">
+                <a class="clearlink" href="15427081419392.html">
                 
-                  <h1>sync.Mutex&sync.RWMutex</h1>
+                  <h1>context.Context</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>mutex attention</h4>
+                        	<h4>任务取消</h4>
 
 <ul>
-<li>不要重复锁定</li>
-<li>不要忘记解锁互斥锁，必要时使用defer</li>
-<li>不要对尚未锁定或者已经解锁的互斥锁解锁</li>
-<li>不要在多个函数之间传递互斥锁</li>
-<li>注意 对于每一个锁定操作，都要有且只有一个对应的解锁操作</li>
-<li>mutex是值类型，函数传递或者进入通道都会导致副本产生</li>
-<li>不要试图解锁未锁定的锁，会引发panic</li>
+<li>根 Context:通过 context.Background () 创建</li>
+<li>⼦子 Context:context.WithCancel(parentContext) 创建</li>
+<li>ctx, cancel := context.WithCancel(context.Background()) 当前 Context 被取消时，基于他的⼦子 context 都会被取消</li>
+<li>接收取消通知 &lt;-ctx.Done()</li>
 </ul>
 
-<h4>question</h4>
+<pre class="line-numbers"><code class="language-go">func isCancelled(ctx context.Context) bool {
+    select {
+    case &lt;-ctx.Done():
+        return true
+    default:
+        return false
+    }
+}
 
-<ul>
-<li>互斥锁和读写锁的指针类型实现了哪一个接口</li>
-<li>Locker接口</li>
-<li>怎样获取读写锁中的读锁</li>
-<li>RLock</li>
-<li>race 查看程序中是否有竞争关系</li>
-</ul>
-
-<h4>code</h4>
-
-<pre class="line-numbers"><code class="language-text">  mu  sync.RWMutex
-  mu.Lock()
-  defer mu.RUnlock()
-  
-</code></pre>
-
-<h4>add line numbers to log Output</h4>
-
-<pre class="line-numbers"><code class="language-text">   log.SetFlags(log.LstdFlags | log.Lshortfile)
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/11/13 09:46 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15408659579397.html">
-                
-                  <h1>loadbalance algorithm</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>负载均衡</h4>
-
-<ul>
-<li>负载均衡算法</li>
-</ul>
-
-<h4>自动输出对象</h4>
-
-<pre class="line-numbers"><code class="language-text">func (p *Instance) String() string {
-  return p.host + &quot;:&quot; + strconv.Itoa(p.port)
+func TestCancel(t *testing.T) {
+    ctx, cancel := context.WithCancel(context.Background())
+    for i := 0; i &lt; 5; i++ {
+        go func(i int, ctx context.Context) {
+            for {
+                if isCancelled(ctx) {
+                    break
+                }
+                time.Sleep(time.Millisecond * 5)
+            }
+            fmt.Println(i, &quot;Cancelled&quot;)
+        }(i, ctx)
+    }
+    cancel()
+    time.Sleep(time.Second * 1)
 }
 </code></pre>
 
-<h4>一致性哈希算法</h4>
-
-<ul>
-<li>一致性哈希 //TODO</li>
-</ul>
-
                         
                       </div>
                   </div>
@@ -319,7 +265,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/10/30 10:19 上午</span>
+                    <span class="date">2018/11/20 18:02 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
@@ -336,286 +282,121 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15395094398747.html">
+                <a class="clearlink" href="15396794002878.html">
                 
-                  <h1>程序实体</h1>
+                  <h1>指针和Go语句执行规则</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>变量重申明</h4>
+                        	<h4>指针不可寻址</h4>
 
 <ul>
-<li>变量的类型在其初始化的时候已经确定，再次申明必须和原来类型相同</li>
-<li>变量重申明只能发生在同一个模块</li>
-<li>变量重申明只有在短变量申明时发生</li>
-<li>申明并赋值的变量必须时多个，并且其中至少一个是新的变量，这时我们才可以</li>
+<li>不可变的值不可寻址</li>
+<li>临时结果的值不可寻址</li>
+<li>拿到某值的指针可能会破坏程序的一致性，不安全</li>
+<li>基本类型的值上调用指针方法，Go语言会自动转译</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-text">var err error
-n, err := io.WriteString(os.Stdout, &quot;Hello, everyone!\n&quot;)
-</code></pre>
-
-<h4>总结变量申明方式</h4>
+<h4>调度器</h4>
 
 <ul>
-<li>var完整方式</li>
-<li>:= 变量方式</li>
-<li>重申明只可以在短变量定义中出现，并且在多个变量中出现</li>
+<li>G goroutine</li>
+<li>P Processor</li>
+<li>M machine</li>
 </ul>
 
-<h4>类型断言</h4>
-
-<pre class="line-numbers"><code class="language-text">  value, ok := interface{}(container).([]string)
-</code></pre>
+<h4>Goroutine机制</h4>
 
 <ul>
-<li>类型断言表达式的语法形式必须是接口类型的</li>
+<li>从空闲的存放的G队列中获取一个G，用G包装当前的go函数，然后再把G追加到某个可允许的G队列中</li>
+<li>go函数的执行时间总是明显滞后于所属的go语句的执行时间</li>
 </ul>
 
-<h4>程序可见性</h4>
+<h4>限制gorutine的启动数量</h4>
 
-<ul>
-<li>同包内，结构体变量的成员变量可随时被访问，不受首字母大小写的影响（即便成员变量小写，也可被直接访问，而不需要通过成员函数来实现）。</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/10/14 17:30 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15414864011635.html">
-                
-                  <h1>http编写</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>注册捕获panic</h4>
-
-<pre class="line-numbers"><code class="language-text">func SimpleServer(w http.ResponseWriter, r *http.Request) {
-  io.WriteString(w, &quot;&lt;h1&gt;Hello world&lt;/h1&gt;&quot;)
-  panic(&quot;test panic&quot;)
-}
-
-func LogPanic(handle http.HandlerFunc) http.HandlerFunc {
-  return func(w http.ResponseWriter, r *http.Request) {
-    defer func() {
-      if ret := recover(); ret != nil {
-        fmt.Println(&quot;panic&quot;, r.RemoteAddr, &quot; ret &quot;, ret)
-      }
-    }()
-    handle(w, r)
-  }
+<pre class="line-numbers"><code class="language-text">func handle(i int, ch chan struct{}) {
+  _ = i
+  &lt;-ch
 }
 
 func main() {
-  http.HandleFunc(&quot;/test1&quot;, LogPanic(SimpleServer))
-  if err := http.ListenAndServe(&quot;:8088&quot;, nil); err != nil {
+  var maxRoutine = 10
+  ch := make(chan struct{}, maxRoutine)
+  total := 100
+
+  for i := 0; i &lt; total; i++ {
+    ch &lt;- struct{}{}
+    go handle(i, ch)
   }
-  select {}
 }
 </code></pre>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/11/06 14:40 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
+<h4>顺序串行执行goroutine</h4>
 
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15410580902368.html">
-                
-                  <h1>定时器</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>Ticker</h4>
-
-<ul>
-<li>NewTicker内部会产生一个goroutine，定时向一个channel写数据</li>
-<li>定时器需要关闭，不然会造成内存泄漏</li>
-<li>高性能用NewTimer 和 NewTicker的区别 //TODO</li>
-<li>定时器使用</li>
-<li><a href="https://www.kancloud.cn/digest/batu-go/153534">https://www.kancloud.cn/digest/batu-go/153534</a></li>
-<li><a href="http://blog.51cto.com/quenlang/1735366">http://blog.51cto.com/quenlang/1735366</a></li>
-</ul>
-
-<h4>goroutine中使用recover</h4>
-
-<ul>
-<li>捕获panic</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/11/01 15:41 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15401977187536.html">
-                
-                  <h1>panic&recover&defer</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>panic</h4>
-
-<ul>
-<li>panic一旦发生，控制权就会迅速的沿着调用栈的反方向传播</li>
-<li>panic后面的代码根本没有执行的机会</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/10/22 16:41 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15401115527029.html">
-                
-                  <h1>Struct类型和interface</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>内存布局</h4>
-
-<ul>
-<li>go的内存布局是连续的</li>
-<li>结构体成员小写是包内访问</li>
-<li>没有构造函数，使用工厂模式解决这个问题</li>
-</ul>
-
-<h4>tag</h4>
-
-<ul>
-<li>tag可以通过反射的机制获取，常用的就是json序列化和反序列化,方便打包</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text"> type Student struct {
-    Name  string `json:&quot;name&quot;` //打包压缩的字段
-    Age   int    `json:&quot;age&quot;`
-    Score int    `json:&quot;score&quot;`
-  }
-</code></pre>
-
-<h4>interface</h4>
-
-<ul>
-<li>interface类型默认是指针</li>
-</ul>
-
-<h4>作业</h4>
-
-<p><img src="media/15401115527029/15401139160631.jpg" alt=""/><br/>
-<img src="media/15401115527029/15401880106472.jpg" alt=""/></p>
-
-<h4>Sort</h4>
-
-<ul>
-<li>Sort(Inteface interface){}</li>
-<li>排序本质上是针对具体的数组或者切片实现一个具体化的排序算法</li>
-</ul>
-
-<h4>接口断言</h4>
-
-<pre class="line-numbers"><code class="language-text">  func classifier(items ...interface{}) {
-  for _, v := range items {
-    switch v.(type) {
-    case bool:
-      fmt.Println(&quot;bool type&quot;)
-    case int, int64, int32:
-      fmt.Println(&quot;int&quot;)
-    case float32, float64:
-      fmt.Println(&quot;float32&quot;)
-    case string:
-      fmt.Println(&quot;string&quot;)
+<pre class="line-numbers"><code class="language-text">func main() {
+  var count uint32 = 0
+  trigger := func(i uint32, fn func()) {
+    for {
+      if n := atomic.LoadUint32(&amp;count); n == i {
+        fn()
+        atomic.AddUint32(&amp;count, 1)
+        break
+      }
+      time.Sleep(time.Nanosecond)
     }
   }
+  for i := uint32(0); i &lt; 10; i++ {
+    go func(i uint32) {
+      fn := func() {
+        fmt.Println(i)
+      }
+      trigger(i, fn)
+    }(i)
+  }
+  trigger(10, func() {})
 }
 
-func main() {
-  classifier(2, 8.2, &quot;ok string&quot;, false)
+func TestGroutine(t *testing.T) {
+ var w sync.WaitGroup
+ w.Add(10)
+ for i := 0; i &lt; 10; i++ {
+  go func(i int) {
+   //time.Sleep(time.Second * 1)
+   fmt.Println(i)
+   w.Done()
+  }(i) //值传递
+ }
+ w.Wait()//等待
+ time.Sleep(time.Millisecond * 50)
 }
 </code></pre>
+
+<h4>并发和并行</h4>
+
+<ul>
+<li>多线程程序在一个核的cpu上运行就是并发</li>
+<li>多线程程序在多个核的cpu运行就是并行</li>
+</ul>
+
+<h4>协程和线程</h4>
+
+<ul>
+<li>独立的栈空间，共享堆空间，调度由用户自己控制，本质有点类似于用户级线程，这些用户级线程的调度也是自己实现的</li>
+<li>一个线程上可以跑多个协程，协程是轻量级的线程</li>
+</ul>
+
+<h4>GPM调度模型</h4>
+
+<p><img src="media/15396794002878/15409557915358.jpg" alt="" style="width:247px;"/></p>
+
+<h4>不同goroutine之间如何通讯</h4>
+
+<ul>
+<li>全局变量和锁同步</li>
+<li>Channel</li>
+<li>go build -race 可以查看程序是否有线程竞争</li>
+</ul>
 
                         
                       </div>
@@ -624,7 +405,7 @@ func main() {
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/10/21 16:45 下午</span>
+                    <span class="date">2018/10/16 16:43 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
@@ -641,84 +422,18 @@ func main() {
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15396539906242.html">
+                <a class="clearlink" href="15713033971664.html">
                 
-                  <h1>函数和结构体</h1>
+                  <h1>可复用的模块</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>如何实现闭包</h4>
+                        	<h4>包管理</h4>
 
-<ul>
-<li>通过内部匿名函数进行定制</li>
-</ul>
-
-<h4>结构体定义</h4>
-
-<pre class="line-numbers"><code class="language-text">type Animal struct {
-    scientificName string // 学名。
-    AnimalCategory    // 动物基本分类。
-}
-</code></pre>
-
-<ul>
-<li>AnimalCategory只有字段的类型名而没有字段的名称，就是一个嵌入字段，可以通过.跟上类型引用到该字段，既是类型又是名称</li>
-</ul>
-
-<h4>值方法和指针方法的区别</h4>
-
-<ul>
-<li>值方法的接收者是方法所属类型的一个副本，修改不会生效在副本上，除非类型是引用类型</li>
-<li>自定义数据的方法集合中包含值方法，但是指针类型的方法包括所有值方法和指针方法</li>
-</ul>
-
-<h4>结构体类型中嵌入某个类型的指针类型</h4>
-
-<ul>
-<li>非指针匿名字段是原结构体的一个拷贝，不影响原结构体,指针匿名字段多一些</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  package main
-
-import (
-    &quot;fmt&quot;
-)
-
-type Animal struct {
-    Name string
-}
-type Persion struct {
-    Animal
-}
-type Ppersion struct {
-    *Animal
-}
-
-func main() {
-    animal := Animal{Name: &quot;Cat&quot;}
-    persion := Persion{animal}
-    ppersion := Ppersion{&amp;animal}
-    fmt.Println(&quot;Animal:&quot; + animal.Name)
-    fmt.Println(&quot;Persion:&quot; + persion.Name)
-    fmt.Println(&quot;PPersion:&quot; + ppersion.Name)
-
-    animal.Name = &quot;Dog&quot;
-    fmt.Println(&quot;------------我是卖萌分割线------------&quot;)
-    fmt.Println(&quot;Animal:&quot; + animal.Name)
-    fmt.Println(&quot;Persion:&quot; + persion.Name)
-    fmt.Println(persion.Animal == animal)
-    fmt.Println(&quot;PPersion:&quot; + ppersion.Name)
-    fmt.Println(ppersion.Animal == &amp;animal)
-}
-
-</code></pre>
-
-<h4>struct{}代表什么</h4>
-
-<ul>
-<li>可以给一个变量赋值，虽然没有字段，但是可以绑定方法</li>
-</ul>
+<p>以首字母大写来表明可被包外代码访问代码的<br/>
+package 可以和所在的目录不一致<br/>
+同一目录里的 Go 代码的 package 要保持一致</p>
 
                         
                       </div>
@@ -727,66 +442,7 @@ func main() {
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/10/16 09:39 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15395848747680.html">
-                
-                  <h1>字典的操作和约束</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>原理</h4>
-
-<ul>
-<li>把key作为参数传给哈希表，然后表通过哈希函数转换成hash值，通过哈希值的低的几位定位到哈希桶</li>
-</ul>
-
-<h4>字典的键类型不能是哪些值</h4>
-
-<ul>
-<li>函数类型</li>
-<li>字典类型</li>
-<li>切片类型</li>
-</ul>
-
-<h4>优先考虑键值类型</h4>
-
-<ul>
-<li>哈希和判等的速度越快，对应的类型就适合作为键类型</li>
-</ul>
-
-<h4>nil类型字典</h4>
-
-<ul>
-<li>除了添加元素对，其他操作都可以</li>
-<li>sync.Map 并发编程</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/10/15 14:27 下午</span>
+                    <span class="date">2019/10/17 17:09 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>

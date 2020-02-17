@@ -170,44 +170,51 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15658312584569.html">
+                <a class="clearlink" href="15668690739240.html">
                 
-                  <h1>位图</h1>
+                  <h1>搜索引擎的算法</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>位图</h4>
+                        	<h4>结构</h4>
 
 <ul>
-<li>要求数字的范围不是很大</li>
+<li>搜集 利用爬虫爬取网页。分析，主要负责网页内容抽取、分词，构建临时索引，计算 PageRank 值这几部分工作</li>
+<li>分析 主要负责网页内容抽取、分词，构建临时索引，计算 PageRank 值这几部分工作</li>
+<li>索引 主要负责网页内容抽取、分词，构建临时索引，计算 PageRank 值这几部分工作</li>
+<li>查询 查询，主要负责响应用户的请求，根据倒排索引获取相关网页，计算网页排名，返回查询结果给用户</li>
 </ul>
 
-<h4>布隆过滤器</h4>
+<h4>搜集</h4>
 
 <ul>
-<li>我们使用 K 个哈希函数，对同一个数字进行求哈希值，那会得到 K 个不同的哈希值</li>
-<li>将对应的BitMap设置为true，用K个二进制位来表示一个数字的存在</li>
+<li>获取页面链接  把整个页面看作一个大的字符串，我们可以利用字符串匹配算法，在这个大字符串中，搜索这样一个网页标签，然后顺序读取之间的字符串。这其实就是网页链接</li>
+<li>网页判重 利用布隆过滤器 bloom_filter.bin</li>
+<li>原始网页存储文件 </li>
+<li>网页链接及其编号的对应文件 doc_id.bin</li>
 </ul>
 
-<h4>布隆过滤器和三列表对比</h4>
+<h4>分析</h4>
 
 <ul>
-<li>布隆过滤器用多个哈希函数对同一个网页链接进行处理，CPU 只需要将网页链接从内存中读取一次，进行多次哈希计算，理论上讲这组操作是 CPU 密集型的。而在散列表的处理方式中，需要读取散列冲突拉链的多个网页链接，分别跟待判重的网页链接，进行字符串匹配。这个操作涉及很多内存数据的读取，所以是内存密集型的。我们知道 CPU 计算可能是要比内存访问更快速的，所以，理论上讲，布隆过滤器的判重方式，更加快速</li>
+<li>抽取文本信息</li>
+<li>分词并且创建临时索引 单词编号对应文档</li>
+<li>单词编号对应的单词</li>
 </ul>
 
-<h4>扩容</h4>
+<h4>索引</h4>
 
 <ul>
-<li>布隆过滤器的误判率，主要跟哈希函数的个数、位图的大小有关。当我们往布隆过滤器中不停地加入数据之后，位图中不是 true 的位置就越来越少了，误判率就越来越高了</li>
-<li>当布隆过滤器中，数据个数与位图大小的比例超过某个阈值的时候，我们就重新申请一个新的位图 </li>
+<li>临时索引构建成倒排索引</li>
+<li>归并排序将脸时索引合并成排好序的临时索引，然后顺序扫描合并成倒排索引</li>
+<li>每个单词编号在倒排索引文件中的偏移位置。我们把这个文件命名为 term_offset.bin</li>
 </ul>
 
-<h4>拓展</h4>
+<h4>查询</h4>
 
 <ul>
-<li>Java BitSet</li>
-<li>Guava工具包</li>
+<li>输入某个查询文本的时候，我们先对用户输入的文本进行分词处理。假设分分词之后，我们得到 k 个单词</li>
 <li></li>
 </ul>
 
@@ -218,7 +225,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/08/15 09:07 上午</span>
+                    <span class="date">2019/08/27 09:24 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
@@ -235,18 +242,42 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15655742953550.html">
+                <a class="clearlink" href="15667846632853.html">
                 
-                  <h1>拓扑排序</h1>
+                  <h1>Redis常用数据结构</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>本质</h4>
+                        	<h4>列表</h4>
 
 <ul>
-<li>是基于有向无环图的一个算法</li>
-<li></li>
+<li>压缩列表</li>
+<li>循环链表</li>
+<li>额外定义一个 list 结构体，来组织链表的首、尾指针，还有长度等信息</li>
+</ul>
+
+<h4>字典</h4>
+
+<ul>
+<li>使用压缩列表条件</li>
+<li>字典中保存的键和值的大小都要小于 64 字节；</li>
+<li>字典中键值对的个数要小于 512 个</li>
+<li>不满足条件就使用散列表来实现字典类型</li>
+</ul>
+
+<h4>集合</h4>
+
+<ul>
+<li>基于数组</li>
+<li>散列表</li>
+</ul>
+
+<h4>有序集合</h4>
+
+<ul>
+<li>跳表</li>
+<li>压缩表</li>
 </ul>
 
                         
@@ -256,7 +287,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/08/12 09:44 上午</span>
+                    <span class="date">2019/08/26 09:57 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
@@ -273,26 +304,44 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15652277691609.html">
+                <a class="clearlink" href="15667839360889.html">
                 
-                  <h1>动态规划</h1>
+                  <h1>并行算法</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>三个特征</h4>
+                        	<h4>分类</h4>
 
 <ul>
-<li>最优子结构</li>
-<li>无后效性</li>
-<li>重复子问题</li>
+<li>归并排序并行化处理</li>
+<li>快速排序并行化处理</li>
 </ul>
 
-<h4>动态规划问题思路</h4>
+<h4>散列表</h4>
 
 <ul>
-<li>回溯加备忘录 回溯算法实现 - 定义状态 - 画递归树 - 找重复子问题 - 画状态转移表 - 根据递推关系填表 - 将填表过程翻译成代码</li>
-<li>状态转移表法 找最优子结构 - 写状态转移方程 - 将状态转移方程翻译成代码。</li>
+<li>可以将数据随机分割成 k 份（比如 16 份），每份中的数据只有原来的 1/k，然后我们针对这 k 个小数据集合分别构建散列表。这样，散列表的维护成本就变低了。当某个小散列表的装载因子过大的时候，我们可以单独对这个散列表进行扩容，而其他散列表不需要进行扩容。</li>
+<li>只需要通过 16 个线程，并行地在这 16 个散列表中查找数据。这样的查找性能，比起一个大散列表的做法，也并不会下降，反倒有可能提高</li>
+</ul>
+
+<h4>并行字符串匹配</h4>
+
+<ul>
+<li>假设关键词的长度是 m。我们在每个小文本的结尾和开始各取 m 个字符串。前一个小文本的末尾 m 个字符和后一个小文本的开头 m 个字符，组成一个长度是 2m 的字符串。我们再拿关键词，在这个长度为 2m 的字符串中再重新查找一遍，就可以补上刚才的漏洞了</li>
+</ul>
+
+<h4>并行搜索</h4>
+
+<ul>
+<li>这两个队列分别是队列 A 和队列 B。多线程并行处理队列 A 中的顶点，并将扩展得到的顶点存储在队列 B 中。等队列 A 中的顶点都扩展完成之后，队列 A 被清空，我们再并行地扩展队列 B 中的顶点，并将扩展出来的顶点存储在队列 A。这样两个队列循环使用，就可以实现并行广度优先搜索算法。</li>
+</ul>
+
+<h4>思考</h4>
+
+<ul>
+<li>我们有 n 个任务，为了提高执行的效率，我们希望能并行执行任务，但是各个任务之间又有一定的依赖关系，如何根据依赖关系找出可以并行执行的任务</li>
+<li>拓扑排序+流水线并行执行</li>
 </ul>
 
                         
@@ -302,7 +351,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/08/08 09:29 上午</span>
+                    <span class="date">2019/08/26 09:45 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
@@ -319,64 +368,18 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15621133437153.html">
+                <a class="clearlink" href="15662625086752.html">
                 
-                  <h1>gdb</h1>
+                  <h1>启发式搜索算法</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>打印整个数组</h4>
-
-<pre class="line-numbers"><code class="language-text">p (int [10])*a
-p *a@10 （print *name@len）
-</code></pre>
-
-<h4>打印地址</h4>
-
-<pre class="line-numbers"><code class="language-text">gdb n/f/u三个参数可以一起使用。例如： 
-命令：x/3uh 0x7ff320 
-表示，从内存地址0x7ff320读取内容，h表示以双字节为一个单位，3表示三个单位
-u表示按十进制显示无符号整型。
-x 十六进制 d 十进制 c字符 d浮点型
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/07/03 08:22 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15649684154486.html">
-                
-                  <h1>动态规划</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>流程</h4>
+                        	<h4>启发函数</h4>
 
 <ul>
-<li>整个求解过程分为 n 个阶段，每个阶段会决策一个物品是否放到背包中。每个物品决策（放入或者不放入背包）完之后，背包中的物品的重量会有多种情况，也就是说，会达到多种不同的状态，对应到递归树中，就是有很多不同的节点</li>
-<li>每一层重复的状态（节点）合并，只记录不同的状态，然后基于上一层的状态集合，来推导下一层的状态集合。我们可以通过合并每一层重复的状态，这样就保证每一层不同状态的个数都不会超过 w 个</li>
+<li>欧几里得距离，来近似地估计这个顶点跟终点的路径长度</li>
+<li>曼哈顿距离是两点之间横纵坐标的距离之和</li>
 </ul>
 
                         
@@ -386,236 +389,7 @@ x 十六进制 d 十进制 c字符 d浮点型
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/08/05 09:26 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15647094297065.html">
-                
-                  <h1>分治思想</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>本质</h4>
-
-<ul>
-<li>分治算法是一种处理问题的思想，递归是一种编程技巧</li>
-</ul>
-
-<h4>满足条件</h4>
-
-<ul>
-<li>原问题与分解成的小问题具有相同的模式；</li>
-<li>原问题分解成的子问题可以独立求解，子问题之间没有相关性，这一点是分治算法跟动态规划的明显区别，等我们讲到动态规划的时候，会详细对比这两种算法；</li>
-<li>具有分解终止条件，也就是说，当问题足够小时，可以直接求解；</li>
-<li>可以将子问题合并成原问题，而这个合并操作的复杂度不能太高，否则就起不到减小算法总体复杂度的效果了。</li>
-</ul>
-
-<h4>逆序度问题</h4>
-
-<ul>
-<li>二维平面上有 n 个点，如何快速计算出两个距离最近的点对？</li>
-<li>有两个 n<em>n 的矩阵 A，B，如何快速求解两个矩阵的乘积 C=A</em>B？</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/02 09:30 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15646235056828.html">
-                
-                  <h1>贪心算法</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>霍夫曼编码</h4>
-
-<ul>
-<li>霍夫曼编码不仅会考察文本中有多少个不同字符，还会考察每个字符出现的频率，根据频率的不同，选择不同长度的编码</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/01 09:38 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15643618135705.html">
-                
-                  <h1>Trie树</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>优缺点</h4>
-
-<ul>
-<li>Trie 树的本质，就是利用字符串之间的公共前缀，将重复的前缀合并在一起</li>
-<li>Trie 树只是不适合精确匹配查找，这种问题更适合用散列表或者红黑树来解决</li>
-<li>比较费内存，查找时间复杂度是O(k)</li>
-<li>Trie 树最有优势的是查找前缀匹配的字符串</li>
-</ul>
-
-<h4>搜索引擎的模糊匹配</h4>
-
-<ul>
-<li>当用户输入了字母 h 的时候，我们就把以 h 为前缀的 hello、her、hi、how 展示在搜索提示框内。当用户继续键入字母 e 的时候，我们就把以 he 为前缀的 hello、her 展示在搜索提示框内。这就是搜索关键词提示的最基本的算法原理</li>
-</ul>
-
-<h4>Trie树要求</h4>
-
-<ul>
-<li>字符串的字符集不能太大</li>
-<li>前缀重合比较多</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/07/29 08:56 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15641068045849.html">
-                
-                  <h1>深度优先搜索</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/07/26 10:06 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15641015780433.html">
-                
-                  <h1>图</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>概念</h4>
-
-<ul>
-<li>在有向图中，我们把度分为入度（In-degree）和出度（Out-degree）</li>
-</ul>
-
-<h4>存储方法</h4>
-
-<ul>
-<li>邻接矩阵</li>
-<li>邻接表</li>
-<li>邻接矩阵存储起来比较浪费空间，但是使用起来比较节省时间。相反，邻接表存储起来比较节省空间，但是使用起来就比较耗时间。</li>
-<li>邻接表中的链表改成平衡二叉查找树。实际开发中，我们可以选择用红黑树。这样，我们就可以更加快速地查找两个顶点之间是否存在边了</li>
-</ul>
-
-<h4>存储社交关系</h4>
-
-<ul>
-<li>邻接表中存储了用户的关注关系，逆邻接表中存储的是用户的被关注关系</li>
-<li><img src="media/15641015780433/501440bcffdcf4e6f9a5ca1117e990a1.jpg" alt="501440bcffdcf4e6f9a5ca1117e990a1"/></li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/07/26 08:39 上午</span>
+                    <span class="date">2019/08/20 08:55 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>

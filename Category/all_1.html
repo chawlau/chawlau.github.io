@@ -170,141 +170,58 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15814188057978.html">
+                <a class="clearlink" href="15817697569868.html">
                 
-                  <h1>重构</h1>
+                  <h1>字符串分割</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>分类</h4>
+                        	<h4>demo</h4>
+
+<pre class="line-numbers"><code class="language-python">ret = [ss.split(&#39;|&#39;) for ss in s.split(&#39;;&#39;)]
+list(map(lambda ss : ss.split(&#39;|&#39;), s.split(&#39;;&#39;)))
+t = []
+list(map(t.extend, [ss.split(&#39;|&#39;) for ss in s.split(&#39;;&#39;)]))
+t = sum([ss.split(&#39;|&#39;) for ss in s.split(&#39;;&#39;)], [])
+
+def my_slit(s, seps):
+    res = [s]
+    for sep in seps:
+        t = []
+        list(map(lambda ss: t.extend(ss.split(sep)), res))
+        res = t
+    return res
+
+my_slit(s, &#39;,;|\t&#39;)
+</code></pre>
+
+<h4>判断字符串开头或者结尾</h4>
 
 <ul>
-<li>大规模高层次重构（以下简称为“大型重构”）和小规模低层次的重构（以下简称为“小型重构”）</li>
+<li><img src="media/15817697569868/15817724455352.jpg" alt="" style="width:774px;"/></li>
 </ul>
 
-<h4>大型重构</h4>
+<pre class="line-numbers"><code class="language-python">import os
+
+d = os.listdir(&#39;./&#39;)
+st = os.stat(&#39;save.pkl&#39;)
+
+import stat
+
+for fn in os.listdir(&#39;./&#39;):
+    if fn.endswith((&#39;.ipynb&#39;, &#39;.pkl&#39;)):
+        fs = os.stat(fn)
+        os.chmod(fn, fs.st_mode | stat.S_IXUSR)
+</code></pre>
+
+<h4>调整文本格式</h4>
 
 <ul>
-<li>型重构指的是对顶层代码设计的重构，包括：系统、模块、代码结构、类与类之间的关系等的重构，重构的手段有：分层、模块化、解耦、抽象可复用组件等等。这类重构的工具就是我们学习过的那些设计思想、原则和模式。</li>
+<li><img src="media/15817697569868/15817735220897.jpg" alt="" style="width:800px;"/></li>
 </ul>
 
-<h4>小型重构</h4>
-
-<ul>
-<li>小型重构指的是对代码细节的重构，主要是针对类、函数、变量等代码级别的重构，比如规范命名、规范注释、消除超大类或函数、提取重复代码等等。小型重构更多的是利用我们能后面要讲到的编码规范。</li>
-</ul>
-
-<h4>AntiPattern</h4>
-
-<p>常见的测试不友好的代码有下面这 5 种：</p>
-
-<h5>代码中包含未决行为逻辑</h5>
-
-<ul>
-<li>所谓的未决行为逻辑就是，代码的输出是随机或者说不确定的，比如，跟时间、随机数有关的代码</li>
-</ul>
-
-<h5>滥用可变全局变量</h5>
-
-<ul>
-<li>全局变量是一种面向过程的编程风格，有种种弊端。实际上，滥用全局变量也让编写单元测试变得困难</li>
-</ul>
-
-<h5>滥用静态方法</h5>
-
-<ul>
-<li>静态方法跟全局变量一样，也是一种面向过程的编程思维。在代码中调用静态方法，有时候会导致代码不易测试</li>
-</ul>
-
-<h5>使用复杂的继承关系</h5>
-
-<ul>
-<li>相比组合关系，继承关系的代码结构更加耦合、不灵活，更加不易扩展、不易维护</li>
-</ul>
-
-<h5>高度耦合的代码</h5>
-
-<ul>
-<li>如果一个类职责很重，需要依赖十几个外部对象才能完成工作，代码高度耦合，那我们在编写单元测试的时候，可能需要 mock 这十几个依赖的对象</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2020/02/11 19:00 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html'>设计模式之美</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15813811739408.html">
-                
-                  <h1>tuple 使用</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>类模板</h4>
-
-<ul>
-<li>类模板 std::tuple 是固定大小的异类值汇集。它是 std::pair 的推广。</li>
-</ul>
-
-<h4>使用</h4>
-
-<pre class="line-numbers"><code class="language-cpp">#include &lt;tuple&gt;
-#include &lt;iostream&gt;
-#include &lt;string&gt;
-#include &lt;stdexcept&gt;
- 
-std::tuple&lt;double, char, std::string&gt; get_student(int id)
-{
-    if (id == 0) return std::make_tuple(3.8, &#39;A&#39;, &quot;Lisa Simpson&quot;);
-    if (id == 1) return std::make_tuple(2.9, &#39;C&#39;, &quot;Milhouse Van Houten&quot;);
-    if (id == 2) return std::make_tuple(1.7, &#39;D&#39;, &quot;Ralph Wiggum&quot;);
-    throw std::invalid_argument(&quot;id&quot;);
-}
- 
-int main()
-{
-    auto student0 = get_student(0);
-    std::cout &lt;&lt; &quot;ID: 0, &quot;
-              &lt;&lt; &quot;GPA: &quot; &lt;&lt; std::get&lt;0&gt;(student0) &lt;&lt; &quot;, &quot;
-              &lt;&lt; &quot;grade: &quot; &lt;&lt; std::get&lt;1&gt;(student0) &lt;&lt; &quot;, &quot;
-              &lt;&lt; &quot;name: &quot; &lt;&lt; std::get&lt;2&gt;(student0) &lt;&lt; &#39;\n&#39;;
- 
-    double gpa1;
-    char grade1;
-    std::string name1;
-    std::tie(gpa1, grade1, name1) = get_student(1);
-    std::cout &lt;&lt; &quot;ID: 1, &quot;
-              &lt;&lt; &quot;GPA: &quot; &lt;&lt; gpa1 &lt;&lt; &quot;, &quot;
-              &lt;&lt; &quot;grade: &quot; &lt;&lt; grade1 &lt;&lt; &quot;, &quot;
-              &lt;&lt; &quot;name: &quot; &lt;&lt; name1 &lt;&lt; &#39;\n&#39;;
- 
-    // C++17 结构化绑定：
-    auto [ gpa2, grade2, name2 ] = get_student(2);
-    std::cout &lt;&lt; &quot;ID: 2, &quot;
-              &lt;&lt; &quot;GPA: &quot; &lt;&lt; gpa2 &lt;&lt; &quot;, &quot;
-              &lt;&lt; &quot;grade: &quot; &lt;&lt; grade2 &lt;&lt; &quot;, &quot;
-              &lt;&lt; &quot;name: &quot; &lt;&lt; name2 &lt;&lt; &#39;\n&#39;;
-}
+<pre class="line-numbers"><code class="language-python">
 </code></pre>
 
                         
@@ -314,65 +231,7 @@ int main()
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2020/02/11 08:32 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15812339995025.html">
-                
-                  <h1>定时任务</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>定时器循环任务</h4>
-
-<pre class="line-numbers"><code class="language-python">import time
-import datetime
-from apscheduler.schedulers.blocking import BlockingScheduler
-
-def func():
-   now = datetime.datetime.now()
-   ts = now.strftime(&#39;%Y-%m-%d %H:%M:%S&#39;)
-   print(&#39;do func time :&#39;,ts)
-
-def func2():
- #耗时2S
-   now = datetime.datetime.now()
-   ts = now.strftime(&#39;%Y-%m-%d %H:%M:%S&#39;)
-   print(&#39;do func2 time：&#39;,ts)
-
-def dojob():
- #创建调度器：BlockingScheduler
- scheduler = BlockingScheduler()
- #添加任务,时间间隔2S
- scheduler.add_job(func, &#39;interval&#39;, seconds=2, id=&#39;test_job1&#39;)
- #添加任务,时间间隔5S
- scheduler.add_job(func2, &#39;interval&#39;, seconds=3, id=&#39;test_job2&#39;)
- scheduler.start()
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2020/02/09 15:39 下午</span>
+                    <span class="date">2020/02/15 20:29 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Python.html'>Python</a></span>
@@ -389,44 +248,49 @@ def dojob():
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15812158642858.html">
+                <a class="clearlink" href="15817610843879.html">
                 
-                  <h1>积分系统</h1>
+                  <h1>编译期</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>开发工作</h4>
+                        	<h4>fmap实现</h4>
 
 <ul>
-<li>接口设计</li>
-<li>数据库设计</li>
-<li>业务模型设计</li>
+<li>用 decltype 来获得用 f 来调用 inputs 元素的类型（参考第 8 讲）；</li>
+<li>用 decay_t 来把获得的类型变成一个普通的值类型；</li>
+<li>缺省使用 vector 作为返回值的容器，但可以通过模板参数改为其他容器；</li>
+<li>使用基于范围的 for 循环来遍历 inputs，对其类型不作其他要求（参考第 7 讲）；</li>
+<li>存放结果的容器需要支持 push_back 成员函数（参考第 4 讲）。</li>
 </ul>
 
-<h4>分层架构</h4>
+<pre class="line-numbers"><code class="language-cpp">template &lt;template &lt;typename, typename&gt;
+class OutContainer = vector, typename F, class R&gt;
+auto fmap(F&amp;&amp; f, R&amp;&amp; inputs) {
+    typedef decay_t&lt;decltype(f(*inputs.begin()))&gt; result_type;
+    OutContainer&lt;result_type, allocator&lt;result_type&gt;&gt; result;
 
-<ul>
-<li>Contoller 层、Service 层、Repository 层</li>
-<li>Repository 层基于数据库表，而数据库表改动的可能性很小 Entity</li>
-<li>Controller 层提供适配给外部使用的接口，代码经常会变动 View Object</li>
-<li>Service层  Business Object</li>
-</ul>
+    for (auto&amp;&amp; item : inputs) {
+        result.push_back(f(item));
+    }
+    return result;
+}
 
-<h4>设计原则和思想</h4>
+int add_1(int x)
+{
+    return x + 1;
+}
 
-<ul>
-<li><img src="media/15812158642858/15812161751517.jpg" alt="" style="width:667px;"/></li>
-</ul>
-
-<h4>功能划分</h4>
-
-<ul>
-<li>根据给定的时间区间，从数据库中拉取数据；</li>
-<li>根据原始数据，计算得到统计数据；</li>
-<li>将统计数据显示到终端（命令行或邮件）；</li>
-<li>定时触发以上 3 个过程的执行。</li>
-</ul>
+int main()
+{
+    vector&lt;int&gt; v{1, 2, 3, 4, 5};
+    auto result = fmap(add_1, v);
+    for (auto it : result) {
+        cout &lt;&lt; it &lt;&lt; &#39;\n&#39;;
+    }
+}
+</code></pre>
 
                         
                       </div>
@@ -435,10 +299,10 @@ def dojob():
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2020/02/09 10:37 上午</span>
+                    <span class="date">2020/02/15 18:04 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html'>设计模式之美</a></span>
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -452,288 +316,316 @@ def dojob():
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15734291005727.html">
+                <a class="clearlink" href="15813101435484.html">
                 
-                  <h1>Flyweight</h1>
+                  <h1>列表&字典&集合进阶用法</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>动机</h4>
+                        	<h4>过滤方案</h4>
 
 <ul>
-<li>在软件系统采用纯粹对象方案的问题在于大量细粒度的对象会很快充斥在系统中，从而带来很高的运行时代价一一主要指内存需求方面的代价。</li>
-<li>如何在避免大量细粒度对象问题的同时，让外部客户程序仍然能够透明地使用面向对象的方式来进行操作？</li>
+<li><img src="media/15813101435484/15813111759180.jpg" alt="" style="width:663px;"/></li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">from random import randint
+
+randint(-10, 10)
+l = [randint(-10, 10) for _ in range(10)]
+[x for x in l if x &gt;= 0]
+
+g = filter(lambda x: x &gt;= 0,l)
+
+
+g = filter(lambda x: x &gt;= 0,l)
+list(g)
+
+d = {&#39;student%d&#39; % i : randint(50,100) for i in range(1, 21)}
+
+{k:v for k, v in d.items() if v &gt;= 90}
+
+g = filter(lambda item: item[1] &gt;= 90, d.items())
+list(g)
+
+s = {randint(0, 20) for _ in range(20)}
+
+{x for x in s if x % 3 == 0}
+</code></pre>
+
+<h4>元组访问</h4>
+
+<ul>
+<li>匿名元组访问</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">#%%
+s = (&#39;jim&#39;, 16, &#39;male&#39;, &#39;zm@gamil.com&#39;)
+from enum import IntEnum
+class StudentEnum(IntEnum):
+    NAME = 0
+    AGE = 1
+    SEX = 2
+    EMAIL = 3
+    
+StudentEnum.NAME
+StudentEnum.AGE
+
+#%%
+from collections import namedtuple
+Student = namedtuple(&#39;Student&#39;, [&#39;name&#39;, &#39;age&#39;, &#39;sex&#39;, &#39;email&#39;])
+s2 = Student(&#39;jim&#39;, 16, &#39;male&#39;, &#39;zm@gamil.com&#39;)
+s2
+s2.name
+s2.age
+</code></pre>
+
+<h4>字典排序</h4>
+
+<ul>
+<li><img src="media/15813101435484/15813207725478.jpg" alt="" style="width:890px;"/></li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">#%%
+(3, 2) &gt; (1, 4)
+from random import randint
+
+d = {k:randint(60, 100) for k in &#39;abcdefgh&#39;}
+l = [(v, k) for k, v in d.items()]
+sorted(l)
+sorted(l, reverse=True)
+
+list(zip([1, 2, 3], [4, 5, 6]))
+list(zip(d.values(), d.keys()))
+
+
+
+#%%
+p = sorted(d.items(), key = lambda item: item[1], reverse=True)
+enumerate(p)
+list(enumerate(p, 1))
+
+for i, (k, v) in enumerate(p, 1):
+    print(i, k, v)
+    
+for i, (k, v) in enumerate (p, 1):
+    d[k] = (i, v)
+    
+{k:(i, v) for i, (k, v) in enumerate(p, 1)}
+</code></pre>
+
+<h4>统计数据</h4>
+
+<p><img src="media/15813101435484/15813957488080.jpg" alt="" style="width:1120px;"/></p>
+
+<pre class="line-numbers"><code class="language-python">#%%
+from random import randint
+data = [randint(0, 20) for _ in range(30)]
+d = dict.fromkeys(data, 0)
+
+for x in data:
+    d[x] += 1
+    
+# 列表解析
+sorted([(v, k) for k, v in d.items()], reverse=True)[:3]
+
+# 生成器解析
+sorted(((v, k) for k, v in d.items()), reverse=True)[:3]
+import heapq
+heapq.nlargest(3, ((v, k) for k, v in d.items()))
+
+#%% Counter
+from collections import Counter
+c = Counter(data)
+c.most_common(3)
+
+from collections import Counter
+import re
+txt = open(&#39;bible.txt&#39;).read()
+print(txt)
+ret = re.split(&#39;\W+&#39;, txt)
+print(ret)
+c2 = Counter(ret)
+print(c2.most_common(10))
+</code></pre>
+
+<h4>字典key的交集</h4>
+
+<p><img src="media/15813101435484/15815113280295.jpg" alt="" style="width:1068px;"/></p>
+
+<pre class="line-numbers"><code class="language-python">from random import randint, sample
+sample(&#39;abcdefgh&#39;, 3)
+d1 = {k: randint(1,4) for k in sample(&#39;abcdefgh&#39;, randint(3, 6))}
+d2 = {k: randint(1,4) for k in sample(&#39;abcdefgh&#39;, randint(3, 6))}
+d3 = {k: randint(1,4) for k in sample(&#39;abcdefgh&#39;, randint(3, 6))}
+
+d1 = [d1, d2, d3]
+[k for k in d1[0] if all(map(lambda d: k in d, d1[1:]))]
+s1 = d2.keys()
+s2 = d3.keys()
+s1 &amp; s2
+from functools import reduce
+reduce(lambda a, b : a &amp; b, map(dict.keys, d1))
+</code></pre>
+
+<h4>如果让字典保持有序</h4>
+
+<p><img src="media/15813101435484/15815127429423.jpg" alt="" style="width:1184px;"/></p>
+
+<pre class="line-numbers"><code class="language-python">from collections import OrderedDict
+d = OrderedDict()
+d[&#39;c&#39;] = 1
+d[&#39;b&#39;] = 2
+d[&#39;a&#39;] = 3
+d.keys()
+
+players = list(&#39;abcdefgh&#39;)
+from random import shuffle
+shuffle(players)
+od = OrderedDict()
+for i, p in enumerate(players, 1):
+    od[p] = i
+print(od)
+
+def query_by_name(d, name):
+    return d[name]
+query_by_name(od, &#39;c&#39;)
+    
+from itertools import islice
+list(islice(range(10), 3, 6))
+
+def query_by_order(d, a, b = None):
+    a -= 1
+    if b is None:
+        b = a + 1
+    return list(islice(d, a, b))
+
+query_by_order(od, 3, 6)
+</code></pre>
+
+<h4>实现用户的历史记录功能</h4>
+
+<p><img src="media/15813101435484/15815134856840.jpg" alt="" style="width:1095px;"/></p>
+
+<pre class="line-numbers"><code class="language-python">from collections import deque
+q = deque([], 5)
+q.append(1)
+q.append(2)
+q.append(3)
+q.append(4)
+q.append(5)
+q.append(6)
+
+# 将一个python对象存入文件
+import pickle
+pickle.dump(q, open(&#39;save.pkl&#39;, &#39;wb&#39;))
+
+q2 = pickle.load(open(&#39;save.pkl&#39;, &#39;rb&#39;))
+print(q2)
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2020/02/10 12:49 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15755890034719.html">
+                
+                  <h1>Memento</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>定义</h4>
+
+<ul>
+<li>在组件构建过程中，某些对象的状态经常面临变化，如何对这些变化进行有效的管理？同时又维持高层模块的稳定？“状态变化模式为这一问题提供了一种解决方案。</li>
+</ul>
+
+<h4>动机</h4>
+
+<ul>
+<li>在软件构建过程中，某些对象的状态在转换过程中，可能由于某种需要，要求程序能够回溯到对象之前处于某个点时的状态。如果使用一些公有接口来让其他对象得到对象的状态，便会暴露对象的细节实现。</li>
+<li>如何实现对象状态的良好保存与恢复？但同时又不会因此而破坏对象本身的封装性。</li>
 </ul>
 
 <h4>结构</h4>
 
 <ul>
-<li><img src="media/15734291005727/15734293143425.jpg" alt="" style="width:664px;"/></li>
+<li><p><img src="media/15755890034719/15815148061622.jpg" alt="" style="width:736px;"/></p></li>
+<li><p>设计模式是94年</p></li>
+<li><p>序列化的方案实现memento</p></li>
 </ul>
 
-<h4>要点总结</h4>
-
-<ul>
-<li><p>面向对象很好地解决了抽象性的问题，但是作为一个运行在机器中的程序实体，我们需要考虑对象的代价问题。Flyweight 主要解决面向对象的代价问题，一般不触及面向对象的抽象性问题。</p></li>
-<li><p>Flyweight 采用对象共享的做法来降低系统中对象的个数，从而降低细粒度对象给系统带来的内存压力。在具体实现方面，要注意对象状态的处理。</p></li>
-<li><p>对象的数量太大从而导致对象内存开销加大ー一什么样的数量才算大？这需要我们仔细的根据具体应用情况进行评估，而不能凭空臆断。</p></li>
-</ul>
-
-<h4>golang_demo</h4>
+<h5>golang_demo</h5>
 
 <pre class="line-numbers"><code class="language-go">package design_pattern
 
-import &quot;fmt&quot;
-
-type WebUser struct {
-    name string
+type GameRole struct {
+    atk, def, vit int
 }
 
-type WebSite interface {
-    Use(*WebUser)
+func (g *GameRole) InitState() {
+    g.atk, g.def, g.vit = 100, 100, 100
 }
 
-type ConcreteWebsite struct {
-    name string
+func (g *GameRole) SaveState() *RoleMemento {
+    return &amp;RoleMemento{g.atk, g.def, g.vit}
 }
 
-func (c *ConcreteWebsite) Use(user *WebUser) {
-    fmt.Println(&quot;Web type &quot;, c.name, &quot; UserName &quot;, user.name)
+func (g *GameRole) ResumeState(m *RoleMemento) {
+    g.atk, g.def, g.vit = m.atk, m.def, m.vit
 }
 
-type NetWebSite struct {
-    *ConcreteWebsite
+func (g *GameRole) Fight() {
+    g.atk, g.def, g.vit = 0, 0, 0
 }
 
-func NewNetWebsite(name string) WebSite {
-    return &amp;NetWebSite{
-        ConcreteWebsite: &amp;ConcreteWebsite{name: name},
-    }
+type RoleCaretaker struct {
+    m *RoleMemento
 }
 
-type WebFactory struct {
-    factory map[string]WebSite
+type Originator struct {
+    state string
 }
 
-func NewWebFactory() *WebFactory {
-    return &amp;WebFactory {
-        factory: make(map[string]WebSite),
-    }
+type Memento struct {
+    state string
 }
 
-func (w *WebFactory) GetWebsiteCategory(key string) WebSite {
-    if _, ok := w.factory[key]; !ok {
-        webSite := NewNetWebsite(key)
-        w.factory[key] = webSite
-        println(&quot;create new product&quot;)
-    }
-
-    return w.factory[key]
+type RoleMemento struct {
+    vit, atk, def int
 }
 
-func TestFlyWeight(t *testing.T) {
-    factory := NewWebFactory()
-
-    f1 := factory.GetWebsiteCategory(&quot;product show&quot;)
-    f1.Use(&amp;WebUser{&quot;ming&quot;})
-
-    f2 := factory.GetWebsiteCategory(&quot;product show&quot;)
-    f2.Use(&amp;WebUser{&quot;zong&quot;})
-
-    f3 := factory.GetWebsiteCategory(&quot;discus&quot;)
-    f3.Use(&amp;WebUser{&quot;jim&quot;})
-
-    f4 := factory.GetWebsiteCategory(&quot;discus&quot;)
-    f4.Use(&amp;WebUser{&quot;bob&quot;})
-}
-</code></pre>
-
-<h4>python_code</h4>
-
-<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
-
-class WebUser(object):
-
-    def __init__(self, name):
-        self.name = name
-
-
-class WebSite(metaclass=ABCMeta):
-
-    @abstractmethod
-    def use(self, user):
-        pass
-
-class ConcreteWebsite(WebSite):
-
-    def __init__(self, name):
-        self.name = name
-
-    def use(self, user):
-        print(&#39;Web type {} {}&#39;.format(self.name, user.name))
-
-
-class WebFactory(object):
-
-    def __init__(self):
-        self.factory = {}
-
-    def get_website_category(self, key):
-        if key not in self.factory:
-            print(&#39;create new website&#39;)
-            self.factory[key] = ConcreteWebsite(key)
-        return self.factory[key]
-
-if __name__ == &#39;__main__&#39;:
-   factory = WebFactory()
-
-   f1 = factory.get_website_category(&quot;product show&quot;)
-   f1.use(WebUser(&#39;ming&#39;))
-
-   f2 = factory.get_website_category(&quot;product show&quot;)
-   f2.use(WebUser(&#39;ming&#39;))
-
-   f3 = factory.get_website_category(&quot;discus&quot;)
-   f3.use(WebUser(&#39;ming&#39;))
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/11 07:38 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15736874304748.html">
-                
-                  <h1>Facade</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>接口隔离模式</h4>
-
-<ul>
-<li>在组件构建过程中，某些接口之间直接的依赖常常会带来很多题、甚至根本无法实现。采用添加一层间接（稳定）接口，来隔离本来互相紧密关联的接口是一种常见的解決方案。</li>
-</ul>
-
-<h4>系统间耦合的复杂度</h4>
-
-<ul>
-<li>方案的问题在于组件的客户和组件中各种复杂的子系统有了过多的耦合，随着外部客户程序和各子系统的演化，这种过多的耦合面临很多变化的挑战。</li>
-</ul>
-
-<h4>结构</h4>
-
-<ul>
-<li><img src="media/15736874304748/15807223678610.jpg" alt="" style="width:636px;"/></li>
-</ul>
-
-<h4>要点总结</h4>
-
-<ul>
-<li>从客户程序的角度来看，Facade 模式简化了整个组件系统的接口对于组件内部与外部客户程序来说达到了种“解耦”果内部学系统的程何雯化不会影到 Facades 接口的变</li>
-<li>Facade 设计模式更注重从架构的层次去看整个系统，而不是单个类的层次。Facade 很多时候更是一种架构</li>
-<li>Facade 设计模式并非、个集装箱，可以任意地放进任何多个对象。Facade 模式中组件的内部应该是、相互合关比较大的一系列组件”，而不是简单的功能集合</li>
-</ul>
-
-<h4>cpp_demo</h4>
-
-<pre class="line-numbers"><code class="language-cpp">//
-// Created by 刘超 on 2019-11-14.
-//
-#include &lt;iostream&gt;
-
-class SubSystem1 {
-public:
-    SubSystem1() {}
-    ~SubSystem1() {}
-
-    void Operation() {std::cout &lt;&lt; &quot;Subsystem1 operation...&quot; &lt;&lt; std::endl;}
-};
-
-class SubSystem2 {
-public:
-    SubSystem2() {}
-    ~SubSystem2() {}
-    void Operation() {std::cout &lt;&lt; &quot;Subsystem2 operation...&quot; &lt;&lt; std::endl;}
-};
-
-class Facade {
-public:
-    Facade() {
-        sub1 = new SubSystem1();
-        sub2 = new SubSystem2();
-    }
-
-    ~Facade();
-    void OperatonWrapper() {
-        sub1-&gt;Operation();
-        sub2-&gt;Operation();
-    }
-    SubSystem1* sub1;
-    SubSystem2* sub2;
-};
-
-int main() {
-    Facade* f =  new Facade();
-    f-&gt;OperatonWrapper();
-}
-</code></pre>
-
-<h4>go_demo</h4>
-
-<pre class="line-numbers"><code class="language-go">package desian_pattern_practise
-
-import &quot;reflect&quot;
-
-type Subsystem1 struct {
+func (o *Originator) CreateMemento() *Memento {
+    return &amp;Memento{o.state}
 }
 
-func (s *Subsystem1) Operation() {
-    println(reflect.TypeOf(s).String() + &quot; Operation&quot;)
+func (o *Originator) SetMemento(m *Memento) {
+    o.state = m.state
 }
 
-type Subsystem2 struct {
-}
-
-func (s *Subsystem2) Operation() {
-    println(reflect.TypeOf(s).String() + &quot; Operation&quot;)
-}
-
-type Facade struct {
-    sub1 *Subsystem1
-    sub2 *Subsystem2
-}
-
-func (f *Facade) Operation() {
-    f.sub1.Operation()
-    f.sub2.Operation()
-}
-
-func NewFacade() *Facade {
-    return &amp;Facade{
-        sub1: &amp;Subsystem1{},
-        sub2: &amp;Subsystem2{},
-    }
+type Caretaker struct {
+    memento *Memento
 }
 </code></pre>
 
@@ -741,400 +633,42 @@ func NewFacade() *Facade {
 
 <pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
 
-class SubSystem1(object):
+class Snapshot(object):
 
-    def operation(self):
-        print(&#39;Subsystem1 operation&#39;)
+    def __init__(self, state):
+        self.state = state
 
-class SubSystem2(object):
 
-    def operation(self):
-        print(&#39;Subsystem2 operation&#39;)
-
-class Facade(object):
+class Caretake(object):
 
     def __init__(self):
-        self.sub1 = SubSystem1()
-        self.sub2 = SubSystem2()
-
-    def operation_wrapper(self):
-        self.sub1.operation()
-        self.sub2.operation()
-
-if __name__ == &#39;__main__&#39;:
-    facade = Facade()
-    facade.operation_wrapper()
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/14 07:23 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15737733784968.html">
-                
-                  <h1>Proxy</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>动机</h4>
-
-<ul>
-<li>在面向对象系统中，有些对象由于某种原因（比如对象创建的开消很大，或者某些操作需要安全控制，或者需要进程外的访问等）直接访问会给使用者、或者系统结构带来很多麻烦。</li>
-<li>如何在不失去透明操作对象的同时来管理/控制这些对象特有的复杂性？增加一层间接层是软件开发中常见的解決方式。</li>
-</ul>
-
-<h4>结构</h4>
-
-<ul>
-<li><img src="media/15737733784968/15807036463940.jpg" alt="" style="width:705px;"/></li>
-</ul>
-
-<h4>要点总结</h4>
-
-<ul>
-<li><img src="media/15737733784968/15737741074243.jpg" alt="" style="width:842px;"/></li>
-</ul>
-
-<h4>cpp_demo</h4>
-
-<pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
-
-class ITelco {
-public:
-    virtual ~ITelco() {}
-
-    virtual  void Recharge(int money) = 0;
-};
-
-class CMCC : public ITelco {
-public:
-    void Recharge(int money) override  {
-        std::cout &lt;&lt; &quot;Recharge &quot; &lt;&lt; money &lt;&lt; std::endl;
-    }
-};
-
-class Proxy : public ITelco {
-public:
-    Proxy() : m_pcMCC(nullptr) {}
-
-    void  Recharge(int money) override {
-       if (money &gt;= 50) {
-           if (m_pcMCC == nullptr)
-               m_pcMCC = new CMCC();
-           m_pcMCC-&gt;Recharge(money);
-       } else {
-           std::cout &lt;&lt; &quot;Sorry, too little money &quot; &lt;&lt; std::endl;
-       }
-    }
-
-public:
-    CMCC* m_pcMCC;
-};
-
-int main() {
-    Proxy* proxy = new Proxy();
-    proxy-&gt;Recharge(20);
-    proxy-&gt;Recharge(100);
-}
-</code></pre>
-
-<h4>golang_demo</h4>
-
-<pre class="line-numbers"><code class="language-go">import &quot;fmt&quot;
-
-tyecharge(money int) {
-    fmt.Println(&quot;CMCC Recharge money &quot;, money)
-}
-
-type ProxySub struct {
-    cmcc *ClientAPP
-}
-
-func (p *ProxySub) Recharge(money int) {
-    if money &gt;= 50 {
-        if p.cmcc == nil {pe Subject1 interface {
-        Recharge(money int)
-        }
-
-            type ClientAPP struct{}
-
-            func (c *ClientAPP) R
-            p.cmcc = &amp;ClientAPP{}
-        }
-        p.cmcc.Recharge(money)
-    } else {
-        fmt.Println(&quot;Sorry too littel money&quot;)
-    }
-}
-func TestProxySub(t *testing.T) {
-    var proxy Subject1
-    proxy = &amp;ProxySub{}
-    proxy.Recharge(30)
-    proxy.Recharge(100)
-}
-</code></pre>
-
-<h4>golang_demo</h4>
-
-<pre class="line-numbers"><code class="language-go">package desian_pattern_practise
-
-import &quot;fmt&quot;
-
-type IPSubject interface {
-    Request(string)
-}
-
-type PSubject struct {
-    name string
-}
-
-type RealSubject struct {
-    *PSubject
-}
-
-func (r *RealSubject) Request(content string) {
-    fmt.Println(&quot;RealSubject handle content&quot;, content)
-}
-
-type ProxySubject struct {
-    *PSubject
-    realSubject IPSubject
-}
-
-func NewRealSubject(name string) *RealSubject {
-    return &amp;RealSubject{
-        PSubject: &amp;PSubject{name: name},
-    }
-}
-
-func (p *ProxySubject) Request(content string) {
-    p.preRequest()
-    if p.realSubject != nil {
-        p.realSubject.Request(content)
-    }
-    p.afterRequest()
-}
-
-func NewProxySubject(name string, subject IPSubject) *ProxySubject {
-    return &amp;ProxySubject{
-        PSubject: &amp;PSubject{name: name},
-        realSubject: subject,
-    }
-}
-
-func (p *ProxySubject) preRequest() {
-    println(&quot;pre request&quot;)
-}
-
-func (p *ProxySubject) afterRequest() {
-    println(&quot;after request&quot;)
-}
-
-func TestProxySubject_Request(t *testing.T) {
-    realObj := NewRealSubject(&quot;realSubject&quot;)
-    proxySubject := NewProxySubject(&quot;ProxySubject&quot;, realObj)
-    proxySubject.Request(&quot;Html world&quot;)
-}
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/15 07:16 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15738632806643.html">
-                
-                  <h1>Adapter</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>动机</h4>
-
-<ul>
-<li><p>在软件系统中，由于应用环境的变化，常常需要将““一些现存的对象”放在新的环境中应用，但是新环境要求的接口是这些现存对象所不满足的</p></li>
-<li><p>如何应对这种“迁移的变化“？如何既能利用现有对象的良好实现，同时又能满足新的应用环境所要求的接口？</p></li>
-</ul>
-
-<h4>结构</h4>
-
-<p><img src="media/15738632806643/15808782023371.jpg" alt="" style="width:1193px;"/></p>
-
-<h4>要点总结</h4>
-
-<ul>
-<li>Adapters 模式主要应用于“希望复用一些现存的类，但是接口又与</li>
-<li>复用环境要求不一致的情況”，在遗留代码复用、类库注移等方面非常有用。</li>
-<li>GoF23 采用了两种 Adapter 模式的实现结构：对象和适配器。但类适配器采用“多继承”的实现方式般不推荐使用。对象适配器采用“对象组合“的方式，更符合松耦合精神。</li>
-<li>Adapter 模式可以实现的非常灵活，不必拘泥于 Gof23 中定义的两种结构。例如，完全可以将 Adapter 模式中现存对象”作为新的接口方法参数，来达到适配的目的。</li>
-<li>对象适配器比类适配器好</li>
-</ul>
-
-<h4>Cpp_demo</h4>
-
-<pre class="line-numbers"><code class="language-cpp">//
-// Created by eredinliu on 2020-02-05.
-//
-#include &lt;iostream&gt;
-using namespace std;
-
-class IAdapter {
-public:
-    virtual void Charge() = 0;
-    IAdapter() {}
-};
-
-class ITarget {
-public:
-    virtual void Process() = 0;
-    ITarget(IAdapter* adapter) : adapter_(adapter) {}
-protected:
-    IAdapter* adapter_;
-};
-
-class CNCharge : public IAdapter {
-public:
-    CNCharge() {}
-
-    void Charge() {
-        cout &lt;&lt; typeid(this).name() &lt;&lt; &quot; Charge \n&quot;;
-    }
-};
-
-class USCharge : public ITarget {
-public:
-    USCharge(IAdapter* adapter) : ITarget(adapter) {}
-
-    void Process() {
-        cout &lt;&lt; typeid(this).name() &lt;&lt; &quot; Process \n&quot;;
-        this-&gt;adapter_-&gt;Charge();
-    }
-};
-
-int main() {
-    IAdapter* cn_charge = new CNCharge();
-    ITarget* target = new USCharge(cn_charge);
-    target-&gt;Process();
-}
-</code></pre>
-
-<h4>golang_demo</h4>
-
-<pre class="line-numbers"><code class="language-go">type ITarget interface {
-    Process()
-}
-
-type IAdapter interface {
-    Charge()
-}
-
-type CNCharge struct {
-}
-
-func (c *CNCharge) Charge() {
-    println(reflect.TypeOf(c).String() + &quot; Charge&quot;)
-}
-
-type USCharge struct {
-    IAdapter
-}
-
-func (u *USCharge) Process() {
-    println(reflect.TypeOf(u).String() + &quot; Process&quot;)
-    u.IAdapter.Charge()
-}
-
-func NewUSCharge(adapter IAdapter) *USCharge {
-    return &amp;USCharge{
-        IAdapter: adapter,
-    }
-}
-
-
-func TestAdapter_Request2(t *testing.T) {
-    cnCharge := &amp;CNCharge{}
-    target := NewUSCharge(cnCharge)
-    target.Process()
-}
-</code></pre>
-
-<h4>python_code</h4>
-
-<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
-
-class ITarget(metaclass=ABCMeta):
-
-    @abstractmethod
-    def process(self):
         pass
 
-    def __init__(self, adapter):
-        self.adapter = adapter
+    def add_snapshot(self, snapshot):
+        self.snapshot = snapshot
 
-class IAdapter(metaclass=ABCMeta):
+class Editor(object):
 
-    @abstractmethod
-    def charge(self):
-        pass
+    def __init__(self, state):
+        self.state = state
 
-class CNCharge(IAdapter):
+    def create_snapshot(self):
+        return Snapshot(self.state)
 
-    def charge(self):
-        print(type(self).__name__ + &#39; charge&#39;)
+    def recover_snapshot(self, snapshot):
+        self.state = snapshot.state
 
-class USCharge(ITarget):
-
-    def __init__(self, adapter):
-        super().__init__(adapter)
-
-    def process(self):
-        print(type(self).__name__ + &#39; process&#39;)
-        self.adapter.charge()
+    def change_state(self, state):
+        self.state = state
 
 if __name__ == &#39;__main__&#39;:
-    cn_charge = CNCharge()
-    target = USCharge(cn_charge)
-    target.process()
+    editor = Editor(&quot;original&quot;)
+    snapshot = editor.create_snapshot()
+    print(editor.state)
+    editor.change_state(&quot;state2&quot;)
+    print(editor.state)
+    editor.recover_snapshot(snapshot)
+    print(editor.state)
 </code></pre>
 
                         
@@ -1144,682 +678,10 @@ if __name__ == &#39;__main__&#39;:
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/11/16 08:14 上午</span>
+                    <span class="date">2019/12/06 07:36 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15742917885791.html">
-                
-                  <h1>中介模式</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>动机</h4>
-
-<ul>
-<li>在软件构建过程中，经常会出现多个对象互相关联交互的情况，对象之间常常会维持一种复杂的引用关系，如果遇到一些需求的更改，这种直接的引用关系将面临不断的变化。</li>
-<li>在这种情況下，我们可使用一个“中介对象”来管理对象间的关联关系，避免相互交互的对象之间的紧耦合引用关系，从而更好地抵御变化。</li>
-</ul>
-
-<h4>模式定义</h4>
-
-<ul>
-<li>用一个中介对象来封装（封装变化）一系列的对象交互。中介者使各对象不需要显式的相互引用（编译时依赖运行时依赖），从而使其耦合松散（管理变化），而且可以独立地改变它们之间的交互</li>
-<li>编译时依赖改成运行时依赖</li>
-</ul>
-
-<h4>结构</h4>
-
-<p><img src="media/15742917885791/15803924036000.jpg" alt="" style="width:758px;"/></p>
-
-<p><img src="media/15742917885791/15742924128916.jpg" alt="" style="width:986px;"/></p>
-
-<h4>要点总结</h4>
-
-<ul>
-<li><p>将多个对象间复杂的关联关系解耦，Mediator 模式将多个对象间的控制逻辑进行集中管理，变“多个对象互相关联“为“多个对象和一个中介者关联“，简化了系统的维护，抵御了可能的变化。</p></li>
-<li><p>随着控制逻辑的复杂化，Mediator 具体对象的实现可能相当复杂。这时候可以对 Mediator 对象进行分解处理。</p></li>
-<li><p>Facade 模式是解耦系统（单向）的对象关联关系；Mediator 模式是解耦系统内各个对象之间（双向）的关联关系。</p></li>
-</ul>
-
-<h4>golang_demo</h4>
-
-<pre class="line-numbers"><code class="language-go">package desian_pattern_practise
-
-import (
-    &quot;reflect&quot;
-    &quot;strings&quot;
-    &quot;sync&quot;
-)
-
-var (
-    mediator *Mediator
-    monce sync.Once
-)
-type IColleague interface {
-    GetMediator()
-}
-
-type Colleague struct {
-    mediator IMediator
-}
-
-
-type IMediator interface {
-    Execute(IColleague)
-}
-
-type Mediator struct {
-    cd, cpu, videoCard, soundCard IColleague
-}
-
-func (m *Mediator) SetCD(cd IColleague) {
-    m.cd = cd
-}
-
-func (m *Mediator) SetCpu(cpu IColleague) {
-    m.cpu = cpu
-}
-
-func (m *Mediator) SetVideoCard(videoCard IColleague) {
-    m.videoCard = videoCard
-}
-
-func (m *Mediator) SetSoundCard(soundCard IColleague) {
-    m.soundCard = soundCard
-}
-
-func GetMediator() *Mediator {
-    monce.Do(func() {
-        mediator = &amp;Mediator{}
-    })
-    return mediator
-}
-
-func (m *Mediator) Execute(i IColleague) {
-    switch i.(type) {
-    case *CDDriver:
-        m.cpu.(*Cpu).Process(i.(*CDDriver).data)
-    case *Cpu:
-        m.soundCard.(*SoundCard).Play(i.(*Cpu).audio)
-        m.videoCard.(*VideoCard).Display(i.(*Cpu).video)
-    }
-}
-
-type CDDriver struct {
-    *Colleague
-    data string
-}
-
-func NewCDDriver() *CDDriver {
-    return &amp;CDDriver{
-        Colleague: &amp;Colleague{
-            mediator: GetMediator(),
-        },
-    }
-}
-
-func (c *CDDriver) GetMediator() {}
-
-func (c *CDDriver) ReadData() {
-    c.data = &quot;music, image&quot;
-    println(reflect.TypeOf(c).String() + &quot; reading data&quot;)
-    c.mediator.Execute(c)
-}
-
-type Cpu struct {
-    *Colleague
-    video, audio string
-}
-
-func NewCpu() *Cpu{
-    return &amp;Cpu {
-        Colleague: &amp;Colleague{
-            mediator: GetMediator(),
-        },
-    }
-}
-
-func (c *Cpu) GetMediator() {}
-
-func (c *Cpu) Process(data string) {
-    sp := strings.Split(data, &quot;,&quot;)
-    c.video = sp[1]
-    c.audio = sp[0]
-    println(reflect.TypeOf(c).String() + &quot; video &quot; + c.video + &quot; audio &quot;, c.audio)
-    c.mediator.Execute(c)
-}
-
-type VideoCard struct {
-    *Colleague
-}
-
-func NewVideoCard() *VideoCard{
-    return &amp;VideoCard {
-        Colleague: &amp;Colleague{
-            mediator: GetMediator(),
-        },
-    }
-}
-
-func (v *VideoCard) GetMediator() {}
-
-func (v *VideoCard) Display(data string) {
-    println(reflect.TypeOf(v).String() + &quot; display data &quot;, data)
-    v.mediator.Execute(v)
-}
-
-type SoundCard struct {
-    *Colleague
-}
-
-func NewSoundCard() *SoundCard {
-    return &amp;SoundCard {
-        Colleague: &amp;Colleague{
-            mediator: GetMediator(),
-        },
-    }
-}
-
-func (v *SoundCard) GetMediator() {}
-
-func (v *SoundCard) Play(data string) {
-    println(reflect.TypeOf(v).String() + &quot; play data &quot;, data)
-    v.mediator.Execute(v)
-}
-
-package desian_pattern_practise
-
-import &quot;testing&quot;
-
-func TestMediator_Execute(t *testing.T) {
-    cd:= NewCDDriver()
-    cpu := NewCpu()
-    soundCard := NewSoundCard()
-    videoCard := NewVideoCard()
-    GetMediator().SetCD(cd)
-    GetMediator().SetCpu(cpu)
-    GetMediator().SetSoundCard(soundCard)
-    GetMediator().SetVideoCard(videoCard)
-    cd.ReadData()
-}
-</code></pre>
-
-<h4>cpp_demo</h4>
-
-<pre class="line-numbers"><code class="language-cpp">//
-// Created by eredinliu on 2020-01-31.
-//
-#include &lt;iostream&gt;
-#include &lt;mutex&gt;
-#include &lt;typeinfo&gt;
-#include &lt;boost/algorithm/string.hpp&gt;
-#include &lt;vector&gt;
-
-using namespace std;
-using namespace boost;
-
-class Mediator;
-class Colleague {
-public:
-    Colleague(Mediator* _mediator) : mediator(_mediator) {}
-
-protected:
-    Mediator* mediator;
-};
-
-class Cpu;
-class CDDriver;
-class VideoCard;
-class SoundCard;
-
-class Mediator {
-public:
-    static Mediator* mediator;
-
-    static Mediator* GetMediator() {
-        static once_flag flag;
-        call_once(flag, [&amp;](){mediator = new Mediator();});
-        return mediator;
-    }
-
-    void SetCD(CDDriver* cd) {this-&gt;cd = cd;}
-
-    void SetCpu(Cpu* cpu) {this-&gt;cpu = cpu;}
-
-    void SetVideoCard(VideoCard* video) {this-&gt;videoCard = video;}
-
-    void SetSoundCard(SoundCard* sound) {this-&gt;soundCard = sound;}
-
-    void Execute(Colleague* colleague);
-private:
-    CDDriver* cd;
-    Cpu* cpu;
-    VideoCard *videoCard;
-    SoundCard *soundCard;
-    Mediator() {}
-};
-
-Mediator* Mediator::mediator = nullptr;
-
-class CDDriver : public Colleague {
-public:
-    CDDriver(Mediator* _mediator) : Colleague(_mediator) {}
-
-    void ReadData() {
-        this-&gt;data = &quot;Music,Image&quot;;
-        cout &lt;&lt; typeid(this).name() &lt;&lt; &quot; reading data&quot; &lt;&lt; endl;
-        this-&gt;mediator-&gt;Execute(this);
-    }
-
-    string&amp; GetData() {
-        return this-&gt;data;
-    }
-private:
-    string data;
-};
-
-class Cpu : public Colleague {
-public:
-    friend class Mediator;
-    Cpu(Mediator* _mediator) : Colleague(_mediator) {}
-
-    void Process(string&amp; data) {
-        vector&lt;string&gt; str_vec;
-        split(str_vec, data, is_any_of(&quot;,&quot;));
-        this-&gt;video = str_vec[1];
-        this-&gt;sound = str_vec[0];
-        cout &lt;&lt; typeid(this).name() &lt;&lt; &quot; video &quot; &lt;&lt; this-&gt;video &lt;&lt; &quot; sound &quot;
-        &lt;&lt; this-&gt;sound &lt;&lt; endl;
-        this-&gt;mediator-&gt;Execute(this);
-    }
-
-    string&amp; GetVideo() {return this-&gt;video;}
-
-    string&amp; GetSound() {return this-&gt;sound;}
-private:
-    string video, sound;
-};
-
-class VideoCard : public Colleague {
-public:
-    VideoCard(Mediator* _mediator) : Colleague(_mediator) {}
-
-    void Process(string&amp; data) {
-        cout &lt;&lt; typeid(this).name() &lt;&lt; &quot; display &quot; &lt;&lt; data &lt;&lt; endl;
-        this-&gt;mediator-&gt;Execute(this);
-    }
-};
-
-class SoundCard : public Colleague {
-public:
-    SoundCard(Mediator* _mediator) : Colleague(_mediator) {}
-
-    void Process(string&amp; data) {
-        cout &lt;&lt; typeid(this).name() &lt;&lt; &quot; play &quot; &lt;&lt; data &lt;&lt; endl;
-        this-&gt;mediator-&gt;Execute(this);
-    }
-};
-
-void Mediator::Execute(Colleague* colleague) {
-    if (colleague == cd) {
-        cpu-&gt;Process(cd-&gt;GetData());
-    } else if (colleague == cpu){
-        soundCard-&gt;Process(cpu-&gt;GetSound());
-        videoCard-&gt;Process(cpu-&gt;GetVideo());
-    }
-}
-
-int main() {
-    Mediator* mediator = Mediator::GetMediator();
-    CDDriver* cd = new CDDriver(mediator);
-    Cpu* cpu = new Cpu(mediator);
-    SoundCard* soundCard = new SoundCard(mediator);
-    VideoCard* videoCard = new VideoCard(mediator);
-    mediator-&gt;SetCD(cd);
-    mediator-&gt;SetCpu(cpu);
-    mediator-&gt;SetSoundCard(soundCard);
-    mediator-&gt;SetVideoCard(videoCard);
-    cd-&gt;ReadData();
-}
-</code></pre>
-
-<h4>python_code</h4>
-
-<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
-
-class Colleague(object):
-
-    def __init__(self, mediator):
-        self.mediator = mediator
-
-
-def singleton(cls, *args, **kwargs):
-    instance = {}
-
-    def __singleton(*args, **kwargs):
-        if cls not in instance:
-            instance[cls] = cls(*args, **kwargs)
-        return instance[cls]
-
-    return __singleton
-
-@singleton
-class Mediator(object):
-
-    def __init__(self):
-        self.__cd = self.__cpu = self.__video_card = self.__sound_card = None
-
-    def set_cd(self, cd):
-        self.__cd  = cd
-
-    def set_cpu(self, cpu):
-        self.__cpu = cpu
-
-    def set_video_card(self, video_card):
-        self.__video_card = video_card
-
-    def set_sound_card(self, sound_card):
-        self.__sound_card = sound_card
-
-    def execute(self, colleague):
-        if colleague == self.__cd:
-            self.__cpu.process(self.__cd.get_data())
-        elif colleague == self.__cpu:
-            self.__sound_card.process(colleague.get_sound())
-            self.__video_card.process(colleague.get_video())
-
-class CDDriver(Colleague):
-
-    def __init__(self, mediator):
-        super().__init__(mediator)
-        self.__data = &#39;&#39;
-
-    def read_data(self):
-        self.__data = &#39;Music,Image&#39;
-        print(type(self).__name__, &quot; reading data&quot;)
-        self.mediator.execute(self)
-
-    def get_data(self):
-        return self.__data
-
-class Cpu(Colleague):
-
-    def __init__(self, mediator):
-        super().__init__(mediator)
-        self.__video = self.__sound = &#39;&#39;
-
-    def process(self, data):
-        ret = data.split(&#39;,&#39;)
-        self.__video = ret[1]
-        self.__sound = ret[0]
-        print(type(self).__name__, &quot; video {} sound {}&quot;.format(self.__video, 
-                                                               self.__sound))
-
-        self.mediator.execute(self)
-
-    def get_video(self):
-        return self.__video
-
-    def get_sound(self):
-        return self.__sound
-
-
-class VideoCard(Colleague):
-
-    def __init__(self, mediator):
-        super().__init__(mediator)
-
-    def process(self, data):
-        print(type(self).__name__, &quot; display {}&quot;.format(data))
-
-
-class SoundCard(Colleague):
-
-    def __init__(self, mediator):
-        super().__init__(mediator)
-
-    def process(self, data):
-        print(type(self).__name__, &quot; play {}&quot;.format(data))
-
-if __name__ == &#39;__main__&#39;:
-    mediator = Mediator()
-    cd = CDDriver(mediator)
-    cpu = Cpu(mediator)
-    sound_card = SoundCard(mediator)
-    video_card = VideoCard(mediator)
-    mediator.set_cd(cd)
-    mediator.set_cpu(cpu)
-    mediator.set_sound_card(sound_card)
-    mediator.set_video_card(video_card)
-    cd.read_data()
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/21 07:16 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15700989065972.html">
-                
-                  <h1>lambda</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>特点</h4>
-
-<ul>
-<li>是个匿名函数, 可调用的代码单元</li>
-<li>返回类型可以自动推导，可以省略</li>
-<li>没有参数的时候()可以省略·</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">auto f = [](int a)-&gt;int {
-    return a + 1;
-  };
-
-  auto f1 = [](int a) {
-    return a + 1;
-  };
-
-  auto f2 = [] {return  2;};
-</code></pre>
-
-<h4>捕获列表</h4>
-
-<ul>
-<li>捕获一定范围内的变量</li>
-<li>lambda可以捕获局部静态变量</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">  static int i = 9;
-  auto f3 = [] {
-    return i;
-  };
-
-</code></pre>
-
-<ul>
-<li>[&amp;] 捕获所有外部变量</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">  int j = 9;
-  auto f4 = [&amp;] {
-    j = 10;
-  };
-  f4();
-</code></pre>
-
-<ul>
-<li>[=] 值使用，只能用，不能修改</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">auto f5 = [=] {
-    cout &lt;&lt; &quot;j &quot; &lt;&lt; j &lt;&lt; endl;
-  };
-  f5();
-
-</code></pre>
-
-<ul>
-<li>[this] 用于类中，拥有和成员函数一样的权限</li>
-<li>[变量名] 表示按值捕获，同时不捕获其他变量，按值分隔</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">class CT {
- public:
-  int m_i = 5;
-  void func(int x, int y) {
-    //auto ld = [this] {
-    //auto ld = [this, x, y] {
-    auto ld = [this, &amp;x, &amp;y] {
-      x = 5;
-      y = 2;
-      return m_i;
-    };
-  }
-};
-</code></pre>
-
-<ul>
-<li>[=,&amp;变量名] 按值捕获所有变量, 但按引用捕获&amp;中所指的变量，第一个都是默认捕获，隐式捕获方式，其他的是显式捕获，后面的引用方式是相反的[&amp;,x]</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp"> int x = 2, y = 3;
-  auto f6 = [=, &amp;x, &amp;y] {
-    cout &lt;&lt; &quot;j &quot; &lt;&lt; j &lt;&lt; endl;
-  };
-  f6();
-
-  auto f7 = [&amp;, x, y] {
-    cout &lt;&lt; &quot;j &quot; &lt;&lt; j &lt;&lt; endl;
-  };
-  f6();
-</code></pre>
-
-<h4>lambda表达式延迟调用易出错</h4>
-
-<pre class="line-numbers"><code class="language-cpp">  int x1 = 5;
-  auto f8 = [=] {
-    return x1;
-  };
-  x1 = 10;
-  cout &lt;&lt; f8() &lt;&lt; endl;//5
-</code></pre>
-
-<ul>
-<li>lamda表达式引用外部变量的那一刻，复制了一份存储在表达式中</li>
-<li>如果采用引用，就不会出错</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp"> int x1 = 5;
-  auto f8 = [&amp;] {
-    return x1;
-  };
-  x1 = 10;
-  cout &lt;&lt; f8() &lt;&lt; endl;//5
-</code></pre>
-
-<h4>mutable</h4>
-
-<pre class="line-numbers"><code class="language-cpp">  int x2 = 5;
-  auto f9 = [=]() mutable {
-    x2 = 7;
-    return x2;
-  };
-  cout &lt;&lt; f9() &lt;&lt; endl;
-</code></pre>
-
-<ul>
-<li>可以修改按值捕获的变量</li>
-</ul>
-
-<h4>表达式类型和存储</h4>
-
-<ul>
-<li>Closure Type</li>
-<li>闭包 函数内的函数，本质就是lambda表达式创建时运行时间对象</li>
-<li>闭包类的类型的对象，可以认为是带有operator()的类型的对象</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">int x = 5;
-auto f = [&amp;] {
-  return x;
-}
-
-function&lt;int(int)&gt; fc1 = [](int t) {return  t;};
-  cout &lt;&lt; fc1(15) &lt;&lt; endl;
-function&lt;int(int)&gt; fc2 = bind(
-      [](int t) {
-      return t;
-      },
-      16
-      );
-</code></pre>
-
-<h4>总结</h4>
-
-<pre class="line-numbers"><code class="language-cpp">  vector&lt;int&gt; vec = {10,20,30,40,50};
-  int sum = 0;
-  for_each (vec.begin(), vec.end(), [&amp;sum](int val) {
-            sum += val;
-            cout &lt;&lt; val &lt;&lt; endl;
-            });
-  cout &lt;&lt; &quot; sum &quot; &lt;&lt; sum &lt;&lt; endl;
-
-  find_if (vec.begin(), vec.end(), [](int val) {
-           cout &lt;&lt; val &lt;&lt; endl;
-           if (val &gt; 15)
-              return true;
-           return false;
-           });
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/03 18:35 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
           				   
                   </div>
                   <div class="more-right right">

@@ -170,213 +170,184 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15502101953283.html">
+                <a class="clearlink" href="15646523320655.html">
                 
-                  <h1>Thrift</h1>
+                  <h1>zmq为什么高效</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>rpc</h4>
+                        	<h4>性能</h4>
 
 <ul>
-<li><img src="media/15502101953283/15502102297613.jpg" alt="" style="width:611px;"/></li>
+<li>RTT</li>
+<li>TPS</li>
+<li>关闭Nagle算法，关闭网卡中断汇聚在一个cpu，提高IO吞吐能力上，开启网络接口的多队列功能，这样，每个队列就可以用不同的中断号，调度到不同 CPU 上执行</li>
+<li>区别大小消息，零拷贝 92字节为临界点</li>
+<li>批量发送和接收消息</li>
+<li>非同步零数据CPU迁移的并发编程 通过管道</li>
+<li>无锁算法</li>
 </ul>
 
-<h4>框架图</h4>
+<h4>线程间共享数据</h4>
 
 <ul>
-<li><img src="media/15502101953283/15502102502211.jpg" alt=""/></li>
+<li>send(cmd)</li>
+<li>socket</li>
+<li>socketpair</li>
+<li>信号 pipe</li>
+<li>eventfd</li>
 </ul>
 
-<h4>如何控制调用的串行化</h4>
+<h5>架构</h5>
 
 <ul>
-<li>call1+ret1/call2+ret2/call3+ret3是串行化的</li>
+<li><img src="media/15646523320655/15646568568348.jpg" alt=""/></li>
+<li>engine负责对底层事件发送和接收解码和内核打交道，依赖poller</li>
+<li>poller 对epoll进行封装</li>
+<li>pipes inbound 和 outbound 读写两个管道</li>
+<li>mailbox就是对pipe的封装，两个线程之间发送数据</li>
+<li>session 管理每个连接，管理客户端连接</li>
+<li>session和engine绑定到每个io thread</li>
+<li>zmq_socket可以对应多个客户端，通过算法将session和engine绑定到io_thread</li>
+<li>poller监听到数据会把socketfd发给listener处理，listener会创建engine和session</li>
+<li>读事件发生poller-&gt;engine-&gt;内核拷贝数据-&gt;session-&gt;inbound-&gt;api接口读取数据</li>
+<li>写事件是engine从session中读取消息</li>
 </ul>
 
-<h4>客户端</h4>
+<h4>消息内存管理</h4>
 
 <ul>
-<li><img src="media/15502101953283/15503035000875.jpg" alt=""/></li>
-</ul>
-
-<h4>服务端</h4>
-
-<ul>
-<li><img src="media/15502101953283/15503035174157.jpg" alt=""/></li>
-</ul>
-
-<h5>代码流程</h5>
-
-<ul>
-<li>TNonblockingServer--&gt;server()--&gt;init()--&gt;registerEvents()--&gt;handleEvent</li>
-<li>connection发生事件时workSocket--&gt;transition--&gt;createTask--&gt;Task::run</li>
-<li>TDispatchProcessor::process--&gt;TDispatchProcessor::dispathCall--&gt;MsgService.cpp::dispathCall--&gt;interfaceCall</li>
-<li>TNonblockingServer::notifyHandler--&gt;</li>
-<li>eventSocketPair是在工作线程和IO线程启动的时候创建的，用于事件通知</li>
-<li>Tconnection的状态机</li>
-<li>APP_INIT</li>
-<li>IOThread数组</li>
-</ul>
-
-<h4>工厂方法</h4>
-
-<ul>
-<li><img src="media/15502101953283/15503035345768.jpg" alt=""/></li>
-</ul>
-
-<h4>串行执行</h4>
-
-<ul>
-<li><img src="media/15502101953283/15503035744813.jpg" alt=""/></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/15 13:56 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15499501670261.html">
-                
-                  <h1>Libevent</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>优点</h4>
-
-<ul>
-<li>事件驱动</li>
-<li>专注于网络</li>
-<li>支持I/O，定时器和信号</li>
-</ul>
-
-<h4>函数解析</h4>
-
-<ul>
-<li>event_new(struct event_base <em>base, evutil_socket_t fd, short events, void (</em>cb)(evutil_socket_t, short, void *), void *arg)</li>
-<li>arg的参数通过回调用函数的第三个参数传进来</li>
-<li>buffer io event是带缓冲的event</li>
-<li>尽量不要使用bufferevent</li>
-<li>epoll_create和epoll_create1的区别</li>
-<li>persistent event被激活了一次是不会被删掉的</li>
-</ul>
-
-<h4>libevent结构</h4>
-
-<ul>
-<li><img src="media/15499501670261/15502973029899.jpg" alt=""/></li>
-<li><img src="media/15499501670261/15502971650987.jpg" alt=""/></li>
-</ul>
-
-<h4>thrift</h4>
-
-<ul>
-<li>IO线程是和客户端绑定</li>
-<li>监听的socket所在的线程会调用registerEvents，创建2个event：serverEvent用于服务监听，notificationEvent是一个socketpair，用于线程池里线程间的通信；</li>
-<li>当serverEvent变成可读时，调用到handleEvent，接受该请求，并且调用createConnection创建TConnection对象，然后再把tconnectionevent时间添加到libevent；</li>
-<li>当TConnection对象被libevent调用到有事件发生时，读取对端发送过来的内容（workSocket），并且调用transition，把读取到的内容封装成一个task<br/>
-添加到ThreadManager，之后由ThreadManager::Worker（具体的线程）主动去任务池里获取任务并调用任务的run方法。</li>
-<li>此时IO线程中的TConnection等待Worker执行完通知，在被通知之前会把事件从libevent中删除，等收到通知后，再重新添加事件到libevent中。</li>
-</ul>
-
-<h4>thrift不足</h4>
-
-<ul>
-<li>Worker主动从任务队列中获取任务，需要加锁和解锁，这并不是一种优良的处理方法；</li>
-<li>IO Thread在处理客户端同一次连接的多个调用的时序性上，依赖把event从libevent中删掉，等处理完单个调用后再添加进去，影响IO的执行效率。</li>
-<li>debug--&gt;design</li>
+<li>短消息vsm直接初始化在栈上</li>
+<li>zmq_msg_t-&gt;msg_t</li>
+<li>move 就是删除引用计数</li>
 <li></li>
 </ul>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/12 13:42 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15500401399354.html">
-                
-                  <h1>单台服务器的百万级并发</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>思考题</h4>
-
-<ul>
-<li>/etc/security/limits.conf</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">* soft  nofile  102400
-* hard  nofile  102400
+<pre class="line-numbers"><code class="language-text">   union {
+    struct {
+      metadata_t *metadata;
+      unsigned char unused [msg_t_size - (8 + sizeof (metadata_t *) + 2)];
+      unsigned char type;
+      unsigned char flags;
+    } base;
+    struct {
+      metadata_t *metadata;
+      unsigned char data [max_vsm_size];
+      unsigned char size;
+      unsigned char type;
+      unsigned char flags;
+    } vsm;
+    struct {
+      metadata_t *metadata;
+      content_t *content;
+      unsigned char unused [msg_t_size - (8 + sizeof (metadata_t *) + sizeof (content_t*) + 2)];
+      unsigned char type;
+      unsigned char flags;
+    } lmsg;
+    struct {
+      metadata_t *metadata;
+      void* data;
+      size_t size;
+      unsigned char unused
+          [msg_t_size - (8 + sizeof (metadata_t *) + sizeof (void*) + sizeof (size_t) + 2)];
+      unsigned char type;
+      unsigned char flags;
+    } cmsg;
+    struct {
+      metadata_t *metadata;
+      unsigned char unused [msg_t_size - (8 + sizeof (metadata_t *) + 2)];
+      unsigned char type;
+      unsigned char flags;
+    } delimiter;
+  } u;
 </code></pre>
 
+<p><img src="media/15646523320655/15646582517066.jpg" alt="" style="width:705px;"/></p>
+
 <ul>
-<li>/etc/sysctl.conf</li>
+<li>zmq_msg_move 做了一个引用计数</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-text">net.ipv4.tcp_mem = 252144 524288 786432
-net.ipv4.tcp_wmem = 2048 2048 4096
-net.ipv4.tcp_rmem = 2048 2048 4096
-fs.file-max = 1048576
+<h4>multipart message</h4>
+
+<ul>
+<li>小消息第一个字节是长度</li>
+<li>大消息分多帧发送，最后一个帧发送空</li>
+<li>超过一个字节的长度，帧第一个字节是0xffff，然后扩充到8个字节</li>
+<li>ZMQ_SNDMORE</li>
+<li></li>
+<li><img src="media/15646523320655/15646590611577.jpg" alt="" style="width:936px;"/></li>
+</ul>
+
+<h4>动态调整批量发送</h4>
+
+<ul>
+<li>outbound和inbound是收发队列</li>
+<li>out_batch_size = 8192 bytes</li>
+<li>有多条消息就合并，没有也立即发送</li>
+<li>8192让tcp尽量有数据发送</li>
+<li>stream_engine</li>
+</ul>
+
+<h4>高效线程的IO</h4>
+
+<ul>
+<li>IO密集型一般线程数目是CPU数目的两倍</li>
+<li>计算密集型跟cpu数目一样
+<img src="media/15646523320655/15649055233553.jpg" alt="" style="width:586px;"/></li>
+<li>统计流量的事情丢给用户</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">zmq::io_thread_t *zmq::ctx_t::choose_io_thread (uint64_t affinity_)
+{
+  if (_io_threads.empty ())
+    return NULL;
+
+  //  Find the I/O thread with minimum load.
+  int min_load = -1;
+  io_thread_t *selected_io_thread = NULL;
+  for (io_threads_t::size_type i = 0; i != _io_threads.size (); i++) {
+    if (!affinity_ || (affinity_ &amp; (uint64_t (1) &lt;&lt; i))) {
+      int load = _io_threads[i]-&gt;get_load ();
+      if (selected_io_thread == NULL || load &lt; min_load) {
+        min_load = load;
+        selected_io_thread = _io_threads[i];
+      }
+    }
+  }
+  return selected_io_thread;
+}
 </code></pre>
 
+<h4>Mailbox</h4>
+
 <ul>
-<li>适合长连接不适合大文件传输，会导致大文件被切割分片，导致内核协议栈处理次数变多，传输速率很慢</li>
+<li>eventfd 事件fd效果等同于socketpair,可以添加到epoll中来</li>
+<li>slot(mailbox)-&gt;io_thread对应数组某个位置</li>
+<li>socket线程和io_thread交换数据</li>
+<li>通过mailbox命令让io_thread绑定poller,session,engine</li>
+<li>signaler_t make_fdpair -&gt; eventfdj</li>
+<li>socket的mailbox和iothread中一一对应</li>
+<li>mailbox第一次send 1激活邮箱</li>
+<li>io_thread中的poller有处理mailbox中的signaler_t信号</li>
+<li>然后poller中收到1后从管道中读数据</li>
+<li>signaler封装一个socketpair对</li>
 </ul>
 
-<h4>单机服务架构</h4>
+<h4>Mailbox发送消息流程</h4>
 
 <ul>
-<li>单线程同步：NTP</li>
-<li>多线程同步：Natty</li>
-<li>纯异步：Redis，HAProxy</li>
-<li>半同步半异步：Natty</li>
-<li>多进程同步：fastcgi</li>
-<li>多线程异步：memcached</li>
-<li>多进程异步：nginx</li>
-<li>每请求每进程（线程）：Apache/CGI</li>
-<li>微进程框架：erlang/go/lua</li>
-<li>协程框架：libco</li>
+<li><img src="media/15646523320655/15660010884535.jpg" alt="" style="width:628px;"/></li>
+<li></li>
+</ul>
+
+<h4>高效IO编程</h4>
+
+<ul>
+<li>高低水位HWM过载落盘 低水位从磁盘载入</li>
+<li>大师级的线程池的设计</li>
+<li></li>
 </ul>
 
                         
@@ -386,7 +357,7 @@ fs.file-max = 1048576
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/02/13 14:42 下午</span>
+                    <span class="date">2019/08/01 17:38 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
@@ -403,29 +374,169 @@ fs.file-max = 1048576
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15498690715501.html">
+                <a class="clearlink" href="15637866905737.html">
                 
-                  <h1>Epoll原理</h1>
+                  <h1>内存池</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>常见问题</h4>
+                        	<h4>考虑方面</h4>
 
 <ul>
-<li>Epoll有没有数量限制</li>
-<li>WebSocket推送的时候出现卡顿问题</li>
-<li>AIO为什么不能坐高性能网络IO</li>
-<li>用户态到内核态交互的性能低</li>
+<li>减少内存碎片</li>
+<li>提高效率</li>
+<li>避免内存泄漏</li>
 </ul>
 
-<h4>问题</h4>
+<h4>内存池考虑</h4>
 
 <ul>
-<li>异步IO数据量太大会导致用户态溢出</li>
-<li>信号驱动IO</li>
-<li>EPOLL_SIZE是指有数据返回的事件集合</li>
-<li>epoll_create1</li>
+<li>线程安全</li>
+<li>尺寸固定</li>
+</ul>
+
+<h4>kfifo的内存池</h4>
+
+<ul>
+<li>ringbuffer_from_dev</li>
+</ul>
+
+<h4>应用层协议</h4>
+
+<ul>
+<li>TLV</li>
+</ul>
+
+<h4>boost pool</h4>
+
+<ul>
+<li>pfirst管理空闲内存，使用内存踢出去</li>
+<li>重栽运算符</li>
+</ul>
+
+<h4>zmq的内存池</h4>
+
+<ul>
+<li> 传输层和应用层更简单的接口</li>
+<li> 尽量少的申请内存，尽量使用即将释放的内存</li>
+<li> 一个读线程，一个写线程，读写之间使用无锁解决互斥</li>
+<li> 批量写入，预取机制，提高效率</li>
+</ul>
+
+<h4>chunk_t</h4>
+
+<ul>
+<li>begin_chunk 读取的块 begin_pos 读取的位置</li>
+<li>back_chunk 写入的块 back_pos 写入的位置</li>
+<li>end_chunk 指向新申请的内存块 </li>
+<li>push()只是申请了空间</li>
+<li>chunk_t *sc = spare_chunk.xchg (NULL); 拿取一个值，然后用NULL去填充</li>
+<li>back()是存储了数据</li>
+<li>begin_pos 正在读取的位置 begin_pos = N 时说明已经全部释放了，所以直接使用物理释放</li>
+<li>back_pos 写的位置</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">inline void pop ()
+    {
+        if (++_begin_pos == N) {
+            chunk_t *o = _begin_chunk;
+            _begin_chunk = _begin_chunk-&gt;next;
+            _begin_chunk-&gt;prev = NULL;
+            _begin_pos = 0;
+
+            //将内存块和空闲内存块进行置换，同时将置换出来的内存块释放掉
+            chunk_t *cs = _spare_chunk.xchg (o);
+            free (cs);
+        }
+    }
+
+</code></pre>
+
+<h4>ypipe_t</h4>
+
+<h5>flush</h5>
+
+<pre class="line-numbers"><code class="language-text">  inline bool flush ()
+  {
+    //  If there are no un-flushed items, do nothing.
+    if (_w == _f)
+      return true;
+
+    //  Try to set &#39;c&#39; to &#39;f&#39;.
+    if (_c.cas (_w, _f) != _w) {
+      //  Compare-and-swap was unseccessful because &#39;c&#39; is NULL.
+      //  This means that the reader is asleep. Therefore we don&#39;t
+      //  care about thread-safeness and update c in non-atomic
+      //  manner. We&#39;ll return false to let the caller know
+      //  that reader is sleeping.
+      _c.set (_f);
+      _w = _f;
+      return false;
+    }
+
+    //  Reader is alive. Nothing special to do now. Just move
+    //  the &#39;first un-flushed item&#39; pointer to &#39;f&#39;.
+    _w = _f;
+    return true;
+  }
+   inline void write (const T &amp;value_, bool incomplete_)
+        {
+            //  Place the value to the queue, add new terminator element.
+            queue.back () = value_;
+            queue.push ();
+
+            //  Move the &quot;flush up to here&quot; poiter.
+            if (!incomplete_)
+                f = &amp;queue.back ();
+        }
+</code></pre>
+
+<p><img src="media/15637866905737/15640480390126.jpg" alt=""/><br/>
+<img src="media/15637866905737/15640480483880.jpg" alt=""/></p>
+
+<h5>read</h5>
+
+<pre class="line-numbers"><code class="language-text">r指针没有指向begin_pos说明已经预读好了
+ inline bool read (T *value_)
+    {
+        //  Try to prefetch a value.
+        if (!check_read ())
+            return false;
+
+        //  There was at least one value prefetched.
+        //  Return it to the caller.
+        *value_ = _queue.front ();
+        _queue.pop ();
+        return true;
+    }
+    
+    inline bool check_read ()
+    {
+      //  Was the value prefetched already? If so, return.
+      if (&amp;_queue.front () != _r &amp;&amp; _r)
+        return true;
+
+      _r = _c.cas (&amp;_queue.front (), NULL);
+      //_c=NULL, _r-&gt;_c的位置
+
+      //  If there are no elements prefetched, exit.
+      //  During pipe&#39;s lifetime r should never be NULL, however,
+      //  it can happen during pipe shutdown when items
+      //  are being deallocated.
+      if (&amp;_queue.front () == _r || !_r)
+        return false;
+
+      //  There was at least one value prefetched.
+      return true;
+    }
+</code></pre>
+
+<p><img src="media/15637866905737/15640481057426.jpg" alt=""/><br/>
+<img src="media/15637866905737/15640481129653.jpg" alt=""/></p>
+
+<ul>
+<li>f刷新指针</li>
 <li></li>
 </ul>
 
@@ -436,7 +547,7 @@ fs.file-max = 1048576
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/02/11 15:11 下午</span>
+                    <span class="date">2019/07/22 17:11 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
@@ -453,65 +564,55 @@ fs.file-max = 1048576
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15493326918557.html">
+                <a class="clearlink" href="15649975500687.html">
                 
-                  <h1>TCP可靠传输</h1>
+                  <h1>Zookeeper</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>思考题</h4>
+                        	<h4>概念</h4>
 
 <ul>
-<li>TCP函数详解</li>
-<li>NtyTCP详解</li>
-<li>为什么要用Nagle算法</li>
-<li>closewait</li>
-<li>timewait</li>
-<li>keeplive是用应用程序还是协议栈</li>
-<li>tcp_deplay设置后，为什么send不是一次发送一个包</li>
-<li>tcp拥塞算法</li>
-<li>流式套接字和数据包的区别</li>
-<li>客户端难度比服务端难度大</li>
+<li>ZooKeeper是一个分布式的，开放源码的分布式集群应用程序协调服务，是Hadoop和Hbase的重要组件。在Zookeeper中，znode是一个跟Unix文件系统路径相似的节点，可以往这个节点存储或获取数据</li>
 </ul>
 
-<h4>accept</h4>
+<h4>节点类型</h4>
 
 <ul>
-<li>accept实现</li>
-<li>accept的工作</li>
-<li>syn队列是服务器回完ACK后加入的</li>
-<li>Accept队列是服务器收到客户端的ACK的包后从SYN队列中取出一个加入ACCEPT队列</li>
-<li>accept功能就是从ACCEPT队列中取出一个完成三次握手的连接</li>
-<li>跟listen的fd是一一绑定的</li>
-<li><img src="media/15493326918557/15497844767435.jpg" alt="" style="width:652px;"/></li>
+<li>持久节点</li>
+<li>持久顺序节点</li>
+<li>临时节点</li>
+<li>临时顺序节点</li>
 </ul>
 
-<h4>connect</h4>
+<h4>zookeeper</h4>
 
 <ul>
-<li><img src="media/15493326918557/15497849633357.jpg" alt="" style="width:659px;"/></li>
-<li>发出去syn加入队列，收到服务器ack，函数返回，并发送给服务器ACK</li>
-<li>定时器由内核维护，定时轮询socket的状态</li>
+<li>配置集中管理</li>
+<li>服务注册和发现</li>
+<li>可靠性架构设计</li>
+<li>分布式锁 排他性 重入性 共享性 创建临时节点的原子性</li>
+<li>分布式队列 </li>
 </ul>
 
-<h4>socket和文件系统</h4>
+<h4>一致性方案</h4>
 
 <ul>
-<li>socket--&gt;sock_map_fd--&gt;sock_alloc_file</li>
-<li>alloc socket sndbuf/rcvbuf</li>
-<li>find unused fdtable_id</li>
-<li>return unused id</li>
-<li>set fdtable_id</li>
+<li>ZAB协议需要确保那些已经在Leader服务器上提交的事务最终被所有服务器都提交（已经被处理的消息不能丢，ZXID不同），</li>
+<li>ZAB协议需要确保丢弃那些只在Leader服务器上被提出的事务（丢弃的消息不能再次出现，ZXID相同，myid最大的做leader</li>
 </ul>
 
-<h4>四次挥手</h4>
+<h4>zookeeper缺陷</h4>
 
 <ul>
-<li>TimeWait保证对端收到最后一次ACK</li>
-<li><img src="media/15493326918557/15497899137662.jpg" alt="" style="width:703px;"/></li>
-<li>close_wait</li>
-<li></li>
+<li>服务发现应该是AP，不是CP</li>
+</ul>
+
+<h4>eureka</h4>
+
+<ul>
+<li>最终一致性</li>
 </ul>
 
                         
@@ -521,7 +622,7 @@ fs.file-max = 1048576
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/02/05 10:11 上午</span>
+                    <span class="date">2019/08/05 17:32 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
@@ -538,62 +639,26 @@ fs.file-max = 1048576
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15492568852611.html">
+                <a class="clearlink" href="15649927761897.html">
                 
-                  <h1>UDP可靠传输</h1>
+                  <h1>Nginx模块开发</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>思考题</h4>
+                        	<h4>动静分离</h4>
 
 <ul>
-<li>有tcp，为什么还要udp可靠传输？</li>
-<li>tcp为什么吞吐量不行</li>
-<li>延迟ack和吞吐量有什么关系</li>
-<li>满启动和吞吐量</li>
-<li>什么情况下内核协议栈处理不过</li>
-<li>tcp资源多，哪些资源多</li>
+<li>静态数据放CDN</li>
+<li>动态数据 业务接口和实现</li>
 </ul>
 
-<h4>udp</h4>
+<h4>模块开发</h4>
 
 <ul>
-<li>udp比IP多八个字节</li>
-<li>系统的时间同步程序</li>
-<li>端口是虚拟的软件的数字</li>
-<li>fd是四元组的索引</li>
-</ul>
-
-<h4>udp为什么会粘包</h4>
-
-<h4>四元组</h4>
-
-<ul>
-<li>local_ip local_port,remote_ip,remote_port,proto</li>
-</ul>
-
-<h4>tcp传输</h4>
-
-<ul>
-<li>第一 间隔9，10的无效的重传</li>
-<li>接收端启动定时器等待确认，有新的定时器过来，重置定时器</li>
-<li>第二 延迟ACK太大</li>
-<li>发送端启动超时定时器</li>
-<li>R = a<em>R_old + (1 - a)</em>R_new</li>
-<li>RTT一直在变</li>
-<li>RTO = b * R_new</li>
-<li>第三 ack延迟确认会导致RTT很大比实际需要要大</li>
-<li>延迟ACK是等接收端定时器到时间了所有的包都收到了再给发送方确认ACK</li>
-<li>重传结束的位置=ACK开始位置+cwd窗口大小位置</li>
-<li>KCP的RTO=1.5*RTT</li>
-<li>使用时间戳来确认ACK</li>
-</ul>
-
-<h4>kcp解决TCP的三个缺点</h4>
-
-<ul>
-<li>连续两次跨越同一个包就重传这个包</li>
+<li>Handle模块</li>
+<li>Filter模块</li>
+<li>Upstream模块</li>
 <li></li>
 </ul>
 
@@ -604,55 +669,7 @@ fs.file-max = 1048576
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/02/04 13:08 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15465006494547.html">
-                
-                  <h1>IO多路复用，EPOLL原理</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>Epoll有没有数量的限制</h4>
-
-<h4>Websocket推送数据的时候，卡顿的问题</h4>
-
-<h4>AIO为什么不能做高性能的IO</h4>
-
-<h4>Epoll只拷贝一部分，拷贝那一部分</h4>
-
-<h4>用户态到内核态交互为什么性能低</h4>
-
-<h4>线程</h4>
-
-<ul>
-<li>一个线程8M空间</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/01/03 15:30 下午</span>
+                    <span class="date">2019/08/05 16:12 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
@@ -679,7 +696,7 @@ fs.file-max = 1048576
 			  </div>
 			  <div class="large-6 columns">
 			<p class="text-right" style="padding-top:25px;">
-			
+			 <a href="linux服务器研发_3.html">&raquo; Next Page</a> 
 			</p>
 			  </div>
 			</div>

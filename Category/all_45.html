@@ -170,46 +170,40 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15457876165545.html">
+                <a class="clearlink" href="15708431807650.html">
                 
-                  <h1>Linux buffer和cache</h1>
+                  <h1>Paxos协议</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>buffer和cache</h4>
+                        	<h4>角色</h4>
+
+<p><img src="media/15708431807650/15708432020016.jpg" alt="" style="width:488px;"/></p>
+
+<h4>Chubby</h4>
 
 <ul>
-<li>Buffers 是内核缓冲区用到的内存，对应的是 /proc/meminfo 中的 Buffers 值。</li>
-<li>Cache 是内核页缓存和 Slab 用到的内存，对应的是 /proc/meminfo 中的 Cached 与 SReclaimable 之和。</li>
-<li>Buffers 是对原始磁盘块的临时存储，也就是用来缓存磁盘的数据，通常不会特别大（20MB 左右）。这样，内核就可以把分散的写集中起来，统一优化磁盘的写入，比如可以把多次小的写合并成单次大的写等等。</li>
-<li>Cached 是从磁盘读取文件的页缓存，也就是用来缓存从文件读取的数据。这样，下次访问这些文件数据时，就可以直接从内存中快速获取，而不需要再次访问缓慢的磁盘。</li>
-<li>SReclaimable 是 Slab 的一部分。Slab 包括两部分，其中的可回收部分，用 </li>
-<li>SReclaimable 记录；而不可回收部分，用 SUnreclaim 记录。</li>
+<li>分布式锁系统</li>
+<li><img src="media/15708431807650/15708436835898.jpg" alt="" style="width:878px;"/></li>
+<li><img src="media/15708431807650/15708436974240.jpg" alt="" style="width:866px;"/></li>
+<li><img src="media/15708431807650/15708440209187.jpg" alt="" style="width:781px;"/></li>
 </ul>
 
-<h4>结论</h4>
+<h4>Locking</h4>
 
-<ul>
-<li>Buffer 既可以用作“将要写入磁盘数据的缓存”，也可以用作“从磁盘读取数据的缓存”。</li>
-<li>Cache 既可以用作“从文件读取数据的页缓存”，也可以用作“写文件的页缓存”。</li>
-</ul>
+<p><img src="media/15708431807650/15708449864784.jpg" alt="" style="width:1522px;"/><br/>
+<img src="media/15708431807650/15708450716795.jpg" alt="" style="width:1576px;"/><br/>
+<img src="media/15708431807650/15708451735410.jpg" alt="" style="width:1520px;"/></p>
 
-<h4>思考</h4>
+<h4>Cache</h4>
 
-<ul>
-<li>如何统计出所有进程的物理内存使用量呢？</li>
-</ul>
+<p><img src="media/15708431807650/15708452349337.jpg" alt="" style="width:1599px;"/></p>
 
-<h4>利用缓存来提升效率</h4>
+<h4>与zk比较</h4>
 
-<ul>
-<li>缓存命中率</li>
-<li>cachestat 提供了整个系统缓存的读写命中情况。</li>
-<li>cachetop 提供了每个进程的缓存命中情况。</li>
-<li>strace -p $(pgrep app) 查看进行的系统调用</li>
-<li></li>
-</ul>
+<p><img src="media/15708431807650/15708452904205.jpg" alt="" style="width:1574px;"/><br/>
+<img src="media/15708431807650/15708453780162.jpg" alt="" style="width:1508px;"/></p>
 
                         
                       </div>
@@ -218,10 +212,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/12/26 09:26 上午</span>
+                    <span class="date">2019/10/12 09:19 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          					    <span class="posted-in"><a href='Zookeeper.html'>Zookeeper</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -235,79 +229,170 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15464093479091.html">
+                <a class="clearlink" href="15606472792037.html">
                 
-                  <h1>内存泄露实战</h1>
+                  <h1>协程调度器</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>导致内存泄露的内存段</h4>
+                        	<h4>协程调度器</h4>
 
 <ul>
-<li>堆内存</li>
-<li>内存映射段，包括动态连接库和共享内存，其中共享内存由程序动态分配和管理，如果忘了回收也会导致内存泄露</li>
+<li>libevent维护fd状态</li>
+<li>每个线程需要维护epollfd的状态</li>
 </ul>
 
-<h4>使用memleak</h4>
+<h4>惊群</h4>
 
 <ul>
-<li>/usr/share/bcc/tools/memleak -p $(pidof main) -a</li>
-<li>显示如下</li>
+<li>accept</li>
+<li>epoll_wait惊群</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-text">  [22:44:58] Top 10 stacks with outstanding allocations:
+<h4>流程</h4>
+
+<ul>
+<li>create</li>
+<li>free</li>
+<li>yield</li>
+<li>resume</li>
+</ul>
+
+<h4>Poll_inner实现</h4>
+
+<ul>
+<li>将Pollfd添加到Epoll中</li>
+<li>让出CPU，切换上下文--&gt;upper 切换给schduel来统一执行</li>
+<li>将Epoll删除Pollfd--&gt;lower</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Int nSend(int sockfd, char *buffer, int length) {
+
+    int result = poll(&amp;pfd, 1, 1);
+    if (pfd.revents &amp; POLLRDHUP) {
+        return idx;
+    }
+    
+    return send(sockfd, buffer, length, 0);
+}
+
+Int nRecv(int sockfd, char *buffer, int length) {
+
+    int result = poll(&amp;pfd, 1, 1);
+    if (pfd.revents &amp; POLLRDHUP) {
+        return idx;
+    }
+    
+    return recv(sockfd, buffer, length, 0);
+}
 </code></pre>
 
+<h4>调度器</h4>
+
+<pre class="line-numbers"><code class="language-cpp">Int nSend(int sockfd, char *buffer, int length) {
+
+    int result = poll(&amp;pfd, 1, 1);
+    if (pfd.revents &amp; POLLRDHUP) {
+        return idx;
+    }
+    
+    return send(sockfd, buffer, length, 0);
+}
+
+Int nSend(int sockfd, char *buffer, int length) {
+
+    int result = poll_inner(&amp;pfd, 1, 1);
+    if (pfd.revents &amp; POLLRDHUP) {
+        return idx;
+    }
+    
+    return send(sockfd, buffer, length, 0);
+}
+
+</code></pre>
+
+<p><img src="media/15606472792037/15706767381701.jpg" alt="" style="width:676px;"/></p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/06/16 09:07 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15605942368306.html">
+                
+                  <h1>协程</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>问题</h4>
+
 <ul>
-<li>表示没有内存泄露</li>
+<li>libgo C++</li>
+<li>异步哪些调用复杂</li>
+<li>为什么要做成上下文保存的方式</li>
+<li>同步与异步的性能差？</li>
+<li>什么场景用协程好，什么场景用线程好</li>
+<li>协程相比对系统线程性能提升在哪里</li>
 </ul>
 
-<h4>脏页回收</h4>
+<h4>新东西</h4>
 
 <ul>
-<li>fsync</li>
-<li>pdflush</li>
+<li>是什么</li>
+<li>为什么</li>
+<li>怎么用</li>
+<li>什么时候用</li>
+<li>在哪里用</li>
 </ul>
 
-<h4>堆内存</h4>
+<h4>异步编程复杂性</h4>
 
 <ul>
-<li>就是应用程序动态分配的堆内存，也就是匿名页</li>
+<li>需要时刻关注IO</li>
+<li>每个子线程需要维护ep_fd和sockfd的状态</li>
+<li>当子线程send或者recv的时候，对端发生关闭的操作，对send和recv要做相应的处理</li>
+<li>EPOLLONESHOT</li>
+<li>线程维护fd的状态集</li>
 </ul>
 
-<h4>内存回收</h4>
+<h4>协程</h4>
 
 <ul>
-<li>直接内存回收</li>
-<li>定期内存回收 kswapd0</li>
+<li>异步封装成同步的编程方式</li>
+<li>accept-&gt;async_accept</li>
+<li>recv-&gt;async_recv</li>
+<li>send-&gt;async_sned</li>
+<li>实现自己的网络接口</li>
+<li>send跟mtu没有关系</li>
+<li>需要自己定义堆栈，对内存消耗比较大</li>
 </ul>
 
-<h4>定期内存回收</h4>
+<h4>poll&amp;send</h4>
 
 <ul>
-<li>页最小阈值（pages_min）</li>
-<li>页低阈值（pages_low）</li>
-<li>页高阈值（pages_high）</li>
-<li>剩余内存 pages_free 表示。</li>
-</ul>
-
-<h4>匿名页和文件页</h4>
-
-<ul>
-<li>对文件页的回收，当然就是直接回收缓存，或者把脏页写回磁盘后再回收。</li>
-<li>而对匿名页的回收，其实就是通过 Swap 机制，把它们写入磁盘后再释放内存。</li>
-<li>swappiness来控制匿名页和文件页的回收，数值越大，越积极使用Swap</li>
-</ul>
-
-<h4>内存指标动态监控</h4>
-
-<ul>
-<li>perf record -e kmem:* -p 27027 -g -- sleep 100</li>
-<li>perf script -i perf.data &amp;&gt; perf.unfold</li>
-<li>./stackcollapse-perf.pl perf.unfold &amp;&gt; perf.folded</li>
-<li>./flamegraph.pl perf.folded &gt; perf.svg</li>
-<li>perf script | ./stackcollapse-perf.pl | ./flamegraph.pl &gt; process.svg</li>
+<li>inner_poll保存上下文同时切换上下文</li>
+<li>accept/send/poll都用一个poll</li>
 <li></li>
 </ul>
 
@@ -318,10 +403,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/01/02 14:09 下午</span>
+                    <span class="date">2019/06/15 18:23 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -335,230 +420,23 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15553724756526.html">
+                <a class="clearlink" href="15706741933375.html">
                 
-                  <h1>系统调用的流程</h1>
+                  <h1>调度器设计</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>32位系统的调用流程</h4>
+                        	<h4>调度器</h4>
 
-<p><img src="media/15553724756526/566299fe7411161bae25b62e7fe20506.jpg" alt="566299fe7411161bae25b62e7fe20506"/></p>
-
-<ul>
-<li>将调用参数放入寄存器中, 由系统调用名得到系统调用号, 放入 eax</li>
-<li>执行 ENTER_KERNEL(一个宏), 对应 int $0x80 触发软中断, 进入内核</li>
-<li>调用软中断处理函数 entry_INT80_32(内核启动时, 由 trap_init() 配置)</li>
-<li>entry_INT80_32 将用户态寄存器存入 pt_regs 中(保存现场以及系统调用参数), 调用 do_syscall_32_iraq_on </li>
-<li>do_syscall_32_iraq_on 从 pt_regs 中取系统调用号(eax), 从系统调用表得到对应实现函数, 取 pt_regs 中存储的参数, 调用系统调用</li>
-<li>entry_INT80_32 调用 INTERRUPT_RUTURN(一个宏)对应 iret 指令, 系统调用结果存在 pt_regs 的 eax 位置, 根据 pt_regs 恢复用户态进程</li>
-</ul>
-
-<h4>64位系统的调用流程</h4>
-
-<p><img src="media/15553724756526/1fc62ab8406c218de6e0b8c7e01fdbd7.jpg" alt="1fc62ab8406c218de6e0b8c7e01fdbd7"/></p>
+<p><img src="media/15706741933375/15706742581605.jpg" alt="" style="width:984px;"/></p>
 
 <ul>
-<li>通过系统调用名得到系统调用号, 存入 rax; 不同中断, 执行 syscall 指令</li>
-<li>MSR(特殊模块寄存器), 辅助完成某些功能(包括系统调用)</li>
-<li>trap_init() 会调用 cpu_init-&gt;syscall_init 设置该寄存器</li>
-<li>syscall 从 MSR 寄存器中, 拿出函数地址进行调用, 即调用 entry_SYSCALL_64</li>
-<li>entry_SYSCALL_64 先保存用户态寄存器到 pt_regs 中</li>
-<li>调用 entry_SYSCALL64_slow_pat-&gt;do_syscall_64</li>
-<li>do_syscall_64 从 rax 取系统调用号, 从系统调用表得到对应实现函数, 取 pt_regs 中存储的参数, 调用系统调用</li>
-<li>返回执行 USERGS_SYSRET64(一个宏), 对应执行 swapgs 和 sysretq 指令; 系统调用结果存在 pt_regs 的 ax 位置, 根据 pt_regs 恢复用户态进程</li>
-</ul>
-
-<h4>64位系统调用的流程</h4>
-
-<p><img src="media/15553724756526/868db3f559ad08659ddc74db07a9a0a5-2.jpg" alt="868db3f559ad08659ddc74db07a9a0a5-2"/></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/04/16 07:54 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15546809549290.html">
-                
-                  <h1>Linux性能优化总结</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>性能问题的来源</h4>
-
-<ul>
-<li>资源瓶颈的分析思路，跟系统资源瓶颈是一样的。</li>
-<li>依赖服务的瓶颈，可以使用全链路跟踪系统，进行快速定位。</li>
-<li>应用自身的问题，则可以通过系统调用、热点函数，或者应用自身的指标和日志等，进行分析定位。</li>
-</ul>
-
-<h4>CPU优化</h4>
-
-<ul>
-<li>进程绑定CPU, 把进程绑定到一个或者多个 CPU 上，充分利用 CPU 缓存的本地性，并减少进程间的相互影响。</li>
-<li>中断程序多CPU负载均衡，以便在发生大量中断时，可以充分利用多CPU的优势分摊负载。</li>
-<li>使用 Cgroups 等方法，为进程设置资源限制，避免个别进程消耗过多的CPU。</li>
-<li>为核心应用程序设置更高的优先级，减少低优先级任务的影响。</li>
-</ul>
-
-<h4>内存优化</h4>
-
-<ul>
-<li>禁止Swap</li>
-<li>使用 Cgroups 等方法，为进程设置内存限制</li>
-<li>核心应用，还应该降低 oom_score，避免被OOM杀死</li>
-</ul>
-
-<h4>磁盘和文件系统IO</h4>
-
-<ul>
-<li>使用SSD，使用RAID提升IO性能</li>
-<li>选择合适的I/O调度算法，SSD和虚拟机磁盘使用Noop，数据库应用使用deadline算法</li>
-<li>优化文件系统和磁盘的缓存和缓冲区</li>
-</ul>
-
-<h4>网络优化</h4>
-
-<h5>内核资源和网络协议</h5>
-
-<ul>
-<li>增大套接字缓冲区、连接跟踪表、最大半连接数、最大文件描述符数、本地端口范围等内核资源配额</li>
-<li>减少TIMEOUT超时时间、SYN+ACK 重传数、Keepalive 探测时间等异常处理参数</li>
-<li>开启端口复用、反向地址校验，并调整 MTU 大小等降低内核的负担</li>
-</ul>
-
-<h5>反向地址校验</h5>
-
-<ul>
-<li>就是在一个网卡收到数据包后，把源地址和目标地址对调后查找路由出口，从而得到反身后路由出口。然后根据反向路由出口进行过滤。</li>
-<li>当rp_filter的值为1时，要求反向路由的出口必须与数据包的入口网卡是同一块，否则就会丢弃数据包。</li>
-<li>当rp_filter的值为2时，要求反向路由必须是可达的，如果反路由不可达，则会丢弃数据包。</li>
-</ul>
-
-<h6>作用</h6>
-
-<ul>
-<li>减少DDoS攻击<br/>
-校验数据包的反向路径，如果反向路径不合适，则直接丢弃数据包，避免过多的无效连接消耗系统资源。</li>
-<li>防止IP Spoofing<br/>
-校验数据包的反向路径，如果客户端伪造的源IP地址对应的反向路径不在路由表中，或者反向路径不是最佳路径，则直接丢弃数据包，不会向伪造IP的客户端回复响应</li>
-</ul>
-
-<h5>网络接口</h5>
-
-<ul>
-<li>CPU 上执行的工作，卸载到网卡中执行，开启网卡的 GRO、GSO、RSS、VXLAN </li>
-<li>开启网络接口的多队列功能，这样，每个队列就可以用不同的中断号，调度到不同 CPU 上执行</li>
-<li>增大网络接口的缓冲区大小以及队列长度等，提升网络传输的吞吐量</li>
-</ul>
-
-<h5>极限性能</h5>
-
-<ul>
-<li>DPDK 技术，跳过内核协议栈，直接由用户态进程用轮询的方式，来处理网络请求</li>
-<li>大页、CPU 绑定、内存对齐、流水线并发等多种机制，优化网络包的处理效率。</li>
-<li>增大网络接口的缓冲区大小以及队列长度等，提升网络传输的吞吐量</li>
-</ul>
-
-<h4>应用程序优化</h4>
-
-<ul>
-<li>从 CPU 使用的角度来说，简化代码、优化算法、异步处理以及编译器优化等，都是常用的降低 CPU 使用率的方法</li>
-<li>数据访问的角度来说，使用缓存、写时复制、增加 I/O 尺寸等，都是常用的减少磁盘 I/O 的方法，</li>
-<li>内存管理的角度来说，使用大页、内存池等方法，可以预先分配内存，减少内存的动态分配，从而更好地内存访问性能</li>
-<li>网络的角度来说，使用 I/O 多路复用、长连接代替短连接、DNS 缓存等方法，可以优化网络 I/O 并减少网络请求数，从而减少网络延时带来的性能问题</li>
-<li>从进程的工作模型来说，异步处理、多线程或多进程等，可以充分利用每一个 CPU 的处理能力，从而提高应用程序的吞吐能力</li>
-<li>架构层面 消息队列、CDN、负载均衡等各种方法，来优化应用程序的架构，将原来单机要承担的任务，调度到多台服务器中并行处理</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/04/08 07:49 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15548549378624.html">
-                
-                  <h1>容器性能分析</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>容器冷启动性能分析</h4>
-
-<ul>
-<li>ServerLess服务启动流程</li>
-<li>事件触发（比如收到新的 HTTP 调用请求）</li>
-<li>资源调度</li>
-<li>镜像拉取 缓存热点镜像</li>
-<li>网络配置 网络资源预分配加速</li>
-<li>启动应用 复用预先创建好的容器</li>
-</ul>
-
-<h4>CPU火焰图和内存火焰图的区别</h4>
-
-<ul>
-<li>对 CPU 火焰图来说，采集的数据主要是消耗 CPU 的函数；</li>
-<li>而对内存火焰图来说，采集的数据主要是内存分配、释放、换页等内存管理函数。</li>
-</ul>
-
-<h4>perf probe</h4>
-
-<ul>
-<li>需要编译时候增加g选项</li>
-</ul>
-
-<h4>RED法则监控微服务</h4>
-
-<ul>
-<li>请求数（Rate）、错误数（Errors）以及响应时间（Duration）</li>
-<li>RED 方法适用于微服务应用的监控，而 USE 方法适用于系统资源的监控。</li>
-</ul>
-
-<h4>理解内核</h4>
-
-<ul>
-<li><a href="https://elixir.bootlin.com/">https://elixir.bootlin.com/</a> 内核函数</li>
-<li><a href="https://github.com/iovisor/bcc">https://github.com/iovisor/bcc</a> BCC工具</li>
+<li>sleep和wait是红黑树</li>
+<li>ready和defer是队列</li>
+<li>最难的是设计这四个状态</li>
+<li>defer是定时器</li>
+<li>wait是read write IO</li>
 <li></li>
 </ul>
 
@@ -569,339 +447,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/04/10 08:08 上午</span>
+                    <span class="date">2019/10/10 10:23 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15547145659086.html">
-                
-                  <h1>异地多活</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>同城异区</h4>
-
-<h4>跨城异区</h4>
-
-<h4>跨国异地</h4>
-
-<h4>思考题</h4>
-
-<ul>
-<li>高可用存储架构中的数据分区备份，又通过自动化运维能够保证 1 分钟就能将全部系统正常启动，那是否意味着没有必要做异地多活了？</li>
-<li>备份系统平常没有流量，如果直接上线可能触发平常测试不到的故障。</li>
-<li>再实时的系统也会有数据延时，如果涉及到金融这种系统，仍然是不敢直接切换的。</li>
-<li>系统运行过程中会有很多中间数据，缓存数据等。系统不经过预热直接把流量倒过来，大流量会直接把系统拖垮</li>
-</ul>
-
-<h4>设计技巧</h4>
-
-<ul>
-<li>保证核心业务的异地多活</li>
-<li>保证核心数据的最终一致性</li>
-<li>采用多种手段同步数据</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/04/08 17:09 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%9E%B6%E6%9E%84.html'>架构</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15547125688046.html">
-                
-                  <h1>微服务混合云部署</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>跨云服务的负载均衡</h4>
-
-<ul>
-<li>通过DNS实现负载均衡</li>
-<li>私有云通过LVS和Nginx实现四层和七层的负载均衡</li>
-<li>阿里云通过SLB和Nginx实现四层和七层的负载均衡</li>
-</ul>
-
-<h4>跨云服务的数据同步</h4>
-
-<ul>
-<li>私有云和阿里云之间架设专线</li>
-<li>缓存放公有云，穿透后访问私有云的数据库</li>
-</ul>
-
-<h4>容器运维</h4>
-
-<ul>
-<li>主机</li>
-<li>服务池</li>
-<li>集群</li>
-</ul>
-
-<h4>流量切换</h4>
-
-<ul>
-<li>DNS 层的切换主要是针对大规模流量增长的情况</li>
-<li>Nginx 层的切换主要是针对私有云内某个机房的 Java Web 容量不足或者服务有问题的时候，需要把这个机房的一部分流量切换到其他机房</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/04/08 16:36 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E5%BE%AE%E6%9C%8D%E5%8A%A1.html'>微服务</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15547108978976.html">
-                
-                  <h1>Service Mesh</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>Service Mesh原理</h4>
-
-<h5>SideCar</h5>
-
-<p><img src="media/15547108978976/daa8dee489e51238f450b51a53c1016d.png" alt="daa8dee489e51238f450b51a53c1016d"/></p>
-
-<ul>
-<li>基于 iptables 的网络拦截</li>
-<li>采用协议转换的方式</li>
-</ul>
-
-<h5>Control Plane</h5>
-
-<ul>
-<li>Control Plane</li>
-<li>服务发现。服务提供者会通过 SideCar 注册到 Control Plane 的注册中心，这样的话服务消费者把请求发送给 SideCar 后，SideCar 就会查询 Control Plane 的注册中心来获取服务提供者节点列表。</li>
-<li>负载均衡。SideCar 从 Control Plane 获取到服务提供者节点列表信息后，就需要按照一定的负载均衡算法从可用的节点列表中选取一个节点发起调用，可以通过 Control Plane 动态修改 SideCar 中的负载均衡配置。</li>
-<li>请求路由。SideCar 从 Control Plane 获取的服务提供者节点列表，也可以通过 Control Plane 来动态改变，比如需要进行 A/B 测试、灰度发布或者流量切换时，就可以动态地改变请求路由。</li>
-<li>故障处理。服务之间的调用如果出现故障，就需要加以控制，通常的手段有超时重试、熔断等，这些都可以在 SideCar 转发请求时，通过 Control Plane 动态配置。</li>
-<li>安全认证。可以通过 Control Plane 控制一个服务可以被谁访问，以及访问哪些信息。</li>
-<li>监控上报。所有 SideCar 转发的请求信息，都会发送到 Control Plane，再由 Control Plane 发送给监控系统，比如 Prometheus 等。</li>
-<li>日志记录。所有 SideCar 转发的日志信息，也会发送到 Control Plane，再由 Control Plane 发送给日志系统，比如 Stackdriver 等。<img src="media/15547108978976/746ba12fff2b184157b00ac44ec2e862.png" alt="746ba12fff2b184157b00ac44ec2e862"/></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/04/08 16:08 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E5%BE%AE%E6%9C%8D%E5%8A%A1.html'>微服务</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15546843019944.html">
-                
-                  <h1>X86结构</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>系统架构图</h4>
-
-<p><img src="media/15546843019944/e2e92f2239fe9b4c024d300046536d76.jpeg" alt="e2e92f2239fe9b4c024d300046536d76"/></p>
-
-<h4>寄存器</h4>
-
-<ul>
-<li>8086  CPU 中寄存器总共为 14 个，且均为 16 位 。<br/>
-即 AX，BX，CX，DX，SP，BP，SI，DI，IP，FLAG，CS，DS，SS，ES 共 14 个。<br/>
-而这 14 个寄存器按照一定方式又分为了通用寄存器，控制寄存器和段寄存器。</li>
-</ul>
-
-<h5>通用寄存器：</h5>
-
-<ul>
-<li>AX，BX，CX，DX 称作为数据寄存器：</li>
-<li>AX (Accumulator)：累加寄存器，也称之为累加器；</li>
-<li>BX (Base)：基地址寄存器；</li>
-<li>CX (Count)：计数器寄存器；</li>
-<li>DX (Data)：数据寄存器；</li>
-<li>SP 和 BP 又称作为指针寄存器：</li>
-<li>SP (Stack Pointer)：堆栈指针寄存器；</li>
-<li>BP (Base Pointer)：基指针寄存器；</li>
-</ul>
-
-<h5>变址寄存器：</h5>
-
-<ul>
-<li>SI (Source Index)：源变址寄存器；</li>
-<li>DI (Destination Index)：目的变址寄存器；</li>
-</ul>
-
-<h5>控制寄存器：</h5>
-
-<ul>
-<li>IP (Instruction Pointer)：指令指针寄存器；</li>
-<li>FLAG：标志寄存器；</li>
-</ul>
-
-<h5>段寄存器：</h5>
-
-<ul>
-<li>CS (Code Segment)：代码段寄存器；</li>
-<li>DS (Data Segment)：数据段寄存器；</li>
-<li>SS (Stack Segment)：堆栈段寄存器；</li>
-<li>ES (Extra Segment)：附加段寄存器；</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/04/08 08:45 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15546836172099.html">
-                
-                  <h1>学习路径</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>阶段</h4>
-
-<ul>
-<li>熟练使用linux</li>
-<li>使用glibc</li>
-<li>了解linux内核机制</li>
-<li>阅读linux内核代码，聚焦核心逻辑和场景</li>
-<li>实验定制化linux组件
-<img src="media/15546836172099/bcf70b988e59522de732bc1b01b45a5b.jpeg" alt="bcf70b988e59522de732bc1b01b45a5b"/></li>
-</ul>
-
-<h4>操作系统内核结构</h4>
-
-<p><img src="media/15546836172099/21a9afd64b05cf1ffc87b74515d1d4f5.jpeg" alt="21a9afd64b05cf1ffc87b74515d1d4f5"/></p>
-
-<h4>内存分配策略</h4>
-
-<ul>
-<li>brk</li>
-<li>mmap</li>
-</ul>
-
-<h4>消息队列</h4>
-
-<ul>
-<li>msgget</li>
-<li>msgsnd</li>
-<li>msgrcv</li>
-</ul>
-
-<h4>共享内存</h4>
-
-<ul>
-<li>shmget</li>
-<li>shmat</li>
-</ul>
-
-<h4>信号量</h4>
-
-<ul>
-<li>sem_post</li>
-<li>sem_wait</li>
-</ul>
-
-<h4>系统调用</h4>
-
-<p><img src="media/15546836172099/ffb6847b94cb0fd086095ac263ac4ff0.jpg" alt="ffb6847b94cb0fd086095ac263ac4ff0"/></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/04/08 08:33 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html'>操作系统原理</a></span>
+          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
           				   
                   </div>
                   <div class="more-right right">

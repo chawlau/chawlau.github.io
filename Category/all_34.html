@@ -170,90 +170,42 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15621133437153.html">
+                <a class="clearlink" href="15716082369662.html">
                 
-                  <h1>gdb</h1>
+                  <h1>并发冲突&悲观锁和乐观锁</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>打印整个数组</h4>
+                        	<h4>悲观锁</h4>
 
-<pre class="line-numbers"><code class="language-text">p (int [10])*a
-p *a@10 （print *name@len）
+<ul>
+<li>各种情况下，都上锁</li>
+</ul>
+
+<h4>对比</h4>
+
+<ul>
+<li>1、悲观筑的优点是：方便，直接加加锁，对应用程序来说，运明，不需要做额外的操作；缺点，并发能力很低，同一时间只能有一条线程操作效据</li>
+<li>2、乐观锁的优点是：并发能力很高，不给数据加锁，大是线程并发操作；缺点，麻颅，每次跟新的时候，都要先比对版本号，然后可能需要重新加載数据，再次修改，再写；这个过程，可能要重复好几</li>
+<li><img src="media/15716082369662/15716093688701.jpg" alt="" style="width:682px;"/></li>
+</ul>
+
+<h4>es乐观锁机制</h4>
+
+<ul>
+<li><img src="media/15716082369662/15716099848850.jpg" alt="" style="width:297px;"/></li>
+</ul>
+
+<pre class="line-numbers"><code class="language-go">PUT /test_index/test_type/1?version=2
+GET /test_index/test_type/1
 </code></pre>
 
-<h4>打印地址</h4>
-
-<pre class="line-numbers"><code class="language-text">gdb n/f/u三个参数可以一起使用。例如： 
-命令：x/3uh 0x7ff320 
-表示，从内存地址0x7ff320读取内容，h表示以双字节为一个单位，3表示三个单位
-u表示按十进制显示无符号整型。
-x 十六进制 d 十进制 c字符 d浮点型
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/07/03 08:22 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15650870393858.html">
-                
-                  <h1>C++对象模型入门</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>内容</h4>
+<h4>external version</h4>
 
 <ul>
-<li>C++对象内部工作原理</li>
-<li>底层的具体实现机制</li>
-<li>提高C++开发修养</li>
-<li>练习C++编程内功</li>
-</ul>
-
-<h4>效果</h4>
-
-<ul>
-<li>拓展眼界和思路</li>
-<li>层次和能力，自信心</li>
-<li>应付面试</li>
-<li>空类sizeof</li>
-<li>虚函数表</li>
-</ul>
-
-<h4>研究内容</h4>
-
-<ul>
-<li>研究系统内部底层的各种各样的实现是如何做的</li>
-<li>继承性</li>
-<li>多态性</li>
-</ul>
-
-<h4>讲解参照</h4>
-
-<ul>
-<li>深度探索C++对象模型</li>
+<li>PUT /test_index/test_type/8?version=2&amp;version_type=external</li>
+<li>PUT /test_index/test_type/8?version=3&amp;version_type=external</li>
 <li></li>
 </ul>
 
@@ -264,10 +216,10 @@ x 十六进制 d 十进制 c字符 d浮点型
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/08/06 18:23 下午</span>
+                    <span class="date">2019/10/21 05:50 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='C++%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B.html'>C++对象模型</a></span>
+          					    <span class="posted-in"><a href='ElasticSearch.html'>ElasticSearch</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -281,44 +233,34 @@ x 十六进制 d 十进制 c字符 d浮点型
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15650804838191.html">
+                <a class="clearlink" href="15716077627222.html">
                 
-                  <h1>C++基础</h1>
+                  <h1>全量替换和强制创建</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>枚举类型</h4>
+                        	<h4>全量替换</h4>
 
 <ul>
-<li>直接赋值整数不行</li>
+<li>（1）语法与创建文档是一样的，如果document id不存在，那么就是创建；如果document id已经存在，那么就是全量替换操作，替换document的json串内容</li>
+<li>（2）document是不可变的，如果要修改document的内容，第一种方式就是全量替换，直接对document重新建立索引，替换里面所有的内容</li>
+<li>（3）es会将老的document标记为deleted，然后新增我们给定的一个document，当我们创建越来越多的document的时候，es会在适当的时机在后台自动删除标记为deleted的document</li>
 </ul>
 
-<h4>bool类型</h4>
+<h4>强制创建</h4>
 
 <ul>
-<li>枚举类型
-<code>
-typedef enum {<br/>
-false, true<br/>
-}bool
-</code></li>
+<li>document的强制创建</li>
+<li>（1）创建文档与全量替换的语法是一样的，有时我们只是想新建文档，不想替换文档，如果强制进行创建呢？</li>
+<li>（2）PUT /index/type/id?op_type=create，PUT /index/type/id/_create</li>
 </ul>
 
-<h4>重载</h4>
+<h4>删除</h4>
 
 <ul>
-<li>返回值类型不同不可以构成重载</li>
-<li>参数顺序不同可以重载</li>
-<li>隐式转换尽量注意</li>
-<li>底层实现 name mangling 函数签名</li>
-<li>.h里面mangling,但是库没有改变，extern c保证头文件不被mangling</li>
-</ul>
-
-<h4>操作符重载</h4>
-
-<ul>
-<li>+号的全局重载函数</li>
+<li>（1）DELETE /index/type/id</li>
+<li>（2）不会理解物理删除，只会将其标记为deleted，当数据越来越多的时候，在后台自动删除</li>
 </ul>
 
                         
@@ -328,10 +270,10 @@ false, true<br/>
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/08/06 16:34 下午</span>
+                    <span class="date">2019/10/21 05:42 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          					    <span class="posted-in"><a href='ElasticSearch.html'>ElasticSearch</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -345,55 +287,32 @@ false, true<br/>
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15649975500687.html">
+                <a class="clearlink" href="15715395755112.html">
                 
-                  <h1>Zookeeper</h1>
+                  <h1>pipe-filter</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>概念</h4>
+                        	<h4>架构</h4>
 
 <ul>
-<li>ZooKeeper是一个分布式的，开放源码的分布式集群应用程序协调服务，是Hadoop和Hbase的重要组件。在Zookeeper中，znode是一个跟Unix文件系统路径相似的节点，可以往这个节点存储或获取数据</li>
+<li><img src="media/15715395755112/15715401958107.jpg" alt="" style="width:998px;"/></li>
+<li>⾮非常适合与数据处理理及数据分析系统</li>
+<li>Filter封装数据处理理的功能</li>
+<li>Pipe⽤用于连接Filter传递数据或者在异步处理理过程中缓冲数据 流</li>
+<li>进程内同步调⽤用时，pipe演变为数据在⽅方法调⽤用间传递 松耦合:Filter只跟数据(格式)耦合</li>
 </ul>
 
-<h4>节点类型</h4>
+<h4>micro kernel</h4>
 
 <ul>
-<li>持久节点</li>
-<li>持久顺序节点</li>
-<li>临时节点</li>
-<li>临时顺序节点</li>
-</ul>
-
-<h4>zookeeper</h4>
-
-<ul>
-<li>配置集中管理</li>
-<li>服务注册和发现</li>
-<li>可靠性架构设计</li>
-<li>分布式锁 排他性 重入性 共享性 创建临时节点的原子性</li>
-<li>分布式队列 </li>
-</ul>
-
-<h4>一致性方案</h4>
-
-<ul>
-<li>ZAB协议需要确保那些已经在Leader服务器上提交的事务最终被所有服务器都提交（已经被处理的消息不能丢，ZXID不同），</li>
-<li>ZAB协议需要确保丢弃那些只在Leader服务器上被提出的事务（丢弃的消息不能再次出现，ZXID相同，myid最大的做leader</li>
-</ul>
-
-<h4>zookeeper缺陷</h4>
-
-<ul>
-<li>服务发现应该是AP，不是CP</li>
-</ul>
-
-<h4>eureka</h4>
-
-<ul>
-<li>最终一致性</li>
+<li><img src="media/15715395755112/15715409828868.jpg" alt="" style="width:584px;"/></li>
+<li>易易于扩展</li>
+<li>错误隔离</li>
+<li>保持架构⼀一致性</li>
+<li>要点</li>
+<li>内核包含公共流程或通⽤用逻辑 将可变或可扩展部分规划为扩展点 抽象扩展点⾏行行为，定义接⼝口 利利⽤用插件进⾏行行扩展</li>
 </ul>
 
                         
@@ -403,10 +322,10 @@ false, true<br/>
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/08/05 17:32 下午</span>
+                    <span class="date">2019/10/20 10:46 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
+          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -420,28 +339,209 @@ false, true<br/>
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15649927761897.html">
+                <a class="clearlink" href="15401734228180.html">
                 
-                  <h1>Nginx模块开发</h1>
+                  <h1>反射机制</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>动静分离</h4>
+                        	<h4>类型断言</h4>
 
 <ul>
-<li>静态数据放CDN</li>
-<li>动态数据 业务接口和实现</li>
+<li>判断类型必须是interface{}</li>
 </ul>
 
-<h4>模块开发</h4>
+<pre class="line-numbers"><code class="language-text">  var f *File
+  var b interface{} = f
+  if v, ok := b.(ReadWriter); ok {
+    fmt.Println(&quot;%v&quot;, ok, v)
+  }
+</code></pre>
+
+<h4>切片和空接口切片不能直接赋值</h4>
+
+<pre class="line-numbers"><code class="language-text">  var a []int
+  var b []interface{}
+  b = a //error
+</code></pre>
+
+<h4>反射</h4>
 
 <ul>
-<li>Handle模块</li>
-<li>Filter模块</li>
-<li>Upstream模块</li>
-<li></li>
+<li>运行时动态获取变量的相关信息</li>
+<li>reflect.TypeOf</li>
+<li>reflect.ValueOf</li>
+<li>reflect.Value.Kind</li>
+<li>reflect.Value.Interface()</li>
 </ul>
+
+<h4>通过反射改变变量的值</h4>
+
+<pre class="line-numbers"><code class="language-text">var a float64
+fv := reflect.ValueOf(&amp;a)
+fv.Elem().SetFloat(3.3)
+fmt.Printf(&quot;%v\n&quot;, a)
+</code></pre>
+
+<h4>json打包原理</h4>
+
+<ul>
+<li>利用反射机制的tag来实现</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-go">tp := reflect.TypeOf(inter)
+for i := 0; i &lt; num; i++ {
+ tag := tp.Elem().Field(i).Tag.Get(&quot;json&quot;)
+ fmt.Println(&quot;tag&quot;, tag)
+}
+</code></pre>
+
+<h4>利用反射编写灵活的代码</h4>
+
+<pre class="line-numbers"><code class="language-go">//按名字访问结构的成员
+* reflect.ValueOf(*e).FieldByName(&quot;Name&quot;)
+// 按名字访问结构的⽅方法
+reflect.ValueOf(e).MethodByName(&quot;UpdateAge&quot;).Call([]reflect.Value{reflect.ValueOf(1)})
+</code></pre>
+
+<h4>调用方法</h4>
+
+<pre class="line-numbers"><code class="language-go">type Employee struct {
+    EmployeeID string
+    Name       string `format:&quot;normal&quot;`
+    Age        int
+}
+
+func (e *Employee) UpdateAge(newVal int) {
+    e.Age = newVal
+}
+
+type Customer struct {
+    CookieID string
+    Name     string
+    Age      int
+}
+
+func TestInvokeByName(t *testing.T) {
+    e := &amp;Employee{&quot;1&quot;, &quot;Mike&quot;, 30}
+    //按名字获取成员
+    t.Logf(&quot;Name: value(%[1]v), Type(%[1]T) &quot;, reflect.ValueOf(*e).FieldByName(&quot;Name&quot;))
+    if nameField, ok := reflect.TypeOf(*e).FieldByName(&quot;Name&quot;); !ok {
+        t.Error(&quot;Failed to get &#39;Name&#39; field.&quot;)
+    } else {
+        t.Log(&quot;Tag:format&quot;, nameField.Tag.Get(&quot;format&quot;))
+    }
+    reflect.ValueOf(e).MethodByName(&quot;UpdateAge&quot;).
+        Call([]reflect.Value{reflect.ValueOf(1)})
+    t.Log(&quot;Updated Age:&quot;, e)
+}
+
+</code></pre>
+
+<h4>struct tag</h4>
+
+<pre class="line-numbers"><code class="language-go">if nameField, ok := reflect.TypeOf(*e).FieldByName(&quot;Name&quot;); !ok { t.Error(&quot;Failed to get &#39;Name&#39; field.&quot;)
+} else {
+t.Log(&quot;Tag:format&quot;, nameField.Tag.Get(&quot;format&quot;))
+}
+Reflect.Type 和 Reflect.Value 都有 FieldByName ⽅方法，注意他们的区别
+</code></pre>
+
+<h4>切片和map进行比较</h4>
+
+<pre class="line-numbers"><code class="language-go">func TestDeepEqual(t *testing.T) {
+    a := map[int]string{1: &quot;one&quot;, 2: &quot;two&quot;, 3: &quot;three&quot;}
+    b := map[int]string{1: &quot;one&quot;, 2: &quot;two&quot;, 3: &quot;three&quot;}
+    //  t.Log(a == b) error
+    t.Log(&quot;a==b?&quot;, reflect.DeepEqual(a, b))
+
+    s1 := []int{1, 2, 3}
+    s2 := []int{1, 2, 3}
+    s3 := []int{2, 3, 1}
+
+    t.Log(&quot;s1 == s2?&quot;, reflect.DeepEqual(s1, s2))
+    t.Log(&quot;s1 == s3?&quot;, reflect.DeepEqual(s1, s3))
+
+    c1 := Customer{&quot;1&quot;, &quot;Mike&quot;, 40}
+    c2 := Customer{&quot;1&quot;, &quot;Mike&quot;, 40}
+    fmt.Println(c1 == c2)
+    fmt.Println(reflect.DeepEqual(c1, c2))
+}
+
+</code></pre>
+
+<h4>万能填充</h4>
+
+<pre class="line-numbers"><code class="language-go">type Employee struct {
+    EmployeeID string
+    Name       string `format:&quot;normal&quot;`
+    Age        int
+}
+
+func (e *Employee) UpdateAge(newVal int) {
+    e.Age = newVal
+}
+
+type Customer struct {
+    CookieID string
+    Name     string
+    Age      int
+}
+
+func fillBySettings(st interface{}, settings map[string]interface{}) error {
+
+    // func (v Value) Elem() Value
+    // Elem returns the value that the interface v contains or that the pointer v points to.
+    // It panics if v&#39;s Kind is not Interface or Ptr.
+    // It returns the zero Value if v is nil.
+
+    if reflect.TypeOf(st).Kind() != reflect.Ptr {
+        return errors.New(&quot;the first param should be a pointer to the struct type.&quot;)
+    }
+    // Elem() 获取指针指向的值
+    if reflect.TypeOf(st).Elem().Kind() != reflect.Struct {
+        return errors.New(&quot;the first param should be a pointer to the struct type.&quot;)
+    }
+
+    if settings == nil {
+        return errors.New(&quot;settings is nil.&quot;)
+    }
+
+    var (
+        field reflect.StructField
+        ok    bool
+    )
+
+    for k, v := range settings {
+        if field, ok = (reflect.ValueOf(st)).Elem().Type().FieldByName(k); !ok {
+            continue
+        }
+        if field.Type == reflect.TypeOf(v) {
+            vstr := reflect.ValueOf(st)
+            vstr = vstr.Elem()
+            vstr.FieldByName(k).Set(reflect.ValueOf(v))
+        }
+
+    }
+    return nil
+}
+
+func TestFillNameAndAge(t *testing.T) {
+    settings := map[string]interface{}{&quot;Name&quot;: &quot;Mike&quot;, &quot;Age&quot;: 30}
+    e := Employee{}
+    if err := fillBySettings(&amp;e, settings); err != nil {
+        t.Fatal(err)
+    }
+    t.Log(e)
+    c := new(Customer)
+    if err := fillBySettings(c, settings); err != nil {
+        t.Fatal(err)
+    }
+    t.Log(*c)
+}
+
+</code></pre>
 
                         
                       </div>
@@ -450,334 +550,10 @@ false, true<br/>
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/08/05 16:12 下午</span>
+                    <span class="date">2018/10/22 09:57 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15649684154486.html">
-                
-                  <h1>动态规划</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>流程</h4>
-
-<ul>
-<li>整个求解过程分为 n 个阶段，每个阶段会决策一个物品是否放到背包中。每个物品决策（放入或者不放入背包）完之后，背包中的物品的重量会有多种情况，也就是说，会达到多种不同的状态，对应到递归树中，就是有很多不同的节点</li>
-<li>每一层重复的状态（节点）合并，只记录不同的状态，然后基于上一层的状态集合，来推导下一层的状态集合。我们可以通过合并每一层重复的状态，这样就保证每一层不同状态的个数都不会超过 w 个</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/05 09:26 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15649289939803.html">
-                
-                  <h1>高水位和Leader epoch</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>高水位作用</h4>
-
-<ul>
-<li>定义消息可见性，即用来标识分区下的哪些消息是可以被消费者消费的。</li>
-<li>帮助 Kafka 完成副本同步</li>
-<li><img src="media/15649289939803/c2243d5887f0ca7a20a524914b85a8dd.png" alt="c2243d5887f0ca7a20a524914b85a8dd"/></li>
-<li>高水位和 LEO 是副本对象的两个重要属性。Kafka 所有副本都有对应的高水位和 LEO 值，而不仅仅是 Leader 副本</li>
-</ul>
-
-<h4>高水位更新机制</h4>
-
-<ul>
-<li>leader的broker保存远程副本，帮助leader副本 确定高水位</li>
-<li>leader的LEO通过生产者消息写入磁盘更新</li>
-<li>folloer副本通过拉取消息，更新磁盘</li>
-<li>follower副本高水位取LEO和leader发来的高水位最小值确定高水位</li>
-<li>leader副本高水位取leader副本和所有同步的leo的最小值</li>
-<li>leader远程副本leo通过follower拉取消息上报的位移算</li>
-</ul>
-
-<h4>副本同步判断</h4>
-
-<ul>
-<li>该远程 Follower 副本在 ISR 中。</li>
-<li>该远程 Follower 副本 LEO 值落后于 Leader 副本 LEO 值的时间，不超过 Broker 端参数 replica.lag.time.max.ms 的值</li>
-<li>先更新leo，然后更新高水位</li>
-</ul>
-
-<h4>Leader Epoch</h4>
-
-<ul>
-<li>Epoch。一个单调增加的版本号。每当副本领导权发生变更时，都会增加该版本号。小版本号的 Leader 被认为是过期 Leader，不能再行使 Leader 权力。</li>
-<li>起始位移（Start Offset）。Leader 副本在该 Epoch 值上写入的首条消息的位移。</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/04 22:29 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Kafka.html'>Kafka</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15649249729413.html">
-                
-                  <h1>消费者组重平衡</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>重平衡通知</h4>
-
-<ul>
-<li>靠消费者的心跳线程</li>
-<li>协调者将REBALANCE_IN_PROGRESS封装进心跳请求响应中发送给消费者</li>
-</ul>
-
-<h4>消费者组状态机</h4>
-
-<table>
-<thead>
-<tr>
-<th style="text-align: center"></th>
-<th style="text-align: center">消费者五种状态</th>
-<th style="text-align: center"></th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td style="text-align: center">状态</td>
-<td style="text-align: center">含义</td>
-<td style="text-align: center"></td>
-</tr>
-<tr>
-<td style="text-align: center">Empty</td>
-<td style="text-align: center">组内没有任何成员，但消费者组可能存在已提交的位移数据，而且这些位移尚未过期</td>
-<td style="text-align: center"></td>
-</tr>
-<tr>
-<td style="text-align: center">Dead</td>
-<td style="text-align: center">同样是组内没有任何成员，但组的元数据信息已经在协调者端被移除。协调者组件保存着当前向它注册过的所有组信息，所谓的元数据信息就类似于这个注册信息</td>
-<td style="text-align: center"></td>
-</tr>
-<tr>
-<td style="text-align: center">PreparingRebalance</td>
-<td style="text-align: center">消费者组准备开启重平衡，此时所有成员都要重新请求加入消费者组</td>
-<td style="text-align: center"></td>
-</tr>
-<tr>
-<td style="text-align: center">CompletingRebalance</td>
-<td style="text-align: center">消费者组下所有成员已经加入，各个成员正在等待分配方案。该状态在老一点的版本中被称为 Awaitingsync，它和 Completing Rebalancek 是等价的</td>
-<td style="text-align: center"></td>
-</tr>
-<tr>
-<td style="text-align: center">Stable</td>
-<td style="text-align: center">消费者组的稳定状态。该状态表明重平衡已经完成，组内各成员能够正常消费数据了</td>
-<td style="text-align: center"></td>
-</tr>
-</tbody>
-</table>
-
-<ul>
-<li><img src="media/15649249729413/f16fbcb798a53c21c3bf1bcd5b72b006.png" alt="f16fbcb798a53c21c3bf1bcd5b72b006"/></li>
-</ul>
-
-<h4>重平衡流程</h4>
-
-<ul>
-<li>JoinGroup JoinGroup 请求的主要作用是将组成员订阅信息发送给领导者消费者，待领导者制定好分配方案后，重平衡流程进入到 SyncGroup 请求阶段</li>
-<li>SyncGroup 就是让协调者把领导者制定的分配方案下发给各个组内成员。当所有成员都成功接收到分配方案后，消费者组进入到 Stable 状态，即开始正常的消费工作</li>
-</ul>
-
-<h4>重平衡场景</h4>
-
-<ul>
-<li>新成员入组</li>
-<li>组成员离开组</li>
-<li>组成员崩溃离组 session.timeout.ms</li>
-<li>重平衡时协调者对组内成员提交位移的处理</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/04 21:22 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Kafka.html'>Kafka</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15647094297065.html">
-                
-                  <h1>分治思想</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>本质</h4>
-
-<ul>
-<li>分治算法是一种处理问题的思想，递归是一种编程技巧</li>
-</ul>
-
-<h4>满足条件</h4>
-
-<ul>
-<li>原问题与分解成的小问题具有相同的模式；</li>
-<li>原问题分解成的子问题可以独立求解，子问题之间没有相关性，这一点是分治算法跟动态规划的明显区别，等我们讲到动态规划的时候，会详细对比这两种算法；</li>
-<li>具有分解终止条件，也就是说，当问题足够小时，可以直接求解；</li>
-<li>可以将子问题合并成原问题，而这个合并操作的复杂度不能太高，否则就起不到减小算法总体复杂度的效果了。</li>
-</ul>
-
-<h4>逆序度问题</h4>
-
-<ul>
-<li>二维平面上有 n 个点，如何快速计算出两个距离最近的点对？</li>
-<li>有两个 n<em>n 的矩阵 A，B，如何快速求解两个矩阵的乘积 C=A</em>B？</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/02 09:30 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html'>数据结构和算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15646540716831.html">
-                
-                  <h1>zmq</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>传统网络编程的问题</h4>
-
-<ul>
-<li>调用的socket接口较多；</li>
-<li>TCP是一对一的连接；</li>
-<li>编程需要关注很多socket细节问题；</li>
-<li>不支持跨平台编程；</li>
-<li>需要自行处理分包、组包问题；</li>
-<li>流式传输时需处理粘包、半包问题；</li>
-<li>需自行处理网络异常，比如连接异常中断、重连等；</li>
-<li>服务端和客户端启动有先后 两端是对等的</li>
-<li>自行处理IO模型；</li>
-<li>自行实现消息的缓存；</li>
-<li>自行实现对消息的加密</li>
-</ul>
-
-<h4>课外阅读</h4>
-
-<ul>
-<li>并发编程的11大问题</li>
-<li><a href="https://blog.csdn.net/mergerly/article/details/39028861">https://blog.csdn.net/mergerly/article/details/39028861</a></li>
-<li>使用socket_pair</li>
-</ul>
-
-<h4>zmq解决的问题</h4>
-
-<ul>
-<li>传统网络编程问题</li>
-<li>并发开发的问题</li>
-<li>分布式环境下的通信</li>
-<li>吞吐量和延时问题</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/01 18:07 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
+          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
           				   
                   </div>
                   <div class="more-right right">

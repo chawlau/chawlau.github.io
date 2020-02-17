@@ -170,83 +170,55 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15396539906242.html">
+                <a class="clearlink" href="15685431648523.html">
                 
-                  <h1>函数和结构体</h1>
+                  <h1>互斥量用法&死锁</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>如何实现闭包</h4>
+                        	<h4>互斥量使用</h4>
 
 <ul>
-<li>通过内部匿名函数进行定制</li>
+<li>lock</li>
+<li>unlock</li>
+<li>std::lock_guard</li>
+<li>std::lock_guard<a href="std::mutex">std::mutex</a> sg(my_mutex);</li>
+<li>必须在析构的时候解锁，不够灵活加{}提前析构</li>
 </ul>
 
-<h4>结构体定义</h4>
+<h4>死锁</h4>
 
-<pre class="line-numbers"><code class="language-text">type Animal struct {
-    scientificName string // 学名。
-    AnimalCategory    // 动物基本分类。
-}
+<ul>
+<li>至少两把锁 </li>
+<li>解决方案</li>
+<li>保证互斥量上锁的顺序一致</li>
+</ul>
+
+<h4>std::lock函数模版</h4>
+
+<ul>
+<li>一次锁住两或者两个以上的互斥量，至少两个</li>
+<li>不存在因为多个线程中，因为锁的顺序问题导致死锁的风险问题</li>
+<li>如果互斥量一个没锁住，就等待，只有等所有互斥量都锁住，才能往下走</li>
+<li>要么都锁住，要么都没锁住，如果只锁了一个，另外没锁成功，则立即把已经锁住的解锁</li>
+<li>建议一个一个锁</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">std::lock(mutex1, mutex2);
+mutex1.unlock();
+mutex2.unlock();
+</code></pre>
+
+<h4>std::lock_guard&amp;</h4>
+
+<pre class="line-numbers"><code class="language-text">std::lock(mutex1, mutex2);
+std::lock_guard&lt;std::mutex&gt; s1(mutex1, std::adopt_lock);
+std::lock_guard&lt;std::mutex&gt; s2(mutex2, std::adopt_lock);
 </code></pre>
 
 <ul>
-<li>AnimalCategory只有字段的类型名而没有字段的名称，就是一个嵌入字段，可以通过.跟上类型引用到该字段，既是类型又是名称</li>
-</ul>
-
-<h4>值方法和指针方法的区别</h4>
-
-<ul>
-<li>值方法的接收者是方法所属类型的一个副本，修改不会生效在副本上，除非类型是引用类型</li>
-<li>自定义数据的方法集合中包含值方法，但是指针类型的方法包括所有值方法和指针方法</li>
-</ul>
-
-<h4>结构体类型中嵌入某个类型的指针类型</h4>
-
-<ul>
-<li>非指针匿名字段是原结构体的一个拷贝，不影响原结构体,指针匿名字段多一些</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  package main
-
-import (
-    &quot;fmt&quot;
-)
-
-type Animal struct {
-    Name string
-}
-type Persion struct {
-    Animal
-}
-type Ppersion struct {
-    *Animal
-}
-
-func main() {
-    animal := Animal{Name: &quot;Cat&quot;}
-    persion := Persion{animal}
-    ppersion := Ppersion{&amp;animal}
-    fmt.Println(&quot;Animal:&quot; + animal.Name)
-    fmt.Println(&quot;Persion:&quot; + persion.Name)
-    fmt.Println(&quot;PPersion:&quot; + ppersion.Name)
-
-    animal.Name = &quot;Dog&quot;
-    fmt.Println(&quot;------------我是卖萌分割线------------&quot;)
-    fmt.Println(&quot;Animal:&quot; + animal.Name)
-    fmt.Println(&quot;Persion:&quot; + persion.Name)
-    fmt.Println(persion.Animal == animal)
-    fmt.Println(&quot;PPersion:&quot; + ppersion.Name)
-    fmt.Println(ppersion.Animal == &amp;animal)
-}
-
-</code></pre>
-
-<h4>struct{}代表什么</h4>
-
-<ul>
-<li>可以给一个变量赋值，虽然没有字段，但是可以绑定方法</li>
+<li>std::adopt_lock表示互斥量已经lock过了</li>
 </ul>
 
                         
@@ -256,10 +228,10 @@ func main() {
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/10/16 09:39 上午</span>
+                    <span class="date">2019/09/15 18:26 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -273,39 +245,20 @@ func main() {
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15395848747680.html">
+                <a class="clearlink" href="15685011552675.html">
                 
-                  <h1>字典的操作和约束</h1>
+                  <h1>消息中间件</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>原理</h4>
+                        	<h4>主流中间件</h4>
 
 <ul>
-<li>把key作为参数传给哈希表，然后表通过哈希函数转换成hash值，通过哈希值的低的几位定位到哈希桶</li>
-</ul>
-
-<h4>字典的键类型不能是哪些值</h4>
-
-<ul>
-<li>函数类型</li>
-<li>字典类型</li>
-<li>切片类型</li>
-</ul>
-
-<h4>优先考虑键值类型</h4>
-
-<ul>
-<li>哈希和判等的速度越快，对应的类型就适合作为键类型</li>
-</ul>
-
-<h4>nil类型字典</h4>
-
-<ul>
-<li>除了添加元素对，其他操作都可以</li>
-<li>sync.Map 并发编程</li>
-<li></li>
+<li>kafka 对消息的重复、丢失、错误没有严格要求 专注高性能</li>
+<li>RocketMQ 事务 </li>
+<li>NameServer源代码</li>
+<li>RabbitMQ 数据一致性 稳定性 可靠性要求很高， 性能和吞吐量在其次</li>
 </ul>
 
                         
@@ -315,10 +268,10 @@ func main() {
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/10/15 14:27 下午</span>
+                    <span class="date">2019/09/15 06:45 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
+          					    <span class="posted-in"><a href='RabbitMQ.html'>RabbitMQ</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -332,110 +285,134 @@ func main() {
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15355101690564.html">
+                <a class="clearlink" href="15602501379556.html">
                 
-                  <h1>Docker NetWorking</h1>
+                  <h1>动态链接</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<ul>
-<li>net实现协议栈和网络设备的隔离</li>
-<li><img src="media/15354190834336/15354475552616.jpg" alt="" style="width:636px;"/></li>
-<li>OVS OpenVSwitch</li>
-<li>SDN软件驱动网络</li>
-<li><img src="media/15354190834336/15355069668262.jpg" alt=""/></li>
-<li>Overlay Network</li>
-<li>隧道转发 两级三层封装 //TODO</li>
-<li>LVS IPtable //TODO</li>
-<li>docker0 交换机和网卡 默认是NAT桥</li>
-<li><img src="media/15354190834336/15355091021145.jpg" alt="" style="width:567px;"/></li>
-<li><img src="media/15354190834336/15355093838771.jpg" alt="" style="width:446px;"/></li>
-<li>容器使用宿主机的网络名称空间</li>
-<li><img src="media/15354190834336/15355096534238.jpg" alt="" style="width:826px;"/></li>
-</ul>
-
-<h4>网络名称空间</h4>
+                        	<h4>fPIC</h4>
 
 <ul>
-<li>ip netns exec r1 ifconfig -a 查看网络名称空间</li>
-<li>ip netns add r1  添加网络名称空间</li>
-<li>ip link add name veth1.1 type veth peer name veth1.2</li>
-<li>ip link set dev veth1.2 netns r1 移动到网络名称空间</li>
-<li>ip netns exec r1 ip link set dev vrth1.2 name veth1.2 改名</li>
-<li>ifconfig veth1.1 10.1.0.1/24 up 激活</li>
-<li>ip netns exec r2 ping 10.1.0.2</li>
-<li></li>
+<li>把指令中那些需要被修改的部分分离出来，跟数据部分放在一起，这样指令部分就可以保持不变，而数据部分可以在每个进程中拥有一个副本。这种方案就是目前被称为地址无关代码（PIC, Position independent Code）的技术。</li>
+<li>动态链接模块被装载映射至虚拟空间后，指令部分是在多个进程之间共享的，由于装载时重定位的方法需要修改指令，所以没有办法做到同一份指令被多个进程共享</li>
 </ul>
 
-<h4>docker 四种网络模型</h4>
+<h4>共享对象模块的地址引用</h4>
 
 <ul>
-<li> 封闭式网络</li>
-<li> 桥接式网络</li>
-<li> 联盟式网络</li>
-<li> 开放式</li>
+<li>模块内部引用和模块外部引用</li>
+<li>按照不同的引用方式又可以分为指令引用和数据访问</li>
 </ul>
 
-<h4>docker查看容器网络</h4>
+<h4>动态库访问原理</h4>
+
+<p><img src="media/15602501379556/15684206512381.jpg" alt="" style="width:862px;"/></p>
+
+<h4>依赖库</h4>
 
 <ul>
-<li>docker network inspect bridge</li>
-<li>docker network ls</li>
-<li>ip netns 查看网络名称空间</li>
-<li>网卡分配给名称空间</li>
-<li>网络名称空间//TODO</li>
+<li>VDSO(Virtual Dynamically-linked Shared Object)</li>
+<li>内核虚拟共享对象linux-vdso.so.1</li>
+<li>它将内核态的调用映射到用户态的地址空间中, 使得调用开销更小, 路径更好.</li>
+<li>较新的内核提供了进程随机地址化功能, linux-vdso.so.1的地址每次cat /proc/self/maps都会变化</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-text"> docker run --name t1 -it --rm busybox:latest 创建容器推出就删除
- docker run --name t4 -it --network none --rm busybox:latest
- docker run --name t4 -it --network bridge --rm busybox:latest
- docker run --name t4 --hostname chawlau --dns 8.8.8.8 -it --network none --rm busybox:latest //给容器分配主机名
- docker run --name t4 --hostname chawlau --dns 8.8.8.8 -it --network bridge --dns-search ilinux.io --add-hosts www.magedu.com:1.1.1.1  --rm busybox:latest //给容器分配主机名
-</code></pre>
-
-<h4>Opening inbound communication</h4>
+<h4>引用外部函数</h4>
 
 <ul>
-<li>查看映射端口</li>
+<li>如果是在静态模块中，按照静态链接的规则重定位</li>
+<li>如果是动态共享对象中的函数，链接器将这个符号的引用标记为一个动态链接的符号</li>
+<li>链接器解析的时候发现动态符号，可以做动态引用</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-text">  iptables -t nat -vnL
-  docker port web2 显示指定容器的映射
-</code></pre>
+<h4>装载时重定位</h4>
 
 <ul>
-<li><img src="media/15355101690564/15355229419041.jpg" alt="" style="width:618px;"/></li>
-<li>联盟式容器</li>
+<li>基地址重置</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-text">  docker run --name b2 --network container:b1 -it --rm busybox 共享b1容器名称空间
-  docker run --name b2 --network host -it --rm busybox
-  配置文件可以远程启动&quot;hosts&quot;: [&quot;tcp://0.0.0.0:2375&quot;, &quot;unix:///var/run/docker.sock&quot;]
-  docker exec -it tinyweb2 /bin/sh
-</code></pre>
+<h4>引用方式</h4>
 
 <ul>
-<li>nohub command &amp; 剥离出去sh进程</li>
-<li>主进程ID为1</li>
-<li>RUN和CMD运行的时间点和行为不同</li>
-<li>CMD 收不到信号，容器中接收信号为1的进程</li>
-<li>CMD在把制作的镜像运行为容器时运行</li>
-<li>ENTRYPOINT的命令在启动时不会被覆盖</li>
-<li>CMD给ENTRYPOINT提供参数</li>
-<li>json数组中要使用双引号</li>
+<li>模块内部函数跳转</li>
+<li>模块内部数据访问</li>
+<li>模块外部函数调用、跳转</li>
+<li>模块外部数据访问</li>
 </ul>
 
-<h4>HEALTHCHECK</h4>
+<h4>模块内部跳转</h4>
 
 <ul>
-<li>interval</li>
-<li>timeout</li>
-<li>start-period 起进程等待时间</li>
-<li>retries</li>
-<li>ARG传输环境变量</li>
-<li>ONBUILD</li>
-<li></li>
+<li>基于寄存器的相对调用，不需要重定位</li>
+</ul>
+
+<h4>模块内部数据访问</h4>
+
+<ul>
+<li>获取PC寄存器的值，然后加上偏移量访问相应变量</li>
+</ul>
+
+<h4>模块外部数据访问</h4>
+
+<ul>
+<li><img src="media/15602501379556/15605664830807.jpg" alt="" style="width:592px;"/></li>
+</ul>
+
+<h4>模块间跳转</h4>
+
+<ul>
+<li>通过Got中函数的相对位置跳转</li>
+</ul>
+
+<h4>共享模块全局变量</h4>
+
+<ul>
+<li>一个模块引用了定义在共享对象的全局变量的时候，全部当作其他模块引用处理
+<img src="media/15602501379556/15605672406780.jpg" alt="" style="width:385px;"/></li>
+</ul>
+
+<h4>数据段地址无关性</h4>
+
+<ul>
+<li>绝对地址引用，编译器和链接器产生重定位表，包含了类型的重定位入口</li>
+</ul>
+
+<h4>延迟绑定</h4>
+
+<ul>
+<li>动态链接访问全局和静态数据需要GOT定位和间接跳转</li>
+<li>链接工作是在运行时完成</li>
+</ul>
+
+<h4>PLT原理</h4>
+
+<ul>
+<li>函数符号引用在重定位表rel.plt的下标</li>
+<li>模块ID压栈
+<img src="media/15602501379556/15605680932671.jpg" alt="" style="width:547px;"/></li>
+</ul>
+
+<h4>加载原理</h4>
+
+<ul>
+<li>读取可执行文件的头部，检查合法性</li>
+<li>从头部的header读取各个segment，映射到进程虚拟空间</li>
+</ul>
+
+<h4>动态符号表</h4>
+
+<ul>
+<li>.dynsym</li>
+<li>.symtab 包含所有符号</li>
+</ul>
+
+<h4>装载时重定位</h4>
+
+<ul>
+<li>.rel.dyn 数据，函数非-fPIC编译时也在回dyn中</li>
+<li>.rel.plt 函数引用</li>
 </ul>
 
                         
@@ -445,10 +422,10 @@ func main() {
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/08/29 10:36 上午</span>
+                    <span class="date">2019/06/11 18:48 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
+          					    <span class="posted-in"><a href='%E7%A8%8B%E5%BA%8F%E5%91%98%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB.html'>程序员的自我修养</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -462,35 +439,209 @@ func main() {
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15395110783190.html">
+                <a class="clearlink" href="15684126501705.html">
                 
-                  <h1>Container 容器</h1>
+                  <h1>Redis内存优化</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>List</h4>
+                        	<h4>分类</h4>
 
 <ul>
-<li>为什么链表可以做到开箱即用</li>
-<li>延迟初始化</li>
-<li>通过PushFront,PushBack,PushBackList,PushFrontList来判断链表的状态</li>
+<li>内存消耗</li>
+<li>内存管理</li>
+<li>内存优化</li>
 </ul>
 
-<h4>Ring和List的区别</h4>
+<h4>内存消耗</h4>
+
+<h5>内存使用统计</h5>
 
 <ul>
-<li>Ring的Len的时间复杂度是O(N)</li>
-<li>List的Len方法的算法复杂度是O(1)</li>
-<li>var r ring.Ring 声明一个长度为1的循环链表，List则是长度为0的链表</li>
-<li>Ring的长度创建后就不会改变，List不会</li>
+<li><img src="media/15684126501705/15684129019117.jpg" alt="" style="width:838px;"/></li>
 </ul>
 
-<h4>ring的循环链表适用场景</h4>
+<h5>内存消耗划分</h5>
 
 <ul>
-<li>list是构建FIFO队列</li>
-<li>ring是作网页轮播</li>
+<li><img src="media/15684126501705/15684131184915.jpg" alt="" style="width:652px;"/></li>
+<li><img src="media/15684126501705/15684132303294.jpg" alt="" style="width:1016px;"/></li>
+</ul>
+
+<h4>客户端缓冲区</h4>
+
+<ul>
+<li>普通客户端</li>
+<li>slave客户端</li>
+<li>pubsub客户端</li>
+</ul>
+
+<h4>输入缓冲区</h4>
+
+<ul>
+<li><img src="media/15684126501705/15684134149671.jpg" alt="" style="width:942px;"/></li>
+</ul>
+
+<h5>输出缓冲区</h5>
+
+<ul>
+<li>client-output-buffer-limit </li>
+<li>class 缓冲区类型</li>
+<li>hard limit 超出会立即被关闭</li>
+<li>soft limit soft seconds 超出规定缓冲区多长时间会被关闭</li>
+<li><img src="media/15684126501705/15684135327774.jpg" alt="" style="width:991px;"/></li>
+</ul>
+
+<h5>普通客户端缓冲区</h5>
+
+<ul>
+<li>默认：client-output-buffer-limit normal 0 0 0 </li>
+<li>默认：没有限制客户端缓冲</li>
+<li>注意：防止大的命令或者 monitor。
+<img src="media/15684126501705/15684137639534.jpg" alt="" style="width:688px;"/></li>
+</ul>
+
+<h5>slave客户端缓冲区</h5>
+
+<ul>
+<li>默认: client-output-buffer-limit slave 256 mb 64 mb 60 </li>
+<li>阻塞：主从延迟较高，或者从节点过多</li>
+<li>注意：主从网络，从节点不要超过 2 个</li>
+</ul>
+
+<h5>pubsub缓冲区</h5>
+
+<ul>
+<li>默认: client-output-buffer-limit pubsub 32 mb 8 mb 60 </li>
+<li>阻塞：生产大于消费</li>
+<li>注意：根据实际场景适当调试。</li>
+<li>client list</li>
+<li>info clients</li>
+</ul>
+
+<h5>复制缓冲区</h5>
+
+<ul>
+<li><img src="media/15684126501705/15684141557235.jpg" alt="" style="width:902px;"/></li>
+</ul>
+
+<h5>AOF缓冲区</h5>
+
+<ul>
+<li><img src="media/15684126501705/15684143425032.jpg" alt="" style="width:810px;"/></li>
+</ul>
+
+<h4>对象内存</h4>
+
+<ul>
+<li>Key：不要过长，量大不容忽视 redis3: embstr39 字节）</li>
+<li>value: ziplist、Intset=等优化方式。</li>
+</ul>
+
+<h4>内存碎片</h4>
+
+<ul>
+<li>jemalloc</li>
+<li>优化方式</li>
+<li>避免频繁更新操作：append、strange 等</li>
+<li>安全重启，例如 Redis sentinela 和 redis clusters 等。</li>
+</ul>
+
+<h4>子进程内存消耗</h4>
+
+<ul>
+<li>必然存在：fork (bgsave 和 bgrewriteaof）</li>
+<li>优化方式</li>
+<li>去掉 THP 特性：2.6.38 增加的特性。</li>
+<li>观察写入量：copy-on-wite overcommit_memory=1</li>
+</ul>
+
+<h4>内存管理</h4>
+
+<ul>
+<li><img src="media/15684126501705/15684147691788.jpg" alt="" style="width:576px;"/></li>
+<li><img src="media/15684126501705/15684148021357.jpg" alt="" style="width:840px;"/></li>
+<li>config set maxmemory </li>
+<li>config rewrite</li>
+</ul>
+
+<h4>内存回收策略</h4>
+
+<h5>删除过期键值</h5>
+
+<ul>
+<li>惰性删除：访诃 key-&gt; expired dict-&gt; del key</li>
+<li>定时删除：每秒运行 10 次，采样删除。</li>
+<li><img src="media/15684126501705/15684151011606.jpg" alt="" style="width:654px;"/></li>
+</ul>
+
+<h5>内存溢出策略</h5>
+
+<ul>
+<li>超过 naxmemory 后触发相应策略，由 naxmemory- policy 控制。</li>
+<li>Noeviction：默认策略，不会删除任何数据，拒绝所有写入操作并返回端错误信息“(error) OOM command not allowed when used memory“此时 Redis 只响应读操作由 maxmemory- policy 控制。</li>
+<li>Volatile-ru：根据 LRU 算法删除设置了超时属性（expire）的键，直到腾出足够空间为止。如果没有可删除的键对象，回退到 noevictioni 策略</li>
+<li>Allkeys-ru：根据 LR∪算法删除犍，不管数据有没有设置超时属性，直到腾出足够空间为止</li>
+<li>Allkeys- random：随机删除所有键，直到腾出足够空间为止。</li>
+<li>Volatile- randon：随机删除过期键，直到腾出足够空间为止。</li>
+<li>volatile-ttl：根据键值对象的属性，删除最近将要过期数据。如果没有，回退到 noevlction 策略。</li>
+</ul>
+
+<h4>内存优化</h4>
+
+<ul>
+<li><img src="media/15684126501705/15684153398835.jpg" alt="" style="width:654px;"/></li>
+</ul>
+
+<h5>合理选择数据结构</h5>
+
+<ul>
+<li><img src="media/15684126501705/15684155535712.jpg" alt="" style="width:1126px;"/></li>
+<li><img src="media/15684126501705/15684156519630.jpg" alt="" style="width:972px;"/></li>
+<li><img src="media/15684126501705/15684157234123.jpg" alt="" style="width:832px;"/></li>
+</ul>
+
+<h5>ziplist</h5>
+
+<p><img src="media/15684126501705/15684158423380.jpg" alt="" style="width:1116px;"/></p>
+
+<h4>内存暴增案例</h4>
+
+<ul>
+<li><img src="media/15684126501705/15684160379094.jpg" alt="" style="width:871px;"/></li>
+<li>批量写入</li>
+<li>主从不一致 dbsize dbsize</li>
+<li>redis-cli client list | grep -v &quot;omem=0&quot;</li>
+<li>找到对应的业务方直接处理掉</li>
+<li>预防</li>
+<li>线上redis禁用monitor</li>
+<li>适度限制缓冲区大小</li>
+<li>理解monitor的原理</li>
+<li>cachecloud可以直接监控到</li>
+</ul>
+
+<h4>其他方法</h4>
+
+<ul>
+<li>不要忽视key长度</li>
+<li>序列化和压缩方法</li>
+</ul>
+
+<h4>需不需要Redis</h4>
+
+<ul>
+<li>数据 大数据 冷数据</li>
+<li>功能性 关系行 消息队列</li>
+</ul>
+
+<h4>总结</h4>
+
+<ul>
+<li>内存是宝贵资源。</li>
+<li>结合场景选择和优化数据结构。</li>
+<li>序列化是有成本的。</li>
+<li>不要忽视键长度。</li>
 </ul>
 
                         
@@ -500,502 +651,10 @@ func main() {
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/10/14 17:57 下午</span>
+                    <span class="date">2019/09/14 06:10 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15376681652852.html">
-                
-                  <h1>Golang入门</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>环境搭建和调试工具</h4>
-
-<ul>
-<li>dlv调式 //TODO</li>
-<li>基于CSP模型实现</li>
-<li>通过创建物理线程，在物理线程中调度携程</li>
-</ul>
-
-<h4>channel</h4>
-
-<ul>
-<li>管道</li>
-<li>多个goroute通过channel进行通信</li>
-<li>支持多个类型</li>
-<li>包内变量全局可访问，大小写控制 //TODO</li>
-<li>管道满了会阻塞</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  var pipe chan int
-  pipe = make(chan int, 3)
-  pipe := make(chan int, 3)
-</code></pre>
-
-<h4>包的概念</h4>
-
-<ul>
-<li>不用考虑编码</li>
-<li>函数名要大写才能被其他包引用</li>
-<li>go build -o ../../bin/main main.go 编译输出到指定路径</li>
-</ul>
-
-<h4>自动运行</h4>
-
-<ul>
-<li>每个源代码文件都可以包含init函数，这个init函数自动被go运行框架调用</li>
-<li>先初始化全局变量--&gt;init函数--&gt;main</li>
-<li>不使用只初始化</li>
-</ul>
-
-<h4>常量</h4>
-
-<ul>
-<li>const c = getValue() 错误</li>
-<li>const 只能修辞boolean, number(int相关类型,浮点型)和string</li>
-</ul>
-
-<h4>值类型和引用类型</h4>
-
-<ul>
-<li>值类型 变量直接存储值，内存在栈中分配</li>
-<li>引用类型 变量存储的是一个地址，内存在堆上分配</li>
-<li>值类型 int, float, bool, string,数据和 struct</li>
-<li>引用类型  指针, slice, map, chan 都是引用类型</li>
-<li>go语言栈只有几k</li>
-<li>堆内存分配没有栈性能高</li>
-<li>堆分配算法//TODO</li>
-</ul>
-
-<h4>变量周期</h4>
-
-<ul>
-<li>大写的变量局部变量模块结束，变量也就释放了</li>
-<li>全局区域:=不能通过，只能声明,不能执行代码</li>
-</ul>
-
-<h4>随机数</h4>
-
-<ul>
-<li>应用场景</li>
-<li><img src="media/15376681652852/15386310431146.jpg" alt=""/></li>
-<li>rpc和web节点绑定在一起</li>
-<li><em><u>rpc调用库实现负载均衡和健康检查</u></em></li>
-</ul>
-
-<h4>字符串类型</h4>
-
-<ul>
-<li>双引号</li>
-<li>反引号 `` 中间的内容不做任何转换，可以任意换行</li>
-<li>%v打印原来的类型</li>
-<li>%T 打印Go语言语法类型</li>
-<li>len的时间复杂度是O(1)长度储存的</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/09/23 10:02 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15368250174471.html">
-                
-                  <h1>K8S关联块设备</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>RedHat连接</h4>
-
-<ul>
-<li><a href="https://docs.openshift.com/container-platform/3.5/install_config/storage_examples/ceph_rbd_dynamic_example.html">https://docs.openshift.com/container-platform/3.5/install_config/storage_examples/ceph_rbd_dynamic_example.html</a></li>
-<li>flunted</li>
-<li>250<em>1024</em>1024</li>
-</ul>
-
-<h4>ceph用户的密钥</h4>
-
-<pre class="line-numbers"><code class="language-text">  apiVersion: v1
-kind: Secret
-metadata:
-  name: ceph-user-secret
-  namespace: default
-data:
-  key: QVFCbEV4OVpmaGJtQ0JBQW55d2Z0NHZtcS96cE42SW1JVUQvekE9PQ== 
-type: kubernetes.io/rbd 
-</code></pre>
-
-<ul>
-<li><u><em>key一定要执行ceph auth get-key client.admin | base64</em></u></li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/09/13 15:50 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15365701104822.html">
-                
-                  <h1>Pod控制器应用进阶</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>容器探测</h4>
-
-<ul>
-<li>livenessProbe</li>
-<li>readinessProbe</li>
-</ul>
-
-<h4>探针类型</h4>
-
-<ul>
-<li>ExecAction exec 嵌套command</li>
-<li>TCPSocketAction tcpSocket</li>
-<li>HTTPGetAction  httpGet</li>
-<li>必须做就绪性探测</li>
-</ul>
-
-<h4>Pod控制器</h4>
-
-<ul>
-<li>ReplicaSet: 新一代(ReplicationController)</li>
-<li>Deployment: 建构在ReplicaSet,管理无状态应用</li>
-<li>DaemonSet：系统级的后台任务，守护进程类</li>
-<li>Job: 完成就退出</li>
-<li>Cronjob:不需要持续后台运行</li>
-<li>StatefulSet 封装控制器</li>
-<li>TPR: Third Party Resources 1.2+</li>
-<li>CDR: Custom Defined Resources, 1.8+</li>
-<li>Operator:</li>
-<li>Helm: 类似yum</li>
-<li>kubectl explain rs</li>
-</ul>
-
-<h4>通过Pod template</h4>
-
-<ul>
-<li> kubectl edit rs myapp</li>
-<li> kubectl get rs -o wide 修改镜像版本</li>
-</ul>
-
-<h4>版本升级</h4>
-
-<ul>
-<li> <img src="media/15365701104822/15366443003667.jpg" alt="" style="width:1071px;"/></li>
-<li>更新策略</li>
-<li>rollingUpdate</li>
-<li>maxSurge</li>
-<li>maxUnavailable</li>
-<li>层级关系</li>
-<li><img src="media/15365701104822/15366456380843.jpg" alt="" style="width:576px;"/></li>
-<li>kubectl apply -f deploy-demo.yaml</li>
-<li>apply可以声明多次</li>
-<li>patch打补丁</li>
-<li>kubectl rollout history deployment myapp-deploy 查看滚动历史</li>
-<li>kubectl rollout status deployment myapp-deploy 查看更新状态</li>
-<li>kubectl rollout undo deployment myapp-deploy --to-revision=1</li>
-</ul>
-
-<h4>Daemenset</h4>
-
-<ul>
-<li>hostNetWork</li>
-<li>hostIPC</li>
-<li>hostPID</li>
-<li><img src="media/15365701104822/15366580951940.jpg" alt=""/></li>
-<li><img src="media/15365701104822/15366580475906.jpg" alt=""/></li>
-<li>工作模式: userspace iptables ipvs</li>
-</ul>
-
-<h4>类型</h4>
-
-<ul>
-<li>ExternalName</li>
-<li>ClusterIP</li>
-<li>NodePort</li>
-<li>LoadBalancer</li>
-</ul>
-
-<h4>资源记录</h4>
-
-<ul>
-<li>SVC_NAME.NS_NAME.DOMAIN.LTD</li>
-<li>svc.cluster.local</li>
-<li>redis.test.svc</li>
-</ul>
-
-<h4>节点标签选择器</h4>
-
-<ul>
-<li>nodeSeletor</li>
-<li>oc label nodes 10.68.1.101 logType=collector --overwrite=true</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  nodeSelector:
-        logType: collector 
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/09/10 17:01 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15369990929638.html">
-                
-                  <h1>flannel插件</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>docker网络</h4>
-
-<ul>
-<li>brige</li>
-<li>joined</li>
-<li>open</li>
-<li>none</li>
-</ul>
-
-<h4>跨节点通讯</h4>
-
-<ul>
-<li>容器之间通讯: 同一个Pod内的多个容器之间的通信，lo</li>
-<li>Pod通信: Pod IP &lt;--&gt; Pod IP</li>
-<li>Pod与Service通信: PodIP &lt;--&gt; ClusterIP</li>
-<li>Service与集群外部客户端通信(ingress)</li>
-</ul>
-
-<h4>CNI 接口</h4>
-
-<ul>
-<li>flannel</li>
-<li>calio</li>
-<li>canel</li>
-<li>kube-router</li>
-</ul>
-
-<h5>解决方案</h5>
-
-<ul>
-<li>虚拟网桥</li>
-<li>多路复用: MacVLAN</li>
-<li>硬件交换: SR-IOV</li>
-<li>网络插件访问策略</li>
-<li>基于BGP协议实现三层网络路由</li>
-<li>VxLan扩展虚拟局域网</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/09/15 16:11 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15368945685295.html">
-                
-                  <h1>Statefulset控制器</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>特性</h4>
-
-<ul>
-<li>cattle, pet</li>
-<li>PetSet -&gt; StatefulSet</li>
-<li>稳定且唯一的网络标识符</li>
-<li>稳定且持久的存储</li>
-<li>有序平滑地部署和扩展</li>
-<li>有序平滑地的删除和终止</li>
-<li>有序的滚动更新</li>
-</ul>
-
-<h4>三个组件</h4>
-
-<ul>
-<li>headless service</li>
-<li>StatefulSet</li>
-<li>volumeClaimTemplate</li>
-<li>pod_name.service_name.ns_name.svc.cluster.local</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/09/14 11:09 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15367317003442.html">
-                
-                  <h1>K8S存储卷</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>存储分类</h4>
-
-<ul>
-<li>基础架构容器</li>
-<li>emptyDir 生命周期同pods</li>
-<li>hostPath 宿主机路径</li>
-<li>SAN iSCSI,</li>
-<li>NAS nfs,cifs</li>
-<li>分布式存储: glusterfs, ceph, cephfs</li>
-<li>云存储: EBS,Azure Disk,</li>
-<li><img src="media/15367317003442/15367337520615.jpg" alt=""/></li>
-<li>使用途经</li>
-<li><img src="media/15367317003442/15367339122979.jpg" alt=""/></li>
-</ul>
-
-<h4>PVC逻辑</h4>
-
-<ul>
-<li><img src="media/15367317003442/15367391255324.jpg" alt=""/></li>
-<li><img src="media/15367317003442/15367417274839.jpg" alt=""/></li>
-<li>pvc属于名称空间</li>
-<li>pv属于全体空间</li>
-<li>pvc的ACCESS_MODE是pv的子集</li>
-<li>pvc保存在etcd中</li>
-</ul>
-
-<h4>配置容器化应用的方式</h4>
-
-<ul>
-<li>自定义命令行参数 args[]</li>
-<li>把配置文件直接备进镜像</li>
-<li>环境变量</li>
-<li>Cloud Native应用程序一般可直接通过环境变量加载配置</li>
-<li>通过entrypoint脚本来预处理变量为配置文件的配置信息</li>
-<li>存储卷 //TODO</li>
-<li>ConfigMap将配置文件从镜像中解耦</li>
-</ul>
-
-<h4>kubelet</h4>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/09/12 13:55 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
+          					    <span class="posted-in"><a href='Redis%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A.html'>Redis从入门到精通</a></span>
           				   
                   </div>
                   <div class="more-right right">

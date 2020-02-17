@@ -170,18 +170,48 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15713033971664.html">
+                <a class="clearlink" href="15775787094210.html">
                 
-                  <h1>可复用的模块</h1>
+                  <h1>TPS和响应时间</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>包管理</h4>
+                        	<h4>性能示意图</h4>
 
-<p>以首字母大写来表明可被包外代码访问代码的<br/>
-package 可以和所在的目录不一致<br/>
-同一目录里的 Go 代码的 package 要保持一致</p>
+<ul>
+<li><img src="media/15775787094210/36ee34ee92b75fd17d5314d74453367d.png" alt="36ee34ee92b75fd17d5314d74453367d"/></li>
+<li>三条曲线：吞吐量的曲线（紫色）、使用率 / 用户数曲线（绿色）、响应时间曲线（深蓝色）。</li>
+<li>三个区域：轻负载区（Light Load）、重负载区（Heavy Load）、塌陷区（Buckle Zone）。</li>
+<li>两个点：最优并发用户数（The Optimum Number of Concurrent Users）、最大并发用户数（The Maximum Number of Concurrent Users）。</li>
+<li>三个状态描述：资源饱和（Resource Saturated）、吞吐下降（Throughput Falling）、用户受影响（End Users Effected）。</li>
+</ul>
+
+<h4>直接关系图</h4>
+
+<ul>
+<li><img src="media/15775787094210/c0575730fe2d14842aba066bc8786734.png" alt="c0575730fe2d14842aba066b"/></li>
+</ul>
+
+<h4>场景定义</h4>
+
+<ul>
+<li><img src="media/15775787094210/55168e3443446e5866c85853f0e71ab1.jpg" alt="55168e3443446e5866c85853f0e71ab1"/></li>
+</ul>
+
+<h4>如何看待性能数据</h4>
+
+<ul>
+<li>一般有两个核心即趋势和证据链。</li>
+<li>分析数据趋势需要对一个时间序列数据的分析，一般采用线性回归分析。</li>
+<li>对于证据链查找，需要对不同时间序列数据的分析，一般采用数据的相关性分析</li>
+</ul>
+
+<h4>性能场景为什么要连续而不是断开</h4>
+
+<ul>
+<li>递增线程数，记录每次的性能指标，对比分析，画曲线，来观察指标变化的趋势，找出性能瓶颈，或者服务器最大处理能力</li>
+</ul>
 
                         
                       </div>
@@ -190,10 +220,10 @@ package 可以和所在的目录不一致<br/>
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/10/17 17:09 下午</span>
+                    <span class="date">2019/12/29 08:18 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
+          					    <span class="posted-in"><a href='%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95.html'>性能测试</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -207,26 +237,130 @@ package 可以和所在的目录不一致<br/>
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15713027420690.html">
+                <a class="clearlink" href="15775770763378.html">
                 
-                  <h1>异常错误处理</h1>
+                  <h1>性能测试概念</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>panic &amp; os.Exit</h4>
+                        	<h4>概念</h4>
 
 <ul>
-<li>os.Exit退出时不会调用defer指定的函数</li>
-<li>不用输出当前调用栈信息</li>
+<li>性能测试针对系统的性能指标，建立性能测试模型，制定性能测试方案，制定监控策略，在场景条件之下执行性能场景，分析判断性能瓶颈并调优，最终得出性能结果来评估系统的性能指标是否满足既定值。</li>
 </ul>
 
-<h4>recover</h4>
-
-<p><img src="media/15713027420690/15713033206416.jpg" alt="" style="width:615px;"/></p>
+<h4>性能测试指标</h4>
 
 <ul>
-<li>形成僵尸进程，导致health check 失效</li>
+<li>时间指标</li>
+<li>容量指标</li>
+<li>资源利用率指标</li>
+</ul>
+
+<h4>性能测试模型</h4>
+
+<ul>
+<li>业务模型 </li>
+<li>监控模型 有分层、分段的能力，要有全局监控、定向监控的能力</li>
+</ul>
+
+<h4>性能测试方案</h4>
+
+<ul>
+<li>测试环境、测试数据、测试模型、性能指标、压力策略、准入准出和进度风险</li>
+</ul>
+
+<h4>监控</h4>
+
+<ul>
+<li>要有分层、分段的能力，要有全局监控、定向监控的能力</li>
+</ul>
+
+<h4>性能测试预定条件</h4>
+
+<ul>
+<li>软硬件环境、测试数据、测试执行策略、压力补偿</li>
+</ul>
+
+<h4>性能测试场景</h4>
+
+<ul>
+<li>在既定的环境（包括动态扩展等策略）、既定的数据（包括场景执行中的数据变化）、既定的执行策略、既定的监控之下，执行性能脚本，同时观察系统各层级的性能状态参数变化，并实时判断分析场景是否符合预期</li>
+</ul>
+
+<h5>基准性能场景</h5>
+
+<ul>
+<li>这里要做的是单交易的容量，为混合容量做准备</li>
+</ul>
+
+<h5>容量性能场景</h5>
+
+<h5>稳定性能场景</h5>
+
+<ul>
+<li>稳定性测试必然是性能场景的一个分类，稳定性测试中，显然最核心的元素是时间，时间的设置应该来自于运维周期</li>
+</ul>
+
+<h5>异常性能场景</h5>
+
+<ul>
+<li>前提就是要有压力。在压力流量之下，模拟异常。这个异常的定义是很宽泛的</li>
+</ul>
+
+<h4>性能测试的性能调优</h4>
+
+<ul>
+<li>瓶颈判断、性能分析</li>
+<li>新系统性能测试类</li>
+<li>旧系统新版本性能测试类</li>
+<li>新系统性能测试优化类</li>
+</ul>
+
+<h5>性能团队的职责</h5>
+
+<ul>
+<li>性能验证: 针对给定的指标，做性能验证</li>
+<li>性能测试：针对给定的系统，做全面的性能测试，可以得到系统最大容量，但不涉及到调优</li>
+<li>性能测试 + 分析调优: 针对给定的系统，做全面的性能测试，同时将系统调优到最优状态</li>
+</ul>
+
+<h4>性能测试报告</h4>
+
+<ul>
+<li>场景结果整理</li>
+<li>监控结果整理</li>
+<li>性能整体分析</li>
+<li>性能结论</li>
+<li>优化建议</li>
+<li>运维建议</li>
+</ul>
+
+<h4>总结</h4>
+
+<ul>
+<li>数据驱动, 很多企业已转向修炼内功，开始注重内部效率的提升。而数据则是这项内功最核心的部分，向内寻找答案，通过数据的力量驱动增长。性能数据也一样。</li>
+<li><img src="media/15775770763378/c78852164f22f4aac124b8bf9679243e.png" alt="c78852164f22f4aac124b8bf9679243e"/></li>
+</ul>
+
+<h4>性能测试</h4>
+
+<ul>
+<li>性能测试通过概念、模型、观测、实验等手段来进行问题的剖析。其涉及范围之广，从压力工具操作系统、开发语言、数据库、消息队列、中间件、网络、压力工具等各个方面。通常还需要深入的理解各种原理，特别是在一些重点细节上，往往需要有超出一般的认识和方法。</li>
+</ul>
+
+<h4>分布式系统和单机系统在性能上的差别</h4>
+
+<ul>
+<li>分布式系统首先要做的就是响应时间消耗的监控拆分。定位到某节点后再定向分析</li>
+</ul>
+
+<h4>全链路压测</h4>
+
+<ul>
+<li>全链路压测是两个部分。全链路和压测測，压测部分要做的就是有清晰的标识，而全链路就是系统要做的链路改造。</li>
+<li>从技术层面说，不管是使用同样的硬件做旁路应用，还是改造已有应用做链路标识识别，技术的实现手段都是成熟的。</li>
 </ul>
 
                         
@@ -236,10 +370,10 @@ package 可以和所在的目录不一致<br/>
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/10/17 16:59 下午</span>
+                    <span class="date">2019/12/29 07:51 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
+          					    <span class="posted-in"><a href='%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95.html'>性能测试</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -253,88 +387,127 @@ package 可以和所在的目录不一致<br/>
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15713004768074.html">
+                <a class="clearlink" href="15768019255107.html">
                 
-                  <h1>相关接口</h1>
+                  <h1>进程间通讯</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>接口差异</h4>
+                        	<h4>三类queue</h4>
+
+<pre class="line-numbers"><code class="language-python">from multiprocessing import Process, Queue
+from queue import Queue
+from multiprocessing import Manager
+</code></pre>
+
+<h4>进程间通讯</h4>
+
+<pre class="line-numbers"><code class="language-python">import time
+from multiprocessing import Process, Queue, Pool, Manager, Pipe
+
+
+def producer(queue):
+    queue.put(&quot;a&quot;)
+    time.sleep(2)
+
+def consumer(queue):
+    time.sleep(2)
+    data = queue.get()
+    print(data)
+
+if __name__ == &quot;__main__&quot;:
+    queue = Queue(10)
+    my_producer = Process(target=producer, args=(queue,))
+    my_consumer = Process(target=consumer, args=(queue,))
+    my_producer.start()
+    my_consumer.start()
+    my_producer.join()
+    my_consumer.join()
+</code></pre>
+
+<h4>进程池间通讯</h4>
+
+<pre class="line-numbers"><code class="language-python">import time
+from multiprocessing import Process, Queue, Pool
+# from queue import Queue
+from multiprocessing import Manager
+
+Manager().Queue()
+
+def producer(queue):
+    queue.put(&#39;a&#39;)
+    time.sleep(2)
+
+def consumer(queue):
+    time.sleep(2)
+    data = queue.get()
+    print(data)
+
+if __name__ == &#39;__main__&#39;:
+    queue = Manager().Queue(10)
+    pool = Pool(2)
+
+    pool.apply_async(producer, args=(queue,))
+    pool.apply_async(consumer, args=(queue,))
+
+    pool.close()
+    pool.join()
+</code></pre>
+
+<h4>Pipe通讯</h4>
+
+<pre class="line-numbers"><code class="language-python">import time
+from multiprocessing import Process, Queue, Pool, Manager, Pipe
+
+def producer(pipe):
+    pipe.send(&#39;bobby&#39;)
+    pipe.send(&#39;ok&#39;)
+    pipe.send(&#39;hello&#39;)
+
+def consumer(pipe):
+    print(pipe.recv())
+    print(pipe.recv())
+    print(pipe.recv())
+
+if __name__ == &#39;__main__&#39;:
+    recv_pipe, send_pipe = Pipe()
+    my_pro = Process(target=producer, args=(send_pipe,))
+    my_con = Process(target=consumer, args=(recv_pipe,))
+
+    my_pro.start()
+    my_con.start()
+    my_pro.join()
+    my_pro.join()
+</code></pre>
 
 <ul>
-<li>接口为非入侵性，实现不依赖于接口定义</li>
-<li>所以接口的定义可以包含在接口使用者包内</li>
+<li>pipe性能是高于queue</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-go">type IntConv func(op int) int
+<h4>共享内存</h4>
 
-func timeSpent(inner IntConv) IntConv {
-    return func(n int) int {
-        start := time.Now()
-        ret := inner(n)
-        fmt.Println(&quot;time spent:&quot;, time.Since(start).Seconds())
-        return ret
-    }
-}
+<pre class="line-numbers"><code class="language-python">import time
+from multiprocessing import Process, Queue, Pool, Manager, Pipe
 
-func slowFun(op int) int {
-    time.Sleep(time.Second * 1)
-    return op
-}
+def add_data(p_dict, key, value):
+    p_dict[key] = value
 
-func TestFn(t *testing.T) {
-    tsSF := timeSpent(slowFun)
-    t.Log(tsSF(10))
-}
+if __name__ == &#39;__main__&#39;:
+    progress_dict = Manager().dict()
+
+    first_pro = Process(target=add_data, args=(progress_dict, &quot;bobby1&quot;, 22))
+    second_pro = Process(target=add_data, args=(progress_dict, &quot;bobby2&quot;, 23))
+    third_pro = Process(target=add_data, args=(progress_dict, &quot;bobby3&quot;, 24))
+
+    first_pro.start()
+    second_pro.start()
+    third_pro.start()
+    first_pro.join()
+    second_pro.join()
+    third_pro.join()
+    print(progress_dict)
 </code></pre>
-
-<h4>扩展和复用</h4>
-
-<pre class="line-numbers"><code class="language-go">func TestDog(t *testing.T) {
-    var dog *Dog = new(Dog)
-    var p = *Pet(dog)
-    p.SpeakTo(&quot;CHao&quot;)
-    dog := new(Dog)
-
-    dog.SpeakTo(&quot;Chao&quot;)
-}
-</code></pre>
-
-<h4>go多态</h4>
-
-<pre class="line-numbers"><code class="language-go">func writeFirstProgram(p Programmer) {
-  fmt.Printf(&quot;%T %v\n&quot;, p, p.WriteHelloWorld())
-}
-p必须传指针才能实现多态
-</code></pre>
-
-<h4>空接口断言</h4>
-
-<pre class="line-numbers"><code class="language-go">func DoSomething(p interface{}) {
-    if i, ok := p.(int); ok {
-      fmt.Println(&quot;Integer&quot;, i)
-      return
-    }
-    // if s, ok := p.(string); ok {
-    //  fmt.Println(&quot;stirng&quot;, s)
-    //  return
-    // }
-    // fmt.Println(&quot;Unknow Type&quot;)
-    switch v := p.(type) {
-    case int:
-        fmt.Println(&quot;Integer&quot;, v)
-    case string:
-        fmt.Println(&quot;String&quot;, v)
-    default:
-        fmt.Println(&quot;Unknow Type&quot;)
-    }
-}
-</code></pre>
-
-<h4>接口实践</h4>
-
-<p><img src="media/15713004768074/15713026545360.jpg" alt="" style="width:767px;"/></p>
 
                         
                       </div>
@@ -343,10 +516,10 @@ p必须传指针才能实现多态
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/10/17 16:21 下午</span>
+                    <span class="date">2019/12/20 08:32 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -360,172 +533,70 @@ p必须传指针才能实现多态
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15712250734123.html">
+                <a class="clearlink" href="15768004391774.html">
                 
-                  <h1>行为的定义和实现</h1>
+                  <h1>多进程同步</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>差别</h4>
+                        	<h4>多进程</h4>
 
-<p><img src="media/15712250734123/15712253092495.jpg" alt="" style="width:1343px;"/></p>
+<pre class="line-numbers"><code class="language-python">import multiprocessing
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/16 19:24 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
+import time
 
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15386465593475.html">
-                
-                  <h1>函数详解</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>函数特点</h4>
+def get_html(n):
+    time.sleep(n)
+    print(&#39;sub_progress success&#39;)
+    return n
 
-<ul>
-<li>不支持重载</li>
-<li>函数也是一种类型，函数可以赋值给变量</li>
-<li>匿名函数</li>
-<li>多返回值</li>
-</ul>
-
-<h4>函数参数传递方式</h4>
-
-<ul>
-<li>map默认就是引用，不需要*</li>
-</ul>
-
-<h4>返回值命名</h4>
-
-<pre class="line-numbers"><code class="language-text">func calc(a, b int) (sum int, avg int) {
-  sum = a + b
-  avg = (a + b) / 2
-}
+if __name__ == &#39;__main__&#39;:
+    progress = multiprocessing.Process(target=get_html, args=(2,))
+    print(progress.pid)
+    progress.start()
+    print(progress.pid)
+    progress.join()
+    print(&#39;main progress end&#39;)
 </code></pre>
 
-<h4>可变参数</h4>
+<h4>进城池获取结果</h4>
 
-<pre class="line-numbers"><code class="language-text">func add(a int, arg ...int) (ret int) {
-  ret = a
-  for i := 0; i &lt; len(arg); i++ {
-    ret += arg[i]
-  }
-  return
-}
+<pre class="line-numbers"><code class="language-python">import multiprocessing
 
-func addStr(a string, arg ...string) (ret string) {
-  ret = a
-  for i := 0; i &lt; len(arg); i++ {
-    ret += arg[i]
-  }
-  return
-}
+import time
+
+def get_html(n):
+    time.sleep(n)
+    print(&#39;sub_progress success&#39;)
+    return n
+
+if __name__ == &#39;__main__&#39;:
+    pool = multiprocessing.Pool(multiprocessing.cpu_count())
+    result = pool.apply_async(get_html, args=(3,))
+    pool.close()
+    pool.join() //前面必须有close
+    print(result.get())
 </code></pre>
 
-<h4>defer</h4>
+<h4>imap&amp;imap_unordered</h4>
 
-<ul>
-<li>函数返回时，执行defer语句，用来做资源清理</li>
-<li>多个defer语句，按照先进后出的方式</li>
-<li>关闭文件句柄</li>
-<li>锁资源释放</li>
-<li><p>数据库连接释放</p>
-<pre class="line-numbers"><code class="language-text">func read() {
- conn, err := openConn()<br/>
- defer func() {<br/>
-   if conn != nil {<br/>
-     conn.Close()<br/>
-   }<br/>
- }<br/>
-}()
-</code></pre></li>
-<li><p>全局匿名函数</p>
-<pre class="line-numbers"><code class="language-text">var (
-result = func(a int, b int) int {<br/>
-  return a + b__<br/>
-}<br/>
-)
-</code></pre></li>
-</ul>
+<pre class="line-numbers"><code class="language-python">import multiprocessing
+import  time
+def get_html(n):
+    time.sleep(n)
+    print(&#39;sub_process sucess&#39;)
+    return n
 
-<h4>字符串切片修改问题</h4>
+if __name__ == &#39;__main__&#39;:
+    pool = multiprocessing.Pool(multiprocessing.cpu_count())
 
-<pre class="line-numbers"><code class="language-text"> // 示例3。
-func modifyComplexArray(a [3][]string) [3][]string {
-  a[1][1] = &quot;s&quot;
-  //a[2] = []string{&quot;o&quot;, &quot;p&quot;, &quot;q&quot;}
-  a[2][0] = &quot;o&quot;
-  a[2][1] = &quot;p&quot;
-  a[2][2] = &quot;q&quot;
-  return a
-}
-
-  complexArray1 := [3][]string{
-    []string{&quot;d&quot;, &quot;e&quot;, &quot;f&quot;},
-    []string{&quot;g&quot;, &quot;h&quot;, &quot;i&quot;},
-    []string{&quot;j&quot;, &quot;k&quot;, &quot;l&quot;},
-  }
-  fmt.Printf(&quot;The complex array: %v\n&quot;, complexArray1)
-  complexArray2 := modifyComplexArray(complexArray1)
-  fmt.Printf(&quot;The modified complex array: %v\n&quot;, complexArray2)
-  fmt.Printf(&quot;The original complex array: %v\n&quot;, complexArray1)
-</code></pre>
-
-<ul>
-<li>修改整个字符串不可以，但是可以一个一个修改</li>
-</ul>
-
-<h4>函数传参数和返回问题</h4>
-
-<ul>
-<li>函数真正拿到的参数值其实只是它们的副本，那么函数返回给调用方的结果值也会被复制吗？</li>
-<li>函数返回给调用方的结果值也会被复制。不过，在一般情况下，我们不用太在意。但如果函数在返回结果值之后依然保持执行并会对结果值进行修改，那么我们就需要注意了</li>
-</ul>
-
-<h5>统计耗时</h5>
-
-<pre class="line-numbers"><code class="language-go">func timeSpent(inner func(op int) int) func(op int) int {
-    return func(n int) int {
-        start := time.Now()
-        ret := inner(n)
-        fmt.Println(&quot;time spent:&quot;, time.Since(start).Seconds())
-        return ret
-    }
-}
-
-func slowFun(op int) int {
-    time.Sleep(time.Second * 1)
-    return op
-}
-
-func TestFn(t *testing.T) {
-    a, _ := returnMultiValues()
-    t.Log(a)
-    tsSF := timeSpent(slowFun)
-    t.Log(tsSF(10))
-}
+//不按顺序输出结果，谁先完成，谁先输出
+    for result in pool.imap_unordered(get_html, [1,5,3]):
+        print(&#39;{} sleep success&#39;.format(result))
+//按照列表顺序输出结果
+    for result in pool.imap(get_html, [1, 5, 3]):
+        print(&#39;{} sleep success&#39;.format(result))
 </code></pre>
 
                         
@@ -535,1177 +606,10 @@ func TestFn(t *testing.T) {
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/10/04 17:49 下午</span>
+                    <span class="date">2019/12/20 08:07 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15712240547557.html">
-                
-                  <h1>string</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>差异</h4>
-
-<ul>
-<li>与其他主要编程语⾔言的差异</li>
-<li>1. string 是数据类型，不不是引⽤用或指针类型</li>
-<li>2. string 是只读的 byte slice，len 函数可以它所包含的 byte 数</li>
-<li>3. string 的 byte 数组可以存放任何数据</li>
-</ul>
-
-<h4>编码和字符</h4>
-
-<ul>
-<li>1. Unicode 是⼀一种字符集(code point)</li>
-<li>2. UTF8 是 unicode 的存储实现 (转换为字节序列列的规则)</li>
-</ul>
-
-<h4>对应关系</h4>
-
-<p><img src="media/15712240547557/15712243766768.jpg" alt="" style="width:974px;"/></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/16 19:07 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15387022894129.html">
-                
-                  <h1>递归&闭包&数组切片&map&锁</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>内置函数</h4>
-
-<ul>
-<li>new 用来分配值类型内存</li>
-<li>make 用来分配引用类型内存</li>
-<li>... 可以用来展开数据或者切片 </li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  a = append(a, a...)
-</code></pre>
-
-<ul>
-<li>打印堆栈//TODO</li>
-</ul>
-
-<blockquote>
-<p>... 两个用途 1 可变参数 2 展开数组或者切片</p>
-</blockquote>
-
-<h4>错误处理</h4>
-
-<ul>
-<li>panic,revocer</li>
-</ul>
-
-<h4>new,make</h4>
-
-<ul>
-<li>new出来的指针必须要用make来分配内存</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  s1 := new([]int)
-  *s1 = make([]int, 5)
-  (*s1)[0] = 100
-</code></pre>
-
-<h4>闭包</h4>
-
-<ul>
-<li>一个函数和其相关的引用的环境组合而成的实体</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">func Adder() func(int) int {
-  var x int
-  return func(delta int) int {
-    x += delta
-    return x
-  }
-}
-
-func makeSuffixFunc(suffix string) func(string) string {
-  return func(name string) string {
-    if !strings.HasSuffix(name, suffix) {
-      return name + suffix
-    }
-    return name
-  }
-}
-</code></pre>
-
-<ul>
-<li>x 相当于类中的成员变量</li>
-<li>闭包可以实现代码的重用//TODO</li>
-</ul>
-
-<h4>数组</h4>
-
-<ul>
-<li>长度是数组类型的一部分</li>
-<li>长度固定</li>
-</ul>
-
-<h4>切片</h4>
-
-<ul>
-<li>切片是数组的一个引用</li>
-<li>切片的长度可以改变</li>
-<li>cap可以求出slice最大的容量</li>
-<li>切片的内存布局和数据结构</li>
-<li>len代表可访问的元素</li>
-<li>cap代表容量
-<img src="media/15387022894129/15387237788534.jpg" alt="" style="width:483px;"/></li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  type slice struct {
-    ptr *[5]int
-    cap int 
-    len int
-  }
-</code></pre>
-
-<ul>
-<li>切片的测试</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">func makeSlice(s slice, cap int) slice {
-  s.ptr = new([100]int)
-  s.cap = cap
-  s.len = 0
-  return s
- }
-
-func modify(s slice) {
-  s.ptr[1] = 1000
-}
-
-func testSlice2() {
-  var s1 slice
-  s1 = makeSlice(s1, 10)
-  s1.ptr[0] = 100
-  modify(s1)
-  fmt.Println(s1.ptr)
-}
-</code></pre>
-
-<ul>
-<li>通过make创建 var slice []type = make([]type, len)</li>
-<li>切片拷贝 copy(s2, s1）
-<img src="media/15387022894129/15712229217252.jpg" alt="" style="width:792px;"/></li>
-</ul>
-
-<h4>string</h4>
-
-<ul>
-<li>string底层布局，string是[]byte的切片</li>
-</ul>
-
-<p><img src="media/15387022894129/15387264795094.jpg" alt="" style="width:379px;"/></p>
-
-<ul>
-<li>string是不可变的</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">func changeString() {
-  s := &quot;我  hello world&quot;
-  s1 := []rune(s)
-  s1[1] = &#39;0&#39;
-  str := string(s1)
-  fmt.Println(str)
-}
-</code></pre>
-
-<h4>Map</h4>
-
-<ul>
-<li>删除一个元素delete</li>
-<li>清空需要重新make</li>
-<li>判断一个maps是否为空</li>
-<li>map排序</li>
-</ul>
-
-<h4>golang中的包</h4>
-
-<ul>
-<li>golang有150个标准的包</li>
-</ul>
-
-<h4>线程同步</h4>
-
-<ul>
-<li>import sync</li>
-<li>互斥锁 var mu sync.Mutex</li>
-<li>读写锁 var mu sync.RWMutex</li>
-</ul>
-
-<h4>go中Set</h4>
-
-<p><img src="media/15387022894129/15712238021174.jpg" alt="" style="width:1173px;"/></p>
-
-<pre class="line-numbers"><code class="language-go">func TestMapForSet(t *testing.T) {
-    mySet := map[int]bool{}
-    mySet[1] = true
-    n := 3
-    if mySet[n] {
-        t.Logf(&quot;%d is existing&quot;, n)
-    } else {
-        t.Logf(&quot;%d is not existing&quot;, n)
-    }
-    mySet[3] = true
-    t.Log(len(mySet))
-    delete(mySet, 1)
-    n = 1
-    if mySet[n] {
-        t.Logf(&quot;%d is existing&quot;, n)
-    } else {
-        t.Logf(&quot;%d is not existing&quot;, n)
-    }
-}
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/10/05 09:18 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15647133717861.html">
-                
-                  <h1>查找表</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>两类</h4>
-
-<ul>
-<li>查找有无</li>
-<li>查找对应关系</li>
-<li>有序和查找是关联</li>
-<li>如果数组有序</li>
-<li>leet_349</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given two arrays, write a function to compute their intersection.
-class Solution {
-public:
-    vector&lt;int&gt; intersection(vector&lt;int&gt;&amp; nums1, vector&lt;int&gt;&amp; nums2) {
-        set&lt;int&gt; s(nums1.begin(), nums1.end()), res;
-        for (auto a : nums2) {
-            if (s.count(a)) res.insert(a);
-        }
-        return vector&lt;int&gt;(res.begin(), res.end());
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_350</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given two arrays, write a function to compute their intersection.
-
-Example 1:
-
-Input: nums1 = [1,2,2,1], nums2 = [2,2]
-Output: [2,2]
-class Solution {
-public:
-    vector&lt;int&gt; intersect(vector&lt;int&gt;&amp; nums1, vector&lt;int&gt;&amp; nums2) {
-        unordered_map&lt;int, int&gt; m;
-        vector&lt;int&gt; res;
-        for (auto a : nums1) ++m[a];
-        for (auto a : nums2) {
-            if (m[a]-- &gt; 0) res.push_back(a);
-        }
-        return res;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_242</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">For example,
-s = &quot;anagram&quot;, t = &quot;nagaram&quot;, return true.
-s = &quot;rat&quot;, t = &quot;car&quot;, return false.
-
-class Solution {
-public:
-    bool isAnagram(string s, string t) {
-        if (s.size() != t.size()) return false;
-        int m[26] = {0};
-        for (int i = 0; i &lt; s.size(); ++i) ++m[s[i] - &#39;a&#39;];
-        for (int i = 0; i &lt; t.size(); ++i) {
-            if (--m[t[i] - &#39;a&#39;] &lt; 0) return false;
-        }
-        return true;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_202</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Write an algorithm to determine if a number is &quot;happy&quot;.
-
-A happy number is a number defined by the following process: Starting with any positive integer, replace the number by the sum of the squares of its digits, and repeat the process until the number equals 1 (where it will stay), or it loops endlessly in a cycle which does not include 1. Those numbers for which this process ends in 1 are happy numbers.
-
-Example: 
-
-Input: 19
-Output: true
-Explanation: 
-1^2 + 9^2 = 82
-8^2 + 2^2 = 68
-6^2 + 8^2 = 100
-1^2 + 0^2 + 0^2 = 1
-class Solution {
-public:
-    bool isHappy(int n) {
-        while (n != 1 &amp;&amp; n != 4) {
-            int sum = 0;
-            while (n) {
-                sum += (n % 10) * (n % 10);
-                n /= 10;
-            }
-            n = sum;
-        }
-        return n == 1;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_290</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given a pattern and a string str, find if str follows the same pattern.
-
-Here follow means a full match, such that there is a bijection between a letter in pattern and a non-empty word in str.
-
-Example 1:
-
-Input: pattern = &quot;abba&quot;, str = &quot;dog cat cat dog&quot;
-Output: true
-Example 2:
-
-Input:pattern = &quot;abba&quot;, str = &quot;dog cat cat fish&quot;
-Output: false
-class Solution {
-public:
-    bool wordPattern(string pattern, string str) {
-        unordered_map&lt;char, int&gt; m1;
-        unordered_map&lt;string, int&gt; m2;
-        istringstream in(str);
-        int i = 0, n = pattern.size();
-        for (string word; in &gt;&gt; word; ++i) {
-            if (i == n || m1[pattern[i]] != m2[word]) return false;
-            m1[pattern[i]] = m2[word] = i + 1;
-        }
-        return i == n;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_205</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given two strings  s  and  t , determine if they are isomorphic.
-
-Two strings are isomorphic if the characters in  s  can be replaced to get  t.
-
-All occurrences of a character must be replaced with another character while preserving the order of characters. No two characters may map to the same character but a character may map to itself.
-
-Example 1:
-
-Input: _s_ = &quot;egg&quot;, _t =_&quot;add&quot;
-Output: true
-class Solution {
-public:
-    bool isIsomorphic(string s, string t) {
-        int m1[256] = {0}, m2[256] = {0}, n = s.size();
-        for (int i = 0; i &lt; n; ++i) {
-            if (m1[s[i]] != m2[t[i]]) return false;
-            m1[s[i]] = i + 1;
-            m2[t[i]] = i + 1;
-        }
-        return true;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_451</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Input:
-&quot;tree&quot;
-
-Output:
-&quot;eert&quot;
-
-Explanation:
-&#39;e&#39; appears twice while &#39;r&#39; and &#39;t&#39; both appear once.
-So &#39;e&#39; must appear before both &#39;r&#39; and &#39;t&#39;. Therefore &quot;eetr&quot; is also a valid answer.
-class Solution {
-public:
-    string frequencySort(string s) {
-        string res;
-        vector&lt;string&gt; v(s.size() + 1);
-        unordered_map&lt;char, int&gt; m;
-        for (char c : s) ++m[c];
-        for (auto &amp;a : m) {
-            v[a.second].append(a.second, a.first);
-        }
-        for (int i = s.size(); i &gt; 0; --i) {
-            if (!v[i].empty()) res.append(v[i]);
-        }
-        return res;
-    }
-};
-</code></pre>
-
-<h4>两数求和</h4>
-
-<ul>
-<li>leet_1 排序后,双索引对撞</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">class Solution {
-public:
-    vector&lt;int&gt; twoSum(vector&lt;int&gt;&amp; nums, int target) {
-        unordered_map&lt;int, int&gt; m;
-        for (int i = 0; i &lt; nums.size(); ++i) {
-            if (m.count(target - nums[i])) {
-                return {i, m[target - nums[i]]};
-            }
-            m[nums[i]] = i;
-        }
-        return {};
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_15</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given an array  S  of  n  integers, are there elements  a ,  b ,  c  in  S  such that  a  +  b  +  c  = 0? Find all unique triplets in the array which gives the sum of zero.
-
-Note:
-
-Elements in a triplet ( a , b , c ) must be in non-descending order. (ie,  a  ≤  b  ≤  c )
-The solution set must not contain duplicate triplets.
- 
-
-    For example, given array S = {-1 0 1 2 -1 -4},
-
-    A solution set is:
-    (-1, 0, 1)
-    (-1, -1, 2)
-class Solution {
-public:
-    vector&lt;vector&lt;int&gt;&gt; threeSum(vector&lt;int&gt;&amp; nums) {
-        vector&lt;vector&lt;int&gt;&gt; res;
-        sort(nums.begin(), nums.end());
-        if (nums.empty() || nums.back() &lt; 0 || nums.front() &gt; 0) return {};
-        for (int k = 0; k &lt; (int)nums.size() - 2; ++k) {
-            if (nums[k] &gt; 0) break;
-            if (k &gt; 0 &amp;&amp; nums[k] == nums[k - 1]) continue;
-            int target = 0 - nums[k], i = k + 1, j = (int)nums.size() - 1;
-            while (i &lt; j) {
-                if (nums[i] + nums[j] == target) {
-                    res.push_back({nums[k], nums[i], nums[j]});
-                    while (i &lt; j &amp;&amp; nums[i] == nums[i + 1]) ++i;
-                    while (i &lt; j &amp;&amp; nums[j] == nums[j - 1]) --j;
-                    ++i; --j;
-                } else if (nums[i] + nums[j] &lt; target) ++i;
-                else --j;
-            }
-        }
-        return res;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_18</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given an array S of n integers, are there elements a , b , c , and d in S such that a + b + c + d = target? Find all unique quadruplets in the array which gives the sum of target.
-
-Note:
-
-Elements in a quadruplet ( a , b , c , d ) must be in non-descending order. (ie, a ≤ b ≤ c ≤ d )
-
-The solution set must not contain duplicate quadruplets.
-
-For example, given array S = {1 0 -1 0 -2 2}, and target = 0.
-
-A solution set is:
-(-1,  0, 0, 1)
-(-2, -1, 1, 2)
-(-2,  0, 0, 2)
-class Solution {
-public:
-    vector&lt;vector&lt;int&gt;&gt; fourSum(vector&lt;int&gt; &amp;nums, int target) {
-        vector&lt;vector&lt;int&gt;&gt; res;
-        int n = nums.size();
-        sort(nums.begin(), nums.end());
-        for (int i = 0; i &lt; n - 3; ++i) {
-            if (i &gt; 0 &amp;&amp; nums[i] == nums[i - 1]) continue;
-            for (int j = i + 1; j &lt; n - 2; ++j) {
-                if (j &gt; i + 1 &amp;&amp; nums[j] == nums[j - 1]) continue;
-                int left = j + 1, right = n - 1;
-                while (left &lt; right) {
-                    int sum = nums[i] + nums[j] + nums[left] + nums[right];
-                    if (sum == target) {
-                        vector&lt;int&gt; out{nums[i], nums[j], nums[left], nums[right]};
-                        res.push_back(out);
-                        while (left &lt; right &amp;&amp; nums[left] == nums[left + 1]) ++left;
-                        while (left &lt; right &amp;&amp; nums[right] == nums[right - 1]) --right;
-                        ++left; --right;
-                    } else if (sum &lt; target) ++left;
-                    else --right;
-                }
-            }
-        }
-        return res;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_16</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given array nums = [-1, 2, 1, -4], and target = 1.
-The sum that is closest to the target is 2. (-1 + 2 + 1 = 2).
-class Solution {
-public:
-    int threeSumClosest(vector&lt;int&gt;&amp; nums, int target) {
-        int closest = nums[0] + nums[1] + nums[2];
-        int diff = abs(closest - target);
-        sort(nums.begin(), nums.end());
-        for (int i = 0; i &lt; nums.size() - 2; ++i) {
-            int left = i + 1, right = nums.size() - 1;
-            while (left &lt; right) {
-                int sum = nums[i] + nums[left] + nums[right];
-                int newDiff = abs(sum - target);
-                if (diff &gt; newDiff) {
-                    diff = newDiff;
-                    closest = sum;
-                }
-                if (sum &lt; target) ++left;
-                else --right;
-            }
-        }
-        return closest;
-    }
-};
-</code></pre>
-
-<h4>动态规划</h4>
-
-<ul>
-<li>leet120 Triangle</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">class Solution {
-public:
-    int minimumTotal(vector&lt;vector&lt;int&gt;&gt;&amp; triangle) {
-        vector&lt;int&gt; dp(triangle.back());
-        for (int i = (int)triangle.size() - 2; i &gt;= 0; --i) {
-            for (int j = 0; j &lt;= i; ++j) {
-                dp[j] = min(dp[j], dp[j + 1]) + triangle[i][j];
-            }
-        }
-        return dp[0];
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet64 minium path sum</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given a m x n grid filled with non-negative numbers, find a path from top left to bottom right which minimizes the sum of all numbers along its path.
-
-Note: You can only move either down or right at any point in time.
-
-Example:
-
-Input:
-[
-  [1,3,1],
-  [1,5,1],
-  [4,2,1]
-]
-Output: 7
-Explanation: Because the path 1→3→1→1→1 minimizes the sum.
-class Solution {
-public:
-    int minPathSum(vector&lt;vector&lt;int&gt; &gt; &amp;grid) {
-        int m = grid.size(), n = grid[0].size();
-        int dp[m][n];
-        dp[0][0] = grid[0][0];
-        for (int i = 1; i &lt; m; ++i) dp[i][0] = grid[i][0] + dp[i - 1][0];
-        for (int i = 1; i &lt; n; ++i) dp[0][i] = grid[0][i] + dp[0][i - 1];
-        for (int i = 1; i &lt; m; ++i) {
-            for (int j = 1; j &lt; n; ++j) {
-                dp[i][j] = grid[i][j] + min(dp[i - 1][j], dp[i][j - 1]);
-            }
-        }
-        return dp[m - 1][n - 1];
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet343 integer break</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given a positive integer  n , break it into the sum of at least two positive integers and maximize the product of those integers. Return the maximum product you can get.
-
-Example 1:
-
-Input: 2
-Output: 1
-Explanation: 2 = 1 + 1, 1 × 1 = 1.
-class Solution {
-public:
-    int integerBreak(int n) {
-        vector&lt;int&gt; dp(n + 1, 1);
-        for (int i = 3; i &lt;= n; ++i) {
-            for (int j = 1; j &lt; i; ++j) {
-                dp[i] = max(dp[i], max(j * (i - j), j * dp[i - j]));
-            }
-        }
-        return dp[n];
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet279 perfect squares</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given a positive integer  n , find the least number of perfect square numbers (for example, 1, 4, 9, 16, ...) which sum to  n.
-
-Example 1:
-
-Input: _n_ = 12
-Output: 3 
-Explanation: 12 = 4 + 4 + 4.
-Example 2:
-
-Input: _n_ = 13
-Output: 2
-Explanation: 13 = 4 + 9.
-class Solution {
-public:
-    int numSquares(int n) {
-        vector&lt;int&gt; dp(n + 1, INT_MAX);
-        dp[0] = 0;
-        for (int i = 0; i &lt;= n; ++i) {
-            for (int j = 1; i + j * j &lt;= n; ++j) {
-                dp[i + j * j] = min(dp[i + j * j], dp[i] + 1);
-            }
-        }
-        return dp.back();
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet91 decode ways</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">A message containing letters from A-Z is being encoded to numbers using the following mapping:
-
-&#39;A&#39; -&gt; 1
-&#39;B&#39; -&gt; 2
-...
-&#39;Z&#39; -&gt; 26
-Given a non-empty string containing only digits, determine the total number of ways to decode it.
-
-Example 1:
-
-Input: &quot;12&quot;
-Output: 2
-Explanation: It could be decoded as &quot;AB&quot; (1 2) or &quot;L&quot; (12).
-，在遍历的过程中，对每个数字首先判断其是否为0，若是则将 dp[i] 赋为0，若不是，赋上 dp[i-1] 的值，然后看数组前一位是否存在，如果存在且满足前一位是1，或者和当前位一起组成的两位数不大于 26，则当前 dp[i] 值加上 dp[i - 2]。最终返回 dp 数组的最后一个值即可
-dp[i] = dp[i-1] + dp[i-2]
-class Solution {
-public:
-    int numDecodings(string s) {
-        if (s.empty() || s[0] == &#39;0&#39;) return 0;
-        vector&lt;int&gt; dp(s.size() + 1, 0);
-        dp[0] = 1;
-        for (int i = 1; i &lt; dp.size(); ++i) {
-            if (s[i - 1] != &#39;0&#39;) dp[i] += dp[i - 1];
-            if (i &gt;= 2 &amp;&amp; s.substr(i - 2, 2) &lt;= &quot;26&quot; &amp;&amp; s.substr(i - 2, 2) &gt;= &quot;10&quot;) {
-                dp[i] += dp[i - 2];
-            }
-        }
-        return dp.back();
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet62 unique path</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">A robot is located at the top-left corner of a  m  x  n  grid (marked &#39;Start&#39; in the diagram below).
-
-The robot can only move either down or right at any point in time. The robot is trying to reach the bottom-right corner of the grid (marked &#39;Finish&#39; in the diagram below).
-
-How many possible unique paths are there?
-class Solution {
-public:
-    int uniquePaths(int m, int n) {
-        vector&lt;int&gt; dp(n, 1);
-        for (int i = 1; i &lt; m; ++i) {
-            for (int j = 1; j &lt; n; ++j) {
-                dp[j] += dp[j - 1]; 
-            }
-        }
-        return dp[n - 1];
-    }
-};
-````
-* leet63 unique path
-
-```C++
-这里还需要初始化 dp 数组的某个值，使得其能正常累加。当起点不是障碍物时，其 dp 值应该为1，即dp[1][1] = 1，由于其是由 dp[0][1] + dp[1][0] 更新而来，所以二者中任意一个初始化为1即可。由于之后 LeetCode 更新了这道题的 test case，使得使用 int 型的 dp 数组会有溢出的错误，所以改为使用 long 型的数组来避免 overflow，代码如下
-class Solution {
-public:
-    int uniquePathsWithObstacles(vector&lt;vector&lt;int&gt;&gt;&amp; obstacleGrid) {
-        if (obstacleGrid.empty() || obstacleGrid[0].empty() || obstacleGrid[0][0] == 1) return 0;
-        int m = obstacleGrid.size(), n = obstacleGrid[0].size();
-        vector&lt;vector&lt;long&gt;&gt; dp(m + 1, vector&lt;long&gt;(n + 1, 0));
-        dp[0][1] = 1;
-        for (int i = 1; i &lt;= m; ++i) {
-            for (int j = 1; j &lt;= n; ++j) {
-                if (obstacleGrid[i - 1][j - 1] != 0) continue;
-                dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
-            }
-        }
-        return dp[m][n];
-    }
-};
-class Solution {
-public:
-    int uniquePathsWithObstacles(vector&lt;vector&lt;int&gt;&gt;&amp; obstacleGrid) {
-        if (obstacleGrid.empty() || obstacleGrid[0].empty() || obstacleGrid[0][0] == 1) return 0;
-        int m = obstacleGrid.size(), n = obstacleGrid[0].size();
-        vector&lt;long&gt; dp(n, 0);
-        dp[0] = 1;
-        for (int i = 0; i &lt; m; ++i) {
-            for (int j = 0; j &lt; n; ++j) {
-                if (obstacleGrid[i][j] == 1) dp[j] = 0;
-                else if (j &gt; 0) dp[j] += dp[j - 1];
-            }
-        }
-        return dp[n - 1];
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet673</li>
-</ul>
-
-<h4>查找</h4>
-
-<ul>
-<li>leet_350</li>
-<li>leet_49</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given an array of strings, group anagrams together.
-
-Example:
-
-Input: [&quot;eat&quot;, &quot;tea&quot;, &quot;tan&quot;, &quot;ate&quot;, &quot;nat&quot;, &quot;bat&quot;],
-Output:
-[
-  [&quot;ate&quot;,&quot;eat&quot;,&quot;tea&quot;],
-  [&quot;nat&quot;,&quot;tan&quot;],
-  [&quot;bat&quot;]
-]
-class Solution {
-public:
-    vector&lt;vector&lt;string&gt;&gt; groupAnagrams(vector&lt;string&gt;&amp; strs) {
-        vector&lt;vector&lt;string&gt;&gt; res;
-        unordered_map&lt;string, vector&lt;string&gt;&gt; m;
-        for (string str : strs) {
-            vector&lt;int&gt; cnt(26, 0);
-            string t = &quot;&quot;;
-            for (char c : str) ++cnt[c - &#39;a&#39;];
-            for (int d : cnt) t += to_string(d) + &quot;/&quot;;
-            m[t].push_back(str);
-        }
-        for (auto a : m) {
-            res.push_back(a.second);
-        }
-        return res;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_447 </li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given n points in the plane that are all pairwise distinct, a &quot;boomerang&quot; is a tuple of points (i, j, k) such that the distance between i and j equals the distance between i and k ( the order of the tuple matters ).
-
-Find the number of boomerangs. You may assume that n will be at most 500 and coordinates of points are all in the range [-10000, 10000] (inclusive).
-
-Example:
-
-**Input:**
-[[0,0],[1,0],[2,0]]
-
-**Output:**
-2
-
-**Explanation:**
-The two boomerangs are **[[1,0],[0,0],[2,0]]** and **[[1,0],[2,0],[0,0]]**
-class Solution {
-public:
-    int numberOfBoomerangs(vector&lt;pair&lt;int, int&gt;&gt;&amp; points) {
-        int res = 0;
-        for (int i = 0; i &lt; points.size(); ++i) {
-            unordered_map&lt;int, int&gt; m;
-            for (int j = 0; j &lt; points.size(); ++j) {
-                int a = points[i].first - points[j].first;
-                int b = points[i].second - points[j].second;
-                ++m[a * a + b * b];
-            }
-            for (auto it = m.begin(); it != m.end(); ++it) {
-                res += it-&gt;second * (it-&gt;second - 1);
-            }
-        }
-        return res;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_149 点坐标的表示 整数 浮点数 </li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given  n  points on a 2D plane, find the maximum number of points that lie on the same straight line.
-
-Example 1:
-
-Input: [[1,1],[2,2],[3,3]]
-Output: 3
-Explanation:
-^
-|
-|        o
-|     o
-|  o  
-+-------------&gt;
-0  1  2  3  4
-class Solution {
-public:
-    int maxPoints(vector&lt;Point&gt;&amp; points) {
-        int res = 0;
-        for (int i = 0; i &lt; points.size(); ++i) {
-            map&lt;pair&lt;int, int&gt;, int&gt; m;
-            int duplicate = 1;
-            for (int j = i + 1; j &lt; points.size(); ++j) {
-                if (points[i].x == points[j].x &amp;&amp; points[i].y == points[j].y) {
-                    ++duplicate; continue;
-                } 
-                int dx = points[j].x - points[i].x;
-                int dy = points[j].y - points[i].y;
-                int d = gcd(dx, dy);
-                ++m[{dx / d, dy / d}];
-            }
-            res = max(res, duplicate);
-            for (auto it = m.begin(); it != m.end(); ++it) {
-                res = max(res, it-&gt;second + duplicate);
-            }
-        }
-        return res;
-    }
-    int gcd(int a, int b) {
-        return (b == 0) ? a : gcd(b, a % b);
-    }
-};
-</code></pre>
-
-<h4>滑动窗口和查找</h4>
-
-<ul>
-<li>leet_217</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given an array of integers, find if the array contains any duplicates. Your function should return true if any value appears at least twice in the array, and it should return false if every element is distinct.
-class Solution {
-public:
-    bool containsDuplicate(vector&lt;int&gt;&amp; nums) {
-        unordered_map&lt;int, int&gt; m;
-        for (int i = 0; i &lt; nums.size(); ++i) {
-            if (m.find(nums[i]) != m.end()) return true;
-            ++m[nums[i]];
-        }
-        return false;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_219</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given an array of integers and an integer k, return true if and only if there are two distinct indices i and j in the array such that nums[i] = nums[j] and the difference between i and j is at most k. (Old Version)
-
-Given an array of integers and an integer k , find out whether there are two distinct indices i and j in the array such that nums[i] = nums[j] and the difference between i and j is at most k. (New Version)
-class Solution {
-public:
-    bool containsNearbyDuplicate(vector&lt;int&gt;&amp; nums, int k) {
-        unordered_map&lt;int, int&gt; m;
-        for (int i = 0; i &lt; nums.size(); ++i) {
-            if (m.find(nums[i]) != m.end() &amp;&amp; i - m[nums[i]] &lt;= k) return true;
-            else m[nums[i]] = i;
-        }
-        return false;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_220</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given an array of integers, find out whether there are two distinct indices i and j in the array such that the difference between nums[i] and nums[j] is at most t and the difference between i and j is at most k.
-class Solution {
-public:
-    bool containsNearbyAlmostDuplicate(vector&lt;int&gt;&amp; nums, int k, int t) {
-      map&lt;long long, int&gt; m;
-      int j = 0;
-      for (int i = 0; i &lt; nums.size(); i++) {
-        if (i - j &gt; k) m.erase(nums[j++]);
-        auto a = m.lower_bound((long long)nums[i] - t);
-        if (a != m.end() &amp;&amp; abs(a-&gt;first - nums[i]) &lt;= t) return true;
-        m[nums[i]] = i;
-      }
-      return false;
-    }
-};
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/02 10:36 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E7%8E%A9%E8%BD%AC%E7%AE%97%E6%B3%95.html'>玩转算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15710957591985.html">
-                
-                  <h1>WebSocket</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>成本</h4>
-
-<ul>
-<li><img src="media/15710957591985/15710962451695.jpg" alt="" style="width:765px;"/></li>
-</ul>
-
-<h4>长连接</h4>
-
-<ul>
-<li><img src="media/15710957591985/15710963836939.jpg" alt="" style="width:568px;"/></li>
-</ul>
-
-<h4>设计哲学</h4>
-
-<p><img src="media/15710957591985/15710964645316.jpg" alt="" style="width:725px;"/></p>
-
-<h4>设计帧</h4>
-
-<p><img src="media/15710957591985/15710969433691.jpg" alt="" style="width:900px;"/></p>
-
-<h4>升级流程</h4>
-
-<ul>
-<li><img src="media/15710957591985/15710970356680.jpg" alt="" style="width:628px;"/></li>
-</ul>
-
-<h4>消息和消息祯</h4>
-
-<ul>
-<li><img src="media/15710957591985/15710973960893.jpg" alt="" style="width:916px;"/></li>
-<li><img src="media/15710957591985/15710974064311.jpg" alt="" style="width:909px;"/></li>
-<li><img src="media/15710957591985/15710974282175.jpg" alt="" style="width:722px;"/></li>
-<li>opcode来区分 op=0持续帧 op=1/2文本帧和持续帧</li>
-</ul>
-
-<h4>发送消息</h4>
-
-<ul>
-<li><img src="media/15710957591985/15710980093558.jpg" alt="" style="width:712px;"/></li>
-</ul>
-
-<h4>掩码编码</h4>
-
-<ul>
-<li><img src="media/15710957591985/15710981834306.jpg" alt="" style="width:1012px;"/></li>
-</ul>
-
-<h4>在线异或</h4>
-
-<ul>
-<li>xor.pw/</li>
-</ul>
-
-<h4>心跳</h4>
-
-<ul>
-<li><img src="media/15710957591985/15710985565889.jpg" alt="" style="width:1060px;"/></li>
-</ul>
-
-<h4>协议关闭</h4>
-
-<ul>
-<li><img src="media/15710957591985/15710987205030.jpg" alt="" style="width:1036px;"/></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/15 07:29 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE.html'>网络协议</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15710940470602.html">
-                
-                  <h1>直播消息</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>数据结构</h4>
-
-<ul>
-<li><img src="media/15710940470602/15710945263817.jpg" alt="" style="width:991px;"/></li>
-<li>zset 展示直播打赏列表</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/15 07:00 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html'>Redis高并发缓存</a></span>
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
           				   
                   </div>
                   <div class="more-right right">

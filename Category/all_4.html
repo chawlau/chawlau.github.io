@@ -170,398 +170,9 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15744656731481.html">
+                <a class="clearlink" href="15737733784968.html">
                 
-                  <h1>静态方法&类方法&对象方法</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>三种方法对比</h4>
-
-<ul>
-<li>对象方法，定义中，传入的第一个参数必须是 self，表示实例本身，在其中可使用 self.attr 获取实例的属性。</li>
-<li>class_method 无需实例化，但与实例方法第一个参数必须是 self 类似，类方法第一个参数表示类自身的 cls 参数，可以来调用类的属性、类的方法、类的实例化对象等</li>
-<li>static_method无需 self 参数，无需 cls 参数，直接声明一个静态方法，可无需实例化，直接由类调用，也可实例化后调用</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-python">class Date:
-    def __init__(self, year, month, day):
-        self.year = year
-        self.month = month
-        self.day = day
-
-    def tomorrow(self):
-        self.day += 1
-
-    @staticmethod
-    def parse_from_string(data_str):
-        year, month, day = tuple(data_str.split(&#39;-&#39;))
-        return Date(int(year), int(month), int(day))
-
-    @staticmethod
-    def valid_str(date_str):
-        year, month, day = tuple(date_str.split(&#39;-&#39;))
-        if int(year) &gt; 0 and (int(month) &gt; 0 and int(month) &lt;=12) and (int(day) &gt; 0 and int(day) &lt;=31):
-            return True
-        else:
-            return False
-
-    @classmethod
-    def from_string(cls, date_str):
-        year, month, day = tuple(date_str.split(&#39;-&#39;))
-        return cls(int(year), int(month), int(day))
-
-    def __str__(self):
-        return &quot;{year}/{month}/{day}&quot;.format(year=self.year, month=self.month, day=self.day)
-
-if __name__ == &#39;__main__&#39;:
-    new_day = Date(2018, 12, 31)
-    new_day.tomorrow()
-    print(new_day)
-
-    date_str = &#39;2018-12-31&#39;
-    year, month, day = tuple(date_str.split(&#39;-&#39;))
-    new_day = Date(int(year), int(month), int(day))
-    print (new_day)
-
-    new_day = Date.parse_from_string(date_str)
-    print (new_day)
-
-    new_day = Date.from_string(date_str)
-    print (new_day)
-    
-    print(Date.valid_str(&quot;2018-12-32&quot;))
-</code></pre>
-
-<h4>私有属性</h4>
-
-<ul>
-<li>双下划线将私有变量进行变形</li>
-<li>通过反射机制也可以拿到这个数值</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-python">from method import Date
-
-class User:
-    def __init__(self, birthday):
-        self.__birthday = birthday
-    def get_age(self):
-        return 2019 - self.__birthday.year
-
-
-if __name__ == &#39;__main__&#39;:
-    user = User(Date(2018, 10, 1))
-    print(user.get_age())
-</code></pre>
-
-<h4>dict和dir查询属性·</h4>
-
-<pre class="line-numbers"><code class="language-python">from method import Date
-
-class Person:
-    name = &#39;user&#39;
-
-class Student(Person):
-    def __init__(self, school_name):
-        self.school_name = school_name
-
-if __name__ == &#39;__main__&#39;:
-    user = Student(&#39;IMooc&#39;)
-    print(user.__dict__)
-    user.__dict__[&quot;school_addr&quot;] = &quot;Beijing&quot;
-    print(user.school_addr)
-    print(Person.__dict__)
-    print(user.name)
-    a = [1, 2]
-    print(dir(a))
-</code></pre>
-
-<ul>
-<li>dict获取属性</li>
-</ul>
-
-<h4>上下文管理器协议</h4>
-
-<ul>
-<li><img src="media/15744656731481/15744763032317.jpg" alt="" style="width:324px;"/></li>
-</ul>
-
-<pre class="line-numbers"><code class="language-python">class Sample:
-    def __enter__(self):
-        #获取资源
-        print(&#39;enter&#39;)
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        #释放资源
-        print(&quot;exit&quot;)
-
-    def do_something(self):
-        print(&quot;doing something&quot;)
-
-with Sample() as sample:
-    sample.do_something()
-</code></pre>
-
-<h4>contextlib协议</h4>
-
-<pre class="line-numbers"><code class="language-python">import contextlib
-
-@contextlib.contextmanager
-def file_open(file_name):
-    print (&quot;file open&quot;)
-    yield {}
-    print (&quot;file end&quot;)
-
-with file_open(&quot;bobby.txt&quot;) as f_opened:
-    print (&quot;file processing&quot;)
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/23 07:34 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15725632392407.html">
-                
-                  <h1>模版模式</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>分类</h4>
-
-<ul>
-<li>创建类</li>
-<li>结构型</li>
-<li>行为型</li>
-<li><img src="media/15725632392407/15725633031911.jpg" alt="" style="width:750px;"/></li>
-<li><img src="media/15725632392407/15725633288545.jpg" alt="" style="width:342px;"/></li>
-<li>需求的频繁变化</li>
-<li>没有一部到位的设计模式</li>
-<li>重构 改善既有的模式</li>
-<li>重构与模式</li>
-</ul>
-
-<h4>重构关键技法</h4>
-
-<p><img src="media/15725632392407/15725635781138.jpg" alt="" style="width:492px;"/></p>
-
-<h4>组件协作模式</h4>
-
-<ul>
-<li>典型模式</li>
-</ul>
-
-<h4>cpp_demo</h4>
-
-<pre class="line-numbers"><code class="language-cpp">class OperateSystem
-{
- protected:
-  virtual void TriggerInterrupt() = 0;        //触发中断
-  virtual void SaveContext() = 0;             //保存现场
-  virtual void InterruptSoulation() = 0;       //中断处理
-  virtual void ReturnContext() = 0;           //返回现场
- public:
-  virtual void HandleInterrupt()
-  {
-    this-&gt;TriggerInterrupt();
-    this-&gt;SaveContext();
-    this-&gt;InterruptSoulation();
-    this-&gt;ReturnContext();
-  }
-};
-
-class Windows:public OperateSystem
-{
- private:
-  virtual void TriggerInterrupt()        //触发中断
-  {
-    std::cout&lt;&lt;&quot;Windows trriger\n&quot;;
-  }
-
-  virtual void SaveContext()             //保存现场
-  {
-    std::cout&lt;&lt;&quot;Windows save context\n&quot;;
-  }
-
-  virtual void InterruptSoulation()       //中断处理
-  {
-    std::cout&lt;&lt;&quot;Windows interrupt soulation\n&quot;;
-  }
-
-  virtual void ReturnContext()           //返回现场
-  {
-    std::cout&lt;&lt;&quot;Windows return context\n&quot;;
-  }
-};
-
-class Linux:public OperateSystem
-{
- private:
-  virtual void TriggerInterrupt()        //触发中断
-  {
-    std::cout&lt;&lt;&quot;Linux trriger\n&quot;;
-  }
-
-  virtual void SaveContext()             //保存现场
-  {
-    std::cout&lt;&lt;&quot;Linux save context\n&quot;;
-  }
-
-  virtual void InterruptSoulation()       //中断处理
-  {
-    std::cout&lt;&lt;&quot;Linux interrupt soulation\n&quot;;
-  }
-
-  virtual void ReturnContext()           //返回现场
-  {
-    std::cout&lt;&lt;&quot;Linux return context\n&quot;;
-  }
-};
-int main()
-{
-  Linux *linux = new Linux();
-  Windows *window = new Windows();
-
-  linux-&gt;HandleInterrupt();
-  window-&gt;HandleInterrupt();
-}
-</code></pre>
-
-<h4>golang_demo</h4>
-
-<pre class="line-numbers"><code class="language-go">package Templatemethod
-
-import &quot;fmt&quot;
-
-type Downloader interface {
-    Download(uri string)
-}
-
-type Template struct {
-    Implement
-    uri string
-}
-
-type Implement interface {
-    download()
-    save()
-}
-
-func newTemplate(impl Implement) *Template {
-    return &amp;Template{
-        Implement: impl,
-    }
-}
-
-func (t *Template) Download(uri string) {
-    t.uri = uri
-    fmt.Print(&quot;prepare downloading\n&quot;)
-    t.Implement.download()
-    t.Implement.save()
-    fmt.Print(&quot;finish downloading\n&quot;)
-}
-
-func (t *Template) save() {
-    fmt.Print(&quot;default save\n&quot;)
-}
-
-type HTTPDownloader struct {
-    *Template
-}
-
-func NewHTTPDownloader() Downloader {
-    downloader := &amp;HTTPDownloader{}
-    Template := newTemplate(downloader)
-    downloader.Template = Template
-    return downloader
-}
-
-func (d *HTTPDownloader) download() {
-    fmt.Printf(&quot;download %s via http\n&quot;, d.uri)
-}
-
-func (*HTTPDownloader) save() {
-    fmt.Printf(&quot;http save\n&quot;)
-}
-
-type FTPDownloader struct {
-    *Template
-}
-
-func NewFTPDownloader() Downloader {
-    downloader := &amp;FTPDownloader{}
-    Template := newTemplate(downloader)
-    downloader.Template = Template
-    return downloader
-}
-
-func (d *FTPDownloader) download() {
-    fmt.Printf(&quot;download %s via ftp\n&quot;, d.uri)
-}
-
-
-package templatemethod
-
-func ExampleHTTPDownloader() {
-    var downloader Downloader = NewHTTPDownloader()
-    downloader.Download(&quot;http://example.com/abc.zip&quot;)
-}
-
-func ExampleFTPDownloader() {
-    var downloader Downloader = NewFTPDownloader()
-    downloader.Download(&quot;ftp://example.com/abc.zip&quot;)
-}
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/01 07:07 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15782299761779.html">
-                
-                  <h1>访问器模式</h1>
+                  <h1>Proxy</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
@@ -569,196 +180,301 @@ func ExampleFTPDownloader() {
                         	<h4>动机</h4>
 
 <ul>
-<li>在软件构建过程中，由于需求的改变，某些类层次结构中常常需要增加新的行为（方法），如果直接在基类中做这样的更改，将会给子类带来很繁重的变更负担，甚至破坏原有设计。</li>
-<li>如何在不更改类层次结构的前提下，在运行时根据需要透明地为类层次结构上的各个类动态添加新的操作，从而避免上述问题？</li>
-</ul>
-
-<h4>定义</h4>
-
-<ul>
-<li>表示一个作用于某对象结构中的各元素的操作。使得可以在不改变（稳定）各元素的类的前提下定义（扩展）作用于这些元素的新操作（变化）。</li>
+<li>在面向对象系统中，有些对象由于某种原因（比如对象创建的开消很大，或者某些操作需要安全控制，或者需要进程外的访问等）直接访问会给使用者、或者系统结构带来很多麻烦。</li>
+<li>如何在不失去透明操作对象的同时来管理/控制这些对象特有的复杂性？增加一层间接层是软件开发中常见的解決方式。</li>
 </ul>
 
 <h4>结构</h4>
 
 <ul>
-<li><img src="media/15782299761779/15782309016996.jpg" alt="" style="width:696px;"/></li>
+<li><img src="media/15737733784968/15807036463940.jpg" alt="" style="width:705px;"/></li>
 </ul>
 
 <h4>要点总结</h4>
 
 <ul>
-<li><p>Visitor 模式通过所谓双重分发（double dispatch）来实现在不更改（不添加新的操作-编译时）Elementa 类层次结构的前提下，在运行时透明地为类层次结构上的各个类动态添加新的操作（支持变化）。</p></li>
-<li><p>所谓双重分发即 Visitor 模式中间包括了两个多态分发（注意其中的多态机制）：第一个为 accept 方法的多态辨析；第二个为 /isitelementx 方法的多态辨析。</p></li>
-<li><p>Visitor 模式的最大缺点在于扩展类层次结构（增添新的 Element 子类），会导致 Visitor？类的改变。<strong><em>因此 Vistor 模式适用于Element 类层次结构稳定，而其中的操作却经常面临频繁改动</em></strong>。</p></li>
+<li><img src="media/15737733784968/15737741074243.jpg" alt="" style="width:842px;"/></li>
 </ul>
 
 <h4>cpp_demo</h4>
 
-<pre class="line-numbers"><code class="language-cpp">//
-// Created by eredinliu on 2020-01-05.
-//
+<pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
 
-#include &lt;iostream&gt;
-
-using namespace std;
-
-class Visitor;
-
-class Element {
+class ITelco {
 public:
-    virtual void accept(Visitor&amp; visitor) = 0;
+    virtual ~ITelco() {}
+
+    virtual  void Recharge(int money) = 0;
 };
 
-class ElementA : public Element {
+class CMCC : public ITelco {
 public:
-    void accept(Visitor&amp; visitor) override {
-        visitor.visitElementA(*this);
+    void Recharge(int money) override  {
+        std::cout &lt;&lt; &quot;Recharge &quot; &lt;&lt; money &lt;&lt; std::endl;
     }
 };
 
-class ElementB : public Element {
+class Proxy : public ITelco {
 public:
-    void accept(Visitor&amp; visitor) override {
-        visitor.visitElementB(*this);
+    Proxy() : m_pcMCC(nullptr) {}
+
+    void  Recharge(int money) override {
+       if (money &gt;= 50) {
+           if (m_pcMCC == nullptr)
+               m_pcMCC = new CMCC();
+           m_pcMCC-&gt;Recharge(money);
+       } else {
+           std::cout &lt;&lt; &quot;Sorry, too little money &quot; &lt;&lt; std::endl;
+       }
     }
-};
 
-
-class Visitor {
 public:
-    virtual void visitElementA(ElementA&amp; e) = 0;
-    virtual void visitElementB(ElementB&amp; e) = 0;
-};
-
-class VisitorA : public Visitor {
-public:
-    void visitElementA(ElementA&amp; e) override {
-        cout &lt;&lt; &quot;VisitorA is processing Element A &quot; &lt;&lt; endl;
-    }
-
-    void visitElementB(ElementB&amp; e) override {
-        cout &lt;&lt; &quot;VisitorA is processing Element B &quot; &lt;&lt; endl;
-    }
-};
-
-class VisitorB : public Visitor {
-public:
-    void visitElementA(ElementA&amp; e) override {
-        cout &lt;&lt; &quot;VisitorB is processing Element A &quot; &lt;&lt; endl;
-    }
-
-    void visitElementB(ElementB&amp; e) override {
-        cout &lt;&lt; &quot;VisitorB is processing Element B &quot; &lt;&lt; endl;
-    }
+    CMCC* m_pcMCC;
 };
 
 int main() {
-    VisitorA visitorA;
-    VisitorB visitor;
-    ElementB elementB;
-    elementB.accept(visitor);
-    elementB.accept(visitorA);
-
-
-    ElementA elementA;
-    elementA.accept(visitor);
-    elementA.accept(visitorA);
+    Proxy* proxy = new Proxy();
+    proxy-&gt;Recharge(20);
+    proxy-&gt;Recharge(100);
 }
 </code></pre>
 
 <h4>golang_demo</h4>
 
-<pre class="line-numbers"><code class="language-go">package design_pattern
+<pre class="line-numbers"><code class="language-go">import &quot;fmt&quot;
+
+tyecharge(money int) {
+    fmt.Println(&quot;CMCC Recharge money &quot;, money)
+}
+
+type ProxySub struct {
+    cmcc *ClientAPP
+}
+
+func (p *ProxySub) Recharge(money int) {
+    if money &gt;= 50 {
+        if p.cmcc == nil {pe Subject1 interface {
+        Recharge(money int)
+        }
+
+            type ClientAPP struct{}
+
+            func (c *ClientAPP) R
+            p.cmcc = &amp;ClientAPP{}
+        }
+        p.cmcc.Recharge(money)
+    } else {
+        fmt.Println(&quot;Sorry too littel money&quot;)
+    }
+}
+func TestProxySub(t *testing.T) {
+    var proxy Subject1
+    proxy = &amp;ProxySub{}
+    proxy.Recharge(30)
+    proxy.Recharge(100)
+}
+</code></pre>
+
+<h4>golang_demo</h4>
+
+<pre class="line-numbers"><code class="language-go">package desian_pattern_practise
 
 import &quot;fmt&quot;
 
-type Element interface {
-    Accept(Visitor)
+type IPSubject interface {
+    Request(string)
 }
 
-type Visitor interface {
-    visitA(*ElementA)
-    visitB(*ElementB)
+type PSubject struct {
+    name string
 }
 
-type ElementA struct {
+type RealSubject struct {
+    *PSubject
 }
 
-func (e *ElementA) Accept(visitor Visitor) {
-    visitor.visitA(e)
+func (r *RealSubject) Request(content string) {
+    fmt.Println(&quot;RealSubject handle content&quot;, content)
 }
 
-type ElementB struct {
+type ProxySubject struct {
+    *PSubject
+    realSubject IPSubject
 }
 
-func (e *ElementB) Accept(visitor Visitor) {
-    visitor.visitB(e)
-}
-
-type VisitorA struct {
-}
-
-func (v *VisitorA) visitA(e *ElementA) {
-    fmt.Println(&quot;VisitorA is processing Element A &quot; )
-}
-
-func (v *VisitorA) visitB(e *ElementB) {
-    fmt.Println(&quot;VisitorA is processing Element B &quot; )
-}
-
-type VisitorB struct {
-}
-
-func (v *VisitorB) visitA(e *ElementA) {
-    fmt.Println(&quot;VisitorB is processing Element A &quot; )
-}
-
-func (v *VisitorB) visitB(e *ElementB) {
-    fmt.Println(&quot;VisitorB is processing Element B &quot; )
-}
-
-type ObjectStructure struct {
-    elements map[Element]bool
-}
-
-func (o *ObjectStructure) Attach(e Element) {
-    o.elements[e] = true
-}
-
-func (o *ObjectStructure) Detach(e Element) {
-    delete(o.elements, e)
-}
-
-func (o *ObjectStructure) Accept(visitor Visitor) {
-    for k, _ := range o.elements {
-        k.Accept(visitor)
+func NewRealSubject(name string) *RealSubject {
+    return &amp;RealSubject{
+        PSubject: &amp;PSubject{name: name},
     }
 }
 
-func NewObjectStructure() *ObjectStructure {
-    return &amp;ObjectStructure{
-        elements: make(map[Element]bool),
+func (p *ProxySubject) Request(content string) {
+    p.preRequest()
+    if p.realSubject != nil {
+        p.realSubject.Request(content)
+    }
+    p.afterRequest()
+}
+
+func NewProxySubject(name string, subject IPSubject) *ProxySubject {
+    return &amp;ProxySubject{
+        PSubject: &amp;PSubject{name: name},
+        realSubject: subject,
     }
 }
 
-package design_pattern
+func (p *ProxySubject) preRequest() {
+    println(&quot;pre request&quot;)
+}
 
-import &quot;testing&quot;
+func (p *ProxySubject) afterRequest() {
+    println(&quot;after request&quot;)
+}
 
-func TestVisitor(t *testing.T) {
-    obj := NewObjectStructure()
+func TestProxySubject_Request(t *testing.T) {
+    realObj := NewRealSubject(&quot;realSubject&quot;)
+    proxySubject := NewProxySubject(&quot;ProxySubject&quot;, realObj)
+    proxySubject.Request(&quot;Html world&quot;)
+}
+</code></pre>
 
-    elementB := &amp;ElementB{}
-    elementA := &amp;ElementA{}
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/15 07:16 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
 
-    obj.Attach(elementA)
-    obj.Attach(elementB)
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15738632806643.html">
+                
+                  <h1>Adapter</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>动机</h4>
 
-    vA := &amp;VisitorA{}
-    vB := &amp;VisitorB{}
-    obj.Accept(vA)
-    obj.Accept(vB)
+<ul>
+<li><p>在软件系统中，由于应用环境的变化，常常需要将““一些现存的对象”放在新的环境中应用，但是新环境要求的接口是这些现存对象所不满足的</p></li>
+<li><p>如何应对这种“迁移的变化“？如何既能利用现有对象的良好实现，同时又能满足新的应用环境所要求的接口？</p></li>
+</ul>
+
+<h4>结构</h4>
+
+<p><img src="media/15738632806643/15808782023371.jpg" alt="" style="width:1193px;"/></p>
+
+<h4>要点总结</h4>
+
+<ul>
+<li>Adapters 模式主要应用于“希望复用一些现存的类，但是接口又与</li>
+<li>复用环境要求不一致的情況”，在遗留代码复用、类库注移等方面非常有用。</li>
+<li>GoF23 采用了两种 Adapter 模式的实现结构：对象和适配器。但类适配器采用“多继承”的实现方式般不推荐使用。对象适配器采用“对象组合“的方式，更符合松耦合精神。</li>
+<li>Adapter 模式可以实现的非常灵活，不必拘泥于 Gof23 中定义的两种结构。例如，完全可以将 Adapter 模式中现存对象”作为新的接口方法参数，来达到适配的目的。</li>
+<li>对象适配器比类适配器好</li>
+</ul>
+
+<h4>Cpp_demo</h4>
+
+<pre class="line-numbers"><code class="language-cpp">//
+// Created by eredinliu on 2020-02-05.
+//
+#include &lt;iostream&gt;
+using namespace std;
+
+class IAdapter {
+public:
+    virtual void Charge() = 0;
+    IAdapter() {}
+};
+
+class ITarget {
+public:
+    virtual void Process() = 0;
+    ITarget(IAdapter* adapter) : adapter_(adapter) {}
+protected:
+    IAdapter* adapter_;
+};
+
+class CNCharge : public IAdapter {
+public:
+    CNCharge() {}
+
+    void Charge() {
+        cout &lt;&lt; typeid(this).name() &lt;&lt; &quot; Charge \n&quot;;
+    }
+};
+
+class USCharge : public ITarget {
+public:
+    USCharge(IAdapter* adapter) : ITarget(adapter) {}
+
+    void Process() {
+        cout &lt;&lt; typeid(this).name() &lt;&lt; &quot; Process \n&quot;;
+        this-&gt;adapter_-&gt;Charge();
+    }
+};
+
+int main() {
+    IAdapter* cn_charge = new CNCharge();
+    ITarget* target = new USCharge(cn_charge);
+    target-&gt;Process();
+}
+</code></pre>
+
+<h4>golang_demo</h4>
+
+<pre class="line-numbers"><code class="language-go">type ITarget interface {
+    Process()
+}
+
+type IAdapter interface {
+    Charge()
+}
+
+type CNCharge struct {
+}
+
+func (c *CNCharge) Charge() {
+    println(reflect.TypeOf(c).String() + &quot; Charge&quot;)
+}
+
+type USCharge struct {
+    IAdapter
+}
+
+func (u *USCharge) Process() {
+    println(reflect.TypeOf(u).String() + &quot; Process&quot;)
+    u.IAdapter.Charge()
+}
+
+func NewUSCharge(adapter IAdapter) *USCharge {
+    return &amp;USCharge{
+        IAdapter: adapter,
+    }
+}
+
+
+func TestAdapter_Request2(t *testing.T) {
+    cnCharge := &amp;CNCharge{}
+    target := NewUSCharge(cnCharge)
+    target.Process()
 }
 </code></pre>
 
@@ -766,78 +482,39 @@ func TestVisitor(t *testing.T) {
 
 <pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
 
-class Element(metaclass=ABCMeta):
+class ITarget(metaclass=ABCMeta):
 
     @abstractmethod
-    def accept(self, visitor):
+    def process(self):
         pass
 
-class Visitor(metaclass=ABCMeta):
+    def __init__(self, adapter):
+        self.adapter = adapter
+
+class IAdapter(metaclass=ABCMeta):
 
     @abstractmethod
-    def visitA(self, elementA):
+    def charge(self):
         pass
 
-    @abstractmethod
-    def visitB(self, elementB):
-        pass
+class CNCharge(IAdapter):
 
-class ElementA(Element):
+    def charge(self):
+        print(type(self).__name__ + &#39; charge&#39;)
 
-    def accept(self, visitor):
-        visitor.visitA(self)
+class USCharge(ITarget):
 
-class ElementB(Element):
+    def __init__(self, adapter):
+        super().__init__(adapter)
 
-    def accept(self, visitor):
-        visitor.visitB(self)
-
-class VisitorA(Visitor):
-
-    def visitA(self, elementA):
-        print(type(self).__name__, &quot; process elementA&quot;)
-
-    def visitB(self, elementB):
-        print(type(self).__name__, &quot; process elementB&quot;)
-
-
-class VisitorB(Visitor):
-
-    def visitA(self, elementA):
-        print(type(self).__name__, &quot; process elementA&quot;)
-
-    def visitB(self, elementB):
-        print(type(self).__name__, &quot; process elementB&quot;)
-
-class ObjectStructure(object):
-
-    def __init__(self):
-        self.elements = []
-
-    def attach(self, element):
-        self.elements.append(element)
-
-    def detach(self, element):
-        self.elements.remove(element)
-
-    def accept(self, visitor):
-        for e in self.elements:
-            e.accept(visitor)
+    def process(self):
+        print(type(self).__name__ + &#39; process&#39;)
+        self.adapter.charge()
 
 if __name__ == &#39;__main__&#39;:
-    obj = ObjectStructure()
-
-    eA = ElementA()
-    eB = ElementB()
-
-    obj.attach(eA)
-    obj.attach(eB)
-
-    va = VisitorA()
-    vb = VisitorB()
-
-    obj.accept(va)
-    obj.accept(vb)
+    cn_charge = CNCharge()
+    target = USCharge(cn_charge)
+    target.process()
 </code></pre>
 
                         
@@ -847,7 +524,7 @@ if __name__ == &#39;__main__&#39;:
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2020/01/05 21:12 下午</span>
+                    <span class="date">2019/11/16 08:14 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
@@ -864,1387 +541,453 @@ if __name__ == &#39;__main__&#39;:
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15728200383131.html">
+                <a class="clearlink" href="15742917885791.html">
                 
-                  <h1>桥模式</h1>
+                  <h1>中介模式</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>单一职责模式</h4>
+                        	<h4>动机</h4>
 
 <ul>
-<li>在软件组件的设计中，如果责任划分的不清晰，使用继承得到的结果往往是随着需求的变化，子类急剧膨胀，同时充斥着重复代码，这时侯的关键是划清责任</li>
+<li>在软件构建过程中，经常会出现多个对象互相关联交互的情况，对象之间常常会维持一种复杂的引用关系，如果遇到一些需求的更改，这种直接的引用关系将面临不断的变化。</li>
+<li>在这种情況下，我们可使用一个“中介对象”来管理对象间的关联关系，避免相互交互的对象之间的紧耦合引用关系，从而更好地抵御变化。</li>
 </ul>
 
-<h4>动机</h4>
+<h4>模式定义</h4>
 
 <ul>
-<li>只override了一部分</li>
-<li>抽象部分（业务功能）与实现部分（平台实现）分离，使它们可以独立地变化。</li>
-<li>由于某些类型的固有的实现逻辑，使得它们具有两个变化的维度乃至多个纬度的变化</li>
-<li>如何应对这种“多维度的变化“？如何利用面向对象技术来使得类型</li>
-<li>可以轻松地沿着两个乃至多个方向变化，而不引入额外的复杂度？</li>
+<li>用一个中介对象来封装（封装变化）一系列的对象交互。中介者使各对象不需要显式的相互引用（编译时依赖运行时依赖），从而使其耦合松散（管理变化），而且可以独立地改变它们之间的交互</li>
+<li>编译时依赖改成运行时依赖</li>
 </ul>
 
 <h4>结构</h4>
 
-<ul>
-<li><img src="media/15728200383131/15728212883849.jpg" alt="" style="width:788px;"/></li>
-</ul>
+<p><img src="media/15742917885791/15803924036000.jpg" alt="" style="width:758px;"/></p>
+
+<p><img src="media/15742917885791/15742924128916.jpg" alt="" style="width:986px;"/></p>
 
 <h4>要点总结</h4>
 
 <ul>
-<li>Bridge 模式使用“对象间的组合关系”解耦了抽象和实现之间固有的绑定关系，使得抽象和实现可以沿着各自的维度来变化。所谓抽象和实现沿着各自纬度的变化，即“子类化“它们。</li>
-<li>Bridge 模式有时候类似于多继承方案，但是多继承方案往往违背单职责原则（即一个类只有一个变化的原因），复用性比较差。Bridge 模式是比多继承方案更好的解决方法</li>
-<li>Bridge 模式的应用一般在“两个非常强的变化维度”，有时一个类也有多于两个的变化维度，这时可以使用 Bridge 的扩展模式。</li>
+<li><p>将多个对象间复杂的关联关系解耦，Mediator 模式将多个对象间的控制逻辑进行集中管理，变“多个对象互相关联“为“多个对象和一个中介者关联“，简化了系统的维护，抵御了可能的变化。</p></li>
+<li><p>随着控制逻辑的复杂化，Mediator 具体对象的实现可能相当复杂。这时候可以对 Mediator 对象进行分解处理。</p></li>
+<li><p>Facade 模式是解耦系统（单向）的对象关联关系；Mediator 模式是解耦系统内各个对象之间（双向）的关联关系。</p></li>
 </ul>
-
-<h4>cpp_demo</h4>
-
-<pre class="line-numbers"><code class="language-cpp">class ISwitch
-{
- public:
-  ISwitch(IElectricalEquipment *ee) { m_pEe = ee; }
-  virtual ~ISwitch() {}
-
-  virtual void On() = 0;
-
-  virtual void Off() = 0;
-
- protected:
-  IElectricalEquipment *m_pEe;
-};
-
-class IElectricalEquipment
-{
- public:
-  virtual ~IElectricalEquipment() {}
-
-  virtual void PowerOn() = 0;
-
-  virtual void PowerOff() = 0;
-};
-class Light : public IElectricalEquipment
-{
- public:
-  // 开灯
-  virtual void PowerOn() override {
-    std::cout &lt;&lt; &quot;Light is on.&quot; &lt;&lt; std::endl;
-  }
-
-  // 关灯
-  virtual void PowerOff() override {
-    std::cout &lt;&lt; &quot;Light is off.&quot; &lt;&lt; std::endl;
-  }
-};
-
-// 风扇
-class Fan : public IElectricalEquipment
-{
- public:
-  // 打开风扇
-  virtual void PowerOn() override {
-    std::cout &lt;&lt; &quot;Fan is on.&quot; &lt;&lt; std::endl;
-  }
-
-  // 关闭风扇
-  virtual void PowerOff() override {
-    std::cout &lt;&lt; &quot;Fan is off.&quot; &lt;&lt; std::endl;
-  }
-};
-// 拉链式开关
-class PullChainSwitch : public ISwitch
-{
-public:
-    PullChainSwitch(IElectricalEquipment *ee) : ISwitch(ee) {}
-
-    // 用拉链式开关打开电器
-    virtual void On() override {
-        std::cout &lt;&lt; &quot;Switch on the equipment with a pull chain switch.&quot; &lt;&lt; std::endl;
-        m_pEe-&gt;PowerOn();
-    }
-
-    // 用拉链式开关关闭电器
-    virtual void Off() override {
-        std::cout &lt;&lt; &quot;Switch off the equipment with a pull chain switch.&quot; &lt;&lt; std::endl;
-        m_pEe-&gt;PowerOff();
-    }
-};
-// 两位开关
-class TwoPositionSwitch : public ISwitch
-{
- public:
-  TwoPositionSwitch(IElectricalEquipment *ee) : ISwitch(ee) {}
-
-  // 用两位开关打开电器
-  virtual void On() override {
-    std::cout &lt;&lt; &quot;Switch on the equipment with a two-position switch.&quot; &lt;&lt; std::endl;
-    m_pEe-&gt;PowerOn();
-  }
-
-  // 用两位开关关闭电器
-  virtual void Off() override {
-    std::cout &lt;&lt; &quot;Switch off the equipment with a two-position switch.&quot; &lt;&lt; std::endl;
-    m_pEe-&gt;PowerOff();
-  }
-};
-int main()
-{
-    // 创建电器 - 电灯、风扇
-    IElectricalEquipment *light = new Light();
-    IElectricalEquipment *fan = new Fan();
-
-    /**
-    * 创建开关 - 拉链式开关、两位开关
-    * 将拉链式开关和电灯关联起来，将两位开关和风扇关联起来
-    **/
-    ISwitch *pullChain = new PullChainSwitch(light);
-    ISwitch *twoPosition = new TwoPositionSwitch(fan);
-
-    // 开灯、关灯
-    pullChain-&gt;On();
-    pullChain-&gt;Off();
-
-    // 打开风扇、关闭风扇
-    twoPosition-&gt;On();
-    twoPosition-&gt;Off();
-}
-</code></pre>
 
 <h4>golang_demo</h4>
 
-<pre class="line-numbers"><code class="language-go">package design_pattern
+<pre class="line-numbers"><code class="language-go">package desian_pattern_practise
 
 import (
-    &quot;fmt&quot;
     &quot;reflect&quot;
+    &quot;strings&quot;
+    &quot;sync&quot;
 )
 
-type ISwitch interface {
-    On()
-    Off()
+var (
+    mediator *Mediator
+    monce sync.Once
+)
+type IColleague interface {
+    GetMediator()
 }
 
-type IEquip interface {
-    PowerOn()
-    PowerOff()
+type Colleague struct {
+    mediator IMediator
 }
 
-type Light struct {}
 
-func (l *Light) PowerOn() {
-    fmt.Println(reflect.TypeOf(l).String() + &quot; PowerOn&quot;)
+type IMediator interface {
+    Execute(IColleague)
 }
 
-func (l *Light) PowerOff() {
-    fmt.Println(reflect.TypeOf(l).String() + &quot; PowerOff&quot;)
+type Mediator struct {
+    cd, cpu, videoCard, soundCard IColleague
 }
 
-type Fen struct {}
-
-func (l *Fen) PowerOn() {
-    fmt.Println(reflect.TypeOf(l).String() + &quot; PowerOn&quot;)
+func (m *Mediator) SetCD(cd IColleague) {
+    m.cd = cd
 }
 
-func (l *Fen) PowerOff() {
-    fmt.Println(reflect.TypeOf(l).String() + &quot; PowerOff&quot;)
+func (m *Mediator) SetCpu(cpu IColleague) {
+    m.cpu = cpu
 }
 
-type PullSwitch struct {
-    IEquip
+func (m *Mediator) SetVideoCard(videoCard IColleague) {
+    m.videoCard = videoCard
 }
 
-func NewPullSwitch(i IEquip) ISwitch {
-    return &amp;PullSwitch{
-        IEquip: i,
+func (m *Mediator) SetSoundCard(soundCard IColleague) {
+    m.soundCard = soundCard
+}
+
+func GetMediator() *Mediator {
+    monce.Do(func() {
+        mediator = &amp;Mediator{}
+    })
+    return mediator
+}
+
+func (m *Mediator) Execute(i IColleague) {
+    switch i.(type) {
+    case *CDDriver:
+        m.cpu.(*Cpu).Process(i.(*CDDriver).data)
+    case *Cpu:
+        m.soundCard.(*SoundCard).Play(i.(*Cpu).audio)
+        m.videoCard.(*VideoCard).Display(i.(*Cpu).video)
     }
 }
 
-func (p *PullSwitch) On() {
-    p.IEquip.PowerOn()
-}
-
-func (p *PullSwitch) Off() {
-    p.IEquip.PowerOff()
-}
-
-type TwoBiteSwitch struct {
-    IEquip
-}
-
-func NewTwoBiteSwitch(i IEquip) ISwitch {
-    return &amp;TwoBiteSwitch{
-        IEquip: i,
-    }
-}
-
-func (p *TwoBiteSwitch) On() {
-    p.IEquip.PowerOn()
-}
-
-func (p *TwoBiteSwitch) Off() {
-    p.IEquip.PowerOff()
-}
-
-type Message interface {
-    SendMsg()
-}
-
-type AsyncMsg struct {
-    ConcreteMsg
-}
-
-func NewAsyncMsg(c ConcreteMsg) *AsyncMsg {
-    return &amp;AsyncMsg{
-        ConcreteMsg: c,
-    }
-}
-
-func (a *AsyncMsg) SendMsg() {
-    a.ConcreteMsg.Send()
-}
-
-type SyncMsg struct {
-    ConcreteMsg
-}
-
-func NewSyncMsg(c ConcreteMsg) *SyncMsg {
-    return &amp;SyncMsg{
-        ConcreteMsg: c,
-    }
-}
-
-func (a *SyncMsg) SendMsg() {
-    a.ConcreteMsg.Send()
-}
-
-type ConcreteMsg interface {
-    Send()
-}
-
-type Email struct {
-}
-
-func (e *Email) Send() {
-    fmt.Println(reflect.TypeOf(e).String() + &quot; Send&quot;)
-}
-
-type WeChat struct {
-}
-
-func (w *WeChat) Send() {
-    fmt.Println(reflect.TypeOf(w).String() + &quot; Send&quot;)
-}
-
-func TestBridge(t *testing.T) {
-    ab := NewAbstraction()
-
-    imA := NewConcreteImA()
-    ab.SetImplement(imA)
-    ab.Operation()
-
-    imB := NewConcreteImB()
-    ab.SetImplement(imB)
-    ab.Operation()
-}
-
-func TestPullSwitch_On(t *testing.T) {
-    light := &amp;Light{}
-    fen := &amp;Fen{}
-
-    pull:= NewPullSwitch(light)
-    pull.On()
-    pull.Off()
-
-    two := NewTwoBiteSwitch(fen)
-    two.On()
-    two.Off()
-}
-
-func TestMsg(t *testing.T) {
-    email := &amp;Email{}
-    weChat := &amp;WeChat{}
-
-    async := NewAsyncMsg(email)
-    async.SendMsg()
-
-    sync := NewSyncMsg(weChat)
-    sync.SendMsg()
-}
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/04 06:27 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15732667564981.html">
-                
-                  <h1>MetaClass</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>Yaml</h4>
-
-<ul>
-<li>AML是一个家喻户晓的 Python 工具，可以方便地序列化 / 逆序列化结构数据。YAMLObject 的一个超越变形能力，就是它的任意子类支持序列化和反序列化</li>
-</ul>
-
-<h4>metaclass</h4>
-
-<ul>
-<li>所有的 Python 的用户定义类，都是 type 这个类的实例</li>
-<li>用户自定义类，只不过是 type 类的__call__运算符重载</li>
-<li>metaclass 是 type 的子类，通过替换 type 的__call__运算符重载机制，“超越变形”正常的类</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-python">class MyClass:
-  data = 1
-class = type(classname, superclasses, attributedict)
-type.__new__(typeclass, classname, superclasses, attributedict)
-type.__init__(class, classname, superclasses, attributedict)
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/09 10:32 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15788051145378.html">
-                
-                  <h1>KISS原则&DRY原则</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>KISS定义</h4>
-
-<ul>
-<li>Keep It Simple and Stupid.</li>
-<li>Keep It Short and Simple.</li>
-<li>Keep It Simple and Straightforward.</li>
-</ul>
-
-<h4>方法</h4>
-
-<ul>
-<li>不要使用同事可能不懂的技术来实现代码。比如前面例子中的正则表达式，还有一些编程语言中过于高级的语法等。</li>
-<li>不要重复造轮子，要善于使用已经有的工具类库。经验证明，自己去实现这些类库，出 bug 的概率会更高，维护的成本也比较高。</li>
-<li>不要过度优化。不要过度使用一些奇技淫巧（比如，位运算代替算术运算、复杂的条件语句代替 if-else、使用一些过于底层的函数等）来优化代码，牺牲代码的可读性</li>
-</ul>
-
-<h4>LOD法则</h4>
-
-<ul>
-<li>“高内聚”用来指导类本身的设计，“松耦合”用来指导类与类之间依赖关系的设计。不过，这两者并非完全独立不相干。高内聚有助于松耦合，松耦合又需要高内聚的支持。</li>
-<li>下载案例</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-go">package design_pattern
-
-type HtmlRequest struct {
-    url string
-}
-
-func (h *HtmlRequest) getAddress() string {
-    return &quot;localhost&quot;
-}
-
-func (h *HtmlRequest) getBytes() []byte {
-    return []byte(&quot;data&quot;)
-}
-
-type NetworkTransporter struct {
-}
-
-
-func (n *NetworkTransporter) send(addr string, data []byte) []byte {
-    var ret []byte
-    return ret
-}
-
-type UnderLayTransporter interface {
-    send(string, []byte) []byte
-}
-
-type HtmlDownloader struct {
-    transporter UnderLayTransporter
-}
-
-type Html struct {
-    rawHtml []byte
-}
-
-func (h *HtmlDownloader) downloadHtml(url string) *Html{
-    htmlReq := &amp;HtmlRequest{url}
-    rawHtml := h.transporter.send(htmlReq.getAddress(), htmlReq.getBytes())
-    return &amp;Html{rawHtml}
-}
-
-type Document struct {
-    html *Html
-    url string
-}
-
-type DocumentFactory struct {
-    downloader HtmlDownloader
-}
-
-func (d *DocumentFactory) creatDocument(url string) *Document {
-    html := d.downloader.downloadHtml(url)
-
-    return &amp;Document{html: html, url: url}
-}
-</code></pre>
-
-<ul>
-<li>序列化</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-go">package design_pattern
-
-type Serializable interface {
-    serialize(Object) string
-}
-
-type Deserializable interface {
-    deserialize(str string) Object
-}
-
-
-type Object interface {
-    Name() string
-}
-
-type Array struct {
+type CDDriver struct {
+    *Colleague
     data string
 }
 
-func (a *Array) Name() string {
-    return &quot;Array&quot;
-}
-
-type Serialization struct {
-}
-
-func (s *Serialization) serialize(obj Object) string {
-    return &quot;ok&quot;
-}
-
-func (s *Serialization) deserialize(str string) Object {
-    return &amp;Array{&quot;Array&quot;}
-}
-
-
-type DemoClass1 struct {
-    serializable Serializable
-}
-
-type DemoClass2 struct {
-    deserializable Deserializable
-}
-</code></pre>
-
-<h4>高内聚&amp;低耦合</h4>
-
-<ul>
-<li>“高内聚、松耦合”是一个非常重要的设计思想，能够有效提高代码的可读性和可维护性，缩小功能改动导致的代码改动范围。“高内聚”用来指导类本身的设计，“松耦合”用来指导类与类之间依赖关系的设计。所谓高内聚，就是指相近的功能应该放到同一个类中，不相近的功能不要放到同一类中。相近的功能往往会被同时修改，放到同一个类中，修改会比较集中。所谓松耦合指的是，在代码中，类与类之间的依赖关系简单清晰。即使两个类有依赖关系，一个类的代码改动也不会或者很少导致依赖类的代码改动</li>
-</ul>
-
-<h4>迪米特法则</h4>
-
-<ul>
-<li>不该有直接依赖关系的类之间，不要有依赖；有依赖关系的类之间，尽量只依赖必要的接口。迪米特法则是希望减少类之间的耦合，让类越独立越好。每个类都应该少了解系统的其他部分。一旦发生变化，需要了解这一变化的类就会比较少</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2020/01/12 12:58 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html'>设计模式之美</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15788045159293.html">
-                
-                  <h1>控制反转&依赖反转&依赖注入</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>控制反转</h4>
-
-<pre class="line-numbers"><code class="language-go">package design_pattern
-
-import &quot;container/list&quot;
-
-type Case interface {
-    doTest() bool
-}
-
-type CaseA struct {
-}
-
-func (c *CaseA) doTest() bool {
-    println(&quot;CaseA doTest&quot;)
-    return true
-}
-
-type CaseB struct {
-}
-
-func (c *CaseB) doTest() bool {
-    println(&quot;CaseB doTest&quot;)
-    return true
-}
-
-type TestCase struct {
-    Case
-}
-
-func (t *TestCase) run() {
-    if t.Case.doTest() {
-        println(&quot;Test succeed.&quot;)
-    } else {
-        println(&quot;Test failed.&quot;)
-    }
-}
-
-type Application struct {
-    caseList list.List
-}
-
-func (a *Application) register(c Case) {
-    testCase := &amp;TestCase{Case: c}
-    a.caseList.PushBack(testCase)
-}
-
-func (a *Application) run() {
-    for e := a.caseList.Front(); e != nil; e = e.Next() {
-        e.Value.(*TestCase).run()
-    }
-}
-
-import &quot;testing&quot;
-
-func TestIOC(t *testing.T) {
-    app := &amp;Application{}
-    app.register(&amp;CaseA{})
-    app.register(&amp;CaseB{})
-    app.run()
-}
-</code></pre>
-
-<ul>
-<li>框架提供了一个可扩展的代码骨架，用来组装对象、管理整个执行流程。程序员利用框架进行开发的时候，只需要往预留的扩展点上，添加跟自己业务相关的代码，就可以利用框架来驱动整个程序流程的执行。这里的“控制”指的是对程序执行流程的控制，而“反转”指的是在没有使用框架之前，程序员自己控制整个程序的执行。在使用框架之后，整个程序的执行流程可以通过框架来控制。流程的控制权从程序员“反转”到了框架</li>
-</ul>
-
-<h4>依赖注入</h4>
-
-<ul>
-<li>不通过 new() 的方式在类内部创建依赖类对象，而是将依赖的类对象在外部创建好之后，通过构造函数、函数参数等方式传递（或注入）给类使用</li>
-</ul>
-
-<h4>依赖反转</h4>
-
-<ul>
-<li>高层模块（high-level modules）不要依赖低层模块（low-level）。高层模块和低层模块应该通过抽象（abstractions）来互相依赖。除此之外，抽象（abstractions）不要依赖具体实现细节（details），具体实现细节（details）依赖抽象（abstractions）</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2020/01/12 12:48 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html'>设计模式之美</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15783513440933.html">
-                
-                  <h1>asyncio并发编程</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>功能</h4>
-
-<ul>
-<li>包含各种特定系统实现的模块化事件循环传输和协议抽象</li>
-<li>对 TCP、UDP、SL、子进程、延时调用以及其他的具体支持</li>
-<li>模仿 futures 模块但适用于事件循环使用的 Futurea 类</li>
-<li>基于 yield from 的协议和任务，可以让你用顺序的方式编写并发代码必须使用一个将产生阻塞 IO 的调用时，有接口可以把这个事件转移到线程池</li>
-<li>模仿 threading 模块中的同步原语、可以用在单线程内的协程之间</li>
-</ul>
-
-<h4>协程三要素</h4>
-
-<ul>
-<li>事件循环</li>
-<li>回调(驱动生成器)</li>
-<li>epoll</li>
-</ul>
-
-<h4>事件驱动</h4>
-
-<pre class="line-numbers"><code class="language-python">import asyncio
-import time
-
-async def get_html(url):
-    print(&quot;start get url&quot;)
-    await asyncio.sleep(2)
-    print(&quot;end get url&quot;)
-
-if __name__ == &quot;__main__&quot;:
-    start_time = time.time()
-    loop = asyncio.get_event_loop()
-    tasks = [get_html(&quot;www.imooc.com&quot;) for i in range(10)]
-    loop.run_until_complete(asyncio.wait(tasks))
-    print(time.time() - start_time)
-</code></pre>
-
-<h4>用途</h4>
-
-<ul>
-<li>asyncio是python用于解决异步IO编程的一整套解决方案</li>
-<li>tornado, gevent, twisted(scrapy, django channels)</li>
-<li>tornado可以直接部署， nginx + tornado</li>
-</ul>
-
-<h4>gather&amp;wait</h4>
-
-<ul>
-<li>gather更加high_level</li>
-</ul>
-
-<h4>获取协程的返回值</h4>
-
-<pre class="line-numbers"><code class="language-python">### 无参数
-import asyncio
-import time
-from functools import partial
-
-async def get_html(url):
-    print(&#39;start get url&#39;)
-    await asyncio.sleep(2)
-    return &#39;bobby&#39;
-
-def callback(future):
-    print(&#39;send email to bobby&#39;)
-
-if __name__ == &#39;__main__&#39;:
-    start_time = time.time()
-    loop = asyncio.get_event_loop()
-    task = loop.create_task(get_html(&#39;http://www.imooc.com&#39;))
-    task.add_done_callback(callback)
-    loop.run_until_complete(task)
-    print(task.result())
-    
-### 有参数
-import asyncio
-import time
-from functools import partial
-
-async def get_html(url):
-    print(&#39;start get url&#39;)
-    await asyncio.sleep(2)
-    return &#39;bobby&#39;
-
-def callback(url, future):
-    print(url)
-    print(&#39;send email to bobby&#39;)
-
-if __name__ == &#39;__main__&#39;:
-    start_time = time.time()
-    loop = asyncio.get_event_loop()
-    task = loop.create_task(get_html(&#39;http://www.imooc.com&#39;))
-    task.add_done_callback(partial(callback, &quot;http://www.imooc.com&quot;))
-    loop.run_until_complete(task)
-    print(task.result())
-</code></pre>
-
-<h4>task和gather</h4>
-
-<pre class="line-numbers"><code class="language-python">import asyncio
-import time
-
-async def get_html(url):
-    print(&#39;start get url&#39;)
-    await asyncio.sleep(2)
-    print(&#39;end get url&#39;)
-
-if __name__ == &#39;__main__&#39;:
-    start_time = time.time()
-    loop = asyncio.get_event_loop()
-    tasks = [get_html(&#39;http://www.imooc.com&#39;) for i in range(10)]
-    loop.run_until_complete(asyncio.wait(tasks))
-    print(time.time() - start_time)
-</code></pre>
-
-<ul>
-<li>gather更加高级，还可以进行任务分组</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-python">import asyncio
-import time
-
-async def get_html(url):
-    print(&#39;start get url&#39;)
-    await asyncio.sleep(2)
-    print(&#39;end get url&#39;)
-
-if __name__ == &#39;__main__&#39;:
-    start_time = time.time()
-    loop = asyncio.get_event_loop()
-    tasks = [get_html(&#39;http://www.imooc.com&#39;) for i in range(10)]
-
-    group1 = [get_html(&#39;http://projectedu.com&#39;) for i in range(2)]
-    group2 = [get_html(&#39;http://www.imooc.com&#39;) for i in range(2)]
-    group1 = asyncio.gather(*group1)
-    group2 = asyncio.gather(*group2)
-    loop.run_until_complete(asyncio.gather(group1, group2))
-    print(time.time() - start_time)
-</code></pre>
-
-<h4>取消协程</h4>
-
-<ul>
-<li><img src="media/15783513440933/15786142024974.jpg" alt="" style="width:934px;"/></li>
-</ul>
-
-<pre class="line-numbers"><code class="language-python">import asyncio
-import time
-
-async def get_html(sleep_times):
-    print(&#39;waiting&#39;)
-    await asyncio.sleep(sleep_times)
-    print(&#39;done after {}s&#39;.format(sleep_times))
-
-if __name__ == &#39;__main__&#39;:
-    task1 = get_html(2)
-    task2 = get_html(3)
-    task3 = get_html(4)
-
-    tasks = [task1, task2, task3]
-
-    loop = asyncio.get_event_loop()
-    try:
-      loop.run_until_complete(asyncio.wait(tasks))
-    except KeyboardInterrupt as e:
-        all_tasks = asyncio.Task.all_tasks()
-        for task in all_tasks:
-            print(&#39;cancel task&#39;)
-            print(task.cancel())
-        loop.stop()
-        loop.run_forever()//很重要
-    finally:
-        loop.close()
-</code></pre>
-
-<h4>协程调用链</h4>
-
-<pre class="line-numbers"><code class="language-python">import asyncio
-
-async def compute(x, y):
-    print(&quot;Compute %s + %s ...&quot; % (x, y))
-    await asyncio.sleep(1.0)
-    return x + y
-
-async def print_sum(x, y):
-    result = await compute(x, y)
-    print(&quot;%s + %s = %s&quot; % (x, y, result))
-
-loop = asyncio.get_event_loop()
-loop.run_until_complete(print_sum(1, 2))
-loop.close()
-</code></pre>
-
-<h4>call_soon&amp;call_later</h4>
-
-<pre class="line-numbers"><code class="language-python">import asyncio
-
-def callback(sleep_times):
-    print(&#39;sleep {} success&#39;.format(sleep_times))
-
-def stoploop(loop):
-    loop.stop()
-
-if __name__ == &#39;__main__&#39;:
-    loop = asyncio.get_event_loop()
-    loop.call_soon(callback, 2)
-    loop.call_soon(stoploop, loop)
-    loop.run_forever()
-    
-import asyncio
-
-def callback(sleep_times):
-    print(&#39;sleep {} success&#39;.format(sleep_times))
-def stoploop(loop):
-    loop.stop()
-
-if __name__ == &quot;__main__&quot;:
-    loop = asyncio.get_event_loop()
-    now = loop.time()
-    loop.call_later(2, callback, 2)
-    loop.call_later(1, callback, 1)
-    loop.call_later(3, callback, 3)
-    loop.call_soon(callback, 4)
-    loop.run_forever()
-</code></pre>
-
-<h4>协程与线程池</h4>
-
-<pre class="line-numbers"><code class="language-python">#使用多线程：在携程中集成阻塞io
-import asyncio
-from concurrent.futures import ThreadPoolExecutor
-import socket
-from urllib.parse import urlparse
-
-
-def get_url(url):
-    #通过socket请求html
-    url = urlparse(url)
-    host = url.netloc
-    path = url.path
-    if path == &quot;&quot;:
-        path = &quot;/&quot;
-
-    #建立socket连接
-    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # client.setblocking(False)
-    client.connect((host, 80)) #阻塞不会消耗cpu
-
-    #不停的询问连接是否建立好， 需要while循环不停的去检查状态
-    #做计算任务或者再次发起其他的连接请求
-
-    client.send(&quot;GET {} HTTP/1.1\r\nHost:{}\r\nConnection:close\r\n\r\n&quot;.format(path, host).encode(&quot;utf8&quot;))
-
-    data = b&quot;&quot;
-    while True:
-        d = client.recv(1024)
-        if d:
-            data += d
-        else:
-            break
-
-    data = data.decode(&quot;utf8&quot;)
-    html_data = data.split(&quot;\r\n\r\n&quot;)[1]
-    print(html_data)
-    client.close()
-
-
-if __name__ == &quot;__main__&quot;:
-    import time
-    start_time = time.time()
-    loop = asyncio.get_event_loop()
-    executor = ThreadPoolExecutor(3)
-    tasks = []
-    for url in range(20):
-        url = &quot;http://shop.projectsedu.com/goods/{}/&quot;.format(url)
-        task = loop.run_in_executor(executor, get_url, url)
-        tasks.append(task)
-    loop.run_until_complete(asyncio.wait(tasks))
-    print(&quot;last time:{}&quot;.format(time.time()-start_time))
-</code></pre>
-
-<h4>async_http</h4>
-
-<pre class="line-numbers"><code class="language-python">import socket
-import asyncio
-from urllib.parse import urlparse
-
-async def get_url(url):
-    url = urlparse(url)
-    host = url.netloc
-    path = url.path
-
-    if path == &quot;&quot;:
-        path = &quot;/&quot;
-
-    reader, writer = await asyncio.open_connection(host, 80)
-    writer.write(
-        &quot;GET {} HTTP/1.1\r\nHost:{}\r\nConnection:close\r\n\r\n&quot;.format(
-        path,host).encode(&quot;utf8&quot;))
-    all_lines = []
-
-    async for raw_line in reader:
-        data = raw_line.decode(&quot;utf8&quot;)
-        all_lines.append(data)
-
-    html = &quot;\n&quot;.join(all_lines)
-    return html
-
-async def main():
-    tasks = []
-    for url in range(20):
-        url = &quot;http://shop.projectsedu.com/goods/{}/&quot;.format(url)
-        tasks.append(asyncio.ensure_future(get_url(url)))
-    for task in asyncio.as_completed(tasks):
-        result = await task
-        print(result)
-
-if __name__ == &#39;__main__&#39;:
-    import time
-    start_time = time.time()
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(main())
-    print(&#39;last time :{}&#39;.format(time.time() - start_time))
-</code></pre>
-
-<h4>asyncio同步和通信</h4>
-
-<ul>
-<li>凡是不涉及到IO操作和await操作都会将当前程序运行到底</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-python">from asyncio import Lock
-
-cache = {}
-
-lock = Lock()
-
-async def get_stuff(url):
-    async with lock:
-        if url in cache:
-            return cache[url]
-        stuff = await aiohttp.reqeust(&#39;GET&#39;, url)
-        cache[url] = stuff
-        return stuff
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2020/01/07 06:55 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15782298377426.html">
-                
-                  <h1>接口隔离原则</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>概念</h4>
-
-<ul>
-<li>客户端不应该强迫依赖它不需要的接口。其中的“客户端”，可以理解为接口的调用者或者使用者</li>
-<li>接口理解</li>
-<li>一组API接口集合</li>
-<li>单个API接口或函数</li>
-<li>OOP中的接口概念</li>
-</ul>
-
-<h4>demo</h4>
-
-<pre class="line-numbers"><code class="language-go">package design_pattern
-
-import (
-    &quot;fmt&quot;
-    &quot;reflect&quot;
-    &quot;time&quot;
-)
-
-type Updater interface {
-    updater()
-}
-
-type ConfigSource struct {
-    address string
-    timeOut, maxTotal int64
-}
-
-
-type RedisConfig struct {
-    configSource *ConfigSource
-    address string
-    timeOut, maxTotal int64
-}
-
-
-func (r *RedisConfig) getAddress() string {
-    return r.address
-}
-
-func (r *RedisConfig) updater() {
-    //r.address = r.configSource.address
-    //r.timeOut, r.maxTotal = r.configSource.timeOut, r.configSource.timeOut
-    fmt.Println(&quot;Time to update config &quot;, reflect.TypeOf(r).String())
-}
-
-type KafkaConfig struct {
-    configSource *ConfigSource
-    address string
-    timeOut, maxTotal int64
-}
-
-func (k *KafkaConfig) updater() {
-    //k.address = k.configSource.address
-    //k.timeOut, k.maxTotal = k.configSource.timeOut, k.configSource.timeOut
-    fmt.Println(&quot;Time to update config &quot;, reflect.TypeOf(k).String())
-}
-
-type MysqlConfig struct {
-    configSource *ConfigSource
-    address string
-    timeOut, maxTotal int64
-}
-
-type Executor struct {
-    t *time.Ticker
-}
-
-func (e *Executor) run(updater Updater) {
-    for {
-        select {
-          case &lt;- e.t.C:
-            updater.updater()
-        }
-    }
-}
-
-type ScheduleUpdater struct {
-    Updater
-    delayTime int64
-    executor *Executor
-}
-
-func (s *ScheduleUpdater) run() {
-    s.executor.run(s.Updater)
-}
-
-func NewScheduleUpdater(updater Updater, delayTime int64) *ScheduleUpdater {
-    return &amp;ScheduleUpdater {
-        Updater: updater,
-        delayTime: delayTime,
-        executor: &amp;Executor{
-            t: time.NewTicker(time.Duration(delayTime)),
+func NewCDDriver() *CDDriver {
+    return &amp;CDDriver{
+        Colleague: &amp;Colleague{
+            mediator: GetMediator(),
         },
     }
 }
 
-import &quot;testing&quot;
+func (c *CDDriver) GetMediator() {}
 
-func TestConfig(t *testing.T) {
-    configSource := &amp;ConfigSource{&quot;localhost&quot;, 2, 3}
-    redisConfig := &amp;RedisConfig{configSource: configSource}
-    kafkaConfig := &amp;KafkaConfig{configSource: configSource}
-    //mysqlConfig := &amp;MysqlConfig{configSource: configSource}
-
-    var updaterList []*ScheduleUpdater
-    redisUpdater := NewScheduleUpdater(redisConfig, 10000)
-    updaterList = append(updaterList, redisUpdater)
-
-    kafkaUpdater := NewScheduleUpdater(kafkaConfig, 10000)
-    updaterList = append(updaterList, kafkaUpdater)
-
-    for _, v := range updaterList {
-        go v.run()
-    }
-    select {}
-}
-</code></pre>
-
-<h4>添加接口查看</h4>
-
-<pre class="line-numbers"><code class="language-go">package design_pattern
-
-import (
-    &quot;container/list&quot;
-    &quot;fmt&quot;
-    &quot;github.com/luci/go-render/render&quot;
-    &quot;reflect&quot;
-    &quot;time&quot;
-)
-
-type Updater interface {
-    updater()
+func (c *CDDriver) ReadData() {
+    c.data = &quot;music, image&quot;
+    println(reflect.TypeOf(c).String() + &quot; reading data&quot;)
+    c.mediator.Execute(c)
 }
 
-type Viewer interface {
-    outPutInPlainText() string
-    output() map[string]string
-    containsKey(string) bool
+type Cpu struct {
+    *Colleague
+    video, audio string
 }
 
-type ConfigSource interface {
-    add()
-}
-
-type ZookeeperConfigSource struct {
-    address string
-    timeOut, maxTotal int64
-}
-
-func (z *ZookeeperConfigSource) add() {
-}
-
-
-type RedisConfig struct {
-    configSource ConfigSource
-    address string
-    timeOut, maxTotal int64
-}
-
-
-func (r *RedisConfig) getAddress() string {
-    return r.address
-}
-
-func (r *RedisConfig) updater() {
-    //r.address = r.configSource.address
-    //r.timeOut, r.maxTotal = r.configSource.timeOut, r.configSource.timeOut
-    fmt.Println(&quot;Time to update config &quot;, reflect.TypeOf(r).String())
-}
-
-func (r *RedisConfig) outPutInPlainText() string {
-    fmt.Println(&quot;outPutInPlainText &quot;, reflect.TypeOf(r).String())
-    return &quot;outPutInPlainText &quot; + reflect.TypeOf(r).String()
-}
-
-func (r *RedisConfig) output() map[string]string {
-    ret := make(map[string]string)
-    ret[&quot;outPut&quot;] = reflect.TypeOf(r).String()
-    fmt.Println(&quot;output &quot;, render.Render(ret))
-    return ret
-}
-
-
-func (r *RedisConfig) containsKey(key string) bool {
-    return false
-}
-
-type KafkaConfig struct {
-    configSource ConfigSource
-    address string
-    timeOut, maxTotal int64
-}
-
-func (k *KafkaConfig) updater() {
-    //k.address = k.configSource.address
-    //k.timeOut, k.maxTotal = k.configSource.timeOut, k.configSource.timeOut
-    fmt.Println(&quot;Time to update config &quot;, reflect.TypeOf(k).String())
-}
-
-func (k *KafkaConfig) outPutInPlainText() string {
-    fmt.Println(&quot;outPutInPlainText &quot;, reflect.TypeOf(k).String())
-    return &quot;outPutInPlainText &quot; + reflect.TypeOf(k).String()
-}
-
-func (k *KafkaConfig) output() map[string]string {
-    ret := make(map[string]string)
-    ret[&quot;outPut&quot;] = reflect.TypeOf(k).String()
-    fmt.Println(&quot;output &quot;, render.Render(ret))
-    return ret
-}
-
-type MysqlConfig struct {
-    configSource ConfigSource
-    address string
-    timeOut, maxTotal int64
-}
-
-func (m *MysqlConfig) outPutInPlainText() string {
-    fmt.Println(&quot;outPutInPlainText &quot;, reflect.TypeOf(m).String())
-    return &quot;outPutInPlainText &quot; + reflect.TypeOf(m).String()
-}
-
-func (m *MysqlConfig) output() map[string]string {
-    ret := make(map[string]string)
-    ret[&quot;outPut&quot;] = reflect.TypeOf(m).String()
-    fmt.Println(&quot;output &quot;, render.Render(ret))
-    return ret
-}
-
-func (r *MysqlConfig) containsKey(key string) bool {
-    return false
-}
-
-type Executor struct {
-    t *time.Timer
-    d time.Duration
-}
-
-func (e *Executor) run(updater Updater) {
-    for {
-        select {
-          case &lt;- e.t.C:
-            updater.updater()
-                e.t.Reset(e.d)
-        }
-    }
-}
-
-type ScheduleUpdater struct {
-    Updater
-    delayTime int64
-    executor *Executor
-}
-
-func (s *ScheduleUpdater) run() {
-    s.executor.run(s.Updater)
-}
-
-func NewScheduleUpdater(updater Updater, delayTime int64) *ScheduleUpdater {
-    dur :=  time.Duration(delayTime) * time.Second
-    return &amp;ScheduleUpdater {
-        Updater: updater,
-        delayTime: delayTime,
-        executor: &amp;Executor{
-            d: dur,
-            t: time.NewTimer(dur),
+func NewCpu() *Cpu{
+    return &amp;Cpu {
+        Colleague: &amp;Colleague{
+            mediator: GetMediator(),
         },
     }
 }
 
-type HttpServer struct {
-    host string
-    port int
-    viewers map[string]*list.List
+func (c *Cpu) GetMediator() {}
+
+func (c *Cpu) Process(data string) {
+    sp := strings.Split(data, &quot;,&quot;)
+    c.video = sp[1]
+    c.audio = sp[0]
+    println(reflect.TypeOf(c).String() + &quot; video &quot; + c.video + &quot; audio &quot;, c.audio)
+    c.mediator.Execute(c)
 }
 
-func (h *HttpServer) addViewers(urlDic string, viewer Viewer) {
-    if !viewer.containsKey(urlDic) {
-        viewList := list.New()
-        h.viewers[urlDic] = viewList
+type VideoCard struct {
+    *Colleague
+}
 
-        h.viewers[urlDic].PushBack(viewer)
+func NewVideoCard() *VideoCard{
+    return &amp;VideoCard {
+        Colleague: &amp;Colleague{
+            mediator: GetMediator(),
+        },
     }
 }
 
-func (h *HttpServer) run() {
-    fmt.Println(&quot;HttpServer viewer &quot;, render.Render(h.viewers))
+func (v *VideoCard) GetMediator() {}
+
+func (v *VideoCard) Display(data string) {
+    println(reflect.TypeOf(v).String() + &quot; display data &quot;, data)
+    v.mediator.Execute(v)
 }
 
-func TestConfig(t *testing.T) {
-    configSource := &amp;ZookeeperConfigSource{&quot;localhost&quot;, 2, 3}
-    redisConfig := &amp;RedisConfig{configSource: configSource}
-    kafkaConfig := &amp;KafkaConfig{configSource: configSource}
-    mysqlConfig := &amp;MysqlConfig{configSource: configSource}
+type SoundCard struct {
+    *Colleague
+}
 
-    updaterList := list.New()
-    redisUpdater := NewScheduleUpdater(redisConfig, 2)
-    updaterList.PushBack(redisUpdater)
-
-    kafkaUpdater := NewScheduleUpdater(kafkaConfig, 2)
-    updaterList.PushBack(kafkaUpdater)
-
-    for e := updaterList.Front(); e != nil; e = e.Next() {
-        go e.Value.(*ScheduleUpdater).run()
+func NewSoundCard() *SoundCard {
+    return &amp;SoundCard {
+        Colleague: &amp;Colleague{
+            mediator: GetMediator(),
+        },
     }
+}
 
-    httpServer := &amp;HttpServer{
-        host: &quot;127.0.0.1&quot;,
-        port: 2389,
-        viewers: make(map[string]*list.List),
-    }
+func (v *SoundCard) GetMediator() {}
 
-    httpServer.addViewers(&quot;/config&quot;, redisConfig)
-    httpServer.addViewers(&quot;/config&quot;, mysqlConfig)
-    httpServer.run()
-    select {}
+func (v *SoundCard) Play(data string) {
+    println(reflect.TypeOf(v).String() + &quot; play data &quot;, data)
+    v.mediator.Execute(v)
+}
+
+package desian_pattern_practise
+
+import &quot;testing&quot;
+
+func TestMediator_Execute(t *testing.T) {
+    cd:= NewCDDriver()
+    cpu := NewCpu()
+    soundCard := NewSoundCard()
+    videoCard := NewVideoCard()
+    GetMediator().SetCD(cd)
+    GetMediator().SetCpu(cpu)
+    GetMediator().SetSoundCard(soundCard)
+    GetMediator().SetVideoCard(videoCard)
+    cd.ReadData()
 }
 </code></pre>
 
-<h4>接口隔离原则</h4>
+<h4>cpp_demo</h4>
 
-<ul>
-<li>理解“接口隔离原则”的重点是理解其中的“接口”二字。这里有三种不同的理解。</li>
-<li>如果把“接口”理解为一组接口集合，可以是某个微服务的接口，也可以是某个类库的接口等。如果部分接口只被部分调用者使用，我们就需要将这部分接口隔离出来，单独给这部分调用者使用，而不强迫其他调用者也依赖这部分不会被用到的接口。</li>
-<li>如果把“接口”理解为单个 API 接口或函数，部分调用者只需要函数中的部分功能，那我们就需要把函数拆分成粒度更细的多个函数，让调用者只依赖它需要的那个细粒度函数</li>
-<li>如果把“接口”理解为 OOP 中的接口，也可以理解为面向对象编程语言中的接口语法。那接口的设计要尽量单一，不要让接口的实现类和调用者，依赖不需要的接口函数。</li>
-</ul>
+<pre class="line-numbers"><code class="language-cpp">//
+// Created by eredinliu on 2020-01-31.
+//
+#include &lt;iostream&gt;
+#include &lt;mutex&gt;
+#include &lt;typeinfo&gt;
+#include &lt;boost/algorithm/string.hpp&gt;
+#include &lt;vector&gt;
+
+using namespace std;
+using namespace boost;
+
+class Mediator;
+class Colleague {
+public:
+    Colleague(Mediator* _mediator) : mediator(_mediator) {}
+
+protected:
+    Mediator* mediator;
+};
+
+class Cpu;
+class CDDriver;
+class VideoCard;
+class SoundCard;
+
+class Mediator {
+public:
+    static Mediator* mediator;
+
+    static Mediator* GetMediator() {
+        static once_flag flag;
+        call_once(flag, [&amp;](){mediator = new Mediator();});
+        return mediator;
+    }
+
+    void SetCD(CDDriver* cd) {this-&gt;cd = cd;}
+
+    void SetCpu(Cpu* cpu) {this-&gt;cpu = cpu;}
+
+    void SetVideoCard(VideoCard* video) {this-&gt;videoCard = video;}
+
+    void SetSoundCard(SoundCard* sound) {this-&gt;soundCard = sound;}
+
+    void Execute(Colleague* colleague);
+private:
+    CDDriver* cd;
+    Cpu* cpu;
+    VideoCard *videoCard;
+    SoundCard *soundCard;
+    Mediator() {}
+};
+
+Mediator* Mediator::mediator = nullptr;
+
+class CDDriver : public Colleague {
+public:
+    CDDriver(Mediator* _mediator) : Colleague(_mediator) {}
+
+    void ReadData() {
+        this-&gt;data = &quot;Music,Image&quot;;
+        cout &lt;&lt; typeid(this).name() &lt;&lt; &quot; reading data&quot; &lt;&lt; endl;
+        this-&gt;mediator-&gt;Execute(this);
+    }
+
+    string&amp; GetData() {
+        return this-&gt;data;
+    }
+private:
+    string data;
+};
+
+class Cpu : public Colleague {
+public:
+    friend class Mediator;
+    Cpu(Mediator* _mediator) : Colleague(_mediator) {}
+
+    void Process(string&amp; data) {
+        vector&lt;string&gt; str_vec;
+        split(str_vec, data, is_any_of(&quot;,&quot;));
+        this-&gt;video = str_vec[1];
+        this-&gt;sound = str_vec[0];
+        cout &lt;&lt; typeid(this).name() &lt;&lt; &quot; video &quot; &lt;&lt; this-&gt;video &lt;&lt; &quot; sound &quot;
+        &lt;&lt; this-&gt;sound &lt;&lt; endl;
+        this-&gt;mediator-&gt;Execute(this);
+    }
+
+    string&amp; GetVideo() {return this-&gt;video;}
+
+    string&amp; GetSound() {return this-&gt;sound;}
+private:
+    string video, sound;
+};
+
+class VideoCard : public Colleague {
+public:
+    VideoCard(Mediator* _mediator) : Colleague(_mediator) {}
+
+    void Process(string&amp; data) {
+        cout &lt;&lt; typeid(this).name() &lt;&lt; &quot; display &quot; &lt;&lt; data &lt;&lt; endl;
+        this-&gt;mediator-&gt;Execute(this);
+    }
+};
+
+class SoundCard : public Colleague {
+public:
+    SoundCard(Mediator* _mediator) : Colleague(_mediator) {}
+
+    void Process(string&amp; data) {
+        cout &lt;&lt; typeid(this).name() &lt;&lt; &quot; play &quot; &lt;&lt; data &lt;&lt; endl;
+        this-&gt;mediator-&gt;Execute(this);
+    }
+};
+
+void Mediator::Execute(Colleague* colleague) {
+    if (colleague == cd) {
+        cpu-&gt;Process(cd-&gt;GetData());
+    } else if (colleague == cpu){
+        soundCard-&gt;Process(cpu-&gt;GetSound());
+        videoCard-&gt;Process(cpu-&gt;GetVideo());
+    }
+}
+
+int main() {
+    Mediator* mediator = Mediator::GetMediator();
+    CDDriver* cd = new CDDriver(mediator);
+    Cpu* cpu = new Cpu(mediator);
+    SoundCard* soundCard = new SoundCard(mediator);
+    VideoCard* videoCard = new VideoCard(mediator);
+    mediator-&gt;SetCD(cd);
+    mediator-&gt;SetCpu(cpu);
+    mediator-&gt;SetSoundCard(soundCard);
+    mediator-&gt;SetVideoCard(videoCard);
+    cd-&gt;ReadData();
+}
+</code></pre>
+
+<h4>python_code</h4>
+
+<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
+
+class Colleague(object):
+
+    def __init__(self, mediator):
+        self.mediator = mediator
+
+
+def singleton(cls, *args, **kwargs):
+    instance = {}
+
+    def __singleton(*args, **kwargs):
+        if cls not in instance:
+            instance[cls] = cls(*args, **kwargs)
+        return instance[cls]
+
+    return __singleton
+
+@singleton
+class Mediator(object):
+
+    def __init__(self):
+        self.__cd = self.__cpu = self.__video_card = self.__sound_card = None
+
+    def set_cd(self, cd):
+        self.__cd  = cd
+
+    def set_cpu(self, cpu):
+        self.__cpu = cpu
+
+    def set_video_card(self, video_card):
+        self.__video_card = video_card
+
+    def set_sound_card(self, sound_card):
+        self.__sound_card = sound_card
+
+    def execute(self, colleague):
+        if colleague == self.__cd:
+            self.__cpu.process(self.__cd.get_data())
+        elif colleague == self.__cpu:
+            self.__sound_card.process(colleague.get_sound())
+            self.__video_card.process(colleague.get_video())
+
+class CDDriver(Colleague):
+
+    def __init__(self, mediator):
+        super().__init__(mediator)
+        self.__data = &#39;&#39;
+
+    def read_data(self):
+        self.__data = &#39;Music,Image&#39;
+        print(type(self).__name__, &quot; reading data&quot;)
+        self.mediator.execute(self)
+
+    def get_data(self):
+        return self.__data
+
+class Cpu(Colleague):
+
+    def __init__(self, mediator):
+        super().__init__(mediator)
+        self.__video = self.__sound = &#39;&#39;
+
+    def process(self, data):
+        ret = data.split(&#39;,&#39;)
+        self.__video = ret[1]
+        self.__sound = ret[0]
+        print(type(self).__name__, &quot; video {} sound {}&quot;.format(self.__video, 
+                                                               self.__sound))
+
+        self.mediator.execute(self)
+
+    def get_video(self):
+        return self.__video
+
+    def get_sound(self):
+        return self.__sound
+
+
+class VideoCard(Colleague):
+
+    def __init__(self, mediator):
+        super().__init__(mediator)
+
+    def process(self, data):
+        print(type(self).__name__, &quot; display {}&quot;.format(data))
+
+
+class SoundCard(Colleague):
+
+    def __init__(self, mediator):
+        super().__init__(mediator)
+
+    def process(self, data):
+        print(type(self).__name__, &quot; play {}&quot;.format(data))
+
+if __name__ == &#39;__main__&#39;:
+    mediator = Mediator()
+    cd = CDDriver(mediator)
+    cpu = Cpu(mediator)
+    sound_card = SoundCard(mediator)
+    video_card = VideoCard(mediator)
+    mediator.set_cd(cd)
+    mediator.set_cpu(cpu)
+    mediator.set_sound_card(sound_card)
+    mediator.set_video_card(video_card)
+    cd.read_data()
+</code></pre>
 
                         
                       </div>
@@ -2253,66 +996,210 @@ func TestConfig(t *testing.T) {
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2020/01/05 21:10 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html'>设计模式之美</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15787865983142.html">
-                
-                  <h1>定时器设计</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>case</h4>
-
-<pre class="line-numbers"><code class="language-go">type TimerTask struct {
-    t *time.Timer
-    d time.Duration
-}
-
-func (e *TimerTask) run() {
-    for {
-        select {
-        case &lt;- e.t.C:
-            fmt.Println(&quot;run&quot;)
-            e.t.Reset(e.d)
-        }
-    }
-}
-
-func main() {
-    dur := time.Duration(1) * time.Second
-    executor := &amp;TimerTask{d: dur, t: time.NewTimer(dur)}
-    executor.run()
-    select {}
-}
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2020/01/12 07:49 上午</span>
+                    <span class="date">2019/11/21 07:16 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15700989065972.html">
+                
+                  <h1>lambda</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>特点</h4>
+
+<ul>
+<li>是个匿名函数, 可调用的代码单元</li>
+<li>返回类型可以自动推导，可以省略</li>
+<li>没有参数的时候()可以省略·</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">auto f = [](int a)-&gt;int {
+    return a + 1;
+  };
+
+  auto f1 = [](int a) {
+    return a + 1;
+  };
+
+  auto f2 = [] {return  2;};
+</code></pre>
+
+<h4>捕获列表</h4>
+
+<ul>
+<li>捕获一定范围内的变量</li>
+<li>lambda可以捕获局部静态变量</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">  static int i = 9;
+  auto f3 = [] {
+    return i;
+  };
+
+</code></pre>
+
+<ul>
+<li>[&amp;] 捕获所有外部变量</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">  int j = 9;
+  auto f4 = [&amp;] {
+    j = 10;
+  };
+  f4();
+</code></pre>
+
+<ul>
+<li>[=] 值使用，只能用，不能修改</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">auto f5 = [=] {
+    cout &lt;&lt; &quot;j &quot; &lt;&lt; j &lt;&lt; endl;
+  };
+  f5();
+
+</code></pre>
+
+<ul>
+<li>[this] 用于类中，拥有和成员函数一样的权限</li>
+<li>[变量名] 表示按值捕获，同时不捕获其他变量，按值分隔</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">class CT {
+ public:
+  int m_i = 5;
+  void func(int x, int y) {
+    //auto ld = [this] {
+    //auto ld = [this, x, y] {
+    auto ld = [this, &amp;x, &amp;y] {
+      x = 5;
+      y = 2;
+      return m_i;
+    };
+  }
+};
+</code></pre>
+
+<ul>
+<li>[=,&amp;变量名] 按值捕获所有变量, 但按引用捕获&amp;中所指的变量，第一个都是默认捕获，隐式捕获方式，其他的是显式捕获，后面的引用方式是相反的[&amp;,x]</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp"> int x = 2, y = 3;
+  auto f6 = [=, &amp;x, &amp;y] {
+    cout &lt;&lt; &quot;j &quot; &lt;&lt; j &lt;&lt; endl;
+  };
+  f6();
+
+  auto f7 = [&amp;, x, y] {
+    cout &lt;&lt; &quot;j &quot; &lt;&lt; j &lt;&lt; endl;
+  };
+  f6();
+</code></pre>
+
+<h4>lambda表达式延迟调用易出错</h4>
+
+<pre class="line-numbers"><code class="language-cpp">  int x1 = 5;
+  auto f8 = [=] {
+    return x1;
+  };
+  x1 = 10;
+  cout &lt;&lt; f8() &lt;&lt; endl;//5
+</code></pre>
+
+<ul>
+<li>lamda表达式引用外部变量的那一刻，复制了一份存储在表达式中</li>
+<li>如果采用引用，就不会出错</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp"> int x1 = 5;
+  auto f8 = [&amp;] {
+    return x1;
+  };
+  x1 = 10;
+  cout &lt;&lt; f8() &lt;&lt; endl;//5
+</code></pre>
+
+<h4>mutable</h4>
+
+<pre class="line-numbers"><code class="language-cpp">  int x2 = 5;
+  auto f9 = [=]() mutable {
+    x2 = 7;
+    return x2;
+  };
+  cout &lt;&lt; f9() &lt;&lt; endl;
+</code></pre>
+
+<ul>
+<li>可以修改按值捕获的变量</li>
+</ul>
+
+<h4>表达式类型和存储</h4>
+
+<ul>
+<li>Closure Type</li>
+<li>闭包 函数内的函数，本质就是lambda表达式创建时运行时间对象</li>
+<li>闭包类的类型的对象，可以认为是带有operator()的类型的对象</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">int x = 5;
+auto f = [&amp;] {
+  return x;
+}
+
+function&lt;int(int)&gt; fc1 = [](int t) {return  t;};
+  cout &lt;&lt; fc1(15) &lt;&lt; endl;
+function&lt;int(int)&gt; fc2 = bind(
+      [](int t) {
+      return t;
+      },
+      16
+      );
+</code></pre>
+
+<h4>总结</h4>
+
+<pre class="line-numbers"><code class="language-cpp">  vector&lt;int&gt; vec = {10,20,30,40,50};
+  int sum = 0;
+  for_each (vec.begin(), vec.end(), [&amp;sum](int val) {
+            sum += val;
+            cout &lt;&lt; val &lt;&lt; endl;
+            });
+  cout &lt;&lt; &quot; sum &quot; &lt;&lt; sum &lt;&lt; endl;
+
+  find_if (vec.begin(), vec.end(), [](int val) {
+           cout &lt;&lt; val &lt;&lt; endl;
+           if (val &gt; 15)
+              return true;
+           return false;
+           });
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/10/03 18:35 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
           				   
                   </div>
                   <div class="more-right right">

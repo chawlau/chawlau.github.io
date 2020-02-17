@@ -170,315 +170,62 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15447533025677.html">
+                <a class="clearlink" href="15694932578516.html">
                 
-                  <h1>Mysql的count(*)</h1>
+                  <h1>函数调用运算符和function类模版</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>问题</h4>
+                        	<h4>function</h4>
 
 <ul>
-<li>MyISAM 表虽然 count(*) 很快，但是不支持事务；</li>
-<li>show table status 命令虽然返回很快，但是不准确；</li>
-<li>InnoDB 表直接 count(*) 会遍历全表，虽然结果准确，但会导致性能问题。</li>
+<li>()是函数调用运算符</li>
 </ul>
 
-<h4>用一个表存储记录数目</h4>
+<h4>标准库funtion</h4>
 
-<ul>
-<li>在事物操作中修改这个表</li>
-<li>先增加表的计数</li>
-<li>commit时再插入数据</li>
-<li></li>
-</ul>
+<pre class="line-numbers"><code class="language-text">int func(int i) {
+  cout &lt;&lt; &quot;i &quot; &lt;&lt; i &lt;&lt; endl;
+  return i;
+}
 
-<h4>各种count差别</h4>
+class A {
+ public:
+  int operator()(int i) {
+    cout &lt;&lt; &quot;i &quot; &lt;&lt; i &lt;&lt; endl;
+    return i;
+  }
+};
 
-<ul>
-<li>count(*)</li>
-<li>count(primary key)</li>
-<li>count(字段)</li>
-<li>count(1)</li>
-<li>count(主键 id) 来说，InnoDB 引擎会遍历整张表，把每一行的 id 值都取出来，返回给 server 层。server 层拿到 id 后，判断是不可能为空的，就按行累加。</li>
-<li>对于 count(1) 来说，InnoDB 引擎遍历整张表，但不取值。server 层对于返回的每一行，放一个数字“1”进去，判断是不可能为空的，按行累加</li>
-<li>count(字段) 如果这个“字段”是定义为 not null 的话，一行行地从记录里面读出这个字段，判断不能为 null，按行累加；如果这个“字段”定义允许为 null，那么执行的时候，判断到有可能是 null，还要把值取出来再判断一下，不是 null 才累加。</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/14 10:08 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15447499262312.html">
-                
-                  <h1>快速分析CPU性能瓶颈</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>CPU性能指标</h4>
-
-<ul>
-<li>CPU使用率</li>
-<li>平均负载</li>
-<li>进程上下文切换</li>
-<li>CPU缓存命中率
-<img src="media/15447499262312/1e66612e0022cd6c17847f3ab6989007.png" alt="1e66612e0022cd6c17847f3ab6989007"/></li>
-</ul>
-
-<h4>可中断睡眠和不可中断睡眠</h4>
-
-<ul>
-<li>可中断的睡眠状态的进程会睡眠直到某个条件变为真，如产生一个硬件中断、释放进程正在等待的系统资源或是传递一个信号都可以是唤醒进程的条件。</li>
-<li>不可中断睡眠状态与可中断睡眠状态类似，但是它有一个例外，那就是把信号传递到这种睡眠状态的进程不能改变它的状态，也就是说它不响应信号的唤醒。</li>
-</ul>
-
-<h4>总结</h4>
-
-<p><img src="media/15447499262312/596397e1d6335d2990f70427ad4b14ec.png" alt="596397e1d6335d2990f70427ad4b14e"/><br/>
-<img src="media/15447499262312/b0c67a7196f5ca4cc58f14f959a364ca.png" alt="b0c67a7196f5ca4cc58f14f959a364ca"/><br/>
-<img src="media/15447499262312/7a445960a4bc0a58a02e1bc75648aa17.png" alt="7a445960a4bc0a58a02e1bc75648aa17"/></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/14 09:12 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15446966492302.html">
-                
-                  <h1>高可用</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>分类</h4>
-
-<ul>
-<li>计算高可用 任务调度器</li>
-<li>存储高可用 数据 + 逻辑 = 业务 难点在于如何减少和规避数据不一致对业务的影响</li>
-</ul>
-
-<h4>决策</h4>
-
-<ul>
-<li>独裁式</li>
-<li>协商式 主备</li>
-<li>民主式 脑裂</li>
-</ul>
-
-<h4>高可用和高性能对比</h4>
-
-<ul>
-<li>高可用更复杂</li>
-<li>状态监控，服务切换或服务恢复上，为了降低其复杂度，又有无状态设计，熔断设计等等</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/13 18:24 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%9E%B6%E6%9E%84.html'>架构</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15445235023007.html">
-                
-                  <h1>软中断</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>Linux内核中断</h4>
-
-<ul>
-<li>上半部用来快速处理中断，它在中断禁止模式下运行，主要处理跟硬件紧密相关的或时间敏感的工作。</li>
-<li>下半部用来延迟处理上半部未完成的工作，通常以内核线程的方式运行。</li>
-<li>上半部直接处理硬件请求，是硬中断，快速执行，会立即打断cpu正在执行的任务</li>
-<li>下半部是内核触发，就是软中断，特点是延迟执行，在每个cpu都对应一个内核线程ksoftirqd/0</li>
-</ul>
-
-<h4>内核线程</h4>
-
-<ul>
-<li>ps 的输出中，名字括在中括号里的，一般都是内核线程</li>
-<li>ksoftirqd/n，每个处理器都有一组辅助处理中断的内核线程，专为出现大量软中断处理而设计，避免跟其他重要任务抢夺资源</li>
-</ul>
-
-<h4>实验</h4>
-
-<ul>
-<li> 发起攻击方 hping3 -S -p 9091 -i u1 10.62.45.4</li>
-<li> watch -d cat /proc/softirqs</li>
-<li> sar -n DEV 1 | grep -Ew &#39;(eth0|IFACE)&#39; 查看网卡收发包情况</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">
-17时30分03秒     IFACE   rxpck/s   txpck/s    rxkB/s    txkB/s   rxcmp/s   txcmp/s  rxmcst/s
-17时30分04秒      eth0    311.00    330.00    104.47    210.60      0.00      0.00      0.00
-17时30分04秒     IFACE   rxpck/s   txpck/s    rxkB/s    txkB/s   rxcmp/s   txcmp/s  rxmcst/s
-17时30分05秒      eth0    565.00    576.00    967.40   8123.24      0.00      0.00      0.00
-17时30分05秒     IFACE   rxpck/s   txpck/s    rxkB/s    txkB/s   rxcmp/s   txcmp/s  rxmcst/s
-17时30分06秒      eth0    165.00    205.00     31.62     95.04      0.00      0.00      0.00
-17时30分06秒     IFACE   rxpck/s   txpck/s    rxkB/s    txkB/s   rxcmp/s   txcmp/s  rxmcst/s
-17时30分07秒      eth0    126.00    125.00     72.29     12.88      0.00      0.00      0.00
-17时30分07秒     IFACE   rxpck/s   txpck/s    rxkB/s    txkB/s   rxcmp/s   txcmp/s  rxmcst/s
+int main() {
+  function&lt;int(int)&gt; f1 = func;
+  function&lt;int(int)&gt; f2 = A();
+  A a;
+  function&lt;int(int)&gt; f3 = a;
+  f1(5);
+  f2(5);
+  f3(6);
+  map&lt;string, function&lt;int(int)&gt;&gt; op = {
+    {&quot;f1&quot;, func},
+    {&quot;f2&quot;, A()},
+    {&quot;f3&quot;, a},
+  };
+  op[&quot;f1&quot;](7);
+  op[&quot;f2&quot;](8);
+  op[&quot;f3&quot;](9);
+}
 </code></pre>
 
 <ul>
-<li>第三、四列：rxpck/s 和 txpck/s 分别表示每秒接收、发送的网络帧数，也就是 PPS。</li>
-<li>第五、六列：rxkB/s 和 txkB/s 分别表示每秒接收、发送的千字节数，也就是 BPS。</li>
+<li>函数func不能有重载,通过定义函数指针来解决</li>
 </ul>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/11 18:18 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15433746829951.html">
-                
-                  <h1>日志搜集系统</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>要求</h4>
+<pre class="line-numbers"><code class="language-text">int(*func1)(int) = func;
+function&lt;int(int)&gt; f1 = func1;
+</code></pre>
 
 <ul>
-<li>日志搜集系统设计</li>
-<li>日志客户端开发</li>
-</ul>
-
-<h4>为什么开发日志搜集系统</h4>
-
-<ul>
-<li>运维成本高，每增加一个日志搜集，都需要手动修改配置</li>
-<li>监控缺失，无法准确获取logstash的状态</li>
-<li>无法做定制化开发以及维护</li>
-</ul>
-
-<h4>log-agent</h4>
-
-<ul>
-<li>kafka</li>
-<li>config</li>
-<li>tailf</li>
-<li>log</li>
-<li>go-fmt 格式化代码</li>
-</ul>
-
-<h4>etcd</h4>
-
-<ul>
-<li>强一致性的要求</li>
-</ul>
-
-<h4>使用场景</h4>
-
-<ul>
-<li>服务发现和服务注册</li>
-<li>配置中心</li>
-<li>分布式锁</li>
-<li>master选举</li>
-</ul>
-
-<h4>etcd使用</h4>
-
-<ul>
-<li>如何控制goroutine超时</li>
-<li>如何保存上下文数据</li>
-<li>ctx来传递数据</li>
-<li>课外阅读 <a href="https://blog.golang.org/context">https://blog.golang.org/context</a></li>
-</ul>
-
-<h4>context</h4>
-
-<ul>
-<li>通过ctx来控制协程的结束</li>
-</ul>
-
-<h4>etcd配置更新两种方式</h4>
-
-<h4>资产管理系统</h4>
-
-<h4>Etcd</h4>
-
-<ul>
-<li>使用的是grpc</li>
 <li></li>
 </ul>
 
@@ -489,10 +236,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/11/28 11:11 上午</span>
+                    <span class="date">2019/09/26 18:20 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -506,281 +253,35 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15442521406459.html">
+                <a class="clearlink" href="15694119108197.html">
                 
-                  <h1>微服务入门</h1>
+                  <h1>多线程补充知识</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>微服务相对服务化特点</h4>
-
-<ul>
-<li>服务拆分粒度更细</li>
-<li>服务独立部署</li>
-<li>服务独立维护</li>
-<li>服务治理能力更高</li>
+                        	<ul>
+<li>补充</li>
 </ul>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/08 14:55 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E5%BE%AE%E6%9C%8D%E5%8A%A1.html'>微服务</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15442494078551.html">
-                
-                  <h1>架构复杂度来源</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>主要目的</h4>
+<h4>虚假唤醒</h4>
 
 <ul>
-<li>架构设计的主要目的是为了解决软件系统复杂度带来的问题</li>
+<li>wait中需要有第二个参数</li>
+<li>这个lambda要正确判断要处理的公共数据是否存在</li>
 </ul>
 
-<h4>高性能</h4>
+<pre class="line-numbers"><code class="language-text">cond.wait(s1, [this]{
+                  if (!msgRecvQueue.empty())
+                     return true;
+                  return false;
+                });
+</code></pre>
+
+<h4>atomic</h4>
 
 <ul>
-<li>一方面是单台计算机内部为了高性能带来的复杂度</li>
-<li>另一方面是多台计算机集群为了高性能带来的复杂度</li>
-</ul>
-
-<h4>单计算机多任务方案</h4>
-
-<ul>
-<li>SMP</li>
-<li>NUMA</li>
-<li>MPP</li>
-</ul>
-
-<h4>集群带来的复杂度</h4>
-
-<ul>
-<li>任务分配 DNS轮询 智能DNS CDN GLSB</li>
-</ul>
-
-<h4>任务分解能够提升性能</h4>
-
-<ul>
-<li>简单系统容易做到高性能</li>
-<li>针对单个任务进行扩展  当各个逻辑任务分解到独立的子系统后，整个系统的性能瓶颈更加容易发现，而且发现后只需要针对有瓶颈的子系统进行性能优化或者提升，不需要改动整个系统</li>
-</ul>
-
-<h4>高性能的两个维度</h4>
-
-<h5>垂直维度</h5>
-
-<ul>
-<li>增大内存减少I/O操作</li>
-<li>更换为固态硬盘（SSD）提升I/O访问速度</li>
-<li>使用RAID增加I/O吞吐能力</li>
-<li>置换服务器获得更多的处理器或分配更多的虚拟核</li>
-<li>升级网络接口或增加网络接口 </li>
-</ul>
-
-<h5>水平维度</h5>
-
-<ul>
-<li>功能分解：基于功能将系统分解为更小的子系统</li>
-<li>多实例副本：同一组件重复部署到多台不同的服务器</li>
-<li>数据分割：在每台机器上都只部署一部分数据</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/08 14:10 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%9E%B6%E6%9E%84.html'>架构</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15442491165377.html">
-                
-                  <h1>什么是架构</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>模块和组件</h4>
-
-<ul>
-<li>从逻辑的角度来拆分系统后，得到的单元就是“模块”；从物理的角度来拆分系统后，得到的单元就是“组件”。划分模块的主要目的是职责分离；划分组件的主要目的是单元复用。</li>
-</ul>
-
-<h4>框架和架构</h4>
-
-<ul>
-<li>框架关注的是“规范”，架构关注的是“结构”</li>
-<li>软件架构指软件系统的顶层结构</li>
-</ul>
-
-<h4>软件架构</h4>
-
-<ul>
-<li>系统是一群关联个体组成，个体包括子系统，模块，组件</li>
-<li>架构需要明确个体运作和协作的规则</li>
-</ul>
-
-<h4>总结</h4>
-
-<ul>
-<li>架构是顶层设计；框架是面向编程或配置的半成品；组件是从技术维度上的复用；模块是从业务维度上职责的划分；系统是相互协同可运行的实体</li>
-<li>软件设计过程中，模块、对象、组件本质上是对一定规模软件在不同粒度和层次上的“拆分”方法论，软件架构是一种对软件的“组织”方法论。一分一合，其目的是为了软件研发过程中的成本、进度、质量得到有效控制。但是，一个成功的软件设计是要适应并满足业务需求，同时不断“演化”的。设计需要根据业务的变化、技术的发展不断进行“演进”，这就决定了这是一个动态活动，出现新问题，解决新问题，没有所谓的“一招鲜”。</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/08 14:05 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%9E%B6%E6%9E%84.html'>架构</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15442485813532.html">
-                
-                  <h1>VPN</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>IPsec</h4>
-
-<ul>
-<li>外层IP头 承载协议</li>
-<li>IPsec头 隧道协议</li>
-<li>内层IP包 乘客协议</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/08 13:56 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE.html'>网络协议</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15440884806626.html">
-                
-                  <h1>数据中心</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>STP协议</h4>
-
-<h4>交换机高可用</h4>
-
-<ul>
-<li>部署两个接入交换机、两个汇聚交换机。服务器和两个接入交换机都连接，接入交换机和两个汇聚都连接，启用 STP 协议，去除环</li>
-<li>堆叠交换机，将多个交换机形成一个逻辑的交换机，服务器通过多根线分配连到多个接入层交换机上，而接入层交换机多根线分别连接到多个交换机上，并且通过堆叠的私有协议，形成双活的连接方式。</li>
-<li>OSPF,ECMP</li>
-</ul>
-
-<h4>TOR交换机&amp;汇聚层交换机</h4>
-
-<ul>
-<li>放在机架顶端的交换机，称为接入层</li>
-<li>将TOR交换机连接在一起叫汇聚层交换机</li>
-</ul>
-
-<h4>LACP协议</h4>
-
-<ul>
-<li>多个网卡聚合称为一个网卡，多个网线聚合成一个网线，在网线之间可以进行负载均衡，也可以为了高可用作准备</li>
-</ul>
-
-<h4>STP协议</h4>
-
-<ul>
-<li>去除网络中的环</li>
-</ul>
-
-<h4>交换机堆叠</h4>
-
-<ul>
-<li>将多个交换机形成一个逻辑的交换机，服务器通过多根线分配连到多个接入层交换机上，而接入层交换机多根线分别连接到多个交换机上，并且通过堆叠的私有协议，形成双活的连接方式。</li>
-</ul>
-
-<h4>TRILL协议</h4>
-
-<ul>
-<li>于是大二层就引入了TRILL（Transparent Interconnection of Lots of Link），即多链接透明互联协议。它的基本思想是，二层环有问题，三层环没有问题，那就把三层的路由能力模拟在二层实现。</li>
-<li>TRILL可以模拟三层的路由功能</li>
-</ul>
-
-<h4>SLB</h4>
-
-<ul>
-<li>负载均衡SLB支持HTTP强制跳转HTTPS功能</li>
+<li>线程数目控制在200个，尽量不要超过500</li>
 <li></li>
 </ul>
 
@@ -791,10 +292,166 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/12/06 17:28 下午</span>
+                    <span class="date">2019/09/25 19:45 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE.html'>网络协议</a></span>
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15693756821958.html">
+                
+                  <h1>并查集</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>连接问题</h4>
+
+<ul>
+<li>网络是个抽象的概念：用户之间形成的网络</li>
+<li>数学中的集合类实现</li>
+</ul>
+
+<h4>连接问题&amp;路径问题</h4>
+
+<ul>
+<li>和二分查找作比较</li>
+<li>和select作比较</li>
+<li>和堆作比较</li>
+</ul>
+
+<h4>Quick find</h4>
+
+<ul>
+<li><img src="media/15693756821958/15693766400411.jpg" alt="" style="width:841px;"/></li>
+</ul>
+
+<h4>quick find</h4>
+
+<ul>
+<li><img src="media/15693756821958/15693785463403.jpg" alt="" style="width:1262px;"/></li>
+</ul>
+
+<h4>uf3</h4>
+
+<p><img src="media/15693756821958/15693796785798.jpg" alt="" style="width:971px;"/></p>
+
+<h4>uf4</h4>
+
+<p><img src="media/15693756821958/15693802524690.jpg" alt="" style="width:1073px;"/></p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/09/25 09:41 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E8%BF%9B%E9%98%B6.html'>数据结构和算法进阶</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15693208659724.html">
+                
+                  <h1>std::atomic</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>std::atomic</h4>
+
+<ul>
+<li>一般atomic原子操作，支持++,--,-=,+=其他的不支持</li>
+</ul>
+
+<h4>std::async</h4>
+
+<ul>
+<li>async一般叫创建异步任务</li>
+<li>async有时候并不创建线程</li>
+<li>deferred延迟调用，并且不创建新线程，延迟到future对象调用get或者wait的时候才执行线程函数，如果没有调用get或者wait，那么mythread不会执行</li>
+</ul>
+
+<h5>std::launch::async</h5>
+
+<pre class="line-numbers"><code class="language-text">std::future&lt;int&gt; res = std::async(std::launch::async, mythread);
+</code></pre>
+
+<ul>
+<li>强制异步任务在新线程上执行</li>
+</ul>
+
+<h5>std::launch::async|std::launch::deferred</h5>
+
+<pre class="line-numbers"><code class="language-text">std::future&lt;int&gt; res = std::async(std::launch::async | std::launch::deferred, mythread);
+</code></pre>
+
+<ul>
+<li>可能是创建新线程立即执行</li>
+<li>也可能是没有创建新线程，并且延迟到res.get()才开始执行任务入口函数</li>
+</ul>
+
+<h5>不带额外参数，只给async函数一入口函数名</h5>
+
+<pre class="line-numbers"><code class="language-text">std::future&lt;int&gt; res = std::async(std::launch::async | std::launch::deferred, mythread);
+</code></pre>
+
+<ul>
+<li>默认值是std::launch::async|std::launch::deferred</li>
+</ul>
+
+<h5>系统如何自行决定</h5>
+
+<ul>
+<li>std::async和std::thread</li>
+<li>std::thread创建线程，如果系统资源紧张，创建线程异常，整个程序就会报异常错误</li>
+<li>std::async创建异步任务，可能创建，也可能不创建，容易拿到入口函数的返回值</li>
+<li>async创建失败不会引起系统崩溃，可能执行在主线程上，不创建新的线程</li>
+<li>如果一定要创建std::launched::async, 可能是程序崩溃</li>
+<li>默认写法判定系统是否创建线程需要wait_for</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">std::future_status status = result.wait_for(std::chrono::seconds(0));
+if (status == std::future_status::deferred) {
+  //delay exec 
+}
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/09/24 18:27 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
           				   
                   </div>
                   <div class="more-right right">

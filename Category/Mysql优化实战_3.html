@@ -170,427 +170,86 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15477155524350.html">
+                <a class="clearlink" href="15439799166687.html">
                 
-                  <h1>Mysql高可用</h1>
+                  <h1>Mysql选错索引</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>seconds_behind_master</h4>
+                        	<h4>mysql选择索引依据</h4>
 
 <ul>
-<li>每个事务的 binlog 里面都有一个时间字段，用于记录主库上写入的时间；</li>
-<li>备库取出当前正在执行的事务的时间字段的值，计算它与当前系统时间的差值，得到 seconds_behind_master。</li>
+<li>扫描行数</li>
+<li>是否使用临时表</li>
+<li>是否排序</li>
 </ul>
 
-<h4>主备延迟</h4>
+<h4>Mysql获取索引基数</h4>
 
 <ul>
-<li>备库机器性能比较差</li>
-<li>备库压力大
-<ul>
-<li>一主多从</li>
-<li>通过binlog输出到外部系统如hadoop </li>
-</ul></li>
-<li>大事务 一次性删除太多历史数据 大表DDL</li>
-<li>备库的并行复制能力</li>
+<li>采样统计的时候，InnoDB 默认会选择 N 个数据页，统计这些页面上的不同值，得到一个平均值，然后乘以这个索引的页面数，就得到了这个索引的基数。</li>
+<li>而数据表是会持续更新的，索引统计信息也不会固定不变。所以，当变更的数据行数超过 1/M 的时候，会自动触发重新做一次索引统计。</li>
+<li>设置为 on 的时候，表示统计信息会持久化存储。这时，默认的 N 是 20，M 是 10。</li>
+<li>设置为 off 的时候，表示统计信息只存储在内存中。这时，默认的 N 是 8，M 是 16。</li>
 </ul>
 
-<h4>可靠性优先策略</h4>
+<h4>索引选择不准确矫正</h4>
 
 <ul>
-<li>双M结构下主从切换，然后等切换成主库的备库的seconds_behind_master=0,把备库改成可读写状态</li>
-<li><img src="media/15477155524350/54f4c7c31e6f0f807c2ab77f78c8844a.png" alt="54f4c7c31e6f0f807c2ab77f78c8844a"/></li>
+<li>索引统计信息不准确导致的问题，你可以用 analyze table 来解决。</li>
+<li>优化器误判的情况，你可以在应用端用force index来强行指定索引</li>
+<li>也可以通过修改语句来引导优化器</li>
+<li>还可以通过增加或者删除索引来绕过这个问题</li>
 </ul>
 
-<h4>可用性优先策略</h4>
-
-<ul>
-<li>双M主备的切换过程中，不等主备同步，直接把连接切到备库</li>
-<li>如果binglog是statement会导致主备不一致，如果是row则会抛出异常不会执行</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/01/17 16:59 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15464186907626.html">
-                
-                  <h1>mysql优化</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>短连接风暴</h4>
-
-<ul>
-<li>提高max_connections</li>
-<li>跳过权限认证阶段</li>
-</ul>
-
-<h4>慢查询</h4>
-
-<ul>
-<li>索引没有设计好 主备切换，</li>
-<li>sql语句没写好 query_rewrite</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">  insert into query_rewrite.rewrite_rules(pattern, replacement, pattern_database) values (&quot;select * from t where id + 1 = ?&quot;, &quot;select * from t where id = ? - 1&quot;, &quot;db1&quot;);
-</code></pre>
-
-<ul>
-<li>mysql选错了索引</li>
-</ul>
-
-<h4>QPS暴增问题</h4>
-
-<ul>
-<li>去掉白名单</li>
-<li>删除用户</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/01/02 16:44 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15460488614529.html">
-                
-                  <h1>幻读</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>概念</h4>
-
-<ul>
-<li>幻读仅仅指新插入的行</li>
-<li>幻读指的是一个事务在前后两次查询同一个范围的时候，后一次查询看到了前一次查询没有看到的行。</li>
-</ul>
-
-<h4>当前读</h4>
-
-<ul>
-<li>for update</li>
-</ul>
-
-<h4>幻读引发的问题</h4>
-
-<ul>
-<li>数据一致性是数据库内部数据状态在此刻的一致性，还包含了数据和日志在逻辑上的一致性</li>
-</ul>
-
-<h4>间隙锁</h4>
-
-<ul>
-<li>保护两个值之间的空隙不允许插入新的值</li>
-<li>在可重复读的级别下生效，读提交的情况下间隙锁不会生效</li>
-<li>读提交下操作数据的锁范围更小，这个选择是合理的</li>
-<li>binlog_format=row配合间隙锁解决数据和日志不一致</li>
-<li>binlog和实际操作的结果数据不一致</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/29 10:01 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15458738062017.html">
-                
-                  <h1>加快插入数据</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<pre class="line-numbers"><code class="language-text">  set global innodb_flush_log_at_trx_commit=0;
-  set global sync_binlog=0;
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/27 09:23 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15456176673171.html">
-                
-                  <h1>SQL语句性能分析</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>条件字段函数分析</h4>
-
-<ul>
-<li>索引字段做函数操作，可能会破坏索引值的有序性，因此优化器就决定放弃走树搜索功能。</li>
-<li>索引字段的参数加上函数操作可以使用索引</li>
-</ul>
-
-<h4>隐性类型转换</h4>
-
-<pre class="line-numbers"><code class="language-text">  mysql&gt; select * from tradelog where tradeid=110717;
-</code></pre>
-
-<ul>
-<li>数据类型转换规则会触发函数字段操作会放弃索引树</li>
-</ul>
-
-<h4>隐式字符编码转换</h4>
-
-<pre class="line-numbers"><code class="language-text"> mysql&gt; CREATE TABLE `tradelog` (
+<pre class="line-numbers"><code class="language-text"> CREATE TABLE `t` (
   `id` int(11) NOT NULL,
-  `tradeid` varchar(32) DEFAULT NULL,
-  `operator` int(11) DEFAULT NULL,
-  `t_modified` time DEFAULT NULL,
+  `a` int(11) DEFAULT NULL,
+  `b` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `tradeid` (`tradeid`),
-  KEY `t_modified` (`t_modified`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
- CREATE TABLE `trade_detail` (
-  `id` int(11) NOT NULL,
-  `tradeid` varchar(32) DEFAULT NULL,
-  `trade_step` int(11) DEFAULT NULL, /* 操作步骤 */
-  `step_info` varchar(32) DEFAULT NULL, /* 步骤信息 */
-  PRIMARY KEY (`id`),
-  KEY `tradeid` (`tradeid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  KEY `a` (`a`),
+  KEY `b` (`b`)
+) ENGINE=InnoDB
 </code></pre>
 
-<ul>
-<li>主动把被驱动表的字符改成utf8
-<code>
-select d.* from tradelog l, trade_detail d where d.tradeid=l.tradeid and l.id=2; <br/>
-select d.* from tradelog l , trade_detail d where d.tradeid=CONVERT(l.tradeid USING utf8) and l.id=2; 
-</code></li>
-</ul>
+<h4>开启慢查询日志</h4>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/24 10:14 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15450951587114.html">
-                
-                  <h1>索引和日志</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>mysql commit 两段式提交</h4>
-
-<ul>
-<li>写redolog 处于prepare</li>
-<li>写binlog是阶段B
-<img src="media/15450951587114/ee9af616e05e4b853eba27048351f62a.jpg" alt="ee9af616e05e4b853eba27048351f62a"/></li>
-</ul>
-
-<h4>奔溃恢复规则</h4>
-
-<ul>
-<li>如果redo log的事务是完整的，有了commit标识，则直接提交</li>
-<li>如果redo log的事务只有完整的preapre，则判断对应的事物binglog是否存在并完整</li>
-<li>如果是，则提交事务</li>
-<li>否则回滚事物</li>
-<li>redolog prepare --&gt; binlog --&gt;redolog commit</li>
-</ul>
-
-<h4>Mysql验证binlog完整性</h4>
-
-<ul>
-<li>statement 的binlog会有commit</li>
-<li>row格式的binlog ，会有XID event</li>
-<li>redolog 和 bin log通过XID关联起来</li>
-</ul>
-
-<h4>设计事务的原因</h4>
-
-<ul>
-<li>主从复制的时候防止备库使用未提交的事物</li>
-<li>redo log是不能回滚的，如果binlog写入失败。就会导致数据和binlog不一致</li>
-<li>binlog没有能力回复数据页</li>
-</ul>
-
-<h4>更新记录和技术表顺序</h4>
-
-<ul>
-<li>应该先插入操作记录，再更新计数表。</li>
-<li>因为更新计数表涉及到行锁的竞争，先插入再更新能最大程度地减少事务之间的锁等待，提升并发度。</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/18 09:05 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15453542683157.html">
-                
-                  <h1>Order by工作机制</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>插入数据函数</h4>
-
-<pre class="line-numbers"><code class="language-text">* delimiter ;;
-create procedure icity()
-begin
-  declare i int;
-  set i=1;
-  while(i&lt;=100000)do
-    if i &lt;= 4000 then
-      insert into t values(i, &quot;杭州&quot;, substring(MD5(RAND()),1,10), ROUND(RAND()*(100-1)+1), &quot;杭州中路&quot;);
-    else
-      insert into t values(i, &quot;深圳&quot;, substring(MD5(RAND()),1,10), ROUND(RAND()*(100-1)+1), &quot;深南大道&quot;);
-    end if;
-    set i=i+1;
-  end while;
-end;;
-delimiter ;
+<pre class="line-numbers"><code class="language-text">  show variables like &#39;log_%&#39;;
+  set sql_long_query=0;
+  set global long_query_time=0;
+  show variables like &quot;%slow%&quot;;
+  set slow_query_log=&#39;ON&#39;;
+  show variables like &quot;%slow%&quot;;
 </code></pre>
 
-<h4>全字段排序</h4>
+<h4>查询优化</h4>
+
+<pre class="line-numbers"><code class="language-text">mysql&gt; select * from t where a between 10000 and 20000 and b between 50000 and 100000 order by b limit 1;
+Empty set (0.05 sec)
+
+mysql&gt; select * from t force index(a) where a between 10000 and 20000 and b between 50000 and 100000 order by b limit 1;
+Empty set (0.02 sec)
+</code></pre>
+
+<h4>清空查询缓存</h4>
+
+<pre class="line-numbers"><code class="language-text"> reset query cache;
+</code></pre>
+
+<h4>选择错误索引原因</h4>
 
 <ul>
-<li>select city,name,age from t where city=&#39;杭州&#39; order by name limit 1000;</li>
-<li><p>初始化 sort_buffer，确定放入 name、city、age 这三个字段；</p></li>
-<li><p>从索引 city 找到第一个满足 city=&#39;杭州’条件的主键 id，也就是图中的 ID_X；</p></li>
-<li><p>到主键 id 索引取出整行，取 name、city、age 三个字段的值，存入 sort_buffer 中；</p></li>
-<li><p>从索引 city 取下一个记录的主键 id；</p></li>
-<li><p>重复步骤 3、4 直到 city 的值不满足查询条件为止，对应的主键 id 也就是图中的 ID_Y；</p></li>
-<li><p>对 sort_buffer 中的数据按照字段 name 做快速排序；</p></li>
-<li><p>按照排序结果取前 1000 行返回给客户端</p></li>
+<li>每次从索引 a 上拿到一个值，都要回到主键索引上查出整行数据，这个代价优化器也要算进去的。如果选择扫描 10 万行，是直接在主键索引上扫描的，没有额外的代价。优化器会估算这两个选择的代价，从结果看来，优化器认为直接扫描主键索引更快。当然，从执行时间看来，这个选择并不是最优的。</li>
 </ul>
 
-<h4>row_id排序</h4>
+<h4>优化错误索引</h4>
 
 <ul>
-<li>相对全字段排序遍历排序结果，取前 1000 行，并按照 id 的值回到原表中取出 city、name 和 age 三个字段返回给客户端。</li>
-</ul>
-
-<h4>覆盖索引</h4>
-
-<ul>
-<li>覆盖索引是指，索引上的信息足够满足查询请求，不需要再回到主键索引上去取数据。</li>
-<li></li>
+<li>force index</li>
+<li>修改语句，引导mysql使用我们期望的索引</li>
+<li>新建合适的索引或者删掉误用的索引</li>
+<li>使用analze table 来解决</li>
 </ul>
 
                         
@@ -600,7 +259,7 @@ delimiter ;
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/12/21 09:04 上午</span>
+                    <span class="date">2018/12/05 11:18 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
@@ -617,40 +276,57 @@ delimiter ;
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15447533025677.html">
+                <a class="clearlink" href="15438265348573.html">
                 
-                  <h1>Mysql的count(*)</h1>
+                  <h1>普通索引和唯一索引</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>问题</h4>
+                        	<h4>InnoDB读取数据</h4>
 
 <ul>
-<li>MyISAM 表虽然 count(*) 很快，但是不支持事务；</li>
-<li>show table status 命令虽然返回很快，但是不准确；</li>
-<li>InnoDB 表直接 count(*) 会遍历全表，虽然结果准确，但会导致性能问题。</li>
+<li>InnoDB 的数据是按数据页为单位来读写的。也就是说，当需要读一条记录的时候，并不是将这个记录本身从磁盘读出来，而是以页为单位，将其整体读入内存。在 InnoDB 中，每个数据页的大小默认是 16KB。</li>
+<li>因为引擎是按页读写的，所以说，当找到 k=5 的记录的时候，它所在的数据页就都在内存里了。那么，对于普通索引来说，要多做的那一次“查找和判断下一条记录”的操作，就只需要一次指针寻找和一次计算。</li>
+<li>当然，如果 k=5 这个记录刚好是这个数据页的最后一个记录，那么要取下一个记录，必须读取下一个数据页，这个操作会稍微复杂一些。</li>
 </ul>
 
-<h4>用一个表存储记录数目</h4>
+<h4>change buffer</h4>
 
 <ul>
-<li>在事物操作中修改这个表</li>
-<li>先增加表的计数</li>
-<li>commit时再插入数据</li>
+<li>change buffer 在内存中有拷贝，也会被写入到磁盘上</li>
+<li>对于唯一索引来说，所有的更新操作都要先判断这个操作是否违反唯一性约束,必须要把数据页载入内存才能实现</li>
+<li>purge 的时候是真正进行数据更新的时刻，而 change buffer 的主要目的就是将记录的变更动作缓存下来，所以在一个数据页做 purge 之前，change buffer 记录的变更越多（也就是这个页面上要更新的次数越多），收益就越大。</li>
+<li>访问这个数据页会触发 purge 外，系统有后台线程会定期 purge。在数据库正常关闭（shutdown）的过程中，也会执行 purge 操作。</li>
+<li>更新后紧跟着这个记录的查询，change buffer应该关闭，其他情况下应该打开</li>
+<li>操作流程</li>
+</ul>
+
+<p><img src="media/15438265348573/15562408037391.jpg" alt="" style="width:583px;"/></p>
+
+<h4>redo log 和 binlog的区别</h4>
+
+<ul>
+<li>redo log 是 InnoDB 引擎特有的；binlog 是 MySQL 的 Server 层实现的，所有引擎都可以使用。</li>
+<li>redo log 是物理日志，记录的是修改；binlog 是逻辑日志，记录的是这个语句的原始操作逻辑</li>
+<li>redo log 是循环写的，空间固定会用完；binlog 是可以追加写入的。“追加写”是指 binlog 文件写到一定大小后会切换到下一个，并不会覆盖以前的日志。</li>
+</ul>
+
+<h4>redo log 和change buffer</h4>
+
+<ul>
+<li>redo log 主要节省的是随机写磁盘的 IO 消耗（转成顺序写）</li>
+<li>而 change buffer 主要节省的则是随机读磁盘的 IO 消耗。</li>
+</ul>
+
+<h4>change buffer的merge的流程</h4>
+
+<ul>
+<li>从磁盘读入数据页到内存（老版本的数据页）；</li>
+<li>从 change buffer 里找出这个数据页的 change buffer 记录 (可能有多个），依次应用，得到新版数据页；</li>
+<li>写 redo log。这个 redo log 包含了数据的变更和 change buffer 的变更。</li>
+<li>数据页和内存的数据需要线程定时刷新回磁盘</li>
 <li></li>
-</ul>
-
-<h4>各种count差别</h4>
-
-<ul>
-<li>count(*)</li>
-<li>count(primary key)</li>
-<li>count(字段)</li>
-<li>count(1)</li>
-<li>count(主键 id) 来说，InnoDB 引擎会遍历整张表，把每一行的 id 值都取出来，返回给 server 层。server 层拿到 id 后，判断是不可能为空的，就按行累加。</li>
-<li>对于 count(1) 来说，InnoDB 引擎遍历整张表，但不取值。server 层对于返回的每一行，放一个数字“1”进去，判断是不可能为空的，按行累加</li>
-<li>count(字段) 如果这个“字段”是定义为 not null 的话，一行行地从记录里面读出这个字段，判断不能为 null，按行累加；如果这个“字段”定义允许为 null，那么执行的时候，判断到有可能是 null，还要把值取出来再判断一下，不是 null 才累加。</li>
 </ul>
 
                         
@@ -660,7 +336,7 @@ delimiter ;
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/12/14 10:08 上午</span>
+                    <span class="date">2018/12/03 16:42 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
@@ -677,46 +353,77 @@ delimiter ;
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15441512790891.html">
+                <a class="clearlink" href="15429441476069.html">
                 
-                  <h1>给字符串加索引</h1>
+                  <h1>索引</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>索引查询区别</h4>
+                        	<h4>事物回滚日志的删除</h4>
 
 <ul>
-<li>完整索引，从索引树找到满足索引值的记录，取得主键的值，然后从主键上查询主键值相匹配的行，判断索引字段是否正确，将记录加入结果集</li>
-<li>继续查找索引树，直到记录不满足为止</li>
-<li>使用前缀索引，定义好长度，就可以做到既节省空间，又不用额外增加太多的查询成本。</li>
+<li>当没有事务再需要用到这些回滚日志时，回滚日志会被删除。</li>
 </ul>
 
-<h4>前缀索引</h4>
+<h4>长事物</h4>
 
 <ul>
-<li>distinct left(key, len)</li>
-<li>前缀索引很可能会损失区分度，需要预先设定一个可以接受的损失比例
-<code>
-explain select ID,email from SUser where email=&#39;zhangssxyz@xxx.com&#39;;<br/>
-explain select ID,email from SUser force index(index2) where email=&#39;zhangssxyz@xxx.com&#39; ;
-</code></li>
-<li>前缀索引就用不上覆盖索引对查询性能的优化了, 因为系统并不确定前缀索引的定义是否截断了完整信息。</li>
+<li>这个事务提交之前，数据库里面它可能用到的回滚记录都必须保留，这就会导致大量占用存储空间。</li>
+<li>长事务还占用锁资源，也可能拖垮整个库</li>
+<li>set autocommit=1</li>
 </ul>
 
-<h4>优化策略</h4>
+<h4>怎么避免长事物</h4>
+
+<h5>开发端</h5>
 
 <ul>
-<li>第一种方式是使用倒序存储</li>
-<li>第二种方式是使用 hash 字段</li>
+<li>确认是否使用了set autocommit=1。</li>
+<li>确认是否有不必要的只读事务。</li>
+<li>通过 SET MAX_EXECUTION_TIME 命令，来控制每个语句执行的最长时间，避免单个语句意外执行太长时间。</li>
 </ul>
 
-<h4>倒序存储和哈希存储的区别</h4>
+<h5>数据库端</h5>
 
 <ul>
-<li>从占用的额外空间来看，倒序存储方式在主键索引上，不会消耗额外的存储空间，而 hash 字段方法需要增加一个字段。</li>
-<li>在 CPU 消耗方面，倒序方式每次写和读的时候，都需要额外调用一次 reverse 函数，而 hash 字段的方式需要额外调用一次 crc32() 函数</li>
-<li>从查询效率上看，使用 hash 字段方式的查询性能相对更稳定一些。因为 crc32 算出来的值虽然有冲突的概率，但是概率非常小，可以认为每次查询的平均扫描行数接近 1。而倒序存储方式毕竟还是用的前缀索引的方式，也就是说还是会增加扫描行数</li>
+<li>监控 information_schema.Innodb_trx 表，设置长事务阈值，超过就报警 / 或者 kill；</li>
+<li>Percona 的 pt-kill</li>
+<li>在业务功能测试阶段要求输出所有的 general_log，分析日志行为提前发现问题；</li>
+</ul>
+
+<h4>自增主键的好处</h4>
+
+<ul>
+<li>每次插入一条新记录，都是追加操作，都不涉及到挪动其他记录，也不会触发叶子节点的分裂。</li>
+<li>业务逻辑的字段做主键，则往往不容易保证有序插入，这样写数据成本相对较高</li>
+<li>插入数据如果是在某个数据满了页的首尾，为了减少数据移动和页分裂，会先去前后两个页看看是否满了，如果没满会先将数据放到前后两个页上</li>
+</ul>
+
+<h4>适合业务字段直接做主键的</h4>
+
+<ul>
+<li>只有一个索引</li>
+<li>该索引必须是唯一索引</li>
+</ul>
+
+<h4>Page内部定位行数据</h4>
+
+<ul>
+<li>内部有个有序数组，二分法</li>
+</ul>
+
+<h4>最左前缀原则</h4>
+
+<ul>
+<li>最左前缀可以是联合索引的最左 N 个字段，也可以是字符串索引的最左 M 个字符</li>
+</ul>
+
+<h4>索引下推</h4>
+
+<ul>
+<li>在二级索引中进行条件判断，无须从主键索引中回表拿到数据再进行判断</li>
+<li></li>
 </ul>
 
                         
@@ -726,7 +433,7 @@ explain select ID,email from SUser force index(index2) where email=&#39;zhangssx
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/12/07 10:54 上午</span>
+                    <span class="date">2018/11/23 11:35 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
@@ -743,40 +450,61 @@ explain select ID,email from SUser force index(index2) where email=&#39;zhangssx
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15435675098509.html">
+                <a class="clearlink" href="15510593691478.html">
                 
-                  <h1>事物隔离</h1>
+                  <h1>Mysql自增ID用完</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>Mysql视图</h4>
+                        	<h4>表定义的自增ID</h4>
 
 <ul>
-<li>一个是 view。它是一个用查询语句定义的虚拟表，在调用的时候执行查询语句并生成结果。创建视图的语法是 create view，而它的查询方法与表一样。</li>
-<li>InnoDB 在实现 MVCC 时用到的一致性读视图，即 consistent read view，用于支持 RC（Read Committed，读提交）和 RR（Repeatable Read，可重复度）隔离级别的实现。</li>
+<li>表定义的自增值达到上限后的逻辑是：再申请下一个 id 时，得到的值保持不变。</li>
 </ul>
 
-<h4>事物更新数据规则</h4>
+<h4>InnoDB 系统自增 row_id</h4>
 
 <ul>
-<li>更新数据都是先读后写的，而这个读，只能读当前的值，称为“当前读（current read）”。</li>
+<li>InnoDB维护全局的dict_sys.row_id</li>
 </ul>
 
-<h4>可重复读和读提交</h4>
+<h4>Xid</h4>
 
 <ul>
-<li>可重复读的核心就是一致性读（consistent read）；而事务更新数据的时候，只能用当前读。如果当前的记录的行锁被其他事务占用的话，就需要进入锁等待。</li>
-<li>在读提交隔离级别下，每一个语句执行前都会重新算一次 up_limit_id 的值</li>
-<li>对于可重复读，查询只承认在事务启动前就已经提交完成的数据；</li>
-<li>对于读提交，查询只承认在语句启动前就已经提交完成的数据；</li>
+<li>redo log 和 binlog 相配合的时候，一个共同的字段叫作 Xid</li>
+<li>Mysql内部维护global_query_id赋值给query_id,然后把query_id赋值给Xid</li>
+<li> MySQL 重启之后会重新生成新的 binlog 文件，这就保证了，同一个 binlog 文件里，Xid 一定是惟一的</li>
 </ul>
 
-<h4>事物启动</h4>
+<h4>innodb trx_id</h4>
 
 <ul>
-<li>begin/start transaction 命令并不是一个事务的起点，在执行到它们之后的第一个操作 InnoDB 表的语句，事务才真正启动。如果你想要马上启动一个事务，可以使用 start transaction with consistent snapshot 这个命令。</li>
-<li></li>
+<li>InnoDB 内部维护了一个 max_trx_id 全局变量，每次需要申请一个新的 trx_id 时，就获得 max_trx_id 的当前值，然后并将 max_trx_id 加 1</li>
+<li>trx_id不止加1</li>
+<li>update 和 delete 语句除了事务本身，还涉及到标记删除旧数据，也就是要把数据放到 purge 队列里等待后续物理删除，这个操作也会把 max_trx_id+1， 因此在一个事务中至少加 2；</li>
+<li>InnoDB 的后台操作，比如表的索引信息统计这类操作，也是会启动内部事务的，因此你可能看到，trx_id 值并不是按照加 1 递增的。</li>
+<li>只读查询的trx_id=trx变量指针2<sup>48</sup></li>
+<li>好处</li>
+<li>一个好处是，这样做可以减小事务视图里面活跃事务数组的大小</li>
+<li>另一个好处是，可以减少 trx_id 的申请次数</li>
+</ul>
+
+<h4>thread_id</h4>
+
+<ul>
+<li>系统保存了一个全局变量 thread_id_counter，每新建一个连接，就将 thread_id_counter 赋值给这个新连接的线程变量。</li>
+<li>thread_id_counter 定义的大小是 4 个字节，因此达到 232-1 后，它就会重置为 0</li>
+</ul>
+
+<h4>总结</h4>
+
+<ul>
+<li>表的自增 id 达到上限后，再申请时它的值就不会改变，进而导致继续插入数据时报主键冲突的错误。</li>
+<li>row_id 达到上限后，则会归 0 再重新递增，如果出现相同的 row_id，后写的数据会覆盖之前的数据。</li>
+<li>Xid 只需要不在同一个 binlog 文件中出现重复值即可。虽然理论上会出现重复值，但是概率极小，可以忽略不计。</li>
+<li>InnoDB 的 max_trx_id 递增值每次 MySQL 重启都会被保存起来，所以我们文章中提到的脏读的例子就是一个必现的 bug，好在留给我们的时间还很充裕。</li>
+<li>thread_id 是我们使用中最常见的，而且也是处理得最好的一个自增 id 逻辑了</li>
 </ul>
 
                         
@@ -786,7 +514,7 @@ explain select ID,email from SUser force index(index2) where email=&#39;zhangssx
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/11/30 16:45 下午</span>
+                    <span class="date">2019/02/25 09:49 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>

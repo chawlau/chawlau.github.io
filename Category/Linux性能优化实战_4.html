@@ -170,28 +170,43 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15428715333254.html">
+                <a class="clearlink" href="15538161650708.html">
                 
-                  <h1>性能问题学习</h1>
+                  <h1>系统监控的思路</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>学习方法</h4>
+                        	<h4>USE法则</h4>
 
 <ul>
-<li>性能问题并没有你想像得那么难，只要你理解了应用程序和系统的少数几个基本原理，再进行大量的实战练习，建立起整体性能的全局观，大多数性能问题的优化就会水到渠成。</li>
+<li>使用率，表示资源用于服务的时间或容量百分比。100% 的使用率，表示容量已经用尽或者全部时间都用于服务。</li>
+<li>饱和度，表示资源的繁忙程度，通常与等待队列的长度相关。100% 的饱和度，表示资源无法接受更多的请求。</li>
+<li>错误数表示发生错误的事件个数。错误数越多，表明系统的问题越严重。
+<img src="media/15538161650708/ccd7a9350c270c0168bad6cc8d0b8aee.png" alt="ccd7a9350c270c0168bad6cc8d0b8aee"/></li>
+<li>适用系统资源的监控</li>
 </ul>
 
-<h4>处理步骤</h4>
+<h4>应用程序的性能监控</h4>
 
 <ul>
-<li>选择指标评估应用程序和系统的性能</li>
-<li>为应用程序和系统设置性能目标</li>
-<li>进行性能基准测试</li>
-<li>性能分析定位瓶颈</li>
-<li>优化系统和应用程序</li>
-<li>性能监控和告警</li>
+<li>请求数</li>
+<li>错误率</li>
+<li>响应时间</li>
+</ul>
+
+<h4>指标</h4>
+
+<ul>
+<li>应用进程的资源使用情况，比如进程占用的 CPU、内存、磁盘 I/O、网络等。</li>
+<li>应用程序之间调用情况，比如调用频率、错误数、延时等</li>
+<li>应用程序内部核心逻辑的运行情况，比如关键环节的耗时以及执行过程中的错误等</li>
+</ul>
+
+<h4>Jaeger调用链</h4>
+
+<ul>
+<li></li>
 </ul>
 
                         
@@ -201,7 +216,383 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/11/22 15:25 下午</span>
+                    <span class="date">2019/03/29 07:36 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15533912218590.html">
+                
+                  <h1>内核动态追踪</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>动态追踪技术</h4>
+
+<ul>
+<li>动态追踪技术，通过探针机制，来采集内核或者应用程序的运行信息，从而可以不用修改内核和应用程序的代码，就获得丰富的信息，帮你分析、定位想要排查的问题。</li>
+</ul>
+
+<h4>DTrace工作原理</h4>
+
+<ul>
+<li>它的运行常驻在内核中，用户可以通过 dtrace 命令，把 D 语言编写的追踪脚本，提交到内核中的运行时来执行。</li>
+</ul>
+
+<h4>动态追踪的机制</h4>
+
+<ul>
+<li>Dtrace 和 SystemTap 都会把用户传入的追踪处理函数（一般称为 Action），关联到被称为探针的检测点上。这些探针，实际上也就是各种动态追踪技术所依赖的事件源</li>
+</ul>
+
+<h4>事件源</h4>
+
+<ul>
+<li>硬件事件通常由性能监控计数器 PMC（Performance Monitoring Counter）产生，包括了各种硬件的性能情况，比如 CPU 的缓存、指令周期、分支预测等等</li>
+<li>静态探针，是指事先在代码中定义好，并编译到应用程序或者内核中的探针，静态探针包括内核中的跟踪点（tracepoints）和 USDT（Userland Statically Defined Tracing）探针。</li>
+<li>动态探针 则是指没有事先在代码中定义，但却可以在运行时动态添加的探针 
+<ul>
+<li>kprobes 用来跟踪内核态的函数，包括用于函数调用的 kprobe 和用于函数返回的 kretprobe。</li>
+<li>uprobes 用来跟踪用户态的函数，包括用于函数调用的 uprobe 和用于函数返回的 uretprobe。</li>
+</ul></li>
+</ul>
+
+<h4>Linux追踪机制</h4>
+
+<ul>
+<li>ftrace</li>
+<li>perf</li>
+<li>eBPF(Berkeley Packet Filter)</li>
+<li>容器分析 sysdig</li>
+<li>SystemTap和BCC(BPF Compiler Collection)</li>
+</ul>
+
+<h4>strace的缺点</h4>
+
+<ul>
+<li>由于 ptrace 是系统调用，就需要在内核态和用户态切换。当事件数量比较多时，繁忙的切换必然会影响原有服务的性能；</li>
+<li>ptrace 需要借助 SIGSTOP 信号挂起目标进程。这种信号控制和进程挂起，会影响目标进程的行为。</li>
+</ul>
+
+<h4>ftrace</h4>
+
+<ul>
+<li>function 表示跟踪函数的执行，function_graph 则是跟踪函数的调用关系，追踪函数的执行过程</li>
+<li> trace-cmd record -p function_graph -g do_sys_open -O funcgraph-proc ls</li>
+<li> trace-cmd report</li>
+</ul>
+
+<h4>拓展阅读</h4>
+
+<ul>
+<li><a href="https://leezhenghui.github.io/linux/2019/03/05/exploring-usdt-on-linux.html">https://leezhenghui.github.io/linux/2019/03/05/exploring-usdt-on-linux.html</a></li>
+</ul>
+
+<h4>perf添加探针</h4>
+
+<pre class="line-numbers"><code class="language-text">perf probe --add do_sys_open
+perf record -e probe:do_sys_open -aR sleep 10
+perf script
+</code></pre>
+
+<ul>
+<li>追踪用户空间的库函数</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text"># 为 /bin/bash 添加 readline 探针
+$ perf probe -x /bin/bash &#39;readline%return +0($retval):string’
+# 采样记录
+$ perf record -e probe_bash:readline__return -aR sleep 5
+# 查看结果
+$ perf script
+# 跟踪完成后删除探针
+$ perf probe --del probe_bash:readline__return
+</code></pre>
+
+<h4>eBPF和BCC</h4>
+
+<ul>
+<li>eBPF工作原理
+<img src="media/15533912218590/15533978673142.jpg" alt=""/></li>
+<li>从用户跟踪程序生成 BPF 字节码；</li>
+<li>加载到内核中运行；</li>
+<li>向用户空间输出结果。</li>
+</ul>
+
+<h4>SystemTap和sysdig</h4>
+
+<ul>
+<li> sysdig = strace + tcpdump + htop + iftop + lsof + docker inspect。</li>
+</ul>
+
+<h4>使用方法</h4>
+
+<ul>
+<li>在不需要很高灵活性的场景中，使用 perf 对性能事件进行采样，然后再配合火焰图辅助分析，就是最常用的一种方法；</li>
+<li>而需要对事件或函数调用进行统计分析（比如观察不同大小的 I/O 分布）时，就要用 SystemTap 或者 eBPF，通过一些自定义的脚本来进行数据处理。</li>
+</ul>
+
+<h4>sysdig监控容器</h4>
+
+<ul>
+<li>容器</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">查看机器上运行的容器列表及其资源使用情况
+sudo csysdig -vcontainers 
+查看容器上下文的进程列表 sudo csysdig -pc 
+查看运行在wordpress1容器里CPU的使用率
+sudo sysdig -pc -c topprocs_cpu container.name=wordpress1
+查看运行在wordpress1容器里网络带宽的使用率
+sudo sysdig -pc -c topprocs_net container.name=wordpress1
+查看在wordpress1容器里使用网络带宽最多的进程
+ sudo sysdig -pc -c topprocs_net container.name=wordpress1
+查看在wordpress1 容器里占用 I/O 字节最多的文件
+sudo sysdig -pc -c topfiles_bytes container.name=wordpress1
+查看在wordpress1 容器里网络连接的排名情况
+sudo sysdig -pc -c topconns container.name=wordpress1
+显示wordpress1容器里所有命令执行的情况
+sudo sysdig -pc -c spy_users container.name=wordpress1
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/03/24 09:33 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15510586495458.html">
+                
+                  <h1>优化NAT性能</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>原理</h4>
+
+<ul>
+<li>NAT 技术可以重写 IP 数据包的源 IP 或者目的 IP，被普遍地用来解决公网 IP 地址短缺的问题。它的主要原理就是，网络中的多台主机，通过共享同一个公网 IP 地址，来访问外网资源</li>
+</ul>
+
+<h4>NAT类型</h4>
+
+<ul>
+<li>静态 NAT，即内网 IP 与公网 IP 是一对一的永久映射关系；</li>
+<li>动态 NAT，即内网 IP 从公网 IP 池中，动态选择一个进行映射；</li>
+<li>网络地址端口转换 NAPT（Network Address and Port Translation），即把内网 IP 映射到公网 IP 的不同端口上，让多个内网 IP 可以共享同一个公网 IP 地址。</li>
+</ul>
+
+<h4>NAPT类型</h4>
+
+<ul>
+<li>原地址转换SNAT</li>
+<li>目的地址转换DNAT</li>
+<li>双向地址转换SNAT和DNAT</li>
+</ul>
+
+<h4>NAT表内置的三个链</h4>
+
+<ul>
+<li>PREROUTING，用于路由判断前所执行的规则，比如，对接收到的数据包进行 DNAT。</li>
+<li>POSTROUTING，用于路由判断后所执行的规则，比如，对发送或转发的数据包进行 SNAT 或 MASQUERADE。</li>
+<li>OUTPUT，类似于 PREROUTING，但只处理从本机发送出去的包</li>
+</ul>
+
+<h4>SNAT</h4>
+
+<ul>
+<li>是为一个子网统一配置 SNAT，并由 Linux 选择默认的出口 IP。这实际上就是经常说的 MASQUERADE</li>
+<li>iptables -t nat -A POSTROUTING -s 192.168.0.0/16 -j MASQUERADE</li>
+<li>是为具体的 IP 地址配置 SNAT，并指定转换后的源地址</li>
+<li>iptables -t nat -A POSTROUTING -s 192.168.0.2 -j SNAT --to-source 100.100.100.100</li>
+</ul>
+
+<h4>DNAT</h4>
+
+<ul>
+<li>DNAT 需要在 nat 表的 PREROUTING 或者 OUTPUT 链中配置，其中， PREROUTING 链更常用一些</li>
+</ul>
+
+<h4>双向地址转换</h4>
+
+<ul>
+<li>同时添加 SNAT 和 DNAT 规则，为公网 IP 和内网 IP 实现一对一的映射关系</li>
+<li>iptables -t nat -A POSTROUTING -s 192.168.0.2 -j SNAT --to-source 100.100.100.100</li>
+<li>iptables -t nat -A PREROUTING -d 100.100.100.100 -j DNAT --to-destination 192.168.0.2</li>
+<li>开启转发功能</li>
+<li>net.ipv4.ip_forward = 1</li>
+</ul>
+
+<h4>问题</h4>
+
+<ul>
+<li>假设现在有一台 Linux 服务器，使用了 MASQUERADE 的方式，为内网的所有 IP 提供出口访问功能。那么，<br/>
+当多个内网 IP 地址的端口号相同时，MASQUERADE 还可以正常工作吗？<br/>
+如果内网 IP 地址数量或请求数比较多，这种方式有没有什么隐患呢？</li>
+</ul>
+
+<h4>安装systemtap</h4>
+
+<ul>
+<li>wget  <a href="http://debuginfo.centos.org/7/x86_64/kernel-debuginfo-3.10.0-957.5.1.el7.x86_64.rpm">http://debuginfo.centos.org/7/x86_64/kernel-debuginfo-3.10.0-957.5.1.el7.x86_64.rpm</a>  &amp;&amp; wget <a href="http://debuginfo.centos.org/7/x86_64/kernel-debuginfo-common-x86_64-3.10.0-957.5.1.el7.x86_64.rpm">http://debuginfo.centos.org/7/x86_64/kernel-debuginfo-common-x86_64-3.10.0-957.5.1.el7.x86_64.rpm</a></li>
+<li> yum -y install systemtap-devel</li>
+<li>测试</li>
+<li>stap -v -e &#39;probe vfs.read {printf(&quot;read performed\n&quot;); exit()}&#39;</li>
+<li>ab安装yum -y install httpd-tools</li>
+<li>启动内核追踪模块 stap --all-modules dropwatch.stp</li>
+</ul>
+
+<h4>测试镜像</h4>
+
+<ul>
+<li>docker run --name nginx_nat --privileged -p 8080:8080 -itd feisky/nginx:nat</li>
+<li>docker run --name nginx-hostnet --privileged --network=host -itd feisky/nginx:80</li>
+</ul>
+
+<h4>抓内核分析</h4>
+
+<ul>
+<li><img src="media/15510586495458/15512346465837.jpg" alt=""/></li>
+</ul>
+
+<h4>nf_hook_slow</h4>
+
+<ul>
+<li>第一，接收网络包时，在连接跟踪表中查找连接，并为新的连接分配跟踪对象（Bucket）。</li>
+<li>第二，在 Linux 网桥中转发包。这是因为案例 Nginx 是一个 Docker 容器，而容器的网络通过网桥来实现；</li>
+<li>第三，接收网络包时，执行 DNAT，即把 8080 端口收到的包转发给容器。</li>
+<li>net.netfilter.nf_conntrack_count，表示当前连接跟踪数；</li>
+<li>net.netfilter.nf_conntrack_max，表示最大连接跟踪数；</li>
+<li>net.netfilter.nf_conntrack_buckets，表示连接跟踪表的大小。</li>
+</ul>
+
+<h4>统计数据</h4>
+
+<ul>
+<li>统计总的连接追踪数</li>
+<li>conntrack -L -o extended | wc -l</li>
+<li>统计 TCP 协议各个状态的连接跟踪数</li>
+<li>conntrack -L -o extended | awk &#39;/<sup>.<em>tcp.</em>$/</sup> {sum[$6]++} END {for(i in sum) print i, sum[i]}&#39;</li>
+<li>统计各个源 IP 的连接跟踪数</li>
+<li>conntrack -L -o extended | awk &#39;{print $7}&#39; | cut -d &quot;=&quot; -f 2 | sort | uniq -c | sort -nr | head -n 10</li>
+</ul>
+
+<h4>优化</h4>
+
+<ul>
+<li>sysctl -w net.netfilter.nf_conntrack_max=131072</li>
+<li>echo 65536 &gt; /sys/module/nf_conntrack/parameters/hashsize</li>
+<li>使用无状态NAT比如tc或者DPDK开发</li>
+</ul>
+
+<h4>NAT扩展阅读</h4>
+
+<ul>
+<li><a href="https://mp.weixin.qq.com/s/VYBs8iqf0HsNg9WAxktzYQ">https://mp.weixin.qq.com/s/VYBs8iqf0HsNg9WAxktzYQ</a></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/02/25 09:37 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15535587417006.html">
+                
+                  <h1>服务吞吐量下降</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>连接数优化</h4>
+
+<pre class="line-numbers"><code class="language-text">ss -s 查看TCP连接数目
+timewait内核中的连接跟踪模块导致timewait
+查看内核处理溢出的情况 dmesg | tail 
+查看连接追踪数 
+sysctl net.netfilter.nf_conntrack_max 
+sysctl net.netfilter.nf_conntrack_count
+</code></pre>
+
+<h4>工作进程优化</h4>
+
+<pre class="line-numbers"><code class="language-text">查看容器日志 docker logs phpfpm --tail 5
+设置容器子进程最大进程数目
+</code></pre>
+
+<h4>套接字优化</h4>
+
+<pre class="line-numbers"><code class="language-text">查看套接字丢包情况 netstat -s | grep socket，观察socket overflowed和sockets dropped
+查看套接字队列大小 ss -ltnp
+查看全连接队列 net.ipv4.tcp_max_syn_backlog
+设置系统的套接字监听队列 sysctl net.core.somaxconn
+</code></pre>
+
+<h4>端口号优化</h4>
+
+<pre class="line-numbers"><code class="language-text">查看系统配置的临时端口号范围 sysctl net.ipv4.ip_local_port_range 
+配置系统的临时端口号范围 sysctl -w net.ipv4.ip_local_port_range
+打开端口重用 sysctl -w net.ipv4.tcp_tw_reuse=1
+inet_hash_connect()分配临时端口的函数
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/03/26 08:05 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
@@ -228,7 +619,7 @@
 			  </div>
 			  <div class="large-6 columns">
 			<p class="text-right" style="padding-top:25px;">
-			
+			 <a href="Linux性能优化实战_5.html">&raquo; Next Page</a> 
 			</p>
 			  </div>
 			</div>

@@ -170,199 +170,46 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15489893285277.html">
+                <a class="clearlink" href="15502009179020.html">
                 
-                  <h1>容器网络隔离</h1>
+                  <h1>kubernetes SIG-Node与CRI</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>NetWorkPolicy</h4>
+                        	<h4>kubelet工作原理</h4>
 
 <ul>
-<li>ingress 流入</li>
-<li>egress 流出</li>
-<li>CNI 网络插件，都维护着一个 NetworkPolicy Controller，通过控制循环的方式对 NetworkPolicy 对象的增删改查做出响应，然后在宿主机上完成 iptables 规则的配置工作</li>
-<li>Kubernetes 网络插件对 Pod 进行隔离，其实是靠在宿主机上生成 NetworkPolicy 对应的 iptable 规则来实现的</li>
-<li>网络插件还需要想办法，将所有对被隔离 Pod 的访问请求，都转发到上述 KUBE-NWPLCY-CHAIN 规则上去进行匹配。并且，如果匹配不通过，这个请求应该被“拒绝”。</li>
+<li><img src="media/15502009179020/914e097aed10b9ff39b509759f8b1d03.png" alt="914e097aed10b9ff39b509759f8b1d03"/></li>
 </ul>
 
-<h4>自定义iptables规则</h4>
-
-<pre class="line-numbers"><code class="language-text">iptables -A KUBE-POD-SPECIFIC-FW-CHAIN -j KUBE-NWPLCY-CHAIN
-iptables -A KUBE-POD-SPECIFIC-FW-CHAIN -j REJECT --reject-with icmp-port-unreachable
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/02/01 10:48 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15488381890610.html">
-                
-                  <h1>容器网络</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>网络栈</h4>
+<h4>kubernetes架构图</h4>
 
 <ul>
-<li>网卡</li>
-<li>回环设备</li>
-<li>路由表</li>
-<li>iptables</li>
+<li><img src="media/15502009179020/5161bd6201942f7a1ed6d70d7d55acfe.png" alt="5161bd6201942f7a1ed6d70d7d55acfe"/></li>
 </ul>
 
-<h4>被隔离的容器进程，该如何跟其他 Network Namespace 里的容器进程进行交互呢？</h4>
+<h4>CRI shim</h4>
 
 <ul>
-<li>docker创建虚拟网桥</li>
-<li><img src="media/15488381890610/e0d28e0371f93af619e91a86eda99a66.png" alt="e0d28e0371f93af619e91a86eda99a66"/></li>
-<li>被限制在 Network Namespace 里的容器进程，实际上是通过 Veth Pair 设备 + 宿主机网桥的方式，实现了跟同其他容器的数据交换</li>
+<li><img src="media/15502009179020/62c591c4d832d44fed6f76f60be88e3d.png" alt="62c591c4d832d44fed6f76f60be88e3d"/></li>
+<li>第一组，是 RuntimeService。它提供的接口，主要是跟容器相关的操作。比如，创建和启动容器、删除容器、执行 exec 命令等等。</li>
+<li>第二组，则是 ImageService。它提供的接口，主要是容器镜像相关的操作，比如拉取镜像、删除镜像等等</li>
 </ul>
 
-<h4>容器跨主机通讯</h4>
+<h4>kata container&amp; gVisor</h4>
 
 <ul>
-<li>overlay网络</li>
-<li><img src="media/15488381890610/b4387a992352109398a66d1dbe6e413d.png" alt="b4387a992352109398a66d1dbe6e413d"/></li>
+<li><img src="media/15502009179020/d9fb7404c5dc9e0b5c902f74df9d7a61.png" alt="d9fb7404c5dc9e0b5c902f74df9d7a61"/></li>
 </ul>
 
-<h4>Flannel</h4>
+<h4>CRI shim实现机制</h4>
 
 <ul>
-<li>VXLAN</li>
-<li>host-gw</li>
-<li>UDP</li>
-</ul>
-
-<h4>通讯原理</h4>
-
-<ul>
-<li><img src="media/15488381890610/e6827cecb75641d3c8838f2213543cf0.png" alt="e6827cecb75641d3c8838f2213543cf0"/></li>
-<li>VXLAN
-<img src="media/15488381890610/cefe6b99422fba768c53f0093947cd38.png" alt="cefe6b99422fba768c53f0093947cd38"/></li>
-<li>flannel VXLAN的外部帧
-<img src="media/15488381890610/43f5ebb001145ecd896fd10fb27c5c41.png" alt="43f5ebb001145ecd896fd10fb27c5"/></li>
-</ul>
-
-<h4>网络模型和CNI插件</h4>
-
-<ul>
-<li>一方面，Kubernetes 项目并没有使用 Docker 的网络模型（CNM），所以它并不希望、也不具备配置 docker0 网桥的能力；</li>
-<li>另一方面，这还与 Kubernetes 如何配置 Pod，也就是 Infra 容器的 Network Namespace 密切相关。</li>
-<li>Kubernetes 在启动 Infra 容器之后，就可以直接调用 CNI 网络插件，为这个 Infra 容器的 Network Namespace，配置符合预期的网络栈。</li>
-</ul>
-
-<h4>CNI基础可执行文件</h4>
-
-<ul>
-<li>Main 插件，它是用来创建具体网络设备的二进制文件,bridge（网桥设备）、ipvlan、loopback（lo 设备）、macvlan、ptp（Veth Pair 设备），以及 vlan。</li>
-<li>IPAM（IP Address Management）插件，它是负责分配 IP 地址的二进制文件。dhcp,hostlocal分配预先制定的IP地址</li>
-<li>CNI 社区维护的内置 CNI 插件,tuning，是一个通过 sysctl 调整网络设备参数的二进制文件；portmap，是一个通过 iptables 配置端口映射的二进制文件；bandwidth，是一个使用 Token Bucket Filter (TBF) 来进行限流的二进制文件。</li>
-</ul>
-
-<h4>容器网络方案</h4>
-
-<ul>
-<li>实现这个网络方案本身，配置宿主机路由、配置 ARP 和 FDB 表里的信息等等。</li>
-<li>实现该网络方案对应的 CNI 插件。这一部分主要需要做的，就是配置 Infra 容器里面的网络栈，并把它连接在 CNI 网桥上</li>
-</ul>
-
-<h4>host-gw</h4>
-
-<ul>
-<li>host-gw 模式的工作原理，其实就是将每个 Flannel 子网（Flannel Subnet，比如：10.244.1.0/24）的“下一跳”，设置成了该子网对应的宿主机的 IP 地址。</li>
-<li>Flannel host-gw 模式必须要求集群宿主机之间是二层连通的</li>
-</ul>
-
-<h4>Calico</h4>
-
-<ul>
-<li>BGP协议 在大规模网络中实现节点路由信息共享的一种协议</li>
-<li>在每个边界网关上都会运行着一个小程序，它们会将各自的路由表信息，通过 TCP 传输给其他的边界网关。而其他边界网关上的这个小程序，则会对收到的这些数据进行分析，然后将需要的信息添加到自己的路由表里。</li>
-<li>CNI插件 </li>
-<li>Felix 负责在宿主机上插入路由规则（即：写入 Linux 内核的 FIB 转发信息库），以及维护 Calico 所需的网络设备等工作。</li>
-<li>BIRD 专门负责在集群里分发路由规则信息</li>
-<li>Node to Node mesh模式</li>
-<li>Route reflector</li>
-</ul>
-
-<h4>IPIP模式</h4>
-
-<ul>
-<li>IP 包进入 IP 隧道设备之后，就会被 Linux 内核的 IPIP 驱动接管。IPIP 驱动会将这个 IP 包直接封装在一个宿主机网络的 IP 包中
-<img src="media/15488381890610/83c0dfa5fbac2b9854c6d8c57b404b15.png" alt="83c0dfa5fbac2b9854c6d8c57b404b15"/></li>
-<li>Node 2 的网络内核栈会使用 IPIP 驱动进行解包，从而拿到原始的 IP 包</li>
-</ul>
-
-<h4>Calio原理</h4>
-
-<ul>
-<li><a href="https://www.yangcs.net/posts/calico-rr/">https://www.yangcs.net/posts/calico-rr/</a></li>
-</ul>
-
-<h4>实验</h4>
-
-<ul>
-<li>Docker单机网络模型动手实验 <a href="https://github.com/mz1999/blog/blob/master/docs/docker-network-bridge.md">https://github.com/mz1999/blog/blob/master/docs/docker-network-bridge.md</a></li>
-<li>Docker跨主机Overlay网络动手实验 <a href="https://github.com/mz1999/blog/blob/master/docs/docker-overlay-networks.md">https://github.com/mz1999/blog/blob/master/docs/docker-overlay-networks.md</a></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/01/30 16:49 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15489056824394.html">
-                
-                  <h1>Kubernetes三层网络方案</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>host-gw</h4>
-
-<ul>
+<li><img src="media/15502009179020/a8e7ff6a6b0c9591a0a4f2b8e9e9bdef.png" alt="a8e7ff6a6b0c9591a0a4f2b8e9e9bdef"/></li>
+<li>kubectl command --&gt;API Server--&gt; kubelet-&gt; Exec api--&gt;CRI--&gt;exec</li>
+<li>CRI shim--&gt;(URL) kubelet --&gt; API Server</li>
+<li>API Server --&gt; Streaming Server</li>
 <li></li>
 </ul>
 
@@ -373,7 +220,7 @@ iptables -A KUBE-POD-SPECIFIC-FW-CHAIN -j REJECT --reject-with icmp-port-unreach
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/01/31 11:34 上午</span>
+                    <span class="date">2019/02/15 11:21 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
@@ -390,35 +237,163 @@ iptables -A KUBE-POD-SPECIFIC-FW-CHAIN -j REJECT --reject-with icmp-port-unreach
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15487414039268.html">
+                <a class="clearlink" href="15499358327518.html">
                 
-                  <h1>FlexVolume&CSI</h1>
+                  <h1>Kubernetes默认调度器</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>存储插件开发方式</h4>
+                        	<h4>调度算法</h4>
 
 <ul>
-<li>FlexVolume</li>
-<li>CSI</li>
+<li>从集群所有的节点中，根据调度算法挑选出所有可以运行该 Pod 的节点；</li>
+<li>从第一步的结果中，再根据调度算法挑选一个最符合条件的节点作为最终结果。</li>
 </ul>
 
-<h4>CSI实现</h4>
+<h4>调度流程</h4>
 
 <ul>
-<li><img src="media/15487414039268/6a553321623f6b58f5494b25091592ef.png" alt="6a553321623f6b58f5494b25091592ef"/></li>
-<li>CSI 插件体系的设计思想，就是把这个 Provision 阶段，以及 Kubernetes 里的一部分存储管理功能，从主干代码里剥离出来，做成了几个单独的组件</li>
-<li><img src="media/15487414039268/d4bdc7035f1286e7a423da851eee89ad.png" alt="d4bdc7035f1286e7a423da851eee89ad"/></li>
+<li><img src="media/15499358327518/90343a090a8242ad46d2f82cb6b99b9b.png" alt="90343a090a8242ad46d2f82cb6b99b9b"/></li>
+<li>Informer Path 启动informer来监听ectd的对象变化，将新的Pod添加进调度队列</li>
+<li>对调度器缓存进行更新，尽最大可能将集群信息Cache化，从根本上提高Predicate 和 Priority的效率</li>
+<li>Scheduling Path 从Scheduler Cache获取可以运行pod的宿主机列表nodes,使用Predicate获取node,然后使用priority对上述列表进行打分，选出得分最高的node作为本次的调度结果</li>
+<li>然后将Pod对象的nodeName修改为调度的Node的名字，成为Bind</li>
 </ul>
 
-<h4>CSI插件</h4>
+<h4>Assume和真正的绑定</h4>
 
 <ul>
-<li>CSI identity 提供插件名和版本号还有插件能力</li>
-<li>CSI Controller 管理Provision和Attach</li>
-<li>CSI node attach 和 mount</li>
-<li>宿主机的 /var/lib/kubelet 以 Volume 的方式挂载进 CSI 插件容器的同名目录下，然后设置这个 Volume 的 mountPropagation=Bidirectional，即开启双向挂载传播，从而将容器在这个目录下进行的挂载操作“传播”给宿主机，反之亦然</li>
+<li>Kubernetes 的默认调度器在 Bind 阶段，只会更新 Scheduler Cache 里的 Pod 和 Node 的信息，成为Assume</li>
+<li>Assume后，调度器才会创建一个 Goroutine 来异步地向 APIServer 发起更新 Pod 的请求，来真正完成 Bind 操作。</li>
+</ul>
+
+<h4>二次确认</h4>
+
+<ul>
+<li>当一个新的 Pod 完成调度需要在某个节点上运行起来之前，该节点上的 kubelet 还会通过一个叫作 Admit 的操作来再次验证该 Pod 是否确实能够运行在该节点上。</li>
+</ul>
+
+<h4>Predicates</h4>
+
+<ul>
+<li>GeneralPredicates,负责的是最基础的调度策略</li>
+<li>PodFitsHost 检查宿主机的名字是否跟Pod的spec.nodeName一致</li>
+<li>PodFitsHostPorts解决端口冲突</li>
+<li>PodMatchNodeSelector 检查的是，Pod 的 nodeSelector 或者 nodeAffinity 指定的节点，是否与待考察节点匹配</li>
+<li>Volume相关过滤策略</li>
+<li>NoDiskConflict多个 Pod 声明挂载的持久化 Volume 是否有冲突</li>
+<li>MaxPDVolumeCountPredicate 检查的条件，则是一个节点上某种类型的持久化 Volume 是不是已经超过了一定数目</li>
+<li>VolumeBindingPredicate 的规则。它负责检查的，是该 Pod 对应的 PV 的 nodeAffinity 字段，是否跟某个节点的标签相匹配</li>
+<li>宿主机相关的过滤规则</li>
+<li>PodToleratesNodeTaints，负责检查的就是我们前面经常用到的 Node 的“污点”机制。只有当 Pod 的 Toleration 字段与 Node 的 Taint 字段能够匹配的时候，这个 Pod 才能被调度到该节点上。</li>
+<li>NodeMemoryPressurePredicate，检查的是当前节点的内存是不是已经不够充足，如果是的话，那么待调度 Pod 就不能被调度到该节点上</li>
+<li>Pod 相关的过滤规则</li>
+<li>PodAffinityPredicate。这个规则的作用，是检查待调度 Pod 与 Node 上的已有 Pod 之间的亲密（affinity）和反亲密（anti-affinity）关系</li>
+</ul>
+
+<h4>Predicate</h4>
+
+<ul>
+<li>当开始调度一个 Pod 时，Kubernetes 调度器会同时启动 16 个 Goroutine，来并发地为集群里的所有 Node 计算 Predicates，最后返回可以运行这个 Pod 的宿主机列表。</li>
+</ul>
+
+<h4>Priorities</h4>
+
+<ul>
+<li>LeastRequestedPriority,就是在选择空闲资源（CPU 和 Memory）最多的宿主机</li>
+<li>BalancedResourceAllocation 调度完成后，所有节点里各种资源分配最均衡的那个节点，从而避免一个节点上 CPU 被大量分配、而 Memory 大量剩余的情况</li>
+</ul>
+
+<h4>调度优先级和抢占机制</h4>
+
+<ul>
+<li>解决Pod调度失败时怎么解决的问题</li>
+</ul>
+
+<h4>抢占机制</h4>
+
+<ul>
+<li>抢占发生的原因，一定是一个高优先级的 Pod 调度失败。这一次，我们还是称这个 Pod 为“抢占者”，称被抢占的 Pod 为“牺牲者”(victims)</li>
+<li>通过两个队列完成</li>
+<li>activeQ 都是下一个调度周期需要调度的对象</li>
+<li>unschedulableQ，专门用来存放调度失败的 Pod</li>
+</ul>
+
+<h4>调度器抢占操作</h4>
+
+<ul>
+<li>第一步，调度器会检查牺牲者列表，清理这些 Pod 所携带的 nominatedNodeName 字段。</li>
+<li>第二步，调度器会把抢占者的 nominatedNodeName，设置为被抢占的 Node 的名字。</li>
+<li>第三步，调度器会开启一个 Goroutine，同步地删除牺牲者。</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/02/12 09:43 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15491707031049.html">
+                
+                  <h1>kubenetas资源管理模型</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>CPU和内存资源</h4>
+
+<ul>
+<li>Kubernetes 里 Pod 的 CPU 和内存资源，实际上还要分为 limits 和 requests 两种情况</li>
+<li>在调度的时候，kube-scheduler 只会按照 requests 的值进行计算。而在真正设置 Cgroups 限制的时候，kubelet 则会按照 limits 的值来进行设置。</li>
+</ul>
+
+<h4>三类资源分配</h4>
+
+<ul>
+<li>当 Pod 里的每一个 Container 都同时设置了 requests 和 limits，并且 requests 和 limits 值相等的时候，这个 Pod 就属于 Guaranteed 类别</li>
+<li>当 Pod 不满足 Guaranteed 的条件，但至少有一个 Container 设置了 requests。那么这个 Pod 就会被划分到 Burstable 类别</li>
+<li>如果一个 Pod 既没有设置 requests，也没有设置 limits，那么它的 QoS 类别就是 BestEffort</li>
+<li>QoS 划分的主要应用场景，是当宿主机资源紧张的时候，kubelet 对 Pod 进行 Eviction（即资源回收）时需要用到的。</li>
+</ul>
+
+<h4>Qos回收资源</h4>
+
+<ul>
+<li>BestEffort</li>
+<li>Burstable</li>
+<li>Guaranteed</li>
+</ul>
+
+<h4>Cpu设置</h4>
+
+<ul>
+<li>首先，你的 Pod 必须是 Guaranteed 的 QoS 类型；</li>
+<li>然后，你只需要将 Pod 的 CPU 资源的 requests 和 limits 设置为同一个相等的整数值即可。</li>
+</ul>
+
+<h4>为什么宿主机进入 MemoryPressure 或者 DiskPressure 状态后，新的 Pod 就不会被调度到这台宿主机上呢？</h4>
+
+<ul>
+<li>通过给主机打上污点taint</li>
 <li></li>
 </ul>
 
@@ -429,7 +404,7 @@ iptables -A KUBE-POD-SPECIFIC-FW-CHAIN -j REJECT --reject-with icmp-port-unreach
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/01/29 13:56 下午</span>
+                    <span class="date">2019/02/03 13:11 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
@@ -446,70 +421,17 @@ iptables -A KUBE-POD-SPECIFIC-FW-CHAIN -j REJECT --reject-with icmp-port-unreach
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15487307529364.html">
+                <a class="clearlink" href="15491554909210.html">
                 
-                  <h1>PV&PVC</h1>
+                  <h1>Service&Ingress</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>概念</h4>
+                        	<h4>Ingress</h4>
 
 <ul>
-<li>PVC 可以理解为持久化存储的“接口”，它提供了对某种持久化存储的描述，但不提供具体的实现；而这个持久化存储的实现部分则由 PV 负责完成。</li>
-<li>专门处理持久化存储的控制器，叫作 Volume Controller。</li>
-<li> PersistentVolumeController</li>
-</ul>
-
-<h4>两阶段处理</h4>
-
-<ul>
-<li>为虚拟机挂载远程磁盘的操作 Attach</li>
-<li>磁盘设备格式化并挂载到 Volume 宿主机目录的操作，对应的正是“两阶段处理”的第二个阶段，我们一般称为：Mount</li>
-<li>kubelet 需要作为 client，将远端 NFS 服务器的目录（比如：“/”目录），挂载到 Volume 的宿主机目录上</li>
-<li>区别两阶段</li>
-<li>对于“第一阶段”（Attach），Kubernetes 提供的可用参数是 nodeName，即宿主机的名字。</li>
-<li>而对于“第二阶段”（Mount），Kubernetes 提供的可用参数是 dir，即 Volume 的宿主机目录。</li>
-</ul>
-
-<h4>操作原理</h4>
-
-<ul>
-<li>第一阶段的 Attach（以及 Dettach）操作，是由 Volume Controller 负责维护的，这个控制循环的名字叫作：AttachDetachController。</li>
-<li>第二阶段的 Mount（以及 Unmount）操作，发生在 Pod 对应的宿主机上，是 kubelet 组件的一部分。这个控制循环的名字，叫作VolumeManagerReconciler</li>
-</ul>
-
-<h4>StorageClass</h4>
-
-<ul>
-<li>第一，PV 的属性。比如，存储类型、Volume 的大小等等。</li>
-<li>第二，创建这种 PV 需要用到的存储插件。比如，Ceph 等等。
-<img src="media/15487307529364/e8b2586e4e14eb54adf8ff95c5c18cd9.png" alt="e8b2586e4e14eb54adf8ff95c5c18cd9"/></li>
-</ul>
-
-<h4>PV和PVC绑定关系</h4>
-
-<p><img src="media/15487307529364/15487329114289.jpg" alt=""/><br/>
-<img src="media/15487307529364/15487329471814.jpg" alt=""/></p>
-
-<ul>
-<li>所谓将一个 PV 与 PVC 进行“绑定”，其实就是将这个 PV 对象的名字，填在了 PVC 对象的 spec.volumeName 字段上。</li>
-</ul>
-
-<h4>Local Persistent Volume</h4>
-
-<ul>
-<li>本地磁盘抽象成PV</li>
-<li>保证Pod始终正确的调度到所请求的Local Persistent Volume</li>
-<li>延迟绑定</li>
-<li>正是由于需要使用“延迟绑定”这个特性，Local Persistent Volume 目前还不能支持 Dynamic Provisioning</li>
-</ul>
-
-<h4>ETCD原理</h4>
-
-<ul>
-<li><a href="https://www.infoq.cn/article/etcd-interpretation-application-scenario-implement-principle">https://www.infoq.cn/article/etcd-interpretation-application-scenario-implement-principle</a></li>
-<li></li>
+<li>全局的、为了代理不同后端 Service 而设置的负载均衡服务，就是 Kubernetes 里的 Ingress 服务。</li>
 </ul>
 
                         
@@ -519,268 +441,7 @@ iptables -A KUBE-POD-SPECIFIC-FW-CHAIN -j REJECT --reject-with icmp-port-unreach
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/01/29 10:59 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15487250739757.html">
-                
-                  <h1>Operator</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>Etcd Operator</h4>
-
-<ul>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/01/29 09:24 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15485836962305.html">
-                
-                  <h1>RABC</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>RABC概念</h4>
-
-<ul>
-<li>基于角色的访问控制（Role-Based Access Control）</li>
-<li>Role：角色，它其实是一组规则，定义了一组对 Kubernetes API 对象的操作权限。</li>
-<li>Subject：被作用者，既可以是“人”，也可以是“机器”，也可以使你在 Kubernetes 里定义的“用户”。</li>
-<li>RoleBinding：定义了“被作用者”和“角色”的绑定关系。</li>
-</ul>
-
-<h4>角色绑定</h4>
-
-<ul>
-<li>一个 ServiceAccount，在 Kubernetes 里对应的“用户”的名字是：<br/>
-system:serviceaccount:<ServiceAccount 名字 ></li>
-<li>而它对应的内置“用户组”的名字，就是：<br/>
-system:serviceaccounts:<Namespace 名字 ></li>
-<li>roleRef 字段。正是通过这个字段，RoleBinding 对象就可以直接通过名字，来引用我们前面定义的 Role 对象（example-role），从而定义了“被作用者（Subject）”和“角色（Role）”之间的绑定关系。</li>
-</ul>
-
-<h4>给系统默认用户配备只读权限</h4>
-
-<pre class="line-numbers"><code class="language-text">kind: ClusterRoleBinding
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  name: readonly-all-default
-subjects:
-- kind: User
-  name: system.serviceaccount.default
-roleRef:
-  kind: ClusterRole
-  name: view
-  apiGroup: rbac.authorization.k8s.io
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/01/27 18:08 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15484844394809.html">
-                
-                  <h1>声明式API</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>创建对象</h4>
-
-<ul>
-<li>Kubernetes 会匹配 API 对象的组。</li>
-<li>Kubernetes 会进一步匹配到 API 对象的版本号。</li>
-<li>Kubernetes 会匹配 API 对象的资源类型。
-<img src="media/15484844394809/df6f1dda45e9a353a051d06c48f0286f.png" alt="df6f1dda45e9a353a051d06c48f0286f"/></li>
-<li></li>
-</ul>
-
-<h4>自定义控制器</h4>
-
-<ul>
-<li>创建一个 Kubernetes 的 client（kubeClient）和 Network 对象的 client（networkClient）</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">cfg, err := clientcmd.BuildConfigFromFlags(masterURL, kubeconfig)
-kubeClient, err := kubernetes.NewForConfig(cfg)
-networkClient, err := clientset.NewForConfig(cfg)
-</code></pre>
-
-<ul>
-<li>Network 对象创建一个叫作 InformerFactory（即：networkInformerFactory）的工厂，并使用它生成一个 Network 对象的 Informer，传递给控制器。</li>
-<li>main 函数启动上述的 Informer，然后执行 controller.Run，启动自定义控制器</li>
-</ul>
-
-<h4>工作流程</h4>
-
-<p><img src="media/15484844394809/32e545dcd4664a3f36e95af83b571ec3.png" alt="32e545dcd4664a3f36e95af83b571e"/></p>
-
-<ul>
-<li>informer从 Kubernetes 的 APIServer 里获取它所关心的对象，也就是我定义的 Network对象</li>
-<li>根据这些事件的类型，触发事先注册好的 ResourceEventHandler</li>
-<li>informer，其实就是一个带有本地缓存和索引机制的、可以注册 EventHandler 的 client</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/01/26 14:33 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15484718413154.html">
-                
-                  <h1>声明式API和编程范式</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>声明式API</h4>
-
-<ul>
-<li>kubectl replace 的执行过程，是使用新的 YAML 文件中的 API 对象，替换原有的 API 对象；而 kubectl apply，则是执行了一个对原有 API 对象的 PATCH 操作。</li>
-<li>响应命令式请求（比如，kubectl replace）的时候，一次只能处理一个写请求，否则会有产生冲突的可能。而对于声明式请求（比如，kubectl apply），一次能处理多个写操作，并且具备 Merge 能力。</li>
-</ul>
-
-<h4>Istio</h4>
-
-<ul>
-<li>微服务治理
-<img src="media/15484718413154/d38daed2fedc90e20e9d2f27afbaec1b.jpg" alt="d38daed2fedc90e20e9d2f27afbaec1b"/></li>
-</ul>
-
-<h4>声明式API</h4>
-
-<ul>
-<li>首先，所谓“声明式”，指的就是我只需要提交一个定义好的 API 对象来“声明”，我所期望的状态是什么样子。</li>
-<li>其次，“声明式 API”允许有多个 API 写端，以 PATCH 的方式对 API 对象进行修改，而无需关心本地原始 YAML 文件的内容。</li>
-<li>最后，也是最重要的，有了上述两个能力，Kubernetes 项目才可以基于对 API 对象的增、删、改、查，在完全无需外界干预的情况下，完成对“实际状态”和“期望状态”的调谐（Reconcile）过程。</li>
-</ul>
-
-<h4>Envoy Demo</h4>
-
-<ul>
-<li><a href="https://github.com/resouer/kubernetes-initializer-tutorial">https://github.com/resouer/kubernetes-initializer-tutorial</a></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/01/26 11:04 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15484716947459.html">
-                
-                  <h1>Job和CronJob</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/01/26 11:01 上午</span>
+                    <span class="date">2019/02/03 08:58 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html'>深入剖析Kubernetes</a></span>

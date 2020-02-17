@@ -170,204 +170,92 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15751681913786.html">
+                <a class="clearlink" href="15788045159293.html">
                 
-                  <h1>封装和抽象和继承多态</h1>
+                  <h1>控制反转&依赖反转&依赖注入</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>继承的作用</h4>
+                        	<h4>控制反转</h4>
 
-<ul>
-<li>继承最大的一个好处就是代码复用。假如两个类有一些相同的属性和方法，我们就可以将这些相同的部分，抽取到父类中，让两个子类继承父类。这样，两个子类就可以重用父类中的代码，避免代码重复写多遍。不过，这一点也并不是继承所独有的，我们也可以通过其他方式来解决这个代码复用的问题，比如利用组合关系而不是继承关系</li>
-</ul>
+<pre class="line-numbers"><code class="language-go">package design_pattern
 
-<h4>接口和抽象类</h4>
+import &quot;container/list&quot;
 
-<ul>
-<li>抽象类更多的是为了代码复用，而接口就更侧重于解耦。接口是对行为的一种抽象，相当于一组协议或者契约</li>
-</ul>
+type Case interface {
+    doTest() bool
+}
 
-<h4>抽象模拟接口</h4>
+type CaseA struct {
+}
 
-<pre class="line-numbers"><code class="language-cpp">class Strategy { // 用抽象类模拟接口
-  public:
-    ~Strategy();
-    virtual void algorithm()=0;
-  protected:
-    Strategy();
-};
-</code></pre>
+func (c *CaseA) doTest() bool {
+    println(&quot;CaseA doTest&quot;)
+    return true
+}
 
-<ul>
-<li>抽象类 Strategy 没有定义任何属性，并且所有的方法都声明为 virtual 类型（等同于 Java 中的 abstract 关键字），这样，所有的方法都不能有代码实现，并且所有继承这个抽象类的子类，都要实现这些方法。从语法特性上来看，这个抽象类就相当于一个接口。</li>
-</ul>
+type CaseB struct {
+}
 
-<h4>抽象类和接口</h4>
+func (c *CaseB) doTest() bool {
+    println(&quot;CaseB doTest&quot;)
+    return true
+}
 
-<ul>
-<li>判断的标准很简单。如果我们要表示一种 is-a 的关系，并且是为了解决代码复用的问题，我们就用抽象类；如果我们要表示一种 has-a 关系，并且是为了解决抽象而非代码复用的问题，那我们就可以使用接口</li>
-</ul>
+type TestCase struct {
+    Case
+}
 
-<h4>附件上传服务器实现</h4>
-
-<ul>
-<li>需求：支持上传、下载、删除以及文件的存储，存储的话需要支持存本地和云端，涉及附件上传的业务点有十几个。</li>
-<li>设计思路：</li>
-<li>接口设计：上传、下载、删除是公共行为，抽象到接口中</li>
-<li>2、存储方法是一大块公共代码，写到抽象类里面</li>
-<li>3、每个业务的附件上传子类实现接口、继承抽象类</li>
-</ul>
-
-<h4>接口属性</h4>
-
-<ul>
-<li>接口不能包含属性（也就是成员变量）。接口只能声明方法，方法不能包含代码实现。类实现接口的时候，必须实现接口中声明的所有方法。</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
-#include &lt;list&gt;
-
-class RpcReq {
-public:
-    RpcReq() {}
-};
-
-class Filter {
-public:
-    virtual void doFilter(RpcReq req) = 0;
-};
-
-class AuthencationFilter : public Filter {
-public:
-    void doFilter(RpcReq req) { std::cout &lt;&lt; &quot;AuthencationFilter&quot; &lt;&lt; std::endl;}
-};
-
-class RateLimitFilter : public Filter {
-public:
-    void doFilter(RpcReq req) { std::cout &lt;&lt; &quot;RateLimitFilter&quot; &lt;&lt; std::endl; }
-};
-
-class Application {
-private:
-    std::list&lt;Filter*&gt; filters;
-
-public:
-    void handleRequest(RpcReq req) {
-        for (auto filter : filters) {
-            filter-&gt;doFilter(req);
-        }
+func (t *TestCase) run() {
+    if t.Case.doTest() {
+        println(&quot;Test succeed.&quot;)
+    } else {
+        println(&quot;Test failed.&quot;)
     }
+}
 
-    void AddFilter(Filter* filter) {
-        filters.push_back(filter);
+type Application struct {
+    caseList list.List
+}
+
+func (a *Application) register(c Case) {
+    testCase := &amp;TestCase{Case: c}
+    a.caseList.PushBack(testCase)
+}
+
+func (a *Application) run() {
+    for e := a.caseList.Front(); e != nil; e = e.Next() {
+        e.Value.(*TestCase).run()
     }
-};
+}
 
-int main() {
-    Application* app = new Application();
-    app-&gt;AddFilter(new AuthencationFilter());
-    app-&gt;AddFilter(new RateLimitFilter());
-    RpcReq req;
-    app-&gt;handleRequest(req);
+import &quot;testing&quot;
+
+func TestIOC(t *testing.T) {
+    app := &amp;Application{}
+    app.register(&amp;CaseA{})
+    app.register(&amp;CaseB{})
+    app.run()
 }
 </code></pre>
 
-<h4>日志</h4>
+<ul>
+<li>框架提供了一个可扩展的代码骨架，用来组装对象、管理整个执行流程。程序员利用框架进行开发的时候，只需要往预留的扩展点上，添加跟自己业务相关的代码，就可以利用框架来驱动整个程序流程的执行。这里的“控制”指的是对程序执行流程的控制，而“反转”指的是在没有使用框架之前，程序员自己控制整个程序的执行。在使用框架之后，整个程序的执行流程可以通过框架来控制。流程的控制权从程序员“反转”到了框架</li>
+</ul>
 
-<pre class="line-numbers"><code class="language-cpp">//
-// Created by 刘超 on 2019-12-01.
-//
+<h4>依赖注入</h4>
 
-#include &lt;iostream&gt;
+<ul>
+<li>不通过 new() 的方式在类内部创建依赖类对象，而是将依赖的类对象在外部创建好之后，通过构造函数、函数参数等方式传递（或注入）给类使用</li>
+</ul>
 
-using namespace std;
+<h4>依赖反转</h4>
 
-class Level {
-private:
-    int value_;
-public:
-    Level(int val = 2) : value_(val) {}
-
-    int intValue() {
-        return value_;
-    }
-};
-
-class Logger {
-public:
-    string _name;
-    bool _enabled;
-    Level *_minLevel;
-public:
-    Logger(string name, bool enabled, Level *minLevel) : _name(name),
-                                                         _enabled(enabled),
-                                                         _minLevel(minLevel) {
-    }
-
-    void log(string message) {
-        if (!isLoggable()) return;
-        doLog(message);
-    }
-
-    virtual void doLog(string message) = 0;
-
-protected:
-    bool isLoggable() {
-        return _enabled &amp;&amp; (_minLevel-&gt;intValue() &lt;= 3);
-    }
-};
-
-class Writer {
-public:
-    void write(string msg) {
-        std::cout &lt;&lt; msg &lt;&lt; std::endl;
-    }
-};
-
-class FileLogger : public Logger {
-private:
-    Writer *fileWriter;
-public:
-    FileLogger(string name, bool enabled, Level *minLevel)
-            : Logger(name, enabled, minLevel), fileWriter(new Writer()) {
-    }
-
-    void doLog(string message) {
-        fileWriter-&gt;write(message);
-    }
-};
-
-class MessageQueueClient {
-public:
-    void send(string msg) {
-        std::cout &lt;&lt; msg &lt;&lt; std::endl;
-    }
-};
-
-class MessageQueueLogger : public Logger {
-private:
-    MessageQueueClient *_client;
-public:
-    MessageQueueLogger(string name, bool enabled, Level *minLevel)
-            : Logger(name, enabled, minLevel),
-              _client(new MessageQueueClient()) {
-    }
-
-    void doLog(string message) {
-        _client-&gt;send(message);
-    }
-};
-
-int main() {
-    Logger* fileLog = new FileLogger(&quot;file&quot;, true, new Level());
-    Logger* mqLog
-            = new MessageQueueLogger(&quot;kafka&quot;, true, new Level());
-    fileLog-&gt;doLog(&quot;file logger&quot;);
-    mqLog-&gt;doLog(&quot;kafka mq logger&quot;);
-}
-</code></pre>
+<ul>
+<li>高层模块（high-level modules）不要依赖低层模块（low-level）。高层模块和低层模块应该通过抽象（abstractions）来互相依赖。除此之外，抽象（abstractions）不要依赖具体实现细节（details），具体实现细节（details）依赖抽象（abstractions）</li>
+<li></li>
+</ul>
 
                         
                       </div>
@@ -376,7 +264,754 @@ int main() {
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/12/01 10:43 上午</span>
+                    <span class="date">2020/01/12 12:48 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html'>设计模式之美</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15782298377426.html">
+                
+                  <h1>接口隔离原则</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>概念</h4>
+
+<ul>
+<li>客户端不应该强迫依赖它不需要的接口。其中的“客户端”，可以理解为接口的调用者或者使用者</li>
+<li>接口理解</li>
+<li>一组API接口集合</li>
+<li>单个API接口或函数</li>
+<li>OOP中的接口概念</li>
+</ul>
+
+<h4>demo</h4>
+
+<pre class="line-numbers"><code class="language-go">package design_pattern
+
+import (
+    &quot;fmt&quot;
+    &quot;reflect&quot;
+    &quot;time&quot;
+)
+
+type Updater interface {
+    updater()
+}
+
+type ConfigSource struct {
+    address string
+    timeOut, maxTotal int64
+}
+
+
+type RedisConfig struct {
+    configSource *ConfigSource
+    address string
+    timeOut, maxTotal int64
+}
+
+
+func (r *RedisConfig) getAddress() string {
+    return r.address
+}
+
+func (r *RedisConfig) updater() {
+    //r.address = r.configSource.address
+    //r.timeOut, r.maxTotal = r.configSource.timeOut, r.configSource.timeOut
+    fmt.Println(&quot;Time to update config &quot;, reflect.TypeOf(r).String())
+}
+
+type KafkaConfig struct {
+    configSource *ConfigSource
+    address string
+    timeOut, maxTotal int64
+}
+
+func (k *KafkaConfig) updater() {
+    //k.address = k.configSource.address
+    //k.timeOut, k.maxTotal = k.configSource.timeOut, k.configSource.timeOut
+    fmt.Println(&quot;Time to update config &quot;, reflect.TypeOf(k).String())
+}
+
+type MysqlConfig struct {
+    configSource *ConfigSource
+    address string
+    timeOut, maxTotal int64
+}
+
+type Executor struct {
+    t *time.Ticker
+}
+
+func (e *Executor) run(updater Updater) {
+    for {
+        select {
+          case &lt;- e.t.C:
+            updater.updater()
+        }
+    }
+}
+
+type ScheduleUpdater struct {
+    Updater
+    delayTime int64
+    executor *Executor
+}
+
+func (s *ScheduleUpdater) run() {
+    s.executor.run(s.Updater)
+}
+
+func NewScheduleUpdater(updater Updater, delayTime int64) *ScheduleUpdater {
+    return &amp;ScheduleUpdater {
+        Updater: updater,
+        delayTime: delayTime,
+        executor: &amp;Executor{
+            t: time.NewTicker(time.Duration(delayTime)),
+        },
+    }
+}
+
+import &quot;testing&quot;
+
+func TestConfig(t *testing.T) {
+    configSource := &amp;ConfigSource{&quot;localhost&quot;, 2, 3}
+    redisConfig := &amp;RedisConfig{configSource: configSource}
+    kafkaConfig := &amp;KafkaConfig{configSource: configSource}
+    //mysqlConfig := &amp;MysqlConfig{configSource: configSource}
+
+    var updaterList []*ScheduleUpdater
+    redisUpdater := NewScheduleUpdater(redisConfig, 10000)
+    updaterList = append(updaterList, redisUpdater)
+
+    kafkaUpdater := NewScheduleUpdater(kafkaConfig, 10000)
+    updaterList = append(updaterList, kafkaUpdater)
+
+    for _, v := range updaterList {
+        go v.run()
+    }
+    select {}
+}
+</code></pre>
+
+<h4>添加接口查看</h4>
+
+<pre class="line-numbers"><code class="language-go">package design_pattern
+
+import (
+    &quot;container/list&quot;
+    &quot;fmt&quot;
+    &quot;github.com/luci/go-render/render&quot;
+    &quot;reflect&quot;
+    &quot;time&quot;
+)
+
+type Updater interface {
+    updater()
+}
+
+type Viewer interface {
+    outPutInPlainText() string
+    output() map[string]string
+    containsKey(string) bool
+}
+
+type ConfigSource interface {
+    add()
+}
+
+type ZookeeperConfigSource struct {
+    address string
+    timeOut, maxTotal int64
+}
+
+func (z *ZookeeperConfigSource) add() {
+}
+
+
+type RedisConfig struct {
+    configSource ConfigSource
+    address string
+    timeOut, maxTotal int64
+}
+
+
+func (r *RedisConfig) getAddress() string {
+    return r.address
+}
+
+func (r *RedisConfig) updater() {
+    //r.address = r.configSource.address
+    //r.timeOut, r.maxTotal = r.configSource.timeOut, r.configSource.timeOut
+    fmt.Println(&quot;Time to update config &quot;, reflect.TypeOf(r).String())
+}
+
+func (r *RedisConfig) outPutInPlainText() string {
+    fmt.Println(&quot;outPutInPlainText &quot;, reflect.TypeOf(r).String())
+    return &quot;outPutInPlainText &quot; + reflect.TypeOf(r).String()
+}
+
+func (r *RedisConfig) output() map[string]string {
+    ret := make(map[string]string)
+    ret[&quot;outPut&quot;] = reflect.TypeOf(r).String()
+    fmt.Println(&quot;output &quot;, render.Render(ret))
+    return ret
+}
+
+
+func (r *RedisConfig) containsKey(key string) bool {
+    return false
+}
+
+type KafkaConfig struct {
+    configSource ConfigSource
+    address string
+    timeOut, maxTotal int64
+}
+
+func (k *KafkaConfig) updater() {
+    //k.address = k.configSource.address
+    //k.timeOut, k.maxTotal = k.configSource.timeOut, k.configSource.timeOut
+    fmt.Println(&quot;Time to update config &quot;, reflect.TypeOf(k).String())
+}
+
+func (k *KafkaConfig) outPutInPlainText() string {
+    fmt.Println(&quot;outPutInPlainText &quot;, reflect.TypeOf(k).String())
+    return &quot;outPutInPlainText &quot; + reflect.TypeOf(k).String()
+}
+
+func (k *KafkaConfig) output() map[string]string {
+    ret := make(map[string]string)
+    ret[&quot;outPut&quot;] = reflect.TypeOf(k).String()
+    fmt.Println(&quot;output &quot;, render.Render(ret))
+    return ret
+}
+
+type MysqlConfig struct {
+    configSource ConfigSource
+    address string
+    timeOut, maxTotal int64
+}
+
+func (m *MysqlConfig) outPutInPlainText() string {
+    fmt.Println(&quot;outPutInPlainText &quot;, reflect.TypeOf(m).String())
+    return &quot;outPutInPlainText &quot; + reflect.TypeOf(m).String()
+}
+
+func (m *MysqlConfig) output() map[string]string {
+    ret := make(map[string]string)
+    ret[&quot;outPut&quot;] = reflect.TypeOf(m).String()
+    fmt.Println(&quot;output &quot;, render.Render(ret))
+    return ret
+}
+
+func (r *MysqlConfig) containsKey(key string) bool {
+    return false
+}
+
+type Executor struct {
+    t *time.Timer
+    d time.Duration
+}
+
+func (e *Executor) run(updater Updater) {
+    for {
+        select {
+          case &lt;- e.t.C:
+            updater.updater()
+                e.t.Reset(e.d)
+        }
+    }
+}
+
+type ScheduleUpdater struct {
+    Updater
+    delayTime int64
+    executor *Executor
+}
+
+func (s *ScheduleUpdater) run() {
+    s.executor.run(s.Updater)
+}
+
+func NewScheduleUpdater(updater Updater, delayTime int64) *ScheduleUpdater {
+    dur :=  time.Duration(delayTime) * time.Second
+    return &amp;ScheduleUpdater {
+        Updater: updater,
+        delayTime: delayTime,
+        executor: &amp;Executor{
+            d: dur,
+            t: time.NewTimer(dur),
+        },
+    }
+}
+
+type HttpServer struct {
+    host string
+    port int
+    viewers map[string]*list.List
+}
+
+func (h *HttpServer) addViewers(urlDic string, viewer Viewer) {
+    if !viewer.containsKey(urlDic) {
+        viewList := list.New()
+        h.viewers[urlDic] = viewList
+
+        h.viewers[urlDic].PushBack(viewer)
+    }
+}
+
+func (h *HttpServer) run() {
+    fmt.Println(&quot;HttpServer viewer &quot;, render.Render(h.viewers))
+}
+
+func TestConfig(t *testing.T) {
+    configSource := &amp;ZookeeperConfigSource{&quot;localhost&quot;, 2, 3}
+    redisConfig := &amp;RedisConfig{configSource: configSource}
+    kafkaConfig := &amp;KafkaConfig{configSource: configSource}
+    mysqlConfig := &amp;MysqlConfig{configSource: configSource}
+
+    updaterList := list.New()
+    redisUpdater := NewScheduleUpdater(redisConfig, 2)
+    updaterList.PushBack(redisUpdater)
+
+    kafkaUpdater := NewScheduleUpdater(kafkaConfig, 2)
+    updaterList.PushBack(kafkaUpdater)
+
+    for e := updaterList.Front(); e != nil; e = e.Next() {
+        go e.Value.(*ScheduleUpdater).run()
+    }
+
+    httpServer := &amp;HttpServer{
+        host: &quot;127.0.0.1&quot;,
+        port: 2389,
+        viewers: make(map[string]*list.List),
+    }
+
+    httpServer.addViewers(&quot;/config&quot;, redisConfig)
+    httpServer.addViewers(&quot;/config&quot;, mysqlConfig)
+    httpServer.run()
+    select {}
+}
+</code></pre>
+
+<h4>接口隔离原则</h4>
+
+<ul>
+<li>理解“接口隔离原则”的重点是理解其中的“接口”二字。这里有三种不同的理解。</li>
+<li>如果把“接口”理解为一组接口集合，可以是某个微服务的接口，也可以是某个类库的接口等。如果部分接口只被部分调用者使用，我们就需要将这部分接口隔离出来，单独给这部分调用者使用，而不强迫其他调用者也依赖这部分不会被用到的接口。</li>
+<li>如果把“接口”理解为单个 API 接口或函数，部分调用者只需要函数中的部分功能，那我们就需要把函数拆分成粒度更细的多个函数，让调用者只依赖它需要的那个细粒度函数</li>
+<li>如果把“接口”理解为 OOP 中的接口，也可以理解为面向对象编程语言中的接口语法。那接口的设计要尽量单一，不要让接口的实现类和调用者，依赖不需要的接口函数。</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2020/01/05 21:10 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html'>设计模式之美</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15782208339837.html">
+                
+                  <h1>里式替换</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>原则</h4>
+
+<ul>
+<li>子类对象（object of subtype/derived class）能够替换程序（program）中父类对象（object of base/parent class）出现的任何地方，并且保证原来程序的逻辑行为（behavior）不变及正确性不被破坏。</li>
+</ul>
+
+<h4>违背里式替换原则</h4>
+
+<ul>
+<li>子类违背父类声明要实现的功能</li>
+<li>子类违背父类对输入、输出、异常的约定</li>
+</ul>
+
+<h4>里氏替换原则</h4>
+
+<ul>
+<li>多态是面向对象编程的一大特性，也是面向对象编程语言的一种语法。它是一种代码实现的思路。而里式替换是一种设计原则，是用来指导继承关系中子类该如何设计的，子类的设计要保证在替换父类的时候，不改变原有程序的逻辑以及不破坏原有程序的正确性。</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2020/01/05 18:40 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html'>设计模式之美</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15771449820188.html">
+                
+                  <h1>单一职责模式</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>单一职责划分标准</h4>
+
+<ul>
+<li>类中的代码行数、函数或属性过多，会影响代码的可读性和可维护性，我们就需要考虑对类进行拆分；</li>
+<li>类依赖的其他类过多，或者依赖类的其他类过多，不符合高内聚、低耦合的设计思想，我们就需要考虑对类进行拆分；</li>
+<li>私有方法过多，我们就要考虑能否将私有方法独立到新的类中，设置为 public 方法，供更多的类使用，从而提高代码的复用性；</li>
+<li>比较难给类起一个合适名字，很难用一个业务名词概括，或者只能用一些笼统的 Manager、Context 之类的词语来命名，这就说明类的职责定义得可能不够清晰；</li>
+<li>类中大量的方法都是集中操作类中的某几个属性，比如，在 UserInfo 例子中，如果一半的方法都是在操作 address 信息，那就可以考虑将这几个属性和对应的方法拆分出来</li>
+</ul>
+
+<h4>单一职责</h4>
+
+<ul>
+<li>一个类只负责完成一个职责或者功能。不要设计大而全的类，要设计粒度小、功能单一的类。单一职责原则是为了实现代码高内聚、低耦合，提高代码的复用性、可读性、可维护性。</li>
+</ul>
+
+<h4>耦合和内聚</h4>
+
+<ul>
+<li>1 内聚和耦合其实是对一个意思（即合在一块）从相反方向的两种阐述。</li>
+<li>2 内聚是从功能相关来谈，主张高内聚。把功能高度相关的内容不必要地分离开，就降低了内聚性，成了低内聚。</li>
+<li>3 耦合是从功能无关来谈，主张低耦合。把功能明显无关的内容随意地结合起来，就增加了耦合性，成了高耦合</li>
+</ul>
+
+<h4>职责单一判断</h4>
+
+<ul>
+<li>类中的代码行数、函数或者属性过多；</li>
+<li>类依赖的其他类过多，或者依赖类的其他类过多；</li>
+<li>私有方法过多；比较难给类起一个合适的名字；</li>
+<li>类中大量的方法都是集中操作类中的某几个属性。</li>
+</ul>
+
+<h4>对扩展开放和对修改关闭</h4>
+
+<pre class="line-numbers"><code class="language-cpp">//
+// Created by eredinliu on 2020-01-05.
+//
+
+#include &lt;iostream&gt;
+#include &lt;list&gt;
+using namespace std;
+
+class AlertRule {
+public:
+    int64_t getMatchRule(string&amp; api) {
+        return 10;
+    }
+};
+
+class Notification{
+public:
+    void notify(int64_t level, const string&amp; msg) {
+        cout &lt;&lt; &quot;level &quot; &lt;&lt; level &lt;&lt; &quot; msg &quot; &lt;&lt; msg &lt;&lt; endl;
+    }
+};
+
+class ApiStateInfo;
+
+class AlertHandle {
+public:
+    AlertHandle(AlertRule* rule, Notification* noti): _rule(rule), _noti(noti){}
+
+    virtual void check(ApiStateInfo* stateInfo) = 0;
+
+
+    AlertRule* getRule() {
+        return _rule;
+    }
+
+    Notification* getNoti() {
+        return _noti;
+    }
+
+private:
+    AlertRule* _rule;
+    Notification* _noti;
+};
+
+class ApiStateInfo {
+public:
+    string api;
+    int64_t reqCount;
+    int64_t errCount;
+    int64_t duration;
+    int64_t timeOut;
+    ApiStateInfo(const string&amp; _api, int64_t _reqCount, int64_t _errCount,
+            int64_t _duration, int64_t _timeOut) : api(_api), reqCount
+            (_reqCount), errCount
+            (_errCount),duration(_duration), timeOut(_timeOut) {}
+};
+
+class Alert {
+public:
+    void addAlertHandle(AlertHandle* handle) {
+        this-&gt;handleList.push_back(handle);
+    }
+
+    void check(ApiStateInfo* stateInfo) {
+        for (auto handler : handleList) {
+            handler-&gt;check(stateInfo);
+        }
+    }
+
+private:
+    list&lt;AlertHandle*&gt; handleList{};
+};
+
+class TpsAlertHandler : public AlertHandle {
+public:
+    using AlertHandle::AlertHandle;
+
+    void check(ApiStateInfo* stateInfo) {
+        int64_t tps = stateInfo-&gt;reqCount / stateInfo-&gt;duration;
+        if (tps &gt; AlertHandle::getRule()-&gt;getMatchRule(stateInfo-&gt;api)) {
+           AlertHandle::getNoti()-&gt;notify(-1, &quot;TpsAlert Handle&quot;);
+        }
+    }
+};
+
+class ErrorAlertHandler : public AlertHandle {
+public:
+    using AlertHandle::AlertHandle;
+
+    void check(ApiStateInfo* stateInfo) {
+        if (stateInfo-&gt;errCount &gt; AlertHandle::getRule()-&gt;getMatchRule(
+                stateInfo-&gt;api)) {
+            AlertHandle::getNoti()-&gt;notify(-2, &quot;ErrAlert Handle&quot;);
+        }
+    }
+};
+
+class TimeOutAlertHandler : public AlertHandle {
+public:
+    using AlertHandle::AlertHandle;
+
+    void check(ApiStateInfo* stateInfo) {
+        if (stateInfo-&gt;timeOut &gt; AlertHandle::getRule()-&gt;getMatchRule(
+                stateInfo-&gt;api)) {
+            AlertHandle::getNoti()-&gt;notify(-3, &quot;TimeOutAlert Handle&quot;);
+        }
+    }
+};
+
+class ApplicationContext {
+public:
+    ApplicationContext() {
+        _rule = new AlertRule();
+        _noti = new Notification();
+        _alert = new Alert();
+        _alert-&gt;addAlertHandle(new TpsAlertHandler(_rule, _noti));
+        _alert-&gt;addAlertHandle(new ErrorAlertHandler(_rule, _noti));
+        _alert-&gt;addAlertHandle(new TimeOutAlertHandler(_rule, _noti));
+    }
+
+    Alert* getAlert() {
+        return _alert;
+    }
+
+private:
+    AlertRule* _rule;
+    Notification* _noti;
+    Alert* _alert;
+};
+
+int main() {
+    ApiStateInfo* stateInfo = new ApiStateInfo(&quot;Money&quot;, 10000, 20 ,30, 60);
+    ApplicationContext* ctx = new ApplicationContext();
+    ctx-&gt;getAlert()-&gt;check(stateInfo);
+}
+</code></pre>
+
+<h4>golang_demo</h4>
+
+<pre class="line-numbers"><code class="language-go">package design_pattern
+
+import &quot;fmt&quot;
+
+type AlertRule struct {
+}
+
+func (*AlertRule) getMatchRule(api string) int64 {
+    return 10;
+}
+
+type Notification struct {
+}
+
+func (*Notification) notify(level int64, msg string) {
+    fmt.Println(&quot;level&quot;, level, &quot; msg&quot;, msg)
+}
+
+type ApiStateInfo struct {
+    api string
+    reqCount, errCount, duration, timeOut  int64
+}
+
+type AlertHandle interface {
+    check(*ApiStateInfo)
+}
+
+type Alert struct {
+    handleList []AlertHandle
+}
+
+func (a *Alert) addAlertHandle(handle AlertHandle) {
+    a.handleList = append(a.handleList, handle)
+}
+
+func (a *Alert) check(info *ApiStateInfo) {
+    for _, v := range a.handleList {
+        v.check(info)
+    }
+}
+
+type TpsAlertHandler struct {
+    *AlertRule
+    *Notification
+}
+
+func (t *TpsAlertHandler) check(info *ApiStateInfo) {
+    tps := info.reqCount / info.duration
+
+    if tps &gt; t.AlertRule.getMatchRule(info.api) {
+        t.Notification.notify(-1, &quot;TpsAlert Handle&quot;)
+    }
+}
+
+type ErrorAlertHandler struct {
+    *AlertRule
+    *Notification
+}
+
+func (t *ErrorAlertHandler) check(info *ApiStateInfo) {
+    tps := info.reqCount / info.duration
+
+    if tps &gt; t.AlertRule.getMatchRule(info.api) {
+        t.Notification.notify(-2, &quot;ErrorAlert Handle&quot;)
+    }
+}
+
+type TimeOutAlertHandler struct {
+    *AlertRule
+    *Notification
+}
+
+func (t *TimeOutAlertHandler) check(info *ApiStateInfo) {
+    tps := info.reqCount / info.duration
+
+    if tps &gt; t.AlertRule.getMatchRule(info.api) {
+        t.Notification.notify(-3, &quot;TimeOutAlert Handle&quot;)
+    }
+}
+
+type ApplicationContext struct {
+    rule *AlertRule
+    noti *Notification
+    alert *Alert
+}
+
+func NewAppContext() *ApplicationContext {
+    ctx := &amp;ApplicationContext{
+        rule: &amp;AlertRule{},
+        noti: &amp;Notification{},
+        alert: &amp;Alert{},
+    }
+
+    tpsHandler := &amp;TpsAlertHandler{
+        AlertRule: ctx.rule,
+        Notification: ctx.noti,
+    }
+
+    errHandler := &amp;ErrorAlertHandler{
+        AlertRule: ctx.rule,
+        Notification: ctx.noti,
+    }
+
+    timeOutHandler := &amp;TimeOutAlertHandler{
+        AlertRule: ctx.rule,
+        Notification: ctx.noti,
+    }
+
+    ctx.alert.addAlertHandle(tpsHandler)
+    ctx.alert.addAlertHandle(errHandler)
+    ctx.alert.addAlertHandle(timeOutHandler)
+    return ctx
+}
+
+import &quot;testing&quot;
+
+func TestAlert(t *testing.T) {
+    stateInfo := &amp;ApiStateInfo{&quot;Money&quot;, 10000, 20, 30, 60}
+    ctx := NewAppContext()
+    ctx.alert.check(stateInfo)
+}
+</code></pre>
+
+<h4>指导思想</h4>
+
+<ul>
+<li>为了尽量写出扩展性好的代码，我们要时刻具备扩展意识、抽象意识、封装意识。这些“潜意识”可能比任何开发技巧都重要。</li>
+<li>提高代码扩展性 多态、依赖注入、基于接口而非实现编程，以及大部分的设计模式（比如，装饰、策略、模板、职责链、状态等）。</li>
+<li>多态、依赖注入、基于接口而非实现编程</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/12/24 07:49 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html'>设计模式之美</a></span>
@@ -403,7 +1038,7 @@ int main() {
 			  </div>
 			  <div class="large-6 columns">
 			<p class="text-right" style="padding-top:25px;">
-			
+			 <a href="设计模式之美_2.html">&raquo; Next Page</a> 
 			</p>
 			  </div>
 			</div>

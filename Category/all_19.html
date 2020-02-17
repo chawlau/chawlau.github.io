@@ -170,40 +170,28 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15703486295241.html">
+                <a class="clearlink" href="15723060364617.html">
                 
-                  <h1>思考题</h1>
+                  <h1>仿函数</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>案例、服务器端高并发IO的keep alive方案，满足一下几个需求</h4>
+                        	<h4>算术运算和逻辑运算</h4>
 
 <ul>
-<li>1. 每个IO都是自己的时间戳</li>
-<li>2. 每个IO收到自己的beat后，重置自己的定时器</li>
-<li>3. 若IO定时没有收到beat，则执行IO的回调函数，并重置定时器</li>
-<li>4. 若再次没有收到beat，销毁IO，注销定时器。</li>
+<li> <img src="media/15723060364617/15723060642492.jpg" alt="" style="width:864px;"/></li>
+<li><img src="media/15723060364617/15723061972480.jpg" alt="" style="width:701px;"/></li>
 </ul>
 
-<h5>方案一</h5>
+<h4>融入STL条件</h4>
 
 <ul>
-<li>timerfd+epoll</li>
-<li>0. 时间精准度高</li>
-<li>小块代码逻辑清晰</li>
-<li>程序总体逻辑混乱</li>
-<li>代码是基于时间反应堆的</li>
-<li>回调函数中不易做较长时间操作，比如数椐库，第三方 HTP 请求中</li>
-</ul>
-
-<h5>方案三</h5>
-
-<ul>
-<li>红黑树</li>
-<li>key 时间戳 val 是 io</li>
-<li>期限到了直接删除节点</li>
-<li>如果key的值是一样的，从s扩充到ms</li>
+<li><img src="media/15723060364617/15723065078186.jpg" alt="" style="width:886px;"/></li>
+<li>继承binary_function<T, T, bool> </li>
+<li><img src="media/15723060364617/15723066558246.jpg" alt="" style="width:919px;"/></li>
+<li>unary_function 一个操作数 如果作为父类，有人继承的话，大小是零</li>
+<li>binary_function 两个操作数 1个字节</li>
 <li></li>
 </ul>
 
@@ -214,10 +202,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/10/06 15:57 下午</span>
+                    <span class="date">2019/10/29 07:40 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
+          					    <span class="posted-in"><a href='%E5%80%99%E6%8D%B7STL.html'>候捷STL</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -231,50 +219,49 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15703439218598.html">
+                <a class="clearlink" href="15671534121507.html">
                 
-                  <h1>nginx线程池</h1>
+                  <h1>微服务架构</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>线程池</h4>
-
-<pre class="line-numbers"><code class="language-c">struct thread_pool_s {
-    pthread_mutex_t        mtx; //互斥锁
-    thread_pool_queue_t   queue; //任务队列
-    int_t                 waiting; //等待任务的数量
-    pthread_cond_t         cond;
-
-    char                  *name; //线程池名称
-    uint_t                threads; //线程池数目
-    int_t                 max_queue;
-};
-</code></pre>
+                        	<h4>访问日志</h4>
 
 <ul>
-<li>pthread_attr_setdetachstate(&amp;attr, PTHREAD_CREATE_DETACHED); 设置线程的分离状态，会释放所有资源</li>
-<li>pthread_join才会释放资源</li>
-<li>分配任务的时候把上下文的空间一块分配了</li>
+<li>通过中间件来解决</li>
+<li>日志中间版本</li>
+<li>v.1.7.1</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-cpp">    thread_task_t  *task;
+<h4>代码生成器优化</h4>
 
-    task = calloc(1,sizeof(thread_task_t) + size);
-    if (task == NULL) {
-        return NULL;
-    }
-
-    task-&gt;ctx = task + 1;
-
-    return task;
+<pre class="line-numbers"><code class="language-go">exist := util.IsFileExist(filename) controller_generator.go 44
+exist := util.IsFileExist(filename) main_generator.go  18
 </code></pre>
 
+<h4>分布式追踪</h4>
+
 <ul>
-<li>退出通过投递任务thread_pool_exit_handler</li>
+<li>v1.9.2</li>
+<li>元信息从grpc获取</li>
 <li></li>
 </ul>
 
+<h4>解决ETCD冲突</h4>
+
+<ul>
+<li>rm -rf $GOPATH/src/go.etcd.io/etcd/vendor/golang.org/x/net/trace</li>
+</ul>
+
+<h4>安装go1.13</h4>
+
+<ul>
+<li>wget <a href="https://dl.google.com/go/go1.13.linux-amd64.tar.gz">https://dl.google.com/go/go1.13.linux-amd64.tar.gz</a></li>
+<li>tar -C /usr/local -xzf go1.13.linux-amd64.tar.gz</li>
+<li><a href="https://madneal.com/post/gproxy/">https://madneal.com/post/gproxy/</a></li>
+</ul>
+
                         
                       </div>
                   </div>
@@ -282,10 +269,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/10/06 14:38 下午</span>
+                    <span class="date">2019/08/30 16:23 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
+          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -299,124 +286,118 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15456164768088.html">
+                <a class="clearlink" href="15739426575118.html">
                 
-                  <h1>Linux内存工作机制</h1>
+                  <h1>抽象基类</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>内存映射</h4>
+                        	<h4>作用</h4>
 
 <ul>
-<li>每个进程都有很大的地址空间</li>
-<li>并不是所有的虚拟内存都会分配物理内存，只有那些实际使用的虚拟内存才分配物理内存，并且分配后的物理内存，是通过内存映射来管理的。</li>
-<li>将虚拟内存地址映射到物理内存地址。为了完成内存映射，内核为每个进程都维护了一张页表，记录虚拟地址与物理地址的映射关系</li>
+<li>类型判断</li>
+<li>接口实现</li>
 </ul>
 
-<h4>缺页异常</h4>
+<h4>类对象数组</h4>
+
+<pre class="line-numbers"><code class="language-python">class Cat(object):
+    def say(self):
+        print(&quot;i am a cat&quot;)
+
+
+class Dog(object):
+    def say(self):
+        print(&quot;i am a dog&quot;)
+
+
+class Duck(object):
+    def say(self):
+        print(&quot;i am a duck&quot;)
+
+
+anaimal_list = [Cat, Dog, Duck]
+for anaimal in anaimal_list:
+    anaimal().say()
+</code></pre>
+
+<h4>扩展类</h4>
 
 <ul>
-<li> 进程访问的虚拟地址在页表中查不到时，系统会产生一个缺页异常，进入内核空间分配物理内存、更新进程页表，最后再返回用户空间，恢复进程的运行</li>
+<li>只要继承了魔法函数getitem就可以</li>
 </ul>
 
-<h4>解决页表过多</h4>
+<pre class="line-numbers"><code class="language-python">class Company(object):
+    def __init__(self, employee_list):
+        self.employee = employee_list
+
+    def __getitem__(self, item):
+        return self.employee[item]
+
+    def __len__(self):
+        return len(self.employee)
+
+
+com = Company([&#39;tom&#39;, &#39;jack&#39;, &#39;jsdon&#39;])
+a = [&#39;b1&#39;, &#39;b2&#39;]
+b = [&#39;b2&#39;, &#39;b3&#39;]
+name_tuple = [&#39;b3&#39;, &#39;b4&#39;]
+name_set = set()
+name_set.add(&#39;b5&#39;)
+name_set.add(&#39;b6&#39;)
+a.extend(com)
+print(a)
+</code></pre>
+
+<h4>强制子类必须实现接口</h4>
+
+<pre class="line-numbers"><code class="language-python">class CacheBase(metaclass=abc.ABCMeta):
+    @abc.abstractmethod
+    def get(self, key):
+        pass
+
+    @abc.abstractmethod
+    def set(self, key, value):
+        pass
+
+class RedisCache(CacheBase):
+    def set(self, key, value):
+        print(&quot;hello&quot;)
+
+    def get(self, key):
+        print(&#39;hello&#39;)
+</code></pre>
+
+<h4>instance&amp;type</h4>
 
 <ul>
-<li>多级页表</li>
-<li>大页面</li>
+<li>is是判断类别</li>
+<li>==是判断值</li>
 </ul>
 
-<h4>虚拟内存空间</h4>
+<pre class="line-numbers"><code class="language-python">class A:
+    pass
 
-<p><img src="media/15456164768088/15456168238060.jpg" alt=""/></p>
+class B(A):
+    pass
 
-<ul>
-<li>文件映射包括动态库，共享内存</li>
-</ul>
+b = B()
 
-<h4>malloc内存</h4>
+print(isinstance(b, B))
+print(isinstance(b, A))
 
-<ul>
-<li>&gt;128K 使用mmap mmap() 方式分配的内存，会在释放时直接归还系统，所以每次 mmap 都会发生缺页异常。在内存工作繁忙时，频繁的内存分配会导致大量的缺页异常，使内核的管理负担增大。这也是 malloc 只对大块内存使用 mmap 的原因。</li>
-<li>&lt;128K 使用brk brk() 方式的缓存，可以减少缺页异常的发生，提高内存访问效率。不过，由于这些内存没有归还系统，在内存工作繁忙时，频繁的内存分配和释放会造成内存碎片。</li>
-<li>slab是内核空间的，只用来管理内核中的小块内存</li>
-</ul>
+print(type(b) is B)
+print(type(b) is A) #二者的ID不想等
+print(id(b))
+print(id(B))
+</code></pre>
 
-<h4>管理小内存</h4>
-
-<ul>
-<li>slab管理器管理小内存</li>
-</ul>
-
-<h4>系统回收机制</h4>
+<h4>Mro算法</h4>
 
 <ul>
-<li>回收缓存，比如使用 LRU（Least Recently Used）算法，回收最近使用最少的内存页面；</li>
-<li>回收不常访问的内存，把不常用的内存通过交换分区直接写到磁盘中；</li>
-<li>杀死进程，内存紧张时系统还会通过 OOM（Out of Memory），直接杀掉占用大量内存的进程。oom_adj的范围-17~15</li>
-</ul>
-
-<h4>top</h4>
-
-<ul>
-<li>VIRT 进程虚拟内存的大小，只要是进程申请过的内存，即便还没有真正分配物理内存，也会计算在内。</li>
-<li>RES 是常驻内存的大小，也就是进程实际使用的物理内存大小</li>
-<li>SHR 是共享内存的大小，比如与其他进程共同使用的共享内存、加载的动态链接库以及程序的代码段等。</li>
-<li>共享内存 SHR 并不一定是共享的，比方说，程序的代码段、非共享的动态链接库，也都算在 SHR 里。当然，SHR 也包括了进程间真正共享的内存。所以在计算多个进程的内存使用时，不要把所有进程的 SHR 直接相加得出结果</li>
-</ul>
-
-<h4>查看系统内存情况</h4>
-
-<ul>
-<li>cat /proc/[pid]/status和pmap -x pid</li>
-</ul>
-
-<h4>拓展阅读</h4>
-
-<ul>
-<li><a href="https://blog.holbertonschool.com/hack-the-virtual-memory-malloc-the-heap-the-program-break/">https://blog.holbertonschool.com/hack-the-virtual-memory-malloc-the-heap-the-program-break/</a></li>
-</ul>
-
-<h4>内存分配</h4>
-
-<ul>
-<li>调用c标准库的都是用户空间的调用，用户空间的内存分配都是基于buddy算法（伙伴算法），并不涉及slab</li>
-<li>brk()方式之所以会产生内存碎片，是由于brk分配的内存是推_edata指针，从堆的低地址向高地址推进。这种情况下，如果高地址的内存不释放，低地址的内存是得不到释放的</li>
-<li>mmap()方式分配的内存，是在堆与栈之间的空闲区域分配虚拟内存，直接拿到的是内存地址，可以直接操作内存的释放</li>
-<li>上述的都是在用户空间发生的行为，只有在内核空间，内核调用kmalloc去分配内存的时候，才会涉及到slab</li>
-</ul>
-
-<h4>缺页异常</h4>
-
-<ul>
-<li>缺页异常是内存分配必要步骤：陷入内核态分配内存并完成内存映射的过程</li>
-<li>可以直接从物理内存中分配时，被称为次缺页异常。</li>
-<li>需要磁盘 I/O 介入（比如 Swap）时，被称为主缺页异常。</li>
-</ul>
-
-<h4>oom_score</h4>
-
-<ul>
-<li>一个进程消耗的内存越大，oom_score 就越大；</li>
-<li>一个进程运行占用的 CPU 越多，oom_score 就越小。</li>
-<li>通过oom_adj来调整大小</li>
-</ul>
-
-<h4>缓存</h4>
-
-<ul>
-<li>cachestat 系统缓存和缓冲区的命中率</li>
-<li>cachetop 进程缓存和缓冲区的命中率</li>
-</ul>
-
-<h4>内存选项</h4>
-
-<ul>
-<li>RSS (Resident set size），使用 top 命令可以查询到，是最常用的内存指标，表示进程占用的物理内存大小。但是，将各进程的 RSS 值相加，通常会超出整个系统的内存消耗，这是因为 RSS 中包含了各进程间共享的内存。</li>
-<li>PSS (Proportional set size）所有使用某共享库的程序均分该共享库占用的内存时。显然所有进程的 PSS 之和就是系统的内存使用量。它会更准确一些，它将共享内存的大小进行平均后，再分推到各进程上去。</li>
-<li>USS (Unique set size）进程独自占用的内存，它只计算了进程独自占用的内存大小，</li>
-<li>smem -k  -s uss</li>
+<li><img src="media/15739426575118/15739464120394.jpg" alt="" style="width:913px;"/></li>
+<li>C3算法</li>
 </ul>
 
                         
@@ -426,10 +407,10 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/12/24 09:54 上午</span>
+                    <span class="date">2019/11/17 06:17 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -443,608 +424,60 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15662646498238.html">
+                <a class="clearlink" href="15738723543218.html">
                 
-                  <h1>队列</h1>
+                  <h1>魔法函数</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>栈</h4>
+                        	<h4>概念</h4>
 
 <ul>
-<li>leet_20</li>
+<li>python内置</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-cpp">Given a string containing just the characters &#39;(&#39;, &#39;)&#39;, &#39;{&#39;, &#39;}&#39;, &#39;[&#39; and &#39;]&#39;, determine if the input string is valid.
-class Solution {
-public:
-    bool isValid(string s) {
-        stack&lt;char&gt; parentheses;
-        for (int i = 0; i &lt; s.size(); ++i) {
-            if (s[i] == &#39;(&#39; || s[i] == &#39;[&#39; || s[i] == &#39;{&#39;) parentheses.push(s[i]);
-            else {
-                if (parentheses.empty()) return false;
-                if (s[i] == &#39;)&#39; &amp;&amp; parentheses.top() != &#39;(&#39;) return false;
-                if (s[i] == &#39;]&#39; &amp;&amp; parentheses.top() != &#39;[&#39;) return false;
-                if (s[i] == &#39;}&#39; &amp;&amp; parentheses.top() != &#39;{&#39;) return false;
-                parentheses.pop();
-            }
-        }
-        return parentheses.empty();
-    }
-}; 
+<pre class="line-numbers"><code class="language-python">class Company(object):
+    def __init__(self, employee_list):
+       self.employee = employee_list
+
+    def __getitem__(self, item):
+        return self.employee[item]
+
+company = Company([&#39;tom&#39;, &#39;jack&#39;, &#39;jsdon&#39;])
+
+for em in company:
+    print(em)
 </code></pre>
 
-<ul>
-<li>leet_150</li>
-</ul>
+<h4>python数据模型</h4>
 
-<pre class="line-numbers"><code class="language-cpp">Input: [&quot;2&quot;, &quot;1&quot;, &quot;+&quot;, &quot;3&quot;, &quot;*&quot;]
-Output: 9
-Explanation: ((2 + 1) * 3) = 9
-class Solution {
-public:
-    int evalRPN(vector&lt;string&gt;&amp; tokens) {
-        if (tokens.size() == 1) return stoi(tokens[0]);
-        stack&lt;int&gt; st;
-        for (int i = 0; i &lt; tokens.size(); ++i) {
-            if (tokens[i] != &quot;+&quot; &amp;&amp; tokens[i] != &quot;-&quot; &amp;&amp; tokens[i] != &quot;*&quot; &amp;&amp; tokens[i] != &quot;/&quot;) {
-                st.push(stoi(tokens[i]));
-            } else {
-                int num1 = st.top(); st.pop();
-                int num2 = st.top(); st.pop();
-                if (tokens[i] == &quot;+&quot;) st.push(num2 + num1);
-                if (tokens[i] == &quot;-&quot;) st.push(num2 - num1);
-                if (tokens[i] == &quot;*&quot;) st.push(num2 * num1);
-                if (tokens[i] == &quot;/&quot;) st.push(num2 / num1);
-            }
-        }
-        return st.top();
-    }
-};
+<pre class="line-numbers"><code class="language-python">class Company(object):
+    def __init__(self, employee_list):
+       self.employee = employee_list
 
-class Solution {
-public:
-    int evalRPN(vector&lt;string&gt;&amp; tokens) {
-        int op = (int)tokens.size() - 1;
-        return helper(tokens, op);
-    }
-    int helper(vector&lt;string&gt;&amp; tokens, int&amp; op) {
-        string str = tokens[op];
-        if (str != &quot;+&quot; &amp;&amp; str != &quot;-&quot; &amp;&amp; str != &quot;*&quot; &amp;&amp; str != &quot;/&quot;) return stoi(str);
-        int num1 = helper(tokens, --op);
-        int num2 = helper(tokens, --op);
-        if (str == &quot;+&quot;) return num2 + num1;
-        if (str == &quot;-&quot;) return num2 - num1;
-        if (str == &quot;*&quot;) return num2 * num1;
-        return num2 / num1;
-    }
-};
+    def __getitem__(self, item):
+        return self.employee[item]
+
+    def __len__(self):
+        return len(self.employee)
+
+company = Company([&#39;tom&#39;, &#39;jack&#39;, &#39;jsdon&#39;])
+
+# company1 = company[:2]
+# for em in company1:
+#     print(em)
+
+print(len(company))
 </code></pre>
 
-<ul>
-<li>leet_71</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">For example,
-path = &quot;/home/&quot;, =&gt; &quot;/home&quot;
-path = &quot;/a/./b/../../c/&quot;, =&gt; &quot;/c&quot;
-class Solution {
-public:
-    string simplifyPath(string path) {
-        vector&lt;string&gt; v;
-        int i = 0;
-        while (i &lt; path.size()) {
-            while (path[i] == &#39;/&#39; &amp;&amp; i &lt; path.size()) ++i;
-            if (i == path.size()) break;
-            int start = i;
-            while (path[i] != &#39;/&#39; &amp;&amp; i &lt; path.size()) ++i;
-            int end = i - 1;
-            string s = path.substr(start, end - start + 1);
-            if (s == &quot;..&quot;) {
-                if (!v.empty()) v.pop_back(); 
-            } else if (s != &quot;.&quot;) {
-                v.push_back(s);
-            }
-        }
-        if (v.empty()) return &quot;/&quot;;
-        string res;
-        for (int i = 0; i &lt; v.size(); ++i) {
-            res += &#39;/&#39; + v[i];
-        }
-        return res;
-    }
-};
-</code></pre>
-
-<h4>栈和递归的紧密关系</h4>
+<h4>魔法函数</h4>
 
 <ul>
-<li>leet_144 </li>
+<li><img src="media/15738723543218/15738740515573.jpg" alt="" style="width:278px;"/></li>
 </ul>
 
-<pre class="line-numbers"><code class="language-cpp">For example:
-Given binary tree {1,#,2,3},
-
-   1
-    \
-     2
-    /
-   3
- 
-return [1,2,3].
-class Solution {
-public:
-    vector&lt;int&gt; preorderTraversal(TreeNode* root) {
-        vector&lt;int&gt; res;
-        stack&lt;TreeNode*&gt; s;
-        TreeNode *p = root;
-        while (!s.empty() || p) {
-            if (p) {
-                s.push(p);
-                res.push_back(p-&gt;val);
-                p = p-&gt;left;
-            } else {
-                TreeNode *t = s.top(); s.pop();
-                p = t-&gt;right;
-            }
-        }
-        return res;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_94 middle</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given a binary tree, return the  inorder  traversal of its nodes&#39; values.
-Example:
-Input: [1,null,2,3]
-   1
-    \
-     2
-    /
-   3
-Output: [1,3,2]
-
-class Solution {
-public:
-    vector&lt;int&gt; inorderTraversal(TreeNode* root) {
-        vector&lt;int&gt; res;
-        stack&lt;TreeNode*&gt; s;
-        TreeNode *p = root;
-        while (!s.empty() || p) {
-            if (p) {
-                s.push(p);
-                p = p-&gt;left;
-            } else {
-               TreeNode* t = s.top(); s.pop();
-                res.push_back(t-&gt;val);
-                p = t-&gt;right;
-            }
-        }
-        return res;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_145</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given a binary tree, return the postorder traversal of its nodes&#39; values.
-
-For example:
-Given binary tree {1,#,2,3},
-   1
-    \
-     2
-    /
-   3
-return [3,2,1].
-
-class Solution {
-public:
-    vector&lt;int&gt; postorderTraversal(TreeNode* root) {
-        vector&lt;int&gt; res;
-        stack&lt;TreeNode*&gt; s;
-        TreeNode *p = root;
-        while (!s.empty() || p) {
-            if (p) {
-                s.push(p);
-                res.insert(res.begin(), p-&gt;val);
-                p = p-&gt;right;
-            } else {
-                TreeNode *t = s.top(); s.pop();
-                p = t-&gt;left;
-            }
-        }
-        return res;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_341 </li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">class NestedIterator {
-public:
-    NestedIterator(vector&lt;NestedInteger&gt; &amp;nestedList) {
-        for (int i = nestedList.size() - 1; i &gt;= 0; --i) {
-            s.push(nestedList[i]);
-        }
-    }
-
-    int next() {
-        NestedInteger t = s.top(); s.pop();
-        return t.getInteger();
-    }
-
-    bool hasNext() {
-        while (!s.empty()) {
-            NestedInteger t = s.top(); 
-            if (t.isInteger()) return true;
-            s.pop();
-            for (int i = t.getList().size() - 1; i &gt;= 0; --i) {
-                s.push(t.getList()[i]);
-            }
-        }
-        return false;
-    }  
-
-private:
-    stack&lt;NestedInteger&gt; s;
-};
-</code></pre>
-
-<h4>队列</h4>
-
-<ul>
-<li>广度优先遍历</li>
-<li>树 层序遍历</li>
-<li>图 无权图的最短路径</li>
-<li>leet_102</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">Given a binary tree, return the  level order  traversal of its nodes&#39; values. (ie, from left to right, level by level).
-
-For example:
-Given binary tree {3,9,20,#,#,15,7},
-
-    3
-   / \
-  9  20
-    /  \
-   15   7
-class Solution {
-public:
-    vector&lt;vector&lt;int&gt;&gt; levelOrder(TreeNode* root) {
-        if (!root) return {};
-        vector&lt;vector&lt;int&gt;&gt; res;
-        queue&lt;TreeNode*&gt; q{{root}};
-        while (!q.empty()) {
-            vector&lt;int&gt; oneLevel;
-            for (int i = q.size(); i &gt; 0; --i) {
-                TreeNode *t = q.front(); q.pop();
-                oneLevel.push_back(t-&gt;val);
-                if (t-&gt;left) q.push(t-&gt;left);
-                if (t-&gt;right) q.push(t-&gt;right);
-            }
-            res.push_back(oneLevel);
-        }
-        return res;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_107</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">For example:
-Given binary tree {3,9,20,#,#,15,7},
-    3
-   / \
-  9  20
-    /  \
-   15   7 
-return its bottom-up level order traversal as:
-[
-  [15,7],
-  [9,20],
-  [3]
-]
-class Solution {
-public:
-    vector&lt;vector&lt;int&gt; &gt; levelOrderBottom(TreeNode* root) {
-        if (!root) return {};
-        vector&lt;vector&lt;int&gt;&gt; res;
-        queue&lt;TreeNode*&gt; q{{root}};
-        while (!q.empty()) {
-            vector&lt;int&gt; oneLevel;
-            for (int i = q.size(); i &gt; 0; --i) {
-                TreeNode *t = q.front(); q.pop();
-                oneLevel.push_back(t-&gt;val);
-                if (t-&gt;left) q.push(t-&gt;left);
-                if (t-&gt;right) q.push(t-&gt;right);
-            }
-            res.insert(res.begin(), oneLevel);
-        }
-        return res;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_103</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">For example:
-Given binary tree [3,9,20,null,null,15,7],
-    3
-   / \
-  9  20
-    /  \
-   15   7
-return its zigzag level order traversal as:
-[
-  [3],
-  [20,9],
-  [15,7]
-]
-class Solution {
-public:
-    vector&lt;vector&lt;int&gt;&gt; zigzagLevelOrder(TreeNode* root) {
-        if (!root) return {};
-        vector&lt;vector&lt;int&gt;&gt; res;
-        queue&lt;TreeNode*&gt; q{{root}};
-        bool leftToRight = true;
-        while (!q.empty()) {
-            int size = q.size();
-            vector&lt;int&gt; oneLevel(size);
-            for (int i = 0; i &lt; size; ++i) {
-                TreeNode *t = q.front(); q.pop();
-                int idx = leftToRight ? i : (size - 1 - i);
-                oneLevel[idx] = t-&gt;val;
-                if (t-&gt;left) q.push(t-&gt;left);
-                if (t-&gt;right) q.push(t-&gt;right);
-            }
-            leftToRight = !leftToRight;
-            res.push_back(oneLevel);
-        }
-        return res;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_199</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given a binary tree, imagine yourself standing on the  right  side of it, return the values of the nodes you can see ordered from top to bottom.
-
-For example:
-Given the following binary tree,
-
-   1            &lt;---
- /   \
-2     3         &lt;---
- \     \
-  5     4       &lt;---
-
-class Solution {
-public:
-    vector&lt;int&gt; rightSideView(TreeNode *root) {
-        vector&lt;int&gt; res;
-        if (!root) return res;
-        queue&lt;TreeNode*&gt; q{{root}};
-        while (!q.empty()) {
-            res.push_back(q.back()-&gt;val);
-            int size = q.size();
-            for (int i = 0; i &lt; size; ++i) {
-                TreeNode *node = q.front();
-                q.pop();
-                if (node-&gt;left) q.push(node-&gt;left);
-                if (node-&gt;right) q.push(node-&gt;right);
-            }
-        }
-        return res;
-    }
-};
-</code></pre>
-
-<h4>BFS</h4>
-
-<ul>
-<li>leet_279</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given a positive integer  n , find the least number of perfect square numbers (for example, 1, 4, 9, 16, ...) which sum to  n.
-
-Example 1:
-
-Input: _n_ = 12
-Output: 3 
-Explanation: 12 = 4 + 4 + 4.
-
-class Solution {
-public:
-    int numSquares(int n) {
-        vector&lt;int&gt; dp(n + 1, INT_MAX);
-        dp[0] = 0;
-        for (int i = 0; i &lt;= n; ++i) {
-            for (int j = 1; i + j * j &lt;= n; ++j) {
-                dp[i + j * j] = min(dp[i + j * j], dp[i] + 1);
-            }
-        }
-        return dp.back();
-    }
-};
-
-class Solution {
-public:
-    int numSquares(int n) {
-        
-      int ret;
-      assert(n &gt; 0);
-      vector&lt;bool&gt; visited(n+1, false);
-      visited[n] = true;
-      queue&lt;pair&lt;int, int&gt;&gt; q;
-
-      q.push(make_pair(n, 0));
-
-      while (!q.empty()) {
-        int num = q.front().first;
-        int step = q.front().second;
-        q.pop();
-
-        for (int i = 1; ; i++) {
-          int a = num - i * i;
-
-          if (a &lt; 0) break;
-
-          if (a == 0) return ret = step + 1;
-
-          if (!visited[a]) {
-            visited[a] = true;
-            q.push(make_pair(a, step + 1));
-          }
-        }
-      }
-      return ret;
-    }
-};
-
-</code></pre>
-
-<ul>
-<li>leet_127</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Input:
-beginWord = &quot;hit&quot;,
-endWord = &quot;cog&quot;,
-wordList = [&quot;hot&quot;,&quot;dot&quot;,&quot;dog&quot;,&quot;lot&quot;,&quot;log&quot;,&quot;cog&quot;]
-
-Output: 5
-
-Explanation: As one shortest transformation is &quot;hit&quot; -&gt; &quot;hot&quot; -&gt; &quot;dot&quot; -&gt; &quot;dog&quot; -&gt; &quot;cog&quot;,
-return its length 5.
-class Solution {
-  public:
-  int ladderLength(string beginWord, string endWord, vector&lt;string&gt;&amp; wordList) {
-    unordered_set&lt;string&gt; wordSet(wordList.begin(), wordList.end());
-    if (!wordSet.count(endWord)) return 0;
-    queue&lt;string&gt; q{{beginWord}};
-    int res = 0;
-    while (!q.empty()) {
-      for (int k = q.size(); k &gt; 0; --k) {
-        string word = q.front(); q.pop();
-        if (word == endWord) return res + 1;
-        for (int i = 0; i &lt; word.size(); ++i) {
-          string newWord = word;
-          for (char ch = &#39;a&#39;; ch &lt;= &#39;z&#39;; ++ch) {
-            newWord[i] = ch;
-            if (wordSet.count(newWord) &amp;&amp; newWord != word) {
-              q.push(newWord);
-              wordSet.erase(newWord);
-            }   
-          }
-        }
-      }
-      ++res;
-    }
-    return 0;
-  }
-};
-</code></pre>
-
-<ul>
-<li>leet_126</li>
-</ul>
-
-<h4>优先级队列</h4>
-
-<ul>
-<li>底层实现,堆</li>
-<li>堆的底层实现, 白板编程</li>
-<li>priority_queue</li>
-<li>leet_347 O(nlog(n-k)) O(nlog(n-k))</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given a non-empty array of integers, return the  k  most frequent elements.
-
-Example 1:
-
-Input: nums = [1,1,1,2,2,3], k = 2
-Output: [1,2]
-class Solution {
-public:
-    vector&lt;int&gt; topKFrequent(vector&lt;int&gt;&amp; nums, int k) {
-        unordered_map&lt;int, int&gt; m;
-        priority_queue&lt;pair&lt;int, int&gt;&gt; q;
-        vector&lt;int&gt; res;
-        for (auto a : nums) ++m[a];
-        for (auto it : m) q.push({it.second, it.first});
-        for (int i = 0; i &lt; k; ++i) {
-            res.push_back(q.top().second); q.pop();
-        }
-        return res;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_23 </li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Merge  k  sorted linked lists and return it as one sorted list. Analyze and describe its complexity.
-
-Example:
-
-Input:
-[
-  1-&gt;4-&gt;5,
-  1-&gt;3-&gt;4,
-  2-&gt;6
-]
-Output: 1-&gt;1-&gt;2-&gt;3-&gt;4-&gt;4-&gt;5-&gt;6
-class Solution {
-  public:
-  ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
-    ListNode node(0), *p = &amp;node;
-
-    while (l1 &amp;&amp; l2) {
-      if (l1-&gt;val &lt; l2-&gt;val) {
-        p-&gt;next = l1;
-        l1 = l1-&gt;next;
-      } else {
-        p-&gt;next = l2;
-        l2 = l2-&gt;next;
-      }
-      p = p-&gt;next;
-    }
-
-    p-&gt;next = l1 ? l1 : l2;
-    return node.next;
-  }
-  
-  ListNode* mergeKLists(vector&lt;ListNode*&gt;&amp; lists) {
-
-    if (lists.empty()) return nullptr;
-    
-    while (lists.size() &gt; 1) {
-      lists.push_back(mergeTwoLists(lists[0], lists[1]));
-      lists.erase(lists.begin());
-      lists.erase(lists.begin());
-    }
-    
-    return lists[0];
-  }
-};
+<pre class="line-numbers"><code class="language-python">__subclasshook__ 魔法函数
 </code></pre>
 
                         
@@ -1054,1219 +487,10 @@ class Solution {
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/08/20 09:30 上午</span>
+                    <span class="date">2019/11/16 10:45 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='%E7%8E%A9%E8%BD%AC%E7%AE%97%E6%B3%95.html'>玩转算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15689790735625.html">
-                
-                  <h1>async、future、packaged task,promise</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>async</h4>
-
-<ul>
-<li>std::async是一个函数模版。启动一个异步任务, 返回一个future对象</li>
-<li>自动启动一个线程并开始执行对应的线程入口函数，future对象里就含有线程入口函数，可以通过调用future对象的成员函数</li>
-<li>future提供了一种访问异步操作结果的机制，就是说结果可能没有办法马上拿到，在线程执行完毕的时候，就能够拿到结果了</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">std::future&lt;int&gt; result = std::async(mythread);
-cout &lt;&lt; &quot;continue...!&quot; &lt;&lt; endl;
-cout &lt;&lt; result.get() &lt;&lt; endl;
-</code></pre>
-
-<ul>
-<li>get()函数等待线程执行结束后返回结果</li>
-<li>get只能获取一次</li>
-<li>如果没有get和wait依然等待线程执行结束后获取结果</li>
-</ul>
-
-<h5>std::launch</h5>
-
-<ul>
-<li>std::launch:deferred 表示线程入口函数调用被延迟到std::future的wait或者get函数调用才执行</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">std::future&lt;int&gt; result = std::async(std::launch::deferred, &amp;A::mythread, &amp;a, val);
-</code></pre>
-
-<ul>
-<li>如果下面不调用get或者wait，线程不会被创建</li>
-</ul>
-
-<h5>std::launch::async</h5>
-
-<pre class="line-numbers"><code class="language-text">std::future&lt;int&gt; result = std::async(std::launch::deferred, &amp;A::mythread, &amp;a, val);
-</code></pre>
-
-<ul>
-<li>std::launch::async不能和std::launch:deferred同时使用</li>
-</ul>
-
-<h4>std::packaged_task</h4>
-
-<ul>
-<li>打包任务，是一个类模板，模板参数是各种调用对象</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">std::packaged_task&lt;int(int)&gt; mypt(mythread2);
-std::thread t1(std::ref(mypt), 1);
-t1.join();
-std::future&lt;int&gt; res = mypt.get_future();
-</code></pre>
-
-<ul>
-<li>lamda</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">std::packaged_task&lt;int(int)&gt; mypt([](int mypar) {
-                                    cout &lt;&lt; &quot;thread start &quot; &lt;&lt; &quot; thread_id = &quot;
-                                    &lt;&lt; std::this_thread::get_id() &lt;&lt; endl;
-                                    cout &lt;&lt; &quot; val &quot; &lt;&lt; mypar &lt;&lt; endl;
-                                    std::chrono::seconds dura(1);
-                                    std::this_thread::sleep_for(dura);
-                                    return 5;
-                                    });
-mypt(1);                                    
-</code></pre>
-
-<h4>std::promise</h4>
-
-<ul>
-<li>通过promise保存一个值，然后在其他线程中，把这个值取出来用</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">std::promise&lt;int&gt; myprom;
-std::thread t1(mythread3, std::ref(myprom), 180);
-t1.join();
-std::future&lt;int&gt; ful = myprom.get_future();
-auto res = ful.get();
-</code></pre>
-
-<ul>
-<li>传递给另外的线程</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">void mythread4(std::future&lt;int&gt;&amp; tmp) {
-  auto res = tmp.get();
-  cout &lt;&lt; &quot;mythread4 res &quot; &lt;&lt; res &lt;&lt; endl;
-}
-std::promise&lt;int&gt; myprom;
-std::thread t1(mythread3, std::ref(myprom), 180);
-t1.join();
-std::future&lt;int&gt; ful = myprom.get_future();
-std::thread t2(mythread4, std::ref(ful));
-</code></pre>
-
-<h4>小结</h4>
-
-<ul>
-<li>我们学习这些东西的目的，并不是要把他们都用在咱们自己的实际开发中。</li>
-<li>相反，如果我们能够用最少的东西能够写出一个稳定、高效的多线程程序，更值得赞赏</li>
-<li>我们为了成长，必须要阅读一些高手些的代码，从而快速实现自己代码的积累，我们的技术就会有一个大幅度的提升 //老师更愿意将学习这些内容的理由解释为：为我们将来能够读懂高手甚至大师些的代码而铺路；</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/20 19:31 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15702694837901.html">
-                
-                  <h1>lamda陷阱</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>捕获异常</h4>
-
-<ul>
-<li>捕获列表中的：捕获外部作用域中所有变量，并作为引用在lambda 表达式中使用, 按照引用这种捕获方式，会导致 1 abda 表达式包含绑定到局部变量的引用</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">vector&lt;function&lt;bool(int)&gt;&gt; gv;
-
-void func() {
-  srand((int)time(NULL));
-
-  int tmp = rand() % 6;
-
-  gv.push_back([&amp;](int v) {
-                if (v % tmp == 0) {
-                  return true;
-                }
-                return false;
-               });
-}
-
-int main() {
-  func();
-
-  cout &lt;&lt; gv[0](10) &lt;&lt; endl;
-}
-</code></pre>
-
-<ul>
-<li>引用捕获超过范围的情形也叫引用悬空</li>
-<li>采用按值捕获可以解决引用悬空</li>
-</ul>
-
-<h4>成员变量</h4>
-
-<ul>
-<li>=是按值捕获的意思我们会认为这个[=]是按值捕获，使用我们能够访问成员变量tmp,所以我们顺理成量的认为，这里这个1ambda 表达式是所使用的tmp是按值捕获的</li>
-<li>lamda表达式的行正确与否，取決于pat対象是否存在,只有PAT对存在，这个lamda表达式行オ正确</li>
-<li>this指向对象本身，所以这里[=]捕获的是this指针值</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">vector&lt;function&lt;bool(int)&gt;&gt; gv;
-class AT {
- public:
-  vector&lt;function&lt;bool(int)&gt;&gt; gv;
-
-  int tmp = 5;
-  void addItem() {
-    gv.push_back([=](auto v) {
-                 if (v % tmp == 0) {
-                 return true;
-                 }
-                 return false;
-                 });
-  };
-};
-
-int main() {
-  func();
-
-
-  AT* pat = new AT();
-  pat-&gt;addItem();
-  delete pat;
-  cout &lt;&lt; gv[0](10) &lt;&lt; endl;
-}
-</code></pre>
-
-<ul>
-<li>使用临时变量来捕获</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">vector&lt;function&lt;bool(int)&gt;&gt; gv;
-class AT {
- public:
-  vector&lt;function&lt;bool(int)&gt;&gt; gv;
-
-  int tmp = 5;
-  void addItem() {
-    auto t_tmp = tmp;
-    gv.push_back([t_tmp](auto v) {
-                 if (v % t_tmp == 0) {
-                 return true;
-                 }
-                 return false;
-                 });
-  };
-};
-</code></pre>
-
-<h4>广义捕获</h4>
-
-<pre class="line-numbers"><code class="language-cpp">class AT {
- public:
-  vector&lt;function&lt;bool(int)&gt;&gt; gv;
-
-  int tmp = 5;
-  void addItem() {
-    gv.push_back([t_tmp = tmp](auto v) {
-                 if (v % t_tmp == 0) {
-                 return true;
-                 }
-                 return false;
-                 });
-  };
-};
-</code></pre>
-
-<h4>静态局部变量</h4>
-
-<ul>
-<li>捕获不包括静态局部变量，但是可以使用</li>
-<li>静态变量使用类似按引用捕获效果</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">vector&lt;function&lt;bool(int)&gt;&gt; gv;
-
-void func() {
-  srand((int)time(NULL));
-
-  static int tmp = 5;
-
-  gv.push_back([](auto v) {
-                cout &lt;&lt; &quot; static val &quot; &lt;&lt; tmp &lt;&lt; endl;
-                if (v % tmp == 0) {
-                  return true;
-                }
-                return false;
-               });
-  tmp++;
-}
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/05 17:58 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15702634865284.html">
-                
-                  <h1>宏定义进阶</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<pre class="line-numbers"><code class="language-c">//version1
-#define MAX(x,y) ((x) &gt; (y) ? (x) : (y))
-
-//version2
-#define MAX(x,y)({     \
-    int _x = x;        \
-    int _y = y;        \
-    _x &gt; _y ? _x : _y; \
-})
-
-//versron3
-#define MAX(type,x,y)({     \
-    type _x = x;        \
-    type _y = y;        \
-    _x &gt; _y ? _x : _y; \
-})
-
-//内核中实现
-#define min_t(type, x, y) ({            \
-    type __min1 = (x);          \
-    type __min2 = (y);          \
-    __min1 &lt; __min2 ? __min1 : __min2; })
-
-#define max_t(type, x, y) ({            \
-    type __max1 = (x);          \
-    type __max2 = (y);          \
-    __max1 &gt; __max2 ? __max1 : __max2; })
-</code></pre>
-
-<h4>typeof</h4>
-
-<pre class="line-numbers"><code class="language-c">int i ;
-typeof(i) j = 20;
-
-typeof(int *) a;
-
-int f();
-typeof(f()) k;
-</code></pre>
-
-<ul>
-<li>在上面的代码中，因为变量 i 的类型为 int，所以 typeof(i) 就等于 int，typeof(i) j =20 就相当于 int j = 20，typeof(int *) a; 相当于 int * a;，函数也是有类型的，函数的类型即其返回值类型，所以 typeof(f()) k; 就相当于 int </li>
-</ul>
-
-<pre class="line-numbers"><code class="language-c">#define MAX(x,y)({     \
-    typeof(x) _x = x;        \
-    typeof(x) _y = y;        \
-    _x &gt; _y ? _x : _y; \
-})
-
-int main(void)
-{
-    int i = 2;
-    int j = 6;
-    printf(&quot;max: %d\n&quot;, MAX(i, j));
-    printf(&quot;max: %f\n&quot;, MAX(3.14, 3.15));
-    return 0;
-}
-
-#define swap(a, b) \
-do {               \
-    typeof(a) __tmp = (a);  \ 
-    (a) = (b);         \
-    (b) = __tmp; \
-} while (0)
-</code></pre>
-
-<h4>内核中部的使用</h4>
-
-<pre class="line-numbers"><code class="language-c">#define min(x, y) ({                \
-    typeof(x) _min1 = (x);          \
-    typeof(y) _min2 = (y);          \
-    (void) (&amp;_min1 == &amp;_min2);      \
-    _min1 &lt; _min2 ? _min1 : _min2; })
-
-#define max(x, y) ({                \
-    typeof(x) _max1 = (x);          \
-    typeof(y) _max2 = (y);          \
-    (void) (&amp;_max1 == &amp;_max2);      \
-    _max1 &gt; _max2 ? _max1 : _max2; })
-</code></pre>
-
-<h4>container_of</h4>
-
-<pre class="line-numbers"><code class="language-c">#define offsetof(TYPE, MEMBER) ((size_t) &amp;((TYPE *)0)-&gt;MEMBER)
-#define  container_of(ptr, type, member) ({    \
-     const typeof( ((type *)0)-&gt;member ) *__mptr = (ptr); \
-     (type *)( (char *)__mptr - offsetof(type,member) );})
-     
-struct student
-{
-    int age;
-    int num;
-    int math;
-};
-int main(void)
-{
-    struct student stu = { 20, 1001, 99};
-
-    int *p = &amp;stu.math;
-    struct student *stup = NULL;
-    stup = container_of( p, struct student, math);
-    printf(&quot;%p\n&quot;,stup);
-    printf(&quot;age: %d\n&quot;,stup-&gt;age);
-    printf(&quot;num: %d\n&quot;,stup-&gt;num);
-
-    return 0;     
-}
-</code></pre>
-
-<h4>计算成员变量在结构体的偏移</h4>
-
-<pre class="line-numbers"><code class="language-c">struct student{
-    int age;
-    int num;
-    int math;
-};
-int main(void)
-{
-    printf(&quot;&amp;age = %p\n&quot;,&amp;((struct student*)0)-&gt;age);
-    printf(&quot;&amp;num = %p\n&quot;,&amp;((struct student*)0)-&gt;num);
-    printf(&quot;&amp;math= %p\n&quot;,&amp;((struct student*)0)-&gt;math);
-    return 0;   
-}
-</code></pre>
-
-<h4>零数组</h4>
-
-<pre class="line-numbers"><code class="language-c">#include &lt;stdlib.h&gt;
-#include &lt;stdio.h&gt;
-#include &lt;string.h&gt;
-
-struct buffer{
-    int len;
-    char a[0];
-};
-
-int main(void)
-{
-    struct buffer *buf;
-    buf = (struct buffer *)malloc (sizeof(struct buffer)+ 20);
-
-    buf-&gt;len = 20;
-    strcpy(buf-&gt;a, &quot;hello wanglitao!\n&quot;);
-    puts(buf-&gt;a);
-
-    free(buf);
-    return 0;
-}
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/05 16:18 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C%E8%AF%AD%E8%A8%80%E8%BF%9B%E9%98%B6.html'>C语言进阶</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15702631234763.html">
-                
-                  <h1>范围赋值</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<ul>
-<li>通过数组索引，我们可以直接给指定的数组元素赋值。除此之外，一个结构体变量的初始化，也可以通过指定某个结构体域直接赋值。</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-c">#include &lt;stdlib.h&gt;
-#include &lt;stdio.h&gt;
-
-
-int main(void)
-{
-  int b[100] = { [10 ... 30] = 1, [50 ... 60] = 2 };
-  for(int i = 0; i &lt; 100; i++)
-  {
-    printf(&quot;%d  &quot;, b[i]);
-    if( i % 10 == 0)
-      printf(&quot;\n&quot;);
-  }
-
-  int j = 5;
-  switch(j)
-  {
-    case 1:
-      printf(&quot;1\n&quot;);
-      break;
-    case 2 ... 8:
-      printf(&quot;%d\n&quot;,j);
-      break;
-    case 9:
-      printf(&quot;9\n&quot;);
-      break;
-    default:
-      printf(&quot;default!\n&quot;);
-      break;
-  }
-
-  return 0;
-}
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/05 16:12 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C%E8%AF%AD%E8%A8%80%E8%BF%9B%E9%98%B6.html'>C语言进阶</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15665280444092.html">
-                
-                  <h1>二叉树和递归</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>天然递归结构</h4>
-
-<ul>
-<li>空也是一棵二叉树</li>
-<li>是否存在键值</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">bool contain(Node8 node, Key key) {
-  if (!node) return false;
-  
-  if (key == node-&gt;key) return true;
-  
-  if(contain(node-&gt;left, key) ||
-     contain(node-&gt;right, key)) return true;
-  return false;
-}
-</code></pre>
-
-<ul>
-<li>leet_104</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">class Solution {
-public:
-    int maxDepth(TreeNode* root) {
-        if (!root) return 0;
-        return 1 + max(maxDepth(root-&gt;left), maxDepth(root-&gt;right));
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_111</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given a binary tree, find its minimum depth.
-class Solution {
-public:
-    int minDepth(TreeNode* root) {
-        if (!root) return 0;
-        if (!root-&gt;left) return 1 + minDepth(root-&gt;right);
-        if (!root-&gt;right) return 1 + minDepth(root-&gt;left);
-        return 1 + min(minDepth(root-&gt;left), minDepth(root-&gt;right));
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_226</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Invert a binary tree.
-
-     4
-   /   \
-  2     7
- / \   / \
-1   3 6   9
-
-to
-     4
-   /   \
-  7     2
- / \   / \
-9   6 3   1
-
-// Recursion
-class Solution {
-public:
-    TreeNode* invertTree(TreeNode* root) {
-        if (!root) return NULL;
-        TreeNode *tmp = root-&gt;left;
-        root-&gt;left = invertTree(root-&gt;right);
-        root-&gt;right = invertTree(tmp);
-        return root;
-    }
-};
-
-// Non-Recursion
-class Solution {
-public:
-    TreeNode* invertTree(TreeNode* root) {
-        if (!root) return NULL;
-        queue&lt;TreeNode*&gt; q;
-        q.push(root);
-        while (!q.empty()) {
-            TreeNode *node = q.front(); q.pop();
-            TreeNode *tmp = node-&gt;left;
-            node-&gt;left = node-&gt;right;
-            node-&gt;right = tmp;
-            if (node-&gt;left) q.push(node-&gt;left);
-            if (node-&gt;right) q.push(node-&gt;right);
-        }
-        return root;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_100</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">判断两棵树是否相同
-class Solution {
-public:
-    bool isSameTree(TreeNode *p, TreeNode *q) {
-        if (!p &amp;&amp; !q) return true;
-        if ((p &amp;&amp; !q) || (!p &amp;&amp; q) || (p-&gt;val != q-&gt;val)) return false;
-        return isSameTree(p-&gt;left, q-&gt;left) &amp;&amp; isSameTree(p-&gt;right, q-&gt;right);
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_101</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given a binary tree, check whether it is a mirror of itself (ie, symmetric around its center).
-
-For example, this binary tree is symmetric:
-
-    1
-   / \
-  2   2
- / \ / \
-3  4 4  3
-
-class Solution {
-public:
-    bool isSymmetric(TreeNode *root) {
-        if (!root) return true;
-        return isSymmetric(root-&gt;left, root-&gt;right);
-    }
-    bool isSymmetric(TreeNode *left, TreeNode *right) {
-        if (!left &amp;&amp; !right) return true;
-        if (left &amp;&amp; !right || !left &amp;&amp; right || left-&gt;val != right-&gt;val) return false;
-        return isSymmetric(left-&gt;left, right-&gt;right) &amp;&amp; isSymmetric(left-&gt;right, right-&gt;left);
-    }
-    
-};
-</code></pre>
-
-<ul>
-<li>leet_222</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given a complete binary tree, count the number of nodes.
-Input: 
-    1
-   / \
-  2   3
- / \  /
-4  5 6
-
-Output: 6
-由 root 根结点往下，分别找最靠左边和最靠右边的路径长度，如果长度相等，则证明二叉树最后一层节点是满的，是满二叉树，直接返回节点个数，如果不相等，则节点个数为左子树的节点个数加上右子树的节点个数再加1(根节点)，
-
-class Solution {
-public:
-    int countNodes(TreeNode* root) {
-        int hLeft = leftHeight(root);
-        int hRight = rightHeight(root);
-        if (hLeft == hRight) return pow(2, hLeft) - 1;
-        return countNodes(root-&gt;left) + countNodes(root-&gt;right) + 1;
-    }
-    int leftHeight(TreeNode* root) {
-        if (!root) return 0;
-        return 1 + leftHeight(root-&gt;left);
-    }
-    int rightHeight(TreeNode* root) {
-        if (!root) return 0;
-        return 1 + rightHeight(root-&gt;right);
-    }
-};
-
-class Solution {
-public:
-    int countNodes(TreeNode* root) {
-        int res = 0, h = getHeight(root);
-        if (h &lt; 0) return 0;
-        if (getHeight(root-&gt;right) == h - 1) return (1 &lt;&lt; h) + countNodes(root-&gt;right);
-        return (1 &lt;&lt; (h - 1)) + countNodes(root-&gt;left);
-    }
-    int getHeight(TreeNode* node) {
-        return node ? (1 + getHeight(node-&gt;left)) : -1;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_110</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given a binary tree, determine if it is height-balanced.
-class Solution {
-public:    
-    bool isBalanced(TreeNode *root) {
-        if (checkDepth(root) == -1) return false;
-        else return true;
-    }
-    int checkDepth(TreeNode *root) {
-        if (!root) return 0;
-        int left = checkDepth(root-&gt;left);
-        if (left == -1) return -1;
-        int right = checkDepth(root-&gt;right);
-        if (right == -1) return -1;
-        int diff = abs(left - right);
-        if (diff &gt; 1) return -1;
-        else return 1 + max(left, right);
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_112</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given the below binary tree and sum = 22,
-
-      5
-     / \
-    4   8
-   /   / \
-  11  13  4
- /  \      \
-7    2      1
-
-class Solution {
-public:
-    bool hasPathSum(TreeNode* root, int sum) {
-        if (!root) return false;
-        if (!root-&gt;left &amp;&amp; !root-&gt;right &amp;&amp; root-&gt;val == sum ) return true;
-        return hasPathSum(root-&gt;left, sum - root-&gt;val) || hasPathSum(root-&gt;right, sum - root-&gt;val);
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_111</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given a binary tree, find its minimum depth.
-class Solution {
-public:
-    int minDepth(TreeNode* root) {
-        if (!root) return 0;
-        if (!root-&gt;left) return 1 + minDepth(root-&gt;right);
-        if (!root-&gt;right) return 1 + minDepth(root-&gt;left);
-        return 1 + min(minDepth(root-&gt;left), minDepth(root-&gt;right));
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_404</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Find the sum of all left leaves in a given binary tree.
-class Solution {
-public:
-    int sumOfLeftLeaves(TreeNode* root) {
-        if (!root || (!root-&gt;left &amp;&amp; !root-&gt;right)) return 0;
-        int res = 0;
-        helper(root-&gt;left, true, res);
-        helper(root-&gt;right, false, res);
-        return res;
-    }
-    void helper(TreeNode* node, bool left, int&amp; res) {
-        if (!node) return;
-        if (!node-&gt;left &amp;&amp; !node-&gt;right &amp;&amp; left) res += node-&gt;val;
-        helper(node-&gt;left, true, res);
-        helper(node-&gt;right, false, res);
-    }
-};
-
-class Solution {
-public:
-    int sumOfLeftLeaves(TreeNode* root) {
-        if (!root || (!root-&gt;left &amp;&amp; !root-&gt;right)) return 0;
-        int res = 0;
-        queue&lt;TreeNode*&gt; q;
-        q.push(root);
-        while (!q.empty()) {
-            TreeNode *t = q.front(); q.pop();
-            if (t-&gt;left &amp;&amp; !t-&gt;left-&gt;left &amp;&amp; !t-&gt;left-&gt;right) res += t-&gt;left-&gt;val;
-            if (t-&gt;left) q.push(t-&gt;left);
-            if (t-&gt;right) q.push(t-&gt;right);
-        }
-        return res;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_257</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">For example, given the following binary tree:
-   1
- /   \
-2     3
- \
-  5
-All root-to-leaf paths are:
-[&quot;1-&gt;2-&gt;5&quot;, &quot;1-&gt;3&quot;]
-
-class Solution {
-public:
-    vector&lt;string&gt; binaryTreePaths(TreeNode* root) {
-        vector&lt;string&gt; res;
-        if (root) helper(root, &quot;&quot;, res);
-        return res;
-    }
-    void helper(TreeNode* node, string out, vector&lt;string&gt;&amp; res) {
-        if (!node-&gt;left &amp;&amp; !node-&gt;right) res.push_back(out + to_string(node-&gt;val));
-        if (node-&gt;left) helper(node-&gt;left, out + to_string(node-&gt;val) + &quot;-&gt;&quot;, res);
-        if (node-&gt;right) helper(node-&gt;right, out + to_string(node-&gt;val) + &quot;-&gt;&quot;, res);
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_113</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">For example:
-Given the below binary tree and sum = 22,
-
-              5
-             / \
-            4   8
-           /   / \
-          11  13  4
-         /  \    / \
-        7    2  5   1
-return
-[
-   [5,4,11,2],
-   [5,8,4,5]
-]
-
-class Solution {
-public:
-    vector&lt;vector&lt;int&gt;&gt; pathSum(TreeNode* root, int sum) {
-        vector&lt;vector&lt;int&gt;&gt; res;
-        vector&lt;int&gt; out;
-        helper(root, sum, out, res);
-        return res;
-    }
-    void helper(TreeNode* node, int sum, vector&lt;int&gt;&amp; out, vector&lt;vector&lt;int&gt;&gt;&amp; res) {
-        if (!node) return;
-        out.push_back(node-&gt;val);
-        if (sum == node-&gt;val &amp;&amp; !node-&gt;left &amp;&amp; !node-&gt;right) {
-            res.push_back(out);
-        }
-        helper(node-&gt;left, sum - node-&gt;val, out, res);
-        helper(node-&gt;right, sum - node-&gt;val, out, res);
-        out.pop_back();
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_129</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Input: [1,2,3]
-    1
-   / \
-  2   3
-Output: 25
-Explanation:
-The root-to-leaf path 1-&gt;2 represents the number 12.
-The root-to-leaf path 1-&gt;3 represents the number 13.
-Therefore, sum = 12 + 13 = 25.
-
-class Solution {
-public:
-    int sumNumbers(TreeNode* root) {
-        return sumNumbersDFS(root, 0);
-    }
-    int sumNumbersDFS(TreeNode* root, int sum) {
-        if (!root) return 0;
-        sum = sum * 10 + root-&gt;val;
-        if (!root-&gt;left &amp;&amp; !root-&gt;right) return sum;
-        return sumNumbersDFS(root-&gt;left, sum) + sumNumbersDFS(root-&gt;right, sum);
-    }
-};
-</code></pre>
-
-<h4>二分搜索树</h4>
-
-<ul>
-<li>leet_235</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">class Solution {
-public:
-    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
-        if (!root) return NULL;
-        if (root-&gt;val &gt; max(p-&gt;val, q-&gt;val)) 
-            return lowestCommonAncestor(root-&gt;left, p, q);
-        else if (root-&gt;val &lt; min(p-&gt;val, q-&gt;val)) 
-            return lowestCommonAncestor(root-&gt;right, p, q);
-        else return root;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_98</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given a binary tree, determine if it is a valid binary search tree (BST).
-
-class Solution {
-public:
-  bool isValidBST(TreeNode* root) {
-    return isValidBST(root, nullptr, nullptr);
-  }
-
-  bool isValidBST(TreeNode* root, TreeNode* min, TreeNode* max) {
-    if (!root) return true;
-
-    if (min &amp;&amp; min-&gt;val &gt;= root-&gt;val || max &amp;&amp; max-&gt;val &lt;= root-&gt;val)
-      return false;
-
-    return isValidBST(root-&gt;left, min, root) &amp;&amp; isValidBST(root-&gt;right, root, max);
-  } 
-};
-</code></pre>
-
-<ul>
-<li>leet_450</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">root = [5,3,6,2,4,null,7]
-key = 3
-
-    5
-   / \
-  3   6
- / \   \
-2   4   7
-
-Given key to delete is 3. So we find the node with value 3 and delete it.
-
-One valid answer is [5,4,6,2,null,null,7], shown in the following BST.
-
-    5
-   / \
-  4   6
- /     \
-2       7
-
-class Solution {
-public:
-    TreeNode* deleteNode(TreeNode* root, int key) {
-        if (!root) return NULL;
-        if (root-&gt;val &gt; key) {
-            root-&gt;left = deleteNode(root-&gt;left, key);
-        } else if (root-&gt;val &lt; key) {
-            root-&gt;right = deleteNode(root-&gt;right, key);
-        } else {
-            if (!root-&gt;left || !root-&gt;right) {
-                root = (root-&gt;left) ? root-&gt;left : root-&gt;right;
-            } else {
-                TreeNode *cur = root-&gt;right;
-                while (cur-&gt;left) cur = cur-&gt;left;
-                root-&gt;val = cur-&gt;val;
-                root-&gt;right = deleteNode(root-&gt;right, cur-&gt;val);
-            }
-        }
-        return root;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_108</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given the sorted array: [-10,-3,0,5,9],
-
-One possible answer is: [0,-3,9,-10,null,5], which represents the following height balanced BST:
-
-      0
-     / \
-   -3   9
-   /   /
- -10  5
-class Solution {
-public:
-    TreeNode* sortedArrayToBST(vector&lt;int&gt;&amp; nums) {
-        return helper(nums, 0 , (int)nums.size() - 1);
-    }
-    TreeNode* helper(vector&lt;int&gt;&amp; nums, int left, int right) {
-        if (left &gt; right) return NULL;
-        int mid = left + (right - left) / 2;
-        TreeNode *cur = new TreeNode(nums[mid]);
-        cur-&gt;left = helper(nums, left, mid - 1);
-        cur-&gt;right = helper(nums, mid + 1, right);
-        return cur;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_230</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Input: root = [5,3,6,2,4,null,null,1], k = 3
-       5
-      / \
-     3   6
-    / \
-   2   4
-  /
- 1
-Output: 3
-class Solution {
-public:
-    int kthSmallest(TreeNode* root, int k) {
-        int cnt = 0;
-        stack&lt;TreeNode*&gt; s;
-        TreeNode *p = root;
-        while (p || !s.empty()) {
-            while (p) {
-                s.push(p);
-                p = p-&gt;left;
-            }
-            p = s.top(); s.pop();
-            ++cnt;
-            if (cnt == k) return p-&gt;val;
-            p = p-&gt;right;
-        }
-        return 0;
-    }
-};
-</code></pre>
-
-<ul>
-<li>leet_236</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Input: root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1
-Output: 3
-Explanation: The LCA of nodes 5 and 1 is 3.
-class Solution {
-public:
-    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
-       if (!root || p == root || q == root) return root;
-       TreeNode *left = lowestCommonAncestor(root-&gt;left, p, q);
-       TreeNode *right = lowestCommonAncestor(root-&gt;right, p , q);
-       if (left &amp;&amp; right) return root;
-       return left ? left : right;
-    }
-};
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/23 10:40 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E7%8E%A9%E8%BD%AC%E7%AE%97%E6%B3%95.html'>玩转算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15701550034103.html">
-                
-                  <h1>延时队列</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<pre class="line-numbers"><code class="language-go">import &quot;github.com/garyburd/redigo/redis&quot;
- 
-func AddZset(data, zsetName string, score int64) (err error) {
-    con := pool.Get()
-    defer con.Close()
-    _, err = con.Do(&quot;zadd&quot;, zsetName, score, data)
-    if err != nil {
-        return
-    }
-    return
-}
-
-//index sorted set from start to end, [start:end], eg: [0:1] will return[member1, score1, member2, score2]
-func RangeZset(start, end int, zsetName string) (data []string, err error) {
-    con := pool.Get()
-    defer con.Close()
-    data, err = redis.Strings(con.Do(&quot;zrange&quot;, zsetName, start, end, &quot;withscores&quot;))
-    return
-}
-func RangeZsetByScore(start, end int64, zsetName string) (data []string, err error) {
-    con := pool.Get()
-    defer con.Close()
-    data, err = redis.Strings(con.Do(&quot;zrangebyscore&quot;, zsetName, start, end, &quot;withscores&quot;))
-    return
-}
-func RemZset(zsetName string, keys []string) (err error) {
-    if len(keys) == 0 {
-        return
-    }
-    con := pool.Get()
-    defer con.Close()
-    _, err = con.Do(&quot;zrem&quot;, redis.Args{}.Add(zsetName).AddFlat(keys)...)
-    return
-}
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/04 10:10 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html'>Redis高并发缓存</a></span>
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
           				   
                   </div>
                   <div class="more-right right">

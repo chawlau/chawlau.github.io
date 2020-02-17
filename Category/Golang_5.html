@@ -170,35 +170,26 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15395110783190.html">
+                <a class="clearlink" href="15713027420690.html">
                 
-                  <h1>Container 容器</h1>
+                  <h1>异常错误处理</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>List</h4>
+                        	<h4>panic &amp; os.Exit</h4>
 
 <ul>
-<li>为什么链表可以做到开箱即用</li>
-<li>延迟初始化</li>
-<li>通过PushFront,PushBack,PushBackList,PushFrontList来判断链表的状态</li>
+<li>os.Exit退出时不会调用defer指定的函数</li>
+<li>不用输出当前调用栈信息</li>
 </ul>
 
-<h4>Ring和List的区别</h4>
+<h4>recover</h4>
+
+<p><img src="media/15713027420690/15713033206416.jpg" alt="" style="width:615px;"/></p>
 
 <ul>
-<li>Ring的Len的时间复杂度是O(N)</li>
-<li>List的Len方法的算法复杂度是O(1)</li>
-<li>var r ring.Ring 声明一个长度为1的循环链表，List则是长度为0的链表</li>
-<li>Ring的长度创建后就不会改变，List不会</li>
-</ul>
-
-<h4>ring的循环链表适用场景</h4>
-
-<ul>
-<li>list是构建FIFO队列</li>
-<li>ring是作网页轮播</li>
+<li>形成僵尸进程，导致health check 失效</li>
 </ul>
 
                         
@@ -208,7 +199,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/10/14 17:57 下午</span>
+                    <span class="date">2019/10/17 16:59 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
@@ -225,96 +216,88 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15376681652852.html">
+                <a class="clearlink" href="15713004768074.html">
                 
-                  <h1>Golang入门</h1>
+                  <h1>相关接口</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>环境搭建和调试工具</h4>
+                        	<h4>接口差异</h4>
 
 <ul>
-<li>dlv调式 //TODO</li>
-<li>基于CSP模型实现</li>
-<li>通过创建物理线程，在物理线程中调度携程</li>
+<li>接口为非入侵性，实现不依赖于接口定义</li>
+<li>所以接口的定义可以包含在接口使用者包内</li>
 </ul>
 
-<h4>channel</h4>
+<pre class="line-numbers"><code class="language-go">type IntConv func(op int) int
 
-<ul>
-<li>管道</li>
-<li>多个goroute通过channel进行通信</li>
-<li>支持多个类型</li>
-<li>包内变量全局可访问，大小写控制 //TODO</li>
-<li>管道满了会阻塞</li>
-</ul>
+func timeSpent(inner IntConv) IntConv {
+    return func(n int) int {
+        start := time.Now()
+        ret := inner(n)
+        fmt.Println(&quot;time spent:&quot;, time.Since(start).Seconds())
+        return ret
+    }
+}
 
-<pre class="line-numbers"><code class="language-text">  var pipe chan int
-  pipe = make(chan int, 3)
-  pipe := make(chan int, 3)
+func slowFun(op int) int {
+    time.Sleep(time.Second * 1)
+    return op
+}
+
+func TestFn(t *testing.T) {
+    tsSF := timeSpent(slowFun)
+    t.Log(tsSF(10))
+}
 </code></pre>
 
-<h4>包的概念</h4>
+<h4>扩展和复用</h4>
 
-<ul>
-<li>不用考虑编码</li>
-<li>函数名要大写才能被其他包引用</li>
-<li>go build -o ../../bin/main main.go 编译输出到指定路径</li>
-</ul>
+<pre class="line-numbers"><code class="language-go">func TestDog(t *testing.T) {
+    var dog *Dog = new(Dog)
+    var p = *Pet(dog)
+    p.SpeakTo(&quot;CHao&quot;)
+    dog := new(Dog)
 
-<h4>自动运行</h4>
+    dog.SpeakTo(&quot;Chao&quot;)
+}
+</code></pre>
 
-<ul>
-<li>每个源代码文件都可以包含init函数，这个init函数自动被go运行框架调用</li>
-<li>先初始化全局变量--&gt;init函数--&gt;main</li>
-<li>不使用只初始化</li>
-</ul>
+<h4>go多态</h4>
 
-<h4>常量</h4>
+<pre class="line-numbers"><code class="language-go">func writeFirstProgram(p Programmer) {
+  fmt.Printf(&quot;%T %v\n&quot;, p, p.WriteHelloWorld())
+}
+p必须传指针才能实现多态
+</code></pre>
 
-<ul>
-<li>const c = getValue() 错误</li>
-<li>const 只能修辞boolean, number(int相关类型,浮点型)和string</li>
-</ul>
+<h4>空接口断言</h4>
 
-<h4>值类型和引用类型</h4>
+<pre class="line-numbers"><code class="language-go">func DoSomething(p interface{}) {
+    if i, ok := p.(int); ok {
+      fmt.Println(&quot;Integer&quot;, i)
+      return
+    }
+    // if s, ok := p.(string); ok {
+    //  fmt.Println(&quot;stirng&quot;, s)
+    //  return
+    // }
+    // fmt.Println(&quot;Unknow Type&quot;)
+    switch v := p.(type) {
+    case int:
+        fmt.Println(&quot;Integer&quot;, v)
+    case string:
+        fmt.Println(&quot;String&quot;, v)
+    default:
+        fmt.Println(&quot;Unknow Type&quot;)
+    }
+}
+</code></pre>
 
-<ul>
-<li>值类型 变量直接存储值，内存在栈中分配</li>
-<li>引用类型 变量存储的是一个地址，内存在堆上分配</li>
-<li>值类型 int, float, bool, string,数据和 struct</li>
-<li>引用类型  指针, slice, map, chan 都是引用类型</li>
-<li>go语言栈只有几k</li>
-<li>堆内存分配没有栈性能高</li>
-<li>堆分配算法//TODO</li>
-</ul>
+<h4>接口实践</h4>
 
-<h4>变量周期</h4>
-
-<ul>
-<li>大写的变量局部变量模块结束，变量也就释放了</li>
-<li>全局区域:=不能通过，只能声明,不能执行代码</li>
-</ul>
-
-<h4>随机数</h4>
-
-<ul>
-<li>应用场景</li>
-<li><img src="media/15376681652852/15386310431146.jpg" alt=""/></li>
-<li>rpc和web节点绑定在一起</li>
-<li><em><u>rpc调用库实现负载均衡和健康检查</u></em></li>
-</ul>
-
-<h4>字符串类型</h4>
-
-<ul>
-<li>双引号</li>
-<li>反引号 `` 中间的内容不做任何转换，可以任意换行</li>
-<li>%v打印原来的类型</li>
-<li>%T 打印Go语言语法类型</li>
-<li>len的时间复杂度是O(1)长度储存的</li>
-</ul>
+<p><img src="media/15713004768074/15713026545360.jpg" alt="" style="width:767px;"/></p>
 
                         
                       </div>
@@ -323,7 +306,199 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/09/23 10:02 上午</span>
+                    <span class="date">2019/10/17 16:21 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15712250734123.html">
+                
+                  <h1>行为的定义和实现</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>差别</h4>
+
+<p><img src="media/15712250734123/15712253092495.jpg" alt="" style="width:1343px;"/></p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/10/16 19:24 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15386465593475.html">
+                
+                  <h1>函数详解</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>函数特点</h4>
+
+<ul>
+<li>不支持重载</li>
+<li>函数也是一种类型，函数可以赋值给变量</li>
+<li>匿名函数</li>
+<li>多返回值</li>
+</ul>
+
+<h4>函数参数传递方式</h4>
+
+<ul>
+<li>map默认就是引用，不需要*</li>
+</ul>
+
+<h4>返回值命名</h4>
+
+<pre class="line-numbers"><code class="language-text">func calc(a, b int) (sum int, avg int) {
+  sum = a + b
+  avg = (a + b) / 2
+}
+</code></pre>
+
+<h4>可变参数</h4>
+
+<pre class="line-numbers"><code class="language-text">func add(a int, arg ...int) (ret int) {
+  ret = a
+  for i := 0; i &lt; len(arg); i++ {
+    ret += arg[i]
+  }
+  return
+}
+
+func addStr(a string, arg ...string) (ret string) {
+  ret = a
+  for i := 0; i &lt; len(arg); i++ {
+    ret += arg[i]
+  }
+  return
+}
+</code></pre>
+
+<h4>defer</h4>
+
+<ul>
+<li>函数返回时，执行defer语句，用来做资源清理</li>
+<li>多个defer语句，按照先进后出的方式</li>
+<li>关闭文件句柄</li>
+<li>锁资源释放</li>
+<li><p>数据库连接释放</p>
+<pre class="line-numbers"><code class="language-text">func read() {
+ conn, err := openConn()<br/>
+ defer func() {<br/>
+   if conn != nil {<br/>
+     conn.Close()<br/>
+   }<br/>
+ }<br/>
+}()
+</code></pre></li>
+<li><p>全局匿名函数</p>
+<pre class="line-numbers"><code class="language-text">var (
+result = func(a int, b int) int {<br/>
+  return a + b__<br/>
+}<br/>
+)
+</code></pre></li>
+</ul>
+
+<h4>字符串切片修改问题</h4>
+
+<pre class="line-numbers"><code class="language-text"> // 示例3。
+func modifyComplexArray(a [3][]string) [3][]string {
+  a[1][1] = &quot;s&quot;
+  //a[2] = []string{&quot;o&quot;, &quot;p&quot;, &quot;q&quot;}
+  a[2][0] = &quot;o&quot;
+  a[2][1] = &quot;p&quot;
+  a[2][2] = &quot;q&quot;
+  return a
+}
+
+  complexArray1 := [3][]string{
+    []string{&quot;d&quot;, &quot;e&quot;, &quot;f&quot;},
+    []string{&quot;g&quot;, &quot;h&quot;, &quot;i&quot;},
+    []string{&quot;j&quot;, &quot;k&quot;, &quot;l&quot;},
+  }
+  fmt.Printf(&quot;The complex array: %v\n&quot;, complexArray1)
+  complexArray2 := modifyComplexArray(complexArray1)
+  fmt.Printf(&quot;The modified complex array: %v\n&quot;, complexArray2)
+  fmt.Printf(&quot;The original complex array: %v\n&quot;, complexArray1)
+</code></pre>
+
+<ul>
+<li>修改整个字符串不可以，但是可以一个一个修改</li>
+</ul>
+
+<h4>函数传参数和返回问题</h4>
+
+<ul>
+<li>函数真正拿到的参数值其实只是它们的副本，那么函数返回给调用方的结果值也会被复制吗？</li>
+<li>函数返回给调用方的结果值也会被复制。不过，在一般情况下，我们不用太在意。但如果函数在返回结果值之后依然保持执行并会对结果值进行修改，那么我们就需要注意了</li>
+</ul>
+
+<h5>统计耗时</h5>
+
+<pre class="line-numbers"><code class="language-go">func timeSpent(inner func(op int) int) func(op int) int {
+    return func(n int) int {
+        start := time.Now()
+        ret := inner(n)
+        fmt.Println(&quot;time spent:&quot;, time.Since(start).Seconds())
+        return ret
+    }
+}
+
+func slowFun(op int) int {
+    time.Sleep(time.Second * 1)
+    return op
+}
+
+func TestFn(t *testing.T) {
+    a, _ := returnMultiValues()
+    t.Log(a)
+    tsSF := timeSpent(slowFun)
+    t.Log(tsSF(10))
+}
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/10/04 17:49 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
@@ -350,7 +525,7 @@
 			  </div>
 			  <div class="large-6 columns">
 			<p class="text-right" style="padding-top:25px;">
-			
+			 <a href="Golang_6.html">&raquo; Next Page</a> 
 			</p>
 			  </div>
 			</div>

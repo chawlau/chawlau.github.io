@@ -170,126 +170,81 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15768019255107.html">
+                <a class="clearlink" href="15724357351344.html">
                 
-                  <h1>进程间通讯</h1>
+                  <h1>列表和元组</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>三类queue</h4>
-
-<pre class="line-numbers"><code class="language-python">from multiprocessing import Process, Queue
-from queue import Queue
-from multiprocessing import Manager
-</code></pre>
-
-<h4>进程间通讯</h4>
-
-<pre class="line-numbers"><code class="language-python">import time
-from multiprocessing import Process, Queue, Pool, Manager, Pipe
-
-
-def producer(queue):
-    queue.put(&quot;a&quot;)
-    time.sleep(2)
-
-def consumer(queue):
-    time.sleep(2)
-    data = queue.get()
-    print(data)
-
-if __name__ == &quot;__main__&quot;:
-    queue = Queue(10)
-    my_producer = Process(target=producer, args=(queue,))
-    my_consumer = Process(target=consumer, args=(queue,))
-    my_producer.start()
-    my_consumer.start()
-    my_producer.join()
-    my_consumer.join()
-</code></pre>
-
-<h4>进程池间通讯</h4>
-
-<pre class="line-numbers"><code class="language-python">import time
-from multiprocessing import Process, Queue, Pool
-# from queue import Queue
-from multiprocessing import Manager
-
-Manager().Queue()
-
-def producer(queue):
-    queue.put(&#39;a&#39;)
-    time.sleep(2)
-
-def consumer(queue):
-    time.sleep(2)
-    data = queue.get()
-    print(data)
-
-if __name__ == &#39;__main__&#39;:
-    queue = Manager().Queue(10)
-    pool = Pool(2)
-
-    pool.apply_async(producer, args=(queue,))
-    pool.apply_async(consumer, args=(queue,))
-
-    pool.close()
-    pool.join()
-</code></pre>
-
-<h4>Pipe通讯</h4>
-
-<pre class="line-numbers"><code class="language-python">import time
-from multiprocessing import Process, Queue, Pool, Manager, Pipe
-
-def producer(pipe):
-    pipe.send(&#39;bobby&#39;)
-    pipe.send(&#39;ok&#39;)
-    pipe.send(&#39;hello&#39;)
-
-def consumer(pipe):
-    print(pipe.recv())
-    print(pipe.recv())
-    print(pipe.recv())
-
-if __name__ == &#39;__main__&#39;:
-    recv_pipe, send_pipe = Pipe()
-    my_pro = Process(target=producer, args=(send_pipe,))
-    my_con = Process(target=consumer, args=(recv_pipe,))
-
-    my_pro.start()
-    my_con.start()
-    my_pro.join()
-    my_pro.join()
-</code></pre>
+                        	<h4>区别</h4>
 
 <ul>
-<li>pipe性能是高于queue</li>
+<li>列表是动态的，长度大小不固定，可以随意地增加、删减或者改变元素（mutable）。而元组是静态的，长度大小固定，无法增加删减或者改变（immutable）</li>
 </ul>
 
-<h4>共享内存</h4>
+<h4>负索引和切片</h4>
 
-<pre class="line-numbers"><code class="language-python">import time
-from multiprocessing import Process, Queue, Pool, Manager, Pipe
+<pre class="line-numbers"><code class="language-python">l = [1, 2, 3, 4]
+l[-1]
 
-def add_data(p_dict, key, value):
-    p_dict[key] = value
+l = [1, 2, 3, 4]
+l[1:3]
 
-if __name__ == &#39;__main__&#39;:
-    progress_dict = Manager().dict()
+</code></pre>
 
-    first_pro = Process(target=add_data, args=(progress_dict, &quot;bobby1&quot;, 22))
-    second_pro = Process(target=add_data, args=(progress_dict, &quot;bobby2&quot;, 23))
-    third_pro = Process(target=add_data, args=(progress_dict, &quot;bobby3&quot;, 24))
+<h4>列表空间比元组大</h4>
 
-    first_pro.start()
-    second_pro.start()
-    third_pro.start()
-    first_pro.join()
-    second_pro.join()
-    third_pro.join()
-    print(progress_dict)
+<ul>
+<li>由于列表是动态的，所以它需要存储指针，来指向对应的元素（上述例子中，对于 int 型，8 字节）。另外，由于列表可变，所以需要额外存储已经分配的长度大小（8 字节），这样才可以实时追踪列表空间的使用情况，当空间不足时，及时分配额外空间</li>
+</ul>
+
+<h4>字典插入</h4>
+
+<ul>
+<li>每次向字典或集合插入一个元素时，Python 会首先计算键的哈希值（hash(key)），再和 mask = PyDicMinSize - 1 做与操作，计算这个元素应该插入哈希表的位置 index = hash(key) &amp; mask。如果哈希表中此位置是空的，那么这个元素就会被插入其中。而如果此位置已被占用，Python 便会比较两个元素的哈希值和键是否相等。若两者都相等，则表明这个元素已经存在，如果值不同，则更新值。若两者中有一个不相等，这种情况我们通常称为哈希冲突（hash collision），意思是两个元素的键不相等，但是哈希值相等。这种情况下，Python 便会继续寻找表中空余的位置，直到找到位置为止</li>
+</ul>
+
+<h4>元组拆包</h4>
+
+<pre class="line-numbers"><code class="language-python">#%%
+lax = (10, 5)
+x, y = lax
+x
+#%%
+divmod(20, 8)
+t = (20, 8)
+divmod(*t)
+x, y = divmod(*t)
+x
+y
+#%%
+# 处理剩下的元素
+a, b, *rest = range(5)
+a, b, rest
+
+a, *body, c, d = range(5)
+a, body, c, d
+</code></pre>
+
+<h4>typle不可变属性</h4>
+
+<ul>
+<li>immutable 性能优化</li>
+<li>线程安全</li>
+<li>可以作为dic的key，可以进行hash, 但是list不可以</li>
+<li>拆包属性</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">user_tuple = (&#39;bobby&#39;, [29, 175])
+user_tuple[1].append(22)
+user_tuple
+
+
+user_tuple = (&#39;bobby&#39;, 29, 175)
+user_dict = {}
+user_dict[user_tuple] = &#39;bobby&#39;
+user_dict
 </code></pre>
 
                         
@@ -299,7 +254,7 @@ if __name__ == &#39;__main__&#39;:
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/12/20 08:32 上午</span>
+                    <span class="date">2019/10/30 19:42 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Python.html'>Python</a></span>
@@ -316,877 +271,580 @@ if __name__ == &#39;__main__&#39;:
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15768004391774.html">
+                <a class="clearlink" href="15744656731481.html">
                 
-                  <h1>多进程同步</h1>
+                  <h1>静态方法&类方法&对象方法</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>多进程</h4>
-
-<pre class="line-numbers"><code class="language-python">import multiprocessing
-
-import time
-
-def get_html(n):
-    time.sleep(n)
-    print(&#39;sub_progress success&#39;)
-    return n
-
-if __name__ == &#39;__main__&#39;:
-    progress = multiprocessing.Process(target=get_html, args=(2,))
-    print(progress.pid)
-    progress.start()
-    print(progress.pid)
-    progress.join()
-    print(&#39;main progress end&#39;)
-</code></pre>
-
-<h4>进城池获取结果</h4>
-
-<pre class="line-numbers"><code class="language-python">import multiprocessing
-
-import time
-
-def get_html(n):
-    time.sleep(n)
-    print(&#39;sub_progress success&#39;)
-    return n
-
-if __name__ == &#39;__main__&#39;:
-    pool = multiprocessing.Pool(multiprocessing.cpu_count())
-    result = pool.apply_async(get_html, args=(3,))
-    pool.close()
-    pool.join() //前面必须有close
-    print(result.get())
-</code></pre>
-
-<h4>imap&amp;imap_unordered</h4>
-
-<pre class="line-numbers"><code class="language-python">import multiprocessing
-import  time
-def get_html(n):
-    time.sleep(n)
-    print(&#39;sub_process sucess&#39;)
-    return n
-
-if __name__ == &#39;__main__&#39;:
-    pool = multiprocessing.Pool(multiprocessing.cpu_count())
-
-//不按顺序输出结果，谁先完成，谁先输出
-    for result in pool.imap_unordered(get_html, [1,5,3]):
-        print(&#39;{} sleep success&#39;.format(result))
-//按照列表顺序输出结果
-    for result in pool.imap(get_html, [1, 5, 3]):
-        print(&#39;{} sleep success&#39;.format(result))
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/12/20 08:07 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15758501024510.html">
-                
-                  <h1>多线程同步</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>死锁情况</h4>
-
-<pre class="line-numbers"><code class="language-python">#2. 锁会引起死锁
-#死锁的情况 A（a，b）
-A(a、b)
-acquire (a)
-acquire (b)
-
-B(a、b)
-acquire (a)
-acquire (b)
-</code></pre>
-
-<h4>可重入的锁</h4>
+                        	<h4>三种方法对比</h4>
 
 <ul>
-<li>同一个线程里面，可以连续调用多次acquire,一定要注意acquire的次数</li>
-<li>RLock可重入锁</li>
+<li>对象方法，定义中，传入的第一个参数必须是 self，表示实例本身，在其中可使用 self.attr 获取实例的属性。</li>
+<li>class_method 无需实例化，但与实例方法第一个参数必须是 self 类似，类方法第一个参数表示类自身的 cls 参数，可以来调用类的属性、类的方法、类的实例化对象等</li>
+<li>static_method无需 self 参数，无需 cls 参数，直接声明一个静态方法，可无需实例化，直接由类调用，也可实例化后调用</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-python">from threading import Lock, RLock, Condition
-
-total = 0
-lock = RLock()
-
-def add():
-    global lock
-    global total
-    for i in range(10000):
-        lock.acquire()
-        lock.acquire()
-        total += 1
-        lock.release()
-        lock.release()
-
-def desc():
-    global total
-    global lock
-    for i in range(10000):
-        # lock.acquire()
-        lock.acquire()
-        total -= 1
-        lock.release()
-        # lock.release()
-
-import threading
-
-thread1 = threading.Thread(target=add)
-thread2 = threading.Thread(target=desc)
-
-thread1.start()
-thread2.start()
-thread2.join()
-thread2.join()
-print(&quot;total {}&quot;.format(total))
-</code></pre>
-
-<h4>协同</h4>
-
-<pre class="line-numbers"><code class="language-python">import threading
-
-class XiaoAi(threading.Thread):
-    def __init__(self, lock):
-        super().__init__(name=&quot;xiaoai&quot;)
-        self.lock = lock
-
-    def run(self):
-        self.lock.acquire()
-        print(&quot;{}. at &quot;.format(self.name))
-        self.lock.release()
-
-        self.lock.acquire()
-        print(&quot;{}. ok &quot;.format(self.name))
-        self.lock.release()
-
-class TianMao(threading.Thread):
-    def __init__(self, lock):
-        super().__init__(name=&quot;tiaomao&quot;)
-        self.lock = lock
-
-    def run(self):
-        self.lock.acquire()
-        print(&quot;{} : xiaoai roomate&quot;.format(self.name))
-        self.lock.release()
-
-        self.lock.acquire()
-        print(&quot;{} : let&#39;s talk&quot;.format(self.name))
-        self.lock.release()
-
-if __name__ == &#39;__main__&#39;:
-    lock = threading.Lock()
-    thread1 = XiaoAi(lock)
-    thread2 = TianMao(lock)
-    thread1.start()
-    thread2.start()
-    thread1.join()
-    thread2.join()
-</code></pre>
-
-<ul>
-<li>condition启动顺序很重要,在调用with cond之后才能调用wait或者notify方法</li>
-<li>condition有两层锁， 一把底层锁会在线程调用了wait方法的时候释放， 上面的锁会在每次调用wait的时候分配一把并放入到cond的等待队列中，等到notify方法的唤醒<br/>
-xiaoai.start()</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-python">import threading
-
-class XiaoAi(threading.Thread):
-    def __init__(self, cond):
-        super().__init__(name=&quot;xiaoai&quot;)
-        self.cond = cond
-
-    def run(self):
-        with self.cond:
-            self.cond.wait()
-            print(&#39;{}: 在 &#39;.format(self.name))
-            self.cond.notify()
-
-            self.cond.wait()
-            print(&#39;{}: 好阿 &#39;.format(self.name))
-            self.cond.notify()
-
-            self.cond.wait()
-            print(&#39;{}: 君住长江尾 &#39;.format(self.name))
-            self.cond.notify()
-
-            self.cond.wait()
-            print(&#39;{}: 共饮长江水 &#39;.format(self.name))
-            self.cond.notify()
-
-            self.cond.wait()
-            print(&#39;{}: 此恨何时已 &#39;.format(self.name))
-            self.cond.notify()
-
-            self.cond.wait()
-            print(&#39;{}: 定不负相思意 &#39;.format(self.name))
-            self.cond.notify()
-
-class TianMao(threading.Thread):
-    def __init__(self, cond):
-        super().__init__(name=&quot;天猫精灵&quot;)
-        self.cond = cond
-
-    def run(self):
-        with self.cond:
-            print(&#39;{}: 小爱同学 &#39;.format(self.name))
-            self.cond.notify()
-            self.cond.wait()
-
-            print(&#39;{}: 我们来对古诗吧 &#39;.format(self.name))
-            self.cond.notify()
-            self.cond.wait()
-
-            print(&#39;{}: 我住长江头 &#39;.format(self.name))
-            self.cond.notify()
-            self.cond.wait()
-
-            print(&#39;{}: 日日思君不见君 &#39;.format(self.name))
-            self.cond.notify()
-            self.cond.wait()
-
-            print(&#39;{}: 此水几时休 &#39;.format(self.name))
-            self.cond.notify()
-            self.cond.wait()
-
-            print(&#39;{}: 只愿君心似我心 &#39;.format(self.name))
-            self.cond.notify()
-            self.cond.wait()
-
-if __name__ == &#39;__main__&#39;:
-    from concurrent import futures
-    cond = threading.Condition()
-    xiaoai = XiaoAi(cond)
-    tianmao = TianMao(cond)
-
-    xiaoai.start()
-    tianmao.start()
-</code></pre>
-
-<h4>ThreadPoolExcutor</h4>
-
-<pre class="line-numbers"><code class="language-python">from concurrent.futures import ThreadPoolExecutor, as_completed, wait, FIRST_COMPLETED
-from concurrent.futures import Future
-from multiprocessing import Pool
-
-
-import time
-
-def get_html(times):
-    time.sleep(times)
-    print(&#39;get page {} process&#39;.format(times))
-    return times
-
-executor = ThreadPoolExecutor(max_workers=2)
-</code></pre>
-
-<h5>执行任务获取结果</h5>
-
-<pre class="line-numbers"><code class="language-python">task1 = executor.submit(get_html, (3))
-task2 = executor.submit(get_html, (2))
-#
-print(task1.result())
-print(task2.cancel()) //取消结果
-</code></pre>
-
-<h5>多任务</h5>
-
-<pre class="line-numbers"><code class="language-python">urls = [3, 2, 4]
-
-all_task = [executor.submit(get_html, (url)) for url in urls]
-
-for future in as_completed(all_task):
-    data = future.result()
-    print(&#39;get {} page&#39;.format(data))
-
-
-#通过excutor获取已经完成的task
-for data in executor.map(get_html, urls):
-    print(&#39;get {} page&#39;.format(data))
-</code></pre>
-
-<h5>wait获取结果</h5>
-
-<pre class="line-numbers"><code class="language-python">#wait
-wait(all_task, return_when=FIRST_COMPLETED)
-print(&#39;main&#39;)
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/12/09 08:08 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15758463705532.html">
-                
-                  <h1>GIL</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>概念</h4>
-
-<ul>
-<li>全局解释器锁</li>
-<li>CPython</li>
-<li>GIL使得同一时刻只有一个线程在一个CPU上执行字节码</li>
-<li>无法将多个线程映射到多个CPU上执行</li>
-</ul>
-
-<h4>释放的时机</h4>
-
-<ul>
-<li>根据执行字节码的行数或者执行的时间片来进行释放</li>
-<li>遇到IO操作的时候释放</li>
-</ul>
-
-<h4>线程调度</h4>
-
-<ul>
-<li>对于IO操作来说，多线程和多进程性能差别不大</li>
-</ul>
-
-<h4>thread_demo</h4>
-
-<pre class="line-numbers"><code class="language-python">import time
-import threading
-
-
-def get_detail_html(url):
-    print(&quot;get detail html started&quot;)
-    time.sleep(2)
-    print(&quot;get detail html end&quot;)
-
-
-def get_detail_url(url):
-    print(&quot;get detail url started&quot;)
-    time.sleep(2)
-    print(&quot;get detail url end&quot;)
-
-if __name__ == &quot;__main__&quot;:
-   thread1 = threading.Thread(target=get_detail_html, args=(&quot;&quot;,))
-   thread2 = threading.Thread(target=get_detail_url, args=(&quot;&quot;,))
-   thread1.setDaemon(True)
-   # thread2.setDaemon(True)
-   start_time = time.time()
-   thread1.start()
-   thread2.start()
-
-   print(&quot;last time : {}&quot;.format(time.time() - start_time))
-</code></pre>
-
-<h4>thread_join</h4>
-
-<pre class="line-numbers"><code class="language-python">def get_detail_html(url):
-    print(&quot;get detail html started&quot;)
-    time.sleep(2)
-    print(&quot;get detail html end&quot;)
-
-
-def get_detail_url(url):
-    print(&quot;get detail url started&quot;)
-    time.sleep(4)
-    print(&quot;get detail url end&quot;)
-
-if __name__ == &quot;__main__&quot;:
-   thread1 = threading.Thread(target=get_detail_html, args=(&quot;&quot;,))
-   thread2 = threading.Thread(target=get_detail_url, args=(&quot;&quot;,))
-   # thread1.setDaemon(True)
-   # thread2.setDaemon(True)
-   start_time = time.time()
-   thread1.start()
-   thread2.start()
-   thread1.join()
-   thread2.join()
-
-   print(&quot;last time : {}&quot;.format(time.time() - start_time))
-</code></pre>
-
-<ul>
-<li>deque在字节码的层面是安全的</li>
-</ul>
-
-<h4>集成Thread来实现多线程</h4>
-
-<pre class="line-numbers"><code class="language-python">import time
-import threading
-
-class GetDetailHtml(threading.Thread):
-    def __init__(self, name):
-        super().__init__(name=name)
-
-    def run(self):
-        print(&quot;get detail html started&quot;)
-        time.sleep(2)
-        print(&quot;get detail html end&quot;)
-
-class GetDetailUrl(threading.Thread):
-    def __init__(self, name):
-        super().__init__(name=name)
-
-    def run(self):
-        print(&quot;get detail url started&quot;)
-        time.sleep(4)
-        print(&quot;get detail url end&quot;)
-
-if __name__ == &quot;__main__&quot;:
-    thread1 = GetDetailHtml(&quot;get_detail_html&quot;)
-    thread2 = GetDetailUrl(&quot;get_detail_url&quot;)
-    start_time = time.time()
-    thread1.start()
-    thread2.start()
-    thread1.join()
-    thread2.join()
-
-    print(&quot;last time : {}&quot;.format(time.time() - start_time))
-
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/12/09 07:06 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15745422969850.html">
-                
-                  <h1>自定义序列类</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>序列协议</h4>
-
-<ul>
-<li><img src="media/15745422969850/15745424374141.jpg" alt="" style="width:663px;"/></li>
-</ul>
-
-<h4>add</h4>
-
-<pre class="line-numbers"><code class="language-python">a += (3, 4)
-a += [3, 4]
-通过魔法函数__iadd__来实现，内部通过extends实现
-a = [1, 2]
-c = a + [3, 4]
-print(c)
-
-a += (3, 4)
-a.extend(range(3))//迭代相加每个元素
-a.append((1, 2)) //直接加上整个元组
-a.append([1, 2]) //直接加上整个列表
-print(a)
-</code></pre>
-
-<h4>可切片的对象</h4>
-
-<pre class="line-numbers"><code class="language-python">import numbers
-
-class Group:
-    def __init__(self, group_name, company_name, staffs):
-        self.group_name = group_name
-        self.company_name = company_name
-        self.staffs = staffs
-
-    def __reversed__(self):
-        self.staffs.reverse()
-
-    def __getitem__(self, item):
-        cls = type(self)
-        if isinstance(item, slice):
-            return cls(group_name=self.group_name, company_name=self.company_name, staffs=self.staffs[item])
-        elif isinstance(item, slice):
-            return cls(group_name=self.group_name, company_name=self.company_name, staffs=[self.staffs[item]])
-
-    def __len__(self):
-        return len(self.staffs)
-
-    def __iter__(self):
-        return iter(self.staffs)
-
-    def __contains__(self, item):
-        if item in self.staffs:
+<pre class="line-numbers"><code class="language-python">class Date:
+    def __init__(self, year, month, day):
+        self.year = year
+        self.month = month
+        self.day = day
+
+    def tomorrow(self):
+        self.day += 1
+
+    @staticmethod
+    def parse_from_string(data_str):
+        year, month, day = tuple(data_str.split(&#39;-&#39;))
+        return Date(int(year), int(month), int(day))
+
+    @staticmethod
+    def valid_str(date_str):
+        year, month, day = tuple(date_str.split(&#39;-&#39;))
+        if int(year) &gt; 0 and (int(month) &gt; 0 and int(month) &lt;=12) and (int(day) &gt; 0 and int(day) &lt;=31):
             return True
         else:
             return False
 
-staffs = [&quot;bobby1&quot;, &quot;imooc&quot;, &quot;bobby2&quot;, &quot;bobby3&quot;]
+    @classmethod
+    def from_string(cls, date_str):
+        year, month, day = tuple(date_str.split(&#39;-&#39;))
+        return cls(int(year), int(month), int(day))
 
-group = Group(company_name=&quot;imooc&quot;, group_name=&quot;user&quot;, staffs=staffs)
-reversed(group)
+    def __str__(self):
+        return &quot;{year}/{month}/{day}&quot;.format(year=self.year, month=self.month, day=self.day)
 
-for user in group:
-    print(user)
+if __name__ == &#39;__main__&#39;:
+    new_day = Date(2018, 12, 31)
+    new_day.tomorrow()
+    print(new_day)
+
+    date_str = &#39;2018-12-31&#39;
+    year, month, day = tuple(date_str.split(&#39;-&#39;))
+    new_day = Date(int(year), int(month), int(day))
+    print (new_day)
+
+    new_day = Date.parse_from_string(date_str)
+    print (new_day)
+
+    new_day = Date.from_string(date_str)
+    print (new_day)
+    
+    print(Date.valid_str(&quot;2018-12-32&quot;))
 </code></pre>
 
-<h4>维持升序排列</h4>
-
-<pre class="line-numbers"><code class="language-python">#用来处理已排序的序列，用来维持已排序的序列， 升序
-import bisect
-
-from  collections import deque
-
-inter_list = deque()
-bisect.insort(inter_list, 3)
-bisect.insort(inter_list, 2)
-bisect.insort(inter_list, 5)
-bisect.insort(inter_list, 1)
-bisect.insort(inter_list, 6)
-
-print(bisect.bisect_left(inter_list, 3))
-
-print(inter_list)
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/24 04:51 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15739426575118.html">
-                
-                  <h1>抽象基类</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>作用</h4>
+<h4>私有属性</h4>
 
 <ul>
-<li>类型判断</li>
-<li>接口实现</li>
+<li>双下划线将私有变量进行变形</li>
+<li>通过反射机制也可以拿到这个数值</li>
 </ul>
 
-<h4>类对象数组</h4>
+<pre class="line-numbers"><code class="language-python">from method import Date
 
-<pre class="line-numbers"><code class="language-python">class Cat(object):
-    def say(self):
-        print(&quot;i am a cat&quot;)
-
-
-class Dog(object):
-    def say(self):
-        print(&quot;i am a dog&quot;)
+class User:
+    def __init__(self, birthday):
+        self.__birthday = birthday
+    def get_age(self):
+        return 2019 - self.__birthday.year
 
 
-class Duck(object):
-    def say(self):
-        print(&quot;i am a duck&quot;)
-
-
-anaimal_list = [Cat, Dog, Duck]
-for anaimal in anaimal_list:
-    anaimal().say()
+if __name__ == &#39;__main__&#39;:
+    user = User(Date(2018, 10, 1))
+    print(user.get_age())
 </code></pre>
 
-<h4>扩展类</h4>
+<h4>dict和dir查询属性·</h4>
+
+<pre class="line-numbers"><code class="language-python">from method import Date
+
+class Person:
+    name = &#39;user&#39;
+
+class Student(Person):
+    def __init__(self, school_name):
+        self.school_name = school_name
+
+if __name__ == &#39;__main__&#39;:
+    user = Student(&#39;IMooc&#39;)
+    print(user.__dict__)
+    user.__dict__[&quot;school_addr&quot;] = &quot;Beijing&quot;
+    print(user.school_addr)
+    print(Person.__dict__)
+    print(user.name)
+    a = [1, 2]
+    print(dir(a))
+</code></pre>
 
 <ul>
-<li>只要继承了魔法函数getitem就可以</li>
+<li>dict获取属性</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-python">class Company(object):
-    def __init__(self, employee_list):
-        self.employee = employee_list
-
-    def __getitem__(self, item):
-        return self.employee[item]
-
-    def __len__(self):
-        return len(self.employee)
-
-
-com = Company([&#39;tom&#39;, &#39;jack&#39;, &#39;jsdon&#39;])
-a = [&#39;b1&#39;, &#39;b2&#39;]
-b = [&#39;b2&#39;, &#39;b3&#39;]
-name_tuple = [&#39;b3&#39;, &#39;b4&#39;]
-name_set = set()
-name_set.add(&#39;b5&#39;)
-name_set.add(&#39;b6&#39;)
-a.extend(com)
-print(a)
-</code></pre>
-
-<h4>强制子类必须实现接口</h4>
-
-<pre class="line-numbers"><code class="language-python">class CacheBase(metaclass=abc.ABCMeta):
-    @abc.abstractmethod
-    def get(self, key):
-        pass
-
-    @abc.abstractmethod
-    def set(self, key, value):
-        pass
-
-class RedisCache(CacheBase):
-    def set(self, key, value):
-        print(&quot;hello&quot;)
-
-    def get(self, key):
-        print(&#39;hello&#39;)
-</code></pre>
-
-<h4>instance&amp;type</h4>
+<h4>上下文管理器协议</h4>
 
 <ul>
-<li>is是判断类别</li>
-<li>==是判断值</li>
+<li><img src="media/15744656731481/15744763032317.jpg" alt="" style="width:324px;"/></li>
 </ul>
 
-<pre class="line-numbers"><code class="language-python">class A:
-    pass
-
-class B(A):
-    pass
-
-b = B()
-
-print(isinstance(b, B))
-print(isinstance(b, A))
-
-print(type(b) is B)
-print(type(b) is A) #二者的ID不想等
-print(id(b))
-print(id(B))
-</code></pre>
-
-<h4>Mro算法</h4>
-
-<ul>
-<li><img src="media/15739426575118/15739464120394.jpg" alt="" style="width:913px;"/></li>
-<li>C3算法</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/17 06:17 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15738723543218.html">
-                
-                  <h1>魔法函数</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>概念</h4>
-
-<ul>
-<li>python内置</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-python">class Company(object):
-    def __init__(self, employee_list):
-       self.employee = employee_list
-
-    def __getitem__(self, item):
-        return self.employee[item]
-
-company = Company([&#39;tom&#39;, &#39;jack&#39;, &#39;jsdon&#39;])
-
-for em in company:
-    print(em)
-</code></pre>
-
-<h4>python数据模型</h4>
-
-<pre class="line-numbers"><code class="language-python">class Company(object):
-    def __init__(self, employee_list):
-       self.employee = employee_list
-
-    def __getitem__(self, item):
-        return self.employee[item]
-
-    def __len__(self):
-        return len(self.employee)
-
-company = Company([&#39;tom&#39;, &#39;jack&#39;, &#39;jsdon&#39;])
-
-# company1 = company[:2]
-# for em in company1:
-#     print(em)
-
-print(len(company))
-</code></pre>
-
-<h4>魔法函数</h4>
-
-<ul>
-<li><img src="media/15738723543218/15738740515573.jpg" alt="" style="width:278px;"/></li>
-</ul>
-
-<pre class="line-numbers"><code class="language-python">__subclasshook__ 魔法函数
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/16 10:45 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15738717951389.html">
-                
-                  <h1>with上下文管理器</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>基于类的上下文管理器</h4>
-
-<pre class="line-numbers"><code class="language-python">class FileManager:
-    def __init__(self, name, mode):
-        print(&#39;calling __init method&#39;)
-        self.name = name
-        self.mode = mode
-        self.file = None
-
+<pre class="line-numbers"><code class="language-python">class Sample:
     def __enter__(self):
-        print(&#39;calling __enter__ method&#39;)
-        self.file = open(self.name, self.mode)
-        return self.file
+        #获取资源
+        print(&#39;enter&#39;)
+        return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        print(&#39;calling __exit__ method&#39;)
-        if self.file:
-            self.file.close()
+        #释放资源
+        print(&quot;exit&quot;)
+
+    def do_something(self):
+        print(&quot;doing something&quot;)
+
+with Sample() as sample:
+    sample.do_something()
 </code></pre>
 
-<h4>基于生成器的上下文管理器</h4>
+<h4>contextlib协议</h4>
 
-<pre class="line-numbers"><code class="language-python">
-from contextlib import contextmanager
+<pre class="line-numbers"><code class="language-python">import contextlib
 
-@contextmanager
-def file_manager(name, mode):
+@contextlib.contextmanager
+def file_open(file_name):
+    print (&quot;file open&quot;)
+    yield {}
+    print (&quot;file end&quot;)
+
+with file_open(&quot;bobby.txt&quot;) as f_opened:
+    print (&quot;file processing&quot;)
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/23 07:34 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15732667564981.html">
+                
+                  <h1>MetaClass</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>Yaml</h4>
+
+<ul>
+<li>AML是一个家喻户晓的 Python 工具，可以方便地序列化 / 逆序列化结构数据。YAMLObject 的一个超越变形能力，就是它的任意子类支持序列化和反序列化</li>
+</ul>
+
+<h4>metaclass</h4>
+
+<ul>
+<li>所有的 Python 的用户定义类，都是 type 这个类的实例</li>
+<li>用户自定义类，只不过是 type 类的__call__运算符重载</li>
+<li>metaclass 是 type 的子类，通过替换 type 的__call__运算符重载机制，“超越变形”正常的类</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">class MyClass:
+  data = 1
+class = type(classname, superclasses, attributedict)
+type.__new__(typeclass, classname, superclasses, attributedict)
+type.__init__(class, classname, superclasses, attributedict)
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/09 10:32 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15783513440933.html">
+                
+                  <h1>asyncio并发编程</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>功能</h4>
+
+<ul>
+<li>包含各种特定系统实现的模块化事件循环传输和协议抽象</li>
+<li>对 TCP、UDP、SL、子进程、延时调用以及其他的具体支持</li>
+<li>模仿 futures 模块但适用于事件循环使用的 Futurea 类</li>
+<li>基于 yield from 的协议和任务，可以让你用顺序的方式编写并发代码必须使用一个将产生阻塞 IO 的调用时，有接口可以把这个事件转移到线程池</li>
+<li>模仿 threading 模块中的同步原语、可以用在单线程内的协程之间</li>
+</ul>
+
+<h4>协程三要素</h4>
+
+<ul>
+<li>事件循环</li>
+<li>回调(驱动生成器)</li>
+<li>epoll</li>
+</ul>
+
+<h4>事件驱动</h4>
+
+<pre class="line-numbers"><code class="language-python">import asyncio
+import time
+
+async def get_html(url):
+    print(&quot;start get url&quot;)
+    await asyncio.sleep(2)
+    print(&quot;end get url&quot;)
+
+if __name__ == &quot;__main__&quot;:
+    start_time = time.time()
+    loop = asyncio.get_event_loop()
+    tasks = [get_html(&quot;www.imooc.com&quot;) for i in range(10)]
+    loop.run_until_complete(asyncio.wait(tasks))
+    print(time.time() - start_time)
+</code></pre>
+
+<h4>用途</h4>
+
+<ul>
+<li>asyncio是python用于解决异步IO编程的一整套解决方案</li>
+<li>tornado, gevent, twisted(scrapy, django channels)</li>
+<li>tornado可以直接部署， nginx + tornado</li>
+</ul>
+
+<h4>gather&amp;wait</h4>
+
+<ul>
+<li>gather更加high_level</li>
+</ul>
+
+<h4>获取协程的返回值</h4>
+
+<pre class="line-numbers"><code class="language-python">### 无参数
+import asyncio
+import time
+from functools import partial
+
+async def get_html(url):
+    print(&#39;start get url&#39;)
+    await asyncio.sleep(2)
+    return &#39;bobby&#39;
+
+def callback(future):
+    print(&#39;send email to bobby&#39;)
+
+if __name__ == &#39;__main__&#39;:
+    start_time = time.time()
+    loop = asyncio.get_event_loop()
+    task = loop.create_task(get_html(&#39;http://www.imooc.com&#39;))
+    task.add_done_callback(callback)
+    loop.run_until_complete(task)
+    print(task.result())
+    
+### 有参数
+import asyncio
+import time
+from functools import partial
+
+async def get_html(url):
+    print(&#39;start get url&#39;)
+    await asyncio.sleep(2)
+    return &#39;bobby&#39;
+
+def callback(url, future):
+    print(url)
+    print(&#39;send email to bobby&#39;)
+
+if __name__ == &#39;__main__&#39;:
+    start_time = time.time()
+    loop = asyncio.get_event_loop()
+    task = loop.create_task(get_html(&#39;http://www.imooc.com&#39;))
+    task.add_done_callback(partial(callback, &quot;http://www.imooc.com&quot;))
+    loop.run_until_complete(task)
+    print(task.result())
+</code></pre>
+
+<h4>task和gather</h4>
+
+<pre class="line-numbers"><code class="language-python">import asyncio
+import time
+
+async def get_html(url):
+    print(&#39;start get url&#39;)
+    await asyncio.sleep(2)
+    print(&#39;end get url&#39;)
+
+if __name__ == &#39;__main__&#39;:
+    start_time = time.time()
+    loop = asyncio.get_event_loop()
+    tasks = [get_html(&#39;http://www.imooc.com&#39;) for i in range(10)]
+    loop.run_until_complete(asyncio.wait(tasks))
+    print(time.time() - start_time)
+</code></pre>
+
+<ul>
+<li>gather更加高级，还可以进行任务分组</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">import asyncio
+import time
+
+async def get_html(url):
+    print(&#39;start get url&#39;)
+    await asyncio.sleep(2)
+    print(&#39;end get url&#39;)
+
+if __name__ == &#39;__main__&#39;:
+    start_time = time.time()
+    loop = asyncio.get_event_loop()
+    tasks = [get_html(&#39;http://www.imooc.com&#39;) for i in range(10)]
+
+    group1 = [get_html(&#39;http://projectedu.com&#39;) for i in range(2)]
+    group2 = [get_html(&#39;http://www.imooc.com&#39;) for i in range(2)]
+    group1 = asyncio.gather(*group1)
+    group2 = asyncio.gather(*group2)
+    loop.run_until_complete(asyncio.gather(group1, group2))
+    print(time.time() - start_time)
+</code></pre>
+
+<h4>取消协程</h4>
+
+<ul>
+<li><img src="media/15783513440933/15786142024974.jpg" alt="" style="width:934px;"/></li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">import asyncio
+import time
+
+async def get_html(sleep_times):
+    print(&#39;waiting&#39;)
+    await asyncio.sleep(sleep_times)
+    print(&#39;done after {}s&#39;.format(sleep_times))
+
+if __name__ == &#39;__main__&#39;:
+    task1 = get_html(2)
+    task2 = get_html(3)
+    task3 = get_html(4)
+
+    tasks = [task1, task2, task3]
+
+    loop = asyncio.get_event_loop()
     try:
-        f = open(name, mode)
-        yield f
+      loop.run_until_complete(asyncio.wait(tasks))
+    except KeyboardInterrupt as e:
+        all_tasks = asyncio.Task.all_tasks()
+        for task in all_tasks:
+            print(&#39;cancel task&#39;)
+            print(task.cancel())
+        loop.stop()
+        loop.run_forever()//很重要
     finally:
-        f.close()
-        
-with file_manager(&#39;test.txt&#39;, &#39;w&#39;) as f:
-    f.write(&#39;hello world&#39;)
+        loop.close()
+</code></pre>
+
+<h4>协程调用链</h4>
+
+<pre class="line-numbers"><code class="language-python">import asyncio
+
+async def compute(x, y):
+    print(&quot;Compute %s + %s ...&quot; % (x, y))
+    await asyncio.sleep(1.0)
+    return x + y
+
+async def print_sum(x, y):
+    result = await compute(x, y)
+    print(&quot;%s + %s = %s&quot; % (x, y, result))
+
+loop = asyncio.get_event_loop()
+loop.run_until_complete(print_sum(1, 2))
+loop.close()
+</code></pre>
+
+<h4>call_soon&amp;call_later</h4>
+
+<pre class="line-numbers"><code class="language-python">import asyncio
+
+def callback(sleep_times):
+    print(&#39;sleep {} success&#39;.format(sleep_times))
+
+def stoploop(loop):
+    loop.stop()
+
+if __name__ == &#39;__main__&#39;:
+    loop = asyncio.get_event_loop()
+    loop.call_soon(callback, 2)
+    loop.call_soon(stoploop, loop)
+    loop.run_forever()
+    
+import asyncio
+
+def callback(sleep_times):
+    print(&#39;sleep {} success&#39;.format(sleep_times))
+def stoploop(loop):
+    loop.stop()
+
+if __name__ == &quot;__main__&quot;:
+    loop = asyncio.get_event_loop()
+    now = loop.time()
+    loop.call_later(2, callback, 2)
+    loop.call_later(1, callback, 1)
+    loop.call_later(3, callback, 3)
+    loop.call_soon(callback, 4)
+    loop.run_forever()
+</code></pre>
+
+<h4>协程与线程池</h4>
+
+<pre class="line-numbers"><code class="language-python">#使用多线程：在携程中集成阻塞io
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
+import socket
+from urllib.parse import urlparse
+
+
+def get_url(url):
+    #通过socket请求html
+    url = urlparse(url)
+    host = url.netloc
+    path = url.path
+    if path == &quot;&quot;:
+        path = &quot;/&quot;
+
+    #建立socket连接
+    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    # client.setblocking(False)
+    client.connect((host, 80)) #阻塞不会消耗cpu
+
+    #不停的询问连接是否建立好， 需要while循环不停的去检查状态
+    #做计算任务或者再次发起其他的连接请求
+
+    client.send(&quot;GET {} HTTP/1.1\r\nHost:{}\r\nConnection:close\r\n\r\n&quot;.format(path, host).encode(&quot;utf8&quot;))
+
+    data = b&quot;&quot;
+    while True:
+        d = client.recv(1024)
+        if d:
+            data += d
+        else:
+            break
+
+    data = data.decode(&quot;utf8&quot;)
+    html_data = data.split(&quot;\r\n\r\n&quot;)[1]
+    print(html_data)
+    client.close()
+
+
+if __name__ == &quot;__main__&quot;:
+    import time
+    start_time = time.time()
+    loop = asyncio.get_event_loop()
+    executor = ThreadPoolExecutor(3)
+    tasks = []
+    for url in range(20):
+        url = &quot;http://shop.projectsedu.com/goods/{}/&quot;.format(url)
+        task = loop.run_in_executor(executor, get_url, url)
+        tasks.append(task)
+    loop.run_until_complete(asyncio.wait(tasks))
+    print(&quot;last time:{}&quot;.format(time.time()-start_time))
+</code></pre>
+
+<h4>async_http</h4>
+
+<pre class="line-numbers"><code class="language-python">import socket
+import asyncio
+from urllib.parse import urlparse
+
+async def get_url(url):
+    url = urlparse(url)
+    host = url.netloc
+    path = url.path
+
+    if path == &quot;&quot;:
+        path = &quot;/&quot;
+
+    reader, writer = await asyncio.open_connection(host, 80)
+    writer.write(
+        &quot;GET {} HTTP/1.1\r\nHost:{}\r\nConnection:close\r\n\r\n&quot;.format(
+        path,host).encode(&quot;utf8&quot;))
+    all_lines = []
+
+    async for raw_line in reader:
+        data = raw_line.decode(&quot;utf8&quot;)
+        all_lines.append(data)
+
+    html = &quot;\n&quot;.join(all_lines)
+    return html
+
+async def main():
+    tasks = []
+    for url in range(20):
+        url = &quot;http://shop.projectsedu.com/goods/{}/&quot;.format(url)
+        tasks.append(asyncio.ensure_future(get_url(url)))
+    for task in asyncio.as_completed(tasks):
+        result = await task
+        print(result)
+
+if __name__ == &#39;__main__&#39;:
+    import time
+    start_time = time.time()
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(main())
+    print(&#39;last time :{}&#39;.format(time.time() - start_time))
+</code></pre>
+
+<h4>asyncio同步和通信</h4>
+
+<ul>
+<li>凡是不涉及到IO操作和await操作都会将当前程序运行到底</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">from asyncio import Lock
+
+cache = {}
+
+lock = Lock()
+
+async def get_stuff(url):
+    async with lock:
+        if url in cache:
+            return cache[url]
+        stuff = await aiohttp.reqeust(&#39;GET&#39;, url)
+        cache[url] = stuff
+        return stuff
 </code></pre>
 
                         
@@ -1196,126 +854,7 @@ with file_manager(&#39;test.txt&#39;, &#39;w&#39;) as f:
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/11/16 10:36 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15737766048515.html">
-                
-                  <h1>assert</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>断言</h4>
-
-<ul>
-<li>不带括号</li>
-<li>assert 时，一定不要加上括号，否则无论表达式对与错，assert 检查永远不会 fail。另外，程序中的 assert 语句，可以通过-O等选项被全局 disable</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-python">def apply_discount(price, discount):
-    update_price = price * (1- discount)
-    assert  0 &lt;= update_price &lt;= price, &#39;price should be greater or equal to  0&#39;
-    return update_price
-
-print(&#39;ret {}&#39;.format(apply_discount(100, 0.2)))
-apply_discount(100, 2)
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/15 08:10 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15735109140523.html">
-                
-                  <h1>python对象</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>结构图</h4>
-
-<ul>
-<li><img src="media/15735109140523/15735109427738.jpg" alt="" style="width:1069px;"/></li>
-</ul>
-
-<h4>type&amp;object&amp;class关系</h4>
-
-<pre class="line-numbers"><code class="language-python">type-&gt;int-&gt;1
-type-&gt;class-&gt;obj
-a = 1
-type(int)
-</code></pre>
-
-<ul>
-<li>object最顶层基类</li>
-<li>type是一个类，也是一个对象</li>
-</ul>
-
-<h4>结构关系图</h4>
-
-<ul>
-<li><img src="media/15735109140523/15735121320037.jpg" alt="" style="width:856px;"/></li>
-</ul>
-
-<h4>对象三个特征</h4>
-
-<ul>
-<li>身份</li>
-<li>值</li>
-<li>类型</li>
-</ul>
-
-<h4>内置类型</h4>
-
-<ul>
-<li><img src="media/15735109140523/15735128960548.jpg" alt="" style="width:763px;"/></li>
-<li>None</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/12 06:21 上午</span>
+                    <span class="date">2020/01/07 06:55 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Python.html'>Python</a></span>

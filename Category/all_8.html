@@ -170,509 +170,299 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15738717951389.html">
+                <a class="clearlink" href="15729049211046.html">
                 
-                  <h1>with上下文管理器</h1>
+                  <h1>Factory</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>基于类的上下文管理器</h4>
-
-<pre class="line-numbers"><code class="language-python">class FileManager:
-    def __init__(self, name, mode):
-        print(&#39;calling __init method&#39;)
-        self.name = name
-        self.mode = mode
-        self.file = None
-
-    def __enter__(self):
-        print(&#39;calling __enter__ method&#39;)
-        self.file = open(self.name, self.mode)
-        return self.file
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        print(&#39;calling __exit__ method&#39;)
-        if self.file:
-            self.file.close()
-</code></pre>
-
-<h4>基于生成器的上下文管理器</h4>
-
-<pre class="line-numbers"><code class="language-python">
-from contextlib import contextmanager
-
-@contextmanager
-def file_manager(name, mode):
-    try:
-        f = open(name, mode)
-        yield f
-    finally:
-        f.close()
-        
-with file_manager(&#39;test.txt&#39;, &#39;w&#39;) as f:
-    f.write(&#39;hello world&#39;)
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/16 10:36 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15737766048515.html">
-                
-                  <h1>assert</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>断言</h4>
+                        	<h4>典型模式</h4>
 
 <ul>
-<li>不带括号</li>
-<li>assert 时，一定不要加上括号，否则无论表达式对与错，assert 检查永远不会 fail。另外，程序中的 assert 语句，可以通过-O等选项被全局 disable</li>
+<li>通过“对象创建”模式绕开 new，来避免对象创建（new）过程中所导致的紧耦合（依赖具体类），从而支持对象创建的稳定。它是接口抽象之后的第一步工作。</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-python">def apply_discount(price, discount):
-    update_price = price * (1- discount)
-    assert  0 &lt;= update_price &lt;= price, &#39;price should be greater or equal to  0&#39;
-    return update_price
-
-print(&#39;ret {}&#39;.format(apply_discount(100, 0.2)))
-apply_discount(100, 2)
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/15 08:10 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15735109140523.html">
-                
-                  <h1>python对象</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>结构图</h4>
+<h4>典型模式</h4>
 
 <ul>
-<li><img src="media/15735109140523/15735109427738.jpg" alt="" style="width:1069px;"/></li>
+<li>Factory Method</li>
+<li>Abstract Factory</li>
+<li>Prototype</li>
+<li>Builder</li>
 </ul>
 
-<h4>type&amp;object&amp;class关系</h4>
-
-<pre class="line-numbers"><code class="language-python">type-&gt;int-&gt;1
-type-&gt;class-&gt;obj
-a = 1
-type(int)
-</code></pre>
+<h4>定义</h4>
 
 <ul>
-<li>object最顶层基类</li>
-<li>type是一个类，也是一个对象</li>
+<li>定义ー个用于创建对象的接口，让子类决定实例化哪一个类 Factory Method 使得一个类的实例化延迟（目的：解耦，手段：虚函数）到子类。</li>
 </ul>
 
-<h4>结构关系图</h4>
+<h4>结构图</h4>
+
+<p><img src="media/15729049211046/15809845877086.jpg" alt="" style="width:728px;"/></p>
+
+<h4>总结</h4>
 
 <ul>
-<li><img src="media/15735109140523/15735121320037.jpg" alt="" style="width:856px;"/></li>
+<li>Factory Method 模式用于隔离类对象的使用者和具体类型之间的耦合关系。面对一个经常变化的具体类型，紧耦合关系（new）会导致软件的脆弱。</li>
+<li>Factory Methodi 模式通过面向对象的手法，将所要创建的具体对象工作延迟到子类，从而实现一种扩展（而非更改）的策略，较好地解决了这种紧耦合关系。</li>
+<li>Factory Method 模式解决“单个对象”的需求变化。缺点在于要求创 建方法/参数相同。</li>
 </ul>
 
-<h4>对象三个特征</h4>
+<h4>cpp_demo</h4>
 
-<ul>
-<li>身份</li>
-<li>值</li>
-<li>类型</li>
-</ul>
+<pre class="line-numbers"><code class="language-cpp">class Video {
+ public:
+  virtual void produce() = 0;
+};
 
-<h4>内置类型</h4>
+class VideoFactory {
+ public:
+  virtual Video* getVideo() = 0;
+};
 
-<ul>
-<li><img src="media/15735109140523/15735128960548.jpg" alt="" style="width:763px;"/></li>
-<li>None</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/12 06:21 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15735992285022.html">
-                
-                  <h1>元组和列表</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>内部实现</h4>
-
-<pre class="line-numbers"><code class="language-c">#ifndef Py_LIMITED_API
-typedef struct {
-    PyObject_VAR_HEAD
-    PyObject **ob_item;
-    Py_ssize_t allocated;
-} PyListObject;
-typedef struct {
-    PyObject_VAR_HEAD
-    PyObject *ob_item[1];
-} PyTupleObject;
-</code></pre>
-
-<h4>hash表</h4>
-
-<pre class="line-numbers"><code class="language-c">Indices
-----------------------------------------------------
-None | index | None | None | index | None | index ...
-----------------------------------------------------
-Entries
---------------------
-hash0   key0  value0
----------------------
-hash1   key1  value1
----------------------
-hash2   key2  value2
----------------------
-        ...
----------------------
-
-</code></pre>
-
-<ul>
-<li>旧的Hash表越来越稀疏</li>
-</ul>
-
-<h4>全局变量修改</h4>
-
-<pre class="line-numbers"><code class="language-python">x = [1]
-
-def func2():
-    x.append(2)
-func2()
-print(x)
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/13 06:53 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15735992739195.html">
-                
-                  <h1>对象的比较和拷贝</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>等于&amp;&amp;is</h4>
-
-<ul>
-<li>&#39;==&#39;操作符比较对象之间的值是否相等</li>
-<li>而&#39;is&#39;操作符比较的是对象的身份标识是否相等，即它们是否是同一个对象，是否指向同一个内存地址。</li>
-</ul>
-
-<h4>is效率比较高</h4>
-
-<ul>
-<li>&#39;is&#39;操作符不能被重载</li>
-<li>&#39;==&#39;操作符却不同，执行a == b相当于是去执行a.__eq__(b)，而 Python 大部分的数据类型都会去重载__eq__这个函数，其内部的处理通常会复杂一些。比如，对于列表，__eq__函数会去遍历列表中的元素，比较它们的顺序和值是否相等</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/13 06:54 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15735993111373.html">
-                
-                  <h1>命令行</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>函数使用</h4>
-
-<h5>rate</h5>
-
-<ul>
-<li>rate(go_goroutines[1m])</li>
-<li>counter类型的数据必须使用rate和increase函数</li>
-<li>在我们的工作中 取1m 还是取5m<br/>
-这个取决于 我们对于监控数据的敏感性程度来挑选</li>
-<li>rate(1m) 是取一段时间增量的平均每秒数量</li>
-<li>rate() -&gt; CPU 内存 硬盘 IO 网络流量</li>
-</ul>
-
-<h5>increase</h5>
-
-<ul>
-<li>increase(1m) 则是 取一段时间增量的总量</li>
-<li>对比rate,曲线基本一致，但是纵坐标单位不一样</li>
-<li><img src="media/15725061245362/15725074004046.jpg" alt="" style="width:1631px;"/></li>
-<li>如果采样点比较少，rate函数容易断链，采用increase比较平缓</li>
-</ul>
-
-<h5>sum</h5>
-
-<ul>
-<li>sum 会把结果集的输出进行总加合</li>
-<li>sum() by (cluster_name)</li>
-<li>sum() by (instance)</li>
-</ul>
-
-<h5>topk</h5>
-
-<ul>
-<li>topk(4,rate(node_network_receive_packets_total[20m]))</li>
-<li>根据给定的数字 取数值最高 &gt;=x 的数值</li>
-<li>Topk因为对于每一个时间点 都只取前三高的数值 那么必然会造成 单个机器的采集数据不连贯,实际使用的时候 一般用topk()函数进行瞬时报警 而不是为了观察曲线图</li>
-</ul>
-
-<h5>count</h5>
-
-<ul>
-<li>count进行一些模糊的监控判断</li>
-<li>比如说 企业中有100台服务器，那么当只有10台服务器CPU高 于80%的时候 这个时候不需要报警但是 当符合80%CPU的服务器数量 超过 30台的时候 那么就 会触发报警 count()</li>
-</ul>
-
-<h5>promethus</h5>
-
-<ul>
-<li>daemonize启动</li>
-<li>--web.read-timeout=5m 链接最大等待时间</li>
-<li>--web-max-connections=512 最大链接数目</li>
-<li>--storage.tsdb.retention=15d 开始采集监控数据后 会存在内存中和硬盘中 对于保留期限的设置</li>
-<li>--storage.tsdb.path=&quot;data/&quot; 存储数据路径</li>
-<li>--query.timeout=2m</li>
-<li>--query.max-concurrency=20</li>
-</ul>
-
-<h4>配置文件</h4>
-
-<ul>
-<li>node_cpu</li>
-<li>node_memory</li>
-<li>node_disk</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/13 06:55 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Prometheus.html'>Prometheus</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15735993394297.html">
-                
-                  <h1>Grafna</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>监控案例</h4>
-
-<ul>
-<li>CPU使用率</li>
-<li>除去IO等待造成的CPU高之外，大部 分情况 就是 user%造成<br/>
-另外， </li>
-<li>system% 内核态的CPU 使用率 偶尔也会出现高的情况</li>
-<li>当服务器硬盘IO占用过大时，CPU会等待IO的返回进入interuptable 类型的CPU等待时间</li>
-</ul>
-
-<h4>硬盘监控</h4>
-
-<ul>
-<li>predict_linear()</li>
-<li>磁盘读写((rate(node_disk_read_bytes_total[1m] )+ rate(node_disk_written_bytes_total[1m])) / 1024 /1024) &gt; 0</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/13 06:55 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15687147026174.html">
-                
-                  <h1>单例设计模式</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>设计模式</h4>
-
-<ul>
-<li>开发程序中代码的写法</li>
-<li>head first</li>
-</ul>
-
-<h4>单例设计模式</h4>
-
-<pre class="line-numbers"><code class="language-cpp">std::mutex m;
- static MyCAS* GetInstance() {
-    //不代表一定没被new过，只有第一次多线程初始化的时候需要加锁，后面都不需要加锁
-    if (m_instance == nullptr) {
-      //初始化的时候才加锁
-      std::unque_lock(std::mutex) lock(m);
-      if (m_instance == nullptr) {
-        m_instance = new MyCAS();
-        static GC c1;
-      }
-      return m_instance;
-    }
+class FEVideo : public Video {
+ public:
+  void produce() {
+    std::cout &lt;&lt; &quot; FE video &quot; &lt;&lt; std::endl;
   }
+};
+
+class FEVideoFactory : public VideoFactory {
+ public:
+  Video* getVideo() {
+    return new FEVideo();
+  }
+};
+
+class JavaVideo : public Video {
+ public:
+  void produce() {
+    std::cout &lt;&lt; &quot; Java video &quot; &lt;&lt; std::endl;
+  }
+};
+class JavaVideoFactory : public VideoFactory {
+ public:
+  Video* getVideo() {
+    return new JavaVideo();
+  }
+};
+
+class PythonVideo : public Video {
+ public:
+  void produce() {
+    std::cout &lt;&lt; &quot; Python video &quot; &lt;&lt; std::endl;
+  }
+};
+
+class PythonVideoFactory : public VideoFactory {
+ public:
+  Video* getVideo() {
+    return new PythonVideo();
+  }
+};
+
+int main() {
+  VideoFactory* f1 = new PythonVideoFactory();
+  VideoFactory* f2 = new JavaVideoFactory();
+  VideoFactory* f3 = new FEVideoFactory();
+  Video* v1 = f1-&gt;getVideo();
+  Video* v2 = f2-&gt;getVideo();
+  Video* v3 = f3-&gt;getVideo();
+  v1-&gt;produce();
+  v2-&gt;produce();
+  v3-&gt;produce();
+}
 </code></pre>
 
-<h4>call_once</h4>
+<h4>golang_demo</h4>
 
-<ul>
-<li>能够保证函数只能被调用一次</li>
-<li>call_once效率上比互斥量消耗的更少</li>
-<li>call_once需要与一个标记结合使用, std::once_flag</li>
-<li>调用call_once成功后，就把once_flag设置为已经调用状态</li>
-</ul>
+<pre class="line-numbers"><code class="language-go">package desian_pattern_practise
 
-<pre class="line-numbers"><code class="language-cpp">std::once_flag g_flag;
-static MyCAS* GetInstance() {
-  std::call_once(g_flag, CreateInstance);
-  return m_instance;
+import &quot;reflect&quot;
+
+type Video interface {
+    Produce()
 }
-static void CreateInstance() {
-    cout &lt;&lt; &quot;CreateInstance &quot; &lt;&lt; endl;
-    m_instance = new MyCAS();
+
+type VideoFactory interface {
+    GetVideo() Video
+}
+
+type CppVideo struct {
+}
+
+func (c *CppVideo) Produce() {
+    println(reflect.TypeOf(c).String(), &quot;Produce&quot;)
+}
+
+type CppFactory struct {
+}
+
+func (c *CppFactory) GetVideo() Video {
+    return &amp;CppVideo{}
+}
+
+type JavaVideo struct {
+}
+
+func (c *JavaVideo) Produce() {
+    println(reflect.TypeOf(c).String(), &quot;Produce&quot;)
+}
+
+type JavaFactory struct {
+}
+
+func (c *JavaFactory) GetVideo() Video {
+    return &amp;JavaVideo{}
+}
+
+type PythonVideo struct {
+}
+
+func (c *PythonVideo) Produce() {
+    println(reflect.TypeOf(c).String(), &quot;Produce&quot;)
+}
+
+type PythonFactory struct {
+}
+
+func (c *PythonFactory) GetVideo() Video {
+    return &amp;PythonVideo{}
+}
+
+func TestCppFactory_GetVideo(t *testing.T) {
+    py := &amp;PythonFactory{}
+    py.GetVideo().Produce()
+
+    cpp := &amp;CppFactory{}
+    cpp.GetVideo().Produce()
+
+    java := &amp;JavaFactory{}
+    java.GetVideo().Produce()
+}
+</code></pre>
+
+<h4>python_demo</h4>
+
+<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
+
+class Video(metaclass=ABCMeta):
+    def produce(self):
+        pass
+
+class VideoFactory(metaclass=ABCMeta):
+
+    def get_video(self):
+        pass
+
+class CppVideo(Video):
+
+    def produce(self):
+        print(type(self).__name__, &quot; produce&quot;)
+        
+class CppFactory(VideoFactory):
+    
+    def get_video(self):
+        return CppVideo()
+
+
+class JavaVideo(Video):
+
+    def produce(self):
+        print(type(self).__name__, &quot; produce&quot;)
+
+
+class JavaFactory(VideoFactory):
+
+    def get_video(self):
+        return JavaVideo()
+
+
+class PythonVideo(Video):
+
+    def produce(self):
+        print(type(self).__name__, &quot; produce&quot;)
+
+
+class PythonFactory(VideoFactory):
+
+    def get_video(self):
+        return PythonVideo()
+
+if __name__ == &#39;__main__&#39;:
+    cpp = CppFactory()
+    cpp.get_video().produce()
+
+    java = JavaFactory()
+    java.get_video().produce()
+
+    python = PythonFactory()
+    python.get_video().produce()
+</code></pre>
+
+<h4>golang_demo</h4>
+
+<pre class="line-numbers"><code class="language-go">import &quot;fmt&quot;
+type ICar interface {
+    Name()
+}
+
+type Factory interface {
+    CreateCar() ICar
+}
+
+type BenzCar struct {
+}
+
+func (bc *BenzCar) Name() {
+    fmt.Println(&quot;BenzCar Create&quot;)
+}
+
+type BenzFactory struct{}
+
+func (b *BenzFactory) CreateCar() ICar {
+    return &amp;BenzCar{}
+}
+
+type BmwCar struct {
+    ICar
+}
+
+func (bc *BmwCar) Name() {
+    fmt.Println(&quot;BmwCar Create&quot;)
+}
+
+type BmwFactory struct{}
+
+func (b *BmwFactory) CreateCar() ICar {
+    return &amp;BmwCar{}
+}
+
+type AudiCar struct {
+    ICar
+}
+
+func (bc *AudiCar) Name() {
+    fmt.Println(&quot;AudiCar Create&quot;)
+}
+
+type AudiFactory struct{}
+
+func (b *AudiFactory) CreateCar() ICar {
+    return &amp;AudiCar{}
+}
+
+func TestAudiFactory_CreateCar(t *testing.T) {
+    audi := &amp;AudiFactory{}
+    audi.CreateCar().Name()
+
+    bmw := &amp;BmwFactory{}
+    bmw.CreateCar().Name()
+
+    benz := &amp;BenzFactory{}
+    benz.CreateCar().Name()
 }
 </code></pre>
 
@@ -683,7 +473,131 @@ static void CreateInstance() {
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/09/17 18:05 下午</span>
+                    <span class="date">2019/11/05 06:02 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15667286771718.html">
+                
+                  <h1>对象移动，移动构造函数，移动赋值运算符</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>对象移动</h4>
+
+<ul>
+<li>A移动给B，A对象就不能用了</li>
+<li>移动 不是从一块地址移动到另外一个地址，只是所有权变更</li>
+<li>移动构造函数Time::Time(const Time&amp;&amp; time)</li>
+</ul>
+
+<h4>完成的功能</h4>
+
+<ul>
+<li>完成必要的内存移动，斩断原对象和内存的关系</li>
+<li>确保移动后源对象即使销毁也没有问题，B&lt;-A 确保不再使用A，而是应该去使用B</li>
+<li>noexcept 提高编译器效率</li>
+</ul>
+
+<h4>合成的移动操作</h4>
+
+<ul>
+<li>有自己的拷贝构造函数，拷贝赋值运算符，或者自己的析构，编译器不会为其合成</li>
+<li>没有自己的拷贝构造函数，拷贝赋值运算符，或者自己的析构</li>
+<li>只有一个类没定义任何自己版本的拷贝构造函数，并且非静态成员都可以移动，</li>
+<li>内置类型是可以移动</li>
+<li>类类型的成员，这个类必须要有对应的移动操作的函数</li>
+</ul>
+
+<h4>容器移动构造函数</h4>
+
+<pre class="line-numbers"><code class="language-cpp">//
+// Created by eredinliu on 2020-02-06.
+//
+
+
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+using namespace std;
+
+class Obj1 {
+public:
+    Obj1()
+    {
+        cout &lt;&lt; &quot;Obj1()\n&quot;;
+    }
+    Obj1(const Obj1&amp;)
+    {
+        cout &lt;&lt; &quot;Obj1(const Obj1&amp;)\n&quot;;
+    }
+    Obj1(Obj1&amp;&amp;)
+    {
+        cout &lt;&lt; &quot;Obj1(Obj1&amp;&amp;)\n&quot;;
+    }
+};
+
+class Obj2 {
+public:
+    Obj2()
+    {
+        cout &lt;&lt; &quot;Obj2()\n&quot;;
+    }
+    Obj2(const Obj2&amp;)
+    {
+        cout &lt;&lt; &quot;Obj2(const Obj2&amp;)\n&quot;;
+    }
+    Obj2(Obj2&amp;&amp;) noexcept
+    {
+        cout &lt;&lt; &quot;Obj2(Obj2&amp;&amp;)\n&quot;;
+    }
+};
+
+int main()
+{
+    vector&lt;Obj1&gt; v1;
+    v1.reserve(2);
+    v1.emplace_back();
+    v1.emplace_back();
+    v1.emplace_back();
+
+    cout &lt;&lt; &quot; ==================\n&quot;;
+    vector&lt;Obj2&gt; v2;
+    v2.reserve(2);
+    v2.emplace_back();
+    v2.emplace_back();
+    v2.emplace_back();
+}
+</code></pre>
+
+<ul>
+<li>vector 通常保证强异常安全性，如果元素类型没有提供一个保证不抛异常的移动构造函数，vector 通常会使用拷贝构造函数。因此，对于拷贝代价较高的自定义元素类型，我们应当定义移动构造函数，并标其为 noexcept，或只在容器中放置对象的智能指针。</li>
+<li>emplace_back系列函数是为了提升容器的性能而设计的</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/08/25 18:24 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
@@ -700,58 +614,209 @@ static void CreateInstance() {
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15734246276075.html">
+                <a class="clearlink" href="15696667375372.html">
                 
-                  <h1>GC原则</h1>
+                  <h1>引用折叠&转发&完美转发&forward</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>查看引用计数</h4>
+                        	<h4>引用折叠</h4>
 
-<ul>
-<li>sys.getrefcount() 这个函数，可以查看一个变量的引用次数。这段代码本身应该很好理解，不过别忘了，getrefcount 本身也会引入一次计数。</li>
-<li>在函数调用发生的时候，会产生额外的两次引用，一次来自函数栈，另一个是函数参数。</li>
-</ul>
+<pre class="line-numbers"><code class="language-cpp">template&lt;typename T&gt;
+void func(T &amp;&amp;tmp)
 
-<h4>循环引用</h4>
-
-<pre class="line-numbers"><code class="language-python">
-import gc
-
-def func():
-    show_memory_info(&#39;initial&#39;)
-    a = [i for i in range(10000000)]
-    b = [i for i in range(10000000)]
-    show_memory_info(&#39;after a, b created&#39;)
-    a.append(b)
-    b.append(a)
-
-func()
-gc.collect()
-show_memory_info(&#39;finished&#39;)
+int main(){
+  int i = 18;
+  func(i); //i左值 T int&amp; tmp int&amp;
+  func(100);//i 右值  T int tmp int&amp;&amp;
+  void func(int&amp; &amp;&amp;tmp) {} 
+  void func(int&amp; tmp) {} //编译器展现出来的
+}
 </code></pre>
 
-<h4>回收机制</h4>
-
-<h5>标记清除</h5>
-
 <ul>
-<li>对于一个有向图，如果从一个节点出发进行遍历，并标记其经过的所有节点；那么，在遍历结束后，所有没有被标记的节点，我们就称之为不可达节点。显而易见，这些节点的存在是没有任何意义的，自然的，我们就需要对它们进行垃圾回收。</li>
-<li>mark-sweep 使用双向链表维护了一个数据结构，并且只考虑容器类的对象（只有容器类对象才有可能产生循环引用）</li>
+<li>引用折叠</li>
+<li>左值引用&amp;, 右值引用&amp;&amp;</li>
+<li>T是第一组左值引用， &amp;&amp;tmp第二组右值引用</li>
 </ul>
 
-<h5>分代收集算法</h5>
+<table>
+<thead>
+<tr>
+<th style="text-align: center">第一组</th>
+<th style="text-align: center">第二组</th>
+<th style="text-align: center">结果</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td style="text-align: center">&amp;左值引用</td>
+<td style="text-align: center">&amp;左值引用</td>
+<td style="text-align: center">&amp;左值引用</td>
+</tr>
+<tr>
+<td style="text-align: center">&amp;左值引用</td>
+<td style="text-align: center">&amp;&amp;右值引用</td>
+<td style="text-align: center">&amp;左值引用</td>
+</tr>
+<tr>
+<td style="text-align: center">&amp;&amp;右值引用</td>
+<td style="text-align: center">&amp;左值引用</td>
+<td style="text-align: center">&amp;左值引用</td>
+</tr>
+<tr>
+<td style="text-align: center">&amp;&amp;右值引用</td>
+<td style="text-align: center">&amp;&amp;右值引用</td>
+<td style="text-align: center">&amp;&amp;右值引用</td>
+</tr>
+</tbody>
+</table>
 
 <ul>
-<li>Python 将所有对象分为三代。刚刚创立的对象是第 0 代；经过一次垃圾回收后，依然存在的对象，便会依次从上一代挪到下一代。而每一代启动自动垃圾回收的阈值，则是可以单独指定的。当垃圾回收器中新增对象减去删除对象达到相应的阈值时，就会对这一代对象启动垃圾回收</li>
+<li>折叠规则，只要有任意一个引用为左值引用，结果就是左值引用，否则就是右值引用</li>
 </ul>
 
-<h4>引用计数</h4>
+<h4>引用的引用</h4>
+
+<pre class="line-numbers"><code class="language-cpp">int b = 500;
+int &amp;rb = b;
+int &amp; &amp;rrb = b; //引用的引用，两个&amp;之间有空格
+</code></pre>
 
 <ul>
-<li>引用计数是其中最简单的实现，不过切记，这只是充分非必要条件，因为循环引用需要通过不可达判定，来确定是否可以回收</li>
+<li>引用的引用是非法的</li>
+<li>编译器内部推断</li>
 </ul>
+
+<h4>转发和完美转发</h4>
+
+<ul>
+<li>函数模版把收到的参数以及这些参数的类型转发给其他函数</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">void func2(int t1, int&amp; t2) {
+  cout &lt;&lt; &quot; t1 + t2 &quot; &lt;&lt; t1 + t2 &lt;&lt; endl;
+  t2++;
+}
+template&lt;typename F, typename T1, typename T2&gt;
+void func(F f, T1 t1, T2&amp;&amp; t2) {
+  f(t1, t2)
+}
+</code></pre>
+
+<ul>
+<li>要保持t2的引用属性，T2改成万能引用T2&amp;&amp;，可以推导所有的实参类型</li>
+<li>T2改成T2&amp;不能保留左值或者右值属性</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp"> int&amp;&amp; rval = 80;//右值引用必须要绑定右值, &amp;&amp;rval是右值引用,但是rval本身是个左值
+  func3(rval, j);//err
+  func3(80, j);//right
+</code></pre>
+
+<h4>完美转发</h4>
+
+<pre class="line-numbers"><code class="language-cpp">void func3(int&amp;&amp; t1, int&amp; t2) {
+  cout &lt;&lt; &quot; t1 + t2 &quot; &lt;&lt; t1 + t2 &lt;&lt; endl;
+  t2++;
+}
+
+template&lt;typename F, typename T1, typename T2&gt;
+void func(F f, T1&amp;&amp; t1, T2&amp;&amp; t2) { //t1是左值, 形参都是左值
+   f(forward&lt;T1&gt;(t1), forward&lt;T2&gt;(t2));
+}
+
+int main() {
+  int i = 20, j = 30;
+  func(func2, i, j);
+  func3(70, j);
+  cout &lt;&lt; &quot; j &quot; &lt;&lt; j &lt;&lt; endl;
+
+  int&amp;&amp; rval = 80;//右值引用必须要绑定右值, &amp;&amp;rval是右值引用,但是rval本身是个左值
+  //func3(rval, j);
+  func(func3, 80, j);
+}
+</code></pre>
+
+<ul>
+<li>接受任意实参的函数模板</li>
+<li>目标函数会接收到与转发函数所收到的完全相同</li>
+<li>std::forward</li>
+<li>发挥作用的条件</li>
+<li>调用模板函数，模板函数参数是万能引用类型，模版函数负责转发</li>
+<li>std::forward的能力就是按照参数本来的类型转发</li>
+<li>实参如果原来是左值，forward还是按照原来的类型处理</li>
+<li>实参如果原来是右值，形参变成了左值，forward会把左值信息还原为右值</li>
+<li>万能引用会保存实参的左值右值的信息，</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">void func4(int &amp;t) {
+  cout&lt;&lt; &quot;left  value &quot; &lt;&lt; endl;
+}
+
+void func4(int &amp;&amp;t) {
+  cout&lt;&lt; &quot;right  value &quot; &lt;&lt; endl;
+}
+
+template &lt;typename T&gt;
+void testF(T&amp;&amp; t) {
+  func4(t);
+  func4(forward&lt;T&gt;(t));
+  func4(move(t));//move是左值转右值。
+}
+</code></pre>
+
+<ul>
+<li>forward是有条件的转发，左值转右值</li>
+<li>move无条件强制类型转换成右值</li>
+</ul>
+
+<h4>万能引用</h4>
+
+<ul>
+<li>可以合并代码，达到简化代码的效果</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">class shape {};
+class circle : public shape {};
+void foo(const shape&amp;)
+{
+    puts(&quot;foo(const shape&amp;)&quot;);
+}
+
+void foo(shape&amp;&amp;)
+{
+    puts(&quot;foo(shape&amp;&amp;)&quot;);
+}
+
+//void bar(const shape&amp; s)
+//{
+//    puts(&quot;bar(const shape&amp;)&quot;);
+//    foo(s);
+//}
+//
+//void bar(shape&amp;&amp; s)
+//{
+//    puts(&quot;bar(shape&amp;&amp;)&quot;);
+//    foo(move(s));
+//}
+
+
+template &lt;typename T&gt;
+void bar(T&amp;&amp; s)
+{
+    foo(std::forward&lt;T&gt;(s));
+}
+
+int main()
+{
+    circle temp;
+    bar(temp);
+    bar(circle());
+}
+</code></pre>
 
                         
                       </div>
@@ -760,10 +825,10 @@ show_memory_info(&#39;finished&#39;)
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/11/11 06:23 上午</span>
+                    <span class="date">2019/09/28 18:32 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -777,23 +842,140 @@ show_memory_info(&#39;finished&#39;)
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15733756280245.html">
+                <a class="clearlink" href="15664703415424.html">
                 
-                  <h1>GIL</h1>
+                  <h1>左值和右值</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>引入GIL原因</h4>
+                        	<h4>左值和右值</h4>
 
 <ul>
-<li>CPython  引进 GIL 其实主要就是这么两个原因：一是设计者为了规避类似于内存管理这样的复杂的竞争风险问题（race condition）；二是因为 CPython 大量使用 C 语言库，但大部分 C 语言库都不是原生线程安全的（线程安全会降低性能和增加复杂度）。</li>
+<li>左值 能用在赋值语句=左边的东西</li>
+<li>C++表达式要么是左值，要么是右值</li>
+<li>i = i + 1 i有右值属性，i出现在左边，拥有左值属性</li>
+<li>赋值运算符</li>
+<li>取地址</li>
+<li>string vector []左值 iter是迭代器</li>
+<li>看一个运算符在一个字面值能不能操作</li>
+<li>左值表达式 左值</li>
+<li>右值表达式 右值</li>
 </ul>
 
-<h4>工作流程</h4>
+<h4>引用分类</h4>
 
 <ul>
-<li>一个 GIL 在 Python 程序的工作示例。其中，Thread 1、2、3 轮流执行，每一个线程在开始执行时，都会锁住 GIL，以阻止别的线程执行；同样的，每一个线程执行完一段后，会释放 GIL，以允许别的线程开始利用资源</li>
+<li>左值引用 绑定到左值</li>
+<li>const引用 左值引用</li>
+<li>右值引用 绑定到右值，临时对象 </li>
+</ul>
+
+<h4>左值引用</h4>
+
+<ul>
+<li>左值引用不能绑定到右值</li>
+<li>const 左值引用可以绑定到右值</li>
+</ul>
+
+<h4>右值引用</h4>
+
+<ul>
+<li>来绑定一些临时对象和即将销毁的对象</li>
+<li>右值引用理解为对象</li>
+<li>绑定到坐值的引用，一般都不能绑定到右值</li>
+<li>&amp;&amp;代表新的数据类型</li>
+<li>提高程序运行效率，把拷贝对象变成移动对象，转换对象的所有者</li>
+<li>移动对象如何发生 移动构造函数，应付移动构造函数</li>
+</ul>
+
+<h4>总结</h4>
+
+<ul>
+<li>返回左值引用的函数，连同赋值，下标，解引用都是左值引用 --i </li>
+<li>i-- 右值引用</li>
+<li>++i ++i直接给变量i+1,然后返回i本身</li>
+<li>i是变量，所以可以被赋值</li>
+<li>右值引用的变量本身是左值</li>
+<li>任何函数的行参都是左值func(int&amp;&amp; w) w是左值</li>
+<li>临时对象都是右值</li>
+<li>如果一个 prvalue 被绑定到一个引用上，它的生命周期则会延长到跟这个引用变量一样长。</li>
+</ul>
+
+<h4>std::move</h4>
+
+<ul>
+<li>把一个左值强制转换成右值</li>
+</ul>
+
+<h4>指分左右</h4>
+
+<p><img src="media/15808686074669/18b692072537d4ce179d3857a8a0133c.png" alt="18b692072537d4ce179d3857a8a0133"/></p>
+
+<ul>
+<li>一个 lvalue 是通常可以放在等号左边的表达式 左值</li>
+<li>一个 rvalue 是通常只能放在等号右边的表达式，右值</li>
+<li>一个 glvalue 是 generalized lvalue，广义左值</li>
+<li>一个 xvalue 是 expiring lvalue，将亡值</li>
+<li>一个 prvalue 是 pure rvalue，纯右值</li>
+</ul>
+
+<h4>对比</h4>
+
+<pre class="line-numbers"><code class="language-cpp">smart_ptr&lt;shape&gt; ptr1{new circle()};
+smart_ptr&lt;shape&gt; ptr2 = std::move(ptr1);
+</code></pre>
+
+<ul>
+<li> std::move(ptr) 就有趣点了。它的作用是把一个左值引用强制转换成一个右值引用，而并不改变其内容。从实用的角度，在我们这儿 std::move(ptr1) 等价于 static_cast<smart_ptr<shape>&amp;&amp;&gt;(ptr1)</li>
+<li> 把 std::move(ptr1) 看作是一个有名字的右值。为了跟无名的纯右值 prvalue 相区别，C++ 里目前就把这种表达式叫做 xvalue。跟左值 lvalue 不同，xvalue 仍然是不能取地址的——这点上，xvalue 和 prvalue 相同。所以，xvalue 和 prvalue 都被归为右值 rvalue</li>
+<li> <img src="media/15808686074669/15808730621501.jpg" alt="" style="width:583px;"/></li>
+</ul>
+
+<h4>字符串绑定</h4>
+
+<pre class="line-numbers"><code class="language-cpp">string str{&quot;I love china&quot;};
+  string&amp; s1{str};
+
+  //左值引用不能绑定到临时变量,临时变量被系统当右值
+  //string&amp; s2{&quot;I love china&quot;};
+  //const引用绑定到右值，执行隐式转换并放入string临时变量
+  const string&amp; s3{&quot;I love china&quot;};
+  //string&amp;&amp; s4{s3};
+  string&amp;&amp; s5{&quot;I love China&quot;};//可以绑定到一个临时变量，
+</code></pre>
+
+<h4>Move函数</h4>
+
+<pre class="line-numbers"><code class="language-cpp">  int tmp = 10;
+  int&amp; l1 = tmp;
+  int&amp;&amp; l2 = tmp * 100;
+  const int&amp; l4 = i * 100;
+  const int&amp;&amp; r5 = i * 100;
+  //成功绑定右值,但是此后r6的值和tmp没有关系
+  int&amp;&amp; r6 = tmp++;
+  tmp = 12;
+  printf(&quot; %d %d \n&quot;, r6, tmp);
+  int&amp;&amp; r7 = std::move(tmp);
+  r7 = 35;
+  printf(&quot; %d %d \n&quot;, r7, tmp);
+
+  int&amp;&amp; r8 = 100;
+  int&amp;&amp; r9 = std::move(r8);
+  printf(&quot; %d %d \n&quot;, r8, r9);
+
+  string st = &quot;Im ok&quot;;
+  //sring移动构造函数把st的内容拷贝到def，def重新开辟内存,同时把st清空
+  //string def = std::move(st);
+  //sring移动构造函数把st的内容拷贝到def，def重新开辟内存,同时把st清空
+  string&amp;&amp; sr  = std::move(st);
+  cout &lt;&lt; sr &lt;&lt; &quot; &quot; &lt;&lt; st &lt;&lt; endl;
+</code></pre>
+
+<h4>返回值优化</h4>
+
+<ul>
+<li>一个本地对象意味着这个对象会被拷贝，除非编译器发现可以做返回值优化（named return value optimization，或 NRVO</li>
 <li></li>
 </ul>
 
@@ -804,10 +986,10 @@ show_memory_info(&#39;finished&#39;)
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/11/10 16:47 下午</span>
+                    <span class="date">2019/08/22 18:39 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
           				   
                   </div>
                   <div class="more-right right">

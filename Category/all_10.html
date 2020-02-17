@@ -170,207 +170,369 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15728246052216.html">
+                <a class="clearlink" href="15744656731481.html">
                 
-                  <h1>异常处理</h1>
+                  <h1>静态方法&类方法&对象方法</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>异常</h4>
-
-<pre class="line-numbers"><code class="language-python">
-try:
-    s = input(&#39;please enter two numbers separated by comma: &#39;)
-    num1 = int(s.split(&#39;,&#39;)[0].strip())
-    num2 = int(s.split(&#39;,&#39;)[1].strip())
-    ... 
-except ValueError as err:
-    print(&#39;Value Error: {}&#39;.format(err))
-
-print(&#39;continue&#39;)
-</code></pre>
+                        	<h4>三种方法对比</h4>
 
 <ul>
-<li>是在最后一个 except block，声明其处理的异常类型是 Exception。Exception 是其他所有非系统异常的基类，能够匹配任意非系统异常,如果多个 except 声明的异常类型都与实际相匹配，那么只有最前面的 except block 会被执行，其他则被忽略</li>
+<li>对象方法，定义中，传入的第一个参数必须是 self，表示实例本身，在其中可使用 self.attr 获取实例的属性。</li>
+<li>class_method 无需实例化，但与实例方法第一个参数必须是 self 类似，类方法第一个参数表示类自身的 cls 参数，可以来调用类的属性、类的方法、类的实例化对象等</li>
+<li>static_method无需 self 参数，无需 cls 参数，直接声明一个静态方法，可无需实例化，直接由类调用，也可实例化后调用</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-python">
-try:
-    s = input(&#39;please enter two numbers separated by comma: &#39;)
-    num1 = int(s.split(&#39;,&#39;)[0].strip())
-    num2 = int(s.split(&#39;,&#39;)[1].strip())
-    ...
-except ValueError as err:
-    print(&#39;Value Error: {}&#39;.format(err))
-except IndexError as err:
-    print(&#39;Index Error: {}&#39;.format(err))
-except Exception as err:
-    print(&#39;Other error: {}&#39;.format(err))
+<pre class="line-numbers"><code class="language-python">class Date:
+    def __init__(self, year, month, day):
+        self.year = year
+        self.month = month
+        self.day = day
 
-print(&#39;continue&#39;)
+    def tomorrow(self):
+        self.day += 1
+
+    @staticmethod
+    def parse_from_string(data_str):
+        year, month, day = tuple(data_str.split(&#39;-&#39;))
+        return Date(int(year), int(month), int(day))
+
+    @staticmethod
+    def valid_str(date_str):
+        year, month, day = tuple(date_str.split(&#39;-&#39;))
+        if int(year) &gt; 0 and (int(month) &gt; 0 and int(month) &lt;=12) and (int(day) &gt; 0 and int(day) &lt;=31):
+            return True
+        else:
+            return False
+
+    @classmethod
+    def from_string(cls, date_str):
+        year, month, day = tuple(date_str.split(&#39;-&#39;))
+        return cls(int(year), int(month), int(day))
+
+    def __str__(self):
+        return &quot;{year}/{month}/{day}&quot;.format(year=self.year, month=self.month, day=self.day)
+
+if __name__ == &#39;__main__&#39;:
+    new_day = Date(2018, 12, 31)
+    new_day.tomorrow()
+    print(new_day)
+
+    date_str = &#39;2018-12-31&#39;
+    year, month, day = tuple(date_str.split(&#39;-&#39;))
+    new_day = Date(int(year), int(month), int(day))
+    print (new_day)
+
+    new_day = Date.parse_from_string(date_str)
+    print (new_day)
+
+    new_day = Date.from_string(date_str)
+    print (new_day)
+    
+    print(Date.valid_str(&quot;2018-12-32&quot;))
 </code></pre>
 
-<h4>finally</h4>
+<h4>私有属性</h4>
 
 <ul>
-<li>finally，经常和 try、except 放在一起来用。无论发生什么情况，finally block 中的语句都会被执行，哪怕前面的 try 和 excep block 中使用了 return 语句。</li>
+<li>双下划线将私有变量进行变形</li>
+<li>通过反射机制也可以拿到这个数值</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-python">
-import sys
-try:
-    f = open(&#39;file.txt&#39;, &#39;r&#39;)
-    .... # some data processing
-except OSError as err:
-    print(&#39;OS error: {}&#39;.format(err))
-except:
-    print(&#39;Unexpected error:&#39;, sys.exc_info()[0])
-finally:
-    f.close()
-</code></pre>
+<pre class="line-numbers"><code class="language-python">from method import Date
 
-<h4>多异常处理</h4>
-
-<pre class="line-numbers"><code class="language-python">
-try:
-    db = DB.connect(&#39;&lt;db path&gt;&#39;) # 可能会抛出异常
-    raw_data = DB.queryData(&#39;&lt;viewer_id&gt;&#39;) # 可能会抛出异常
-except (DBConnectionError, DBQueryDataError) err:
-    print(&#39;Error: {}&#39;.format(err))
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/04 07:43 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15727842506087.html">
-                
-                  <h1>输入输出&json</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>输入输出</h4>
-
-<pre class="line-numbers"><code class="language-python">import re
-
-def parse(text):
-    text = re.sub(r&#39;[^\w]&#39;, &#39; &#39;, text)
-
-    text = text.lower()
-
-    word_list = text.split(&#39; &#39;)
-
-    word_list = filter(None, word_list)
-
-    word_cnt = {}
-
-    for word in word_list:
-        if word not in word_cnt:
-            word_cnt[word] = 0
-        word_cnt[word] += 1
-
-    sorted_word_cnt = sorted(word_cnt.items(), key=lambda kv : kv[1], reverse=True)
-
-    return sorted_word_cnt
-
-def main():
-  with open(&#39;./demo.txt&#39;, &#39;r&#39;) as fin:
-    text = fin.read()
-
-  word_and_freq = parse(text)
-
-  print(word_and_freq)
-
-  with open(&#39;./out.txt&#39;, &#39;w&#39;) as fout:
-      for word, freq in word_and_freq:
-          fout.write(&#39;{}{}\n&#39;.format(word, freq))
+class User:
+    def __init__(self, birthday):
+        self.__birthday = birthday
+    def get_age(self):
+        return 2019 - self.__birthday.year
 
 
 if __name__ == &#39;__main__&#39;:
-    main()
+    user = User(Date(2018, 10, 1))
+    print(user.get_age())
 </code></pre>
 
-<h4>json</h4>
+<h4>dict和dir查询属性·</h4>
+
+<pre class="line-numbers"><code class="language-python">from method import Date
+
+class Person:
+    name = &#39;user&#39;
+
+class Student(Person):
+    def __init__(self, school_name):
+        self.school_name = school_name
+
+if __name__ == &#39;__main__&#39;:
+    user = Student(&#39;IMooc&#39;)
+    print(user.__dict__)
+    user.__dict__[&quot;school_addr&quot;] = &quot;Beijing&quot;
+    print(user.school_addr)
+    print(Person.__dict__)
+    print(user.name)
+    a = [1, 2]
+    print(dir(a))
+</code></pre>
 
 <ul>
-<li>json.dumps() 这个函数，接受 Python 的基本数据类型，然后将其序列化为 string</li>
-<li>json.loads() 这个函数，接受一个合法字符串，然后将其反序列化为 Python 的基本数据类型。</li>
+<li>dict获取属性</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-python">import json
+<h4>上下文管理器协议</h4>
 
-params = {
-    &#39;symbol&#39; : &#39;123456&#39;,
-    &#39;type&#39;: &#39;limit&#39;,
-    &#39;price&#39;: 123.4,
-    &#39;amount&#39;: 23
+<ul>
+<li><img src="media/15744656731481/15744763032317.jpg" alt="" style="width:324px;"/></li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">class Sample:
+    def __enter__(self):
+        #获取资源
+        print(&#39;enter&#39;)
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        #释放资源
+        print(&quot;exit&quot;)
+
+    def do_something(self):
+        print(&quot;doing something&quot;)
+
+with Sample() as sample:
+    sample.do_something()
+</code></pre>
+
+<h4>contextlib协议</h4>
+
+<pre class="line-numbers"><code class="language-python">import contextlib
+
+@contextlib.contextmanager
+def file_open(file_name):
+    print (&quot;file open&quot;)
+    yield {}
+    print (&quot;file end&quot;)
+
+with file_open(&quot;bobby.txt&quot;) as f_opened:
+    print (&quot;file processing&quot;)
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/23 07:34 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15725632392407.html">
+                
+                  <h1>模版模式</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>分类</h4>
+
+<ul>
+<li>创建类</li>
+<li>结构型</li>
+<li>行为型</li>
+<li><img src="media/15725632392407/15725633031911.jpg" alt="" style="width:750px;"/></li>
+<li><img src="media/15725632392407/15725633288545.jpg" alt="" style="width:342px;"/></li>
+<li>需求的频繁变化</li>
+<li>没有一部到位的设计模式</li>
+<li>重构 改善既有的模式</li>
+<li>重构与模式</li>
+</ul>
+
+<h4>重构关键技法</h4>
+
+<p><img src="media/15725632392407/15725635781138.jpg" alt="" style="width:492px;"/></p>
+
+<h4>组件协作模式</h4>
+
+<ul>
+<li>典型模式</li>
+</ul>
+
+<h4>cpp_demo</h4>
+
+<pre class="line-numbers"><code class="language-cpp">class OperateSystem
+{
+ protected:
+  virtual void TriggerInterrupt() = 0;        //触发中断
+  virtual void SaveContext() = 0;             //保存现场
+  virtual void InterruptSoulation() = 0;       //中断处理
+  virtual void ReturnContext() = 0;           //返回现场
+ public:
+  virtual void HandleInterrupt()
+  {
+    this-&gt;TriggerInterrupt();
+    this-&gt;SaveContext();
+    this-&gt;InterruptSoulation();
+    this-&gt;ReturnContext();
+  }
+};
+
+class Windows:public OperateSystem
+{
+ private:
+  virtual void TriggerInterrupt()        //触发中断
+  {
+    std::cout&lt;&lt;&quot;Windows trriger\n&quot;;
+  }
+
+  virtual void SaveContext()             //保存现场
+  {
+    std::cout&lt;&lt;&quot;Windows save context\n&quot;;
+  }
+
+  virtual void InterruptSoulation()       //中断处理
+  {
+    std::cout&lt;&lt;&quot;Windows interrupt soulation\n&quot;;
+  }
+
+  virtual void ReturnContext()           //返回现场
+  {
+    std::cout&lt;&lt;&quot;Windows return context\n&quot;;
+  }
+};
+
+class Linux:public OperateSystem
+{
+ private:
+  virtual void TriggerInterrupt()        //触发中断
+  {
+    std::cout&lt;&lt;&quot;Linux trriger\n&quot;;
+  }
+
+  virtual void SaveContext()             //保存现场
+  {
+    std::cout&lt;&lt;&quot;Linux save context\n&quot;;
+  }
+
+  virtual void InterruptSoulation()       //中断处理
+  {
+    std::cout&lt;&lt;&quot;Linux interrupt soulation\n&quot;;
+  }
+
+  virtual void ReturnContext()           //返回现场
+  {
+    std::cout&lt;&lt;&quot;Linux return context\n&quot;;
+  }
+};
+int main()
+{
+  Linux *linux = new Linux();
+  Windows *window = new Windows();
+
+  linux-&gt;HandleInterrupt();
+  window-&gt;HandleInterrupt();
+}
+</code></pre>
+
+<h4>golang_demo</h4>
+
+<pre class="line-numbers"><code class="language-go">package Templatemethod
+
+import &quot;fmt&quot;
+
+type Downloader interface {
+    Download(uri string)
 }
 
-json_str = json.dumps(params)
+type Template struct {
+    Implement
+    uri string
+}
 
-print(json_str)
+type Implement interface {
+    download()
+    save()
+}
 
-print(&#39;json_str {} params {}&#39;.format(type(json_str), params))
+func newTemplate(impl Implement) *Template {
+    return &amp;Template{
+        Implement: impl,
+    }
+}
 
-origin_params = json.loads(json_str)
+func (t *Template) Download(uri string) {
+    t.uri = uri
+    fmt.Print(&quot;prepare downloading\n&quot;)
+    t.Implement.download()
+    t.Implement.save()
+    fmt.Print(&quot;finish downloading\n&quot;)
+}
 
-print(&#39;type origin={}, origin={}&#39;.format(type(origin_params), origin_params))
-</code></pre>
+func (t *Template) save() {
+    fmt.Print(&quot;default save\n&quot;)
+}
 
-<h4>for&amp;while</h4>
+type HTTPDownloader struct {
+    *Template
+}
 
-<ul>
-<li>range() 函数是直接由 C 语言写的，调用它速度非常快。而 while 循环中的“i += 1”这个操作，得通过 Python 的解释器间接调用底层的 C 语言；并且这个简单的操作，又涉及到了对象的创建和删除（因为 i 是整型，是 immutable，i += 1 相当于 i = new int(i + 1)）。所以，显然，for 循环的效率更胜一筹</li>
-</ul>
+func NewHTTPDownloader() Downloader {
+    downloader := &amp;HTTPDownloader{}
+    Template := newTemplate(downloader)
+    downloader.Template = Template
+    return downloader
+}
 
-<pre class="line-numbers"><code class="language-python">
-i = 0
-while i &lt; 1000000:
-    i += 1
+func (d *HTTPDownloader) download() {
+    fmt.Printf(&quot;download %s via http\n&quot;, d.uri)
+}
 
-for i in range(0, 1000000):
-    pass
-</code></pre>
+func (*HTTPDownloader) save() {
+    fmt.Printf(&quot;http save\n&quot;)
+}
 
-<h4>条件与循环的复用</h4>
+type FTPDownloader struct {
+    *Template
+}
 
-<pre class="line-numbers"><code class="language-python">expression for item in iterable if condition
+func NewFTPDownloader() Downloader {
+    downloader := &amp;FTPDownloader{}
+    Template := newTemplate(downloader)
+    downloader.Template = Template
+    return downloader
+}
 
-[(xx, yy) for xx in x for yy in y if xx != yy]
-</code></pre>
+func (d *FTPDownloader) download() {
+    fmt.Printf(&quot;download %s via ftp\n&quot;, d.uri)
+}
 
-<h4>demo</h4>
 
-<pre class="line-numbers"><code class="language-python">attributes = [&#39;name&#39;, &#39;dob&#39;, &#39;gender&#39;]
-values = [[&#39;jason&#39;, &#39;2000-01-01&#39;, &#39;male&#39;],
-[&#39;mike&#39;, &#39;1999-01-01&#39;, &#39;male&#39;],
-[&#39;nancy&#39;, &#39;2001-02-01&#39;, &#39;female&#39;]
-]
+package templatemethod
 
-res = [dict(zip(attributes, value)) for value in values]
-print(res)
+func ExampleHTTPDownloader() {
+    var downloader Downloader = NewHTTPDownloader()
+    downloader.Download(&quot;http://example.com/abc.zip&quot;)
+}
+
+func ExampleFTPDownloader() {
+    var downloader Downloader = NewFTPDownloader()
+    downloader.Download(&quot;ftp://example.com/abc.zip&quot;)
+}
 </code></pre>
 
                         
@@ -380,143 +542,7 @@ print(res)
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/11/03 20:30 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15726839005959.html">
-                
-                  <h1>基础数据类型</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>字符串不可变</h4>
-
-<ul>
-<li>使用加法操作符&#39;+=&#39;的字符串拼接方法。因为它是一个例外，打破了字符串不可变的特性。</li>
-<li>type就是判断类型</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/02 16:38 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15724781541212.html">
-                
-                  <h1>面向对象设计原则</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>面向对象设计</h4>
-
-<ul>
-<li>变化是复用的</li>
-<li>抵御变化</li>
-</ul>
-
-<h4>认知</h4>
-
-<ul>
-<li>从语言实现层面来看，对象封装了代码和数据。</li>
-<li>从规格层面讲，对象是一系列可被使用的公共接口</li>
-<li>从概念层面讲，对象是某种拥有责任的抽象。</li>
-</ul>
-
-<h4>设计原则</h4>
-
-<h5>依赖倒置原则（DIP)</h5>
-
-<ul>
-<li>高层模块（稳定不应该依赖于低层模块（变化） 二者都依赖于抽象（稳定）</li>
-<li>抽象不应该依赖于实现细节，实现细节应该依赖于抽象</li>
-<li><img src="media/15724781541212/15724788990425.jpg" alt="" style="width:714px;"/></li>
-</ul>
-
-<h5>开放封闭原则</h5>
-
-<ul>
-<li>对扩展开放，对更改封闭。</li>
-<li>类模块应该是可扩展的，但是不可修改。</li>
-</ul>
-
-<h5>单一职责原则（SRP)</h5>
-
-<ul>
-<li>一个类应该仅有一个引起它变化的原因</li>
-<li>变化的方向隐含着类的责任。</li>
-</ul>
-
-<h5>Liskov 替换原则（LSP)</h5>
-
-<ul>
-<li>子类必须能够替換它们的基类（IS-A）。继承表达类型抽象。</li>
-</ul>
-
-<h4>接口隔离原则（ISP)</h4>
-
-<p>・不应该强迫客户程序依赖它们不用的方法。・接口应该小而完备</p>
-
-<h5>优先使用组合</h5>
-
-<ul>
-<li>继承破坏了封装性，子类父类耦合高</li>
-</ul>
-
-<h5>封装变化点</h5>
-
-<h5>针对接口编程</h5>
-
-<ul>
-<li>针对接口编程，而不是针对实现编程</li>
-<li>不将变量类型声明为某个特定的具体类，而是声明为某个接口。</li>
-<li>客户程序无需获知对象的具体类型，只需要知道对象所具有的接口。</li>
-<li>減少系统中各部分的依赖关系，从而实现“高内聚、松耦合的类型设计方案。</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/31 07:29 上午</span>
+                    <span class="date">2019/11/01 07:07 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
@@ -533,51 +559,286 @@ print(res)
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15724763690872.html">
+                <a class="clearlink" href="15782299761779.html">
                 
-                  <h1>学习目标</h1>
+                  <h1>访问器模式</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>目标</h4>
+                        	<h4>动机</h4>
 
 <ul>
-<li>理解松耦合设计思想</li>
-<li>掌握面向对象设计原则</li>
-<li>掌握重构技法改善设计</li>
-<li>掌握 GOF 核心设计模式</li>
+<li>在软件构建过程中，由于需求的改变，某些类层次结构中常常需要增加新的行为（方法），如果直接在基类中做这样的更改，将会给子类带来很繁重的变更负担，甚至破坏原有设计。</li>
+<li>如何在不更改类层次结构的前提下，在运行时根据需要透明地为类层次结构上的各个类动态添加新的操作，从而避免上述问题？</li>
 </ul>
 
-<h4>底层思维</h4>
+<h4>定义</h4>
 
 <ul>
-<li>语言构造</li>
-<li>编译转换</li>
-<li>内存模型</li>
-<li>运行时机制</li>
+<li>表示一个作用于某对象结构中的各元素的操作。使得可以在不改变（稳定）各元素的类的前提下定义（扩展）作用于这些元素的新操作（变化）。</li>
 </ul>
 
-<h4>抽象思维</h4>
+<h4>结构</h4>
 
 <ul>
-<li>面向对象</li>
-<li>组件封装</li>
-<li>设计模式</li>
-<li>架构模式</li>
+<li><img src="media/15782299761779/15782309016996.jpg" alt="" style="width:696px;"/></li>
 </ul>
 
-<h4>解决复杂性</h4>
+<h4>要点总结</h4>
 
 <ul>
-<li>更高层次来讲，人们处理复杂性有一个通用的技术，即抽象。由于不能掌握全部的复杂对象，我们选择忽视它的非本质细节，而去处理泛化和理想化了的对象模型。</li>
+<li><p>Visitor 模式通过所谓双重分发（double dispatch）来实现在不更改（不添加新的操作-编译时）Elementa 类层次结构的前提下，在运行时透明地为类层次结构上的各个类动态添加新的操作（支持变化）。</p></li>
+<li><p>所谓双重分发即 Visitor 模式中间包括了两个多态分发（注意其中的多态机制）：第一个为 accept 方法的多态辨析；第二个为 /isitelementx 方法的多态辨析。</p></li>
+<li><p>Visitor 模式的最大缺点在于扩展类层次结构（增添新的 Element 子类），会导致 Visitor？类的改变。<strong><em>因此 Vistor 模式适用于Element 类层次结构稳定，而其中的操作却经常面临频繁改动</em></strong>。</p></li>
 </ul>
 
-<h4>软件设计的目标</h4>
+<h4>cpp_demo</h4>
 
-<ul>
-<li>复用</li>
-</ul>
+<pre class="line-numbers"><code class="language-cpp">//
+// Created by eredinliu on 2020-01-05.
+//
+
+#include &lt;iostream&gt;
+
+using namespace std;
+
+class Visitor;
+
+class Element {
+public:
+    virtual void accept(Visitor&amp; visitor) = 0;
+};
+
+class ElementA : public Element {
+public:
+    void accept(Visitor&amp; visitor) override {
+        visitor.visitElementA(*this);
+    }
+};
+
+class ElementB : public Element {
+public:
+    void accept(Visitor&amp; visitor) override {
+        visitor.visitElementB(*this);
+    }
+};
+
+
+class Visitor {
+public:
+    virtual void visitElementA(ElementA&amp; e) = 0;
+    virtual void visitElementB(ElementB&amp; e) = 0;
+};
+
+class VisitorA : public Visitor {
+public:
+    void visitElementA(ElementA&amp; e) override {
+        cout &lt;&lt; &quot;VisitorA is processing Element A &quot; &lt;&lt; endl;
+    }
+
+    void visitElementB(ElementB&amp; e) override {
+        cout &lt;&lt; &quot;VisitorA is processing Element B &quot; &lt;&lt; endl;
+    }
+};
+
+class VisitorB : public Visitor {
+public:
+    void visitElementA(ElementA&amp; e) override {
+        cout &lt;&lt; &quot;VisitorB is processing Element A &quot; &lt;&lt; endl;
+    }
+
+    void visitElementB(ElementB&amp; e) override {
+        cout &lt;&lt; &quot;VisitorB is processing Element B &quot; &lt;&lt; endl;
+    }
+};
+
+int main() {
+    VisitorA visitorA;
+    VisitorB visitor;
+    ElementB elementB;
+    elementB.accept(visitor);
+    elementB.accept(visitorA);
+
+
+    ElementA elementA;
+    elementA.accept(visitor);
+    elementA.accept(visitorA);
+}
+</code></pre>
+
+<h4>golang_demo</h4>
+
+<pre class="line-numbers"><code class="language-go">package design_pattern
+
+import &quot;fmt&quot;
+
+type Element interface {
+    Accept(Visitor)
+}
+
+type Visitor interface {
+    visitA(*ElementA)
+    visitB(*ElementB)
+}
+
+type ElementA struct {
+}
+
+func (e *ElementA) Accept(visitor Visitor) {
+    visitor.visitA(e)
+}
+
+type ElementB struct {
+}
+
+func (e *ElementB) Accept(visitor Visitor) {
+    visitor.visitB(e)
+}
+
+type VisitorA struct {
+}
+
+func (v *VisitorA) visitA(e *ElementA) {
+    fmt.Println(&quot;VisitorA is processing Element A &quot; )
+}
+
+func (v *VisitorA) visitB(e *ElementB) {
+    fmt.Println(&quot;VisitorA is processing Element B &quot; )
+}
+
+type VisitorB struct {
+}
+
+func (v *VisitorB) visitA(e *ElementA) {
+    fmt.Println(&quot;VisitorB is processing Element A &quot; )
+}
+
+func (v *VisitorB) visitB(e *ElementB) {
+    fmt.Println(&quot;VisitorB is processing Element B &quot; )
+}
+
+type ObjectStructure struct {
+    elements map[Element]bool
+}
+
+func (o *ObjectStructure) Attach(e Element) {
+    o.elements[e] = true
+}
+
+func (o *ObjectStructure) Detach(e Element) {
+    delete(o.elements, e)
+}
+
+func (o *ObjectStructure) Accept(visitor Visitor) {
+    for k, _ := range o.elements {
+        k.Accept(visitor)
+    }
+}
+
+func NewObjectStructure() *ObjectStructure {
+    return &amp;ObjectStructure{
+        elements: make(map[Element]bool),
+    }
+}
+
+package design_pattern
+
+import &quot;testing&quot;
+
+func TestVisitor(t *testing.T) {
+    obj := NewObjectStructure()
+
+    elementB := &amp;ElementB{}
+    elementA := &amp;ElementA{}
+
+    obj.Attach(elementA)
+    obj.Attach(elementB)
+
+    vA := &amp;VisitorA{}
+    vB := &amp;VisitorB{}
+    obj.Accept(vA)
+    obj.Accept(vB)
+}
+</code></pre>
+
+<h4>python_code</h4>
+
+<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
+
+class Element(metaclass=ABCMeta):
+
+    @abstractmethod
+    def accept(self, visitor):
+        pass
+
+class Visitor(metaclass=ABCMeta):
+
+    @abstractmethod
+    def visitA(self, elementA):
+        pass
+
+    @abstractmethod
+    def visitB(self, elementB):
+        pass
+
+class ElementA(Element):
+
+    def accept(self, visitor):
+        visitor.visitA(self)
+
+class ElementB(Element):
+
+    def accept(self, visitor):
+        visitor.visitB(self)
+
+class VisitorA(Visitor):
+
+    def visitA(self, elementA):
+        print(type(self).__name__, &quot; process elementA&quot;)
+
+    def visitB(self, elementB):
+        print(type(self).__name__, &quot; process elementB&quot;)
+
+
+class VisitorB(Visitor):
+
+    def visitA(self, elementA):
+        print(type(self).__name__, &quot; process elementA&quot;)
+
+    def visitB(self, elementB):
+        print(type(self).__name__, &quot; process elementB&quot;)
+
+class ObjectStructure(object):
+
+    def __init__(self):
+        self.elements = []
+
+    def attach(self, element):
+        self.elements.append(element)
+
+    def detach(self, element):
+        self.elements.remove(element)
+
+    def accept(self, visitor):
+        for e in self.elements:
+            e.accept(visitor)
+
+if __name__ == &#39;__main__&#39;:
+    obj = ObjectStructure()
+
+    eA = ElementA()
+    eB = ElementB()
+
+    obj.attach(eA)
+    obj.attach(eB)
+
+    va = VisitorA()
+    vb = VisitorB()
+
+    obj.accept(va)
+    obj.accept(vb)
+</code></pre>
 
                         
                       </div>
@@ -586,7 +847,7 @@ print(res)
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/10/31 06:59 上午</span>
+                    <span class="date">2020/01/05 21:12 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
@@ -603,48 +864,317 @@ print(res)
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15724311586874.html">
+                <a class="clearlink" href="15728200383131.html">
                 
-                  <h1>操作</h1>
+                  <h1>桥模式</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>查询cpu使用率</h4>
+                        	<h4>单一职责模式</h4>
 
-<pre class="line-numbers"><code class="language-text">//一段时间的cpu使用率
-rate(node_cpu_seconds_total{mode!=&quot;idle&quot;}[1m])
-//一分钟的增量
-increase(node_cpu_seconds_total{mode!=&quot;idle&quot;}[1m])
-//总的使用率
-sum(increase(node_cpu_seconds_total{mode!=&quot;idle&quot;}[1m]))
-//平均使用
-(1-((sum(increase(node_cpu_seconds_total{mode=&quot;idle&quot;}[1m])) by (instance)) / (sum(increase(node_cpu_seconds_total[1m])) by (instance)))) * 100
+<ul>
+<li>在软件组件的设计中，如果责任划分的不清晰，使用继承得到的结果往往是随着需求的变化，子类急剧膨胀，同时充斥着重复代码，这时侯的关键是划清责任</li>
+</ul>
+
+<h4>动机</h4>
+
+<ul>
+<li>只override了一部分</li>
+<li>抽象部分（业务功能）与实现部分（平台实现）分离，使它们可以独立地变化。</li>
+<li>由于某些类型的固有的实现逻辑，使得它们具有两个变化的维度乃至多个纬度的变化</li>
+<li>如何应对这种“多维度的变化“？如何利用面向对象技术来使得类型</li>
+<li>可以轻松地沿着两个乃至多个方向变化，而不引入额外的复杂度？</li>
+</ul>
+
+<h4>结构</h4>
+
+<ul>
+<li><img src="media/15728200383131/15728212883849.jpg" alt="" style="width:788px;"/></li>
+</ul>
+
+<h4>要点总结</h4>
+
+<ul>
+<li>Bridge 模式使用“对象间的组合关系”解耦了抽象和实现之间固有的绑定关系，使得抽象和实现可以沿着各自的维度来变化。所谓抽象和实现沿着各自纬度的变化，即“子类化“它们。</li>
+<li>Bridge 模式有时候类似于多继承方案，但是多继承方案往往违背单职责原则（即一个类只有一个变化的原因），复用性比较差。Bridge 模式是比多继承方案更好的解决方法</li>
+<li>Bridge 模式的应用一般在“两个非常强的变化维度”，有时一个类也有多于两个的变化维度，这时可以使用 Bridge 的扩展模式。</li>
+</ul>
+
+<h4>cpp_demo</h4>
+
+<pre class="line-numbers"><code class="language-cpp">class ISwitch
+{
+ public:
+  ISwitch(IElectricalEquipment *ee) { m_pEe = ee; }
+  virtual ~ISwitch() {}
+
+  virtual void On() = 0;
+
+  virtual void Off() = 0;
+
+ protected:
+  IElectricalEquipment *m_pEe;
+};
+
+class IElectricalEquipment
+{
+ public:
+  virtual ~IElectricalEquipment() {}
+
+  virtual void PowerOn() = 0;
+
+  virtual void PowerOff() = 0;
+};
+class Light : public IElectricalEquipment
+{
+ public:
+  // 开灯
+  virtual void PowerOn() override {
+    std::cout &lt;&lt; &quot;Light is on.&quot; &lt;&lt; std::endl;
+  }
+
+  // 关灯
+  virtual void PowerOff() override {
+    std::cout &lt;&lt; &quot;Light is off.&quot; &lt;&lt; std::endl;
+  }
+};
+
+// 风扇
+class Fan : public IElectricalEquipment
+{
+ public:
+  // 打开风扇
+  virtual void PowerOn() override {
+    std::cout &lt;&lt; &quot;Fan is on.&quot; &lt;&lt; std::endl;
+  }
+
+  // 关闭风扇
+  virtual void PowerOff() override {
+    std::cout &lt;&lt; &quot;Fan is off.&quot; &lt;&lt; std::endl;
+  }
+};
+// 拉链式开关
+class PullChainSwitch : public ISwitch
+{
+public:
+    PullChainSwitch(IElectricalEquipment *ee) : ISwitch(ee) {}
+
+    // 用拉链式开关打开电器
+    virtual void On() override {
+        std::cout &lt;&lt; &quot;Switch on the equipment with a pull chain switch.&quot; &lt;&lt; std::endl;
+        m_pEe-&gt;PowerOn();
+    }
+
+    // 用拉链式开关关闭电器
+    virtual void Off() override {
+        std::cout &lt;&lt; &quot;Switch off the equipment with a pull chain switch.&quot; &lt;&lt; std::endl;
+        m_pEe-&gt;PowerOff();
+    }
+};
+// 两位开关
+class TwoPositionSwitch : public ISwitch
+{
+ public:
+  TwoPositionSwitch(IElectricalEquipment *ee) : ISwitch(ee) {}
+
+  // 用两位开关打开电器
+  virtual void On() override {
+    std::cout &lt;&lt; &quot;Switch on the equipment with a two-position switch.&quot; &lt;&lt; std::endl;
+    m_pEe-&gt;PowerOn();
+  }
+
+  // 用两位开关关闭电器
+  virtual void Off() override {
+    std::cout &lt;&lt; &quot;Switch off the equipment with a two-position switch.&quot; &lt;&lt; std::endl;
+    m_pEe-&gt;PowerOff();
+  }
+};
+int main()
+{
+    // 创建电器 - 电灯、风扇
+    IElectricalEquipment *light = new Light();
+    IElectricalEquipment *fan = new Fan();
+
+    /**
+    * 创建开关 - 拉链式开关、两位开关
+    * 将拉链式开关和电灯关联起来，将两位开关和风扇关联起来
+    **/
+    ISwitch *pullChain = new PullChainSwitch(light);
+    ISwitch *twoPosition = new TwoPositionSwitch(fan);
+
+    // 开灯、关灯
+    pullChain-&gt;On();
+    pullChain-&gt;Off();
+
+    // 打开风扇、关闭风扇
+    twoPosition-&gt;On();
+    twoPosition-&gt;Off();
+}
 </code></pre>
 
-<h4>按机器拆分</h4>
+<h4>golang_demo</h4>
 
-<pre class="line-numbers"><code class="language-text">sum(increase(node_cpu_seconds_total{mode=&quot;idle&quot;}[1m])) by (instance)
+<pre class="line-numbers"><code class="language-go">package design_pattern
+
+import (
+    &quot;fmt&quot;
+    &quot;reflect&quot;
+)
+
+type ISwitch interface {
+    On()
+    Off()
+}
+
+type IEquip interface {
+    PowerOn()
+    PowerOff()
+}
+
+type Light struct {}
+
+func (l *Light) PowerOn() {
+    fmt.Println(reflect.TypeOf(l).String() + &quot; PowerOn&quot;)
+}
+
+func (l *Light) PowerOff() {
+    fmt.Println(reflect.TypeOf(l).String() + &quot; PowerOff&quot;)
+}
+
+type Fen struct {}
+
+func (l *Fen) PowerOn() {
+    fmt.Println(reflect.TypeOf(l).String() + &quot; PowerOn&quot;)
+}
+
+func (l *Fen) PowerOff() {
+    fmt.Println(reflect.TypeOf(l).String() + &quot; PowerOff&quot;)
+}
+
+type PullSwitch struct {
+    IEquip
+}
+
+func NewPullSwitch(i IEquip) ISwitch {
+    return &amp;PullSwitch{
+        IEquip: i,
+    }
+}
+
+func (p *PullSwitch) On() {
+    p.IEquip.PowerOn()
+}
+
+func (p *PullSwitch) Off() {
+    p.IEquip.PowerOff()
+}
+
+type TwoBiteSwitch struct {
+    IEquip
+}
+
+func NewTwoBiteSwitch(i IEquip) ISwitch {
+    return &amp;TwoBiteSwitch{
+        IEquip: i,
+    }
+}
+
+func (p *TwoBiteSwitch) On() {
+    p.IEquip.PowerOn()
+}
+
+func (p *TwoBiteSwitch) Off() {
+    p.IEquip.PowerOff()
+}
+
+type Message interface {
+    SendMsg()
+}
+
+type AsyncMsg struct {
+    ConcreteMsg
+}
+
+func NewAsyncMsg(c ConcreteMsg) *AsyncMsg {
+    return &amp;AsyncMsg{
+        ConcreteMsg: c,
+    }
+}
+
+func (a *AsyncMsg) SendMsg() {
+    a.ConcreteMsg.Send()
+}
+
+type SyncMsg struct {
+    ConcreteMsg
+}
+
+func NewSyncMsg(c ConcreteMsg) *SyncMsg {
+    return &amp;SyncMsg{
+        ConcreteMsg: c,
+    }
+}
+
+func (a *SyncMsg) SendMsg() {
+    a.ConcreteMsg.Send()
+}
+
+type ConcreteMsg interface {
+    Send()
+}
+
+type Email struct {
+}
+
+func (e *Email) Send() {
+    fmt.Println(reflect.TypeOf(e).String() + &quot; Send&quot;)
+}
+
+type WeChat struct {
+}
+
+func (w *WeChat) Send() {
+    fmt.Println(reflect.TypeOf(w).String() + &quot; Send&quot;)
+}
+
+func TestBridge(t *testing.T) {
+    ab := NewAbstraction()
+
+    imA := NewConcreteImA()
+    ab.SetImplement(imA)
+    ab.Operation()
+
+    imB := NewConcreteImB()
+    ab.SetImplement(imB)
+    ab.Operation()
+}
+
+func TestPullSwitch_On(t *testing.T) {
+    light := &amp;Light{}
+    fen := &amp;Fen{}
+
+    pull:= NewPullSwitch(light)
+    pull.On()
+    pull.Off()
+
+    two := NewTwoBiteSwitch(fen)
+    two.On()
+    two.Off()
+}
+
+func TestMsg(t *testing.T) {
+    email := &amp;Email{}
+    weChat := &amp;WeChat{}
+
+    async := NewAsyncMsg(email)
+    async.SendMsg()
+
+    sync := NewSyncMsg(weChat)
+    sync.SendMsg()
+}
 </code></pre>
 
-<ul>
-<li>by instance按每台机器划分的实例</li>
-</ul>
-
-<h4>查看单独cpu的使用率</h4>
-
-<pre class="line-numbers"><code class="language-text">sum(increase(node_cpu_seconds_total{mode=&quot;user&quot;}[1m]))
-sum(increase(node_cpu_seconds_total{mode=&quot;system&quot;}[1m]))
-sum(increase(node_cpu_seconds_total{mode=&quot;iowait&quot;}[1m]))
-</code></pre>
-
-<h4>命令行扩展</h4>
-
-<ul>
-<li>tag扩展</li>
-<li></li>
-</ul>
-
                         
                       </div>
                   </div>
@@ -652,323 +1182,10 @@ sum(increase(node_cpu_seconds_total{mode=&quot;iowait&quot;}[1m]))
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/10/30 18:25 下午</span>
+                    <span class="date">2019/11/04 06:27 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Prometheus.html'>Prometheus</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15724252772617.html">
-                
-                  <h1>监控分类</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>类别</h4>
-
-<ul>
-<li>业务监控 可以包含 用户访问QPS，DAU日活，访问状态(http code)， 业务接入(登陆，注 册，聊天，上传，留言，短信，搜索)，产品转化率，充值额度，用户投诉 等等这些很宏观的概 念(上层)</li>
-<li>系统监控 主要是跟操作系统相关的 基本监控项 CPU/ 内存 / 硬盘 / IO / TCP链接 / 流量 等等 (Nagios - plugins, prometheus)</li>
-<li>网络监控 (IDC)对网络状态的监控(交换机，路由器，防火墙，VPN) 互联网公司必不可 少 但是很多时候又被忽略 例如:内网之间(物理内网，逻辑内网 可用区 创建虚拟机 内网IP ) 外网丢包率 延迟 等等</li>
-<li>日志监控 监控中的重头戏(Splunk,ELK)，往往单独设计和搭建， 全部种类的日志都有需要采 集 (syslog, soft, 网络设备，用户行为)</li>
-<li>程序监控 一般需要和开发人员配合，程序中嵌入各种接又 直接获取数据 或者特质的日志格式</li>
-</ul>
-
-<h4>采取</h4>
-
-<ul>
-<li>自带图形调试</li>
-<li>精细数据采样到s级</li>
-</ul>
-
-<h4>不足</h4>
-
-<ul>
-<li>不支持集群</li>
-<li>被监控集群过大，性能有一定瓶颈</li>
-<li>偶尔发生数据丢失</li>
-</ul>
-
-<h4>promethus</h4>
-
-<ul>
-<li>prometheus本身是一个以进程方式启动,之后以多进程和多线程实现监敬据收集计算查询更新存储的这样一个C/S模型远行模式</li>
-<li><img src="media/15724252772617/15724275818078.jpg" alt="" style="width:786px;"/></li>
-</ul>
-
-<h4>数据存储</h4>
-
-<ul>
-<li>Prometheus 采用的是 tme- series（时间序列）的方式以一种自定义的格式存储在本地硬盘上</li>
-<li>prometheus 的本地 T-S (ime- senes）数据库以毎两小时为间隔来分 block（块）存储，每一个块中又分为</li>
-<li>多个 chunk 文件（我们以后会介绍 chunk 的概念）, chunk 文件是用来存放采集过来的数据的 TS 数据，metadata 和引文件（index </li>
-<li>index 文件是对 metrics (prometheus 中一突 KV 采集数据叫做一个 metric）和 labels（标签）进行素引之后存在 chunk 中 chunk 是作为存储的基本单位，index and metadata 是作为子集</li>
-<li>prometheus 平时是将采集过来的数据先都存放在内存之中（prometheus 对内存的消耗还是不小的）以类似缓存的方式用于加快授索和访问当出现当机时，prometheus？有一种保折机叫做 WAL 可以讲数据定期存入硬盘中以 chunk 来表示，并在重新启动时用以恢复进入内存</li>
-</ul>
-
-<h4>数据采集</h4>
-
-<ul>
-<li>pull</li>
-<li>push 指的是在客户（或者服务端）安装这个官方提供的 pushgateway 插件<br/>
-然后，使用我们运维自行开发的各种脚本把监控数据组织成 k 的形式 metrics？形式发送给 pushgateway 之后 pushgateway 会再推送给 prometheus</li>
-</ul>
-
-<h4>prometheus metrics</h4>
-
-<ul>
-<li>Gauges</li>
-<li>最简单的度量指标，只有一个简单的返回值，或者叫瞬时状态</li>
-<li>Counters</li>
-<li>Counter就是计数器，从数据量 0 开始累积计算在理想状态下只能是永远的增长不会降低</li>
-<li>Histograms</li>
-<li>Histograms 统计数据的分布情况。比如最小值，最大值，中间值，还有中位数，75 百分位，90 百分位，95 百分位，98 百分位，99 百分位，和 99.9 百分位的值</li>
-</ul>
-
-<h4>数据格式</h4>
-
-<ul>
-<li>key value</li>
-<li>Push 的形式是把 pushgateway 安装在客户端或者服务（其实装那里都无俗谓）pushgateway，本身也是一个http服务器</li>
-<li>Exporters 虽然采集类型已经很丰高了，但是我们依然需要很多自制的监控敬据非规则化的自定制的</li>
-<li>exporter 由于数据类型采集量大其实很多据或者说大部分数据其实我们监控中真的用不到用 pushgateway 是定义一项数据就采集着一种节省资源</li>
-<li>一个新的自定义的 pushgatewaye 脚本开发远远比开发一个全新的 exporter 简单快速的多的多的多！(exporter 的开发需要使用真正的缩程语言，shel 这种快速本是不行的而且需要了解很多 prometheus 自定的编程格式才能开始制作工作量很大）</li>
-<li>exporter 虽然已经很丰富了，但是依然有很多的我们需要的采集形式，exporter：无法提供，或者说现有的 poter 还不支持，但是如果使用 pushgatewayg 的形式就可以任意灵活想做什么都可以做到而且极快</li>
-<li><img src="media/15724252772617/15724311436825.jpg" alt="" style="width:997px;"/></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/30 16:47 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Prometheus.html'>Prometheus</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15447000048936.html">
-                
-                  <h1>云中网络</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>注意事项</h4>
-
-<ul>
-<li>共享</li>
-<li>隔离 vconfig基于物理网卡创建带VLAN的虚拟网卡</li>
-<li>互通 </li>
-<li>灵活</li>
-</ul>
-
-<h4>访问外网</h4>
-
-<ul>
-<li>桥接</li>
-</ul>
-
-<h4>iptables功能</h4>
-
-<ul>
-<li>连接追踪</li>
-<li>数据包过滤</li>
-<li>网络地址转换</li>
-<li>数据包的修改</li>
-</ul>
-
-<h4>snat</h4>
-
-<ul>
-<li>Netfilter 的连接跟踪（conntrack）功能实现返回的请求还原成具体的私网IP</li>
-</ul>
-
-<h4>云中网络流量控制</h4>
-
-<ul>
-<li>云中的流量控制主要通过队列进行的，队列分为两大类：无类别队列规则和基于类别的队列规则。</li>
-<li>在云中网络 Openvswitch 中，主要使用的是分层令牌桶规则（HTB），将总的带宽在一棵树上按照配置的比例进行分配，并且在一个分支不用的时候，可以借给另外的分支，从而增强带宽利用率。</li>
-</ul>
-
-<h4>网络隔离</h4>
-
-<ul>
-<li>底层的物理网络设备组成的网络我们称为Underlay 网络</li>
-<li>虚拟机和云中的这些技术组成的网络称为Overlay 网络</li>
-</ul>
-
-<h4>GRE</h4>
-
-<ul>
-<li><img src="media/15447000048936/b189df0a6ee4b0462818bf2f154c9531.jpg" alt="b189df0a6ee4b0462818bf2f154"/></li>
-</ul>
-
-<h4>VXLAN</h4>
-
-<ul>
-<li><img src="media/15447000048936/3b02d54c9093e3de6d1a847dd0eb060f.jpg" alt="3b02d54c9093e3de6d1a847dd0eb060f"/></li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/13 19:20 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE.html'>网络协议</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15723916352790.html">
-                
-                  <h1>not1&bind</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>取反</h4>
-
-<ul>
-<li>not1(bind2nd(less<int>(), 40)));</li>
-<li>compose组合复杂的条件</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/30 07:27 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E5%80%99%E6%8D%B7STL.html'>候捷STL</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15723071129548.html">
-                
-                  <h1>适配器</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>Adapters</h4>
-
-<ul>
-<li><img src="media/15723071129548/15723071584800.jpg" alt="" style="width:801px;"/></li>
-</ul>
-
-<h4>三种适配器</h4>
-
-<ul>
-<li>容器适配器</li>
-<li>迭代器适配器</li>
-<li>仿函数适配器</li>
-</ul>
-
-<h4>容器适配器</h4>
-
-<ul>
-<li><img src="media/15723071129548/15723075551933.jpg" alt="" style="width:989px;"/></li>
-</ul>
-
-<h4>函数适配器</h4>
-
-<ul>
-<li><img src="media/15723071129548/15723076807947.jpg" alt="" style="width:1034px;"/></li>
-<li>less对应Operator op</li>
-<li>40对应typename Operation::second argument_type value</li>
-<li>Operation进行类型检测</li>
-<li>将参数存起来，以备后面使用</li>
-</ul>
-
-<h5>适配器回答三个问题</h5>
-
-<ul>
-<li>第一实参type是什么</li>
-<li>第二实参type是什么</li>
-<li>二者比较完后的type是什么</li>
-</ul>
-
-<h5>可适配条件</h5>
-
-<ul>
-<li>binary_function</li>
-<li>unary_fucntion</li>
-</ul>
-
-<h4>新型适配器</h4>
-
-<ul>
-<li>bind</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/29 07:58 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E5%80%99%E6%8D%B7STL.html'>候捷STL</a></span>
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
           				   
                   </div>
                   <div class="more-right right">

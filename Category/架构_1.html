@@ -170,34 +170,38 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15491817683393.html">
+                <a class="clearlink" href="15501998188113.html">
                 
-                  <h1>识别复杂度</h1>
+                  <h1>负载均衡算法</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>复杂度来源</h4>
+                        	<h4>轮询</h4>
+
+<h4>加权轮询</h4>
+
+<h4>负载最低优先</h4>
 
 <ul>
-<li>高性能</li>
-<li>高可用</li>
-<li>可扩展</li>
+<li>如果是 CPU 密集型，可以以“CPU 负载”来衡量系统压力；</li>
+<li>如果是 I/O 密集型，可以以“I/O 负载”来衡量系统压力。</li>
+<li>复杂度增加很多</li>
 </ul>
 
-<h4>设计</h4>
+<h4>性能最优</h4>
 
 <ul>
-<li>TPS和QPS取峰值的3倍</li>
-<li>消息队列的复杂性</li>
-<li>高性能消息读取、高可用消息写入、高可用消息存储、高可用消息读取</li>
+<li>负载均衡系统需要收集和分析每个服务器每个任务的响应时间，在大量任务处理的场景下，这种收集和统计本身也会消耗较多的性能。</li>
+<li>为了减少这种统计上的消耗，可以采取采样的方式来统计，即不统计所有任务的响应时间，而是抽样统计部分任务的响应时间来估算整体任务的响应时间。</li>
+<li>无论是全部统计还是采样统计，都需要选择合适的周期</li>
 </ul>
 
-<h4>设计方案</h4>
+<h4>Hash类</h4>
 
 <ul>
-<li>高可用的主备方案、集群方案，高性能的负载均衡、多路复用，可扩展的分层、插件化</li>
-<li>高可用消息存储和读取可以采用mongo和redis 这么高的gps很难保证消息不丢 那么可以采用有消息确认机制和消息回溯的MQ 或者自研rpc的时候考虑消息发送失败的时候重新选择节点然后落盘</li>
+<li>源地址HASH</li>
+<li>IDhash</li>
 <li></li>
 </ul>
 
@@ -208,7 +212,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/02/03 16:16 下午</span>
+                    <span class="date">2019/02/15 11:03 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E6%9E%B6%E6%9E%84.html'>架构</a></span>
@@ -225,18 +229,78 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15447574413940.html">
+                <a class="clearlink" href="15501985470108.html">
                 
-                  <h1>可扩展性</h1>
+                  <h1>负载均衡</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>可扩展的条件</h4>
+                        	<h4>本质</h4>
 
 <ul>
-<li>正确预测变化</li>
-<li>完美封装变化</li>
+<li>高性能集群的复杂性主要体现在需要增加一个任务分配器，以及为任务选择一个合适的任务分配算法</li>
+</ul>
+
+<h4>DNS负载均衡</h4>
+
+<ul>
+<li>一般用来实现地理级别的均衡</li>
+<li>实现简单、成本低，但也存在粒度太粗、负载均衡算法少等缺点</li>
+<li>一般公司自己实现HTTP-DNS</li>
+</ul>
+
+<h4>硬件负载均衡</h4>
+
+<ul>
+<li>F5和A10</li>
+<li>功能和性能强大</li>
+<li>稳定性高</li>
+<li>支持安全防护</li>
+<li>价格昂贵和扩展性差</li>
+</ul>
+
+<h4>软件负载均衡</h4>
+
+<ul>
+<li>一个nginx一般支持5w并发</li>
+</ul>
+
+<h4>应用场景</h4>
+
+<ul>
+<li>地理级别负载均衡DNS</li>
+<li>集群级别负载均衡F5</li>
+<li>机器级别负载均衡nginx和lvs</li>
+</ul>
+
+<h4>日活千万的论坛</h4>
+
+<h5>1、首先，流量评估。</h5>
+
+<ul>
+<li>1000万DAU，换算成秒级，平均约等于116。</li>
+<li>考虑每个用户操作次数，假定10，换算成平均QPS=1160。</li>
+<li>考虑峰值是均值倍数，假定10，换算成峰值QPS=11600。</li>
+<li>考虑静态资源、图片资源、服务拆分等，流量放大效应，假定10，QPS*10=116000。 </li>
+</ul>
+
+<h5>2、其次，容量规划。</h5>
+
+<ul>
+<li>考虑高可用、异地多活，QPS*2=232000。</li>
+<li>考虑未来半年增长，QPS*1.5=348000。</li>
+</ul>
+
+<h5>3、最后，方案设计。</h5>
+
+<ul>
+<li>三级导流。</li>
+<li>第一级，DNS，确定机房，以目前量级，可以不考虑。</li>
+<li>第二级，确定集群，扩展优先，则选Haproxy/LVS，稳定优先则选F5。</li>
+<li>第三级，Nginx+KeepAlived，确定实例。<br/>
+     <br/>
+    </li>
 </ul>
 
                         
@@ -246,7 +310,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/12/14 11:17 上午</span>
+                    <span class="date">2019/02/15 10:42 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E6%9E%B6%E6%9E%84.html'>架构</a></span>
@@ -263,33 +327,68 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15446966492302.html">
+                <a class="clearlink" href="15501149405804.html">
                 
-                  <h1>高可用</h1>
+                  <h1>CAP</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>分类</h4>
+                        	<h4>三个点</h4>
 
 <ul>
-<li>计算高可用 任务调度器</li>
-<li>存储高可用 数据 + 逻辑 = 业务 难点在于如何减少和规避数据不一致对业务的影响</li>
+<li>Consistency、Availability、Partition Tolerance </li>
 </ul>
 
-<h4>决策</h4>
+<h4>一致性</h4>
 
 <ul>
-<li>独裁式</li>
-<li>协商式 主备</li>
-<li>民主式 脑裂</li>
+<li>对某个指定的客户端来说，读操作保证能够返回最新的写操作结果</li>
+<li>第一版从节点 node 的角度描述，第二版从客户端 client 的角度描述。</li>
+<li>第一版强调同一时刻拥有相同数据（same time + same data），第二版并没有强调这点。</li>
+<li>对于系统执行事务来说，在事务执行过程中，系统其实处于一个不一致的状态，不同的节点的数据并不完全一致</li>
 </ul>
 
-<h4>高可用和高性能对比</h4>
+<h4>可用性</h4>
 
 <ul>
-<li>高可用更复杂</li>
-<li>状态监控，服务切换或服务恢复上，为了降低其复杂度，又有无状态设计，熔断设计等等</li>
+<li>第一版是 every request，第二版强调了 A non-failing node</li>
+<li>第一版的 response 分为 success 和 failure，第二版用了两个 reasonable：reasonable response 和 reasonable time，而且特别强调了 no error or timeout</li>
+</ul>
+
+<h4>分区容忍性</h4>
+
+<ul>
+<li>当出现网络分区后，系统能够继续“履行职责”。</li>
+<li>第一版用的是 work，第二版用的是 function。</li>
+</ul>
+
+<h4>CAP关键细节点</h4>
+
+<ul>
+<li>CAP关注的粒度是数据，不是整个系统</li>
+<li>CAP是忽略网络延迟的</li>
+<li>正常运行情况下，不存在 CP 和 AP 的选择，可以同时满足 CA</li>
+<li>放弃并不等于什么都不做，需要为分区恢复后做准备</li>
+</ul>
+
+<h4>BASE</h4>
+
+<ul>
+<li>BASE 是指基本可用（Basically Available）、软状态（ Soft State）、最终一致性（ Eventual Consistency），核心思想是即使无法做到强一致性（CAP 的一致性就是强一致性），但应用可以采用适合的方式达到最终一致性。</li>
+<li>BASE 是 CAP 理论中 AP 方案的延伸</li>
+<li>分布式系统中，节点之间的数据同步是基于网络的。由于网络本身固有的不可靠属性，极端情况下会出现网络不可用的情况，进而将网络两端的节点孤立开来，这就是所谓的“网络分区”现象。</li>
+</ul>
+
+<h4>CAP电商系统的设计</h4>
+
+<ul>
+<li>电商网站核心功能有用户、产品、订单、支付、库存，相应的数据有用户、产品、订单、支付、库存。</li>
+<li>对于用户数据，选择CP。因为用户注册后，可能几分钟后重新登录，所以需要满足一致性；在网络出现分区时，因为需要满足一致性而暂时不能提供写服务，所以无法满足可用性；对于分区容错性，只要能返回一个合理的响应就能满足，这一点能很好满足。</li>
+<li>对于产品数据，无需满足一致性，所以选择AP。</li>
+<li>对于订单数据，业务需要满足一致性，所以选择CP。</li>
+<li>对于支付数据，业务需要满足一致性，所以选择CP。</li>
+<li>对于库存数据，业务需要满足一致性，所以选择CP。</li>
 </ul>
 
                         
@@ -299,7 +398,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/12/13 18:24 下午</span>
+                    <span class="date">2019/02/14 11:29 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E6%9E%B6%E6%9E%84.html'>架构</a></span>
@@ -316,65 +415,75 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15442494078551.html">
+                <a class="clearlink" href="15499416717639.html">
                 
-                  <h1>架构复杂度来源</h1>
+                  <h1>高性能缓存架构</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>主要目的</h4>
+                        	<h4>缓存穿透</h4>
 
 <ul>
-<li>架构设计的主要目的是为了解决软件系统复杂度带来的问题</li>
+<li>存储数据不存在</li>
+<li>如果查询存储系统的数据没有找到，则直接设置一个默认值（可以是空值，也可以是具体的值）存到缓存中，这样第二次读取缓存时就会获取到默认值，而不会继续访问存储系统。</li>
+<li>缓存数据生成耗费大量时间或者资源</li>
 </ul>
 
-<h4>高性能</h4>
+<h4>缓存雪崩</h4>
 
 <ul>
-<li>一方面是单台计算机内部为了高性能带来的复杂度</li>
-<li>另一方面是多台计算机集群为了高性能带来的复杂度</li>
+<li>对缓存更新操作进行加锁保护，保证只有一个线程能够进行缓存更新，未能获取更新锁的线程要么等待锁释放后重新读取缓存，要么就返回空值或者默认值</li>
+<li>后台更新</li>
+<li>后台线程除了定时更新缓存，还要频繁地去读取缓存</li>
+<li>业务线程发现缓存失效后，通过消息队列发送一条消息通知后台线程更新缓存</li>
 </ul>
 
-<h4>单计算机多任务方案</h4>
+<h4>缓存热点</h4>
 
 <ul>
-<li>SMP</li>
-<li>NUMA</li>
-<li>MPP</li>
+<li>缓存热点的解决方案就是复制多份缓存副本，将请求分散到多个缓存服务器上，减轻缓存热点导致的单台缓存服务器压力</li>
 </ul>
 
-<h4>集群带来的复杂度</h4>
+<h4>思考题</h4>
 
 <ul>
-<li>任务分配 DNS轮询 智能DNS CDN GLSB</li>
+<li>所在的业务发生过哪些因为缓存导致的线上问题？采取了什么样的解决方案？效果如何？</li>
+<li>双key策略：要缓存的key过期时间是t，key1没有过期时间。每次缓存读取不到key时就返回key1的内容，然后触发一个事件。这个事件会同时更新key和key1。</li>
+<li>下线这个缓存加载功能，改造缓存加载方式，用后台进程去更新缓存，而不用业务访问加载</li>
 </ul>
 
-<h4>任务分解能够提升性能</h4>
+<h4>缓存设计方案考虑的点</h4>
 
 <ul>
-<li>简单系统容易做到高性能</li>
-<li>针对单个任务进行扩展  当各个逻辑任务分解到独立的子系统后，整个系统的性能瓶颈更加容易发现，而且发现后只需要针对有瓶颈的子系统进行性能优化或者提升，不需要改动整个系统</li>
+<li>1.什么数据应该缓存</li>
+<li>2.什么时机触发缓存和以及触发方式是什么</li>
+<li>3.缓存的层次和粒度</li>
+<li>4.缓存的命名规则和失效规则</li>
+<li>5.缓存的监控指标和故障应对方案</li>
+<li>6.可视化缓存数据如 redis 具体 key 内容和大小</li>
 </ul>
 
-<h4>高性能的两个维度</h4>
-
-<h5>垂直维度</h5>
+<h4>mysql缓存的局限性</h4>
 
 <ul>
-<li>增大内存减少I/O操作</li>
-<li>更换为固态硬盘（SSD）提升I/O访问速度</li>
-<li>使用RAID增加I/O吞吐能力</li>
-<li>置换服务器获得更多的处理器或分配更多的虚拟核</li>
-<li>升级网络接口或增加网络接口 </li>
+<li>1. mysql第一种缓存叫sql语句结果缓存，但条件比较苛刻，程序员不可控，我们的dba线上都关闭这个功能，具体实现可以查一下</li>
+<li>2. mysql第二种缓存是innodb buffer pool，缓存的是磁盘上的分页数据，不是sql的查询结果，sql的执行过程省不了。而mc，redis这些实际上都是缓存sql的结果，两种缓存方式，性能差很远。</li>
 </ul>
 
-<h5>水平维度</h5>
+<h4>热点数据存在相当的突发性，临时的扩容似乎也来不及，能否从缓存架构角度如何避免类似微博宕机的事件</h4>
 
 <ul>
-<li>功能分解：基于功能将系统分解为更小的子系统</li>
-<li>多实例副本：同一组件重复部署到多台不同的服务器</li>
-<li>数据分割：在每台机器上都只部署一部分数据</li>
+<li>1. 限流</li>
+<li>2. 容器化+动态化</li>
+<li>3. 业务降级，例如限制评论</li>
+</ul>
+
+<h4>拓展阅读</h4>
+
+<ul>
+<li><a href="https://github.com/qiujiayu/AutoLoadCache">https://github.com/qiujiayu/AutoLoadCache</a></li>
+<li></li>
 </ul>
 
                         
@@ -384,65 +493,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2018/12/08 14:10 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%9E%B6%E6%9E%84.html'>架构</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15442491165377.html">
-                
-                  <h1>什么是架构</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>模块和组件</h4>
-
-<ul>
-<li>从逻辑的角度来拆分系统后，得到的单元就是“模块”；从物理的角度来拆分系统后，得到的单元就是“组件”。划分模块的主要目的是职责分离；划分组件的主要目的是单元复用。</li>
-</ul>
-
-<h4>框架和架构</h4>
-
-<ul>
-<li>框架关注的是“规范”，架构关注的是“结构”</li>
-<li>软件架构指软件系统的顶层结构</li>
-</ul>
-
-<h4>软件架构</h4>
-
-<ul>
-<li>系统是一群关联个体组成，个体包括子系统，模块，组件</li>
-<li>架构需要明确个体运作和协作的规则</li>
-</ul>
-
-<h4>总结</h4>
-
-<ul>
-<li>架构是顶层设计；框架是面向编程或配置的半成品；组件是从技术维度上的复用；模块是从业务维度上职责的划分；系统是相互协同可运行的实体</li>
-<li>软件设计过程中，模块、对象、组件本质上是对一定规模软件在不同粒度和层次上的“拆分”方法论，软件架构是一种对软件的“组织”方法论。一分一合，其目的是为了软件研发过程中的成本、进度、质量得到有效控制。但是，一个成功的软件设计是要适应并满足业务需求，同时不断“演化”的。设计需要根据业务的变化、技术的发展不断进行“演进”，这就决定了这是一个动态活动，出现新问题，解决新问题，没有所谓的“一招鲜”。</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/12/08 14:05 下午</span>
+                    <span class="date">2019/02/12 11:21 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='%E6%9E%B6%E6%9E%84.html'>架构</a></span>
@@ -469,7 +520,7 @@
 			  </div>
 			  <div class="large-6 columns">
 			<p class="text-right" style="padding-top:25px;">
-			
+			 <a href="架构_2.html">&raquo; Next Page</a> 
 			</p>
 			  </div>
 			</div>

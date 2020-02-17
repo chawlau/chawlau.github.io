@@ -170,64 +170,240 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15730828183314.html">
+                <a class="clearlink" href="15758501024510.html">
                 
-                  <h1>值传递和引用传递</h1>
+                  <h1>多线程同步</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>赋值</h4>
+                        	<h4>死锁情况</h4>
+
+<pre class="line-numbers"><code class="language-python">#2. 锁会引起死锁
+#死锁的情况 A（a，b）
+A(a、b)
+acquire (a)
+acquire (b)
+
+B(a、b)
+acquire (a)
+acquire (b)
+</code></pre>
+
+<h4>可重入的锁</h4>
 
 <ul>
-<li>Python 的数据类型，例如整型（int）、字符串（string）等等，是不可变的</li>
+<li>同一个线程里面，可以连续调用多次acquire,一定要注意acquire的次数</li>
+<li>RLock可重入锁</li>
 </ul>
 
-<h4>变量删除</h4>
+<pre class="line-numbers"><code class="language-python">from threading import Lock, RLock, Condition
 
-<pre class="line-numbers"><code class="language-python">l = [1, 2, 3]
-del l
+total = 0
+lock = RLock()
+
+def add():
+    global lock
+    global total
+    for i in range(10000):
+        lock.acquire()
+        lock.acquire()
+        total += 1
+        lock.release()
+        lock.release()
+
+def desc():
+    global total
+    global lock
+    for i in range(10000):
+        # lock.acquire()
+        lock.acquire()
+        total -= 1
+        lock.release()
+        # lock.release()
+
+import threading
+
+thread1 = threading.Thread(target=add)
+thread2 = threading.Thread(target=desc)
+
+thread1.start()
+thread2.start()
+thread2.join()
+thread2.join()
+print(&quot;total {}&quot;.format(total))
+</code></pre>
+
+<h4>协同</h4>
+
+<pre class="line-numbers"><code class="language-python">import threading
+
+class XiaoAi(threading.Thread):
+    def __init__(self, lock):
+        super().__init__(name=&quot;xiaoai&quot;)
+        self.lock = lock
+
+    def run(self):
+        self.lock.acquire()
+        print(&quot;{}. at &quot;.format(self.name))
+        self.lock.release()
+
+        self.lock.acquire()
+        print(&quot;{}. ok &quot;.format(self.name))
+        self.lock.release()
+
+class TianMao(threading.Thread):
+    def __init__(self, lock):
+        super().__init__(name=&quot;tiaomao&quot;)
+        self.lock = lock
+
+    def run(self):
+        self.lock.acquire()
+        print(&quot;{} : xiaoai roomate&quot;.format(self.name))
+        self.lock.release()
+
+        self.lock.acquire()
+        print(&quot;{} : let&#39;s talk&quot;.format(self.name))
+        self.lock.release()
+
+if __name__ == &#39;__main__&#39;:
+    lock = threading.Lock()
+    thread1 = XiaoAi(lock)
+    thread2 = TianMao(lock)
+    thread1.start()
+    thread2.start()
+    thread1.join()
+    thread2.join()
 </code></pre>
 
 <ul>
-<li>Python 里的变量可以被删除，但是对象无法被删除</li>
-<li>del l 删除了 l 这个变量，从此以后你无法访问 l，但是对象 [1, 2, 3] 仍然存在。Python 程序运行时，其自带的垃圾回收系统会跟踪每个对象的引用。如果 [1, 2, 3] 除了 l 外，还在其他地方被引用，那就不会被回收，反之则会被回收</li>
+<li>condition启动顺序很重要,在调用with cond之后才能调用wait或者notify方法</li>
+<li>condition有两层锁， 一把底层锁会在线程调用了wait方法的时候释放， 上面的锁会在每次调用wait的时候分配一把并放入到cond的等待队列中，等到notify方法的唤醒<br/>
+xiaoai.start()</li>
 </ul>
 
-<h4>变量总结</h4>
+<pre class="line-numbers"><code class="language-python">import threading
 
-<ul>
-<li>变量的赋值，只是表示让变量指向了某个对象，并不表示拷贝对象给变量；而一个对象，可以被多个变量所指向。</li>
-<li>可变对象（列表，字典，集合等等）的改变，会影响所有指向该对象的变量。</li>
-<li>对于不可变对象（字符串，整型，元祖等等），所有指向该对象的变量的值总是一样的，也不会改变。但是通过某些操作（+= 等等）更新不可变对象的值时，会返回一个新的对象。</li>
-<li>变量可以被删除，但是对象无法被删</li>
-<li>如果对象是可变的，当其改变时，所有指向这个对象的变量都会改变。如果对象不可变，简单的赋值只能改变其中一个变量的值，其余变量则不受影响。</li>
-</ul>
+class XiaoAi(threading.Thread):
+    def __init__(self, cond):
+        super().__init__(name=&quot;xiaoai&quot;)
+        self.cond = cond
 
-<h4>函数传参</h4>
+    def run(self):
+        with self.cond:
+            self.cond.wait()
+            print(&#39;{}: 在 &#39;.format(self.name))
+            self.cond.notify()
 
-<pre class="line-numbers"><code class="language-python">def my_func5(l2):
- l2 = l2 + [4]
- return l2
+            self.cond.wait()
+            print(&#39;{}: 好阿 &#39;.format(self.name))
+            self.cond.notify()
+
+            self.cond.wait()
+            print(&#39;{}: 君住长江尾 &#39;.format(self.name))
+            self.cond.notify()
+
+            self.cond.wait()
+            print(&#39;{}: 共饮长江水 &#39;.format(self.name))
+            self.cond.notify()
+
+            self.cond.wait()
+            print(&#39;{}: 此恨何时已 &#39;.format(self.name))
+            self.cond.notify()
+
+            self.cond.wait()
+            print(&#39;{}: 定不负相思意 &#39;.format(self.name))
+            self.cond.notify()
+
+class TianMao(threading.Thread):
+    def __init__(self, cond):
+        super().__init__(name=&quot;天猫精灵&quot;)
+        self.cond = cond
+
+    def run(self):
+        with self.cond:
+            print(&#39;{}: 小爱同学 &#39;.format(self.name))
+            self.cond.notify()
+            self.cond.wait()
+
+            print(&#39;{}: 我们来对古诗吧 &#39;.format(self.name))
+            self.cond.notify()
+            self.cond.wait()
+
+            print(&#39;{}: 我住长江头 &#39;.format(self.name))
+            self.cond.notify()
+            self.cond.wait()
+
+            print(&#39;{}: 日日思君不见君 &#39;.format(self.name))
+            self.cond.notify()
+            self.cond.wait()
+
+            print(&#39;{}: 此水几时休 &#39;.format(self.name))
+            self.cond.notify()
+            self.cond.wait()
+
+            print(&#39;{}: 只愿君心似我心 &#39;.format(self.name))
+            self.cond.notify()
+            self.cond.wait()
+
+if __name__ == &#39;__main__&#39;:
+    from concurrent import futures
+    cond = threading.Condition()
+    xiaoai = XiaoAi(cond)
+    tianmao = TianMao(cond)
+
+    xiaoai.start()
+    tianmao.start()
 </code></pre>
 
-<h4>思考</h4>
+<h4>ThreadPoolExcutor</h4>
 
-<pre class="line-numbers"><code class="language-python">l1 = [1, 2, 3]
-l2 = [1, 2, 3]
-l3 = l2
+<pre class="line-numbers"><code class="language-python">from concurrent.futures import ThreadPoolExecutor, as_completed, wait, FIRST_COMPLETED
+from concurrent.futures import Future
+from multiprocessing import Pool
+
+
+import time
+
+def get_html(times):
+    time.sleep(times)
+    print(&#39;get page {} process&#39;.format(times))
+    return times
+
+executor = ThreadPoolExecutor(max_workers=2)
 </code></pre>
 
-<ul>
-<li>列表是可变对象，每创建一个列表，都会重新分配内存，因此 1 和 12 并不是同个对象，由于 I3=12 表明 13 指向 12 的对象。</li>
-</ul>
+<h5>执行任务获取结果</h5>
 
-<h5>整型数组问题</h5>
+<pre class="line-numbers"><code class="language-python">task1 = executor.submit(get_html, (3))
+task2 = executor.submit(get_html, (2))
+#
+print(task1.result())
+print(task2.cancel()) //取消结果
+</code></pre>
 
-<ul>
-<li>出于对性能优化的考虑，Python 内部会对 -5 到 256 的整型维持一个数组，起到一个缓存的作用。这样，每次你试图创建一个 -5 到 256 范围内的整型数字时，Python 都会从这个数组中返回相对应的引用，而不是重新开辟一块新的内存空间</li>
-<li></li>
-</ul>
+<h5>多任务</h5>
+
+<pre class="line-numbers"><code class="language-python">urls = [3, 2, 4]
+
+all_task = [executor.submit(get_html, (url)) for url in urls]
+
+for future in as_completed(all_task):
+    data = future.result()
+    print(&#39;get {} page&#39;.format(data))
+
+
+#通过excutor获取已经完成的task
+for data in executor.map(get_html, urls):
+    print(&#39;get {} page&#39;.format(data))
+</code></pre>
+
+<h5>wait获取结果</h5>
+
+<pre class="line-numbers"><code class="language-python">#wait
+wait(all_task, return_when=FIRST_COMPLETED)
+print(&#39;main&#39;)
+</code></pre>
 
                         
                       </div>
@@ -236,7 +412,7 @@ l3 = l2
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/11/07 07:26 上午</span>
+                    <span class="date">2019/12/09 08:08 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Python.html'>Python</a></span>
@@ -253,73 +429,129 @@ l3 = l2
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15728255199604.html">
+                <a class="clearlink" href="15758463705532.html">
                 
-                  <h1>自定义函数和匿名函数</h1>
+                  <h1>GIL</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>函数定义</h4>
+                        	<h4>概念</h4>
 
 <ul>
-<li>def 是可执行语句，这意味着函数直到被调用前，都是不存在的。当程序调用函数时，def 语句才会创建一个新的函数对象，并赋予其名字。</li>
-<li>主程序调用函数时，必须保证这个函数此前已经定义过，不然就会报错</li>
-<li>如果我们在函数内部调用其他函数，函数间哪个声明在前、哪个在后就无所谓，因为 def 是可执行语句，函数在调用之前都不存在，我们只需保证调用时，所需的函数都已经声明定义：</li>
+<li>全局解释器锁</li>
+<li>CPython</li>
+<li>GIL使得同一时刻只有一个线程在一个CPU上执行字节码</li>
+<li>无法将多个线程映射到多个CPU上执行</li>
 </ul>
 
-<h4>参数类型</h4>
+<h4>释放的时机</h4>
 
 <ul>
-<li>Python 不用考虑输入的数据类型，而是将其交给具体的代码去判断执行，同样的一个函数（比如这边的相加函数 my_sum()），可以同时应用在整型、列表、字符串等等的操作中。</li>
+<li>根据执行字节码的行数或者执行的时间片来进行释放</li>
+<li>遇到IO操作的时候释放</li>
 </ul>
 
-<h4>局部变量</h4>
+<h4>线程调度</h4>
 
 <ul>
-<li>不能在函数内部随意改变全局变量的值。</li>
-<li>要在函数内部改变全局变量的值，就必须加上 global 这个声明</li>
+<li>对于IO操作来说，多线程和多进程性能差别不大</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-python">MIN_VLAUE = 1
-MAX_VLAUE = 10
+<h4>thread_demo</h4>
 
-def check(value):
-    if value &lt; MIN_VLAUE or value &gt; MAX_VLAUE:
-        global MIN_VLAUE
-        MIN_VLAUE += 1
-        raise Exception(&#39;check fails&#39;)
-    else:
-        print(&#39;check ok&#39;)
+<pre class="line-numbers"><code class="language-python">import time
+import threading
 
 
-def main():
-    check(3)
+def get_detail_html(url):
+    print(&quot;get detail html started&quot;)
+    time.sleep(2)
+    print(&quot;get detail html end&quot;)
 
-if __name__ == &#39;__main__&#39;:
-    main()
+
+def get_detail_url(url):
+    print(&quot;get detail url started&quot;)
+    time.sleep(2)
+    print(&quot;get detail url end&quot;)
+
+if __name__ == &quot;__main__&quot;:
+   thread1 = threading.Thread(target=get_detail_html, args=(&quot;&quot;,))
+   thread2 = threading.Thread(target=get_detail_url, args=(&quot;&quot;,))
+   thread1.setDaemon(True)
+   # thread2.setDaemon(True)
+   start_time = time.time()
+   thread1.start()
+   thread2.start()
+
+   print(&quot;last time : {}&quot;.format(time.time() - start_time))
+</code></pre>
+
+<h4>thread_join</h4>
+
+<pre class="line-numbers"><code class="language-python">def get_detail_html(url):
+    print(&quot;get detail html started&quot;)
+    time.sleep(2)
+    print(&quot;get detail html end&quot;)
+
+
+def get_detail_url(url):
+    print(&quot;get detail url started&quot;)
+    time.sleep(4)
+    print(&quot;get detail url end&quot;)
+
+if __name__ == &quot;__main__&quot;:
+   thread1 = threading.Thread(target=get_detail_html, args=(&quot;&quot;,))
+   thread2 = threading.Thread(target=get_detail_url, args=(&quot;&quot;,))
+   # thread1.setDaemon(True)
+   # thread2.setDaemon(True)
+   start_time = time.time()
+   thread1.start()
+   thread2.start()
+   thread1.join()
+   thread2.join()
+
+   print(&quot;last time : {}&quot;.format(time.time() - start_time))
 </code></pre>
 
 <ul>
-<li>告诉 Python 解释器，函数内部的变量 MIN_VALUE，就是之前定义的全局变量，并不是新的全局变量，也不是局部变量。这样，程序就可以在函数内部访问全局变量，并修改它的值了。</li>
-<li>对于嵌套函数来说，内部函数可以访问外部函数定义的变量，但是无法修改，若要修改，必须加上 nonlocal 这个关键字</li>
+<li>deque在字节码的层面是安全的</li>
 </ul>
 
-<h4>闭包</h4>
+<h4>集成Thread来实现多线程</h4>
 
-<pre class="line-numbers"><code class="language-python">def nth_power(ex):
-    def exon_of(base):
-        return base ** ex
-    return exon_of
+<pre class="line-numbers"><code class="language-python">import time
+import threading
 
-def main():
-    sq = nth_power(2)
-    cub = nth_power(3)
-    print(sq(2))
-    print(cub(3))
+class GetDetailHtml(threading.Thread):
+    def __init__(self, name):
+        super().__init__(name=name)
 
-if __name__ == &#39;__main__&#39;:
-    main()
+    def run(self):
+        print(&quot;get detail html started&quot;)
+        time.sleep(2)
+        print(&quot;get detail html end&quot;)
+
+class GetDetailUrl(threading.Thread):
+    def __init__(self, name):
+        super().__init__(name=name)
+
+    def run(self):
+        print(&quot;get detail url started&quot;)
+        time.sleep(4)
+        print(&quot;get detail url end&quot;)
+
+if __name__ == &quot;__main__&quot;:
+    thread1 = GetDetailHtml(&quot;get_detail_html&quot;)
+    thread2 = GetDetailUrl(&quot;get_detail_url&quot;)
+    start_time = time.time()
+    thread1.start()
+    thread2.start()
+    thread1.join()
+    thread2.join()
+
+    print(&quot;last time : {}&quot;.format(time.time() - start_time))
+
 </code></pre>
 
                         
@@ -329,7 +561,7 @@ if __name__ == &#39;__main__&#39;:
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/11/04 07:58 上午</span>
+                    <span class="date">2019/12/09 07:06 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Python.html'>Python</a></span>
@@ -346,74 +578,93 @@ if __name__ == &#39;__main__&#39;:
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15728246052216.html">
+                <a class="clearlink" href="15745422969850.html">
                 
-                  <h1>异常处理</h1>
+                  <h1>自定义序列类</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>异常</h4>
-
-<pre class="line-numbers"><code class="language-python">
-try:
-    s = input(&#39;please enter two numbers separated by comma: &#39;)
-    num1 = int(s.split(&#39;,&#39;)[0].strip())
-    num2 = int(s.split(&#39;,&#39;)[1].strip())
-    ... 
-except ValueError as err:
-    print(&#39;Value Error: {}&#39;.format(err))
-
-print(&#39;continue&#39;)
-</code></pre>
+                        	<h4>序列协议</h4>
 
 <ul>
-<li>是在最后一个 except block，声明其处理的异常类型是 Exception。Exception 是其他所有非系统异常的基类，能够匹配任意非系统异常,如果多个 except 声明的异常类型都与实际相匹配，那么只有最前面的 except block 会被执行，其他则被忽略</li>
+<li><img src="media/15745422969850/15745424374141.jpg" alt="" style="width:663px;"/></li>
 </ul>
 
-<pre class="line-numbers"><code class="language-python">
-try:
-    s = input(&#39;please enter two numbers separated by comma: &#39;)
-    num1 = int(s.split(&#39;,&#39;)[0].strip())
-    num2 = int(s.split(&#39;,&#39;)[1].strip())
-    ...
-except ValueError as err:
-    print(&#39;Value Error: {}&#39;.format(err))
-except IndexError as err:
-    print(&#39;Index Error: {}&#39;.format(err))
-except Exception as err:
-    print(&#39;Other error: {}&#39;.format(err))
+<h4>add</h4>
 
-print(&#39;continue&#39;)
+<pre class="line-numbers"><code class="language-python">a += (3, 4)
+a += [3, 4]
+通过魔法函数__iadd__来实现，内部通过extends实现
+a = [1, 2]
+c = a + [3, 4]
+print(c)
+
+a += (3, 4)
+a.extend(range(3))//迭代相加每个元素
+a.append((1, 2)) //直接加上整个元组
+a.append([1, 2]) //直接加上整个列表
+print(a)
 </code></pre>
 
-<h4>finally</h4>
+<h4>可切片的对象</h4>
 
-<ul>
-<li>finally，经常和 try、except 放在一起来用。无论发生什么情况，finally block 中的语句都会被执行，哪怕前面的 try 和 excep block 中使用了 return 语句。</li>
-</ul>
+<pre class="line-numbers"><code class="language-python">import numbers
 
-<pre class="line-numbers"><code class="language-python">
-import sys
-try:
-    f = open(&#39;file.txt&#39;, &#39;r&#39;)
-    .... # some data processing
-except OSError as err:
-    print(&#39;OS error: {}&#39;.format(err))
-except:
-    print(&#39;Unexpected error:&#39;, sys.exc_info()[0])
-finally:
-    f.close()
+class Group:
+    def __init__(self, group_name, company_name, staffs):
+        self.group_name = group_name
+        self.company_name = company_name
+        self.staffs = staffs
+
+    def __reversed__(self):
+        self.staffs.reverse()
+
+    def __getitem__(self, item):
+        cls = type(self)
+        if isinstance(item, slice):
+            return cls(group_name=self.group_name, company_name=self.company_name, staffs=self.staffs[item])
+        elif isinstance(item, slice):
+            return cls(group_name=self.group_name, company_name=self.company_name, staffs=[self.staffs[item]])
+
+    def __len__(self):
+        return len(self.staffs)
+
+    def __iter__(self):
+        return iter(self.staffs)
+
+    def __contains__(self, item):
+        if item in self.staffs:
+            return True
+        else:
+            return False
+
+staffs = [&quot;bobby1&quot;, &quot;imooc&quot;, &quot;bobby2&quot;, &quot;bobby3&quot;]
+
+group = Group(company_name=&quot;imooc&quot;, group_name=&quot;user&quot;, staffs=staffs)
+reversed(group)
+
+for user in group:
+    print(user)
 </code></pre>
 
-<h4>多异常处理</h4>
+<h4>维持升序排列</h4>
 
-<pre class="line-numbers"><code class="language-python">
-try:
-    db = DB.connect(&#39;&lt;db path&gt;&#39;) # 可能会抛出异常
-    raw_data = DB.queryData(&#39;&lt;viewer_id&gt;&#39;) # 可能会抛出异常
-except (DBConnectionError, DBQueryDataError) err:
-    print(&#39;Error: {}&#39;.format(err))
+<pre class="line-numbers"><code class="language-python">#用来处理已排序的序列，用来维持已排序的序列， 升序
+import bisect
+
+from  collections import deque
+
+inter_list = deque()
+bisect.insort(inter_list, 3)
+bisect.insort(inter_list, 2)
+bisect.insort(inter_list, 5)
+bisect.insort(inter_list, 1)
+bisect.insort(inter_list, 6)
+
+print(bisect.bisect_left(inter_list, 3))
+
+print(inter_list)
 </code></pre>
 
                         
@@ -423,7 +674,7 @@ except (DBConnectionError, DBQueryDataError) err:
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/11/04 07:43 上午</span>
+                    <span class="date">2019/11/24 04:51 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Python.html'>Python</a></span>
@@ -440,152 +691,118 @@ except (DBConnectionError, DBQueryDataError) err:
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15727842506087.html">
+                <a class="clearlink" href="15739426575118.html">
                 
-                  <h1>输入输出&json</h1>
+                  <h1>抽象基类</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>输入输出</h4>
-
-<pre class="line-numbers"><code class="language-python">import re
-
-def parse(text):
-    text = re.sub(r&#39;[^\w]&#39;, &#39; &#39;, text)
-
-    text = text.lower()
-
-    word_list = text.split(&#39; &#39;)
-
-    word_list = filter(None, word_list)
-
-    word_cnt = {}
-
-    for word in word_list:
-        if word not in word_cnt:
-            word_cnt[word] = 0
-        word_cnt[word] += 1
-
-    sorted_word_cnt = sorted(word_cnt.items(), key=lambda kv : kv[1], reverse=True)
-
-    return sorted_word_cnt
-
-def main():
-  with open(&#39;./demo.txt&#39;, &#39;r&#39;) as fin:
-    text = fin.read()
-
-  word_and_freq = parse(text)
-
-  print(word_and_freq)
-
-  with open(&#39;./out.txt&#39;, &#39;w&#39;) as fout:
-      for word, freq in word_and_freq:
-          fout.write(&#39;{}{}\n&#39;.format(word, freq))
-
-
-if __name__ == &#39;__main__&#39;:
-    main()
-</code></pre>
-
-<h4>json</h4>
+                        	<h4>作用</h4>
 
 <ul>
-<li>json.dumps() 这个函数，接受 Python 的基本数据类型，然后将其序列化为 string</li>
-<li>json.loads() 这个函数，接受一个合法字符串，然后将其反序列化为 Python 的基本数据类型。</li>
+<li>类型判断</li>
+<li>接口实现</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-python">import json
+<h4>类对象数组</h4>
 
-params = {
-    &#39;symbol&#39; : &#39;123456&#39;,
-    &#39;type&#39;: &#39;limit&#39;,
-    &#39;price&#39;: 123.4,
-    &#39;amount&#39;: 23
-}
+<pre class="line-numbers"><code class="language-python">class Cat(object):
+    def say(self):
+        print(&quot;i am a cat&quot;)
 
-json_str = json.dumps(params)
 
-print(json_str)
+class Dog(object):
+    def say(self):
+        print(&quot;i am a dog&quot;)
 
-print(&#39;json_str {} params {}&#39;.format(type(json_str), params))
 
-origin_params = json.loads(json_str)
+class Duck(object):
+    def say(self):
+        print(&quot;i am a duck&quot;)
 
-print(&#39;type origin={}, origin={}&#39;.format(type(origin_params), origin_params))
+
+anaimal_list = [Cat, Dog, Duck]
+for anaimal in anaimal_list:
+    anaimal().say()
 </code></pre>
 
-<h4>for&amp;while</h4>
+<h4>扩展类</h4>
 
 <ul>
-<li>range() 函数是直接由 C 语言写的，调用它速度非常快。而 while 循环中的“i += 1”这个操作，得通过 Python 的解释器间接调用底层的 C 语言；并且这个简单的操作，又涉及到了对象的创建和删除（因为 i 是整型，是 immutable，i += 1 相当于 i = new int(i + 1)）。所以，显然，for 循环的效率更胜一筹</li>
+<li>只要继承了魔法函数getitem就可以</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-python">
-i = 0
-while i &lt; 1000000:
-    i += 1
+<pre class="line-numbers"><code class="language-python">class Company(object):
+    def __init__(self, employee_list):
+        self.employee = employee_list
 
-for i in range(0, 1000000):
+    def __getitem__(self, item):
+        return self.employee[item]
+
+    def __len__(self):
+        return len(self.employee)
+
+
+com = Company([&#39;tom&#39;, &#39;jack&#39;, &#39;jsdon&#39;])
+a = [&#39;b1&#39;, &#39;b2&#39;]
+b = [&#39;b2&#39;, &#39;b3&#39;]
+name_tuple = [&#39;b3&#39;, &#39;b4&#39;]
+name_set = set()
+name_set.add(&#39;b5&#39;)
+name_set.add(&#39;b6&#39;)
+a.extend(com)
+print(a)
+</code></pre>
+
+<h4>强制子类必须实现接口</h4>
+
+<pre class="line-numbers"><code class="language-python">class CacheBase(metaclass=abc.ABCMeta):
+    @abc.abstractmethod
+    def get(self, key):
+        pass
+
+    @abc.abstractmethod
+    def set(self, key, value):
+        pass
+
+class RedisCache(CacheBase):
+    def set(self, key, value):
+        print(&quot;hello&quot;)
+
+    def get(self, key):
+        print(&#39;hello&#39;)
+</code></pre>
+
+<h4>instance&amp;type</h4>
+
+<ul>
+<li>is是判断类别</li>
+<li>==是判断值</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">class A:
     pass
+
+class B(A):
+    pass
+
+b = B()
+
+print(isinstance(b, B))
+print(isinstance(b, A))
+
+print(type(b) is B)
+print(type(b) is A) #二者的ID不想等
+print(id(b))
+print(id(B))
 </code></pre>
 
-<h4>条件与循环的复用</h4>
-
-<pre class="line-numbers"><code class="language-python">expression for item in iterable if condition
-
-[(xx, yy) for xx in x for yy in y if xx != yy]
-</code></pre>
-
-<h4>demo</h4>
-
-<pre class="line-numbers"><code class="language-python">attributes = [&#39;name&#39;, &#39;dob&#39;, &#39;gender&#39;]
-values = [[&#39;jason&#39;, &#39;2000-01-01&#39;, &#39;male&#39;],
-[&#39;mike&#39;, &#39;1999-01-01&#39;, &#39;male&#39;],
-[&#39;nancy&#39;, &#39;2001-02-01&#39;, &#39;female&#39;]
-]
-
-res = [dict(zip(attributes, value)) for value in values]
-print(res)
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/03 20:30 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15726839005959.html">
-                
-                  <h1>基础数据类型</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>字符串不可变</h4>
+<h4>Mro算法</h4>
 
 <ul>
-<li>使用加法操作符&#39;+=&#39;的字符串拼接方法。因为它是一个例外，打破了字符串不可变的特性。</li>
-<li>type就是判断类型</li>
-<li></li>
+<li><img src="media/15739426575118/15739464120394.jpg" alt="" style="width:913px;"/></li>
+<li>C3算法</li>
 </ul>
 
                         
@@ -595,45 +812,7 @@ print(res)
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/11/02 16:38 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15716196846642.html">
-                
-                  <h1>PyCharm</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>安装插件</h4>
-
-<ul>
-<li>启动pycharm， View-&gt;Tool Windows-&gt;Terminal 打开终端界面（一般在pycharm的左下角）</li>
-<li>pip install package</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/21 09:01 上午</span>
+                    <span class="date">2019/11/17 06:17 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Python.html'>Python</a></span>
@@ -660,7 +839,7 @@ print(res)
 			  </div>
 			  <div class="large-6 columns">
 			<p class="text-right" style="padding-top:25px;">
-			
+			 <a href="Python_4.html">&raquo; Next Page</a> 
 			</p>
 			  </div>
 			</div>

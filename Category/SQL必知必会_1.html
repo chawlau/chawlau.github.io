@@ -170,51 +170,50 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="15666923091015.html">
+                <a class="clearlink" href="15678067248596.html">
                 
-                  <h1>子查询</h1>
+                  <h1>索引</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>分类</h4>
+                        	<h4>索引场景</h4>
 
 <ul>
-<li>关联子查询和非关联子查询</li>
-<li>存在性检测子查询和集合比较子查询</li>
-<li>子查询作为主查询的列</li>
+<li>数据量比较少不需要索引</li>
+<li>数据重复度大</li>
+<li>索引的本质是快速定位，如果定位的数据很多，就不需要索引</li>
 </ul>
 
-<h4>关联子查询和非关联子查询</h4>
+<h4>索引</h4>
 
 <ul>
-<li>如果表 A 比表 B 大，那么 IN 子查询的效率要比 EXIST 子查询效率高，因为这时 B 表中如果对 cc 列进行了索引，那么 IN 子查询的效率就会比较高子查询从数据表中查询了数据结果，如果这个数据结果只执行一次，然后这个数据结果作为主查询的条件进行执行，那么这样的子查询叫做非关联子查询。</li>
-<li>同样，如果子查询需要执行多次，即采用循环的方式，先从外部查询开始，每次都传入子查询进行查询，然后再将结果反馈给外部，这种嵌套的执行方式就称为关联子查询。</li>
+<li>普通索引</li>
+<li>唯一索引 unique</li>
+<li>主键索引 unique + not null</li>
+<li>全文索引ES</li>
 </ul>
 
-<h4>EXIST和In区别</h4>
+<h4>物理实现方式</h4>
 
 <ul>
-<li>如果表 A 比表 B 大，那么 IN 子查询的效率要比 EXIST 子查询效率高，因为这时 B 表中如果对 cc 列进行了索引，那么 IN 子查询的效率就会比较高</li>
-<li>如果表 A 比表 B 小，那么使用 EXISTS 子查询效率会更高，因为我们可以使用到 A 表中对 cc 列的索引，而不用从 B 中进行 cc 列的查询。</li>
+<li>聚集索引 表内的数据行才会按找索引列的值在磁盘上进行物理排序和存储</li>
+<li>非聚集索引 索引项是按照顺序存储的，但索引项指向的内容是随机存储的 先找索引，再找索引行对应的位置</li>
 </ul>
 
-<pre class="line-numbers"><code class="language-text">SELECT * FROM A WHERE cc IN (SELECT cc FROM B)
-SELECT * FROM A WHERE EXIST (SELECT cc FROM B WHERE B.cc=A.cc)
-</code></pre>
-
-<h4>ANY&amp;ALL</h4>
+<h4>聚集索引和非聚集索引对比</h4>
 
 <ul>
-<li> ANY、ALL 关键字必须与一个比较操作符一起使用。因为如果你不使用比较操作符，就起不到集合比较的作用，那么使用 ANY 和 ALL 就没有任何意义</li>
+<li>聚集索引的叶子节点存储的就是我们的数据记录，非聚集索引的叶子节点存储的是数据位置。非聚集索引不会影响数据表的物理存储顺序。</li>
+<li>一个表只能有一个聚集索引，因为只能有一种排序存储的方式，但可以有多个非聚集索引，也就是多个索引目录提供数据检索。</li>
+<li>使用聚集索引的时候，数据的查询效率高，但如果对数据进行插入，删除，更新等操作，效率会比非聚集索引低</li>
 </ul>
 
-<h4>总结</h4>
+<h4>字段数</h4>
 
 <ul>
-<li>IN表是外边和内表进行hash连接，是先执行子查询。</li>
-<li>EXISTS是对外表进行循环，然后在内表进行查询。</li>
-<li>因此如果外表数据量大，则用IN，如果外表数据量小，也用EXISTS。</li>
+<li>单一索引 </li>
+<li>联合索引 最左匹配原则 where and </li>
 </ul>
 
                         
@@ -224,7 +223,7 @@ SELECT * FROM A WHERE EXIST (SELECT cc FROM B WHERE B.cc=A.cc)
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/08/25 08:18 上午</span>
+                    <span class="date">2019/09/07 05:52 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='SQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>SQL必知必会</a></span>
@@ -241,50 +240,14 @@ SELECT * FROM A WHERE EXIST (SELECT cc FROM B WHERE B.cc=A.cc)
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15660869706932.html">
+                <a class="clearlink" href="15672088258884.html">
                 
-                  <h1>聚集函数</h1>
+                  <h1>反范式设计</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>分类</h4>
-
-<ul>
-<li>count COUNT(role_assist)会忽略值为 NULL 的数据行，而 COUNT(*) 只是统计数据行数，不管某个字段是否为 NULL</li>
-<li>max</li>
-<li>min</li>
-<li>sum</li>
-<li>avg</li>
-</ul>
-
-<h4>注意</h4>
-
-<ul>
-<li>使用 MAX 和 MIN 函数统计数据行的时候，不需要再额外使用 DISTINCT</li>
-</ul>
-
-<h4>过滤分组</h4>
-
-<ul>
-<li>having</li>
-<li>HAVING 的作用和 WHERE 一样，都是起到过滤的作用，只不过 WHERE 是用于数据行，而 HAVING 则作用于分组。</li>
-</ul>
-
-<h4>例题</h4>
-
-<ul>
-<li>筛选最大生命值大于 6000 的英雄，按照主要定位进行分组，选择分组英雄数量大于 5 的分组，按照分组英雄数从高到低进行排序，并显示每个分组的英雄数量、主要定位和平均最大生命值。</li>
-<li>筛选最大生命值与最大法力值之和大于 7000 的英雄，按照攻击范围来进行分组，显示分组的英雄数量，以及分组英雄的最大生命值与法力值之和的平均值、最大值和最小值，并按照分组英雄数从高到低进行排序，其中聚集函数的结果包括小数点后两位。</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">1.SELECT COUNT(*) AS num,role_main,AVG(hp_max) FROM heros WHERE hp_max &gt; 6000 GROUP 
-BY role_main HAVING num&gt;5 ORDER BY num DESC; 
-2.SELECT COUNT(*) AS num,ROUND(MAX(hp_max+mp_max),2),ROUND(AVG(hp_max+mp_max),2),
-ROUND(MIN(hp_max+mp_max),2) FROM heros WHERE hp_max+mp_max &gt; 7000 GROUP BY attack_range
-ORDER BY num DESC;
-</code></pre>
-
+                        	
                         
                       </div>
                   </div>
@@ -292,7 +255,7 @@ ORDER BY num DESC;
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/08/18 08:09 上午</span>
+                    <span class="date">2019/08/31 07:47 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='SQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>SQL必知必会</a></span>
@@ -309,36 +272,42 @@ ORDER BY num DESC;
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15660857101922.html">
+                <a class="clearlink" href="15672079594822.html">
                 
-                  <h1>sql函数</h1>
+                  <h1>设计范式</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>分类</h4>
+                        	<h4>类别</h4>
 
 <ul>
-<li>算术函数</li>
-<li>字符串函数</li>
-<li>日期函数</li>
-<li>转换函数</li>
+<li>1NF（第一范式）、2NF（第二范式）、3NF（第三范式）、BCNF（巴斯 - 科德范式）、4NF（第四范式）和 5NF（第五范式，又叫做完美范式</li>
 </ul>
 
-<h4>算术函数</h4>
+<h4>数据表中的键</h4>
 
 <ul>
-<li>ABS</li>
-<li>MOD</li>
-<li>ROUND</li>
+<li>超键：能唯一标识元组的属性集叫做超键。</li>
+<li>候选键：如果超键不包括多余的属性，那么这个超键就是候选键。</li>
+<li>主键：用户可以从候选键中选择一个作为主键。</li>
+<li>外键：如果数据表 R1 中的某属性集不是 R1 的主键，而是另一个数据表 R2 的主键，那么这个属性集就是数据表 R1 的外键。</li>
+<li>主属性：包含在任一候选键中的属性称为主属性。</li>
+<li>非主属性：与主属性相对，指的是不包含在任何一个候选键中的属性。</li>
 </ul>
 
-<h4>日期函数</h4>
+<h4>2NF</h4>
 
 <ul>
-<li><p><img src="media/15660857101922/3dec8d799b1363d38df34ed3fdd29045.png" alt="3dec8d799b1363d38df34ed3fdd29045"/></p></li>
-<li><p>datetime类型和string类型比较不安全</p></li>
-<li><p>无法确认 birthdate 的数据类型是字符串，还是 datetime 类型，如果你想对日期部分进行比较，那么使用DATE(birthdate)来进行比较是更安全的</p></li>
+<li>2NF 指的数据表里的非主属性都要和这个数据表的候选键有完全依赖关系</li>
+<li>3NF 需要保证表中的非主属性与候选键不存在传递依赖</li>
+</ul>
+
+<h4>范式设计</h4>
+
+<ul>
+<li>降低查询效率 表太多</li>
+<li>带来插入更新和删除的问题</li>
 </ul>
 
                         
@@ -348,7 +317,7 @@ ORDER BY num DESC;
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/08/18 07:48 上午</span>
+                    <span class="date">2019/08/31 07:32 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='SQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>SQL必知必会</a></span>
@@ -365,39 +334,44 @@ ORDER BY num DESC;
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15660842826043.html">
+                <a class="clearlink" href="15672075805787.html">
                 
-                  <h1>表设计原则</h1>
+                  <h1>数据库调优秀</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h4>三少一多</h4>
+                        	<h4>数据库调优的目标</h4>
 
 <ul>
-<li>数据表个数越少越好</li>
-<li>数据表的字段个数越少越好</li>
-<li>数据表中联合主键的字段个数越少越好</li>
-<li>使用主键越多越好</li>
+<li>运行更快，吞吐量更大</li>
+<li>日志分析</li>
+<li>用户反馈</li>
+<li>服务器资源监控</li>
+<li>数据库内部状况监控</li>
 </ul>
 
-<h4>执行顺序</h4>
+<h4>维度</h4>
 
 <ul>
-<li>SELECT ... FROM ... WHERE ... GROUP BY (聚集函数)... HAVING ... ORDER BY ...</li>
-<li>首先先通过 CROSS JOIN 求笛卡尔积，相当于得到虚拟表 vt（virtual table）1-1；</li>
-<li>通过 ON 进行筛选，在虚拟表 vt1-1 的基础上进行筛选，得到虚拟表 vt1-2；</li>
-<li>添加外部行。如果我们使用的是左连接、右链接或者全连接，就会涉及到外部行，也就是在虚拟表 vt1-2 的基础上增加外部行，得到虚拟表 vt1-3</li>
-<li>FROM &gt; WHERE &gt; GROUP BY &gt; HAVING &gt; SELECT 的字段 &gt; DISTINCT &gt; ORDER BY &gt; LIMIT</li>
-<li>每个步骤都会产生虚拟表</li>
+<li>选择合适的DBMS</li>
+<li>优化表设计 三范式原则 反范式进行优化 表字段类型选择</li>
+<li>优化查询逻辑</li>
+<li>优化物理查询</li>
 </ul>
 
-<h4>执行效率</h4>
+<h4>使用物理缓存</h4>
 
 <ul>
-<li>COUNT(*) = COUNT(1) &gt; COUNT(字段)</li>
-<li>COUNT(*)和COUNT(1)本质上没有区别，执行的复杂度都是O(N)，也就是采用全表扫描，进行循环+计数的方式进行统计。</li>
-<li>count(*)和count(1)一般要建立二级索引</li>
+<li>redis</li>
+</ul>
+
+<h4>库级优化</h4>
+
+<ul>
+<li>数据库中的数据表过多，可以采用垂直分库的方式，将关联的数据表部署在一个数据库上。</li>
+<li>数据表中的列过多，可以采用垂直分表的方式，将数据表分拆成多张，把经常一起使用的列放到同一张表里</li>
+<li>数据表中的数据达到了亿级以上，可以考虑水平切分，将大的数据表分拆成不同的子表，每张表保持相同的表结构</li>
 </ul>
 
                         
@@ -407,62 +381,7 @@ ORDER BY num DESC;
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2019/08/18 07:24 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='SQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>SQL必知必会</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15660840293357.html">
-                
-                  <h1>SQL 执行方式</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>mysql架构</h4>
-
-<ul>
-<li><img src="media/15660840293357/c4b24ef2377e0d233af69925b0d7139e.png" alt="c4b24ef2377e0d233af69925b0d7139e"/></li>
-</ul>
-
-<h4>sql层架构</h4>
-
-<ul>
-<li><img src="media/15660840293357/30819813cc9d53714c08527e282ede79-2.jpg" alt="30819813cc9d53714c08527e282ede79-2"/></li>
-<li>查询缓存：Server 如果在查询缓存中发现了这条 SQL 语句，就会直接将结果返回给客户端；如果没有，就进入到解析器阶段。需要说明的是，因为查询缓存往往效率不高，所以在 MySQL8.0 之后就抛弃了这个功能。</li>
-<li>解析器：在解析器中对 SQL 语句进行语法分析、语义分析。</li>
-<li>优化器：在优化器中会确定 SQL 语句的执行路径，比如是根据全表检索，还是根据索引来检索等。</li>
-<li>执行器：在执行之前需要判断该用户是否具备权限，如果具备权限就执行 SQL 查询并返回结果。在 MySQL8.0 以下的版本，如果设置了查询缓存，这时会将查询结果进行缓存</li>
-</ul>
-
-<h4>sql执行分析</h4>
-
-<ul>
-<li>set profiling = 1;</li>
-<li>show profile</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/08/18 07:20 上午</span>
+                    <span class="date">2019/08/31 07:26 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='SQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>SQL必知必会</a></span>
@@ -489,7 +408,7 @@ ORDER BY num DESC;
 			  </div>
 			  <div class="large-6 columns">
 			<p class="text-right" style="padding-top:25px;">
-			
+			 <a href="SQL必知必会_2.html">&raquo; Next Page</a> 
 			</p>
 			  </div>
 			</div>
