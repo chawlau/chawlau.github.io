@@ -170,6 +170,233 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15728246052216.html">
+                
+                  <h1>异常处理</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>异常</h4>
+
+<pre class="line-numbers"><code class="language-python">
+try:
+    s = input(&#39;please enter two numbers separated by comma: &#39;)
+    num1 = int(s.split(&#39;,&#39;)[0].strip())
+    num2 = int(s.split(&#39;,&#39;)[1].strip())
+    ... 
+except ValueError as err:
+    print(&#39;Value Error: {}&#39;.format(err))
+
+print(&#39;continue&#39;)
+</code></pre>
+
+<ul>
+<li>是在最后一个 except block，声明其处理的异常类型是 Exception。Exception 是其他所有非系统异常的基类，能够匹配任意非系统异常,如果多个 except 声明的异常类型都与实际相匹配，那么只有最前面的 except block 会被执行，其他则被忽略</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">
+try:
+    s = input(&#39;please enter two numbers separated by comma: &#39;)
+    num1 = int(s.split(&#39;,&#39;)[0].strip())
+    num2 = int(s.split(&#39;,&#39;)[1].strip())
+    ...
+except ValueError as err:
+    print(&#39;Value Error: {}&#39;.format(err))
+except IndexError as err:
+    print(&#39;Index Error: {}&#39;.format(err))
+except Exception as err:
+    print(&#39;Other error: {}&#39;.format(err))
+
+print(&#39;continue&#39;)
+</code></pre>
+
+<h4>finally</h4>
+
+<ul>
+<li>finally，经常和 try、except 放在一起来用。无论发生什么情况，finally block 中的语句都会被执行，哪怕前面的 try 和 excep block 中使用了 return 语句。</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">
+import sys
+try:
+    f = open(&#39;file.txt&#39;, &#39;r&#39;)
+    .... # some data processing
+except OSError as err:
+    print(&#39;OS error: {}&#39;.format(err))
+except:
+    print(&#39;Unexpected error:&#39;, sys.exc_info()[0])
+finally:
+    f.close()
+</code></pre>
+
+<h4>多异常处理</h4>
+
+<pre class="line-numbers"><code class="language-python">
+try:
+    db = DB.connect(&#39;&lt;db path&gt;&#39;) # 可能会抛出异常
+    raw_data = DB.queryData(&#39;&lt;viewer_id&gt;&#39;) # 可能会抛出异常
+except (DBConnectionError, DBQueryDataError) err:
+    print(&#39;Error: {}&#39;.format(err))
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/04 07:43 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15727842506087.html">
+                
+                  <h1>输入输出&json</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>输入输出</h4>
+
+<pre class="line-numbers"><code class="language-python">import re
+
+def parse(text):
+    text = re.sub(r&#39;[^\w]&#39;, &#39; &#39;, text)
+
+    text = text.lower()
+
+    word_list = text.split(&#39; &#39;)
+
+    word_list = filter(None, word_list)
+
+    word_cnt = {}
+
+    for word in word_list:
+        if word not in word_cnt:
+            word_cnt[word] = 0
+        word_cnt[word] += 1
+
+    sorted_word_cnt = sorted(word_cnt.items(), key=lambda kv : kv[1], reverse=True)
+
+    return sorted_word_cnt
+
+def main():
+  with open(&#39;./demo.txt&#39;, &#39;r&#39;) as fin:
+    text = fin.read()
+
+  word_and_freq = parse(text)
+
+  print(word_and_freq)
+
+  with open(&#39;./out.txt&#39;, &#39;w&#39;) as fout:
+      for word, freq in word_and_freq:
+          fout.write(&#39;{}{}\n&#39;.format(word, freq))
+
+
+if __name__ == &#39;__main__&#39;:
+    main()
+</code></pre>
+
+<h4>json</h4>
+
+<ul>
+<li>json.dumps() 这个函数，接受 Python 的基本数据类型，然后将其序列化为 string</li>
+<li>json.loads() 这个函数，接受一个合法字符串，然后将其反序列化为 Python 的基本数据类型。</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">import json
+
+params = {
+    &#39;symbol&#39; : &#39;123456&#39;,
+    &#39;type&#39;: &#39;limit&#39;,
+    &#39;price&#39;: 123.4,
+    &#39;amount&#39;: 23
+}
+
+json_str = json.dumps(params)
+
+print(json_str)
+
+print(&#39;json_str {} params {}&#39;.format(type(json_str), params))
+
+origin_params = json.loads(json_str)
+
+print(&#39;type origin={}, origin={}&#39;.format(type(origin_params), origin_params))
+</code></pre>
+
+<h4>for&amp;while</h4>
+
+<ul>
+<li>range() 函数是直接由 C 语言写的，调用它速度非常快。而 while 循环中的“i += 1”这个操作，得通过 Python 的解释器间接调用底层的 C 语言；并且这个简单的操作，又涉及到了对象的创建和删除（因为 i 是整型，是 immutable，i += 1 相当于 i = new int(i + 1)）。所以，显然，for 循环的效率更胜一筹</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-python">
+i = 0
+while i &lt; 1000000:
+    i += 1
+
+for i in range(0, 1000000):
+    pass
+</code></pre>
+
+<h4>条件与循环的复用</h4>
+
+<pre class="line-numbers"><code class="language-python">expression for item in iterable if condition
+
+[(xx, yy) for xx in x for yy in y if xx != yy]
+</code></pre>
+
+<h4>demo</h4>
+
+<pre class="line-numbers"><code class="language-python">attributes = [&#39;name&#39;, &#39;dob&#39;, &#39;gender&#39;]
+values = [[&#39;jason&#39;, &#39;2000-01-01&#39;, &#39;male&#39;],
+[&#39;mike&#39;, &#39;1999-01-01&#39;, &#39;male&#39;],
+[&#39;nancy&#39;, &#39;2001-02-01&#39;, &#39;female&#39;]
+]
+
+res = [dict(zip(attributes, value)) for value in values]
+print(res)
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/03 20:30 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15726839005959.html">
                 
                   <h1>基础数据类型</h1>
@@ -754,163 +981,6 @@ sum(increase(node_cpu_seconds_total{mode=&quot;iowait&quot;}[1m]))
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15713949412054.html">
-                
-                  <h1>算法</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>结构图</h4>
-
-<p><img src="media/15713949412054/15715453122734.jpg" alt="" style="width:427px;"/></p>
-
-<h4>iterator</h4>
-
-<p><img src="media/15713949412054/15715455629718.jpg" alt="" style="width:1057px;"/></p>
-
-<h4>迭代器对算法影响</h4>
-
-<ul>
-<li><img src="media/15716560292736/15716563657075.jpg" alt="" style="width:1042px;"/></li>
-<li>根据迭代器的分类来调用次函数</li>
-<li>主函数配合辅助函数</li>
-<li>distance</li>
-<li>advance</li>
-</ul>
-
-<h4>copy</h4>
-
-<ul>
-<li><img src="media/15716560292736/15716569518022.jpg" alt="" style="width:1017px;"/></li>
-<li><img src="media/15713949412054/15716573005059.jpg" alt="" style="width:745px;"/></li>
-</ul>
-
-<h4>accumulate</h4>
-
-<ul>
-<li><img src="media/15713949412054/15720002023243.jpg" alt="" style="width:1065px;"/></li>
-<li><img src="media/15713949412054/15720003899707.jpg" alt="" style="width:629px;"/></li>
-</ul>
-
-<h4>replace&amp;replace_if&amp;replace</h4>
-
-<h4>count&amp;count_if</h4>
-
-<ul>
-<li>如果容器带count，用自带的</li>
-<li>不带count用算法的</li>
-<li>带count是一个字典结构，关联容器</li>
-</ul>
-
-<h4>rebegin&amp;rend</h4>
-
-<ul>
-<li><img src="media/15713949412054/15721473356416.jpg" alt="" style="width:891px;"/></li>
-</ul>
-
-<h4>binary_search</h4>
-
-<ul>
-<li><img src="media/15713949412054/15721476188458.jpg" alt="" style="width:342px;"/></li>
-<li>lower_bound能够插入的最低点</li>
-<li>upper_bound能够插入的最高点</li>
-<li><img src="media/15713949412054/15721477967350.jpg" alt="" style="width:349px;"/></li>
-</ul>
-
-<h4>防函数</h4>
-
-<ul>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/18 18:35 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E5%80%99%E6%8D%B7STL.html'>候捷STL</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15721446385015.html">
-                
-                  <h1>Query String</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>搜索</h4>
-
-<ul>
-<li>GET /test_index/_search?q=-producer:gaolujie</li>
-<li>GET /test_index/_search?q=+producer:gaolujie</li>
-</ul>
-
-<h4>_all metadata</h4>
-
-<ul>
-<li>2、_all metadata的原理和作用</li>
-</ul>
-
-<p>GET /test_index/test_type/_search?q=test</p>
-
-<p>直接可以搜索所有的field，任意一个field包含指定的关键字就可以搜索出来。我们在进行中搜索的时候，难道是对document中的每一个field都进行一次搜索吗？不是的</p>
-
-<p>es中的_all元数据，在建立索引的时候，我们插入一条document，它里面包含了多个field，此时，es会自动将多个field的值，全部用字符串的方式串联起来，变成一个长的字符串，作为_all field的值，同时建立索引</p>
-
-<p>后面如果在搜索的时候，没有对某个field指定搜索，就默认搜索_all field，其中是包含了所有field的值的</p>
-
-<p>举个例子</p>
-
-<p>{<br/>
-  &quot;name&quot;: &quot;jack&quot;,<br/>
-  &quot;age&quot;: 26,<br/>
-  &quot;email&quot;: &quot;<a href="mailto:jack@sina.com">jack@sina.com</a>&quot;,<br/>
-  &quot;address&quot;: &quot;guamgzhou&quot;<br/>
-}</p>
-
-<p>&quot;jack 26 <a href="mailto:jack@sina.com">jack@sina.com</a> guangzhou&quot;，作为这一条document的_all field的值，同时进行分词后建立对应的倒排索引</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/27 10:50 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='ElasticSearch.html'>ElasticSearch</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1050,6 +1120,18 @@ sum(increase(node_cpu_seconds_total{mode=&quot;iowait&quot;}[1m]))
 	      
 		      
 			      <li class="post">
+			        <a href="15692331863352.html">future&shared_future&atomic</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15702724482478.html">可变参数函数&&initializer_list</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15818128782116.html">Singleton</a>
 			      </li>
 		     
@@ -1063,18 +1145,6 @@ sum(increase(node_cpu_seconds_total{mode=&quot;iowait&quot;}[1m]))
 		      
 			      <li class="post">
 			        <a href="15817697569868.html">字符串分割</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15817610843879.html">编译期</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

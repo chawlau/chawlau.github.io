@@ -170,6 +170,101 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15694944763341.html">
+                
+                  <h1>类型区别</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>类型推断</h4>
+
+<pre class="line-numbers"><code class="language-text">template&lt;typename T&gt;
+int func(const T&amp; abc) {
+  cout &lt;&lt; &quot;i &quot; &lt;&lt; abc &lt;&lt; endl;
+  return abc;
+}
+
+int main() {
+  func(10);
+}
+</code></pre>
+
+<h4>universal reference 万能引用</h4>
+
+<ul>
+<li>&amp;&amp;abc右值引用</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">template&lt;typename T&gt;
+void func2(T&amp;&amp; tmp) { //&amp;&amp;属于形参的一部分,不属于T的一部分
+  cout &lt;&lt; &quot;tmp &quot; &lt;&lt; tmp &lt;&lt; endl;
+}
+void func2(int&amp; tmp) {
+  cout &lt;&lt; &quot;tmp &quot; &lt;&lt; tmp &lt;&lt; endl;
+}
+</code></pre>
+
+<ul>
+<li>函数模板tmp既能接受左值也能接受右值</li>
+<li>单纯的函数是不可以接受左值</li>
+</ul>
+
+<h5>语境</h5>
+
+<ul>
+<li>必须是函数模版</li>
+<li>必须是发生了模版类型推断并且函数模板形参T&amp;&amp;</li>
+<li>auto也存在万能引用的概念</li>
+<li>右值引用必须传递右值</li>
+<li>万能引用可以传递左值引用和左值引用</li>
+<li>T&amp;&amp;或者tmp才是万能引用</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">template&lt;typename T&gt;
+void func2(vector&lt;T&gt;&amp;&amp; tmp) {}//不是万能引用
+</code></pre>
+
+<h4>万能引用的资格剥夺和确认</h4>
+
+<ul>
+<li>const引用会剥夺万能引用资格，变成右值引用</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-text">template&lt;typename T&gt;
+void func2(vector&lt;T&gt;&amp;&amp; tmp) {}//不是万能引用
+
+template&lt;typename T&gt;
+class A {
+  void func2(vector&lt;T&gt;&amp;&amp; tmp) {}//不是万能引用,是右值引用
+  //成员函数没有类型推断
+}
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/09/26 18:41 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15694932578516.html">
                 
                   <h1>函数调用运算符和function类模版</h1>
@@ -383,83 +478,6 @@ if (status == std::future_status::deferred) {
                   <div class="more-left left">
                   
                     <span class="date">2019/09/24 18:27 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15692331863352.html">
-                
-                  <h1>future&shared_future&atomic</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>future</h4>
-
-<pre class="line-numbers"><code class="language-text">  std::future&lt;int&gt; result = std::async(std::launch::deferred, mythread);
-  cout &lt;&lt; &quot;continue...!&quot; &lt;&lt; endl;
-
-  std::future_status status = result.wait_for(std::chrono::seconds(4));
-  if (status == std::future_status::timeout) {
-    cout &lt;&lt; &quot;timeout func thread not finished &quot; &lt;&lt; endl;
-  } else if (status == std::future_status::ready) {
-    cout &lt;&lt; &quot;thread suc finished &quot; &lt;&lt; endl;
-  } else if (status == std::future_status::deferred) {
-    //如果async第一个条件std::launch::deferred
-    cout &lt;&lt; &quot;thread deferred &quot; &lt;&lt; endl;
-    cout &lt;&lt; result.get() &lt;&lt; endl;
-  }
-</code></pre>
-
-<h4>shared_future</h4>
-
-<pre class="line-numbers"><code class="language-text">std::packaged_task&lt;int(int)&gt; mypt(mythread2);
-std::thread t1(std::ref(mypt), 1);
-t1.join();
-std::future&lt;int&gt; res = mypt.get_future();
-std::shared_future&lt;int&gt; result_s(std::move(res));
-
-bool valid = res.valid();//判断future对象值是否是有效值
-std::shared_future&lt;int&gt; result_s(res.share());
-
-valid = res.valid();
-auto getRes = result_s.get();
-getRes = result_s.get();
-
-
-
-std::shared_future&lt;int&gt; result_s(mypt.get_future());
-std::thread t2(mythread4, std::ref(result_s));
-t2.join();
-cout &lt;&lt; &quot; I love China&quot; &lt;&lt; endl;
-</code></pre>
-
-<h4>std::atomic</h4>
-
-<ul>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/23 18:06 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
@@ -1099,6 +1117,18 @@ int main() {
 	      
 		      
 			      <li class="post">
+			        <a href="15692331863352.html">future&shared_future&atomic</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15702724482478.html">可变参数函数&&initializer_list</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15818128782116.html">Singleton</a>
 			      </li>
 		     
@@ -1112,18 +1142,6 @@ int main() {
 		      
 			      <li class="post">
 			        <a href="15817697569868.html">字符串分割</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15817610843879.html">编译期</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

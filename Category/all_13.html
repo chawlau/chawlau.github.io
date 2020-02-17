@@ -170,6 +170,103 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15716264505052.html">
+                
+                  <h1>锁</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>并发map</h4>
+
+<ul>
+<li>easierway/concurrent_map</li>
+</ul>
+
+<h4>避免锁</h4>
+
+<ul>
+<li>减少锁的影响范围</li>
+<li>减少发⽣生锁冲突的概率</li>
+<li>sync.Map ConcurrentMap</li>
+<li>避免锁的使⽤用</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/10/21 10:54 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15716243663482.html">
+                
+                  <h1>性能调优</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>分析指标</h4>
+
+<ul>
+<li>Wall Time</li>
+<li>CPU Time</li>
+<li>Block Time</li>
+<li>Memory allocation GC times/time spent</li>
+</ul>
+
+<h4>生成文件</h4>
+
+<ul>
+<li>go test  -bench=. -cpuprofile=cpu.prof</li>
+<li>go tool pprof cpu.prof</li>
+<li>top</li>
+<li>top -cum</li>
+<li>list function</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/10/21 10:19 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15715412406867.html">
                 
                   <h1>Json</h1>
@@ -762,114 +859,6 @@ func TestFillNameAndAge(t *testing.T) {
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15715292422214.html">
-                
-                  <h1>doc_id&source</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>手动生成</h4>
-
-<ul>
-<li>PUT 一般来说，是从某些其他的系统中，导入一些数据到es时，会采取这种方式，就是使用系统中已有数据的唯一标识，作为es中document的id</li>
-</ul>
-
-<h4>自动生成</h4>
-
-<ul>
-<li>POST </li>
-<li>自动生成的id，长度为20个字符，URL安全，base64编码，GUID，分布式系统并行生成时不可能会发生冲突</li>
-</ul>
-
-<h4>PUTsource元数据和获取指定元数据</h4>
-
-<pre class="line-numbers"><code class="language-go">put /test_index/test_type/1
-{
-  &quot;test_field1&quot;: &quot;test field1&quot;,
-  &quot;test_field2&quot;: &quot;test field2&quot;
-}
-GET /test_index/test_type/1?_source=test_field1,test_field2
-
-{
-  &quot;_index&quot;: &quot;test_index&quot;,
-  &quot;_type&quot;: &quot;test_type&quot;,
-  &quot;_id&quot;: &quot;1&quot;,
-  &quot;_version&quot;: 2,
-  &quot;found&quot;: true,
-  &quot;_source&quot;: {
-    &quot;test_field2&quot;: &quot;test field2&quot;
-  }
-}
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/20 07:54 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='ElasticSearch.html'>ElasticSearch</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15715281044945.html">
-                
-                  <h1>元数据</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>index</h4>
-
-<ul>
-<li>_index代表一个document存放在哪个index中</li>
-<li>类似的数据放在一个索引，非类似的数据放不同索引</li>
-<li>index中包含了很多类似的document：类似是什么意思，其实指的就是说，这些document的fields很大一部分是相同的，你说你放了3个document，每个document的fields都完全不一样，这就不是类似了，就不太适合放到一个index里面去了。</li>
-<li>_type</li>
-<li>代表document属于index中的哪个类别（type）</li>
-<li>_id元数据</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/20 07:35 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='ElasticSearch.html'>ElasticSearch</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1009,6 +998,18 @@ GET /test_index/test_type/1?_source=test_field1,test_field2
 	      
 		      
 			      <li class="post">
+			        <a href="15692331863352.html">future&shared_future&atomic</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15702724482478.html">可变参数函数&&initializer_list</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15818128782116.html">Singleton</a>
 			      </li>
 		     
@@ -1022,18 +1023,6 @@ GET /test_index/test_type/1?_source=test_field1,test_field2
 		      
 			      <li class="post">
 			        <a href="15817697569868.html">字符串分割</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15817610843879.html">编译期</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

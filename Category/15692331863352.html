@@ -192,7 +192,7 @@
       <div class="article-content">
       <h4>future</h4>
 
-<pre class="line-numbers"><code class="language-text">  std::future&lt;int&gt; result = std::async(std::launch::deferred, mythread);
+<pre class="line-numbers"><code class="language-cpp">  std::future&lt;int&gt; result = std::async(std::launch::deferred, mythread);
   cout &lt;&lt; &quot;continue...!&quot; &lt;&lt; endl;
 
   std::future_status status = result.wait_for(std::chrono::seconds(4));
@@ -209,7 +209,7 @@
 
 <h4>shared_future</h4>
 
-<pre class="line-numbers"><code class="language-text">std::packaged_task&lt;int(int)&gt; mypt(mythread2);
+<pre class="line-numbers"><code class="language-cpp">std::packaged_task&lt;int(int)&gt; mypt(mythread2);
 std::thread t1(std::ref(mypt), 1);
 t1.join();
 std::future&lt;int&gt; res = mypt.get_future();
@@ -230,11 +230,39 @@ t2.join();
 cout &lt;&lt; &quot; I love China&quot; &lt;&lt; endl;
 </code></pre>
 
-<h4>std::atomic</h4>
+<h4>async案例</h4>
 
-<ul>
-<li></li>
-</ul>
+<pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;thread&gt;
+#include &lt;chrono&gt;
+#include &lt;future&gt;
+using namespace std;
+
+int mythread() {
+  cout &lt;&lt; &quot;thread start &quot; &lt;&lt; &quot; thread_id = &quot;&lt;&lt; std::this_thread::get_id() &lt;&lt; endl;
+  std::chrono::seconds dura(3);
+  std::this_thread::sleep_for(dura);
+  return 5;
+}
+
+int main() {
+  cout &lt;&lt; &quot;main thread id &quot; &lt;&lt; std::this_thread::get_id() &lt;&lt; endl;
+  // std::future&lt;int&gt; result = std::async(std::launch::deferred, mythread);
+  std::future&lt;int&gt; result = std::async(mythread);
+  cout &lt;&lt; &quot;continue...!&quot; &lt;&lt; endl;
+
+  std::future_status status = result.wait_for(std::chrono::seconds(4));
+  if (status == std::future_status::timeout) {
+    cout &lt;&lt; &quot;timeout func thread not finished &quot; &lt;&lt; endl;
+  } else if (status == std::future_status::ready) {
+    cout &lt;&lt; &quot;thread suc finished resutl &quot; &lt;&lt; result.get();
+  } else if (status == std::future_status::deferred) {
+    //如果async第一个条件std::launch::deferred
+    cout &lt;&lt; &quot;thread deferred &quot; &lt;&lt; endl;
+    cout &lt;&lt; result.get() &lt;&lt; endl;
+  }
+}
+</code></pre>
 
 
     
@@ -245,16 +273,13 @@ cout &lt;&lt; &quot; I love China&quot; &lt;&lt; endl;
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="15693208659724.html" 
-          title="Previous Post: std::atomic">&laquo; std::atomic</a>
-      
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="15690414161042.html" 
-          title="Next Post: 二叉搜索树">二叉搜索树 &raquo;</a>
+          <a  href="15702724482478.html" 
+          title="Next Post: 可变参数函数&&initializer_list">可变参数函数&&initializer_list &raquo;</a>
       
       </p>
         </div>
@@ -395,6 +420,18 @@ cout &lt;&lt; &quot; I love China&quot; &lt;&lt; endl;
 	      
 		      
 			      <li class="post">
+			        <a href="15692331863352.html">future&shared_future&atomic</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15702724482478.html">可变参数函数&&initializer_list</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15818128782116.html">Singleton</a>
 			      </li>
 		     
@@ -408,18 +445,6 @@ cout &lt;&lt; &quot; I love China&quot; &lt;&lt; endl;
 		      
 			      <li class="post">
 			        <a href="15817697569868.html">字符串分割</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15817610843879.html">编译期</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

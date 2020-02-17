@@ -170,6 +170,392 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15734280261866.html">
+                
+                  <h1>Singleton</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>案例</h4>
+
+<pre class="line-numbers"><code class="language-cpp">std::mutex m;
+ static MyCAS* GetInstance() {
+    //不代表一定没被new过，只有第一次多线程初始化的时候需要加锁，后面都不需要加锁
+    if (m_instance == nullptr) {
+      //初始化的时候才加锁
+      std::unque_lock(std::mutex) lock(m);
+      if (m_instance == nullptr) {
+        m_instance = new MyCAS();
+        static GC c1;
+      }
+      return m_instance;
+    }
+  }
+
+</code></pre>
+
+<ul>
+<li>存在内存reorder, 加volatitle没有</li>
+</ul>
+
+<h4>golang_demo</h4>
+
+<pre class="line-numbers"><code class="language-go">//Singleton 是单例模式类
+type Singleton struct{}
+
+var singleton *Singleton
+var once sync.Once
+
+//GetInstance 用于获取单例模式对象
+func GetInstance() *Singleton {
+        once.Do(func() {
+                singleton = &amp;Singleton{}
+        })
+
+        return singleton
+}
+
+func GetInstance() *Singleton {
+        once.Do(func() {
+                singleton = &amp;Singletion()
+        })
+}
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/11 07:20 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15729950422631.html">
+                
+                  <h1>Abstract factory</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>动机</h4>
+
+<ul>
+<li>在软件系统中，经常面临着“一系列相互依赖的对象”的创建工作；同时，由于需求的变化，往往存在更多系列对象的创建工作。</li>
+<li>如何应对这种变化？如何绕过常规的对象创建方法（new），提供种“封裝机制“来避免客户程序和这种多系列具体对象创建工作“的紧耦合？</li>
+</ul>
+
+<h4>模式定义</h4>
+
+<ul>
+<li>提供一个接口，让该接口负责创建一系列“相关或者相互依赖的对象”，无需指定它们具体的类。</li>
+</ul>
+
+<h4>结构图</h4>
+
+<p><img src="media/15729950422631/15809876460184.jpg" alt="" style="width:812px;"/></p>
+
+<h4>要点总结</h4>
+
+<ul>
+<li>如果没有应对多系列对象构建”的需求变化，则没有必要使用abstract Factory/模式,这时候使用简单的工厂完全可以。</li>
+<li>系列对象”指的是在某一特定系列下的对象之间有相互依赖、或作用的关系。不同系列的对象之间不能相互依赖。</li>
+<li>Abstract Factory 模式主要在于应对“新系列的需求变动。其缺点在于难以应对“新对象”的需求变动。</li>
+<li>抽象工厂是工厂方法模式的升级版本，工厂方法不能解决具有二级分类的产品的创建问题，抽象工厂就是用来解决这个问题的</li>
+<li>模式稳定的部分就是缺点</li>
+</ul>
+
+<h4>cpp_demo</h4>
+
+<pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
+
+class Article {
+ public:
+  virtual void produce() = 0;
+};
+
+class Video {
+ public:
+  virtual void produce() = 0;
+};
+
+class CourseFactory {
+ public:
+  virtual Video* getVideo() = 0;
+  virtual Article* getArticle()= 0;
+};
+
+class JavaArticle : public Article {
+ public:
+  void produce() {
+    std::cout &lt;&lt; &quot; JavaArticl produce&quot; &lt;&lt; std::endl;
+  }
+};
+
+class JavaVideo : public Video {
+ public:
+  void produce() {
+    std::cout &lt;&lt; &quot; JavaVideo produce&quot; &lt;&lt; std::endl;
+  }
+};
+class JavaCourseFactory : public CourseFactory {
+ public:
+  Video* getVideo() {
+    return new JavaVideo();
+  }
+  Article* getArticle() {
+    return new JavaArticle();
+  }
+};
+
+class PythonArticle : public Article {
+ public:
+  void produce() {
+    std::cout &lt;&lt; &quot; PythonArticl produce&quot; &lt;&lt; std::endl;
+  }
+};
+
+class PythonVideo : public Video {
+ public:
+  void produce() {
+    std::cout &lt;&lt; &quot; PythonVideo produce&quot; &lt;&lt; std::endl;
+  }
+};
+
+class PythonCourseFactory : public CourseFactory {
+ public:
+  Video* getVideo() {
+    return new PythonVideo();
+  }
+  Article* getArticle() {
+    return new PythonArticle();
+  }
+};
+int main() {
+  CourseFactory* f1 = new JavaCourseFactory();
+  Video* v1 = f1-&gt;getVideo();
+  Article* a1 = f1-&gt;getArticle();
+  v1-&gt;produce();
+  a1-&gt;produce();
+
+  CourseFactory* f2 = new PythonCourseFactory();
+  Video* v2 = f2-&gt;getVideo();
+  Article* a2 = f2-&gt;getArticle();
+  v2-&gt;produce();
+  a2-&gt;produce();
+}
+</code></pre>
+
+<h4>golang_demo</h4>
+
+<pre class="line-numbers"><code class="language-go">package abstractfactory
+
+import &quot;fmt&quot;
+
+type Article interface {
+        produce()
+}
+
+type Video interface {
+        produce()
+}
+
+type CourseFactory interface {
+        getVideo() Video
+        getArticle() Article
+}
+
+type JavaArticle struct{}
+
+func (j *JavaArticle) produce() {
+        fmt.Println(&quot;JavaArticle produce&quot;)
+}
+
+type JavaVideo struct{}
+
+func (j *JavaVideo) produce() {
+        fmt.Println(&quot;JavaVideo produce&quot;)
+}
+
+type JavaCourseFactory struct{}
+
+func (jc *JavaCourseFactory) getVideo() Video {
+        return &amp;JavaVideo{}
+}
+
+func (jc *JavaCourseFactory) getArticle() Article {
+        return &amp;JavaArticle{}
+}
+type PythonArticle struct{}
+
+func (p *PythonArticle) produce() {
+        fmt.Println(&quot;PythonArticle produce&quot;)
+}
+
+type PythonVideo struct{}
+
+func (p *PythonVideo) produce() {
+        fmt.Println(&quot;PythonVideo produce&quot;)
+}
+
+type PythonCourseFactory struct{}
+
+func (py *PythonCourseFactory) getVideo() Video {
+        return &amp;PythonVideo{}
+}
+
+func (py *PythonCourseFactory) getArticle() Article {
+        return &amp;PythonArticle{}
+}
+import &quot;testing&quot;
+
+func getArticleAndVideo(factory CourseFactory) {
+        factory.getArticle().produce()
+        factory.getVideo().produce()
+}
+
+func TestABSFactory(t *testing.T) {
+        var f1 CourseFactory = &amp;JavaCourseFactory{}
+        getArticleAndVideo(f1)
+        var f2 CourseFactory = &amp;PythonCourseFactory{}
+        getArticleAndVideo(f2)
+}
+</code></pre>
+
+<h4>python_code</h4>
+
+<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
+
+class Article(metaclass=ABCMeta):
+    
+    def produce(self):
+        pass
+    
+class Video(metaclass=ABCMeta):
+    
+    def produce(self):
+        pass
+    
+class CourseFactory(metaclass=ABCMeta):
+    
+    def get_article(self):
+        pass
+    
+    def get_video(self):
+        pass
+    
+class JavaArticle(Article):
+    
+    def produce(self):
+        print(type(self).__name__, &quot; produce&quot;)
+
+
+class JavaVideo(Video):
+
+    def produce(self):
+        print(type(self).__name__, &quot; produce&quot;)
+        
+class JavaCourseFactory(CourseFactory):
+    
+    def get_article(self):
+        return JavaArticle()
+    
+    def get_video(self):
+        return JavaVideo()
+
+
+class CppArticle(Article):
+
+    def produce(self):
+        print(type(self).__name__, &quot; produce&quot;)
+
+
+class CppVideo(Video):
+
+    def produce(self):
+        print(type(self).__name__, &quot; produce&quot;)
+
+
+class CppCourseFactory(CourseFactory):
+
+    def get_article(self):
+        return CppArticle()
+
+    def get_video(self):
+        return CppVideo()
+
+
+class PythonArticle(Article):
+
+    def produce(self):
+        print(type(self).__name__, &quot; produce&quot;)
+
+
+class PythonVideo(Video):
+
+    def produce(self):
+        print(type(self).__name__, &quot; produce&quot;)
+
+
+class PythonCourseFactory(CourseFactory):
+
+    def get_article(self):
+        return PythonArticle()
+
+    def get_video(self):
+        return PythonVideo()
+
+if __name__ == &#39;__main__&#39;:
+
+    java = JavaCourseFactory()
+    java.get_video().produce()
+    java.get_article().produce()
+
+    cpp = CppCourseFactory()
+    cpp.get_article().produce()
+    cpp.get_video().produce()
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/11/06 07:04 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15729049211046.html">
                 
                   <h1>Factory</h1>
@@ -2385,395 +2771,6 @@ if __name__ == &#39;__main__&#39;:
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15744656731481.html">
-                
-                  <h1>静态方法&类方法&对象方法</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>三种方法对比</h4>
-
-<ul>
-<li>对象方法，定义中，传入的第一个参数必须是 self，表示实例本身，在其中可使用 self.attr 获取实例的属性。</li>
-<li>class_method 无需实例化，但与实例方法第一个参数必须是 self 类似，类方法第一个参数表示类自身的 cls 参数，可以来调用类的属性、类的方法、类的实例化对象等</li>
-<li>static_method无需 self 参数，无需 cls 参数，直接声明一个静态方法，可无需实例化，直接由类调用，也可实例化后调用</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-python">class Date:
-    def __init__(self, year, month, day):
-        self.year = year
-        self.month = month
-        self.day = day
-
-    def tomorrow(self):
-        self.day += 1
-
-    @staticmethod
-    def parse_from_string(data_str):
-        year, month, day = tuple(data_str.split(&#39;-&#39;))
-        return Date(int(year), int(month), int(day))
-
-    @staticmethod
-    def valid_str(date_str):
-        year, month, day = tuple(date_str.split(&#39;-&#39;))
-        if int(year) &gt; 0 and (int(month) &gt; 0 and int(month) &lt;=12) and (int(day) &gt; 0 and int(day) &lt;=31):
-            return True
-        else:
-            return False
-
-    @classmethod
-    def from_string(cls, date_str):
-        year, month, day = tuple(date_str.split(&#39;-&#39;))
-        return cls(int(year), int(month), int(day))
-
-    def __str__(self):
-        return &quot;{year}/{month}/{day}&quot;.format(year=self.year, month=self.month, day=self.day)
-
-if __name__ == &#39;__main__&#39;:
-    new_day = Date(2018, 12, 31)
-    new_day.tomorrow()
-    print(new_day)
-
-    date_str = &#39;2018-12-31&#39;
-    year, month, day = tuple(date_str.split(&#39;-&#39;))
-    new_day = Date(int(year), int(month), int(day))
-    print (new_day)
-
-    new_day = Date.parse_from_string(date_str)
-    print (new_day)
-
-    new_day = Date.from_string(date_str)
-    print (new_day)
-    
-    print(Date.valid_str(&quot;2018-12-32&quot;))
-</code></pre>
-
-<h4>私有属性</h4>
-
-<ul>
-<li>双下划线将私有变量进行变形</li>
-<li>通过反射机制也可以拿到这个数值</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-python">from method import Date
-
-class User:
-    def __init__(self, birthday):
-        self.__birthday = birthday
-    def get_age(self):
-        return 2019 - self.__birthday.year
-
-
-if __name__ == &#39;__main__&#39;:
-    user = User(Date(2018, 10, 1))
-    print(user.get_age())
-</code></pre>
-
-<h4>dict和dir查询属性·</h4>
-
-<pre class="line-numbers"><code class="language-python">from method import Date
-
-class Person:
-    name = &#39;user&#39;
-
-class Student(Person):
-    def __init__(self, school_name):
-        self.school_name = school_name
-
-if __name__ == &#39;__main__&#39;:
-    user = Student(&#39;IMooc&#39;)
-    print(user.__dict__)
-    user.__dict__[&quot;school_addr&quot;] = &quot;Beijing&quot;
-    print(user.school_addr)
-    print(Person.__dict__)
-    print(user.name)
-    a = [1, 2]
-    print(dir(a))
-</code></pre>
-
-<ul>
-<li>dict获取属性</li>
-</ul>
-
-<h4>上下文管理器协议</h4>
-
-<ul>
-<li><img src="media/15744656731481/15744763032317.jpg" alt="" style="width:324px;"/></li>
-</ul>
-
-<pre class="line-numbers"><code class="language-python">class Sample:
-    def __enter__(self):
-        #获取资源
-        print(&#39;enter&#39;)
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        #释放资源
-        print(&quot;exit&quot;)
-
-    def do_something(self):
-        print(&quot;doing something&quot;)
-
-with Sample() as sample:
-    sample.do_something()
-</code></pre>
-
-<h4>contextlib协议</h4>
-
-<pre class="line-numbers"><code class="language-python">import contextlib
-
-@contextlib.contextmanager
-def file_open(file_name):
-    print (&quot;file open&quot;)
-    yield {}
-    print (&quot;file end&quot;)
-
-with file_open(&quot;bobby.txt&quot;) as f_opened:
-    print (&quot;file processing&quot;)
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/23 07:34 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Python.html'>Python</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15725632392407.html">
-                
-                  <h1>模版模式</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>分类</h4>
-
-<ul>
-<li>创建类</li>
-<li>结构型</li>
-<li>行为型</li>
-<li><img src="media/15725632392407/15725633031911.jpg" alt="" style="width:750px;"/></li>
-<li><img src="media/15725632392407/15725633288545.jpg" alt="" style="width:342px;"/></li>
-<li>需求的频繁变化</li>
-<li>没有一部到位的设计模式</li>
-<li>重构 改善既有的模式</li>
-<li>重构与模式</li>
-</ul>
-
-<h4>重构关键技法</h4>
-
-<p><img src="media/15725632392407/15725635781138.jpg" alt="" style="width:492px;"/></p>
-
-<h4>组件协作模式</h4>
-
-<ul>
-<li>典型模式</li>
-</ul>
-
-<h4>cpp_demo</h4>
-
-<pre class="line-numbers"><code class="language-cpp">class OperateSystem
-{
- protected:
-  virtual void TriggerInterrupt() = 0;        //触发中断
-  virtual void SaveContext() = 0;             //保存现场
-  virtual void InterruptSoulation() = 0;       //中断处理
-  virtual void ReturnContext() = 0;           //返回现场
- public:
-  virtual void HandleInterrupt()
-  {
-    this-&gt;TriggerInterrupt();
-    this-&gt;SaveContext();
-    this-&gt;InterruptSoulation();
-    this-&gt;ReturnContext();
-  }
-};
-
-class Windows:public OperateSystem
-{
- private:
-  virtual void TriggerInterrupt()        //触发中断
-  {
-    std::cout&lt;&lt;&quot;Windows trriger\n&quot;;
-  }
-
-  virtual void SaveContext()             //保存现场
-  {
-    std::cout&lt;&lt;&quot;Windows save context\n&quot;;
-  }
-
-  virtual void InterruptSoulation()       //中断处理
-  {
-    std::cout&lt;&lt;&quot;Windows interrupt soulation\n&quot;;
-  }
-
-  virtual void ReturnContext()           //返回现场
-  {
-    std::cout&lt;&lt;&quot;Windows return context\n&quot;;
-  }
-};
-
-class Linux:public OperateSystem
-{
- private:
-  virtual void TriggerInterrupt()        //触发中断
-  {
-    std::cout&lt;&lt;&quot;Linux trriger\n&quot;;
-  }
-
-  virtual void SaveContext()             //保存现场
-  {
-    std::cout&lt;&lt;&quot;Linux save context\n&quot;;
-  }
-
-  virtual void InterruptSoulation()       //中断处理
-  {
-    std::cout&lt;&lt;&quot;Linux interrupt soulation\n&quot;;
-  }
-
-  virtual void ReturnContext()           //返回现场
-  {
-    std::cout&lt;&lt;&quot;Linux return context\n&quot;;
-  }
-};
-int main()
-{
-  Linux *linux = new Linux();
-  Windows *window = new Windows();
-
-  linux-&gt;HandleInterrupt();
-  window-&gt;HandleInterrupt();
-}
-</code></pre>
-
-<h4>golang_demo</h4>
-
-<pre class="line-numbers"><code class="language-go">package Templatemethod
-
-import &quot;fmt&quot;
-
-type Downloader interface {
-    Download(uri string)
-}
-
-type Template struct {
-    Implement
-    uri string
-}
-
-type Implement interface {
-    download()
-    save()
-}
-
-func newTemplate(impl Implement) *Template {
-    return &amp;Template{
-        Implement: impl,
-    }
-}
-
-func (t *Template) Download(uri string) {
-    t.uri = uri
-    fmt.Print(&quot;prepare downloading\n&quot;)
-    t.Implement.download()
-    t.Implement.save()
-    fmt.Print(&quot;finish downloading\n&quot;)
-}
-
-func (t *Template) save() {
-    fmt.Print(&quot;default save\n&quot;)
-}
-
-type HTTPDownloader struct {
-    *Template
-}
-
-func NewHTTPDownloader() Downloader {
-    downloader := &amp;HTTPDownloader{}
-    Template := newTemplate(downloader)
-    downloader.Template = Template
-    return downloader
-}
-
-func (d *HTTPDownloader) download() {
-    fmt.Printf(&quot;download %s via http\n&quot;, d.uri)
-}
-
-func (*HTTPDownloader) save() {
-    fmt.Printf(&quot;http save\n&quot;)
-}
-
-type FTPDownloader struct {
-    *Template
-}
-
-func NewFTPDownloader() Downloader {
-    downloader := &amp;FTPDownloader{}
-    Template := newTemplate(downloader)
-    downloader.Template = Template
-    return downloader
-}
-
-func (d *FTPDownloader) download() {
-    fmt.Printf(&quot;download %s via ftp\n&quot;, d.uri)
-}
-
-
-package templatemethod
-
-func ExampleHTTPDownloader() {
-    var downloader Downloader = NewHTTPDownloader()
-    downloader.Download(&quot;http://example.com/abc.zip&quot;)
-}
-
-func ExampleFTPDownloader() {
-    var downloader Downloader = NewFTPDownloader()
-    downloader.Download(&quot;ftp://example.com/abc.zip&quot;)
-}
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/11/01 07:07 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -2913,6 +2910,18 @@ func ExampleFTPDownloader() {
 	      
 		      
 			      <li class="post">
+			        <a href="15692331863352.html">future&shared_future&atomic</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15702724482478.html">可变参数函数&&initializer_list</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15818128782116.html">Singleton</a>
 			      </li>
 		     
@@ -2926,18 +2935,6 @@ func ExampleFTPDownloader() {
 		      
 			      <li class="post">
 			        <a href="15817697569868.html">字符串分割</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15817610843879.html">编译期</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

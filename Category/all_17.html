@@ -170,6 +170,227 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15710898154881.html">
+                
+                  <h1>微信红包</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>开发流程</h4>
+
+<p><img src="media/15710898154881/15710899833084.jpg" alt="" style="width:1193px;"/></p>
+
+<h4>业务功能点</h4>
+
+<ul>
+<li>新建红包:在DB、cache各新增一条记录</li>
+<li>抢红包:请求访问cache，剩余红包个数大于0则可拆开红包</li>
+<li>key:1，value:20 string decr原子减，每次减1 ， 而decreby减指定数量2</li>
+<li>拆红包: 20个红包里面有500块，key:1,value:50000(以分为单位) decreby 548，decreby 1055 ，decreby 2329</li>
+<li>请求访问cache，剩余红包个数大于0则继续，同时获取可抢红包数与金额 计算金额(从1分到剩余平均值2倍之间随机数，如果不是最后一个红包，剩余金额预留 最少1分给cas更新失败，最后一位拿红包的人) cas更新数据库(更新红包计数表记录【剩余红包个数、剩余红包金额】、插入领取记 录)</li>
+<li>查看红包记录:用户进来直接查DB即可</li>
+</ul>
+
+<h4>红包的库表设计</h4>
+
+<pre class="line-numbers"><code class="language-mysql">
+CREATE TABLE `red_packet_info` (
+`id` int(11) NOT NULL AUTO_INCREMENT,
+`red_packet_id` bigint(11) NOT NULL DEFAULT 0 COMMENT &#39;红包id，采用timestamp+5位随机数&#39;, `total_amount` int(11) NOT NULL DEFAULT 0 COMMENT &#39;红包总金额，单位分&#39;,
+`total_packet` int(11) NOT NULL DEFAULT 0 COMMENT &#39;红包总个数&#39;,
+`remaining_amount` int(11) NOT NULL DEFAULT 0 COMMENT &#39;剩余红包金额，单位分&#39;, `remaining_packet` int(11) NOT NULL DEFAULT 0 COMMENT &#39;剩余红包个数&#39;,
+`uid` int(20) NOT NULL DEFAULT 0 COMMENT &#39;新建红包用户的用户标识&#39;,
+`create_time` timestamp COMMENT &#39;创建时间&#39;,
+`update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+COMMENT &#39;更新时间&#39;, PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT=&#39;红包信息表，新建一个红包插 入一条记录&#39;;
+
+CREATE TABLE `red_packet_record` (
+`id` int(11) NOT NULL AUTO_INCREMENT,
+`amount` int(11) NOT NULL DEFAULT &#39;0&#39; COMMENT &#39;抢到红包的金额&#39;,
+`nick_name` varchar(32) NOT NULL DEFAULT &#39;0&#39; COMMENT &#39;抢到红包的用户的用户名&#39;,
+`img_url` varchar(255) NOT NULL DEFAULT &#39;0&#39; COMMENT &#39;抢到红包的用户的头像&#39;,
+`uid` int(20) NOT NULL DEFAULT &#39;0&#39; COMMENT &#39;抢到红包用户的用户标识&#39;,
+`red_packet_id` bigint(11) NOT NULL DEFAULT &#39;0&#39; COMMENT &#39;红包id，采用timestamp+5位随机
+数&#39;,
+`create_time` timestamp COMMENT &#39;创建时间&#39;,
+`update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+COMMENT &#39;更新时间&#39;, PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT=&#39;抢红包记录表，抢一个红包插 入一条记录&#39;;
+</code></pre>
+
+<h4>发红包接口实现</h4>
+
+<ul>
+<li>发红包功能接口开发</li>
+<li>新增一条红包记录 往mysql里面添加一条红包记录 往redis里面添加一条红包数量记录 decr 往redis里面添加一条红包金额记录 decreby</li>
+<li>抢红包功能接口开发</li>
+<li>抢红包功能属于原子减操作</li>
+<li>当大小小于0时原子减失败 当红包个数为0时后面进来的用户全部抢红包失败，并不会进入拆红包环节</li>
+<li>抢红包功能扩展设计</li>
+<li>将红包ID的请求放入请求队列中，如果发现超过红包的个数，直接返回</li>
+<li>类推出token令牌和秒杀设计原理 注意点</li>
+<li>抢到红包不到能拆成功</li>
+<li>2014年的红包一点开就知道金额，分两次操作，先抢到金额，然后再转账。 2015年后的红包的拆和抢 是分离的，需要点两次，因此会出现抢到红包了，但点开后告知红包已经被领完的状况。进入到第一个 页面不代表抢到，只表示当时红包还有。</li>
+</ul>
+
+<h4>抢红包接口实现</h4>
+
+<p><img src="media/15710898154881/15710924219795.jpg" alt="" style="width:1157px;"/><br/>
+<img src="media/15710898154881/15710924361303.jpg" alt="" style="width:1127px;"/></p>
+
+<ul>
+<li>抢红包功能接口开发</li>
+<li>在抢红包这里并不能保证用户已经能领到这个红包 抢红包只是做了一个判断，判断当前是否还有红包 有红包则返回可以领</li>
+<li>没红包则返回不可以领</li>
+<li>拆红包功能接口开发</li>
+<li>拆红包才是用户能领导红包 这时候要先减redis里面的金额和红包数量 减完金额再入库</li>
+</ul>
+
+<h4>红包业务思考</h4>
+
+<ul>
+<li>take all操作 入库转账时需要保证红包个数和红包剩余金额正确</li>
+<li>高并发处理:红包如何计算被抢完?</li>
+<li>cache会抵抗无效请求，将无效的请求过滤掉，实际进入到后台的量不大。cache记录红包个数，原子操作进行个数递减，到0表示被抢光</li>
+<li>lua原子操作减红包个数和金额</li>
+<li>性能扩展</li>
+<li>多主sharding，水平扩展机器 数据库层面sharding分片 redis层面sharding分片技术</li>
+<li>业务能动性，从发展的角度来看待业务 观察总结，技术赋能业务</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/10/15 05:50 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html'>Redis高并发缓存</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15710601189403.html">
+                
+                  <h1>常量&数据类型</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>常量</h4>
+
+<p><img src="media/15710601189403/15710601502836.jpg" alt="" style="width:1229px;"/></p>
+
+<ul>
+<li>位操作</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-go">const (
+  Readable = 1 &lt;&lt; iota
+  Writable
+  Executable
+)
+</code></pre>
+
+<h4>禁止类型转换</h4>
+
+<ul>
+<li>别名都不可以</li>
+</ul>
+
+<h4>类型预定义的值</h4>
+
+<ul>
+<li>math.MaxInt64</li>
+<li>math.MaxFloat64</li>
+</ul>
+
+<h4>字符串string</h4>
+
+<ul>
+<li>string == 0 来判断</li>
+</ul>
+
+<h4>数组</h4>
+
+<pre class="line-numbers"><code class="language-go">a := [...]int{1,2,3,4}
+b := [...]int{1,2,3,4}
+</code></pre>
+
+<ul>
+<li>要求数组长度，顺序，和类型一致</li>
+</ul>
+
+<h4>位操作</h4>
+
+<pre class="line-numbers"><code class="language-go">1 &amp;^ 0  -- 1
+1 &amp;^ 1  -- 0
+0 &amp;^ 1  -- 0
+0 &amp;^ 0  -- 0
+</code></pre>
+
+<h4>循环</h4>
+
+<p><img src="media/15710601189403/15710612828833.jpg" alt="" style="width:508px;"/></p>
+
+<h4>if条件</h4>
+
+<p><img src="media/15710601189403/15710613636218.jpg" alt="" style="width:1024px;"/></p>
+
+<h4>switch</h4>
+
+<pre class="line-numbers"><code class="language-go">func TestSwitchCaseCondition(t *testing.T) {
+    for i := 0; i &lt; 5; i++ {
+        switch {
+        case i%2 == 0:
+            t.Log(&quot;Even&quot;)
+        case i%2 == 1:
+            t.Log(&quot;Odd&quot;)
+        default:
+            t.Log(&quot;unknow&quot;)
+        }
+    }
+}
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/10/14 21:35 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Golang.html'>Golang</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15710092044608.html">
                 
                   <h1>分配器</h1>
@@ -710,174 +931,6 @@ sudo vi /etc/security/limits.conf<br/>
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15708431807650.html">
-                
-                  <h1>Paxos协议</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>角色</h4>
-
-<p><img src="media/15708431807650/15708432020016.jpg" alt="" style="width:488px;"/></p>
-
-<h4>Chubby</h4>
-
-<ul>
-<li>分布式锁系统</li>
-<li><img src="media/15708431807650/15708436835898.jpg" alt="" style="width:878px;"/></li>
-<li><img src="media/15708431807650/15708436974240.jpg" alt="" style="width:866px;"/></li>
-<li><img src="media/15708431807650/15708440209187.jpg" alt="" style="width:781px;"/></li>
-</ul>
-
-<h4>Locking</h4>
-
-<p><img src="media/15708431807650/15708449864784.jpg" alt="" style="width:1522px;"/><br/>
-<img src="media/15708431807650/15708450716795.jpg" alt="" style="width:1576px;"/><br/>
-<img src="media/15708431807650/15708451735410.jpg" alt="" style="width:1520px;"/></p>
-
-<h4>Cache</h4>
-
-<p><img src="media/15708431807650/15708452349337.jpg" alt="" style="width:1599px;"/></p>
-
-<h4>与zk比较</h4>
-
-<p><img src="media/15708431807650/15708452904205.jpg" alt="" style="width:1574px;"/><br/>
-<img src="media/15708431807650/15708453780162.jpg" alt="" style="width:1508px;"/></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/12 09:19 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Zookeeper.html'>Zookeeper</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15606472792037.html">
-                
-                  <h1>协程调度器</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>协程调度器</h4>
-
-<ul>
-<li>libevent维护fd状态</li>
-<li>每个线程需要维护epollfd的状态</li>
-</ul>
-
-<h4>惊群</h4>
-
-<ul>
-<li>accept</li>
-<li>epoll_wait惊群</li>
-</ul>
-
-<h4>流程</h4>
-
-<ul>
-<li>create</li>
-<li>free</li>
-<li>yield</li>
-<li>resume</li>
-</ul>
-
-<h4>Poll_inner实现</h4>
-
-<ul>
-<li>将Pollfd添加到Epoll中</li>
-<li>让出CPU，切换上下文--&gt;upper 切换给schduel来统一执行</li>
-<li>将Epoll删除Pollfd--&gt;lower</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">Int nSend(int sockfd, char *buffer, int length) {
-
-    int result = poll(&amp;pfd, 1, 1);
-    if (pfd.revents &amp; POLLRDHUP) {
-        return idx;
-    }
-    
-    return send(sockfd, buffer, length, 0);
-}
-
-Int nRecv(int sockfd, char *buffer, int length) {
-
-    int result = poll(&amp;pfd, 1, 1);
-    if (pfd.revents &amp; POLLRDHUP) {
-        return idx;
-    }
-    
-    return recv(sockfd, buffer, length, 0);
-}
-</code></pre>
-
-<h4>调度器</h4>
-
-<pre class="line-numbers"><code class="language-cpp">Int nSend(int sockfd, char *buffer, int length) {
-
-    int result = poll(&amp;pfd, 1, 1);
-    if (pfd.revents &amp; POLLRDHUP) {
-        return idx;
-    }
-    
-    return send(sockfd, buffer, length, 0);
-}
-
-Int nSend(int sockfd, char *buffer, int length) {
-
-    int result = poll_inner(&amp;pfd, 1, 1);
-    if (pfd.revents &amp; POLLRDHUP) {
-        return idx;
-    }
-    
-    return send(sockfd, buffer, length, 0);
-}
-
-</code></pre>
-
-<p><img src="media/15606472792037/15706767381701.jpg" alt="" style="width:676px;"/></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/06/16 09:07 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1017,6 +1070,18 @@ Int nSend(int sockfd, char *buffer, int length) {
 	      
 		      
 			      <li class="post">
+			        <a href="15692331863352.html">future&shared_future&atomic</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15702724482478.html">可变参数函数&&initializer_list</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15818128782116.html">Singleton</a>
 			      </li>
 		     
@@ -1030,18 +1095,6 @@ Int nSend(int sockfd, char *buffer, int length) {
 		      
 			      <li class="post">
 			        <a href="15817697569868.html">字符串分割</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15817610843879.html">编译期</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

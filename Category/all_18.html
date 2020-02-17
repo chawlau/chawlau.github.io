@@ -170,6 +170,174 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15708431807650.html">
+                
+                  <h1>Paxos协议</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>角色</h4>
+
+<p><img src="media/15708431807650/15708432020016.jpg" alt="" style="width:488px;"/></p>
+
+<h4>Chubby</h4>
+
+<ul>
+<li>分布式锁系统</li>
+<li><img src="media/15708431807650/15708436835898.jpg" alt="" style="width:878px;"/></li>
+<li><img src="media/15708431807650/15708436974240.jpg" alt="" style="width:866px;"/></li>
+<li><img src="media/15708431807650/15708440209187.jpg" alt="" style="width:781px;"/></li>
+</ul>
+
+<h4>Locking</h4>
+
+<p><img src="media/15708431807650/15708449864784.jpg" alt="" style="width:1522px;"/><br/>
+<img src="media/15708431807650/15708450716795.jpg" alt="" style="width:1576px;"/><br/>
+<img src="media/15708431807650/15708451735410.jpg" alt="" style="width:1520px;"/></p>
+
+<h4>Cache</h4>
+
+<p><img src="media/15708431807650/15708452349337.jpg" alt="" style="width:1599px;"/></p>
+
+<h4>与zk比较</h4>
+
+<p><img src="media/15708431807650/15708452904205.jpg" alt="" style="width:1574px;"/><br/>
+<img src="media/15708431807650/15708453780162.jpg" alt="" style="width:1508px;"/></p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/10/12 09:19 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Zookeeper.html'>Zookeeper</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15606472792037.html">
+                
+                  <h1>协程调度器</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>协程调度器</h4>
+
+<ul>
+<li>libevent维护fd状态</li>
+<li>每个线程需要维护epollfd的状态</li>
+</ul>
+
+<h4>惊群</h4>
+
+<ul>
+<li>accept</li>
+<li>epoll_wait惊群</li>
+</ul>
+
+<h4>流程</h4>
+
+<ul>
+<li>create</li>
+<li>free</li>
+<li>yield</li>
+<li>resume</li>
+</ul>
+
+<h4>Poll_inner实现</h4>
+
+<ul>
+<li>将Pollfd添加到Epoll中</li>
+<li>让出CPU，切换上下文--&gt;upper 切换给schduel来统一执行</li>
+<li>将Epoll删除Pollfd--&gt;lower</li>
+</ul>
+
+<pre class="line-numbers"><code class="language-cpp">Int nSend(int sockfd, char *buffer, int length) {
+
+    int result = poll(&amp;pfd, 1, 1);
+    if (pfd.revents &amp; POLLRDHUP) {
+        return idx;
+    }
+    
+    return send(sockfd, buffer, length, 0);
+}
+
+Int nRecv(int sockfd, char *buffer, int length) {
+
+    int result = poll(&amp;pfd, 1, 1);
+    if (pfd.revents &amp; POLLRDHUP) {
+        return idx;
+    }
+    
+    return recv(sockfd, buffer, length, 0);
+}
+</code></pre>
+
+<h4>调度器</h4>
+
+<pre class="line-numbers"><code class="language-cpp">Int nSend(int sockfd, char *buffer, int length) {
+
+    int result = poll(&amp;pfd, 1, 1);
+    if (pfd.revents &amp; POLLRDHUP) {
+        return idx;
+    }
+    
+    return send(sockfd, buffer, length, 0);
+}
+
+Int nSend(int sockfd, char *buffer, int length) {
+
+    int result = poll_inner(&amp;pfd, 1, 1);
+    if (pfd.revents &amp; POLLRDHUP) {
+        return idx;
+    }
+    
+    return send(sockfd, buffer, length, 0);
+}
+
+</code></pre>
+
+<p><img src="media/15606472792037/15706767381701.jpg" alt="" style="width:676px;"/></p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/06/16 09:07 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15605942368306.html">
                 
                   <h1>协程</h1>
@@ -1336,144 +1504,6 @@ std::lock_guard&lt;std::recursive_mutex&gt; s2(mutex1);
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15702724482478.html">
-                
-                  <h1>可变参数函数&&initializer_list</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>可变参数函数</h4>
-
-<ul>
-<li>这种能够接收非固定个数数的数就是可变参数还数</li>
-<li>initialiser_1 ist 标准库类型，该类型能够使用的前提条件是所有的实多类型相同</li>
-<li>参数类型一致，但是个数不可预知</li>
-</ul>
-
-<h4>拷贝和赋值</h4>
-
-<ul>
-<li>不会拷贝列表中元素，原来对象拷贝</li>
-</ul>
-
-<h4>省略号形参</h4>
-
-<ul>
-<li>这种省略形参式的可变参数函数虽然参数数量不固定，但是函数的所有参数是存储在线性连续的空间中的</li>
-<li>可变参数只能是字符串类型和int类型</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-cpp">double sum(int num, ...) {
-  va_list valist;
-  double sum = 0;
-  va_start(valist, num);
-  for (int i = 0; i &lt; num; i++) {
-    sum = sum + va_arg(valist, int);
-  }
-  va_end(valist);
-  return sum;
-}
-
-void funcTest(const char* msg...) {
-  va_list  valist;
-  int cnt = atoi(msg);
-  va_start(valist, msg);
-  int args = 0;
-  while (args &lt; cnt) {
-    char* p = va_arg(valist, char*);
-    printf(&quot;args %d %s \n&quot;, cnt, p);
-    args++;
-  }
-  va_end(valist);
-}
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/05 18:47 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15703486295241.html">
-                
-                  <h1>思考题</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>案例、服务器端高并发IO的keep alive方案，满足一下几个需求</h4>
-
-<ul>
-<li>1. 每个IO都是自己的时间戳</li>
-<li>2. 每个IO收到自己的beat后，重置自己的定时器</li>
-<li>3. 若IO定时没有收到beat，则执行IO的回调函数，并重置定时器</li>
-<li>4. 若再次没有收到beat，销毁IO，注销定时器。</li>
-</ul>
-
-<h5>方案一</h5>
-
-<ul>
-<li>timerfd+epoll</li>
-<li>0. 时间精准度高</li>
-<li>小块代码逻辑清晰</li>
-<li>程序总体逻辑混乱</li>
-<li>代码是基于时间反应堆的</li>
-<li>回调函数中不易做较长时间操作，比如数椐库，第三方 HTP 请求中</li>
-</ul>
-
-<h5>方案三</h5>
-
-<ul>
-<li>红黑树</li>
-<li>key 时间戳 val 是 io</li>
-<li>期限到了直接删除节点</li>
-<li>如果key的值是一样的，从s扩充到ms</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/06 15:57 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html'>linux服务器研发</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1613,6 +1643,18 @@ void funcTest(const char* msg...) {
 	      
 		      
 			      <li class="post">
+			        <a href="15692331863352.html">future&shared_future&atomic</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15702724482478.html">可变参数函数&&initializer_list</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15818128782116.html">Singleton</a>
 			      </li>
 		     
@@ -1626,18 +1668,6 @@ void funcTest(const char* msg...) {
 		      
 			      <li class="post">
 			        <a href="15817697569868.html">字符串分割</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15817610843879.html">编译期</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

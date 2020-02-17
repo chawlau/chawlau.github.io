@@ -170,6 +170,167 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15814188057978.html">
+                
+                  <h1>重构</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>分类</h4>
+
+<ul>
+<li>大规模高层次重构（以下简称为“大型重构”）和小规模低层次的重构（以下简称为“小型重构”）</li>
+</ul>
+
+<h4>大型重构</h4>
+
+<ul>
+<li>型重构指的是对顶层代码设计的重构，包括：系统、模块、代码结构、类与类之间的关系等的重构，重构的手段有：分层、模块化、解耦、抽象可复用组件等等。这类重构的工具就是我们学习过的那些设计思想、原则和模式。</li>
+</ul>
+
+<h4>小型重构</h4>
+
+<ul>
+<li>小型重构指的是对代码细节的重构，主要是针对类、函数、变量等代码级别的重构，比如规范命名、规范注释、消除超大类或函数、提取重复代码等等。小型重构更多的是利用我们能后面要讲到的编码规范。</li>
+</ul>
+
+<h4>AntiPattern</h4>
+
+<p>常见的测试不友好的代码有下面这 5 种：</p>
+
+<h5>代码中包含未决行为逻辑</h5>
+
+<ul>
+<li>所谓的未决行为逻辑就是，代码的输出是随机或者说不确定的，比如，跟时间、随机数有关的代码</li>
+</ul>
+
+<h5>滥用可变全局变量</h5>
+
+<ul>
+<li>全局变量是一种面向过程的编程风格，有种种弊端。实际上，滥用全局变量也让编写单元测试变得困难</li>
+</ul>
+
+<h5>滥用静态方法</h5>
+
+<ul>
+<li>静态方法跟全局变量一样，也是一种面向过程的编程思维。在代码中调用静态方法，有时候会导致代码不易测试</li>
+</ul>
+
+<h5>使用复杂的继承关系</h5>
+
+<ul>
+<li>相比组合关系，继承关系的代码结构更加耦合、不灵活，更加不易扩展、不易维护</li>
+</ul>
+
+<h5>高度耦合的代码</h5>
+
+<ul>
+<li>如果一个类职责很重，需要依赖十几个外部对象才能完成工作，代码高度耦合，那我们在编写单元测试的时候，可能需要 mock 这十几个依赖的对象</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2020/02/11 19:00 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html'>设计模式之美</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15813811739408.html">
+                
+                  <h1>tuple 使用</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>类模板</h4>
+
+<ul>
+<li>类模板 std::tuple 是固定大小的异类值汇集。它是 std::pair 的推广。</li>
+</ul>
+
+<h4>使用</h4>
+
+<pre class="line-numbers"><code class="language-cpp">#include &lt;tuple&gt;
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+ 
+std::tuple&lt;double, char, std::string&gt; get_student(int id)
+{
+    if (id == 0) return std::make_tuple(3.8, &#39;A&#39;, &quot;Lisa Simpson&quot;);
+    if (id == 1) return std::make_tuple(2.9, &#39;C&#39;, &quot;Milhouse Van Houten&quot;);
+    if (id == 2) return std::make_tuple(1.7, &#39;D&#39;, &quot;Ralph Wiggum&quot;);
+    throw std::invalid_argument(&quot;id&quot;);
+}
+ 
+int main()
+{
+    auto student0 = get_student(0);
+    std::cout &lt;&lt; &quot;ID: 0, &quot;
+              &lt;&lt; &quot;GPA: &quot; &lt;&lt; std::get&lt;0&gt;(student0) &lt;&lt; &quot;, &quot;
+              &lt;&lt; &quot;grade: &quot; &lt;&lt; std::get&lt;1&gt;(student0) &lt;&lt; &quot;, &quot;
+              &lt;&lt; &quot;name: &quot; &lt;&lt; std::get&lt;2&gt;(student0) &lt;&lt; &#39;\n&#39;;
+ 
+    double gpa1;
+    char grade1;
+    std::string name1;
+    std::tie(gpa1, grade1, name1) = get_student(1);
+    std::cout &lt;&lt; &quot;ID: 1, &quot;
+              &lt;&lt; &quot;GPA: &quot; &lt;&lt; gpa1 &lt;&lt; &quot;, &quot;
+              &lt;&lt; &quot;grade: &quot; &lt;&lt; grade1 &lt;&lt; &quot;, &quot;
+              &lt;&lt; &quot;name: &quot; &lt;&lt; name1 &lt;&lt; &#39;\n&#39;;
+ 
+    // C++17 结构化绑定：
+    auto [ gpa2, grade2, name2 ] = get_student(2);
+    std::cout &lt;&lt; &quot;ID: 2, &quot;
+              &lt;&lt; &quot;GPA: &quot; &lt;&lt; gpa2 &lt;&lt; &quot;, &quot;
+              &lt;&lt; &quot;grade: &quot; &lt;&lt; grade2 &lt;&lt; &quot;, &quot;
+              &lt;&lt; &quot;name: &quot; &lt;&lt; name2 &lt;&lt; &#39;\n&#39;;
+}
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2020/02/11 08:32 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html'>C++基础与提高</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15812339995025.html">
                 
                   <h1>定时任务</h1>
@@ -1671,645 +1832,6 @@ function&lt;int(int)&gt; fc2 = bind(
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15775908801763.html">
-                
-                  <h1>Command</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>行为变化模式</h4>
-
-<ul>
-<li>在组件的构建过程中，组件行为的变化经常导致组件本身剧烈的变化。“行为变化“模式将组件的行为和组件本身进行解耦，从而支持组件行为的变化，实现两者之间的松耦合。</li>
-</ul>
-
-<h4>动机</h4>
-
-<ul>
-<li>在软件构建过程中，“行为请求者”与“行为实现者通常呈现一种“紧耦合”。但在某些场合一一比如需要对行为进行“记录、撤销/重（undo/redo)、事务”等处理,这种无法抵御变化的紧耦合是不合适 的</li>
-<li>在这种情况下，如何将“行为请求者“与“行为实现者”解耦？将一组行为抽象为对象，可以实现二者之间的松耦合。</li>
-</ul>
-
-<h4>模式定义</h4>
-
-<ul>
-<li>将一个请求（行为）封装为一个对象，从而使你可用不同的请求对客户进行参数化；对请求排队或记录请求日志，以及支持可撇销的操作。</li>
-</ul>
-
-<h4>结构</h4>
-
-<ul>
-<li><img src="media/15775908801763/15811582346417.jpg" alt="" style="width:787px;"/></li>
-</ul>
-
-<h4>要点总结</h4>
-
-<ul>
-<li>Command 模式的根本目的在于将“行为请求者”与“行为实现者”解耦，在面向对象语言中，常见的实现手段是“将行为抽象为对象</li>
-<li>实现 Command 接口的具体命令对象 Concrete Command 有时侯根据需要可能会保存一些额外的状态信息。通过使用 Composite 模式可以将多个“命令“封装为ー个“复合命令“Macro Command</li>
-<li>Command 模式与 C++中的函数对象有些类似。但两者定义行为接口的规范有所区别：Command 以面向对象中的“接口-实现”来定义行为接口规范，更严格，但有性能损失；C++函数对象以函数签名来定义行为接口规范，更灵活，性能更高。</li>
-<li>编译时多态</li>
-<li>范形编程+函数对象解决了迭代器模式和命令模式</li>
-<li>设计模式是弥补语言设计的不足出现的</li>
-</ul>
-
-<h4>优缺点</h4>
-
-<h5>优点</h5>
-
-<ul>
-<li>将调用操作的类与知道如何执行该操作的对象解耦；</li>
-<li>提供队列系统后，可以创建一系列命令；</li>
-<li>添加新命令更加容易，并且无需更改现有代码；</li>
-<li>还可以使用命令模式来定义回滚系统，例如，在向导示例中，我们可以编写一个回滚方法。</li>
-</ul>
-
-<h6>缺点：</h6>
-
-<ul>
-<li>为了实现目标，需要大量的类和对象进行协作。应用程序开发人员为了正确开发这些类，需要倍加小心；</li>
-<li>每个单独的命令都是一个ConcreteCommand类，从而增加了需要实现和维护的类的数量。</li>
-</ul>
-
-<h4>cpp_code</h4>
-
-<pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
-#include &lt;list&gt;
-using namespace std;
-
-class Command {
-    public:
-    virtual void execute() = 0;
-    Command() {}
-};
-
-class Barbecue {
-    public:
-    void bake_mutton() {cout &lt;&lt; &quot;bake mutton \n&quot;;}
-    void bake_chicken() {cout &lt;&lt; &quot;bake chicken\n&quot;;}
-};
-
-class MuttonCommand : public Command {
-    public:
-    MuttonCommand(Barbecue* barbecue) : barbecue_(barbecue) {}
-
-    void execute() {
-        this-&gt;barbecue_-&gt;bake_mutton();
-    }
-    private:
-    Barbecue* barbecue_ = nullptr;
-};
-
-class ChickenCommand : public Command {
-    public:
-    ChickenCommand(Barbecue* barbecue) : barbecue_(barbecue) {}
-
-    void execute() {
-        this-&gt;barbecue_-&gt;bake_chicken();
-    }
-    private:
-    Barbecue* barbecue_ = nullptr;
-};
-
-class Waiter {
-    public:
-    Waiter() {}
-
-    void AddOrder(Command* cmd) {
-        this-&gt;orders.push_back(cmd);
-    }
-
-    void DelOrder(Command* cmd) {
-        this-&gt;orders.remove(cmd);
-    }
-
-    void Notify() {
-        for (auto it : this-&gt;orders) {
-            it-&gt;execute();
-        }
-    }
-    private:
-    list&lt;Command*&gt; orders;
-};
-
-int main() {
-    auto boy = new Barbecue();
-    Command* cmd1 = new MuttonCommand(boy);
-    Command* cmd2 = new MuttonCommand(boy);
-    Command* cmd3 = new ChickenCommand(boy);
-    auto waiter = new Waiter();
-    waiter-&gt;AddOrder(cmd1);
-    waiter-&gt;AddOrder(cmd2);
-    waiter-&gt;AddOrder(cmd3);
-    waiter-&gt;Notify();
-}
-</code></pre>
-
-<h4>golang_demo</h4>
-
-<pre class="line-numbers"><code class="language-go">package desian_pattern_practise
-
-
-import &quot;fmt&quot;
-
-type Command interface {
-    ExecuteCommand()
-}
-
-type Barbecue struct {}
-
-func (b *Barbecue) BakeMutton() {
-    fmt.Println(&quot;BakeMutton&quot;)
-}
-
-func (b *Barbecue) BakeChicken() {
-    fmt.Println(&quot;BakeChicken&quot;)
-}
-
-type MuttonCommand struct {
-    *Barbecue
-}
-
-func NewMuttonCommand(boy *Barbecue) *MuttonCommand {
-    return &amp;MuttonCommand{
-        Barbecue: boy,
-    }
-}
-
-func (m *MuttonCommand) ExecuteCommand() {
-    m.Barbecue.BakeMutton()
-}
-
-type BakeCommand struct {
-    *Barbecue
-}
-
-func NewBakeCommand(boy *Barbecue) *BakeCommand {
-    return &amp;BakeCommand{
-        Barbecue: boy,
-    }
-}
-
-func (b *BakeCommand) ExecuteCommand() {
-    b.Barbecue.BakeChicken()
-}
-
-type Waiter struct {
-    orders map[Command]bool
-}
-
-func NewWaiter() *Waiter {
-    return &amp;Waiter{
-        orders: make(map[Command]bool),
-    }
-}
-
-func (w *Waiter) AddOrder(cmd Command) {
-    w.orders[cmd] = true
-}
-
-func (w *Waiter) CancelOrder(cmd Command) {
-    delete(w.orders, cmd)
-}
-
-func (w *Waiter) Notify() {
-    for k, _ := range w.orders {
-        k.ExecuteCommand()
-    }
-}
-func TestBakeCommand_ExecuteCommand(t *testing.T) {
-    boy := &amp;Barbecue{}
-
-    cmd1, cmd2  := NewMuttonCommand(boy), NewMuttonCommand(boy)
-    cmd3 := NewBakeCommand(boy)
-
-    waiter := NewWaiter()
-    waiter.AddOrder(cmd1)
-
-    waiter.AddOrder(cmd2)
-
-    waiter.AddOrder(cmd3)
-
-    waiter.CancelOrder(cmd1)
-    waiter.Notify()
-}
-</code></pre>
-
-<h4>python_demo</h4>
-
-<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
-
-class Command(metaclass=ABCMeta):
-
-    @abstractmethod
-    def execute_command(self):
-        pass
-
-class Barbecue(object):
-
-    def bake_mutton(self):
-        print(&quot;bake mutton&quot;)
-
-    def bake_chicken(self):
-        print(&quot;bake chicken&quot;)
-
-class MuttonCommand(Command):
-
-    def __init__(self, barbecue):
-        self.barbecue = barbecue
-
-    def execute_command(self):
-        self.barbecue.bake_mutton()
-
-
-class ChickenCommand(Command):
-
-    def __init__(self, barbecue):
-        self.barbecue = barbecue
-
-    def execute_command(self):
-        self.barbecue.bake_chicken()
-
-class Waiter(object):
-
-    def __init__(self):
-        self.__orders = []
-
-    def add_order(self, cmd):
-        self.__orders.append(cmd)
-
-    def cancel_order(self, cmd):
-        self.__orders.remove(cmd)
-
-    def notify(self):
-        for order in self.__orders:
-            order.execute_command()
-
-if __name__ == &#39;__main__&#39;:
-    boy = Barbecue()
-
-    cmd1 = MuttonCommand(boy)
-    cmd2 = MuttonCommand(boy)
-    cmd3 = ChickenCommand(boy)
-
-    waiter = Waiter()
-
-    waiter.add_order(cmd1)
-    waiter.add_order(cmd2)
-    waiter.add_order(cmd3)
-
-    waiter.notify()
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/12/29 11:41 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15768853718636.html">
-                
-                  <h1>Chain of Responsibility</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>模式定义</h4>
-
-<ul>
-<li>使多个对象都有机会处理请求，从而避免请求的发送者和接收者之间的耦合关系。将这些对象连成一条链，并沿着这条链传递请求，直到有一个对象处理它为止</li>
-</ul>
-
-<h4>结构</h4>
-
-<ul>
-<li><img src="media/15768853718636/15806441423658.jpg" alt="" style="width:799px;"/></li>
-</ul>
-
-<h4>要点总结</h4>
-
-<ul>
-<li>Chain of Responsibility 7 模式的应用场合在于“一个请求可能有多个接受者，但是最后真正的接受者只有一个“，这时候请求发送者与接受者的耦合有可能出现“变化脆弱”的症状，职责链的目的就是将二者解耦，从而更好地应对变化</li>
-<li>应用了 Chain of Responsibility 模式后，对象的职责分派将更具灵活性。我们可以在运行时动态添加/修改请求的处理职责。</li>
-<li>如果请求传递到职责链的末尾仍得不到处理，应该有一个合理的缺省机制。这也是每一个接受对象的责任，而不是发出请求的对象的责任。</li>
-<li>这里发出这个请求的客户端并不知道这当中的哪一个对象最终处理这个请求，这样系统的更改可以在不影响客户端的情况下动态地重新组织和分配责任</li>
-</ul>
-
-<h4>cpp_demo</h4>
-
-<pre class="line-numbers"><code class="language-cpp">//
-// Created by eredinliu on 2020-02-03.
-//
-
-#include &lt;iostream&gt;
-#include &lt;typeinfo&gt;
-using namespace std;
-
-class Request {
-public:
-    Request(const string&amp; name, const string&amp; reason, int day_off) :
-            name_(name), reason_(reason), day_off_(day_off) {}
-    string name_, reason_;
-    int day_off_;
-};
-
-class Responsible {
-public:
-    void SetSuperior(Responsible* superior) {this-&gt;superior_ = superior;}
-    Responsible() {}
-
-    bool SuperiorHandle(Request* request) {
-        if (this-&gt;superior_ != nullptr) {
-            return this-&gt;superior_-&gt;HandleRequest(request);
-        }
-
-        cout &lt;&lt; &quot;Out of power, reject \n&quot;;
-        return false;
-    }
-
-    virtual bool HandleRequest(Request* request) = 0;
-
-private:
-    Responsible* superior_;
-};
-
-class Supervisor : public  Responsible {
-public:
-    bool HandleRequest(Request* request) {
-        if (request-&gt;day_off_ &gt; 0 &amp;&amp; request-&gt;day_off_ &lt;= 2) {
-            cout &lt;&lt; typeid(this).name() &lt;&lt; &quot; permit \n&quot;;
-            return true;
-        }
-
-        return this-&gt;SuperiorHandle(request);
-    }
-};
-
-class Depmanager : public  Responsible {
-public:
-    bool HandleRequest(Request* request) {
-        if (request-&gt;day_off_ &gt; 2 &amp;&amp; request-&gt;day_off_ &lt;= 5) {
-            cout &lt;&lt; typeid(this).name() &lt;&lt; &quot; permit \n&quot;;
-            return true;
-        }
-
-        return this-&gt;SuperiorHandle(request);
-    }
-};
-
-class CEO : public  Responsible {
-public:
-    bool HandleRequest(Request* request) {
-        if (request-&gt;day_off_ &gt; 5 &amp;&amp; request-&gt;day_off_ &lt;= 12) {
-            cout &lt;&lt; typeid(this).name() &lt;&lt; &quot; permit \n&quot;;
-            return true;
-        }
-
-        return this-&gt;SuperiorHandle(request);
-    }
-};
-
-int main() {
-    Responsible* ceo = new CEO();
-    Responsible* dep = new Depmanager();
-    Responsible* super = new Supervisor();
-    dep-&gt;SetSuperior(ceo);
-    super-&gt;SetSuperior(dep);
-
-    Request* req = new Request(&quot;ming&quot;, &quot;sick&quot;, 10);
-    super-&gt;HandleRequest(req);
-}
-</code></pre>
-
-<h4>golang_demo</h4>
-
-<pre class="line-numbers"><code class="language-go">package design_pattern
-
-import (
-    &quot;fmt&quot;
-    &quot;reflect&quot;
-)
-
-type Request struct {
-    name, reason string
-    dayOff int
-}
-
-type Responsible interface {
-    HandlerRequest(*Request) bool
-}
-
-type Manager struct {
-    superior Responsible
-}
-
-func (m *Manager) HandlerRequest(*Request) bool {
-    return true
-}
-
-func (m *Manager) SetSuperior(superior Responsible) {
-    m.superior = superior
-}
-
-func (m *Manager) SuperHandle(r *Request) bool {
-    if m.superior != nil {
-      return m.superior.HandlerRequest(r)
-    }
-
-    fmt.Println(&quot;out of power, reject&quot;)
-    return false
-}
-
-type Supervisor struct {
-    *Manager
-}
-
-func (s *Supervisor) HandlerRequest(r *Request) bool {
-    
-    if r.dayOff &gt; 0 &amp;&amp; r.dayOff &lt;=2 {
-        fmt.Println(reflect.TypeOf(s).String() + &quot; Permit&quot;)
-        return true
-    }
-
-    return s.SuperHandle(r)
-}
-
-func NewSupervisor() *Supervisor {
-    return &amp;Supervisor{
-        Manager: &amp;Manager{},
-    }
-}
-
-type DepManager struct {
-    *Manager
-}
-
-func (s *DepManager) HandlerRequest(r *Request) bool {
-
-    if r.dayOff &gt; 2 &amp;&amp; r.dayOff &lt;=5 {
-        fmt.Println(reflect.TypeOf(s).String() + &quot; Permit&quot;)
-        return true
-    }
-
-    return s.SuperHandle(r)
-}
-
-func NewDepManager() *DepManager {
-    return &amp;DepManager{
-        Manager: &amp;Manager{},
-    }
-}
-
-type CEO struct {
-    *Manager
-}
-
-func (s *CEO) HandlerRequest(r *Request) bool {
-
-    if r.dayOff &gt; 5 &amp;&amp; r.dayOff &lt;=22 {
-        fmt.Println(reflect.TypeOf(s).String() + &quot; Permit&quot;)
-        return true
-    }
-
-    return s.SuperHandle(r)
-}
-
-func NewCEO() *CEO{
-    return &amp;CEO{
-        Manager: &amp;Manager{},
-    }
-}
-
-func TestRequestChain(t *testing.T) {
-    c1 := NewCEO()
-    c1.SetSuperior(nil)
-    c2 := NewDepManager()
-    c2.SetSuperior(c1)
-    c3 := NewSupervisor()
-    c3.SetSuperior(c2)
-
-    request := &amp;Request{
-        name: &quot;ming&quot;,
-        reason: &quot;sick&quot;,
-        dayOff: 23,
-    }
-
-    c3.HandlerRequest(request)
-}
-</code></pre>
-
-<h4>python_code</h4>
-
-<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
-
-class Request(object):
-
-    def __init__(self, name, reason, dayOff):
-        self.name, self.reason, self.dayOff = name, reason, dayOff
-
-class Responsible(metaclass=ABCMeta):
-
-    @abstractmethod
-    def HandleRequest(self, request):
-        pass
-
-    def __init__(self):
-        self.__superior = None
-
-    def set_superior(self, superior):
-        self.__superior = superior
-
-    def super_handler(self, request):
-        if not self.__superior is None:
-            return self.__superior.HandleRequest(request)
-
-        print(&quot;out of power, reject&quot;)
-        return False
-
-
-class Supervisor(Responsible):
-
-    def HandleRequest(self, request):
-        if request.dayOff &gt; 0 and request.dayOff &lt;= 2:
-           print(type(self).__name__ + &#39; permit&#39;)
-           return True
-
-        return self.super_handler(request)
-
-
-class DepManager(Responsible):
-
-    def HandleRequest(self, request):
-        if request.dayOff &gt; 2 and request.dayOff &lt;= 5:
-            print(type(self).__name__ + &#39; permit&#39;)
-            return True
-
-        return self.super_handler(request)
-
-class CEO(Responsible):
-
-    def HandleRequest(self, request):
-        if request.dayOff &gt; 2 and request.dayOff &lt;= 5:
-            print(type(self).__name__ + &#39; permit&#39;)
-            return True
-
-        return self.super_handler(request)
-
-
-if __name__ == &#39;__main__&#39;:
-    c1 = CEO()
-    c2 = DepManager()
-    c2.set_superior(c1)
-    c3 = Supervisor()
-    c3.set_superior(c2)
-
-    req = Request(&quot;ming&quot;, &quot;sick&quot;, 2)
-    c3.HandleRequest(req)
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/12/21 07:42 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -2449,6 +1971,18 @@ if __name__ == &#39;__main__&#39;:
 	      
 		      
 			      <li class="post">
+			        <a href="15692331863352.html">future&shared_future&atomic</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15702724482478.html">可变参数函数&&initializer_list</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15818128782116.html">Singleton</a>
 			      </li>
 		     
@@ -2462,18 +1996,6 @@ if __name__ == &#39;__main__&#39;:
 		      
 			      <li class="post">
 			        <a href="15817697569868.html">字符串分割</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15817610843879.html">编译期</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

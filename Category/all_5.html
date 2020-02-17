@@ -170,6 +170,216 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15782640669384.html">
+                
+                  <h1>解析器</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>动机</h4>
+
+<ul>
+<li><p>在软件构建过程中，如果某一特定领域的问题比较复杂，类似的结构不断重复出现，如果使用普通的编程方式来实现将面临非常频繁的变化。</p></li>
+<li><p>在这种情况下，将特定领域的问题表达为某种语法规则下的句子然后构建一个解释器来解释这样的句子，从而达到解决问题的目的。</p></li>
+</ul>
+
+<h4>模式定义</h4>
+
+<ul>
+<li>给定一个语言，定义它的文法的一种表示，并定义一种解释器，这个解释器使用该表示来解释语言中的句子。</li>
+</ul>
+
+<h4>结构</h4>
+
+<ul>
+<li><img src="media/15782640669384/15782652005755.jpg" alt="" style="width:598px;"/></li>
+</ul>
+
+<h4>要点总结</h4>
+
+<ul>
+<li>Interpreter 模式的应用场合是 Interpreter。模式应用中的难点，只有满足“业务规则频繁变化，<strong><em>且类似的结构不断重复出现，并且容易抽象为语法规则的问题”才适合使用 Interpreter/模式。</em></strong></li>
+<li>使用 Interpreter 模式来表示文法规则，从而可以使用面向对象技巧来方便地“扩展”文法</li>
+<li>interpreter/模式比较适合简单的文法表示,对于复杂的文法表示, nterperter/模式会产生比较大的类层次结构,需要求助于语法分析生成器这样的标准工具</li>
+</ul>
+
+<h4>golang_demo</h4>
+
+<pre class="line-numbers"><code class="language-go">package design_pattern
+
+import (
+    &quot;strconv&quot;
+    &quot;strings&quot;
+)
+
+type Node interface {
+    Interpret() int
+}
+
+type ValNode struct {
+    val int
+}
+
+func (n *ValNode) Interpret() int {
+    return n.val
+}
+
+type AddNode struct {
+    left, right Node
+}
+
+func (n *AddNode) Interpret() int {
+    return n.left.Interpret() + n.right.Interpret()
+}
+
+type MinNode struct {
+    left, right Node
+}
+
+func (n *MinNode) Interpret() int {
+    return n.left.Interpret() - n.right.Interpret()
+}
+
+type Parser struct {
+    exp   []string
+    index int
+    prev  Node
+}
+
+func (p *Parser) Parse(exp string) {
+    p.exp = strings.Split(exp, &quot; &quot;)
+
+    for {
+        if p.index &gt;= len(p.exp) {
+            return
+        }
+        switch p.exp[p.index] {
+        case &quot;+&quot;:
+            p.prev = p.newAddNode()
+        case &quot;-&quot;:
+            p.prev = p.newMinNode()
+        default:
+            p.prev = p.newValNode()
+        }
+    }
+}
+
+func (p *Parser) newAddNode() Node {
+    p.index++
+    return &amp;AddNode{
+        left:  p.prev,
+        right: p.newValNode(),
+    }
+}
+
+func (p *Parser) newMinNode() Node {
+    p.index++
+    return &amp;MinNode{
+        left:  p.prev,
+        right: p.newValNode(),
+    }
+}
+
+func (p *Parser) newValNode() Node {
+    v, _ := strconv.Atoi(p.exp[p.index])
+    p.index++
+    return &amp;ValNode{
+        val: v,
+    }
+}
+
+func (p *Parser) Result() Node {
+    return p.prev
+}
+
+import &quot;testing&quot;
+
+func TestInterpreter(t *testing.T) {
+    p := &amp;Parser{}
+    p.Parse(&quot;1 + 2 + 3 - 4 + 5 - 6&quot;)
+    res := p.Result().Interpret()
+    expect := 1
+    if res != expect {
+        t.Fatalf(&quot;expect %d got %d&quot;, expect, res)
+    }
+}
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2020/01/06 06:41 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15782208339837.html">
+                
+                  <h1>里式替换</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>原则</h4>
+
+<ul>
+<li>子类对象（object of subtype/derived class）能够替换程序（program）中父类对象（object of base/parent class）出现的任何地方，并且保证原来程序的逻辑行为（behavior）不变及正确性不被破坏。</li>
+</ul>
+
+<h4>违背里式替换原则</h4>
+
+<ul>
+<li>子类违背父类声明要实现的功能</li>
+<li>子类违背父类对输入、输出、异常的约定</li>
+</ul>
+
+<h4>里氏替换原则</h4>
+
+<ul>
+<li>多态是面向对象编程的一大特性，也是面向对象编程语言的一种语法。它是一种代码实现的思路。而里式替换是一种设计原则，是用来指导继承关系中子类该如何设计的，子类的设计要保证在替换父类的时候，不改变原有程序的逻辑以及不破坏原有程序的正确性。</li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2020/01/05 18:40 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html'>设计模式之美</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15771449820188.html">
                 
                   <h1>单一职责模式</h1>
@@ -1035,93 +1245,6 @@ python manage.py + 回车 可查看更多命令
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15776089984521.html">
-                
-                  <h1>性能数据的展示</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>展示的目的</h4>
-
-<ul>
-<li>向上级报告性能趋势和流量预测的结果；</li>
-<li>向运维部门描述性能问题的根因分析；</li>
-<li>向开发部门建议性能提升和代码优化。</li>
-</ul>
-
-<h4>性能数据展示的难点</h4>
-
-<ul>
-<li>数据量大</li>
-<li>数据复杂</li>
-<li>性能问题复杂</li>
-<li>牵扯的模块多</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/12/29 16:43 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%80%A7%E8%83%BD%E5%B7%A5%E7%A8%8B%E9%AB%98%E6%89%8B%E8%AF%BE.html'>性能工程高手课</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15776085483416.html">
-                
-                  <h1>性能数据的分析</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>对时间序列的分析</h4>
-
-<ul>
-<li>一个性能指标，按照时间顺序得到的观测值，可以看作是一个时间序列。很多分析就是针对这个时间序列进行的</li>
-<li>使用线性回归分析，通过拟合自变量与因变量之间最佳线性关系，来预测目标变量的方法</li>
-<li></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/12/29 16:35 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E6%80%A7%E8%83%BD%E5%B7%A5%E7%A8%8B%E9%AB%98%E6%89%8B%E8%AF%BE.html'>性能工程高手课</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1261,6 +1384,18 @@ python manage.py + 回车 可查看更多命令
 	      
 		      
 			      <li class="post">
+			        <a href="15692331863352.html">future&shared_future&atomic</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15702724482478.html">可变参数函数&&initializer_list</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15818128782116.html">Singleton</a>
 			      </li>
 		     
@@ -1274,18 +1409,6 @@ python manage.py + 回车 可查看更多命令
 		      
 			      <li class="post">
 			        <a href="15817697569868.html">字符串分割</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15817610843879.html">编译期</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  

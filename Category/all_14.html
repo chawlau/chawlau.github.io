@@ -170,6 +170,114 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15715292422214.html">
+                
+                  <h1>doc_id&source</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>手动生成</h4>
+
+<ul>
+<li>PUT 一般来说，是从某些其他的系统中，导入一些数据到es时，会采取这种方式，就是使用系统中已有数据的唯一标识，作为es中document的id</li>
+</ul>
+
+<h4>自动生成</h4>
+
+<ul>
+<li>POST </li>
+<li>自动生成的id，长度为20个字符，URL安全，base64编码，GUID，分布式系统并行生成时不可能会发生冲突</li>
+</ul>
+
+<h4>PUTsource元数据和获取指定元数据</h4>
+
+<pre class="line-numbers"><code class="language-go">put /test_index/test_type/1
+{
+  &quot;test_field1&quot;: &quot;test field1&quot;,
+  &quot;test_field2&quot;: &quot;test field2&quot;
+}
+GET /test_index/test_type/1?_source=test_field1,test_field2
+
+{
+  &quot;_index&quot;: &quot;test_index&quot;,
+  &quot;_type&quot;: &quot;test_type&quot;,
+  &quot;_id&quot;: &quot;1&quot;,
+  &quot;_version&quot;: 2,
+  &quot;found&quot;: true,
+  &quot;_source&quot;: {
+    &quot;test_field2&quot;: &quot;test field2&quot;
+  }
+}
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/10/20 07:54 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='ElasticSearch.html'>ElasticSearch</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15715281044945.html">
+                
+                  <h1>元数据</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h4>index</h4>
+
+<ul>
+<li>_index代表一个document存放在哪个index中</li>
+<li>类似的数据放在一个索引，非类似的数据放不同索引</li>
+<li>index中包含了很多类似的document：类似是什么意思，其实指的就是说，这些document的fields很大一部分是相同的，你说你放了3个document，每个document的fields都完全不一样，这就不是类似了，就不太适合放到一个index里面去了。</li>
+<li>_type</li>
+<li>代表document属于index中的哪个类别（type）</li>
+<li>_id元数据</li>
+<li></li>
+</ul>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2019/10/20 07:35 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='ElasticSearch.html'>ElasticSearch</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15715277688744.html">
                 
                   <h1>容错机制&选举和数据恢复</h1>
@@ -898,175 +1006,6 @@ func TestGetSingletonObj(t *testing.T) {
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="15714366994859.html">
-                
-                  <h1>什么是搜索</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>全文检索</h4>
-
-<ul>
-<li>搜索关键字进行分词，根据分词去拿倒排索引</li>
-<li>根据倒排索引的id拿出文章进行匹配</li>
-</ul>
-
-<h4>ES特点</h4>
-
-<ul>
-<li>1、自动雄护数据的分布到多个节点的素引的違立，还有素请求分布到多个节点的执行</li>
-<li>2、自动準护数据的冗余副本，保证说，一些机器宕机了，不会丢失任何的数据</li>
-<li>3、封装了更多的高级功能，以给我们提供更多高级的支持，让我们快速的开发应用，开发更加复杂的应用：复杂的担素功能，聚合分析的功能基于地理位置的搜素（距离我当前位置 1 公里以内的烤肉店）</li>
-</ul>
-
-<h4>功能</h4>
-
-<ul>
-<li>分布式，搜索，数据分析</li>
-</ul>
-
-<h5>结构化检索</h5>
-
-<ul>
-<li>我想搜索商品分类为日化用品的商品都有哪些，select * from products where category_id=&#39;日化用品&#39;</li>
-<li>数据分析：我们分析每一个商品分类下有多少个商品</li>
-</ul>
-
-<h4>对海量数据进行近实时的处理</h4>
-
-<ul>
-<li>分布式：ES自动可以将海量数据分散到多台服务器上去存储和检索海联数据的处理：分布式以后，就可以采用大量的服务器去存储和检索数据，自然而然就可以实现海量数据的处理了</li>
-<li>近实时：检索个数据要花费1小时（这就不要近实时，离线批处理，batch-processing）；在秒级别对数据进行搜索和分析</li>
-<li>跟分布式/海量数据相反的：lucene，单机应用，只能在单台服务器上使用，最多只能处理单台服务器可以处理的数据量</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/19 06:11 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='ElasticSearch.html'>ElasticSearch</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15710105177530.html">
-                
-                  <h1>容器分类</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>结构和内存</h4>
-
-<p><img src="media/15710105177530/15710105448587.jpg" alt="" style="width:1070px;"/><br/>
-<img src="media/15710105177530/15710105565347.jpg" alt="" style="width:924px;"/></p>
-
-<h4>List</h4>
-
-<ul>
-<li><img src="media/15710105177530/15710124730986.jpg" alt="" style="width:1050px;"/></li>
-<li>前闭后关</li>
-<li>_List_node_base&lt;_Tp&gt; 中有两个指针</li>
-<li><img src="media/15710105177530/15710128449885.jpg" alt="" style="width:1036px;"/></li>
-</ul>
-
-<h4>vector</h4>
-
-<ul>
-<li><img src="media/15710105177530/15710136833376.jpg" alt="" style="width:590px;"/></li>
-</ul>
-
-<h4>array</h4>
-
-<ul>
-<li>TR版本
-<img src="media/15710105177530/15710141832315.jpg" alt="" style="width:1051px;"/></li>
-</ul>
-
-<h4>deque</h4>
-
-<p><img src="media/15710105177530/15710481449352.jpg" alt="" style="width:1006px;"/></p>
-
-<ul>
-<li>通过buffer串起来</li>
-<li>cur是当前位置，first,last是buffer的起始位置，node 控制iterator访问到边界之后，跳到下一个缓冲区</li>
-<li>map是中控制，数据结构是vector</li>
-<li><img src="media/15710105177530/15710488082434.jpg" alt="" style="width:207px;"/></li>
-<li>dequeue和stack是封装的deque对象，并且调用部分成员函数</li>
-<li>可以选择list和dequeue</li>
-<li>不可以选择set或者map做底部支撑</li>
-</ul>
-
-<h4>容器</h4>
-
-<ul>
-<li>set 和 queue不算容器</li>
-</ul>
-
-<h4>红黑树</h4>
-
-<p><img src="media/15710105177530/15712320954756.jpg" alt="" style="width:952px;"/></p>
-
-<ul>
-<li>handle and body</li>
-<li>set调用的是insert_unique()</li>
-<li>multiset调用的是insert_equal()</li>
-<li>set不能修改元素借用的是const_iterator</li>
-</ul>
-
-<h4>map</h4>
-
-<ul>
-<li>将key改成const</li>
-</ul>
-
-<h4>hash_table</h4>
-
-<ul>
-<li><img src="media/15710105177530/15713937832348.jpg" alt="" style="width:1078px;"/></li>
-<li><img src="media/15710105177530/15713937669703.jpg" alt="" style="width:1098px;"/></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/14 07:48 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E5%80%99%E6%8D%B7STL.html'>候捷STL</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -1206,6 +1145,18 @@ func TestGetSingletonObj(t *testing.T) {
 	      
 		      
 			      <li class="post">
+			        <a href="15692331863352.html">future&shared_future&atomic</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15702724482478.html">可变参数函数&&initializer_list</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15818128782116.html">Singleton</a>
 			      </li>
 		     
@@ -1219,18 +1170,6 @@ func TestGetSingletonObj(t *testing.T) {
 		      
 			      <li class="post">
 			        <a href="15817697569868.html">字符串分割</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15817610843879.html">编译期</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15813101435484.html">列表&字典&集合进阶用法</a>
 			      </li>
 		     
 		  
