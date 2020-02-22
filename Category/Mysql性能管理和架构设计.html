@@ -1,1232 +1,610 @@
-<!doctype html>
-<html class="no-js" lang="en">
+<!DOCTYPE html>
+<html lang="zh">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>
+      
+    Mysql性能管理和架构设计 -        凌云阁
     
-  Mysql性能管理和架构设计 - eredin-blog
-  
-  </title>
-  
-  
-  <link href="atom.xml" rel="alternate" title="eredin-blog" type="application/atom+xml">
-    <link rel="stylesheet" href="asset/css/foundation.min.css" />
-    <link rel="stylesheet" href="asset/css/docs.css" />
-    <script src="asset/js/vendor/modernizr.js"></script>
-    <script src="asset/js/vendor/jquery.js"></script>
-  <script src="asset/highlightjs/highlight.pack.js"></script>
-  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <script>hljs.initHighlightingOnLoad();</script>
-<script type="text/javascript">
-  function before_search(){
-    var searchVal = 'site: ' + document.getElementById('search_input').value;
-    document.getElementById('search_q').value = searchVal;
-    return true;
-  }
-</script>
-  </head>
-  <body class="antialiased hide-extras">
+    </title>
     
-    <div class="marketing off-canvas-wrap" data-offcanvas>
-      <div class="inner-wrap">
 
-
-<nav class="top-bar docs-bar hide-for-small" data-topbar>
-
-
-  <section class="top-bar-section">
-  <div class="row">
-      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
-        <ul id="main-menu" class="left">
-        
-        <li id=""><a target="self" href="index.html">Home</a></li>
-        
-        <li id=""><a target="_self" href="archives.html">Archives</a></li>
-        
-        </ul>
-
-        <ul class="right" id="search-wrap">
-          <li>
-<form target="_blank" onsubmit="return before_search();" action="https://google.com/search" method="get">
-    <input type="hidden" id="search_q" name="q" value="" />
-    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
-</form>
-</li>
-          </ul>
-      </div></div>
-  </div>
-  </section>
-
-</nav>
-
-        <nav class="tab-bar show-for-small">
-  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
-    <span> &nbsp; eredin-blog</span>
-  </a>
-</nav>
-
-<aside class="left-off-canvas-menu">
-      <ul class="off-canvas-list">
-        
-        <li><a target="self" href="index.html">Home</a></li>
-        
-        <li><a target="_self" href="archives.html">Archives</a></li>
-        
-
-    <li><label>Categories</label></li>
-
-        
-            <li><a href="C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html">C++基础与提高</a></li>
-        
-            <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html">设计模式</a></li>
-        
-            <li><a href="Python.html">Python</a></li>
-        
-            <li><a href="Golang.html">Golang</a></li>
-        
-            <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html">设计模式之美</a></li>
-        
-            <li><a href="%E6%80%A7%E8%83%BD%E5%B7%A5%E7%A8%8B%E9%AB%98%E6%89%8B%E8%AF%BE.html">性能工程高手课</a></li>
-        
-            <li><a href="%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95.html">性能测试</a></li>
-        
-            <li><a href="Prometheus.html">Prometheus</a></li>
-        
-            <li><a href="RocketMQ.html">RocketMQ</a></li>
-        
-            <li><a href="%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE.html">网络协议</a></li>
-        
-            <li><a href="Django.html">Django</a></li>
-        
-            <li><a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html">深入剖析Kubernetes</a></li>
-        
-            <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html">数据结构和算法</a></li>
-        
-            <li><a href="%E5%BE%AE%E6%9C%8D%E5%8A%A1.html">微服务</a></li>
-        
-            <li><a href="%E6%9E%B6%E6%9E%84.html">架构</a></li>
-        
-            <li><a href="%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html">操作系统原理</a></li>
-        
-            <li><a href="Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html">Mysql优化实战</a></li>
-        
-            <li><a href="Kafka.html">Kafka</a></li>
-        
-            <li><a href="linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html">linux服务器研发</a></li>
-        
-            <li><a href="%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86.html">计算机组成原理</a></li>
-        
-            <li><a href="%E7%A8%8B%E5%BA%8F%E5%91%98%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB.html">程序员的自我修养</a></li>
-        
-            <li><a href="C%E8%AF%AD%E8%A8%80%E8%BF%9B%E9%98%B6.html">C语言进阶</a></li>
-        
-            <li><a href="http_study.html">http_study</a></li>
-        
-            <li><a href="%E7%8E%A9%E8%BD%AC%E7%AE%97%E6%B3%95.html">玩转算法</a></li>
-        
-            <li><a href="C++%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B.html">C++对象模型</a></li>
-        
-            <li><a href="SQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html">SQL必知必会</a></li>
-        
-            <li><a href="Zookeeper.html">Zookeeper</a></li>
-        
-            <li><a href="Redis%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A.html">Redis从入门到精通</a></li>
-        
-            <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E8%BF%9B%E9%98%B6.html">数据结构和算法进阶</a></li>
-        
-            <li><a href="Mysql%E6%80%A7%E8%83%BD%E7%AE%A1%E7%90%86%E5%92%8C%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1.html">Mysql性能管理和架构设计</a></li>
-        
-            <li><a href="%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98.html">网络编程实战</a></li>
-        
-            <li><a href="Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html">Redis高并发缓存</a></li>
-        
-            <li><a href="Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html">Linux性能优化实战</a></li>
-        
-            <li><a href="%E5%80%99%E6%8D%B7STL.html">候捷STL</a></li>
-        
-            <li><a href="ElasticSearch.html">ElasticSearch</a></li>
-        
-            <li><a href="RabbitMQ.html">RabbitMQ</a></li>
-         
-
-      </ul>
-    </aside>
-
-<a class="exit-off-canvas" href="#"></a>
-
-
-        <section id="main-content" role="main" class="scroll-container">
-        
-       
-
- <script type="text/javascript">
-	$(function(){
-		$('#menu_item_index').addClass('is_active');
-	});
-</script>
-<div class="row">
-	<div class="large-8 medium-8 columns">
-		<div class="markdown-body home-categories">
-		
-			<div class="article">
-                <a class="clearlink" href="15599783184679.html">
+    
+    
+    <link href="atom.xml" rel="alternate" title="       凌云阁" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/style.min.css">
+    <link rel="stylesheet" href="asset/css/doc.css">
+    <script src="asset/app.js"></script>
+</head>
+  <body>
+    <section class="hero">
+      <div class="hero-head">
+          <nav class="navbar" role="navigation" aria-label="main navigation">
+              <div class="container">
+              <div class="navbar-brand">
                 
-                  <h1>基准测试和性能测试</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>基准测试的目的</h4>
-
-<ul>
-<li>建立mysql服务器的性能基准线</li>
-<li>模拟比当前系统更高的负载，找出系统的扩展瓶劲</li>
-<li>测试不同硬件，软件和操作系统</li>
-<li>证明新的硬件设备是否配置正确</li>
-</ul>
-
-<h4>基准测试常见指标</h4>
-
-<ul>
-<li>TPS</li>
-<li>QPS</li>
-<li>响应时间
-<ul>
-<li>平均响应时间，最小响应时间，最大响应时间，各时间响应百分比</li>
-</ul></li>
-<li>并发量</li>
-<li>正在工作中的并发的操作数或同事工作的数量</li>
-</ul>
-
-<h4>计划和设计基准测试</h4>
-
-<ul>
-<li>整个系统还是单一组件</li>
-<li>使用什么样的数据</li>
-</ul>
-
-<h4>基准测试的步骤</h4>
-
-<ul>
-<li>准备基准测试数据和收集脚本</li>
-<li>运行基准测试</li>
-<li>保存以及分析基准测试结果</li>
-</ul>
-
-<h4>基准测试的问题</h4>
-
-<ul>
-<li>使用生产环境数据，只使用了部分数据</li>
-<li>多用户场景，只做单用户测试</li>
-<li>单服务器上测试分布式应用</li>
-<li>反复执行同一个查询，容易命中缓存，无法反应真实的查询性能</li>
-</ul>
-
-<h4>mysqlslap</h4>
-
-<ul>
-<li>可以模拟服务器负载，并输出相关统计信息可以指定也可以自动生成查询语句</li>
-<li>常用参数说明</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-mysql">--auto-generate-sql由系统自动生成SQL脚本进行测试
---auto-generate-sql-add-autoincrement在牛成的表中增加自增ID
---auto-generate sql-load-type指定测试中使用的询类型
---auto-generate sql-write number指定初始化数据时生成的数据量
---concurrency指定并发线程的数量
---engine 指定要测试表的存储引擎，可以用逗号分割多个存储引擎
---no-drop 指定不清理测试数据
---iterations 指定测试运行的次数
---number-of-queries 指定每一个线程执行的查询数量
---debug-info 指定输出额外的内存和CPU统计信息
---number-int-cols 指定测试表中包含INT类型列的数量
---number-char-cols 指定测试表中包含的varchar 类型的数量
---create-schema 指定了用于执行测试的数据库的名字
---query 用于指定自定义 SQL 的脚本
---only-print 并不运行测试脚本，而是把生成的脚本打
-</code></pre>
-
-<h4>测试案例</h4>
-
-<pre class="line-numbers"><code class="language-text">mysqlslap --concurrency=1,50,100,200 --iterations=3 --number-int-cols=5 --number-char-cols=5 --auto-generate-sql --auto-generate-sql-add-autoincrement --engine=myisam,innodb --number-of-queries=10 --create-schema=sbtest -uroot -pL19880901c-
-</code></pre>
-
-<h4>sysbench</h4>
-
-<h5>常用参数</h5>
-
-<ul>
-<li>test 用于指定所要执行的测试类型，支持以下参数 Fileid 文件系统 O 性能測试 cpu cpu&#39;性能试 memory 内存性能观试 oltp 测试要指定具体的 lua 脚本</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-sql">mysqa-db 用于指定执行基准测试的数据库名
-mysql-table-engine 用于指定所使用的存储引擎
-oltp-tables-count 执行测试的表的数量
-oltp-table-size 指定每个表中的数据行数
-num-threads 指定测试的并发线程数量
-max-time 指定最大的测试时间
-report- -interval指定间隔多长时间输出一次统计信息
-mysq-user 指定执行测试的 MYSQL 用户
--mysqlpassword 指定执行测试的 MYSQL 用户的密码
-prepare 用于准备测试数据
-run 用于实际进行测试
-cleanup 用于清理测试数据
-</code></pre>
-
-<h4>测试案例</h4>
-
-<pre class="line-numbers"><code class="language-text">sysbench --test=cpu --cpu-max-prime=10000 run
-sysbench --test-fileio --num-thread=8 --init-rng=on --file-total-size=5G \
---file-test-mode=rndrw --report-interval=1s
-</code></pre>
-
-<h5>mysql性能测试</h5>
-
-<pre class="line-numbers"><code class="language-text">sysbench ./oltp.lua --mysql-host=192.168.31.186 --mysql-port=3306 --mysql-user=root --mysql-password=&quot;L19880901c-&quot; --mysq1-table-engine=innodb --oltp-tables-count=10 --oltp-table-size=100000 --threads=10 --time=120 --report-interval=10 prepare
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/06/08 15:18 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E6%80%A7%E8%83%BD%E7%AE%A1%E7%90%86%E5%92%8C%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1.html'>Mysql性能管理和架构设计</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15691944800581.html">
+                <a target="self" class="navbar-item " href="index.html">Home</a>
                 
-                  <h1>mysql高可用架构设计</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>复制</h4>
-
-<ul>
-<li>实现在不同服务器上的数据分布</li>
-<li>实现数据读取的负载均衡</li>
-<li>增强了数据安全性</li>
-<li>实现数据库高可用和故障切换</li>
-<li>实现数据库在线升级</li>
-</ul>
-
-<h4>binlog</h4>
-
-<h5>statement</h5>
-
-<ul>
-<li>基于段的格式
-<img src="media/15691944800581/15691948341088.jpg" alt="" style="width:1183px;"/></li>
-</ul>
-
-<h5>row</h5>
-
-<ul>
-<li>基于行的格式</li>
-<li>同-SQL 语句修改了 10000 条数据的情况下基于段的日志格式只会记录这个 SQL 语句</li>
-<li>基于行的日志会有 10000 条记录分别记录每行的数据修改</li>
-<li>使Mysql主从复制更加安全</li>
-<li>对每一行数据的修改比基于段的复制高效</li>
-<li>误操作可以通过反向处理</li>
-<li>缺点</li>
-<li>记录日志量较大binlog_row_image=full|minimal记录列|noblog</li>
-<li>full：在before和after影像中，记录所有的列值；</li>
-<li>minimal：在before和after影像中，仅仅记录被更改的以及能够唯一识别数据行的列值；</li>
-<li>noblob：在before和after影像中，记录所有的列值，但是BLOB 与 TEXT列除外（如未更改）。</li>
-</ul>
-
-<h5>mixed</h5>
-
-<ul>
-<li>根据SQL语句由系统决定在基于段和基于行的日志格式中进行选择</li>
-</ul>
-
-<h5>建议</h5>
-
-<ul>
-<li>row</li>
-<li>minimal</li>
-</ul>
-
-<h5>复制总结</h5>
-
-<h5>基于SQL语句的复制（SBR)</h5>
-
-<ul>
-<li>二进制日志格式使用的是 statement </li>
-<li>缺点</li>
-<li>对于非确定性事件，无法保证主从复制数据的一致性</li>
-<li>对于存储过程，触法器，自定义函数进行的修改也可能造成数据不一致</li>
-<li>相比于基于行的复制方式在从上执行时需要更多的行锁</li>
-</ul>
-
-<h5>基于行的复制（RBR)</h5>
-
-<ul>
-<li>二进制日志格式使用的是基于行的日志格式</li>
-<li>优点</li>
-<li>可以应用于任何 SQL 的复制包括非确定函数，存储过程等</li>
-<li>可以减少数据库锁的使用</li>
-<li>缺点</li>
-<li>要求主从数据庳的表结构相同，否则可能会中断复制</li>
-<li>无法在从服务器上单独执行触法器</li>
-</ul>
-
-<h4>复制工作方式</h4>
-
-<ul>
-<li>主将变更写入二进制日志</li>
-<li>从读取主的二进制日志变更并写入到 Relay_log 中</li>
-<li>在从上重放 relay_log 中的日志</li>
-<li>基于 SQL 段的日志是在从库上重新执行记录的 SQL 基王行的日赤则是在从库上直接应用对数据库行的修改</li>
-</ul>
-
-<h4>主配置</h4>
-
-<pre class="line-numbers"><code class="language-text">bin_log=mysql-bin
-server_id=100
-</code></pre>
-
-<h4>从服务器配置</h4>
-
-<pre class="line-numbers"><code class="language-text">bin_log=mysql-bin
-server_id=100
-relay_log=mysql-relay-bin
-log_slave_update=on //链路配置
-read_only=on //防止错误配置
-</code></pre>
-
-<h4>GTID</h4>
-
-<ul>
-<li>GTID 即全局事务 ID，其保证为每一个在主上提交的事务在复制集群中可以生成一个唯一的 ID</li>
-<li>source_id:transaction_id</li>
-<li>Create table. Select<br/>
-在事务中使用 Create temporary table 建立临时表使用关联更新事务表和非事务表都是会报错的</li>
-</ul>
-
-<h4>从服务器</h4>
-
-<pre class="line-numbers"><code class="language-text">Log-slave-updates = on read_only=on【建议】
-master info_ repository= TABLE【建议】
-relay_log_info_ repository= TABLE【建议】
-gtid_mode =on
-enforce-gtid-consistency
-</code></pre>
-
-<ul>
-<li>查询授权</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">select user,host  from user;
-show grants for shui@&#39;192.168.31.%&#39;
-</code></pre>
-
-<h4>GTID复制的优缺点</h4>
-
-<ul>
-<li>优点</li>
-<li>可以很方便的进行故障转移从库不会丢失主库上的任何修改</li>
-<li>缺点</li>
-<li>故障处理比较复杂</li>
-<li>对执行的 SQL 有一定的限制</li>
-</ul>
-
-<h4>选择复制模式要考虑的问题</h4>
-
-<ul>
-<li>所使用的MYSQL版本</li>
-<li>复制架构及主从切换的方式</li>
-<li>所使用的高可用管理组件</li>
-</ul>
-
-<h4>复制拓扑</h4>
-
-<ul>
-<li>MYSQL5.7 之前，一个从库只能有一个主库</li>
-<li>MYSQL5.7 之后支持一从多主架构</li>
-</ul>
-
-<h4>一主多从</h4>
-
-<ul>
-<li>为不同业务使用不同的从库</li>
-<li>将一台从库放到远程 IDC，用作灾备恢复</li>
-<li>分担主库的读负载，由于要复制主库的写，所以不能分担写负载</li>
-</ul>
-
-<h4>主主复制拓扑</h4>
-
-<h5>主主模式</h5>
-
-<ul>
-<li>产生数据冲突而造成复制链路的中断</li>
-<li>耗费大量的时间</li>
-<li>造成数据丟失</li>
-<li>注意事项</li>
-<li>两个主中所操作的表最好能够分开使用下面两个参数控制自增 ID 的生成</li>
-<li>auto increment increment= 2</li>
-<li>auto_increment_offset=12</li>
-</ul>
-
-<h4>主备</h4>
-
-<ul>
-<li>只有一台主服务器对外提供服务</li>
-<li>一台服务器处于只读状态并且只作为热备使用在对外提供服务的主库出现故障或是计划性的维护时才会进行切换</li>
-<li>使原来的备库成为主库，而原来的主库会成为新的备库并处理只读或是下线状态，待维护完成后重新上线</li>
-<li>注意事项</li>
-<li>确保两台服务器上的初始数据相同</li>
-<li>确保两台服务器上已经启动 biolog 并且有不同的 server id</li>
-<li>在两台服务器上启用 log_ slave_ updates 参数在初始的备库上启用 read_only</li>
-</ul>
-
-<h4>拓扑结构</h4>
-
-<p><img src="media/15691944800581/15692711891670.jpg" alt="" style="width:1026px;"/></p>
-
-<ul>
-<li>级联复制
-<img src="media/15691944800581/15692712403802.jpg" alt="" style="width:1034px;"/></li>
-</ul>
-
-<h4>复制优化</h4>
-
-<ul>
-<li>控制主库的事务大小分割大事务,大表修改无法分割</li>
-<li>二进制日志传输时间 mixed，row-&gt;set binlog_row_image=minimal;</li>
-<li>默认情况下从只有一个 SQ인L 线程，主上并发的修改在从上变成了串行</li>
-<li>在 MYSQL5.7 中可以按照逻辑时钟的方式来分配 SQL 线程</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">stop slave;
-set global slave_parallel_type=&#39;logical_clock&#39;;
-set global slave_parallel_workers=4; 
-start slave;
-</code></pre>
-
-<h4>复制常见问题</h4>
-
-<ul>
-<li>主库或从库意外宕机引起的错误</li>
-<li>使用跳过二进制日志事件</li>
-<li>注入空事务的方式先恢复中断的复制链路</li>
-<li>再使用其它方法来对比主从服务器上的数据</li>
-<li>主库的二进制日志损坏</li>
-<li>备库的中继日志</li>
-<li>在从库上进行数据修改造成的主从复制错误</li>
-<li>不唯一的 server id 或 server_uuid</li>
-<li>max_allow_packeti 设置引起的主从复制错</li>
-</ul>
-
-<h4>复制解决不了的问题</h4>
-
-<ul>
-<li>分担主数据库的写负载</li>
-<li>自动进行故障转移及主从切换</li>
-<li>提供读写分离功能</li>
-</ul>
-
-<h4>高可用</h4>
-
-<p><img src="media/15691944800581/15692724432770.jpg" alt="" style="width:723px;"/></p>
-
-<h5>避免导致系统不可用的因素，减少系统不可用的时间</h5>
-
-<ul>
-<li>建立完善的监控及报警系统</li>
-<li>对备份数据进行恢复测试</li>
-<li>正确配置数据库环境</li>
-<li>对不需要的数据进行归档和清理</li>
-</ul>
-
-<h5>增加系统冗余，保证发生系统不可用时可以尽快恢复</h5>
-
-<ul>
-<li>避免存在单点故障</li>
-<li>利用SUN共享存储或DRDB磁盘复制解决MYSQL单点故障
-<img src="media/15691944800581/15693677885166.jpg" alt="" style="width:637px;"/></li>
-<li>利用多写集群或NDB集群来解决Mysql单点故障
-<img src="media/15691944800581/15693678313849.jpg" alt="" style="width:377px;"/></li>
-<li>利用MySQL主从复制来解决MySQL单点故障</li>
-<li>问题</li>
-<li>主服务器切换后如何通知应用新的主服务器的 IP 地址</li>
-<li>如何检查 MYSQL 主服务器是否可用</li>
-<li>如何处理从服务器和新主服务器之间的那种复制关系</li>
-<li>主从切换及故障转移</li>
-</ul>
-
-<h4>MMM</h4>
-
-<ul>
-<li>监控和管理 MYSQL 的主主复制拓扑，并在当前的主服务器失效时，进行主和主备服务器之间的主从切换和故障转移等工作</li>
-<li>MMM监控 MySQL 主从复制健康情况</li>
-<li>在主库出现宕机时进行故障转移并自动配置其它从对新主的复制</li>
-<li><img src="media/15691944800581/15693682010691.jpg" alt="" style="width:888px;"/>
-<img src="media/15691944800581/15693681373072.jpg" alt="" style="width:670px;"/></li>
-<li>提供了主，写虚拟 IP，在主从服务器出现问题时可以自动迁移虚拟 IP
-<img src="media/15691944800581/15693682624344.jpg" alt="" style="width:918px;"/></li>
-</ul>
-
-<h5>需要资源</h5>
-
-<p><img src="media/15691944800581/15693682900151.jpg" alt="" style="width:947px;"/></p>
-
-<h5>部署步骤</h5>
-
-<ul>
-<li>配置主主复制及主从同步集群</li>
-<li>安装主从节点所需要的支持包</li>
-<li>安装及配置 MMM 工具集</li>
-<li>运行 MMM 监控服务测试
-<img src="media/15691944800581/15693685291641.jpg" alt="" style="width:651px;"/></li>
-<li><img src="media/15691944800581/15693685352329.jpg" alt="" style="width:883px;"/></li>
-</ul>
-
-<h5>优点</h5>
-
-<ul>
-<li>使用 PerI 脚本语言开发及完全开源</li>
-<li>提供了读写 VIP（虚拟 IP），使服务器角色的变更对前端应用透明</li>
-<li>在从服务器出现大量的主从延迟，主从链路中断时可以把这台从服务器上的读的虚拟 IP，漂移到集群中其它正常的服务器上。</li>
-<li>MMM 提供了从服务器的延迟监控</li>
-<li>MMM 提供了主数据库故障转移后从服务器对新主的重新同步功能</li>
-<li>很容易对发生故障的主数据库重新上线</li>
-</ul>
-
-<h5>缺点</h5>
-
-<ul>
-<li>发布时间比较早不支持 MYSQLI 新的复制功能</li>
-<li>不支持多线程复制功能</li>
-<li>没有读负载均衡的功能</li>
-<li>在进行主从切换时，容易造成数据丟失，重复递交事务</li>
-<li>MMM 监控服务存在单点故障</li>
-</ul>
-
-<h4>MHA</h4>
-
-<ul>
-<li>30秒内完成切换</li>
-<li>监控主数据库服务器是否可用</li>
-<li>当主 DB 不可用时，从多个从服务器中选举出新的主数据库服务器</li>
-<li>提供了主从切换和故障转移功能</li>
-</ul>
-
-<h5>主从切换流程</h5>
-
-<ul>
-<li>尝试从出现故障的主数据库保存二进制日志</li>
-<li>从多个备选从服务器中选举出新的备选主服务器</li>
-<li>在备选主服务器和其它从服务器之间同步差异二进制数据</li>
-<li>应用从原主 DB 服器上保存的二进制日志</li>
-<li>迁移集群中的其它从 DB 作为新的主 DB 的从服务器</li>
-</ul>
-
-<h5>MHA架构</h5>
-
-<p><img src="media/15691944800581/15693704382563.jpg" alt="" style="width:757px;"/></p>
-
-<ul>
-<li><img src="media/15691944800581/15693704552779.jpg" alt="" style="width:643px;"/></li>
-</ul>
-
-<h5>配置步骤</h5>
-
-<ul>
-<li>建立主从复制集群</li>
-<li>配制 MHA 管理节点</li>
-<li>使用 masterha_ check_ssh 和 masterha_ check_repl 对配置进行检验</li>
-<li>启动并测试 MHA 服务</li>
-</ul>
-
-<h4>MHA的优点和缺点</h4>
-
-<h5>优点</h5>
-
-<ul>
-<li>同样是由 Per 语言开发的开源工具</li>
-<li>可以支持基于 GTD 的复制模式</li>
-<li>MHA 在进行故障转移时更不易产生数据丟失</li>
-<li>同一个监控节点可以监控多个集群</li>
-</ul>
-
-<h5>缺点</h5>
-
-<ul>
-<li>需要编写脚本或利用第三方工具来实现 Vip 的配置</li>
-<li>MHA 启动后只会对主数据库进行监控，不能排查从服务器故障</li>
-<li>需要基于 SSH 兔认证配置，存在一定的安全隐患</li>
-<li>没有提供从服务器的读负载均衡功能</li>
-</ul>
-
-<h4>负载均衡</h4>
-
-<h4>读写分离</h4>
-
-<p><img src="media/15691944800581/15696236063092.jpg" alt="" style="width:1110px;"/></p>
-
-<h5>程序实现读写分离</h5>
-
-<ul>
-<li>优点</li>
-<li>由开发人员控制什么样查询在从库中执行，因此比较灵活</li>
-<li>由程序直接连接数据库，所以性能损耗比较少</li>
-<li>缺点</li>
-<li>增加了开发的工作量，使程序代码更加复杂</li>
-<li>人为控制，容易出现错误</li>
-</ul>
-
-<h5>中间件来实现读写分离</h5>
-
-<ul>
-<li>mysql-proxy</li>
-<li>maxScale</li>
-<li>优点</li>
-<li>由中间件根据查询语法分析，自动完成读写分离</li>
-<li>对程序透明，对于已有程序不用做任何调整</li>
-<li>缺点</li>
-<li>由于增加了中间层，所以对查询效率有损耗 消耗50%</li>
-</ul>
-
-<h5>总结</h5>
-
-<ul>
-<li>读写分离要解决的是如何在复制集群的不同角色上，去执行不同的 SQL 语句。</li>
-<li>读的负载均衡主要解决的是具有相同角色的数据库，如何共同分担相同的负载。</li>
-</ul>
-
-<h4>MaxScale</h4>
-
-<ul>
-<li>Authentication 认证插件</li>
-<li>Protocal 协议插件</li>
-<li>Router 路由插件 readconnroute readwritesplit</li>
-<li>Monitor 监控插件</li>
-<li>Filter&amp;Logging 日志和过滤插件</li>
-</ul>
-
-<h4>高可用架构</h4>
-
-<p><img src="media/15691944800581/15696250203347.jpg" alt="" style="width:1204px;"/></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/09/23 07:21 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E6%80%A7%E8%83%BD%E7%AE%A1%E7%90%86%E5%92%8C%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1.html'>Mysql性能管理和架构设计</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15698817657509.html">
+                <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
-                  <h1>Mysql监控</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<ul>
-<li>MySQL 数据库我们都要监控什么</li>
-<li>怎么对这些要监控的资源进行监控</li>
-</ul>
 
-<h4>监控可用性</h4>
-
-<ul>
-<li>对数据库服务可用性进行监控</li>
-</ul>
-
-<h5>如何确认数据库是否可以通过网络连接</h5>
-
-<pre class="line-numbers"><code class="language-text">mysqladmin-umonitor_user-p h ping
-telnet ip port
-应用程序通过网络建立数据库连接
-</code></pre>
-
-<ul>
-<li>可以连接到数据库不代表可用</li>
-</ul>
-
-<h5>如何确认数据库是否可读写</h5>
-
-<ul>
-<li>检査数据库的 read_only 参数是否为 off </li>
-<li>建立监控表并对表中数据进行更行执行简单的查询</li>
-<li>select@@ version</li>
-</ul>
-
-<h5>如何监控数据库的连接数</h5>
-
-<ul>
-<li>时刻关注数据库连接数量的变化</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">show variables like &#39;max connections 
-show global status like &#39;Threads_connected&#39;
-threads connected/max connections 0.8
-</code></pre>
-
-<h4>对数据库性能进行监控</h4>
-
-<ul>
-<li>记录性能监控过程中所采集到的数据库的状态</li>
-</ul>
-
-<h5>如何计算QPS和TPS</h5>
-
-<pre class="line-numbers"><code class="language-text">* QPS=(Queries2-Queries1)(差值)/
-(Uptime_since_flush_status2- Uptime_since_flush_status1）(时间间隔)
-* TPS=((Com_insert+Com_update2+Com_delete
- (Com_insert1+Com_update1+Com_deletel))/
- (Uptimesince_flushStatus2-uptime_since_flush_statusi)
-</code></pre>
-
-<h5>如何监控数据库的并发请求数量</h5>
-
-<pre class="line-numbers"><code class="language-text">show global status like &#39;Threads_running&#39;
-</code></pre>
-
-<ul>
-<li>数据库系统的性能会随着并发处理请求数量的增加而下降</li>
-</ul>
-
-<h5>如何监控Innodb阻塞</h5>
-
-<p><img src="media/15698817657509/15698831966537.jpg" alt="" style="width:1183px;"/></p>
-
-<ul>
-<li>information_schema.innodb_lock_waits</li>
-<li>information_schema.innodb_trx</li>
-</ul>
-
-<pre class="line-numbers"><code class="language-text">select connection_id() 查看连接ID
-</code></pre>
-
-<h4>对主从复制进行监控</h4>
-
-<h5>主从复制链路状态的监控</h5>
-
-<ul>
-<li>Slave_IO_Running: Yes</li>
-<li>Slave_SQL_Running: Yes</li>
-</ul>
-
-<h5>主从复制延迟的监控</h5>
-
-<ul>
-<li>show slave status</li>
-<li>Seconds_Behind_Master 0</li>
-<li>这个方法需要使用多线程的程序同时对于主从服务器的状态来进行检查</li>
-</ul>
-
-<h5>定期的确认主从复制的数据是否一致</h5>
-
-<p><img src="media/15698817657509/15698839274583.jpg" alt="" style="width:1065px;"/></p>
-
-<h4>服务器资源的监控</h4>
-
-<ul>
-<li>磁盘空间</li>
-<li>CPU 的使用情况，内存的使用情况，Swap 分区的使用情况以及网络 IO 的情况等</li>
-</ul>
-
-                        
-                      </div>
-                  </div>
+                <a role="button" id="navbarSNSRssSwitchBtn" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarSNSRssButtons">
+                  <span aria-hidden="true"></span>
+                  <span aria-hidden="true"></span>
+                  <span aria-hidden="true"></span>
                 </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/01 06:16 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E6%80%A7%E8%83%BD%E7%AE%A1%E7%90%86%E5%92%8C%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1.html'>Mysql性能管理和架构设计</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15698792898834.html">
-                
-                  <h1>分库分表</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h4>集中方式</h4>
-
-<ul>
-<li>把一个实例中的多个数据库拆分到不同的实例
-<img src="media/15698792898834/15698794876981.jpg" alt="" style="width:1093px;"/></li>
-<li>把一个库中的表分离到不同的数据库中</li>
-<li>根据写压力来拆分，缓解写负载
-<img src="media/15698792898834/15698795766519.jpg" alt="" style="width:966px;"/></li>
-</ul>
-
-<h4>数据库分片</h4>
-
-<ul>
-<li>对一个库中的相关表进行水平拆分到不同实例的数据库中</li>
-</ul>
-
-<h5>选择分区键</h5>
-
-<ul>
-<li>分区键要能尽量避兔跨分片查询的发生</li>
-<li>分区键要能尽量使各个分片中的数据平均</li>
-</ul>
-
-<h5>如何存储无需分片的表</h5>
-
-<ul>
-<li>每个分片中存储一份相同的数据</li>
-<li>使用额外的节点统一存储</li>
-</ul>
-
-<h5>如何在节点上部署分片</h5>
-
-<ul>
-<li>每个分片使用单一数据库，并且数据库名也相同</li>
-<li>将多个分片表存储在一个数据库中，并在表名上加入分片号后缀</li>
-<li>在一个节点中部署多个数据库，每个数据库包含一个分片</li>
-</ul>
-
-<h5>如何分配分片中的数据</h5>
-
-<ul>
-<li>按分区键的 Hash 值取模来分配分片数据</li>
-<li>按分区键的范围来分配分片数据</li>
-<li>利用分区键和分片的映射表来分配分片数据//表放在缓存中</li>
-</ul>
-
-<h5>如何生成全局唯一ID</h5>
-
-<ul>
-<li>使用 auto_increment_increment 和 auto_increment_offset 参数跟分片数目相同</li>
-<li>使用全局节点来生成 ID</li>
-<li>在Redis等绶存服务器中创建全局ID</li>
-</ul>
-
-<h4>演示</h4>
-
-<ul>
-<li>oneProxyp</li>
-<li><img src="media/15698792898834/15698810528098.jpg" alt="" style="width:697px;"/></li>
-<li><img src="media/15698792898834/15698810874116.jpg" alt="" style="width:721px;"/></li>
-<li><img src="media/15698792898834/15698811118872.jpg" alt="" style="width:492px;"/></li>
-<li>节点一</li>
-<li><img src="media/15698792898834/15698812390408.jpg" alt="" style="width:718px;"/></li>
-<li>节点二</li>
-<li><img src="media/15698792898834/15698812790906.jpg" alt="" style="width:898px;"/></li>
-<li><img src="media/15698792898834/15698812971307.jpg" alt="" style="width:846px;"/></li>
-<li>全局ID</li>
-<li><img src="media/15698792898834/15698815144180.jpg" alt="" style="width:1288px;"/></li>
-</ul>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2019/10/01 05:34 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Mysql%E6%80%A7%E8%83%BD%E7%AE%A1%E7%90%86%E5%92%8C%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1.html'>Mysql性能管理和架构设计</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-              
-
-
-			<div class="row">
-			  <div class="large-6 columns">
-			  <p class="text-left" style="padding-top:25px;">
-			   
-			  </p>
-			  </div>
-			  <div class="large-6 columns">
-			<p class="text-right" style="padding-top:25px;">
-			 <a href="Mysql性能管理和架构设计_1.html">&raquo; Next Page</a> 
-			</p>
-			  </div>
-			</div>
-		</div>
-	</div><!-- large 8 -->
-
- <div class="large-4 medium-4 columns">
-  <div class="hide-for-small">
-    <div id="sidebar" class="sidebar">
-          <div id="site-info" class="site-info">
+              </div>
             
-                <h1>eredin-blog</h1>
-                <div class="site-des">生命的意义是成为你自己！</div>
-                <div class="social">
-
-
-
-
-
-
-
-
-
-
-
-  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
-                
-              	 </div>
-          	</div>
-
-             
-
-              <div id="site-categories" class="side-item ">
-                <div class="side-header">
-                  <h2>Categories</h2>
+              <div id="navbarSNSRssButtons" class="navbar-menu">
+                <div class="navbar-start">
+                  
                 </div>
-                <div class="side-content">
+            
+                <div class="navbar-end">
+                  <div class="navbar-item">
+                    <!--buttons start-->
+                    <div class="buttons">
+                      
+                        
+                        
 
-      	<p class="cat-list">
-        
-            <a href="C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html"><strong>C++基础与提高</strong></a>
-        
-            <a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html"><strong>设计模式</strong></a>
-        
-            <a href="Python.html"><strong>Python</strong></a>
-        
-            <a href="Golang.html"><strong>Golang</strong></a>
-        
-            <a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html"><strong>设计模式之美</strong></a>
-        
-            <a href="%E6%80%A7%E8%83%BD%E5%B7%A5%E7%A8%8B%E9%AB%98%E6%89%8B%E8%AF%BE.html"><strong>性能工程高手课</strong></a>
-        
-            <a href="%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95.html"><strong>性能测试</strong></a>
-        
-            <a href="Prometheus.html"><strong>Prometheus</strong></a>
-        
-            <a href="RocketMQ.html"><strong>RocketMQ</strong></a>
-        
-            <a href="%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE.html"><strong>网络协议</strong></a>
-        
-            <a href="Django.html"><strong>Django</strong></a>
-        
-            <a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html"><strong>深入剖析Kubernetes</strong></a>
-        
-            <a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html"><strong>数据结构和算法</strong></a>
-        
-            <a href="%E5%BE%AE%E6%9C%8D%E5%8A%A1.html"><strong>微服务</strong></a>
-        
-            <a href="%E6%9E%B6%E6%9E%84.html"><strong>架构</strong></a>
-        
-            <a href="%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html"><strong>操作系统原理</strong></a>
-        
-            <a href="Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html"><strong>Mysql优化实战</strong></a>
-        
-            <a href="Kafka.html"><strong>Kafka</strong></a>
-        
-            <a href="linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html"><strong>linux服务器研发</strong></a>
-        
-            <a href="%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86.html"><strong>计算机组成原理</strong></a>
-        
-            <a href="%E7%A8%8B%E5%BA%8F%E5%91%98%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB.html"><strong>程序员的自我修养</strong></a>
-        
-            <a href="C%E8%AF%AD%E8%A8%80%E8%BF%9B%E9%98%B6.html"><strong>C语言进阶</strong></a>
-        
-            <a href="http_study.html"><strong>http_study</strong></a>
-        
-            <a href="%E7%8E%A9%E8%BD%AC%E7%AE%97%E6%B3%95.html"><strong>玩转算法</strong></a>
-        
-            <a href="C++%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B.html"><strong>C++对象模型</strong></a>
-        
-            <a href="SQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html"><strong>SQL必知必会</strong></a>
-        
-            <a href="Zookeeper.html"><strong>Zookeeper</strong></a>
-        
-            <a href="Redis%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A.html"><strong>Redis从入门到精通</strong></a>
-        
-            <a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E8%BF%9B%E9%98%B6.html"><strong>数据结构和算法进阶</strong></a>
-        
-            <a href="Mysql%E6%80%A7%E8%83%BD%E7%AE%A1%E7%90%86%E5%92%8C%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1.html"><strong>Mysql性能管理和架构设计</strong></a>
-        
-            <a href="%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98.html"><strong>网络编程实战</strong></a>
-        
-            <a href="Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html"><strong>Redis高并发缓存</strong></a>
-        
-            <a href="Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html"><strong>Linux性能优化实战</strong></a>
-        
-            <a href="%E5%80%99%E6%8D%B7STL.html"><strong>候捷STL</strong></a>
-        
-            <a href="ElasticSearch.html"><strong>ElasticSearch</strong></a>
-        
-            <a href="RabbitMQ.html"><strong>RabbitMQ</strong></a>
-         
-        </p>
+                        <a href="www.facebook.com" target="_blank" title="facebook">
+                            <span class="icon is-large has-text-grey-darker">
+                               <svg class="svg-inline--fa fa-facebook fa-w-16 fa-lg" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="facebook" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M504 256C504 119 393 8 256 8S8 119 8 256c0 123.78 90.69 226.38 209.25 245V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.28c-30.8 0-40.41 19.12-40.41 38.73V256h68.78l-11 71.69h-57.78V501C413.31 482.38 504 379.78 504 256z"></path></svg><!-- <i class="fab fa-facebook fa-lg"></i> -->
+                            </span>
+                          </a>
+                        
+                        
+                        <a href="www.github.com/chawlau" target="_blank" title="github">
+                            <span class="icon is-large has-text-grey-darker">
+                               <svg class="svg-inline--fa fa-github fa-w-16 fa-lg" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="github" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" data-fa-i2svg=""><path fill="currentColor" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg><!-- <i class="fab fa-github fa-lg"></i> -->
+                            </span>
+                          </a>
+                        
+                        
+                     <a href="www.twitter.com"  target="_blank" title="twitter">
+                       <span class="icon is-large has-text-grey-darker">
+                          <svg class="svg-inline--fa fa-twitter fa-w-16 fa-lg" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="twitter" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"></path></svg><!-- <i class="fab fa-twitter fa-lg"></i> -->
+                       </span>
+                     </a>
+                      
+                      
+                      <a href="www.weibo.com" target="_blank" title="weibo">
+                          <span class="icon is-large has-text-grey-darker">
+                            <svg class="svg-inline--fa fa-weibo fa-w-16 fa-lg" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="weibo" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M407 177.6c7.6-24-13.4-46.8-37.4-41.7-22 4.8-28.8-28.1-7.1-32.8 50.1-10.9 92.3 37.1 76.5 84.8-6.8 21.2-38.8 10.8-32-10.3zM214.8 446.7C108.5 446.7 0 395.3 0 310.4c0-44.3 28-95.4 76.3-143.7C176 67 279.5 65.8 249.9 161c-4 13.1 12.3 5.7 12.3 6 79.5-33.6 140.5-16.8 114 51.4-3.7 9.4 1.1 10.9 8.3 13.1 135.7 42.3 34.8 215.2-169.7 215.2zm143.7-146.3c-5.4-55.7-78.5-94-163.4-85.7-84.8 8.6-148.8 60.3-143.4 116s78.5 94 163.4 85.7c84.8-8.6 148.8-60.3 143.4-116zM347.9 35.1c-25.9 5.6-16.8 43.7 8.3 38.3 72.3-15.2 134.8 52.8 111.7 124-7.4 24.2 29.1 37 37.4 12 31.9-99.8-55.1-195.9-157.4-174.3zm-78.5 311c-17.1 38.8-66.8 60-109.1 46.3-40.8-13.1-58-53.4-40.3-89.7 17.7-35.4 63.1-55.4 103.4-45.1 42 10.8 63.1 50.2 46 88.5zm-86.3-30c-12.9-5.4-30 .3-38 12.9-8.3 12.9-4.3 28 8.6 34 13.1 6 30.8.3 39.1-12.9 8-13.1 3.7-28.3-9.7-34zm32.6-13.4c-5.1-1.7-11.4.6-14.3 5.4-2.9 5.1-1.4 10.6 3.7 12.9 5.1 2 11.7-.3 14.6-5.4 2.8-5.2 1.1-10.9-4-12.9z"></path></svg><!-- <i class="fab fa-weibo fa-lg"></i> -->
+                          </span>
+                      </a>
+                      
+                      <a href="atom.xml" target="_blank" title="RSS">
+                          <span class="icon is-large has-text-black-bis">
+                              <svg class="svg-inline--fa fa-rss fa-w-14 fa-lg" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="rss" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M128.081 415.959c0 35.369-28.672 64.041-64.041 64.041S0 451.328 0 415.959s28.672-64.041 64.041-64.041 64.04 28.673 64.04 64.041zm175.66 47.25c-8.354-154.6-132.185-278.587-286.95-286.95C7.656 175.765 0 183.105 0 192.253v48.069c0 8.415 6.49 15.472 14.887 16.018 111.832 7.284 201.473 96.702 208.772 208.772.547 8.397 7.604 14.887 16.018 14.887h48.069c9.149.001 16.489-7.655 15.995-16.79zm144.249.288C439.596 229.677 251.465 40.445 16.503 32.01 7.473 31.686 0 38.981 0 48.016v48.068c0 8.625 6.835 15.645 15.453 15.999 191.179 7.839 344.627 161.316 352.465 352.465.353 8.618 7.373 15.453 15.999 15.453h48.068c9.034-.001 16.329-7.474 16.005-16.504z"></path></svg><!-- <i class="fas fa-rss fa-lg"></i> -->
+                          </span>
+                      </a>
+                    </div>
+                    <!--buttons end-->
 
-
+                  </div>
+                </div>
                 </div>
               </div>
-
-              <div id="site-categories" class="side-item">
-                <div class="side-header">
-                  <h2>Recent Posts</h2>
-                </div>
-                <div class="side-content">
-                <ul class="posts-list">
-	      
-		      
-			      <li class="post">
-			        <a href="15692331863352.html">future&shared_future&atomic</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15702724482478.html">可变参数函数&&initializer_list</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15818128782116.html">Singleton</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15748977610569.html">State</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="15817697569868.html">字符串分割</a>
-			      </li>
-		     
-		  
-		      
-		  
-		      
-		  
-		      
-		  
-		      
-		  
-		      
-		  
-		      
-		  
-		      
-		  
-		      
-		  
-		      
-		  
-		      
-		  
-		      
-		  
-		      
-		  
-		      
-		  
-		      
-		  
-		      
-		   
-		  		</ul>
-                </div>
-              </div>
-        </div><!-- sidebar -->
-      </div><!-- hide for small -->
-</div><!-- large 4 -->
-
-</div><!-- row -->
-
- <div class="page-bottom clearfix">
-  <div class="row">
-   <p class="copyright">Copyright &copy; 2015
-Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
-Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
-  </div>
-</div>
-
-        </section>
+            </nav>
       </div>
-    </div>
+
+ 
+<div class="hero-body ct-body">
+        <div class="container">
+              <div class="columns is-centered">
+                  <div class="column  is-four-fifths">
+                      <div class="columns is-mobile">
+                          <div class="column">
+                              <h1 class="title">
+       凌云阁
+              
+                              </h1>
+                              <h2 class="subtitle">
+                                 生命的意义是成为你自己！
+                              </h2>
+                          </div>
+                          <div class="column is-narrow"><figure class="image is-128x128">
+                            
+                              <img class="is-rounded" src="/Users/Liuchao/Pictures/log.jpg">
+                            
+                            </figure></div>
+                      </div>
+                        
+                      
+                  </div>
+                  
+                </div>
+            
+              
+        
+        </div>
+      </div>
+</section>
+<section class="ct-body">
+      <div class="container">
+          <div class="columns is-variable bd-klmn-columns is-4">
+              <div class="column is-two-thirds">
+                
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15599783184679.html"> 
+                            <h2 class="title">基准测试和性能测试</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15599783184679.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2019/06/08 15:18 下午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Mysql%E6%80%A7%E8%83%BD%E7%AE%A1%E7%90%86%E5%92%8C%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1.html'>Mysql性能管理和架构设计</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15691944800581.html"> 
+                            <h2 class="title">mysql高可用架构设计</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15691944800581.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2019/09/23 07:21 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Mysql%E6%80%A7%E8%83%BD%E7%AE%A1%E7%90%86%E5%92%8C%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1.html'>Mysql性能管理和架构设计</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15698817657509.html"> 
+                            <h2 class="title">Mysql监控</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15698817657509.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2019/10/01 06:16 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Mysql%E6%80%A7%E8%83%BD%E7%AE%A1%E7%90%86%E5%92%8C%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1.html'>Mysql性能管理和架构设计</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15698792898834.html"> 
+                            <h2 class="title">分库分表</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15698792898834.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2019/10/01 05:34 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Mysql%E6%80%A7%E8%83%BD%E7%AE%A1%E7%90%86%E5%92%8C%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1.html'>Mysql性能管理和架构设计</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15697951220815.html"> 
+                            <h2 class="title">SQL查询优化</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15697951220815.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2019/09/30 06:12 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Mysql%E6%80%A7%E8%83%BD%E7%AE%A1%E7%90%86%E5%92%8C%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1.html'>Mysql性能管理和架构设计</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15697112820357.html"> 
+                            <h2 class="title">索引性能优化</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15697112820357.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2019/09/29 06:54 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Mysql%E6%80%A7%E8%83%BD%E7%AE%A1%E7%90%86%E5%92%8C%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1.html'>Mysql性能管理和架构设计</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15599779387841.html"> 
+                            <h2 class="title">性能影响方面</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15599779387841.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2019/06/08 15:12 下午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Mysql%E6%80%A7%E8%83%BD%E7%AE%A1%E7%90%86%E5%92%8C%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1.html'>Mysql性能管理和架构设计</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15691076069994.html"> 
+                            <h2 class="title">数据库结构优化</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15691076069994.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2019/09/22 07:13 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Mysql%E6%80%A7%E8%83%BD%E7%AE%A1%E7%90%86%E5%92%8C%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1.html'>Mysql性能管理和架构设计</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+
+                  <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+                    <a class="pagination-previous"  disabled="disabled" ><span class="tran-prev-page">&laquo; Prev Page</span></a>  
+                    <a class="pagination-next"  disabled="disabled" ><span class="tran-next-page">Next Page &raquo;</span></a>                   
+                  </nav>
+
+              </div><!-- end column -->
+              <div class="column">
+                  <div class="card">
+                      <header class="card-header">
+                        <p class="card-header-title">
+                           <span class="tran-site-categories">Categories</span> 
+                        </p>
+                     
+                      </header>
+                      <div class="card-content site-categories">
+                        <div class="content"> 
+                          <ul>
+                          
+                                <li><a href="C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html">C++基础与提高</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html">设计模式</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Python.html">Python</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Golang.html">Golang</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html">设计模式之美</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%80%A7%E8%83%BD%E5%B7%A5%E7%A8%8B%E9%AB%98%E6%89%8B%E8%AF%BE.html">性能工程高手课</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95.html">性能测试</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Prometheus.html">Prometheus</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="RocketMQ.html">RocketMQ</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE.html">网络协议</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Django.html">Django</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html">深入剖析Kubernetes</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html">数据结构和算法</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E5%BE%AE%E6%9C%8D%E5%8A%A1.html">微服务</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%9E%B6%E6%9E%84.html">架构</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html">操作系统原理</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html">Mysql优化实战</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Kafka.html">Kafka</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html">linux服务器研发</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86.html">计算机组成原理</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E7%A8%8B%E5%BA%8F%E5%91%98%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB.html">程序员的自我修养</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="C%E8%AF%AD%E8%A8%80%E8%BF%9B%E9%98%B6.html">C语言进阶</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="http_study.html">http_study</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E7%8E%A9%E8%BD%AC%E7%AE%97%E6%B3%95.html">玩转算法</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="C++%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B.html">C++对象模型</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="SQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html">SQL必知必会</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Zookeeper.html">Zookeeper</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Redis%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A.html">Redis从入门到精通</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E8%BF%9B%E9%98%B6.html">数据结构和算法进阶</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Mysql%E6%80%A7%E8%83%BD%E7%AE%A1%E7%90%86%E5%92%8C%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1.html">Mysql性能管理和架构设计</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98.html">网络编程实战</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html">Redis高并发缓存</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html">Linux性能优化实战</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E5%80%99%E6%8D%B7STL.html">候捷STL</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="ElasticSearch.html">ElasticSearch</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="RabbitMQ.html">RabbitMQ</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                          </ul>
+                        </div>
+                      </div>
+                     
+                    </div>
+
+                    <div class="card">
+                        <header class="card-header">
+                          <p class="card-header-title">
+                              <span class="tran-site-tags">Tags</span> 
+                          </p>
+                       
+                        </header>
+                        <div class="card-content site-tags">
+                          <div class="content">
+                           <div class="tags">
+                            
+                              <a class="tag is-link is-light" href="tag_C++.html">#C++</a> 
+                            
+                              <a class="tag is-link is-light" href="tag_Docker.html">#Docker</a> 
+                            
+                              <a class="tag is-link is-light" href="tag_ElasticSearch.html">#ElasticSearch</a> 
+                            
+                              <a class="tag is-link is-light" href="tag_K8S.html">#K8S</a> 
+                            
+                              <a class="tag is-link is-light" href="tag_Python.html">#Python</a> 
+                            
+                              <a class="tag is-link is-light" href="tag_golang.html">#golang</a> 
+                            
+                              <a class="tag is-link is-light" href="tag_%E6%80%A7%E8%83%BD%E5%B7%A5%E7%A8%8B.html">#性能工程</a> 
+                            
+                              <a class="tag is-link is-light" href="tag_%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95.html">#性能测试</a> 
+                            
+                              <a class="tag is-link is-light" href="tag_%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html">#设计模式</a> 
+                            
+                           </div>
+                             
+                          </div>
+                        </div>
+                       
+                      </div>
+
+              </div>
+            </div>
+
+          
+      </div>
+    </section>
+
+    <footer class="footer">
+        <div class="content has-text-centered">
+          <p>
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+              Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
+          </p>
+        </div>
+      </footer>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   
     
 
-    <script src="asset/js/foundation.min.js"></script>
-    <script>
-      $(document).foundation();
-      function fixSidebarHeight(){
-        var w1 = $('.markdown-body').height();
-          var w2 = $('#sidebar').height();
-          if (w1 > w2) { $('#sidebar').height(w1); };
-      }
-      $(function(){
-        fixSidebarHeight();
-      })
-      $(window).load(function(){
-          fixSidebarHeight();
-      });
-     
-    </script>
 
-    
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
 
 
   </body>
