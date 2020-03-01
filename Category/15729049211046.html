@@ -160,6 +160,12 @@
 <li>定义ー个用于创建对象的接口，让子类决定实例化哪一个类 Factory Method 使得一个类的实例化延迟（目的：解耦，手段：虚函数）到子类。</li>
 </ul>
 
+<h4>什么时候选择工厂类</h4>
+
+<ul>
+<li>基于这个设计思想，当对象的创建逻辑比较复杂，不只是简单的 new 一下就可以，而是要组合其他类对象，做各种初始化操作的时候，我们推荐使用工厂方法模式，将复杂的创建逻辑拆分到多个工厂类中，让每个工厂类都不至于过于复杂。而使用简单工厂模式，将所有的创建逻辑都放到一个工厂类中，会导致这个工厂类变得很复杂。</li>
+</ul>
+
 <h4>结构图</h4>
 
 <p><img src="media/15729049211046/15809845877086.jpg" alt="" style="width:728px;"/></p>
@@ -425,6 +431,222 @@ func TestAudiFactory_CreateCar(t *testing.T) {
 
     benz := &amp;BenzFactory{}
     benz.CreateCar().Name()
+}
+</code></pre>
+
+<h4>实际应用场景</h4>
+
+<ul>
+<li>考虑这样一个实际应用：实现一个导出数据的应用框架，来让客户选择数据的导出方式，并真正执行数据导出。</li>
+<li>通常这种系统，在导出数据上，会有一些约定的方式，比如导出成：cSV 格式、数据库备份形式、Excel格式、XML格式等等。</li>
+</ul>
+
+<h4>工程模式的应用IOC/DI</h4>
+
+<ul>
+<li>依赖注入和控制反转</li>
+<li><img src="media/15729049211046/15830147868694.jpg" alt="" style="width:891px;"/></li>
+<li>不依赖于AB之间的直接通信</li>
+<li>通过IOC实现注入</li>
+</ul>
+
+<h4>工厂模式的本质</h4>
+
+<ul>
+<li>依赖倒置原则告诉我们“要依赖抽象，不要依赖于具体类”：不能让高层组件依赖于低层组件，而且不管高层组件还是低层组件，都应该依赖于抽象。何时选用工厂方法模式</li>
+<li>1: 如果一个类需要创建某个接口的对象，但是又不知道具体的实现，这种情况可以选用工厂方法模式，把创建对象的工作延退到子类去实现</li>
+<li>2: 如果一个类本身就希望由它的子类来创建所需的对象的时候，应该使用工厂方法模式</li>
+</ul>
+
+<h4>IOC注入</h4>
+
+<pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;map&gt;
+#include &lt;functional&gt;
+#include &lt;memory&gt;
+using namespace std;
+
+template &lt;class T&gt;
+class IocContainer {
+    public:
+    IocContainer() {}
+    ~ IocContainer() {}
+
+    template&lt;class U&gt;
+    void RegisterType(string key) {
+        std::function&lt;T* ()&gt; function = [] {return new U();};
+        Register(key, function);
+    }
+
+    T* Resolve(string key) {
+        if (create_map_.find(key) == create_map_.end()) {
+            return nullptr;
+        }
+        std::function&lt;T* ()&gt; func = create_map_[key];
+        return func();
+    }
+
+    shared_ptr&lt;T&gt; ResolveShared(string key) {
+        T* ptr = Resolve(key);
+        return shared_ptr&lt;T&gt;(ptr);
+    }
+
+private:
+    void Register(string key, function&lt;T* ()&gt; creator) {
+        if (create_map_.find(key) == create_map_.end()) {
+            create_map_.emplace(key, creator);
+        }
+    }
+    map&lt;string, function&lt;T* ()&gt;&gt; create_map_;
+};
+
+struct ICar{
+    virtual ~ICar(){}
+    virtual void test() const = 0;
+};
+
+struct Bus : ICar {
+    Bus(){}
+    void test() const {cout &lt;&lt; &quot;Bus::test&quot; &lt;&lt;endl;}
+};
+
+struct Track : ICar {
+    Track(){}
+    void test() const {cout &lt;&lt; &quot;Track::test&quot; &lt;&lt;endl;}
+};
+
+
+int main() {
+    IocContainer&lt;ICar&gt; carIOC;
+    carIOC.RegisterType&lt;Bus&gt;(&quot;bus&quot;);
+    carIOC.RegisterType&lt;Track&gt;(&quot;track&quot;);
+
+    shared_ptr&lt;ICar&gt; bus = carIOC.ResolveShared(&quot;bus&quot;);
+    bus-&gt;test();
+    shared_ptr&lt;ICar&gt; track = carIOC.ResolveShared(&quot;track&quot;);
+    track-&gt;test();
+}
+</code></pre>
+
+<h4>python_demo</h4>
+
+<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
+import dependency_injector.containers as containers
+import dependency_injector.providers as providers
+
+
+class GasolineEngine(Engine):
+    pass
+
+class DieselEngine(Engine):
+    pass
+
+class ElectroEngine(Engine):
+    pass
+
+class Car:
+
+    def __init__(self, engine):
+        self.engine = engine
+
+class Engine(containers.DeclarativeContainer):
+
+    gasoline = providers.Factory(GasolineEngine)
+    diesel = providers.Factory(DieselEngine)
+    electro = providers.Factory(ElectroEngine)
+
+class Cars(containers.DeclarativeContainer):
+
+    gasoline = providers.Factory(Car, engine=Engine.gasoline)
+    diesel = providers.Factory(Car, engine=Engine.diesel)
+    electro = providers.Factory(Car, engine=Engine.electro)
+
+if __name__ == &#39;__main__&#39;:
+
+    gasoline_car = Cars.gasoline()
+    diesel_car = Cars.diesel()
+    electro_car = Cars.electro()
+</code></pre>
+
+<h4>go_ioc</h4>
+
+<pre class="line-numbers"><code class="language-go">package desian_pattern_practise
+
+import (
+    &quot;github.com/pkg/errors&quot;
+    &quot;sync&quot;
+)
+
+var (
+    ErrFactoryNotFound = errors.New(&quot;factory not found&quot;)
+)
+
+type factory  = func() (interface{}, error)
+
+type Container struct {
+    sync.Mutex
+    singletons map[string]interface{}
+    factories map[string]factory
+}
+
+func NewContainer() *Container {
+    return &amp;Container{
+        singletons: make(map[string]interface{}),
+        factories: make(map[string]factory),
+    }
+}
+
+func (p *Container) GetSingleton(name string) interface{} {
+    return p.singletons[name]
+}
+
+func (p *Container) SetSingleton(name string, singleton interface{}) {
+    p.Lock()
+    p.singletons[name] = singleton
+    p.Unlock()
+}
+
+func (p *Container) Register(name string, f factory) {
+    p.Lock()
+    p.factories[name] = f
+    p.Unlock()
+}
+
+func (p *Container) Resolve(name string) (ins interface{}) {
+    factory, ok := p.factories[name]
+
+    if !ok {
+        return nil
+    }
+    ins, _ = factory()
+    return ins
+}
+
+import (
+    &quot;github.com/luci/go-render/render&quot;
+    &quot;testing&quot;
+)
+
+type A struct {}
+
+type B struct {}
+
+func NewB() *B {
+    return &amp;B{}
+}
+
+func TestIOC(t *testing.T) {
+    container := NewContainer()
+
+    container.SetSingleton(&quot;a&quot;, &amp;A{})
+    container.Register(&quot;b&quot;, func() (interface{}, error) {
+        return NewB(), nil
+    })
+
+    ret := container.Resolve(&quot;b&quot;)
+    if ret != nil {
+        println(render.Render(ret))
+    }
 }
 </code></pre>
 
