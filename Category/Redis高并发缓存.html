@@ -1,764 +1,729 @@
-<!DOCTYPE HTML>
-<html>
-<head>
-	<meta charset="utf-8">
-	<title>  
-	  
-  	Redis高并发缓存 -        凌云阁
-  	
-	</title>
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+      
+    Redis高并发缓存 -        凌云阁
+    
+    </title>
+    <link rel="shortcut icon" href="https://i.loli.net/2020/02/22/Si1K7sluept2ZgR.jpg" type="image/png" />
 
-  <meta name="HandheldFriendly" content="True">
-  <meta name="MobileOptimized" content="320">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-	<link href="atom.xml" rel="alternate" title="       凌云阁" type="application/atom+xml">
-
-	<link href="asset/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-	<link href="asset/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
-	<script src="asset/javascripts/jquery.min.js"></script>
-	<script src="asset/highlightjs/highlight.pack.js"></script>
-	<link href="asset/highlightjs/styles/solarized_dark.css" media="screen, projection" rel="stylesheet" type="text/css">
-<script>hljs.initHighlightingOnLoad();</script>
-
-	<!--[if lt IE 9]><script src="asset/javascripts/html5.js"></script><![endif]-->
-	<!-- <link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'> -->
-	<style type="text/css">
-/* latin */
-@font-face {
-  font-family: 'Nunito';
-  font-style: normal;
-  font-weight: 300;
-  src: local('Nunito-Light'), url(asset/font/1TiHc9yag0wq3lDO9cw0voX0hVgzZQUfRDuZrPvH3D8.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
-}
-/* latin */
-@font-face {
-  font-family: 'Nunito';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Nunito-Regular'), url(asset/font/6TbRXKWJjpj6V2v_WyRbMX-_kf6ByYO6CLYdB4HQE-Y.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
-}
-/* latin */
-@font-face {
-  font-family: 'Nunito';
-  font-style: normal;
-  font-weight: 700;
-  src: local('Nunito-Bold'), url(asset/font/TttUCfJ272GBgSKaOaD7KoX0hVgzZQUfRDuZrPvH3D8.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
-}
-	</style>
-	
-	<style type="text/css">
-	.container .left-col{ opacity: 1;}
-	#pagenavi a{ font-size: 1.3em;}
-	#pagenavi .next:before{ top: 3px;}
-	#pagenavi .prev:before{ top: 3px;}
-	.container .mid-col .mid-col-container #content .archives .title{ font-size: 1.5em;}
-	.container .mid-col .mid-col-container #content article{ padding: 15px 0px;}
-	#header .subtitle {
-		line-height: 1.2em;
-		padding-top: 8px;
-	}
-	article pre{ background: none; border: none; padding: 0;}
-	article .entry-content{text-align: left;}
-	.share-comment{ padding: 25px 0px; clear: both;}
-	hr{ margin: 20px 0px;border: 0; border-top:solid 1px #ddd;}
-
-	</style>
-  
-
+    
+    
+    <link href="atom.xml" rel="alternate" title="       凌云阁" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/style.min.css">
+    <link rel="stylesheet" href="asset/css/doc.css">
+    <script src="asset/app.js"></script>
 </head>
+  <body>
+    <section class="hero">
+      <div class="hero-head">
+          <nav class="navbar" role="navigation" aria-label="main navigation">
+              <div class="container">
+              <div class="navbar-brand">
+                
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
+                
+                <a target="_self" class="navbar-item " href="archives.html">Archives</a>
+                
 
+                <a role="button" id="navbarSNSRssSwitchBtn" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarSNSRssButtons">
+                  <span aria-hidden="true"></span>
+                  <span aria-hidden="true"></span>
+                  <span aria-hidden="true"></span>
+                </a>
+              </div>
+            
+              <div id="navbarSNSRssButtons" class="navbar-menu">
+                <div class="navbar-start">
+                  
+                </div>
+            
+                <div class="navbar-end">
+                  <div class="navbar-item">
+                    <!--buttons start-->
+                    <div class="buttons">
+                      
+                        
+                        
 
-<body>
-	<div class="container">
-		<div class="left-col">
-			<div class="intrude-less">
-				<header id="header" class="inner">
-				 
-				 	<div class="profilepic">
-						<img src="https://i.loli.net/2020/02/22/Si1K7sluept2ZgR.jpg" style="width:160px;">
-					</div>
-            	
-					
-					<h1><a href="index.html">       凌云阁</a></h1>
-					<p class="subtitle">生命的意义是成为你自己！</p>
-					<nav id="main-nav">
-						<ul class="main">
-						
-						  <li id=""><a target="_self" href="index.html">Home</a></li>
-						
-						  <li id=""><a target="_self" href="archives.html">Archives</a></li>
-						
-						</ul>
-					</nav>
+                        <a href="www.facebook.com" target="_blank" title="facebook">
+                            <span class="icon is-large has-text-grey-darker">
+                               <svg class="svg-inline--fa fa-facebook fa-w-16 fa-lg" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="facebook" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M504 256C504 119 393 8 256 8S8 119 8 256c0 123.78 90.69 226.38 209.25 245V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.28c-30.8 0-40.41 19.12-40.41 38.73V256h68.78l-11 71.69h-57.78V501C413.31 482.38 504 379.78 504 256z"></path></svg><!-- <i class="fab fa-facebook fa-lg"></i> -->
+                            </span>
+                          </a>
+                        
+                        
+                        <a href="www.github.com/chawlau" target="_blank" title="github">
+                            <span class="icon is-large has-text-grey-darker">
+                               <svg class="svg-inline--fa fa-github fa-w-16 fa-lg" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="github" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" data-fa-i2svg=""><path fill="currentColor" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg><!-- <i class="fab fa-github fa-lg"></i> -->
+                            </span>
+                          </a>
+                        
+                        
+                     <a href="www.twitter.com"  target="_blank" title="twitter">
+                       <span class="icon is-large has-text-grey-darker">
+                          <svg class="svg-inline--fa fa-twitter fa-w-16 fa-lg" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="twitter" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"></path></svg><!-- <i class="fab fa-twitter fa-lg"></i> -->
+                       </span>
+                     </a>
+                      
+                      
+                      <a href="www.weibo.com" target="_blank" title="weibo">
+                          <span class="icon is-large has-text-grey-darker">
+                            <svg class="svg-inline--fa fa-weibo fa-w-16 fa-lg" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="weibo" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M407 177.6c7.6-24-13.4-46.8-37.4-41.7-22 4.8-28.8-28.1-7.1-32.8 50.1-10.9 92.3 37.1 76.5 84.8-6.8 21.2-38.8 10.8-32-10.3zM214.8 446.7C108.5 446.7 0 395.3 0 310.4c0-44.3 28-95.4 76.3-143.7C176 67 279.5 65.8 249.9 161c-4 13.1 12.3 5.7 12.3 6 79.5-33.6 140.5-16.8 114 51.4-3.7 9.4 1.1 10.9 8.3 13.1 135.7 42.3 34.8 215.2-169.7 215.2zm143.7-146.3c-5.4-55.7-78.5-94-163.4-85.7-84.8 8.6-148.8 60.3-143.4 116s78.5 94 163.4 85.7c84.8-8.6 148.8-60.3 143.4-116zM347.9 35.1c-25.9 5.6-16.8 43.7 8.3 38.3 72.3-15.2 134.8 52.8 111.7 124-7.4 24.2 29.1 37 37.4 12 31.9-99.8-55.1-195.9-157.4-174.3zm-78.5 311c-17.1 38.8-66.8 60-109.1 46.3-40.8-13.1-58-53.4-40.3-89.7 17.7-35.4 63.1-55.4 103.4-45.1 42 10.8 63.1 50.2 46 88.5zm-86.3-30c-12.9-5.4-30 .3-38 12.9-8.3 12.9-4.3 28 8.6 34 13.1 6 30.8.3 39.1-12.9 8-13.1 3.7-28.3-9.7-34zm32.6-13.4c-5.1-1.7-11.4.6-14.3 5.4-2.9 5.1-1.4 10.6 3.7 12.9 5.1 2 11.7-.3 14.6-5.4 2.8-5.2 1.1-10.9-4-12.9z"></path></svg><!-- <i class="fab fa-weibo fa-lg"></i> -->
+                          </span>
+                      </a>
+                      
+                      <a href="atom.xml" target="_blank" title="RSS">
+                          <span class="icon is-large has-text-black-bis">
+                              <svg class="svg-inline--fa fa-rss fa-w-14 fa-lg" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="rss" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M128.081 415.959c0 35.369-28.672 64.041-64.041 64.041S0 451.328 0 415.959s28.672-64.041 64.041-64.041 64.04 28.673 64.04 64.041zm175.66 47.25c-8.354-154.6-132.185-278.587-286.95-286.95C7.656 175.765 0 183.105 0 192.253v48.069c0 8.415 6.49 15.472 14.887 16.018 111.832 7.284 201.473 96.702 208.772 208.772.547 8.397 7.604 14.887 16.018 14.887h48.069c9.149.001 16.489-7.655 15.995-16.79zm144.249.288C439.596 229.677 251.465 40.445 16.503 32.01 7.473 31.686 0 38.981 0 48.016v48.068c0 8.625 6.835 15.645 15.453 15.999 191.179 7.839 344.627 161.316 352.465 352.465.353 8.618 7.373 15.453 15.999 15.453h48.068c9.034-.001 16.329-7.474 16.005-16.504z"></path></svg><!-- <i class="fas fa-rss fa-lg"></i> -->
+                          </span>
+                      </a>
+                    </div>
+                    <!--buttons end-->
 
-					<nav id="sub-nav">
-						<div class="social">
+                  </div>
+                </div>
+                </div>
+              </div>
+            </nav>
+      </div>
 
-<a target="_blank" class="facebook" href="www.facebook.com" title="Facebook">Facebook</a>
-
-
-
-
-
-
-<a target="_blank" class="weibo" href="www.weibo.com" title="weibo">Weibo</a>
-<a target="_blank" class="twitter" target="_blank" href="www.twitter.com" title="Twitter">Twitter</a>
-<a target="_blank" class="github" target="_blank" href="www.github.com/chawlau" title="GitHub">GitHub</a>
-
-
-								
-
-								<a class="rss" href="atom.xml" title="RSS">RSS</a>
-							
-						</div>
-					</nav>
-				</header>				
-			</div>
-		</div>	
-		<div class="mid-col">
-			<div class="mid-col-container"> <div id="content" class="inner">
-<div itemscope itemtype="http://schema.org/Blog">
-
-
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2019-10-01T07:28:33+08:00" itemprop="datePublished">2019/10/01 07:28 上午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html'>Redis高并发缓存</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15698861133746.html" itemprop="url">
-		分布式锁</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E6%98%AF%E4%BB%80%E4%B9%88" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>分布式锁是什么</h4>
-<ul>
-<li>分布式锁是控制分布式系统或不同系统之间共同访问共享资源的一种锁实现</li>
-<li>如果不同的系统或同一个系统的不同主机之间共享了某个资源时，往往通过互斥来防止彼此干扰。</li>
-</ul>
-<h4><a id="%E7%9B%AE%E7%9A%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>目的</h4>
-<ul>
-<li>可以保证在分布式部署的应用集群中，同一个方法在同一操作只能被一台机器上的一个线程执行。</li>
-</ul>
-<h4><a id="%E8%AE%BE%E8%AE%A1%E8%A6%81%E6%B1%82" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>设计要求</h4>
-<ul>
-<li>这把锁要是一把可重入锁(避免死锁)</li>
-<li>这把锁有高可用的获取锁和释放锁功能</li>
-<li>这把锁获取锁和释放锁的性能要好</li>
-</ul>
-<h4><a id="%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>分布式锁</h4>
-<ul>
-<li>分布式任务<br />
-<img src="media/15698861133746/15699663553008.jpg" alt="" style="width:1172px;" /></li>
-</ul>
-<pre><code class="language-go">package main
  
-import (
-	&quot;fmt&quot;
-	&quot;log&quot;
-	&quot;time&quot;
- 
-	&quot;github.com/garyburd/redigo/redis&quot;
-)
- 
-type Lock struct {
-	resource string
-	token    string
-	conn     redis.Conn
-	timeout  int
-}
- 
-func (lock *Lock) tryLock() (ok bool, err error) {
-	_, err = redis.String(lock.conn.Do(&quot;SET&quot;, lock.key(), lock.token, &quot;EX&quot;, int(lock.timeout), &quot;NX&quot;))
-	if err == redis.ErrNil {
-		// The lock was not successful, it already exists.
-		return false, nil
-	}
-	if err != nil {
-		return false, err
-	}
-	return true, nil
-}
- 
-func (lock *Lock) Unlock() (err error) {
-	_, err = lock.conn.Do(&quot;del&quot;, lock.key())
-	return
-}
- 
-func (lock *Lock) key() string {
-	return fmt.Sprintf(&quot;redislock:%s&quot;, lock.resource)
-}
- 
-func (lock *Lock) AddTimeout(ex_time int64) (ok bool, err error) {
-	ttl_time, err := redis.Int64(lock.conn.Do(&quot;TTL&quot;, lock.key()))
-	fmt.Println(ttl_time)
-	if err != nil {
-		log.Fatal(&quot;redis get failed:&quot;, err)
-	}
-	if ttl_time &gt; 0 {
-		fmt.Println(11)
-		_, err := redis.String(lock.conn.Do(&quot;SET&quot;, lock.key(), lock.token, &quot;EX&quot;, int(ttl_time+ex_time)))
-		if err == redis.ErrNil {
-			return false, nil
-		}
-		if err != nil {
-			return false, err
-		}
-	}
-	return false, nil
-}
- 
-func TryLock(conn redis.Conn, resource string, token string, DefaulTimeout int) (lock *Lock, ok bool, err error) {
-	return TryLockWithTimeout(conn, resource, token, DefaulTimeout)
-}
- 
-func TryLockWithTimeout(conn redis.Conn, resource string, token string, timeout int) (lock *Lock, ok bool, err error) {
-	lock = &amp;Lock{resource, token, conn, timeout}
- 
-	ok, err = lock.tryLock()
- 
-	if !ok || err != nil {
-		lock = nil
-	}
- 
-	return
-}
- 
-func main() {
-	fmt.Println(&quot;start&quot;)
-	DefaultTimeout := 10
-	conn, err := redis.Dial(&quot;tcp&quot;, &quot;localhost:6379&quot;)
- 
-	lock, ok, err := TryLock(conn, &quot;xiaoru.cc&quot;, &quot;token&quot;, int(DefaultTimeout))
-	if err != nil {
-		log.Fatal(&quot;Error while attempting lock&quot;)
-	}
-	if !ok {
-		log.Fatal(&quot;Lock&quot;)
-	}
-	lock.AddTimeout(100)
- 
-	time.Sleep(time.Duration(DefaultTimeout) * time.Second)
-	fmt.Println(&quot;end&quot;)
-	defer lock.Unlock()
-}
-</code></pre>
-<h4><a id="%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%84%E7%BC%BA%E9%99%B7" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>分布式锁的缺陷</h4>
-<p><img src="media/15698861133746/15699675229202.jpg" alt="" style="width:1096px;" /></p>
-<h4><a id="lua%E8%84%9A%E6%9C%AC" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>lua脚本</h4>
-<pre><code class="language-lua">local lockKey = KEYS[1]
---唯一随机数
-local lockValue = KEYS[2]
---失效时间，如果是当前线程，也是续期时间
-
---setnx info
-local result_1 = redis.call('SETNX', lockKey, lockValue)
-
-if result_1 == true
-then
-local result_2 = redis.call('SETEX', lockKey, 3600, lockValue)
-return result_1
-else
-return result_1
-end
-
-</code></pre>
-<h4><a id="%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E4%BC%98%E5%8C%96" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>分布式锁优化</h4>
-<p><img src="media/15698861133746/15699692953813.jpg" alt="" style="width:1129px;" /></p>
-<ul>
-<li>锁都超时了，任务还没有执行完，导致AB同时执行任务</li>
-</ul>
-<pre><code class="language-lua">local lockkey = KEYS[1]
---唯一随机数
-local uid = KEYS[2]
---失效时间，如果是当前线程，也是续期时间
-local time = KEYS[3]
-
-if redis.call('set',lockkey,uid,'nx','px',time)=='OK' then
-return 'OK'
-else
-    if redis.call('get',lockkey) == uid then
-       if redis.call('EXPIRE',lockkey,time/1000)==1 then
-       return 'OOKK'
-       end
-    end
-end
-</code></pre>
-<h4><a id="%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E9%9D%A2%E8%AF%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>分布式锁面试</h4>
-<ul>
-<li>为了确保分布式锁可用，我们至少要确保锁的实现同时满足以下三个条件:</li>
-<li>互斥性。在任意时刻，只有一个客户端能持有锁。</li>
-<li>不会发生死锁。即使有一个客户端在持有锁的期间崩溃而没有主动解锁，也能保证后续其他客户端能加锁。</li>
-<li>解铃还须系铃人。加锁和解锁必须是同一个客户端，客户端自己不能把别人加的锁给解了</li>
-<li>怎么实现</li>
-<li>采用lua脚本操作分布式锁 采用setnx、setex命令连用的方式实现分布式锁</li>
-<li>解锁需要注意什么<br />
-解铃还须系铃人。加锁和解锁必须是同一个客户端，客户端自己不能把别人加的锁给解了</li>
-</ul>
-
-
-			
-			
-		</div>
-
-	</article>
- 
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2019-10-15T07:00:47+08:00" itemprop="datePublished">2019/10/15 07:00 上午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html'>Redis高并发缓存</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15710940470602.html" itemprop="url">
-		直播消息</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>数据结构</h4>
-<ul>
-<li><img src="media/15710940470602/15710945263817.jpg" alt="" style="width:991px;" /></li>
-<li>zset 展示直播打赏列表</li>
-<li></li>
-</ul>
-
-
-			
-			
-		</div>
-
-	</article>
- 
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2019-10-15T05:50:15+08:00" itemprop="datePublished">2019/10/15 05:50 上午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html'>Redis高并发缓存</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15710898154881.html" itemprop="url">
-		微信红包</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="%E5%BC%80%E5%8F%91%E6%B5%81%E7%A8%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>开发流程</h4>
-<p><img src="media/15710898154881/15710899833084.jpg" alt="" style="width:1193px;" /></p>
-<h4><a id="%E4%B8%9A%E5%8A%A1%E5%8A%9F%E8%83%BD%E7%82%B9" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>业务功能点</h4>
-<ul>
-<li>新建红包:在DB、cache各新增一条记录</li>
-<li>抢红包:请求访问cache，剩余红包个数大于0则可拆开红包</li>
-<li>key:1，value:20 string decr原子减，每次减1 ， 而decreby减指定数量2</li>
-<li>拆红包: 20个红包里面有500块，key:1,value:50000(以分为单位) decreby 548，decreby 1055 ，decreby 2329</li>
-<li>请求访问cache，剩余红包个数大于0则继续，同时获取可抢红包数与金额 计算金额(从1分到剩余平均值2倍之间随机数，如果不是最后一个红包，剩余金额预留 最少1分给cas更新失败，最后一位拿红包的人) cas更新数据库(更新红包计数表记录【剩余红包个数、剩余红包金额】、插入领取记 录)</li>
-<li>查看红包记录:用户进来直接查DB即可</li>
-</ul>
-<h4><a id="%E7%BA%A2%E5%8C%85%E7%9A%84%E5%BA%93%E8%A1%A8%E8%AE%BE%E8%AE%A1" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>红包的库表设计</h4>
-<pre><code class="language-mysql">
-CREATE TABLE `red_packet_info` (
-`id` int(11) NOT NULL AUTO_INCREMENT,
-`red_packet_id` bigint(11) NOT NULL DEFAULT 0 COMMENT '红包id，采用timestamp+5位随机数', `total_amount` int(11) NOT NULL DEFAULT 0 COMMENT '红包总金额，单位分',
-`total_packet` int(11) NOT NULL DEFAULT 0 COMMENT '红包总个数',
-`remaining_amount` int(11) NOT NULL DEFAULT 0 COMMENT '剩余红包金额，单位分', `remaining_packet` int(11) NOT NULL DEFAULT 0 COMMENT '剩余红包个数',
-`uid` int(20) NOT NULL DEFAULT 0 COMMENT '新建红包用户的用户标识',
-`create_time` timestamp COMMENT '创建时间',
-`update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-COMMENT '更新时间', PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='红包信息表，新建一个红包插 入一条记录';
-
-CREATE TABLE `red_packet_record` (
-`id` int(11) NOT NULL AUTO_INCREMENT,
-`amount` int(11) NOT NULL DEFAULT '0' COMMENT '抢到红包的金额',
-`nick_name` varchar(32) NOT NULL DEFAULT '0' COMMENT '抢到红包的用户的用户名',
-`img_url` varchar(255) NOT NULL DEFAULT '0' COMMENT '抢到红包的用户的头像',
-`uid` int(20) NOT NULL DEFAULT '0' COMMENT '抢到红包用户的用户标识',
-`red_packet_id` bigint(11) NOT NULL DEFAULT '0' COMMENT '红包id，采用timestamp+5位随机
-数',
-`create_time` timestamp COMMENT '创建时间',
-`update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-COMMENT '更新时间', PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='抢红包记录表，抢一个红包插 入一条记录';
-</code></pre>
-<h4><a id="%E5%8F%91%E7%BA%A2%E5%8C%85%E6%8E%A5%E5%8F%A3%E5%AE%9E%E7%8E%B0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>发红包接口实现</h4>
-<ul>
-<li>发红包功能接口开发</li>
-<li>新增一条红包记录 往mysql里面添加一条红包记录 往redis里面添加一条红包数量记录 decr 往redis里面添加一条红包金额记录 decreby</li>
-<li>抢红包功能接口开发</li>
-<li>抢红包功能属于原子减操作</li>
-<li>当大小小于0时原子减失败 当红包个数为0时后面进来的用户全部抢红包失败，并不会进入拆红包环节</li>
-<li>抢红包功能扩展设计</li>
-<li>将红包ID的请求放入请求队列中，如果发现超过红包的个数，直接返回</li>
-<li>类推出token令牌和秒杀设计原理 注意点</li>
-<li>抢到红包不到能拆成功</li>
-<li>2014年的红包一点开就知道金额，分两次操作，先抢到金额，然后再转账。 2015年后的红包的拆和抢 是分离的，需要点两次，因此会出现抢到红包了，但点开后告知红包已经被领完的状况。进入到第一个 页面不代表抢到，只表示当时红包还有。</li>
-</ul>
-<h4><a id="%E6%8A%A2%E7%BA%A2%E5%8C%85%E6%8E%A5%E5%8F%A3%E5%AE%9E%E7%8E%B0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>抢红包接口实现</h4>
-<p><img src="media/15710898154881/15710924219795.jpg" alt="" style="width:1157px;" /><br />
-<img src="media/15710898154881/15710924361303.jpg" alt="" style="width:1127px;" /></p>
-<ul>
-<li>抢红包功能接口开发</li>
-<li>在抢红包这里并不能保证用户已经能领到这个红包 抢红包只是做了一个判断，判断当前是否还有红包 有红包则返回可以领</li>
-<li>没红包则返回不可以领</li>
-<li>拆红包功能接口开发</li>
-<li>拆红包才是用户能领导红包 这时候要先减redis里面的金额和红包数量 减完金额再入库</li>
-</ul>
-<h4><a id="%E7%BA%A2%E5%8C%85%E4%B8%9A%E5%8A%A1%E6%80%9D%E8%80%83" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>红包业务思考</h4>
-<ul>
-<li>take all操作 入库转账时需要保证红包个数和红包剩余金额正确</li>
-<li>高并发处理:红包如何计算被抢完?</li>
-<li>cache会抵抗无效请求，将无效的请求过滤掉，实际进入到后台的量不大。cache记录红包个数，原子操作进行个数递减，到0表示被抢光</li>
-<li>lua原子操作减红包个数和金额</li>
-<li>性能扩展</li>
-<li>多主sharding，水平扩展机器 数据库层面sharding分片 redis层面sharding分片技术</li>
-<li>业务能动性，从发展的角度来看待业务 观察总结，技术赋能业务</li>
-</ul>
-
-
-			
-			
-		</div>
-
-	</article>
- 
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2019-10-14T06:07:55+08:00" itemprop="datePublished">2019/10/14 06:07 上午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html'>Redis高并发缓存</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15710044750017.html" itemprop="url">
-		布隆过滤器</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="%E7%BB%93%E6%9E%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>结构</h4>
-<p><img src="media/15710044750017/15710044945778.jpg" alt="" style="width:1134px;" /></p>
-<h4><a id="%E6%8A%BD%E5%A5%96%E7%A8%8B%E5%BA%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>抽奖程序</h4>
-<ul>
-<li><img src="media/15710044750017/15710046156516.jpg" alt="" style="width:1142px;" /></li>
-<li>可以调整误码率，没有过滤的%1根据mysql进行过滤</li>
-</ul>
-<h4><a id="google%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>google布隆过滤器</h4>
-<ul>
-<li>基于内存布隆过滤器有什么特点</li>
-<li>启动时间长，</li>
-<li>内存级别产物</li>
-<li>重启即失效</li>
-<li>本地内存无法用在分布式场景</li>
-<li>不支持大数据量存储</li>
-</ul>
-<h4><a id="redis%E5%AE%89%E8%A3%85%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>redis安装布隆过滤器</h4>
-<ul>
-<li>loadmodule /usr/local/rebloom.so</li>
-<li>redis-cli -p 6379 bf.add myBloom redis1</li>
-</ul>
-<h4><a id="%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>秒杀系统</h4>
-<p><img src="media/15710044750017/15710055062721.jpg" alt="" style="width:1015px;" /></p>
-<ul>
-<li>功能核心点</li>
-<li>经典互联网商品抢购秒杀功能</li>
-<li>功能api 商品秒杀接口</li>
-<li>数据落地存储方案</li>
-<li>通过分布式redis减库存</li>
-<li>DB存最终订单信息数据 api性能调优</li>
-<li>性能瓶颈在高并发秒杀</li>
-<li>技术难题在于超卖问题</li>
-</ul>
-<h5><a id="%E7%B3%BB%E7%BB%9F%E5%88%86%E6%9E%90" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>系统分析</h5>
-<ul>
-<li><img src="media/15710044750017/15710057936881.jpg" alt="" style="width:1156px;" /></li>
-</ul>
-<h4><a id="%E7%A7%92%E6%9D%80%E5%8A%9F%E8%83%BD%E6%AD%A5%E9%AA%A4" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>秒杀功能步骤</h4>
-<ul>
-<li>首先通过数据控制模块，提前将秒杀商品缓存到读写分离 Redis，并设置秒杀开始标记如下:</li>
-<li>&quot;skuId_start&quot;: 0 //开始标记0表示秒杀开始</li>
-<li>&quot;skuId_count&quot;: 10000 //总数</li>
-<li>&quot;skuId_access&quot;: 12000 //接受抢购数</li>
-<li>秒杀开始前，服务集群读取 goodsId_Start 为 0，直接返回未开始。</li>
-<li>服务时间不一致可能导致流量倾斜，所有流量打到一个机器</li>
-<li>数据控制模块将 goodsId_start 改为1，标志秒杀开始。</li>
-<li>当接受下单数达到 sku_count*1.2 后，继续拦截所有请求，商品剩余数量为 0</li>
-</ul>
-<h4><a id="api%E5%AE%9E%E6%88%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>API实战</h4>
-<ul>
-<li>判断秒杀是否开始</li>
-<li>流量拦截</li>
-</ul>
-<h5><a id="%E4%BF%A1%E6%81%AF%E6%A0%A1%E9%AA%8C%E5%B1%82" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>信息校验层</h5>
-<ul>
-<li>订单信息校验层</li>
-<li>校验当前用户是否已经买过这个商品</li>
-<li>需要存储用户的uid 存数据库效率太低</li>
-<li>存Redis value方式数据太大</li>
-<li>存布隆过滤器性能高且数据量小</li>
-<li>校验完通过直接返回抢购成功</li>
-</ul>
-<h4><a id="%E5%BA%93%E5%AD%98%E6%89%A3%E5%87%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>库存扣减</h4>
-<ul>
-<li>库存扣除成功，获取当前最新库存 如果库存大于0，即马上进行库存扣除，并且访问抢购成功给用户</li>
-<li>考虑原子性问题</li>
-<li>保证原子性的方式，采用lua脚本</li>
-<li>采用lua脚本方式保证原子性带来缺点</li>
-<li>性能有所下降不保证原子性缺点，放入请求量可能大于预期值</li>
-<li>当前扣除库存场景必须保证原子性，否则会导致超卖 返回抢购结果</li>
-<li>抢购成功</li>
-<li>库存没了 ，抢购失败<br />
-<img src="media/15710044750017/15710074434359.jpg" alt="" style="width:385px;" /></li>
-</ul>
-
-
-			
-			
-		</div>
-
-	</article>
- 
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2019-10-04T10:10:03+08:00" itemprop="datePublished">2019/10/04 10:10 上午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html'>Redis高并发缓存</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15701550034103.html" itemprop="url">
-		延时队列</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<pre><code class="language-go">import &quot;github.com/garyburd/redigo/redis&quot;
- 
-func AddZset(data, zsetName string, score int64) (err error) {
-	con := pool.Get()
-	defer con.Close()
-	_, err = con.Do(&quot;zadd&quot;, zsetName, score, data)
-	if err != nil {
-		return
-	}
-	return
-}
-
-//index sorted set from start to end, [start:end], eg: [0:1] will return[member1, score1, member2, score2]
-func RangeZset(start, end int, zsetName string) (data []string, err error) {
-	con := pool.Get()
-	defer con.Close()
-	data, err = redis.Strings(con.Do(&quot;zrange&quot;, zsetName, start, end, &quot;withscores&quot;))
-	return
-}
-func RangeZsetByScore(start, end int64, zsetName string) (data []string, err error) {
-	con := pool.Get()
-	defer con.Close()
-	data, err = redis.Strings(con.Do(&quot;zrangebyscore&quot;, zsetName, start, end, &quot;withscores&quot;))
-	return
-}
-func RemZset(zsetName string, keys []string) (err error) {
-	if len(keys) == 0 {
-		return
-	}
-	con := pool.Get()
-	defer con.Close()
-	_, err = con.Do(&quot;zrem&quot;, redis.Args{}.Add(zsetName).AddFlat(keys)...)
-	return
-}
-</code></pre>
-
-
-			
-			
-		</div>
-
-	</article>
- 
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2019-10-04T05:40:17+08:00" itemprop="datePublished">2019/10/04 05:40 上午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html'>Redis高并发缓存</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15701388172178.html" itemprop="url">
-		微信红包</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="%E4%B8%9A%E5%8A%A1%E5%88%86%E6%9E%90" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>业务分析</h4>
-<p><img src="media/15701388172178/15701390212385.jpg" alt="" style="width:971px;" /><br />
-*</p>
-
-
-			
-			
-		</div>
-
-	</article>
- 
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2019-10-04T05:27:44+08:00" itemprop="datePublished">2019/10/04 05:27 上午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html'>Redis高并发缓存</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15701380646450.html" itemprop="url">
-		Redis持久化</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a></h4>
-
-
-			
-			
-		</div>
-
-	</article>
- 
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2019-10-03T07:22:32+08:00" itemprop="datePublished">2019/10/03 07:22 上午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html'>Redis高并发缓存</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15700585529718.html" itemprop="url">
-		Redis 集群</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="%E4%B8%80%E8%87%B4%E6%80%A7%E4%BF%9D%E8%AF%81" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>一致性保证</h4>
-<ul>
-<li>主节点对命令的复制工作发生在返回命令回复之后， 因为如果每次处理命令请求都需要等待复制操作 完成的话， 那么主节点处理命令请求的速度将极大地降低 —— 我们必须在性能和一致性之间做出权 衡。 注意:Redis 集群可能会在将来提供同步写的方法。 Redis 集群另外一种可能会丢失命令的情况 是集群出现了网络分区， 并且一个客户端与至少包括一个主节点在内的少数实例被孤立。</li>
-</ul>
-<h4><a id="%E5%88%86%E7%89%87%E9%87%8D%E5%93%88%E5%B8%8C" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>分片重哈希</h4>
-<ul>
-<li>添加一个新的主节点</li>
-</ul>
-<pre><code class="language-plain_text">./redis-trib.rb add-node 127.0.0.1:7006 127.0.0.1:7000
-</code></pre>
-<ul>
-<li>添加一个新的从节点</li>
-</ul>
-<pre><code class="language-plain_text">./redis-trib.rb add-node --slave 127.0.0.1:7006 127.0.0.1:7000
-</code></pre>
-<ul>
-<li>移除一个节点</li>
-</ul>
-<pre><code class="language-plain_text">./redis-trib.rb del-node 127.0.0.1:7000 &lt;node-id&gt; 
-</code></pre>
-<p>第一个参数是任意一个节点的地址,第二个节点是你想要移 除的节点地址。</p>
-<h4><a id="%E9%9B%86%E7%BE%A4%E9%97%AE%E9%A2%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>集群问题</h4>
-<p><img src="media/15700585529718/15700600532398.jpg" alt="" style="width:1192px;" /></p>
-<h4><a id="%E5%88%86%E7%89%87%E9%97%AE%E9%A2%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>分片问题</h4>
-<ul>
-<li>水平切分于垂直切分相比，相对来说稍微复杂一些。因为要将同一个表中的不同数据拆分到不同的数据 库中。 分片是一种基于数据库分成若干片段的传统概念扩容技术，它将数据库分割成多个碎片并将这 些碎片放置在不同的服务器上。</li>
-<li>垂直切分的最大特点就是规则简单，实施也更为方便，尤其适合各业务之间的耦合度非常低，相互影响很小，业务逻辑非常清晰的系统。按照业务维度将不同数据放入不同的表</li>
-</ul>
-<h4><a id="%E4%B8%80%E8%87%B4%E6%80%A7hash%E7%AE%97%E6%B3%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>一致性hash算法</h4>
-<p><img src="media/15700585529718/15700606333480.jpg" alt="" style="width:1150px;" /></p>
-<ul>
-<li>hash环上顺时针从整数0开始，一直到最大正整数，我们根据四个ip计算的hash值肯定会落到这个hash 环上的某一个点，至此我们把服务器的四个ip映射到了一致性hash环</li>
-<li>当用户在客户端进行请求时候，首先根据hash(用户id)计算路由规则(hash值)，然后看hash值落到了 hash环的那个地方，根据hash值在hash环上的位置顺时针找距离最近的ip作为路由ip</li>
-</ul>
-<h4><a id="%E4%B8%80%E8%87%B4%E6%80%A7hash%E7%AE%97%E6%B3%95%E8%99%9A%E6%8B%9F%E8%8A%82%E7%82%B9" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>一致性HASH算法虚拟节点</h4>
-<ul>
-<li></li>
-</ul>
-
-
-			
-			
-		</div>
-
-	</article>
- 
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2019-10-02T07:02:58+08:00" itemprop="datePublished">2019/10/02 07:02 上午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html'>Redis高并发缓存</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15699709788203.html" itemprop="url">
-		读写分离高可用</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="%E6%97%A7%E7%89%88%E6%9C%AC%E5%A4%8D%E5%88%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>旧版本复制</h4>
-<ul>
-<li>SYNC是一个非常耗费资源的操作</li>
-<li>主服务器需要执行BGSAVE命令来生成RDB文件，这个生成操作会耗费主服务器大量的的 CPU、内存和磁盘读写资源 主服务器将RDB文件发送给从服务器，这个发送操作会耗费主从服务器大量的网络带宽和流 量，并对主服务器响应命令 请求的时间产生影响:接收到RDB文件的从服务器在载入文件的过程是阻塞的，无法处理命令 请求</li>
-</ul>
-<h4><a id="%E6%96%B0%E7%89%88%E6%9C%AC%E5%A4%8D%E5%88%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>新版本复制</h4>
-<p><img src="media/15699709788203/15699714704625.jpg" alt="" style="width:1002px;" /><br />
-<img src="media/15699709788203/15699717831453.jpg" alt="" style="width:1039px;" /></p>
-<ul>
-<li>主服务的复制偏移量(replication offset)和从服务器的复制偏移量 主服务器的复制积压缓冲区(replication backlog),默认大小为1M</li>
-<li>服务器的运行ID(run ID),用于存储服务器标识，如从服务器断线重新连接，取到主服务器 的运行ID与重接后的主服务器运行ID进行对比，从而判断是执行部分重同步还是执行完 整重同步</li>
-</ul>
-
-
-			
-			
-		</div>
-
-	</article>
-  
-
-</div>
-<nav id="pagenavi">
-	 
-	
-	<div class="center"><a href="archives.html">Blog Archives</a></div>
-
-</nav>
-
-</div>
-
-
-
+<div class="hero-body ct-body">
+        <div class="container">
+              <div class="columns is-centered">
+                  <div class="column  is-four-fifths">
+                      <div class="columns is-mobile">
+                          <div class="column">
+                              <h1 class="title">
+       凌云阁
+              
+                              </h1>
+                              <h2 class="subtitle">
+                                 2024 重新扬帆启航！
+                              </h2>
+                          </div>
+                          <div class="column is-narrow"><figure class="image is-128x128">
+                            
+                              <img class="is-rounded" src="https://i.loli.net/2020/02/22/Si1K7sluept2ZgR.jpg">
+                            
+                            </figure></div>
+                      </div>
+                        
+                      
+                  </div>
+                  
+                </div>
+            
+              
+        
         </div>
-			<footer id="footer" class="inner">Copyright &copy; 2014
-Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a> &nbsp;&nbsp; 
-Theme by <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a>
+      </div>
+</section>
+<section class="ct-body">
+      <div class="container">
+          <div class="columns is-variable bd-klmn-columns is-4">
+              <div class="column is-two-thirds">
+                
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15698861133746.html"> 
+                            <h2 class="title">分布式锁</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15698861133746.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2019/10/01 07:28 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html'>Redis高并发缓存</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15710940470602.html"> 
+                            <h2 class="title">直播消息</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15710940470602.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2019/10/15 07:00 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html'>Redis高并发缓存</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15710898154881.html"> 
+                            <h2 class="title">微信红包</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15710898154881.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2019/10/15 05:50 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html'>Redis高并发缓存</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15710044750017.html"> 
+                            <h2 class="title">布隆过滤器</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15710044750017.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2019/10/14 06:07 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html'>Redis高并发缓存</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15701550034103.html"> 
+                            <h2 class="title">延时队列</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15701550034103.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2019/10/04 10:10 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html'>Redis高并发缓存</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15701388172178.html"> 
+                            <h2 class="title">微信红包</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15701388172178.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2019/10/04 05:40 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html'>Redis高并发缓存</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15701380646450.html"> 
+                            <h2 class="title">Redis持久化</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15701380646450.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2019/10/04 05:27 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html'>Redis高并发缓存</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15700585529718.html"> 
+                            <h2 class="title">Redis 集群</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15700585529718.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2019/10/03 07:22 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html'>Redis高并发缓存</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15699709788203.html"> 
+                            <h2 class="title">读写分离高可用</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15699709788203.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2019/10/02 07:02 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html'>Redis高并发缓存</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+
+                  <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+                    <a class="pagination-previous"  disabled="disabled" ><span class="tran-prev-page">&laquo; Prev Page</span></a>  
+                    <a class="pagination-next"  disabled="disabled" ><span class="tran-next-page">Next Page &raquo;</span></a>                   
+                  </nav>
+
+              </div><!-- end column -->
+              <div class="column">
+                  <div class="card">
+                      <header class="card-header">
+                        <p class="card-header-title">
+                           <span class="tran-site-categories">Categories</span> 
+                        </p>
+                     
+                      </header>
+                      <div class="card-content site-categories">
+                        <div class="content"> 
+                          <ul>
+                          
+                                <li><a href="%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95%E5%AE%9E%E6%88%98.html">代码随想录实战</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Redis%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98.html">Redis核心技术与实战</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E7%B3%BB%E7%BB%9F%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html">系统性能调优必知必会</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E5%88%86%E5%B8%83%E5%BC%8F%E5%8D%8F%E8%AE%AE%E5%92%8C%E7%AE%97%E6%B3%95%E5%AE%9E%E6%88%98.html">分布式协议和算法实战</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html">C++基础与提高</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html">设计模式</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Python.html">Python</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Golang.html">Golang</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html">设计模式之美</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%80%A7%E8%83%BD%E5%B7%A5%E7%A8%8B%E9%AB%98%E6%89%8B%E8%AF%BE.html">性能工程高手课</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95.html">性能测试</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Prometheus.html">Prometheus</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="RocketMQ.html">RocketMQ</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE.html">网络协议</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Django.html">Django</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html">深入剖析Kubernetes</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html">数据结构和算法</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E5%BE%AE%E6%9C%8D%E5%8A%A1.html">微服务</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%9E%B6%E6%9E%84.html">架构</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html">操作系统原理</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html">Mysql优化实战</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Kafka.html">Kafka</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html">linux服务器研发</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86.html">计算机组成原理</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E7%A8%8B%E5%BA%8F%E5%91%98%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB.html">程序员的自我修养</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="C%E8%AF%AD%E8%A8%80%E8%BF%9B%E9%98%B6.html">C语言进阶</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="http_study.html">http_study</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E7%8E%A9%E8%BD%AC%E7%AE%97%E6%B3%95.html">玩转算法</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="C++%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B.html">C++对象模型</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="SQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html">SQL必知必会</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Zookeeper.html">Zookeeper</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Redis%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A.html">Redis从入门到精通</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E8%BF%9B%E9%98%B6.html">数据结构和算法进阶</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Mysql%E6%80%A7%E8%83%BD%E7%AE%A1%E7%90%86%E5%92%8C%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1.html">Mysql性能管理和架构设计</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98.html">网络编程实战</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html">Redis高并发缓存</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html">Linux性能优化实战</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E5%80%99%E6%8D%B7STL.html">候捷STL</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="ElasticSearch.html">ElasticSearch</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="RabbitMQ.html">RabbitMQ</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="etcd.html">etcd</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="RocketMQ-1.html">RocketMQ</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="mysql.html">mysql</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                          </ul>
+                        </div>
+                      </div>
+                     
+                    </div>
+
+                    <div class="card">
+                        <header class="card-header">
+                          <p class="card-header-title">
+                              <span class="tran-site-tags">Tags</span> 
+                          </p>
+                       
+                        </header>
+                        <div class="card-content site-tags">
+                          <div class="content">
+                           <div class="tags">
+                            
+                              <a class="tag is-link is-light" href="tag_Docker.html">#Docker</a> 
+                            
+                              <a class="tag is-link is-light" href="tag_K8S.html">#K8S</a> 
+                            
+                              <a class="tag is-link is-light" href="tag_%E6%80%A7%E8%83%BD%E5%B7%A5%E7%A8%8B.html">#性能工程</a> 
+                            
+                              <a class="tag is-link is-light" href="tag_%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95.html">#性能测试</a> 
+                            
+                           </div>
+                             
+                          </div>
+                        </div>
+                       
+                      </div>
+
+              </div>
+            </div>
+
+          
+      </div>
+    </section>
+
+    <footer class="footer">
+        <div class="content has-text-centered">
+          <p>
+              Copyright &copy; 2024
+              Powered by <a target="_blank" href="http://www.mweb.im">geraltlau</a>&nbsp; 
+          </p>
+        </div>
       </footer>
-		</div>
-	</div>
+
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
+
+
+
+div.code-toolbar {
+  position: relative;
+}
+
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
+
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
+
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
+
 
   
     
 
 
 
-</body>
+
+  </body>
 </html>

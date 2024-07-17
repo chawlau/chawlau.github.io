@@ -1,618 +1,729 @@
-<!DOCTYPE HTML>
-<html>
-<head>
-	<meta charset="utf-8">
-	<title>  
-	  
-  	Mysql优化实战 -        凌云阁
-  	
-	</title>
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+      
+    Mysql优化实战 -        凌云阁
+    
+    </title>
+    <link rel="shortcut icon" href="https://i.loli.net/2020/02/22/Si1K7sluept2ZgR.jpg" type="image/png" />
 
-  <meta name="HandheldFriendly" content="True">
-  <meta name="MobileOptimized" content="320">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-	<link href="atom.xml" rel="alternate" title="       凌云阁" type="application/atom+xml">
-
-	<link href="asset/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-	<link href="asset/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
-	<script src="asset/javascripts/jquery.min.js"></script>
-	<script src="asset/highlightjs/highlight.pack.js"></script>
-	<link href="asset/highlightjs/styles/solarized_dark.css" media="screen, projection" rel="stylesheet" type="text/css">
-<script>hljs.initHighlightingOnLoad();</script>
-
-	<!--[if lt IE 9]><script src="asset/javascripts/html5.js"></script><![endif]-->
-	<!-- <link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'> -->
-	<style type="text/css">
-/* latin */
-@font-face {
-  font-family: 'Nunito';
-  font-style: normal;
-  font-weight: 300;
-  src: local('Nunito-Light'), url(asset/font/1TiHc9yag0wq3lDO9cw0voX0hVgzZQUfRDuZrPvH3D8.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
-}
-/* latin */
-@font-face {
-  font-family: 'Nunito';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Nunito-Regular'), url(asset/font/6TbRXKWJjpj6V2v_WyRbMX-_kf6ByYO6CLYdB4HQE-Y.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
-}
-/* latin */
-@font-face {
-  font-family: 'Nunito';
-  font-style: normal;
-  font-weight: 700;
-  src: local('Nunito-Bold'), url(asset/font/TttUCfJ272GBgSKaOaD7KoX0hVgzZQUfRDuZrPvH3D8.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
-}
-	</style>
-	
-	<style type="text/css">
-	.container .left-col{ opacity: 1;}
-	#pagenavi a{ font-size: 1.3em;}
-	#pagenavi .next:before{ top: 3px;}
-	#pagenavi .prev:before{ top: 3px;}
-	.container .mid-col .mid-col-container #content .archives .title{ font-size: 1.5em;}
-	.container .mid-col .mid-col-container #content article{ padding: 15px 0px;}
-	#header .subtitle {
-		line-height: 1.2em;
-		padding-top: 8px;
-	}
-	article pre{ background: none; border: none; padding: 0;}
-	article .entry-content{text-align: left;}
-	.share-comment{ padding: 25px 0px; clear: both;}
-	hr{ margin: 20px 0px;border: 0; border-top:solid 1px #ddd;}
-
-	</style>
-  
-
+    
+    
+    <link href="atom.xml" rel="alternate" title="       凌云阁" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/style.min.css">
+    <link rel="stylesheet" href="asset/css/doc.css">
+    <script src="asset/app.js"></script>
 </head>
+  <body>
+    <section class="hero">
+      <div class="hero-head">
+          <nav class="navbar" role="navigation" aria-label="main navigation">
+              <div class="container">
+              <div class="navbar-brand">
+                
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
+                
+                <a target="_self" class="navbar-item " href="archives.html">Archives</a>
+                
 
+                <a role="button" id="navbarSNSRssSwitchBtn" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarSNSRssButtons">
+                  <span aria-hidden="true"></span>
+                  <span aria-hidden="true"></span>
+                  <span aria-hidden="true"></span>
+                </a>
+              </div>
+            
+              <div id="navbarSNSRssButtons" class="navbar-menu">
+                <div class="navbar-start">
+                  
+                </div>
+            
+                <div class="navbar-end">
+                  <div class="navbar-item">
+                    <!--buttons start-->
+                    <div class="buttons">
+                      
+                        
+                        
 
-<body>
-	<div class="container">
-		<div class="left-col">
-			<div class="intrude-less">
-				<header id="header" class="inner">
-				 
-				 	<div class="profilepic">
-						<img src="https://i.loli.net/2020/02/22/Si1K7sluept2ZgR.jpg" style="width:160px;">
-					</div>
-            	
-					
-					<h1><a href="index.html">       凌云阁</a></h1>
-					<p class="subtitle">生命的意义是成为你自己！</p>
-					<nav id="main-nav">
-						<ul class="main">
-						
-						  <li id=""><a target="_self" href="index.html">Home</a></li>
-						
-						  <li id=""><a target="_self" href="archives.html">Archives</a></li>
-						
-						</ul>
-					</nav>
+                        <a href="www.facebook.com" target="_blank" title="facebook">
+                            <span class="icon is-large has-text-grey-darker">
+                               <svg class="svg-inline--fa fa-facebook fa-w-16 fa-lg" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="facebook" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M504 256C504 119 393 8 256 8S8 119 8 256c0 123.78 90.69 226.38 209.25 245V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.28c-30.8 0-40.41 19.12-40.41 38.73V256h68.78l-11 71.69h-57.78V501C413.31 482.38 504 379.78 504 256z"></path></svg><!-- <i class="fab fa-facebook fa-lg"></i> -->
+                            </span>
+                          </a>
+                        
+                        
+                        <a href="www.github.com/chawlau" target="_blank" title="github">
+                            <span class="icon is-large has-text-grey-darker">
+                               <svg class="svg-inline--fa fa-github fa-w-16 fa-lg" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="github" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" data-fa-i2svg=""><path fill="currentColor" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg><!-- <i class="fab fa-github fa-lg"></i> -->
+                            </span>
+                          </a>
+                        
+                        
+                     <a href="www.twitter.com"  target="_blank" title="twitter">
+                       <span class="icon is-large has-text-grey-darker">
+                          <svg class="svg-inline--fa fa-twitter fa-w-16 fa-lg" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="twitter" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"></path></svg><!-- <i class="fab fa-twitter fa-lg"></i> -->
+                       </span>
+                     </a>
+                      
+                      
+                      <a href="www.weibo.com" target="_blank" title="weibo">
+                          <span class="icon is-large has-text-grey-darker">
+                            <svg class="svg-inline--fa fa-weibo fa-w-16 fa-lg" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="weibo" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M407 177.6c7.6-24-13.4-46.8-37.4-41.7-22 4.8-28.8-28.1-7.1-32.8 50.1-10.9 92.3 37.1 76.5 84.8-6.8 21.2-38.8 10.8-32-10.3zM214.8 446.7C108.5 446.7 0 395.3 0 310.4c0-44.3 28-95.4 76.3-143.7C176 67 279.5 65.8 249.9 161c-4 13.1 12.3 5.7 12.3 6 79.5-33.6 140.5-16.8 114 51.4-3.7 9.4 1.1 10.9 8.3 13.1 135.7 42.3 34.8 215.2-169.7 215.2zm143.7-146.3c-5.4-55.7-78.5-94-163.4-85.7-84.8 8.6-148.8 60.3-143.4 116s78.5 94 163.4 85.7c84.8-8.6 148.8-60.3 143.4-116zM347.9 35.1c-25.9 5.6-16.8 43.7 8.3 38.3 72.3-15.2 134.8 52.8 111.7 124-7.4 24.2 29.1 37 37.4 12 31.9-99.8-55.1-195.9-157.4-174.3zm-78.5 311c-17.1 38.8-66.8 60-109.1 46.3-40.8-13.1-58-53.4-40.3-89.7 17.7-35.4 63.1-55.4 103.4-45.1 42 10.8 63.1 50.2 46 88.5zm-86.3-30c-12.9-5.4-30 .3-38 12.9-8.3 12.9-4.3 28 8.6 34 13.1 6 30.8.3 39.1-12.9 8-13.1 3.7-28.3-9.7-34zm32.6-13.4c-5.1-1.7-11.4.6-14.3 5.4-2.9 5.1-1.4 10.6 3.7 12.9 5.1 2 11.7-.3 14.6-5.4 2.8-5.2 1.1-10.9-4-12.9z"></path></svg><!-- <i class="fab fa-weibo fa-lg"></i> -->
+                          </span>
+                      </a>
+                      
+                      <a href="atom.xml" target="_blank" title="RSS">
+                          <span class="icon is-large has-text-black-bis">
+                              <svg class="svg-inline--fa fa-rss fa-w-14 fa-lg" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="rss" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M128.081 415.959c0 35.369-28.672 64.041-64.041 64.041S0 451.328 0 415.959s28.672-64.041 64.041-64.041 64.04 28.673 64.04 64.041zm175.66 47.25c-8.354-154.6-132.185-278.587-286.95-286.95C7.656 175.765 0 183.105 0 192.253v48.069c0 8.415 6.49 15.472 14.887 16.018 111.832 7.284 201.473 96.702 208.772 208.772.547 8.397 7.604 14.887 16.018 14.887h48.069c9.149.001 16.489-7.655 15.995-16.79zm144.249.288C439.596 229.677 251.465 40.445 16.503 32.01 7.473 31.686 0 38.981 0 48.016v48.068c0 8.625 6.835 15.645 15.453 15.999 191.179 7.839 344.627 161.316 352.465 352.465.353 8.618 7.373 15.453 15.999 15.453h48.068c9.034-.001 16.329-7.474 16.005-16.504z"></path></svg><!-- <i class="fas fa-rss fa-lg"></i> -->
+                          </span>
+                      </a>
+                    </div>
+                    <!--buttons end-->
 
-					<nav id="sub-nav">
-						<div class="social">
+                  </div>
+                </div>
+                </div>
+              </div>
+            </nav>
+      </div>
 
-<a target="_blank" class="facebook" href="www.facebook.com" title="Facebook">Facebook</a>
-
-
-
-
-
-
-<a target="_blank" class="weibo" href="www.weibo.com" title="weibo">Weibo</a>
-<a target="_blank" class="twitter" target="_blank" href="www.twitter.com" title="Twitter">Twitter</a>
-<a target="_blank" class="github" target="_blank" href="www.github.com/chawlau" title="GitHub">GitHub</a>
-
-
-								
-
-								<a class="rss" href="atom.xml" title="RSS">RSS</a>
-							
-						</div>
-					</nav>
-				</header>				
-			</div>
-		</div>	
-		<div class="mid-col">
-			<div class="mid-col-container"> <div id="content" class="inner">
-<div itemscope itemtype="http://schema.org/Blog">
-
-
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2018-12-21T10:50:13+08:00" itemprop="datePublished">2018/12/21 10:50 上午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15453606137574.html" itemprop="url">
-		如何正确的显示随机信息</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="%E5%8E%9F%E5%A7%8B%E7%AE%97%E6%B3%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>原始算法</h4>
-<pre><code class="language-plain_text">mysql&gt; select word from words order by rand() limit 3;
-</code></pre>
-<h4><a id="%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%951" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>优化算法1</h4>
-<pre><code class="language-plain_text">mysql&gt; select max(id),min(id) into @M,@N from t ;
-set @X= floor((@M-@N+1)*rand() + @N);
-select * from t where id &gt;= @X limit 1;
-</code></pre>
-<ul>
-<li>有概率不均匀的问题</li>
-</ul>
-<h4><a id="%E7%AE%97%E6%B3%952" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>算法2</h4>
-<pre><code class="language-plain_text">mysql&gt; select count(*) into @C from t;
-set @Y = floor(@C * rand());
-set @sql = concat(&quot;select * from t limit &quot;, @Y, &quot;,1&quot;);
-prepare stmt from @sql;
-execute stmt;
-DEALLOCATE prepare stmt;
-</code></pre>
-
-
-			
-			
-		</div>
-
-	</article>
  
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2018-12-29T10:01:01+08:00" itemprop="datePublished">2018/12/29 10:01 上午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15460488614529.html" itemprop="url">
-		幻读</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="%E6%A6%82%E5%BF%B5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>概念</h4>
-<ul>
-<li>幻读仅仅指新插入的行</li>
-<li>幻读指的是一个事务在前后两次查询同一个范围的时候，后一次查询看到了前一次查询没有看到的行。</li>
-</ul>
-<h4><a id="%E5%BD%93%E5%89%8D%E8%AF%BB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>当前读</h4>
-<ul>
-<li>for update</li>
-</ul>
-<h4><a id="%E5%B9%BB%E8%AF%BB%E5%BC%95%E5%8F%91%E7%9A%84%E9%97%AE%E9%A2%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>幻读引发的问题</h4>
-<ul>
-<li>数据一致性是数据库内部数据状态在此刻的一致性，还包含了数据和日志在逻辑上的一致性</li>
-</ul>
-<h4><a id="%E9%97%B4%E9%9A%99%E9%94%81" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>间隙锁</h4>
-<ul>
-<li>保护两个值之间的空隙不允许插入新的值</li>
-<li>在可重复读的级别下生效，读提交的情况下间隙锁不会生效</li>
-<li>读提交下操作数据的锁范围更小，这个选择是合理的</li>
-<li>binlog_format=row配合间隙锁解决数据和日志不一致</li>
-<li>binlog和实际操作的结果数据不一致</li>
-<li></li>
-</ul>
-
-
-			
-			
-		</div>
-
-	</article>
- 
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2019-01-17T16:59:12+08:00" itemprop="datePublished">2019/01/17 16:59 下午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15477155524350.html" itemprop="url">
-		Mysql高可用</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="seconds-behind-master" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>seconds_behind_master</h4>
-<ul>
-<li>每个事务的 binlog 里面都有一个时间字段，用于记录主库上写入的时间；</li>
-<li>备库取出当前正在执行的事务的时间字段的值，计算它与当前系统时间的差值，得到 seconds_behind_master。</li>
-</ul>
-<h4><a id="%E4%B8%BB%E5%A4%87%E5%BB%B6%E8%BF%9F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>主备延迟</h4>
-<ul>
-<li>备库机器性能比较差</li>
-<li>备库压力大</li>
-<li>一主多从</li>
-<li>通过binlog输出到外部系统如hadoop</li>
-<li>大事务 一次性删除太多历史数据 大表DDL</li>
-<li>备库的并行复制能力</li>
-</ul>
-<h4><a id="%E5%8F%AF%E9%9D%A0%E6%80%A7%E4%BC%98%E5%85%88%E7%AD%96%E7%95%A5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>可靠性优先策略</h4>
-<ul>
-<li>双M结构下主从切换，然后等切换成主库的备库的seconds_behind_master=0,把备库改成可读写状态</li>
-<li><img src="media/15477155524350/54f4c7c31e6f0f807c2ab77f78c8844a.png" alt="54f4c7c31e6f0f807c2ab77f78c8844a" /></li>
-</ul>
-<h4><a id="%E5%8F%AF%E7%94%A8%E6%80%A7%E4%BC%98%E5%85%88%E7%AD%96%E7%95%A5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>可用性优先策略</h4>
-<ul>
-<li>双M主备的切换过程中，不等主备同步，直接把连接切到备库</li>
-<li>如果binglog是statement会导致主备不一致，如果是row则会抛出异常不会执行</li>
-<li></li>
-</ul>
-
-
-			
-			
-		</div>
-
-	</article>
- 
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2019-01-17T17:45:12+08:00" itemprop="datePublished">2019/01/17 17:45 下午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15477183125806.html" itemprop="url">
-		备库长时间延迟</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="coordinator%E5%88%86%E5%8F%91" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>coordinator分发</h4>
-<ul>
-<li>不能造成更新覆盖。这就要求更新同一行的两个事务，必须被分发到同一个worker中</li>
-<li>同一个事务不能被拆开，必须放到同一个worker中。</li>
-</ul>
-<h4><a id="%E5%B9%B6%E8%A1%8C%E5%A4%8D%E5%88%B6%E7%AD%96%E7%95%A5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>并行复制策略</h4>
-<ul>
-<li>按表分发策略</li>
-<li>worker线程维护库名+表名 + 冲突 (该线程修改这个表的事物数目)</li>
-<li>如果跟所有 worker 都不冲突，coordinator 线程就会把这个事务分配给最空闲的 woker;</li>
-<li>如果跟多于一个 worker 冲突，coordinator 线程就进入等待状态，直到和这个事务存在冲突关系的 worker 只剩下 1 个；</li>
-<li>如果只跟一个 worker 冲突，coordinator 线程就会把这个事务分配给这个存在冲突关系的 worker</li>
-<li>不足 如果碰到热点表，比如所有的更新事务都会涉及到某一个表的时候，所有事务都会被分配到同一个 worker 中，就变成单线程复制了。</li>
-</ul>
-<h4><a id="%E6%8C%89%E8%A1%8C%E5%88%86%E5%8F%91%E7%AD%96%E7%95%A5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>按行分发策略</h4>
-<ul>
-<li>如果两个事务没有更新相同的行，它们在备库上可以并行执行。显然，这个模式要求 binlog 格式必须是 row。</li>
-<li>每个worker的hash表的key是库名 + 表名 + 唯一键的名字 + 唯一的键的值</li>
-<li>要能够从 binlog 里面解析出表名、主键值和唯一索引的值。也就是说，主库的 binlog 格式必须是 row；</li>
-<li>表必须有主键；</li>
-<li>不能有外键。表上如果有外键，级联更新的行不会记录在 binlog 中，这样冲突检测就不准确。</li>
-<li>不足</li>
-<li>耗费内存。比如一个语句要删除 100 万行数据，这时候 hash 表就要记录 100 万个项。</li>
-<li>耗费 CPU。解析 binlog，然后计算 hash 值，对于大事务，这个成本还是很高的。</li>
-</ul>
-<h4><a id="%E7%A4%BE%E5%8C%BA%E5%B9%B6%E8%A1%8C%E5%A4%8D%E5%88%B6%E7%AD%96%E7%95%A5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>社区并行复制策略</h4>
-<ul>
-<li>按库分发</li>
-</ul>
-<h4><a id="maradb" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>maradb</h4>
-<ul>
-<li>利用特性</li>
-<li>能够在同一组里提交的事务，一定不会修改同一行；</li>
-<li>主库上可以并行执行的事务，备库上也一定是可以并行执行的。</li>
-<li>复制策略</li>
-<li>在一组里面一起提交的事务，有一个相同的 commit_id，下一组就是 commit_id+1；</li>
-<li>commit_id 直接写到 binlog 里面；</li>
-<li>传到备库应用的时候，相同 commit_id 的事务分发到多个 worker 执行；</li>
-<li>这一组全部执行完成后，coordinator 再去取下一批。</li>
-</ul>
-<h4><a id="mysql5-7%E5%B9%B6%E8%A1%8C%E5%A4%8D%E5%88%B6%E7%AD%96%E7%95%A5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>mysql5.7并行复制策略</h4>
-<ul>
-<li>LOGICAL_CLOCK</li>
-<li>同时处于 prepare 状态的事务，在备库执行时是可以并行的；</li>
-<li>处于 prepare 状态的事务，与处于 commit 状态的事务之间，在备库执行时也是可以并行的。</li>
-<li>binlog_group_commit_sync_delay</li>
-<li>binlog_group_commit_sync_no_delay_count</li>
-<li>也可以提升从库的复制并发度</li>
-<li>binlog-transaction-dependency-tracking</li>
-<li>COMMIT_ORDER，表示的就是前面介绍的，根据同时进入 prepare 和 commit 来判断是否可以并行的策略。</li>
-<li>WRITESET，表示的是对于事务涉及更新的每一行，计算出这一行的 hash 值，组成集合 writeset。如果两个事务没有操作相同的行，也就是说它们的 writeset 没有交集，就可以并行。</li>
-<li>WRITESET_SESSION，是在 WRITESET 的基础上多了一个约束，即在主库上同一个线程先后执行的两个事务，在备库执行的时候，要保证相同的先后顺序。</li>
-<li>优势</li>
-<li>writeset 是在主库生成后直接写入到 binlog 里面的，这样在备库执行的时候，不需要解析 binlog 内容（event 里的行数据），节省了很多计算量；</li>
-<li>不需要把整个事务的 binlog 都扫一遍才能决定分发到哪个 worker，更省内存；</li>
-<li>由于备库的分发策略不依赖于 binlog 内容，所以 binlog 是 statement 格式也是可以的。</li>
-<li></li>
-</ul>
-
-
-			
-			
-		</div>
-
-	</article>
- 
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2019-02-01T09:03:36+08:00" itemprop="datePublished">2019/02/01 09:03 上午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15489830169180.html" itemprop="url">
-		Join语句优化</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="multi-range-read" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Multi-Range Read</h4>
-<ul>
-<li>根据索引 a，定位到满足条件的记录，将 id 值放入 read_rnd_buffer 中 ;</li>
-<li>将 read_rnd_buffer 中的 id 进行递增排序；</li>
-<li>排序后的 id 数组，依次到主键 id 索引中查记录，并作为结果返回</li>
-<li>read_rnd_buffer由read_rnd_buffer_length</li>
-<li>优化核心原因</li>
-<li>MRR 能够提升性能的核心在于，这条查询语句在索引 a 上做的是一个范围查询（也就是说，这是一个多值查询），可以得到足够多的主键 id。这样通过排序以后，再去主键索引查数据，才能体现出“顺序性”的优势。</li>
-</ul>
-<h4><a id="batched-key-access" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Batched Key Access</h4>
-<ul>
-<li>NLJ的优化一次性驱动表多取出索引值跟被驱动表进行多行匹配</li>
-<li>BNL优化把</li>
-<li>表 t2 中满足条件的数据放在临时表 tmp_t 中；</li>
-<li>给临时表 tmp_t 的字段 b 加上索引；</li>
-<li>让表 t1 和 tmp_t 做 join 操作。</li>
-</ul>
-<h4><a id="sql%E6%93%8D%E7%BB%83%E8%AF%AD%E5%8F%A5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>SQL操练语句</h4>
-<pre><code class="language-plain_text">explain select * from t2 where a&gt;=100 and a&lt;=200;
-explain select * from t1 join t2 on (t1.b=t2.b) where t2.b&gt;=1 and t2.b&lt;=2000;
-优化BNL
-create temporary table temp_t(id int primary key, a int, b int, index(b))engine=innodb;
-insert into temp_t select * from t2 where b&gt;=1 and b&lt;=2000;
-select * from t1 join temp_t on (t1.b=temp_t.b);
-</code></pre>
-
-
-			
-			
-		</div>
-
-	</article>
- 
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2019-02-04T11:20:09+08:00" itemprop="datePublished">2019/02/04 11:20 上午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15492504094153.html" itemprop="url">
-		临时表</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="%E5%86%85%E5%AD%98%E8%A1%A8%E5%92%8C%E4%B8%B4%E6%97%B6%E8%A1%A8%E5%8C%BA%E5%88%AB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>内存表和临时表区别</h4>
-<ul>
-<li>内存表，指的是使用 Memory 引擎的表，建表语法是 create table … engine=memory。这种表的数据都保存在内存里，系统重启的时候会被清空，但是表结构还在</li>
-<li>而临时表，可以使用各种引擎类型 。如果是使用 InnoDB 引擎或者 MyISAM 引擎的临时表，写数据的时候是写到磁盘上的。当然，临时表也可以使用 Memory 引擎</li>
-</ul>
-<h4><a id="%E4%B8%B4%E6%97%B6%E8%A1%A8%E7%89%B9%E7%82%B9" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>临时表特点</h4>
-<ul>
-<li>建表语法是 create temporary table …。</li>
-<li>一个临时表只能被创建它的 session 访问，对其他线程不可见。所以，图中 session A 创建的临时表 t，对于 session B 就是不可见的。</li>
-<li>临时表可以与普通表同名。</li>
-<li>session A 内有同名的临时表和普通表的时候，show create 语句，以及增删改查语句访问的是临时表。</li>
-<li>show tables 命令不显示临时表。</li>
-</ul>
-<h4><a id="%E4%B8%B4%E6%97%B6%E8%A1%A8%E5%AD%98%E5%82%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>临时表存储</h4>
-<ul>
-<li>文件名的后缀是.frm，前缀是“#sql{进程 id}<em>{线程 id}</em> 序列号”</li>
-<li>MySQL 引入了一个临时文件表空间，专门用来存放临时文件的数据。因此，我们就不需要再创建 ibd 文件了。</li>
-<li>临时表库名+表名+server_id+thread_id</li>
-</ul>
-<h4><a id="%E4%B8%BB%E4%BB%8E%E5%90%8C%E6%AD%A5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>主从同步</h4>
-<ul>
-<li>创建临时表的语句会传到备库执行，因此备库的同步线程就会创建这个临时表。主库在线程退出的时候，会自动删除临时表，但是备库同步线程是持续在运行的。所以，这时候我们就需要在主库上再写一个 DROP TEMPORARY TABLE 传给备库执行。</li>
-<li>果执行 drop table t_normal，系统记录 binlog 就会写成：</li>
-</ul>
-<pre><code class="language-plain_text">DROP TABLE `t_normal` /* generated by server */
-</code></pre>
-<ul>
-<li>从库区别主库同名临时通过server_id+thread_id+database+table</li>
-</ul>
-<h4><a id="%E6%80%BB%E7%BB%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>总结</h4>
-<ul>
-<li>在 binlog_format='row’的时候，临时表的操作不记录到 binlog 中，也省去了不少麻烦</li>
-<li></li>
-</ul>
-
-
-			
-			
-		</div>
-
-	</article>
- 
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2019-02-10T09:11:59+08:00" itemprop="datePublished">2019/02/10 09:11 上午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15497611194576.html" itemprop="url">
-		内部临时表</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="%E5%86%85%E5%AD%98%E4%B8%B4%E6%97%B6%E8%A1%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>内存临时表</h4>
-<ul>
-<li>tmp_table_size控制内存临时表大小</li>
-</ul>
-<h4><a id="group-by%E4%BC%98%E5%8C%96" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>group by优化</h4>
-<ul>
-<li>优化原因</li>
-<li>内存临时表还是磁盘临时表，group by 逻辑都需要构造一个带唯一索引的表，执行代价都是比较高的。如果表的数据量比较大，上面这个 group by 语句执行起来就会很慢</li>
-<li>generated column 添加索引</li>
-<li>直接排序，使用磁盘临时表进行辅助, 通过SQL_BIG_RESULT来提示优化器</li>
-</ul>
-<h4><a id="%E5%86%85%E5%AD%98%E4%B8%B4%E6%97%B6%E8%A1%A8%E4%BD%BF%E7%94%A8%E4%BA%8B%E9%A1%B9" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>内存临时表使用事项</h4>
-<ul>
-<li>如果对 group by 语句的结果没有排序要求，要在语句后面加 order by null；</li>
-<li>尽量让 group by 过程用上表的索引，确认方法是 explain 结果里没有 Using temporary 和 Using filesort；</li>
-<li>如果 group by 需要统计的数据量不大，尽量只使用内存临时表；也可以通过适当调大 tmp_table_size 参数，来避免用到磁盘临时表；</li>
-<li>如果数据量实在太大，使用 SQL_BIG_RESULT 这个提示，来告诉优化器直接使用排序算法得到 group by 的结果。</li>
-</ul>
-
-
-			
-			
-		</div>
-
-	</article>
- 
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2019-02-11T14:37:51+08:00" itemprop="datePublished">2019/02/11 14:37 下午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15498670713472.html" itemprop="url">
-		自增主键</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="%E4%BD%9C%E7%94%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>作用</h4>
-<ul>
-<li>自增主键可以让主键索引尽量地保持递增顺序插入，避免了页分裂，因此索引更紧凑。</li>
-</ul>
-<h4><a id="%E8%87%AA%E5%A2%9E%E5%80%BC%E7%9A%84%E4%BF%9D%E5%AD%98%E7%AD%96%E7%95%A5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>自增值的保存策略</h4>
-<ul>
-<li>MyISAM 引擎的自增值保存在数据文件中。</li>
-<li>InnoDB 引擎的自增值，其实是保存在了内存里，并且到了 MySQL 8.0 版本后，才有了“自增值持久化”的能力</li>
-</ul>
-<h4><a id="%E8%87%AA%E5%A2%9E%E5%80%BC%E7%AE%97%E6%B3%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>自增值算法</h4>
-<ul>
-<li>从 auto_increment_offset 开始，以 auto_increment_increment 为步长，持续叠加，直到找到第一个大于 X 的值，作为新的自增值。</li>
-</ul>
-<h4><a id="%E8%87%AA%E5%A2%9Eid%E4%B8%8D%E8%BF%9E%E7%BB%AD" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>自增ID不连续</h4>
-<ul>
-<li>唯一键冲突</li>
-<li>事物回滚</li>
-<li>同一个语句去申请自增 id，每次申请到的自增 id 个数都是上一次的两倍。</li>
-</ul>
-<h4><a id="%E8%87%AA%E5%A2%9E%E9%94%81%E7%9A%84%E4%BC%98%E5%8C%96" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>自增锁的优化</h4>
-<ul>
-<li>主库不使用语句锁如果自增健不连续，但是从库执行语句会导致从库的自增值仍然是一致的，会导致主从不一致</li>
-<li>解决思路</li>
-<li>一种思路是，让原库的批量插入数据语句，固定生成连续的 id 值。所以，自增锁直到语句执行结束才释放，就是为了达到这个目的。</li>
-<li>另一种思路是，在 binlog 里面把插入数据的操作都如实记录进来，到备库执行的时候，不再依赖于自增主键去生成。这种情况，其实就是 innodb_autoinc_lock_mode 设置为 2，同时 binlog_format 设置为 row。</li>
-</ul>
-<h4><a id="%E6%89%B9%E9%87%8F%E7%94%B3%E8%AF%B7%E8%87%AA%E5%A2%9Eid%E7%9A%84%E7%AD%96%E7%95%A5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>批量申请自增ID的策略</h4>
-<ul>
-<li>同一个语句去申请自增 id，每次申请到的自增 id 个数都是上一次的两倍。</li>
-<li></li>
-</ul>
-
-
-			
-			
-		</div>
-
-	</article>
- 
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2019-08-28T07:15:06+08:00" itemprop="datePublished">2019/08/28 07:15 上午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15669477064349.html" itemprop="url">
-		删库之后怎么办</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="%E5%88%86%E7%B1%BB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>分类</h4>
-<ul>
-<li>使用 delete 语句误删数据行；</li>
-<li>使用 drop table 或者 truncate table 语句误删数据表；</li>
-<li>使用 drop database 语句误删数据库；</li>
-<li>使用 rm 命令误删整个 MySQL 实例</li>
-</ul>
-<h4><a id="%E8%AF%AF%E5%88%A0%E8%A1%8C" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>误删行</h4>
-<ul>
-<li>binlog_format=row 和 binlog_row_image=FULL</li>
-<li>对于 insert 语句，对应的 binlog event 类型是 Write_rows event，把它改成 Delete_rows event 即可；</li>
-<li>同理，对于 delete 语句，也是将 Delete_rows event 改为 Write_rows event；而如果是 Update_rows 的话，binlog 里面记录了数据行修改前和修改后的值，对调这两行的位置即</li>
-<li>sql_safe_updates on</li>
-</ul>
-<h4><a id="%E8%AF%AF%E5%88%A0%E5%BA%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>误删库</h4>
-<ul>
-<li>如果原实例没有使用 GTID 模式，只能在应用到包含 12 点的 binlog 文件的时候，先用–stop-position 参数执行到误操作之前的日志，然后再用–start-position 从误操作之后的日志继续执行；</li>
-<li>如果实例使用了 GTID 模式，就方便多了。假设误操作命令的 GTID 是 gtid1，那么只需要执行 set gtid_next=gtid1;begin;commit; 先把这个 GTID 加到临时实例的 GTID 集合，之后按顺序执行 binlog 的时候，就会自动跳过误操作的语句</li>
-</ul>
-<h4><a id="%E5%8A%A0%E9%80%9F%E6%96%B9%E6%B3%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>加速方法</h4>
-<ul>
-<li>只同步误操作的表，使用并行复制技术</li>
-<li>延迟复制从库CHANGE MASTER TO MASTER_DELAY = N</li>
-<li></li>
-</ul>
-
-
-			
-			
-		</div>
-
-	</article>
-  
-
-</div>
-<nav id="pagenavi">
-	 <a class="prev" href="Mysql优化实战_1.html">Prev</a>  
-	 <a class="next" href="Mysql优化实战_3.html">Next</a> 
-	<div class="center"><a href="archives.html">Blog Archives</a></div>
-
-</nav>
-
-</div>
-
-
-
+<div class="hero-body ct-body">
+        <div class="container">
+              <div class="columns is-centered">
+                  <div class="column  is-four-fifths">
+                      <div class="columns is-mobile">
+                          <div class="column">
+                              <h1 class="title">
+       凌云阁
+              
+                              </h1>
+                              <h2 class="subtitle">
+                                 2024 重新扬帆启航！
+                              </h2>
+                          </div>
+                          <div class="column is-narrow"><figure class="image is-128x128">
+                            
+                              <img class="is-rounded" src="https://i.loli.net/2020/02/22/Si1K7sluept2ZgR.jpg">
+                            
+                            </figure></div>
+                      </div>
+                        
+                      
+                  </div>
+                  
+                </div>
+            
+              
+        
         </div>
-			<footer id="footer" class="inner">Copyright &copy; 2014
-Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a> &nbsp;&nbsp; 
-Theme by <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a>
+      </div>
+</section>
+<section class="ct-body">
+      <div class="container">
+          <div class="columns is-variable bd-klmn-columns is-4">
+              <div class="column is-two-thirds">
+                
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15453606137574.html"> 
+                            <h2 class="title">如何正确的显示随机信息</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15453606137574.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2018/12/21 10:50 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15460488614529.html"> 
+                            <h2 class="title">幻读</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15460488614529.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2018/12/29 10:01 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15477155524350.html"> 
+                            <h2 class="title">Mysql高可用</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15477155524350.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2019/01/17 16:59 下午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15477183125806.html"> 
+                            <h2 class="title">备库长时间延迟</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15477183125806.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2019/01/17 17:45 下午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15489830169180.html"> 
+                            <h2 class="title">Join语句优化</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15489830169180.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2019/02/01 09:03 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15492504094153.html"> 
+                            <h2 class="title">临时表</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15492504094153.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2019/02/04 11:20 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15497611194576.html"> 
+                            <h2 class="title">内部临时表</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15497611194576.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2019/02/10 09:11 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15498670713472.html"> 
+                            <h2 class="title">自增主键</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15498670713472.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2019/02/11 14:37 下午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15669477064349.html"> 
+                            <h2 class="title">删库之后怎么办</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15669477064349.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2019/08/28 07:15 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+
+                  <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+                    <a class="pagination-previous"   href="Mysql优化实战_1.html" ><span class="tran-prev-page">&laquo; Prev Page</span></a>  
+                    <a class="pagination-next"   href="Mysql优化实战_3.html" ><span class="tran-next-page">Next Page &raquo;</span></a>                   
+                  </nav>
+
+              </div><!-- end column -->
+              <div class="column">
+                  <div class="card">
+                      <header class="card-header">
+                        <p class="card-header-title">
+                           <span class="tran-site-categories">Categories</span> 
+                        </p>
+                     
+                      </header>
+                      <div class="card-content site-categories">
+                        <div class="content"> 
+                          <ul>
+                          
+                                <li><a href="%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95%E5%AE%9E%E6%88%98.html">代码随想录实战</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Redis%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98.html">Redis核心技术与实战</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E7%B3%BB%E7%BB%9F%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html">系统性能调优必知必会</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E5%88%86%E5%B8%83%E5%BC%8F%E5%8D%8F%E8%AE%AE%E5%92%8C%E7%AE%97%E6%B3%95%E5%AE%9E%E6%88%98.html">分布式协议和算法实战</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html">C++基础与提高</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html">设计模式</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Python.html">Python</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Golang.html">Golang</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html">设计模式之美</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%80%A7%E8%83%BD%E5%B7%A5%E7%A8%8B%E9%AB%98%E6%89%8B%E8%AF%BE.html">性能工程高手课</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95.html">性能测试</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Prometheus.html">Prometheus</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="RocketMQ.html">RocketMQ</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE.html">网络协议</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Django.html">Django</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html">深入剖析Kubernetes</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html">数据结构和算法</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E5%BE%AE%E6%9C%8D%E5%8A%A1.html">微服务</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%9E%B6%E6%9E%84.html">架构</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html">操作系统原理</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html">Mysql优化实战</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Kafka.html">Kafka</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html">linux服务器研发</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86.html">计算机组成原理</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E7%A8%8B%E5%BA%8F%E5%91%98%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB.html">程序员的自我修养</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="C%E8%AF%AD%E8%A8%80%E8%BF%9B%E9%98%B6.html">C语言进阶</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="http_study.html">http_study</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E7%8E%A9%E8%BD%AC%E7%AE%97%E6%B3%95.html">玩转算法</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="C++%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B.html">C++对象模型</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="SQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html">SQL必知必会</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Zookeeper.html">Zookeeper</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Redis%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A.html">Redis从入门到精通</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E8%BF%9B%E9%98%B6.html">数据结构和算法进阶</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Mysql%E6%80%A7%E8%83%BD%E7%AE%A1%E7%90%86%E5%92%8C%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1.html">Mysql性能管理和架构设计</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98.html">网络编程实战</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html">Redis高并发缓存</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html">Linux性能优化实战</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E5%80%99%E6%8D%B7STL.html">候捷STL</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="ElasticSearch.html">ElasticSearch</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="RabbitMQ.html">RabbitMQ</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="etcd.html">etcd</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="RocketMQ-1.html">RocketMQ</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="mysql.html">mysql</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                          </ul>
+                        </div>
+                      </div>
+                     
+                    </div>
+
+                    <div class="card">
+                        <header class="card-header">
+                          <p class="card-header-title">
+                              <span class="tran-site-tags">Tags</span> 
+                          </p>
+                       
+                        </header>
+                        <div class="card-content site-tags">
+                          <div class="content">
+                           <div class="tags">
+                            
+                              <a class="tag is-link is-light" href="tag_Docker.html">#Docker</a> 
+                            
+                              <a class="tag is-link is-light" href="tag_K8S.html">#K8S</a> 
+                            
+                              <a class="tag is-link is-light" href="tag_%E6%80%A7%E8%83%BD%E5%B7%A5%E7%A8%8B.html">#性能工程</a> 
+                            
+                              <a class="tag is-link is-light" href="tag_%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95.html">#性能测试</a> 
+                            
+                           </div>
+                             
+                          </div>
+                        </div>
+                       
+                      </div>
+
+              </div>
+            </div>
+
+          
+      </div>
+    </section>
+
+    <footer class="footer">
+        <div class="content has-text-centered">
+          <p>
+              Copyright &copy; 2024
+              Powered by <a target="_blank" href="http://www.mweb.im">geraltlau</a>&nbsp; 
+          </p>
+        </div>
       </footer>
-		</div>
-	</div>
+
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
+
+
+
+div.code-toolbar {
+  position: relative;
+}
+
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
+
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
+
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
+
 
   
     
 
 
 
-</body>
+
+  </body>
 </html>

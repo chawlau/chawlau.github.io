@@ -1,877 +1,729 @@
-<!DOCTYPE HTML>
-<html>
-<head>
-	<meta charset="utf-8">
-	<title>  
-	  
-  	Mysql优化实战 -        凌云阁
-  	
-	</title>
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+      
+    Mysql优化实战 -        凌云阁
+    
+    </title>
+    <link rel="shortcut icon" href="https://i.loli.net/2020/02/22/Si1K7sluept2ZgR.jpg" type="image/png" />
 
-  <meta name="HandheldFriendly" content="True">
-  <meta name="MobileOptimized" content="320">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-	<link href="atom.xml" rel="alternate" title="       凌云阁" type="application/atom+xml">
-
-	<link href="asset/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-	<link href="asset/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
-	<script src="asset/javascripts/jquery.min.js"></script>
-	<script src="asset/highlightjs/highlight.pack.js"></script>
-	<link href="asset/highlightjs/styles/solarized_dark.css" media="screen, projection" rel="stylesheet" type="text/css">
-<script>hljs.initHighlightingOnLoad();</script>
-
-	<!--[if lt IE 9]><script src="asset/javascripts/html5.js"></script><![endif]-->
-	<!-- <link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'> -->
-	<style type="text/css">
-/* latin */
-@font-face {
-  font-family: 'Nunito';
-  font-style: normal;
-  font-weight: 300;
-  src: local('Nunito-Light'), url(asset/font/1TiHc9yag0wq3lDO9cw0voX0hVgzZQUfRDuZrPvH3D8.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
-}
-/* latin */
-@font-face {
-  font-family: 'Nunito';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Nunito-Regular'), url(asset/font/6TbRXKWJjpj6V2v_WyRbMX-_kf6ByYO6CLYdB4HQE-Y.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
-}
-/* latin */
-@font-face {
-  font-family: 'Nunito';
-  font-style: normal;
-  font-weight: 700;
-  src: local('Nunito-Bold'), url(asset/font/TttUCfJ272GBgSKaOaD7KoX0hVgzZQUfRDuZrPvH3D8.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
-}
-	</style>
-	
-	<style type="text/css">
-	.container .left-col{ opacity: 1;}
-	#pagenavi a{ font-size: 1.3em;}
-	#pagenavi .next:before{ top: 3px;}
-	#pagenavi .prev:before{ top: 3px;}
-	.container .mid-col .mid-col-container #content .archives .title{ font-size: 1.5em;}
-	.container .mid-col .mid-col-container #content article{ padding: 15px 0px;}
-	#header .subtitle {
-		line-height: 1.2em;
-		padding-top: 8px;
-	}
-	article pre{ background: none; border: none; padding: 0;}
-	article .entry-content{text-align: left;}
-	.share-comment{ padding: 25px 0px; clear: both;}
-	hr{ margin: 20px 0px;border: 0; border-top:solid 1px #ddd;}
-
-	</style>
-  
-
+    
+    
+    <link href="atom.xml" rel="alternate" title="       凌云阁" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/style.min.css">
+    <link rel="stylesheet" href="asset/css/doc.css">
+    <script src="asset/app.js"></script>
 </head>
+  <body>
+    <section class="hero">
+      <div class="hero-head">
+          <nav class="navbar" role="navigation" aria-label="main navigation">
+              <div class="container">
+              <div class="navbar-brand">
+                
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
+                
+                <a target="_self" class="navbar-item " href="archives.html">Archives</a>
+                
 
+                <a role="button" id="navbarSNSRssSwitchBtn" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarSNSRssButtons">
+                  <span aria-hidden="true"></span>
+                  <span aria-hidden="true"></span>
+                  <span aria-hidden="true"></span>
+                </a>
+              </div>
+            
+              <div id="navbarSNSRssButtons" class="navbar-menu">
+                <div class="navbar-start">
+                  
+                </div>
+            
+                <div class="navbar-end">
+                  <div class="navbar-item">
+                    <!--buttons start-->
+                    <div class="buttons">
+                      
+                        
+                        
 
-<body>
-	<div class="container">
-		<div class="left-col">
-			<div class="intrude-less">
-				<header id="header" class="inner">
-				 
-				 	<div class="profilepic">
-						<img src="https://i.loli.net/2020/02/22/Si1K7sluept2ZgR.jpg" style="width:160px;">
-					</div>
-            	
-					
-					<h1><a href="index.html">       凌云阁</a></h1>
-					<p class="subtitle">生命的意义是成为你自己！</p>
-					<nav id="main-nav">
-						<ul class="main">
-						
-						  <li id=""><a target="_self" href="index.html">Home</a></li>
-						
-						  <li id=""><a target="_self" href="archives.html">Archives</a></li>
-						
-						</ul>
-					</nav>
+                        <a href="www.facebook.com" target="_blank" title="facebook">
+                            <span class="icon is-large has-text-grey-darker">
+                               <svg class="svg-inline--fa fa-facebook fa-w-16 fa-lg" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="facebook" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M504 256C504 119 393 8 256 8S8 119 8 256c0 123.78 90.69 226.38 209.25 245V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.28c-30.8 0-40.41 19.12-40.41 38.73V256h68.78l-11 71.69h-57.78V501C413.31 482.38 504 379.78 504 256z"></path></svg><!-- <i class="fab fa-facebook fa-lg"></i> -->
+                            </span>
+                          </a>
+                        
+                        
+                        <a href="www.github.com/chawlau" target="_blank" title="github">
+                            <span class="icon is-large has-text-grey-darker">
+                               <svg class="svg-inline--fa fa-github fa-w-16 fa-lg" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="github" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" data-fa-i2svg=""><path fill="currentColor" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg><!-- <i class="fab fa-github fa-lg"></i> -->
+                            </span>
+                          </a>
+                        
+                        
+                     <a href="www.twitter.com"  target="_blank" title="twitter">
+                       <span class="icon is-large has-text-grey-darker">
+                          <svg class="svg-inline--fa fa-twitter fa-w-16 fa-lg" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="twitter" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"></path></svg><!-- <i class="fab fa-twitter fa-lg"></i> -->
+                       </span>
+                     </a>
+                      
+                      
+                      <a href="www.weibo.com" target="_blank" title="weibo">
+                          <span class="icon is-large has-text-grey-darker">
+                            <svg class="svg-inline--fa fa-weibo fa-w-16 fa-lg" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="weibo" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M407 177.6c7.6-24-13.4-46.8-37.4-41.7-22 4.8-28.8-28.1-7.1-32.8 50.1-10.9 92.3 37.1 76.5 84.8-6.8 21.2-38.8 10.8-32-10.3zM214.8 446.7C108.5 446.7 0 395.3 0 310.4c0-44.3 28-95.4 76.3-143.7C176 67 279.5 65.8 249.9 161c-4 13.1 12.3 5.7 12.3 6 79.5-33.6 140.5-16.8 114 51.4-3.7 9.4 1.1 10.9 8.3 13.1 135.7 42.3 34.8 215.2-169.7 215.2zm143.7-146.3c-5.4-55.7-78.5-94-163.4-85.7-84.8 8.6-148.8 60.3-143.4 116s78.5 94 163.4 85.7c84.8-8.6 148.8-60.3 143.4-116zM347.9 35.1c-25.9 5.6-16.8 43.7 8.3 38.3 72.3-15.2 134.8 52.8 111.7 124-7.4 24.2 29.1 37 37.4 12 31.9-99.8-55.1-195.9-157.4-174.3zm-78.5 311c-17.1 38.8-66.8 60-109.1 46.3-40.8-13.1-58-53.4-40.3-89.7 17.7-35.4 63.1-55.4 103.4-45.1 42 10.8 63.1 50.2 46 88.5zm-86.3-30c-12.9-5.4-30 .3-38 12.9-8.3 12.9-4.3 28 8.6 34 13.1 6 30.8.3 39.1-12.9 8-13.1 3.7-28.3-9.7-34zm32.6-13.4c-5.1-1.7-11.4.6-14.3 5.4-2.9 5.1-1.4 10.6 3.7 12.9 5.1 2 11.7-.3 14.6-5.4 2.8-5.2 1.1-10.9-4-12.9z"></path></svg><!-- <i class="fab fa-weibo fa-lg"></i> -->
+                          </span>
+                      </a>
+                      
+                      <a href="atom.xml" target="_blank" title="RSS">
+                          <span class="icon is-large has-text-black-bis">
+                              <svg class="svg-inline--fa fa-rss fa-w-14 fa-lg" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="rss" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M128.081 415.959c0 35.369-28.672 64.041-64.041 64.041S0 451.328 0 415.959s28.672-64.041 64.041-64.041 64.04 28.673 64.04 64.041zm175.66 47.25c-8.354-154.6-132.185-278.587-286.95-286.95C7.656 175.765 0 183.105 0 192.253v48.069c0 8.415 6.49 15.472 14.887 16.018 111.832 7.284 201.473 96.702 208.772 208.772.547 8.397 7.604 14.887 16.018 14.887h48.069c9.149.001 16.489-7.655 15.995-16.79zm144.249.288C439.596 229.677 251.465 40.445 16.503 32.01 7.473 31.686 0 38.981 0 48.016v48.068c0 8.625 6.835 15.645 15.453 15.999 191.179 7.839 344.627 161.316 352.465 352.465.353 8.618 7.373 15.453 15.999 15.453h48.068c9.034-.001 16.329-7.474 16.005-16.504z"></path></svg><!-- <i class="fas fa-rss fa-lg"></i> -->
+                          </span>
+                      </a>
+                    </div>
+                    <!--buttons end-->
 
-					<nav id="sub-nav">
-						<div class="social">
+                  </div>
+                </div>
+                </div>
+              </div>
+            </nav>
+      </div>
 
-<a target="_blank" class="facebook" href="www.facebook.com" title="Facebook">Facebook</a>
-
-
-
-
-
-
-<a target="_blank" class="weibo" href="www.weibo.com" title="weibo">Weibo</a>
-<a target="_blank" class="twitter" target="_blank" href="www.twitter.com" title="Twitter">Twitter</a>
-<a target="_blank" class="github" target="_blank" href="www.github.com/chawlau" title="GitHub">GitHub</a>
-
-
-								
-
-								<a class="rss" href="atom.xml" title="RSS">RSS</a>
-							
-						</div>
-					</nav>
-				</header>				
-			</div>
-		</div>	
-		<div class="mid-col">
-			<div class="mid-col-container"> <div id="content" class="inner">
-<div itemscope itemtype="http://schema.org/Blog">
-
-
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2018-12-05T11:18:36+08:00" itemprop="datePublished">2018/12/05 11:18 上午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15439799166687.html" itemprop="url">
-		Mysql选错索引</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="mysql%E9%80%89%E6%8B%A9%E7%B4%A2%E5%BC%95%E4%BE%9D%E6%8D%AE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>mysql选择索引依据</h4>
-<ul>
-<li>扫描行数</li>
-<li>是否使用临时表</li>
-<li>是否排序</li>
-</ul>
-<h4><a id="mysql%E8%8E%B7%E5%8F%96%E7%B4%A2%E5%BC%95%E5%9F%BA%E6%95%B0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Mysql获取索引基数</h4>
-<ul>
-<li>采样统计的时候，InnoDB 默认会选择 N 个数据页，统计这些页面上的不同值，得到一个平均值，然后乘以这个索引的页面数，就得到了这个索引的基数。</li>
-<li>而数据表是会持续更新的，索引统计信息也不会固定不变。所以，当变更的数据行数超过 1/M 的时候，会自动触发重新做一次索引统计。</li>
-<li>设置为 on 的时候，表示统计信息会持久化存储。这时，默认的 N 是 20，M 是 10。</li>
-<li>设置为 off 的时候，表示统计信息只存储在内存中。这时，默认的 N 是 8，M 是 16。</li>
-</ul>
-<h4><a id="%E7%B4%A2%E5%BC%95%E9%80%89%E6%8B%A9%E4%B8%8D%E5%87%86%E7%A1%AE%E7%9F%AB%E6%AD%A3" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>索引选择不准确矫正</h4>
-<ul>
-<li>索引统计信息不准确导致的问题，你可以用 analyze table 来解决。</li>
-<li>优化器误判的情况，你可以在应用端用force index来强行指定索引</li>
-<li>也可以通过修改语句来引导优化器</li>
-<li>还可以通过增加或者删除索引来绕过这个问题</li>
-</ul>
-<pre><code class="language-plain_text"> CREATE TABLE `t` (
-  `id` int(11) NOT NULL,
-  `a` int(11) DEFAULT NULL,
-  `b` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `a` (`a`),
-  KEY `b` (`b`)
-) ENGINE=InnoDB
-</code></pre>
-<h4><a id="%E5%BC%80%E5%90%AF%E6%85%A2%E6%9F%A5%E8%AF%A2%E6%97%A5%E5%BF%97" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>开启慢查询日志</h4>
-<pre><code class="language-plain_text">  show variables like 'log_%';
-  set sql_long_query=0;
-  set global long_query_time=0;
-  show variables like &quot;%slow%&quot;;
-  set slow_query_log='ON';
-  show variables like &quot;%slow%&quot;;
-</code></pre>
-<h4><a id="%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>查询优化</h4>
-<pre><code class="language-plain_text">mysql&gt; select * from t where a between 10000 and 20000 and b between 50000 and 100000 order by b limit 1;
-Empty set (0.05 sec)
-
-mysql&gt; select * from t force index(a) where a between 10000 and 20000 and b between 50000 and 100000 order by b limit 1;
-Empty set (0.02 sec)
-</code></pre>
-<h4><a id="%E6%B8%85%E7%A9%BA%E6%9F%A5%E8%AF%A2%E7%BC%93%E5%AD%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>清空查询缓存</h4>
-<pre><code class="language-plain_text"> reset query cache;
-</code></pre>
-<h4><a id="%E9%80%89%E6%8B%A9%E9%94%99%E8%AF%AF%E7%B4%A2%E5%BC%95%E5%8E%9F%E5%9B%A0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>选择错误索引原因</h4>
-<ul>
-<li>每次从索引 a 上拿到一个值，都要回到主键索引上查出整行数据，这个代价优化器也要算进去的。如果选择扫描 10 万行，是直接在主键索引上扫描的，没有额外的代价。优化器会估算这两个选择的代价，从结果看来，优化器认为直接扫描主键索引更快。当然，从执行时间看来，这个选择并不是最优的。</li>
-</ul>
-<h4><a id="%E4%BC%98%E5%8C%96%E9%94%99%E8%AF%AF%E7%B4%A2%E5%BC%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>优化错误索引</h4>
-<ul>
-<li>force index</li>
-<li>修改语句，引导mysql使用我们期望的索引</li>
-<li>新建合适的索引或者删掉误用的索引</li>
-<li>使用analze table 来解决</li>
-</ul>
-
-
-			
-			
-		</div>
-
-	</article>
  
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2019-01-13T11:44:50+08:00" itemprop="datePublished">2019/01/13 11:44 上午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15473510902745.html" itemprop="url">
-		Mysql常见问题整理</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="%E9%82%A3%E4%B9%88%E5%9C%A8%E4%BB%80%E4%B9%88%E5%9C%BA%E6%99%AF%E4%B8%8B%EF%BC%8C%E4%B8%80%E5%A4%A9%E4%B8%80%E5%A4%87%E4%BC%9A%E6%AF%94%E4%B8%80%E5%91%A8%E4%B8%80%E5%A4%87%E6%9B%B4%E6%9C%89%E4%BC%98%E5%8A%BF%E5%91%A2%EF%BC%9F%E6%88%96%E8%80%85%E8%AF%B4%EF%BC%8C%E5%AE%83%E5%BD%B1%E5%93%8D%E4%BA%86%E8%BF%99%E4%B8%AA%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%93%AA%E4%B8%AA%E6%8C%87%E6%A0%87%EF%BC%9F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>那么在什么场景下，一天一备会比一周一备更有优势呢？或者说，它影响了这个数据库系统的哪个指标？</h4>
-<ul>
-<li>RTO恢复目标时间</li>
-<li>数据库的备份周期影响恢复速度</li>
-</ul>
-<h4><a id="%E6%80%8E%E4%B9%88%E9%81%BF%E5%85%8D%E9%95%BF%E4%BA%8B%E7%89%A9" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>怎么避免长事物</h4>
-<h5><a id="%E5%BC%80%E5%8F%91%E7%AB%AF" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>开发端</h5>
-<ul>
-<li>确认是否使用了set autocommit=1。</li>
-<li>确认是否有不必要的只读事务。</li>
-<li>通过 SET MAX_EXECUTION_TIME 命令，来控制每个语句执行的最长时间，避免单个语句意外执行太长时间。</li>
-</ul>
-<h5><a id="%E6%95%B0%E6%8D%AE%E5%BA%93%E7%AB%AF" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>数据库端</h5>
-<ul>
-<li>监控 information_schema.Innodb_trx 表，设置长事务阈值，超过就报警 / 或者 kill；</li>
-<li>Percona 的 pt-kill</li>
-<li>在业务功能测试阶段要求输出所有的 general_log，分析日志行为提前发现问题；</li>
-</ul>
-<h4><a id="%E9%87%8D%E5%BB%BA%E7%B4%A2%E5%BC%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>重建索引</h4>
-<h5><a id="%E5%A5%BD%E5%A4%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>好处</h5>
-<ul>
-<li>索引可能因为删除，或者页分裂等原因，导致数据页有空洞，重建索引的过程会创建一个新的索引，把数据按顺序插入，这样页面的利用率最高，也就是索引更紧凑、更省空间</li>
-<li>InnoDB虽然删除了表的部分记录,但是它的索引还在, 并未释放只能是重新建表才能重建索引</li>
-<li>重建二级索引可以先drop再create</li>
-<li>重建主键索引alter table T engine=InnoDB</li>
-</ul>
-<h4><a id="change-buffer%E5%BC%95%E5%8F%91%E7%9A%84%E6%80%A7%E8%83%BD%E9%97%AE%E9%A2%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>change buffer引发的性能问题</h4>
-<ul>
-<li>某个业务的库内存命中率突然从 99% 降低到了 75%，整个系统处于阻塞状态，更新语句全部堵住</li>
-<li>这个业务有大量插入数据的操作，而他在前一天把其中的某个普通索引改成了唯一索引</li>
-<li>查询性能没有差别，针对更新性能而言,普通索引更新性能会更快一点</li>
-</ul>
-<h5><a id="%E9%92%88%E5%AF%B9%E6%9C%BA%E6%A2%B0%E7%A1%AC%E7%9B%98%E7%9A%84%E4%BC%98%E5%8C%96" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>针对机械硬盘的优化</h5>
-<ul>
-<li>使用普通索引</li>
-<li>把change buffer开大</li>
-</ul>
-<h4><a id="%E8%A1%A8%E4%BA%8B%E7%89%A9%E6%9B%B4%E6%96%B0%E4%B8%8D%E5%8F%AF%E8%A7%81%E7%9A%84%E9%97%AE%E9%A2%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>表事物更新不可见的问题</h4>
-<ul>
-<li>Innodb 要保证这个规则：事务启动以前所有还没提交的事务，它都不可见。</li>
-<li>但是只存一个已经提交事务的最大值是不够的。 因为存在一个问题，那些比最大值小的事务，之后也可能更新</li>
-<li>所以事务启动的时候还要保存“现在正在执行的所有事物ID列表”，如果一个row trx_id在这列表中，也要不可见。</li>
-</ul>
-<h4><a id="%E8%81%94%E5%90%88%E4%B8%BB%E9%94%AE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>联合主键</h4>
-<pre><code class="language-plain_text">CREATE TABLE `geek` (
-  `a` int(11) NOT NULL,
-  `b` int(11) NOT NULL,
-  `c` int(11) NOT NULL,
-  `d` int(11) NOT NULL,
-  PRIMARY KEY (`a`,`b`),
-  KEY `c` (`c`),
-  KEY `ca` (`c`,`a`),
-  KEY `cb` (`c`,`b`)
-) ENGINE=InnoDB;
-
-</code></pre>
-<ul>
-<li>ca 可以去掉，因为c的索引的组织结构和ca一模一样，cb要保留，二级索引在面对联合主键的时候需要把联合主键的数据都加上</li>
-</ul>
-<h4><a id="mysql%E6%80%8E%E4%B9%88%E7%9F%A5%E9%81%93-binlog%E6%98%AF%E5%AE%8C%E6%95%B4%E7%9A%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>MySQL 怎么知道 binlog 是完整的?</h4>
-<ul>
-<li>statement 格式的 binlog，最后会有 COMMIT；</li>
-<li>row 格式的 binlog，最后会有一个 XID event。</li>
-</ul>
-<h4><a id="%E5%A4%84%E4%BA%8Eprepare%E9%98%B6%E6%AE%B5%E7%9A%84-redo-log%E5%8A%A0%E4%B8%8A%E5%AE%8C%E6%95%B4-binlog%EF%BC%8C%E9%87%8D%E5%90%AF%E5%B0%B1%E8%83%BD%E6%81%A2%E5%A4%8D%EF%BC%8Cmysql%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E8%BF%99%E4%B9%88%E8%AE%BE%E8%AE%A1" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>处于 prepare 阶段的 redo log 加上完整 binlog，重启就能恢复，MySQL 为什么要这么设计?</h4>
-<ul>
-<li>在时刻 B，也就是 binlog 写完以后 MySQL 发生崩溃，这时候 binlog 已经写入了，之后就会被从库（或者用这个 binlog 恢复出来的库）使用。</li>
-<li>binglog不支持页界别的数据</li>
-</ul>
-<h4><a id="%E4%B8%9A%E5%8A%A1%E4%B8%8A%E6%9C%89%E8%BF%99%E6%A0%B7%E7%9A%84%E9%9C%80%E6%B1%82%EF%BC%8Ca%E3%80%81b%E4%B8%A4%E4%B8%AA%E7%94%A8%E6%88%B7%EF%BC%8C%E5%A6%82%E6%9E%9C%E4%BA%92%E7%9B%B8%E5%85%B3%E6%B3%A8%EF%BC%8C%E5%88%99%E6%88%90%E4%B8%BA%E5%A5%BD%E5%8F%8B%E3%80%82%E8%AE%BE%E8%AE%A1%E4%B8%8A%E6%98%AF%E6%9C%89%E4%B8%A4%E5%BC%A0%E8%A1%A8%EF%BC%8C%E4%B8%80%E4%B8%AA%E6%98%AF-like%E8%A1%A8%EF%BC%8C%E4%B8%80%E4%B8%AA%E6%98%AF-friend%E8%A1%A8%EF%BC%8C-like%E8%A1%A8%E6%9C%89-user-id%E3%80%81liker-id%E4%B8%A4%E4%B8%AA%E5%AD%97%E6%AE%B5%EF%BC%8C%E6%88%91%E8%AE%BE%E7%BD%AE%E4%B8%BA%E5%A4%8D%E5%90%88%E5%94%AF%E4%B8%80%E7%B4%A2%E5%BC%95%E5%8D%B3-uk-user-id-liker-id%E3%80%82%E8%AF%AD%E5%8F%A5%E6%89%A7%E8%A1%8C%E9%80%BB%E8%BE%91%E6%98%AF%E8%BF%99%E6%A0%B7%E7%9A%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>业务上有这样的需求，A、B 两个用户，如果互相关注，则成为好友。设计上是有两张表，一个是 like 表，一个是 friend 表，like 表有 user_id、liker_id 两个字段，我设置为复合唯一索引即 uk_user_id_liker_id。语句执行逻辑是这样的</h4>
-<h4><a id="sync-binlog-0%E7%9A%84%E6%97%B6%E5%80%99%EF%BC%8C%E8%BF%98%E6%98%AF%E5%8F%AF%E4%BB%A5%E7%9C%8B%E5%88%B0-binlog%E6%96%87%E4%BB%B6%E9%A9%AC%E4%B8%8A%E5%81%9A%E4%BA%86%E4%BF%AE%E6%94%B9%E3%80%82" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>sync_binlog=0 的时候，还是可以看到 binlog 文件马上做了修改。</h4>
-<ul>
-<li>数据写到了page cache，就是文件系统的 page cache。而你用 ls 命令看到的就是文件系统返回的结果。</li>
-</ul>
-<h4><a id="%E5%87%86%E7%A1%AE%E5%AE%9A%E4%BD%8Dbinlog" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>准确定位binlog</h4>
-<ul>
-<li>stop-datetime</li>
-</ul>
-<h4><a id="mysql%E4%B8%AD%E9%97%B4%E4%BB%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Mysql中间件</h4>
-<ul>
-<li>网易cetus</li>
-<li>myscat</li>
-<li>canal输出binlog到hadoop</li>
-</ul>
-<h4><a id="%E5%8F%8Cm%E7%BB%93%E6%9E%84%E4%BC%9A%E5%87%BA%E7%8E%B0%E5%BE%AA%E7%8E%AF%E5%A4%8D%E5%88%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>双 M 结构会出现循环复制</h4>
-<ul>
-<li>在一个主库更新事务后，用命令 set global server_id=x 修改了 server_id。等日志再传回来的时候，发现 server_id 跟自己的 server_id 不同，就只能执行了。</li>
-<li>binlog 从B传给A, A和A'构成双M结构</li>
-<li>终止循环复制</li>
-</ul>
-<pre><code class="language-plain_text">stop slave；
-CHANGE MASTER TO IGNORE_SERVER_IDS=(server_id_of_B);
-start slave;
-stop slave；
-CHANGE MASTER TO IGNORE_SERVER_IDS=();
-start slave;
-</code></pre>
-<h4><a id="%E4%B8%BB%E4%BB%8E%E5%88%87%E6%8D%A2%E5%AF%BC%E8%87%B4%E4%B8%BB%E7%9A%84%E6%9C%80%E6%96%B0%E6%95%B0%E6%8D%AE%E6%B2%A1%E6%9C%89%E5%90%8C%E6%AD%A5%E5%88%B0%E4%BB%8E" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>主从切换导致主的最新数据没有同步到从</h4>
-<ul>
-<li>使用semi-sync</li>
-<li>启动后业务做数据对账</li>
-</ul>
-<h4><a id="gtid%E6%A8%A1%E5%BC%8F%E4%B8%8B%E8%AE%BE%E7%BD%AE%E4%B8%BB%E4%BB%8E%E5%85%B3%E7%B3%BB%E7%9A%84%E6%97%B6%E5%80%99%EF%BC%8C%E4%BB%8E%E5%BA%93%E6%89%A7%E8%A1%8C-start-slave%E5%91%BD%E4%BB%A4%E5%90%8E%EF%BC%8C%E4%B8%BB%E5%BA%93%E5%8F%91%E7%8E%B0%E9%9C%80%E8%A6%81%E7%9A%84-binlog%E5%B7%B2%E7%BB%8F%E8%A2%AB%E5%88%A0%E9%99%A4%E6%8E%89%E4%BA%86%EF%BC%8C%E5%AF%BC%E8%87%B4%E4%B8%BB%E5%A4%87%E5%88%9B%E5%BB%BA%E4%B8%8D%E6%88%90%E5%8A%9F%E3%80%82%E8%BF%99%E7%A7%8D%E6%83%85%E5%86%B5%E4%B8%8B%EF%BC%8C%E4%BD%A0%E8%A7%89%E5%BE%97%E5%8F%AF%E4%BB%A5%E6%80%8E%E4%B9%88%E5%A4%84%E7%90%86%E5%91%A2%EF%BC%9F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>GTID 模式下设置主从关系的时候，从库执行 start slave 命令后，主库发现需要的 binlog 已经被删除掉了，导致主备创建不成功。这种情况下，你觉得可以怎么处理呢？</h4>
-<ul>
-<li>如果业务允许主从不一致的情况那么可以在主上先show global variables like 'gtid_purged';然后在从上执行set global gtid_purged =' '.指定从库从哪个gtid开始同步,binlog缺失那一部分,数据在从库上会丢失,就会造成主从不一致</li>
-<li>需要主从数据一致的话,最好还是通过重新搭建从库来做。</li>
-<li>如果有其它的从库保留有全量的binlog的话，可以把从库指定为保留了全量binlog的从库为主库(级联复制)</li>
-<li>如果binlog有备份的情况,可以先在从库上应用缺失的binlog,然后在start slave</li>
-</ul>
-<h4><a id="%E4%B8%80%E4%B8%BB%E5%A4%9A%E4%BB%8E%E7%AD%89gtid%E7%9A%84%E6%96%B9%E6%A1%88%EF%BC%8C%E7%8E%B0%E5%9C%A8%E4%BD%A0%E8%A6%81%E5%AF%B9%E4%B8%BB%E5%BA%93%E7%9A%84%E4%B8%80%E5%BC%A0%E5%A4%A7%E8%A1%A8%E5%81%9A-ddl%EF%BC%8C%E5%8F%AF%E8%83%BD%E4%BC%9A%E5%87%BA%E7%8E%B0%E4%BB%80%E4%B9%88%E6%83%85%E5%86%B5%E5%91%A2%EF%BC%9F%E4%B8%BA%E4%BA%86%E9%81%BF%E5%85%8D%E8%BF%99%E7%A7%8D%E6%83%85%E5%86%B5%EF%BC%8C%E4%BD%A0%E4%BC%9A%E6%80%8E%E4%B9%88%E5%81%9A%E5%91%A2%EF%BC%9F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>一主多从等 GTID 的方案，现在你要对主库的一张大表做 DDL，可能会出现什么情况呢？为了避免这种情况，你会怎么做呢？</h4>
-<h4><a id="%E5%A6%82%E6%9E%9C%E4%B8%80%E4%B8%AA%E4%BA%8B%E5%8A%A1%E8%A2%ABkill%E4%B9%8B%E5%90%8E%EF%BC%8C%E6%8C%81%E7%BB%AD%E5%A4%84%E4%BA%8E%E5%9B%9E%E6%BB%9A%E7%8A%B6%E6%80%81%EF%BC%8C%E4%BB%8E%E6%81%A2%E5%A4%8D%E9%80%9F%E5%BA%A6%E7%9A%84%E8%A7%92%E5%BA%A6%E7%9C%8B%EF%BC%8C%E4%BD%A0%E6%98%AF%E5%BA%94%E8%AF%A5%E9%87%8D%E5%90%AF%E7%AD%89%E5%AE%83%E6%89%A7%E8%A1%8C%E7%BB%93%E6%9D%9F%EF%BC%8C%E8%BF%98%E6%98%AF%E5%BA%94%E8%AF%A5%E5%BC%BA%E8%A1%8C%E9%87%8D%E5%90%AF%E6%95%B4%E4%B8%AA-mysql%E8%BF%9B%E7%A8%8B%E3%80%82" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>如果一个事务被 kill 之后，持续处于回滚状态，从恢复速度的角度看，你是应该重启等它执行结束，还是应该强行重启整个 MySQL 进程。</h4>
-<ul>
-<li>因为重启之后该做的回滚动作还是不能少的，所以从恢复速度的角度来说，应该让它自己结束。</li>
-<li>如果这个语句可能会占用别的锁，或者由于占用 IO 资源过多，从而影响到了别的语句执行的话，就需要先做主备切换，切到新主库提供服务</li>
-</ul>
-<h4><a id="%E5%A6%82%E6%9E%9C%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%94%B1%E4%BA%8E%E5%8E%8B%E5%8A%9B%E8%BF%87%E5%A4%A7%EF%BC%8C%E8%BF%9F%E8%BF%9F%E4%B8%8D%E8%83%BD%E6%8E%A5%E6%94%B6%E6%95%B0%E6%8D%AE%EF%BC%8C%E4%BC%9A%E5%AF%B9%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%80%A0%E6%88%90%E4%BB%80%E4%B9%88%E4%B8%A5%E9%87%8D%E7%9A%84%E5%BD%B1%E5%93%8D%E3%80%82" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>如果客户端由于压力过大，迟迟不能接收数据，会对服务端造成什么严重的影响。</h4>
-<ul>
-<li>如果前面的语句有更新，意味着它们在占用着行锁，会导致别的语句更新被锁住；</li>
-<li>当然读的事务也有问题，就是会导致 undo log 不能被回收，导致回滚段空间膨胀。</li>
-</ul>
-<h4><a id="%E4%BD%BF%E7%94%A8block-nested-loop-join-bnl%E7%AE%97%E6%B3%95%E6%97%B6%EF%BC%8C%E5%8F%AF%E8%83%BD%E4%BC%9A%E5%AF%B9%E8%A2%AB%E9%A9%B1%E5%8A%A8%E8%A1%A8%E5%81%9A%E5%A4%9A%E6%AC%A1%E6%89%AB%E6%8F%8F%E3%80%82%E5%A6%82%E6%9E%9C%E8%BF%99%E4%B8%AA%E8%A2%AB%E9%A9%B1%E5%8A%A8%E8%A1%A8%E6%98%AF%E4%B8%80%E4%B8%AA%E5%A4%A7%E7%9A%84%E5%86%B7%E6%95%B0%E6%8D%AE%E8%A1%A8%EF%BC%8C%E9%99%A4%E4%BA%86%E4%BC%9A%E5%AF%BC%E8%87%B4-io%E5%8E%8B%E5%8A%9B%E5%A4%A7%E4%BB%A5%E5%A4%96%EF%BC%8C%E8%BF%98%E4%BC%9A%E5%AF%B9%E7%B3%BB%E7%BB%9F%E6%9C%89%E4%BB%80%E4%B9%88%E5%BD%B1%E5%93%8D%E5%91%A2%EF%BC%9F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>使用 Block Nested-Loop Join(BNL) 算法时，可能会对被驱动表做多次扫描。如果这个被驱动表是一个大的冷数据表，除了会导致 IO 压力大以外，还会对系统有什么影响呢？</h4>
-<ul>
-<li>由于我们的 join 语句在循环读磁盘和淘汰内存页，进入 old 区域的数据页，很可能在 1 秒之内就被淘汰了。这样，就会导致这个 MySQL 实例的 Buffer Pool 在这段时间内，young 区域的数据页没有被合理地淘汰。</li>
-<li>Buffer Pool 的影响就是持续性的，需要依靠后续的查询请求慢慢恢复内存命中率。</li>
-<li>临时补救措施就是join_buffer_size的值增大</li>
-<li><em><strong>主要影响点</strong></em></li>
-<li>可能会多次扫描被驱动表，占用磁盘 IO 资源；</li>
-<li>判断 join 条件需要执行 M*N 次对比（M、N 分别是两张表的行数），如果是大表就会占用非常多的 CPU 资源；</li>
-<li>可能会导致 Buffer Pool 的热数据被淘汰，影响内存命中率。</li>
-</ul>
-<h4><a id="%E7%BB%B4%E6%8A%A4%E7%9A%84mysql%E7%B3%BB%E7%BB%9F%E9%87%8C%E6%9C%89%E5%86%85%E5%AD%98%E8%A1%A8%EF%BC%8C%E6%80%8E%E4%B9%88%E9%81%BF%E5%85%8D%E5%86%85%E5%AD%98%E8%A1%A8%E7%AA%81%E7%84%B6%E4%B8%A2%E6%95%B0%E6%8D%AE%EF%BC%8C%E7%84%B6%E5%90%8E%E5%AF%BC%E8%87%B4%E4%B8%BB%E5%A4%87%E5%90%8C%E6%AD%A5%E5%81%9C%E6%AD%A2%E7%9A%84%E6%83%85%E5%86%B5%E3%80%82" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>维护的 MySQL 系统里有内存表，怎么避免内存表突然丢数据，然后导致主备同步停止的情况。</h4>
-<ul>
-<li>那么就把备库的内存表引擎先都改成 InnoDB。对于每个内存表，执行</li>
-<li>set sql_log_bin=off;</li>
-<li>alter table tbl_name engine=innodb;</li>
-<li>可以配置一个自动巡检的工具，在备库上发现内存表就把引擎改了。</li>
-</ul>
-<h4><a id="mysql%E8%A7%A3%E6%9E%90-statement%E6%A0%BC%E5%BC%8F%E7%9A%84-binlog%E7%9A%84%E6%97%B6%E5%80%99%EF%BC%8C%E5%AF%B9%E4%BA%8E-load-data%E5%91%BD%E4%BB%A4%EF%BC%8C%E8%A7%A3%E6%9E%90%E5%87%BA%E6%9D%A5%E4%B8%BA%E4%BB%80%E4%B9%88%E7%94%A8%E7%9A%84%E6%98%AF-load-data-local" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>MySQL 解析 statement 格式的 binlog 的时候，对于 load data 命令，解析出来为什么用的是 load data local</h4>
-<ul>
-<li>为了确保备库应用 binlog 正常。因为备库可能配置了 secure_file_priv=null，所以如果不用 local 的话，可能会导入失败，造成主备同步延迟。</li>
-<li>应用场景是使用 mysqlbinlog 工具解析 binlog 文件，并应用到目标库，就可以支持非本地的host</li>
-</ul>
-<h4><a id="%E6%80%8E%E4%B9%88%E7%BB%99%E5%88%86%E5%8C%BA%E8%A1%A8%E5%88%9B%E5%BB%BA%E8%87%AA%E5%A2%9E%E4%B8%BB%E9%94%AE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>怎么给分区表创建自增主键</h4>
-<ul>
-<li>(ftime,id) 使用前缀索引的规则减少索引</li>
-</ul>
-<h4><a id="changebuffer%E5%BC%82%E5%B8%B8%E6%96%AD%E7%94%B5%E6%83%85%E5%86%B5%E4%B8%8B%E6%98%AF%E5%90%A6%E4%BC%9A%E6%95%B0%E6%8D%AE%E4%B8%A2%E5%A4%B1" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>changebuffer 异常断电情况下是否会数据丢失</h4>
-<ul>
-<li>是只更新内存，但是在事务提交的时候，我们把 change buffer 的操作也记录到 redo log 里了，所以崩溃恢复的时候，change buffer 也能找回来</li>
-</ul>
-<h4><a id="mysql%E6%89%AB%E6%8F%8F%E8%A1%8C%E6%95%B0%E5%8F%98%E5%A4%A7%E7%9A%84%E6%83%85%E5%86%B5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>mysql扫描行数变大的情况</h4>
-<ul>
-<li>由于mysql是使用标记删除来删除记录的,并不从索引和数据文件中真正的删除。<br />
-如果delete和insert中间的间隔相对较小,purge线程还没有来得及清理该记录。<br />
-如果主键相同的情况下,新插入的insert会沿用之前删除的delete的记录的空间。<br />
-由于相同的数据量以及表大小,所以导致了统计信息没有变化</li>
-<li>为什么开启了session A,session B扫描行数变成3W<br />
-由于session A开启了一致性读,目的为了保证session A的可重复读,insert只能<br />
-另起炉灶,不能占用delete的空间。所以出现的情况就是delete虽然删除了,但是<br />
-未释放空间,insert又增加了空间。导致统计信息有误</li>
-</ul>
-<h4><a id="%E7%BB%99%E5%AD%A6%E5%8F%B7%E5%AD%97%E6%AE%B5%E5%88%9B%E5%BB%BA%E7%B4%A2%E5%BC%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>给学号字段创建索引</h4>
-<ul>
-<li>使用数字来存9位数字的入学年份</li>
-</ul>
-<h4><a id="%E5%A6%82%E6%9E%9C%E4%B8%80%E4%B8%AA%E9%AB%98%E9%85%8D%E7%9A%84%E6%9C%BA%E5%99%A8%EF%BC%8Credo-log%E8%AE%BE%E7%BD%AE%E5%A4%AA%E5%B0%8F%EF%BC%8C%E4%BC%9A%E5%8F%91%E7%94%9F%E4%BB%80%E4%B9%88%E6%83%85%E5%86%B5%E3%80%82" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>如果一个高配的机器，redo log 设置太小，会发生什么情况。</h4>
-<ul>
-<li>磁盘压力很小，但是数据库出现间歇性的性能下跌。</li>
-<li>SSD性能很好，磁盘压力也很小，但是mysql间歇性的性能下跌</li>
-<li>iops 20000 4个1G redo文件,innodb_io_capacity 20000</li>
-</ul>
-<h4><a id="mysql%E6%9F%A5%E8%AF%A2%E5%BE%88%E6%85%A2" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>mysql查询很慢</h4>
-<ul>
-<li>等MDL锁</li>
-<li>等flush</li>
-<li>等行锁</li>
-</ul>
-<h4><a id="%E5%BF%AB%E9%80%9F%E6%8F%90%E9%AB%98%E6%80%A7%E8%83%BD%E7%9A%84%E5%8A%9E%E6%B3%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>快速提高性能的办法</h4>
-<ul>
-<li>短连接风暴</li>
-<li>show processlist-&gt;id-&gt;information_schema 库的 innodb_trx找到空闲连接杀掉</li>
-<li>call query_rewrite.flush_rewrite_rules()让新的规则生效</li>
-<li>force index</li>
-</ul>
-<h4><a id="%E4%B8%BB%E5%A4%87%E5%A4%8D%E5%88%B6%E4%BD%BF%E7%94%A8row" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>主备复制使用row</h4>
-<ul>
-<li>当 binlog_format使用row格式的时候，binlog 里面记录了真实操作行的主键 id，这样 binlog 传到备库去的时候，就肯定会操作 id=4 的行，不会有主备操作不同行的问题。statement格式会导致主备选择不同的索引</li>
-</ul>
-<h4><a id="%E5%BE%AA%E7%8E%AF%E5%A4%8D%E5%88%B6%E9%97%AE%E9%A2%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>循环复制问题</h4>
-<ul>
-<li>通过server_id来解决一致性问题</li>
-<li>stop slave</li>
-<li>change master to ignore_server_ids=(server_id_of_B)</li>
-</ul>
-<h4><a id="%E7%94%9F%E4%BA%A7%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E7%BD%AE%E4%B8%BA%E5%8F%8C1" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>生产数据库设置为双1</h4>
-<ul>
-<li>业务高峰期。一般如果有预知的高峰期，DBA 会有预案，把主库设置成“非双 1”。</li>
-<li>备库延迟，为了让备库尽快赶上主库。</li>
-<li>用备份恢复主库的副本，应用 binlog 的过程，这个跟上一种场景类似。</li>
-<li>批量导入数据的时候。</li>
-</ul>
-<h4><a id="left-join" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>left join</h4>
-<ul>
-<li>如果需要 left join 的语义，就不能把被驱动表的字段放在 where 条件里面做等值判断或不等值判断，必须都写在 on 里面</li>
-</ul>
-<h4><a id="%E4%B8%BA%E4%BB%80%E4%B9%88bnl%E6%80%A7%E8%83%BD%E6%AF%94nlj%E6%80%A7%E8%83%BD%E5%A5%BD" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>为什么BNL性能比NLJ性能好</h4>
-<ul>
-<li>在对被驱动表做全表扫描的时候，如果数据没有在 Buffer Pool 中，就需要等待这部分数据从磁盘读入；</li>
-<li>从磁盘读入数据到内存中，会影响正常业务的 Buffer Pool 命中率，而且这个算法天然会对被驱动表的数据做多次访问，更容易将这些数据页放到 Buffer Pool 的头部</li>
-<li>即使被驱动表数据都在内存中，每次查找“下一个记录的操作”，都是类似指针操作。而 join_buffer 中是数组，遍历的成本更低。</li>
-</ul>
-<h4><a id="distinct%E5%92%8Cgroup-by%E7%9A%84%E6%80%A7%E8%83%BD" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>distinct和group by的性能</h4>
-<ul>
-<li>所以不需要执行聚合函数时，distinct 和 group by 这两条语句的语义和执行流程是相同的，因此执行性能也相同。</li>
-</ul>
-<h4><a id="%E5%A4%87%E5%BA%93%E8%87%AA%E5%A2%9E%E4%B8%BB%E9%94%AE%E9%97%AE%E9%A2%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>备库自增主键问题</h4>
-<ul>
-<li>在 insert 语句之前，还有一句 SET INSERT_ID=1。这个线程里下一次需要用到自增值的时候，不论当前表的自增值是多少，固定用 1 这个值。</li>
-</ul>
-
-
-			
-			
-		</div>
-
-	</article>
- 
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2019-01-02T16:44:50+08:00" itemprop="datePublished">2019/01/02 16:44 下午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15464186907626.html" itemprop="url">
-		mysql优化</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="%E7%9F%AD%E8%BF%9E%E6%8E%A5%E9%A3%8E%E6%9A%B4" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>短连接风暴</h4>
-<ul>
-<li>提高max_connections</li>
-<li>跳过权限认证阶段</li>
-</ul>
-<h4><a id="%E6%85%A2%E6%9F%A5%E8%AF%A2" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>慢查询</h4>
-<ul>
-<li>索引没有设计好 主备切换，</li>
-<li>sql语句没写好 query_rewrite</li>
-</ul>
-<pre><code class="language-plain_text">  insert into query_rewrite.rewrite_rules(pattern, replacement, pattern_database) values (&quot;select * from t where id + 1 = ?&quot;, &quot;select * from t where id = ? - 1&quot;, &quot;db1&quot;);
-</code></pre>
-<ul>
-<li>mysql选错了索引</li>
-</ul>
-<h4><a id="qps%E6%9A%B4%E5%A2%9E%E9%97%AE%E9%A2%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>QPS暴增问题</h4>
-<ul>
-<li>去掉白名单</li>
-<li>删除用户</li>
-<li></li>
-</ul>
-
-
-			
-			
-		</div>
-
-	</article>
- 
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2019-01-28T10:29:18+08:00" itemprop="datePublished">2019/01/28 10:29 上午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15486425582591.html" itemprop="url">
-		动态观点看待加锁</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="%E6%9F%A5%E8%AF%A2%E8%AF%AD%E5%8F%A5%E4%B8%ADwhere%E6%9D%A1%E4%BB%B6%E6%98%AF%E5%A4%A7%E4%BA%8E%E5%8F%B7%E5%92%8C%E5%B0%8F%E4%BA%8E%E5%8F%B7%EF%BC%8C%E8%BF%99%E9%87%8C%E7%9A%84%E2%80%9C%E7%AD%89%E5%80%BC%E6%9F%A5%E8%AF%A2%E2%80%9D%E5%8F%88%E6%98%AF%E4%BB%8E%E5%93%AA%E9%87%8C%E6%9D%A5%E7%9A%84%E5%91%A2%EF%BC%9F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>查询语句中 where 条件是大于号和小于号，这里的“等值查询”又是从哪里来的呢？</h4>
-<ul>
-<li>select * from t where id&gt;9 and id&lt;12 order by id desc for update;</li>
-<li>首先这个查询语句的语义是 order by id desc，要拿到满足条件的所有行，优化器必须先找到“第一个 id&lt;12 的值”。</li>
-<li>在执行过程中，通过树搜索的方式定位记录的时候，用的是“等值查询”的方法。</li>
-</ul>
-<h4><a id="lock-in-share-mode%E5%92%8C-for-update" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>lock in share mode 和 for update</h4>
-<ul>
-<li>当前事务获取共享锁后，可以读写，其他事务是否可以进行读写操作和获取共享锁：可以读，可以获取共享锁，不可以写</li>
-<li>两个事务同时获取某行数据共享锁后，是否可以进行update操作：不可以</li>
-<li>当前事务获取某行数据排他锁后，其他事务是否可以对该行数据进行读写操作和获取共享锁：其他事务可以读，不可以获取共享锁，不可以写</li>
-</ul>
-<h4><a id="%E8%A1%8C%E9%94%81%E5%92%8C%E7%B4%A2%E5%BC%95%E7%9A%84%E5%85%B3%E7%B3%BB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>行锁和索引的关系</h4>
-<ul>
-<li>未加索引时，两种行锁情况为（使用表锁）：
-<ul>
-<li>事务1获取某行数据共享锁，其他事务可以获取不同行数据的共享锁，不可以获取不同行数据的排他锁</li>
-<li>事务1获取某行数据排他锁，其他事务不可以获取不同行数据的共享锁、排他锁</li>
-</ul>
-</li>
-<li>加索引后，两种行锁为（使用行锁）：</li>
-<li>事务1获取某行数据共享锁，其他事务可以获取不同行数据的排他锁</li>
-<li>事务1获取某行数据排他锁，其他事务可以获取不同行数据的共享锁、排他锁</li>
-</ul>
-<h4><a id="%E6%AD%BB%E9%94%81" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>死锁</h4>
-<ul>
-<li>select id from t where c in(5,20,10) lock in share mode;</li>
-<li>select id from t where c in(5,20,10) order by c desc for update;</li>
-</ul>
-<h4><a id="%E6%97%A5%E5%BF%97%E9%94%81%E7%B1%BB%E5%9E%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>日志锁类型</h4>
-<pre><code class="language-plain_text">lock_mode X waiting表示next-key lock；
-lock_mode X locks rec but not gap是只有行锁；
-locks gap before rec 只有间隙锁；
-</code></pre>
-<h4><a id="%E7%B4%A2%E5%BC%95%E4%BC%98%E5%8C%96" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>索引优化</h4>
-<ul>
-<li>lock in share mode 只锁覆盖索引，但是如果是 for update 就不一样了。 执行 for update 时，系统会认为你接下来要更新数据，因此会顺便给主键索引上满足条件的行加上行锁。</li>
-<li>索引上的等值查询，给唯一索引加锁的时候，next-key lock 退化为行锁</li>
-<li>limit 可以减少间隙锁的范围，只要从左到右满足limit就不在向右锁多余的锁</li>
-<li></li>
-</ul>
-
-
-			
-			
-		</div>
-
-	</article>
- 
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2018-11-26T17:07:46+08:00" itemprop="datePublished">2018/11/26 17:07 下午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15432232669056.html" itemprop="url">
-		全局锁和表锁</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="%E9%94%81%E6%9C%89%E4%B8%89%E7%A7%8D" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>锁有三种</h4>
-<ul>
-<li>全局锁</li>
-<li>表级锁</li>
-<li>行锁</li>
-</ul>
-<h4><a id="%E5%85%A8%E5%B1%80%E9%94%81" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>全局锁</h4>
-<ul>
-<li>Flush tables with read lock</li>
-<li>single-transaction 方法只适用于所有的表使用事务引擎的库。如果有的表使用了不支持事务的引擎，那么备份就只能通过 FTWRL 方法。这往往是 DBA 要求业务开发人员使用 InnoDB 替代 MyISAM 的原因之一。</li>
-</ul>
-<h4><a id="readonly%E5%92%8Cftwrl%E5%AF%B9%E6%AF%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>readonly和FTWRL对比</h4>
-<ul>
-<li>readonly 的值会被用来做其他逻辑，比如用来判断一个库是主库还是备库。因此，修改 global 变量的方式影响面更大，我不建议你使用。</li>
-<li>在异常处理机制上有差异。如果执行 FTWRL 命令之后由于客户端发生异常断开，那么 MySQL 会自动释放这个全局锁，整个库回到可以正常更新的状态。而将整个库设置为 readonly 之后，如果客户端发生异常，则数据库就会一直保持 readonly 状态，这样会导致整个库长时间处于不可写状态，风险较高。</li>
-</ul>
-<h4><a id="%E8%A1%A8%E7%BA%A7%E9%94%81" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>表级锁</h4>
-<ul>
-<li>lock tables ... read/write</li>
-<li>表锁</li>
-<li>元数据锁 MDL</li>
-</ul>
-<h4><a id="%E5%AE%89%E5%85%A8%E7%BB%99%E5%B0%8F%E8%A1%A8%E5%8A%A0%E9%94%81" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>安全给小表加锁</h4>
-<ul>
-<li>alter table 语句里面设定等待时间，如果在这个指定的等待时间里面能够拿到 MDL 写锁最好，拿不到也不要阻塞后面的业务语句，先放弃。之后开发人员或者 DBA 再通过重试命令重复这个过程。</li>
-</ul>
-<pre><code class="language-plain_text">  ALTER TABLE tbl_name NOWAIT add column ...
-  ALTER TABLE tbl_name WAIT N add column ... 
-</code></pre>
-<ul>
-<li>MDL 会直到事务提交才释放，在做表结构变更的时候，你一定要小心不要导致锁住线上查询和更新。</li>
-<li></li>
-</ul>
-
-
-			
-			
-		</div>
-
-	</article>
- 
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2018-12-07T10:54:39+08:00" itemprop="datePublished">2018/12/07 10:54 上午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15441512790891.html" itemprop="url">
-		给字符串加索引</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="%E7%B4%A2%E5%BC%95%E6%9F%A5%E8%AF%A2%E5%8C%BA%E5%88%AB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>索引查询区别</h4>
-<ul>
-<li>完整索引，从索引树找到满足索引值的记录，取得主键的值，然后从主键上查询主键值相匹配的行，判断索引字段是否正确，将记录加入结果集</li>
-<li>继续查找索引树，直到记录不满足为止</li>
-<li>使用前缀索引，定义好长度，就可以做到既节省空间，又不用额外增加太多的查询成本。</li>
-</ul>
-<h4><a id="%E5%89%8D%E7%BC%80%E7%B4%A2%E5%BC%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>前缀索引</h4>
-<ul>
-<li>distinct left(key, len)</li>
-<li>前缀索引很可能会损失区分度，需要预先设定一个可以接受的损失比例</li>
-</ul>
-<pre><code class="language-plain_text">explain select ID,email from SUser where email='zhangssxyz@xxx.com';
-  explain select ID,email from SUser force index(index2) where email='zhangssxyz@xxx.com' ;
-</code></pre>
-<ul>
-<li>前缀索引就用不上覆盖索引对查询性能的优化了, 因为系统并不确定前缀索引的定义是否截断了完整信息。</li>
-</ul>
-<h4><a id="%E4%BC%98%E5%8C%96%E7%AD%96%E7%95%A5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>优化策略</h4>
-<ul>
-<li>第一种方式是使用倒序存储</li>
-<li>第二种方式是使用 hash 字段</li>
-</ul>
-<h4><a id="%E5%80%92%E5%BA%8F%E5%AD%98%E5%82%A8%E5%92%8C%E5%93%88%E5%B8%8C%E5%AD%98%E5%82%A8%E7%9A%84%E5%8C%BA%E5%88%AB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>倒序存储和哈希存储的区别</h4>
-<ul>
-<li>从占用的额外空间来看，倒序存储方式在主键索引上，不会消耗额外的存储空间，而 hash 字段方法需要增加一个字段。</li>
-<li>在 CPU 消耗方面，倒序方式每次写和读的时候，都需要额外调用一次 reverse 函数，而 hash 字段的方式需要额外调用一次 crc32() 函数</li>
-<li>从查询效率上看，使用 hash 字段方式的查询性能相对更稳定一些。因为 crc32 算出来的值虽然有冲突的概率，但是概率非常小，可以认为每次查询的平均扫描行数接近 1。而倒序存储方式毕竟还是用的前缀索引的方式，也就是说还是会增加扫描行数</li>
-</ul>
-
-
-			
-			
-		</div>
-
-	</article>
- 
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2018-12-21T09:04:28+08:00" itemprop="datePublished">2018/12/21 09:04 上午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15453542683157.html" itemprop="url">
-		Order by工作机制</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="%E6%8F%92%E5%85%A5%E6%95%B0%E6%8D%AE%E5%87%BD%E6%95%B0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>插入数据函数</h4>
-<pre><code class="language-plain_text">* delimiter ;;
-create procedure icity()
-begin
-  declare i int;
-  set i=1;
-  while(i&lt;=100000)do
-    if i &lt;= 4000 then
-      insert into t values(i, &quot;杭州&quot;, substring(MD5(RAND()),1,10), ROUND(RAND()*(100-1)+1), &quot;杭州中路&quot;);
-    else
-      insert into t values(i, &quot;深圳&quot;, substring(MD5(RAND()),1,10), ROUND(RAND()*(100-1)+1), &quot;深南大道&quot;);
-    end if;
-    set i=i+1;
-  end while;
-end;;
-delimiter ;
-</code></pre>
-<h4><a id="%E5%85%A8%E5%AD%97%E6%AE%B5%E6%8E%92%E5%BA%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>全字段排序</h4>
-<ul>
-<li>
-<p>select city,name,age from t where city='杭州' order by name limit 1000;</p>
-</li>
-<li>
-<p>初始化 sort_buffer，确定放入 name、city、age 这三个字段；</p>
-</li>
-<li>
-<p>从索引 city 找到第一个满足 city='杭州’条件的主键 id，也就是图中的 ID_X；</p>
-</li>
-<li>
-<p>到主键 id 索引取出整行，取 name、city、age 三个字段的值，存入 sort_buffer 中；</p>
-</li>
-<li>
-<p>从索引 city 取下一个记录的主键 id；</p>
-</li>
-<li>
-<p>重复步骤 3、4 直到 city 的值不满足查询条件为止，对应的主键 id 也就是图中的 ID_Y；</p>
-</li>
-<li>
-<p>对 sort_buffer 中的数据按照字段 name 做快速排序；</p>
-</li>
-<li>
-<p>按照排序结果取前 1000 行返回给客户端</p>
-</li>
-</ul>
-<h4><a id="row-id%E6%8E%92%E5%BA%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>row_id排序</h4>
-<ul>
-<li>相对全字段排序遍历排序结果，取前 1000 行，并按照 id 的值回到原表中取出 city、name 和 age 三个字段返回给客户端。</li>
-</ul>
-<h4><a id="%E8%A6%86%E7%9B%96%E7%B4%A2%E5%BC%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>覆盖索引</h4>
-<ul>
-<li>覆盖索引是指，索引上的信息足够满足查询请求，不需要再回到主键索引上去取数据。</li>
-<li></li>
-</ul>
-
-
-			
-			
-		</div>
-
-	</article>
- 
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2018-12-24T10:14:27+08:00" itemprop="datePublished">2018/12/24 10:14 上午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15456176673171.html" itemprop="url">
-		SQL语句性能分析</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="%E6%9D%A1%E4%BB%B6%E5%AD%97%E6%AE%B5%E5%87%BD%E6%95%B0%E5%88%86%E6%9E%90" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>条件字段函数分析</h4>
-<ul>
-<li>索引字段做函数操作，可能会破坏索引值的有序性，因此优化器就决定放弃走树搜索功能。</li>
-<li>索引字段的参数加上函数操作可以使用索引</li>
-</ul>
-<h4><a id="%E9%9A%90%E6%80%A7%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>隐性类型转换</h4>
-<pre><code class="language-plain_text">  mysql&gt; select * from tradelog where tradeid=110717;
-</code></pre>
-<ul>
-<li>数据类型转换规则会触发函数字段操作会放弃索引树</li>
-</ul>
-<h4><a id="%E9%9A%90%E5%BC%8F%E5%AD%97%E7%AC%A6%E7%BC%96%E7%A0%81%E8%BD%AC%E6%8D%A2" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>隐式字符编码转换</h4>
-<pre><code class="language-plain_text"> mysql&gt; CREATE TABLE `tradelog` (
-  `id` int(11) NOT NULL,
-  `tradeid` varchar(32) DEFAULT NULL,
-  `operator` int(11) DEFAULT NULL,
-  `t_modified` time DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `tradeid` (`tradeid`),
-  KEY `t_modified` (`t_modified`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
- CREATE TABLE `trade_detail` (
-  `id` int(11) NOT NULL,
-  `tradeid` varchar(32) DEFAULT NULL,
-  `trade_step` int(11) DEFAULT NULL, /* 操作步骤 */
-  `step_info` varchar(32) DEFAULT NULL, /* 步骤信息 */
-  PRIMARY KEY (`id`),
-  KEY `tradeid` (`tradeid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-</code></pre>
-<ul>
-<li>主动把被驱动表的字符改成utf8</li>
-</ul>
-<pre><code class="language-plain_text">select d.* from tradelog l, trade_detail d where d.tradeid=l.tradeid and l.id=2; 
-select d.* from tradelog l , trade_detail d where d.tradeid=CONVERT(l.tradeid USING utf8) and l.id=2; 
-</code></pre>
-
-
-			
-			
-		</div>
-
-	</article>
- 
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2018-12-27T09:11:58+08:00" itemprop="datePublished">2018/12/27 09:11 上午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15458731180628.html" itemprop="url">
-		语句性能差异</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="%E6%B8%85%E9%99%A4%E9%94%81%E8%A1%A8%E8%BF%9B%E7%A8%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>清除锁表进程</h4>
-<ul>
-<li>锁表和解锁表</li>
-</ul>
-<pre><code class="language-plain_text"> lock table t write;
- unlock  tables;
- select blocking_pid from sys.schema_table_lock_waits;
-</code></pre>
-<h4><a id="%E6%9F%A5%E8%AF%A2%E9%94%81%E8%A1%A8%E8%BF%9B%E7%A8%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>查询锁表进程</h4>
-<pre><code class="language-plain_text">  select * from t sys.innodb_lock_waits where locked_table=`'test'.'t'`\G
-</code></pre>
-<h4><a id="%E8%AF%BB%E9%94%81%E6%AF%94%E8%BE%83%E5%BF%AB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>读锁比较快</h4>
-<pre><code class="language-plain_text">  update t set c=c+1 where id=1;
-  start transaction with consistent snapshot;
-  select * from t where id = 1;
-  select * from t where id = 1 lock in share mode 
-</code></pre>
-<ul>
-<li>带 lock in share mode 的 SQL 语句，是当前读，因此会直接读到 1000001 这个结果，所以速度很快；而 select * from t where id=1 这个语句，是一致性读，因此需要从 1000001 开始，依次执行 undo log，执行了 100 万次以后，才将 1 这个结果返回。</li>
-</ul>
-<h4><a id="%E5%8F%82%E8%80%83%E9%98%85%E8%AF%BB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>参考阅读</h4>
-<ul>
-<li><a href="http://hedengcheng.com/?p=771">http://hedengcheng.com/?p=771</a></li>
-<li><a href="http://www.aneasystone.com/archives/2017/11/solving-dead-locks-two.html">http://www.aneasystone.com/archives/2017/11/solving-dead-locks-two.html</a></li>
-</ul>
-<h4><a id="%E7%B4%A2%E5%BC%95%E4%BD%BF%E7%94%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>索引使用</h4>
-<p>所以说，实际设计索引的时侯，必须把经常用做范围查询的字段放在联合索引的最后一个，オ能保证你 SQL 里每个字段都能基于索引去查询</p>
-
-
-			
-			
-		</div>
-
-	</article>
-  
-
-</div>
-<nav id="pagenavi">
-	 
-	 <a class="next" href="Mysql优化实战_1.html">Next</a> 
-	<div class="center"><a href="archives.html">Blog Archives</a></div>
-
-</nav>
-
-</div>
-
-
-
+<div class="hero-body ct-body">
+        <div class="container">
+              <div class="columns is-centered">
+                  <div class="column  is-four-fifths">
+                      <div class="columns is-mobile">
+                          <div class="column">
+                              <h1 class="title">
+       凌云阁
+              
+                              </h1>
+                              <h2 class="subtitle">
+                                 2024 重新扬帆启航！
+                              </h2>
+                          </div>
+                          <div class="column is-narrow"><figure class="image is-128x128">
+                            
+                              <img class="is-rounded" src="https://i.loli.net/2020/02/22/Si1K7sluept2ZgR.jpg">
+                            
+                            </figure></div>
+                      </div>
+                        
+                      
+                  </div>
+                  
+                </div>
+            
+              
+        
         </div>
-			<footer id="footer" class="inner">Copyright &copy; 2014
-Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a> &nbsp;&nbsp; 
-Theme by <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a>
+      </div>
+</section>
+<section class="ct-body">
+      <div class="container">
+          <div class="columns is-variable bd-klmn-columns is-4">
+              <div class="column is-two-thirds">
+                
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15439799166687.html"> 
+                            <h2 class="title">Mysql选错索引</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15439799166687.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2018/12/05 11:18 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15473510902745.html"> 
+                            <h2 class="title">Mysql常见问题整理</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15473510902745.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2019/01/13 11:44 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15464186907626.html"> 
+                            <h2 class="title">mysql优化</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15464186907626.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2019/01/02 16:44 下午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15486425582591.html"> 
+                            <h2 class="title">动态观点看待加锁</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15486425582591.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2019/01/28 10:29 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15432232669056.html"> 
+                            <h2 class="title">全局锁和表锁</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15432232669056.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2018/11/26 17:07 下午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15441512790891.html"> 
+                            <h2 class="title">给字符串加索引</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15441512790891.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2018/12/07 10:54 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15453542683157.html"> 
+                            <h2 class="title">Order by工作机制</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15453542683157.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2018/12/21 09:04 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15456176673171.html"> 
+                            <h2 class="title">SQL语句性能分析</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15456176673171.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2018/12/24 10:14 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15458731180628.html"> 
+                            <h2 class="title">语句性能差异</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15458731180628.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2018/12/27 09:11 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Mysql优化实战</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+
+                  <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+                    <a class="pagination-previous"  disabled="disabled" ><span class="tran-prev-page">&laquo; Prev Page</span></a>  
+                    <a class="pagination-next"   href="Mysql优化实战_1.html" ><span class="tran-next-page">Next Page &raquo;</span></a>                   
+                  </nav>
+
+              </div><!-- end column -->
+              <div class="column">
+                  <div class="card">
+                      <header class="card-header">
+                        <p class="card-header-title">
+                           <span class="tran-site-categories">Categories</span> 
+                        </p>
+                     
+                      </header>
+                      <div class="card-content site-categories">
+                        <div class="content"> 
+                          <ul>
+                          
+                                <li><a href="%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95%E5%AE%9E%E6%88%98.html">代码随想录实战</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Redis%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98.html">Redis核心技术与实战</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E7%B3%BB%E7%BB%9F%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html">系统性能调优必知必会</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E5%88%86%E5%B8%83%E5%BC%8F%E5%8D%8F%E8%AE%AE%E5%92%8C%E7%AE%97%E6%B3%95%E5%AE%9E%E6%88%98.html">分布式协议和算法实战</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html">C++基础与提高</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html">设计模式</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Python.html">Python</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Golang.html">Golang</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html">设计模式之美</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%80%A7%E8%83%BD%E5%B7%A5%E7%A8%8B%E9%AB%98%E6%89%8B%E8%AF%BE.html">性能工程高手课</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95.html">性能测试</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Prometheus.html">Prometheus</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="RocketMQ.html">RocketMQ</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE.html">网络协议</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Django.html">Django</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html">深入剖析Kubernetes</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html">数据结构和算法</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E5%BE%AE%E6%9C%8D%E5%8A%A1.html">微服务</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%9E%B6%E6%9E%84.html">架构</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html">操作系统原理</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html">Mysql优化实战</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Kafka.html">Kafka</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html">linux服务器研发</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86.html">计算机组成原理</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E7%A8%8B%E5%BA%8F%E5%91%98%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB.html">程序员的自我修养</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="C%E8%AF%AD%E8%A8%80%E8%BF%9B%E9%98%B6.html">C语言进阶</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="http_study.html">http_study</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E7%8E%A9%E8%BD%AC%E7%AE%97%E6%B3%95.html">玩转算法</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="C++%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B.html">C++对象模型</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="SQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html">SQL必知必会</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Zookeeper.html">Zookeeper</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Redis%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A.html">Redis从入门到精通</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E8%BF%9B%E9%98%B6.html">数据结构和算法进阶</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Mysql%E6%80%A7%E8%83%BD%E7%AE%A1%E7%90%86%E5%92%8C%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1.html">Mysql性能管理和架构设计</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98.html">网络编程实战</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html">Redis高并发缓存</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html">Linux性能优化实战</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E5%80%99%E6%8D%B7STL.html">候捷STL</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="ElasticSearch.html">ElasticSearch</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="RabbitMQ.html">RabbitMQ</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="etcd.html">etcd</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="RocketMQ-1.html">RocketMQ</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="mysql.html">mysql</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                          </ul>
+                        </div>
+                      </div>
+                     
+                    </div>
+
+                    <div class="card">
+                        <header class="card-header">
+                          <p class="card-header-title">
+                              <span class="tran-site-tags">Tags</span> 
+                          </p>
+                       
+                        </header>
+                        <div class="card-content site-tags">
+                          <div class="content">
+                           <div class="tags">
+                            
+                              <a class="tag is-link is-light" href="tag_Docker.html">#Docker</a> 
+                            
+                              <a class="tag is-link is-light" href="tag_K8S.html">#K8S</a> 
+                            
+                              <a class="tag is-link is-light" href="tag_%E6%80%A7%E8%83%BD%E5%B7%A5%E7%A8%8B.html">#性能工程</a> 
+                            
+                              <a class="tag is-link is-light" href="tag_%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95.html">#性能测试</a> 
+                            
+                           </div>
+                             
+                          </div>
+                        </div>
+                       
+                      </div>
+
+              </div>
+            </div>
+
+          
+      </div>
+    </section>
+
+    <footer class="footer">
+        <div class="content has-text-centered">
+          <p>
+              Copyright &copy; 2024
+              Powered by <a target="_blank" href="http://www.mweb.im">geraltlau</a>&nbsp; 
+          </p>
+        </div>
       </footer>
-		</div>
-	</div>
+
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
+
+
+
+div.code-toolbar {
+  position: relative;
+}
+
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
+
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
+
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
+
 
   
     
 
 
 
-</body>
+
+  </body>
 </html>

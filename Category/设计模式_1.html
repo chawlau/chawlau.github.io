@@ -1,1845 +1,729 @@
-<!DOCTYPE HTML>
-<html>
-<head>
-	<meta charset="utf-8">
-	<title>  
-	  
-  	设计模式 -        凌云阁
-  	
-	</title>
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+      
+    设计模式 -        凌云阁
+    
+    </title>
+    <link rel="shortcut icon" href="https://i.loli.net/2020/02/22/Si1K7sluept2ZgR.jpg" type="image/png" />
 
-  <meta name="HandheldFriendly" content="True">
-  <meta name="MobileOptimized" content="320">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-	<link href="atom.xml" rel="alternate" title="       凌云阁" type="application/atom+xml">
-
-	<link href="asset/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-	<link href="asset/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
-	<script src="asset/javascripts/jquery.min.js"></script>
-	<script src="asset/highlightjs/highlight.pack.js"></script>
-	<link href="asset/highlightjs/styles/solarized_dark.css" media="screen, projection" rel="stylesheet" type="text/css">
-<script>hljs.initHighlightingOnLoad();</script>
-
-	<!--[if lt IE 9]><script src="asset/javascripts/html5.js"></script><![endif]-->
-	<!-- <link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'> -->
-	<style type="text/css">
-/* latin */
-@font-face {
-  font-family: 'Nunito';
-  font-style: normal;
-  font-weight: 300;
-  src: local('Nunito-Light'), url(asset/font/1TiHc9yag0wq3lDO9cw0voX0hVgzZQUfRDuZrPvH3D8.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
-}
-/* latin */
-@font-face {
-  font-family: 'Nunito';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Nunito-Regular'), url(asset/font/6TbRXKWJjpj6V2v_WyRbMX-_kf6ByYO6CLYdB4HQE-Y.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
-}
-/* latin */
-@font-face {
-  font-family: 'Nunito';
-  font-style: normal;
-  font-weight: 700;
-  src: local('Nunito-Bold'), url(asset/font/TttUCfJ272GBgSKaOaD7KoX0hVgzZQUfRDuZrPvH3D8.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
-}
-	</style>
-	
-	<style type="text/css">
-	.container .left-col{ opacity: 1;}
-	#pagenavi a{ font-size: 1.3em;}
-	#pagenavi .next:before{ top: 3px;}
-	#pagenavi .prev:before{ top: 3px;}
-	.container .mid-col .mid-col-container #content .archives .title{ font-size: 1.5em;}
-	.container .mid-col .mid-col-container #content article{ padding: 15px 0px;}
-	#header .subtitle {
-		line-height: 1.2em;
-		padding-top: 8px;
-	}
-	article pre{ background: none; border: none; padding: 0;}
-	article .entry-content{text-align: left;}
-	.share-comment{ padding: 25px 0px; clear: both;}
-	hr{ margin: 20px 0px;border: 0; border-top:solid 1px #ddd;}
-
-	</style>
-  
-
+    
+    
+    <link href="atom.xml" rel="alternate" title="       凌云阁" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/style.min.css">
+    <link rel="stylesheet" href="asset/css/doc.css">
+    <script src="asset/app.js"></script>
 </head>
+  <body>
+    <section class="hero">
+      <div class="hero-head">
+          <nav class="navbar" role="navigation" aria-label="main navigation">
+              <div class="container">
+              <div class="navbar-brand">
+                
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
+                
+                <a target="_self" class="navbar-item " href="archives.html">Archives</a>
+                
+
+                <a role="button" id="navbarSNSRssSwitchBtn" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarSNSRssButtons">
+                  <span aria-hidden="true"></span>
+                  <span aria-hidden="true"></span>
+                  <span aria-hidden="true"></span>
+                </a>
+              </div>
+            
+              <div id="navbarSNSRssButtons" class="navbar-menu">
+                <div class="navbar-start">
+                  
+                </div>
+            
+                <div class="navbar-end">
+                  <div class="navbar-item">
+                    <!--buttons start-->
+                    <div class="buttons">
+                      
+                        
+                        
+
+                        <a href="www.facebook.com" target="_blank" title="facebook">
+                            <span class="icon is-large has-text-grey-darker">
+                               <svg class="svg-inline--fa fa-facebook fa-w-16 fa-lg" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="facebook" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M504 256C504 119 393 8 256 8S8 119 8 256c0 123.78 90.69 226.38 209.25 245V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.28c-30.8 0-40.41 19.12-40.41 38.73V256h68.78l-11 71.69h-57.78V501C413.31 482.38 504 379.78 504 256z"></path></svg><!-- <i class="fab fa-facebook fa-lg"></i> -->
+                            </span>
+                          </a>
+                        
+                        
+                        <a href="www.github.com/chawlau" target="_blank" title="github">
+                            <span class="icon is-large has-text-grey-darker">
+                               <svg class="svg-inline--fa fa-github fa-w-16 fa-lg" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="github" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" data-fa-i2svg=""><path fill="currentColor" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg><!-- <i class="fab fa-github fa-lg"></i> -->
+                            </span>
+                          </a>
+                        
+                        
+                     <a href="www.twitter.com"  target="_blank" title="twitter">
+                       <span class="icon is-large has-text-grey-darker">
+                          <svg class="svg-inline--fa fa-twitter fa-w-16 fa-lg" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="twitter" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"></path></svg><!-- <i class="fab fa-twitter fa-lg"></i> -->
+                       </span>
+                     </a>
+                      
+                      
+                      <a href="www.weibo.com" target="_blank" title="weibo">
+                          <span class="icon is-large has-text-grey-darker">
+                            <svg class="svg-inline--fa fa-weibo fa-w-16 fa-lg" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="weibo" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M407 177.6c7.6-24-13.4-46.8-37.4-41.7-22 4.8-28.8-28.1-7.1-32.8 50.1-10.9 92.3 37.1 76.5 84.8-6.8 21.2-38.8 10.8-32-10.3zM214.8 446.7C108.5 446.7 0 395.3 0 310.4c0-44.3 28-95.4 76.3-143.7C176 67 279.5 65.8 249.9 161c-4 13.1 12.3 5.7 12.3 6 79.5-33.6 140.5-16.8 114 51.4-3.7 9.4 1.1 10.9 8.3 13.1 135.7 42.3 34.8 215.2-169.7 215.2zm143.7-146.3c-5.4-55.7-78.5-94-163.4-85.7-84.8 8.6-148.8 60.3-143.4 116s78.5 94 163.4 85.7c84.8-8.6 148.8-60.3 143.4-116zM347.9 35.1c-25.9 5.6-16.8 43.7 8.3 38.3 72.3-15.2 134.8 52.8 111.7 124-7.4 24.2 29.1 37 37.4 12 31.9-99.8-55.1-195.9-157.4-174.3zm-78.5 311c-17.1 38.8-66.8 60-109.1 46.3-40.8-13.1-58-53.4-40.3-89.7 17.7-35.4 63.1-55.4 103.4-45.1 42 10.8 63.1 50.2 46 88.5zm-86.3-30c-12.9-5.4-30 .3-38 12.9-8.3 12.9-4.3 28 8.6 34 13.1 6 30.8.3 39.1-12.9 8-13.1 3.7-28.3-9.7-34zm32.6-13.4c-5.1-1.7-11.4.6-14.3 5.4-2.9 5.1-1.4 10.6 3.7 12.9 5.1 2 11.7-.3 14.6-5.4 2.8-5.2 1.1-10.9-4-12.9z"></path></svg><!-- <i class="fab fa-weibo fa-lg"></i> -->
+                          </span>
+                      </a>
+                      
+                      <a href="atom.xml" target="_blank" title="RSS">
+                          <span class="icon is-large has-text-black-bis">
+                              <svg class="svg-inline--fa fa-rss fa-w-14 fa-lg" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="rss" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M128.081 415.959c0 35.369-28.672 64.041-64.041 64.041S0 451.328 0 415.959s28.672-64.041 64.041-64.041 64.04 28.673 64.04 64.041zm175.66 47.25c-8.354-154.6-132.185-278.587-286.95-286.95C7.656 175.765 0 183.105 0 192.253v48.069c0 8.415 6.49 15.472 14.887 16.018 111.832 7.284 201.473 96.702 208.772 208.772.547 8.397 7.604 14.887 16.018 14.887h48.069c9.149.001 16.489-7.655 15.995-16.79zm144.249.288C439.596 229.677 251.465 40.445 16.503 32.01 7.473 31.686 0 38.981 0 48.016v48.068c0 8.625 6.835 15.645 15.453 15.999 191.179 7.839 344.627 161.316 352.465 352.465.353 8.618 7.373 15.453 15.999 15.453h48.068c9.034-.001 16.329-7.474 16.005-16.504z"></path></svg><!-- <i class="fas fa-rss fa-lg"></i> -->
+                          </span>
+                      </a>
+                    </div>
+                    <!--buttons end-->
+
+                  </div>
+                </div>
+                </div>
+              </div>
+            </nav>
+      </div>
 
-
-<body>
-	<div class="container">
-		<div class="left-col">
-			<div class="intrude-less">
-				<header id="header" class="inner">
-				 
-				 	<div class="profilepic">
-						<img src="https://i.loli.net/2020/02/22/Si1K7sluept2ZgR.jpg" style="width:160px;">
-					</div>
-            	
-					
-					<h1><a href="index.html">       凌云阁</a></h1>
-					<p class="subtitle">生命的意义是成为你自己！</p>
-					<nav id="main-nav">
-						<ul class="main">
-						
-						  <li id=""><a target="_self" href="index.html">Home</a></li>
-						
-						  <li id=""><a target="_self" href="archives.html">Archives</a></li>
-						
-						</ul>
-					</nav>
-
-					<nav id="sub-nav">
-						<div class="social">
-
-<a target="_blank" class="facebook" href="www.facebook.com" title="Facebook">Facebook</a>
-
-
-
-
-
-
-<a target="_blank" class="weibo" href="www.weibo.com" title="weibo">Weibo</a>
-<a target="_blank" class="twitter" target="_blank" href="www.twitter.com" title="Twitter">Twitter</a>
-<a target="_blank" class="github" target="_blank" href="www.github.com/chawlau" title="GitHub">GitHub</a>
-
-
-								
-
-								<a class="rss" href="atom.xml" title="RSS">RSS</a>
-							
-						</div>
-					</nav>
-				</header>				
-			</div>
-		</div>	
-		<div class="mid-col">
-			<div class="mid-col-container"> <div id="content" class="inner">
-<div itemscope itemtype="http://schema.org/Blog">
-
-
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2020-01-05T21:12:56+08:00" itemprop="datePublished">2020/01/05 21:12 下午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15782299761779.html" itemprop="url">
-		访问器模式</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="%E5%8A%A8%E6%9C%BA" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>动机</h4>
-<ul>
-<li>在软件构建过程中，由于需求的改变，某些类层次结构中常常需要增加新的行为（方法），如果直接在基类中做这样的更改，将会给子类带来很繁重的变更负担，甚至破坏原有设计。</li>
-<li>如何在不更改类层次结构的前提下，在运行时根据需要透明地为类层次结构上的各个类动态添加新的操作，从而避免上述问题？</li>
-</ul>
-<h4><a id="%E5%AE%9A%E4%B9%89" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>定义</h4>
-<ul>
-<li>表示一个作用于某对象结构中的各元素的操作。使得可以在不改变（稳定）各元素的类的前提下定义（扩展）作用于这些元素的新操作（变化）。</li>
-</ul>
-<h4><a id="%E7%BB%93%E6%9E%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>结构</h4>
-<ul>
-<li><img src="media/15782299761779/15782309016996.jpg" alt="" style="width:696px;" /></li>
-</ul>
-<h4><a id="%E8%A6%81%E7%82%B9%E6%80%BB%E7%BB%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>要点总结</h4>
-<ul>
-<li>
-<p>Visitor 模式通过所谓双重分发（double dispatch）来实现在不更改（不添加新的操作-编译时）Elementa 类层次结构的前提下，在运行时透明地为类层次结构上的各个类动态添加新的操作（支持变化）。</p>
-</li>
-<li>
-<p>所谓双重分发即 Visitor 模式中间包括了两个多态分发（注意其中的多态机制）：第一个为 accept 方法的多态辨析；第二个为 /isitelementx 方法的多态辨析。</p>
-</li>
-<li>
-<p>Visitor 模式的最大缺点在于扩展类层次结构（增添新的 Element 子类），会导致 Visitor？类的改变。<em><strong>因此 Vistor 模式适用于Element 类层次结构稳定，而其中的操作却经常面临频繁改动</strong></em>。</p>
-</li>
-</ul>
-<h4><a id="cpp-demo" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>cpp_demo</h4>
-<pre><code class="language-C++">//
-// Created by eredinliu on 2020-01-05.
-//
-
-#include &lt;iostream&gt;
-
-using namespace std;
-
-class Visitor;
-
-class Element {
-public:
-    virtual void accept(Visitor&amp; visitor) = 0;
-};
-
-class ElementA : public Element {
-public:
-    void accept(Visitor&amp; visitor) override {
-        visitor.visitElementA(*this);
-    }
-};
-
-class ElementB : public Element {
-public:
-    void accept(Visitor&amp; visitor) override {
-        visitor.visitElementB(*this);
-    }
-};
-
-
-class Visitor {
-public:
-    virtual void visitElementA(ElementA&amp; e) = 0;
-    virtual void visitElementB(ElementB&amp; e) = 0;
-};
-
-class VisitorA : public Visitor {
-public:
-    void visitElementA(ElementA&amp; e) override {
-        cout &lt;&lt; &quot;VisitorA is processing Element A &quot; &lt;&lt; endl;
-    }
-
-    void visitElementB(ElementB&amp; e) override {
-        cout &lt;&lt; &quot;VisitorA is processing Element B &quot; &lt;&lt; endl;
-    }
-};
-
-class VisitorB : public Visitor {
-public:
-    void visitElementA(ElementA&amp; e) override {
-        cout &lt;&lt; &quot;VisitorB is processing Element A &quot; &lt;&lt; endl;
-    }
-
-    void visitElementB(ElementB&amp; e) override {
-        cout &lt;&lt; &quot;VisitorB is processing Element B &quot; &lt;&lt; endl;
-    }
-};
-
-int main() {
-    VisitorA visitorA;
-    VisitorB visitor;
-    ElementB elementB;
-    elementB.accept(visitor);
-    elementB.accept(visitorA);
-
-
-    ElementA elementA;
-    elementA.accept(visitor);
-    elementA.accept(visitorA);
-}
-</code></pre>
-<h4><a id="golang-demo" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>golang_demo</h4>
-<pre><code class="language-go">package design_pattern
-
-import &quot;fmt&quot;
-
-type Element interface {
-	Accept(Visitor)
-}
-
-type Visitor interface {
-	visitA(*ElementA)
-	visitB(*ElementB)
-}
-
-type ElementA struct {
-}
-
-func (e *ElementA) Accept(visitor Visitor) {
-	visitor.visitA(e)
-}
-
-type ElementB struct {
-}
-
-func (e *ElementB) Accept(visitor Visitor) {
-	visitor.visitB(e)
-}
-
-type VisitorA struct {
-}
-
-func (v *VisitorA) visitA(e *ElementA) {
-	fmt.Println(&quot;VisitorA is processing Element A &quot; )
-}
-
-func (v *VisitorA) visitB(e *ElementB) {
-	fmt.Println(&quot;VisitorA is processing Element B &quot; )
-}
-
-type VisitorB struct {
-}
-
-func (v *VisitorB) visitA(e *ElementA) {
-	fmt.Println(&quot;VisitorB is processing Element A &quot; )
-}
-
-func (v *VisitorB) visitB(e *ElementB) {
-	fmt.Println(&quot;VisitorB is processing Element B &quot; )
-}
-
-type ObjectStructure struct {
-	elements map[Element]bool
-}
-
-func (o *ObjectStructure) Attach(e Element) {
-	o.elements[e] = true
-}
-
-func (o *ObjectStructure) Detach(e Element) {
-	delete(o.elements, e)
-}
-
-func (o *ObjectStructure) Accept(visitor Visitor) {
-	for k, _ := range o.elements {
-		k.Accept(visitor)
-	}
-}
-
-func NewObjectStructure() *ObjectStructure {
-	return &amp;ObjectStructure{
-		elements: make(map[Element]bool),
-	}
-}
-
-package design_pattern
-
-import &quot;testing&quot;
-
-func TestVisitor(t *testing.T) {
-	obj := NewObjectStructure()
-
-	elementB := &amp;ElementB{}
-	elementA := &amp;ElementA{}
-
-	obj.Attach(elementA)
-	obj.Attach(elementB)
-
-	vA := &amp;VisitorA{}
-	vB := &amp;VisitorB{}
-	obj.Accept(vA)
-	obj.Accept(vB)
-}
-</code></pre>
-<h4><a id="python-code" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>python_code</h4>
-<pre><code class="language-python">from abc import ABCMeta, abstractmethod
-
-class Element(metaclass=ABCMeta):
-
-    @abstractmethod
-    def accept(self, visitor):
-        pass
-
-class Visitor(metaclass=ABCMeta):
-
-    @abstractmethod
-    def visitA(self, elementA):
-        pass
-
-    @abstractmethod
-    def visitB(self, elementB):
-        pass
-
-class ElementA(Element):
-
-    def accept(self, visitor):
-        visitor.visitA(self)
-
-class ElementB(Element):
-
-    def accept(self, visitor):
-        visitor.visitB(self)
-
-class VisitorA(Visitor):
-
-    def visitA(self, elementA):
-        print(type(self).__name__, &quot; process elementA&quot;)
-
-    def visitB(self, elementB):
-        print(type(self).__name__, &quot; process elementB&quot;)
-
-
-class VisitorB(Visitor):
-
-    def visitA(self, elementA):
-        print(type(self).__name__, &quot; process elementA&quot;)
-
-    def visitB(self, elementB):
-        print(type(self).__name__, &quot; process elementB&quot;)
-
-class ObjectStructure(object):
-
-    def __init__(self):
-        self.elements = []
-
-    def attach(self, element):
-        self.elements.append(element)
-
-    def detach(self, element):
-        self.elements.remove(element)
-
-    def accept(self, visitor):
-        for e in self.elements:
-            e.accept(visitor)
-
-if __name__ == '__main__':
-    obj = ObjectStructure()
-
-    eA = ElementA()
-    eB = ElementB()
-
-    obj.attach(eA)
-    obj.attach(eB)
-
-    va = VisitorA()
-    vb = VisitorB()
-
-    obj.accept(va)
-    obj.accept(vb)
-</code></pre>
-
-
-			
-			
-		</div>
-
-	</article>
  
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2019-11-06T07:04:02+08:00" itemprop="datePublished">2019/11/06 07:04 上午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15729950422631.html" itemprop="url">
-		Abstract factory</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="%E5%8A%A8%E6%9C%BA" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>动机</h4>
-<ul>
-<li>在软件系统中，经常面临着“一系列相互依赖的对象”的创建工作；同时，由于需求的变化，往往存在更多系列对象的创建工作。</li>
-<li>如何应对这种变化？如何绕过常规的对象创建方法（new），提供种“封裝机制“来避免客户程序和这种多系列具体对象创建工作“的紧耦合？</li>
-</ul>
-<h4><a id="%E6%A8%A1%E5%BC%8F%E5%AE%9A%E4%B9%89" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>模式定义</h4>
-<ul>
-<li>提供一个接口，让该接口负责创建一系列“相关或者相互依赖的对象”，无需指定它们具体的类。</li>
-</ul>
-<h4><a id="%E7%BB%93%E6%9E%84%E5%9B%BE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>结构图</h4>
-<p><img src="media/15729950422631/15809876460184.jpg" alt="" style="width:812px;" /></p>
-<h4><a id="%E8%A6%81%E7%82%B9%E6%80%BB%E7%BB%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>要点总结</h4>
-<ul>
-<li>如果没有应对多系列对象构建”的需求变化，则没有必要使用abstract Factory/模式,这时候使用简单的工厂完全可以。</li>
-<li>系列对象”指的是在某一特定系列下的对象之间有相互依赖、或作用的关系。不同系列的对象之间不能相互依赖。</li>
-<li>Abstract Factory 模式主要在于应对“新系列的需求变动。其缺点在于难以应对“新对象”的需求变动。</li>
-<li>抽象工厂是工厂方法模式的升级版本，工厂方法不能解决具有二级分类的产品的创建问题，抽象工厂就是用来解决这个问题的</li>
-<li>模式稳定的部分就是缺点</li>
-</ul>
-<h4><a id="cpp-demo" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>cpp_demo</h4>
-<pre><code class="language-C++">#include &lt;iostream&gt;
-
-class Article {
- public:
-  virtual void produce() = 0;
-};
-
-class Video {
- public:
-  virtual void produce() = 0;
-};
-
-class CourseFactory {
- public:
-  virtual Video* getVideo() = 0;
-  virtual Article* getArticle()= 0;
-};
-
-class JavaArticle : public Article {
- public:
-  void produce() {
-    std::cout &lt;&lt; &quot; JavaArticl produce&quot; &lt;&lt; std::endl;
-  }
-};
-
-class JavaVideo : public Video {
- public:
-  void produce() {
-    std::cout &lt;&lt; &quot; JavaVideo produce&quot; &lt;&lt; std::endl;
-  }
-};
-class JavaCourseFactory : public CourseFactory {
- public:
-  Video* getVideo() {
-    return new JavaVideo();
-  }
-  Article* getArticle() {
-    return new JavaArticle();
-  }
-};
-
-class PythonArticle : public Article {
- public:
-  void produce() {
-    std::cout &lt;&lt; &quot; PythonArticl produce&quot; &lt;&lt; std::endl;
-  }
-};
-
-class PythonVideo : public Video {
- public:
-  void produce() {
-    std::cout &lt;&lt; &quot; PythonVideo produce&quot; &lt;&lt; std::endl;
-  }
-};
-
-class PythonCourseFactory : public CourseFactory {
- public:
-  Video* getVideo() {
-    return new PythonVideo();
-  }
-  Article* getArticle() {
-    return new PythonArticle();
-  }
-};
-int main() {
-  CourseFactory* f1 = new JavaCourseFactory();
-  Video* v1 = f1-&gt;getVideo();
-  Article* a1 = f1-&gt;getArticle();
-  v1-&gt;produce();
-  a1-&gt;produce();
-
-  CourseFactory* f2 = new PythonCourseFactory();
-  Video* v2 = f2-&gt;getVideo();
-  Article* a2 = f2-&gt;getArticle();
-  v2-&gt;produce();
-  a2-&gt;produce();
-}
-</code></pre>
-<h4><a id="golang-demo" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>golang_demo</h4>
-<pre><code class="language-go">package abstractfactory
-
-import &quot;fmt&quot;
-
-type Article interface {
-        produce()
-}
-
-type Video interface {
-        produce()
-}
-
-type CourseFactory interface {
-        getVideo() Video
-        getArticle() Article
-}
-
-type JavaArticle struct{}
-
-func (j *JavaArticle) produce() {
-        fmt.Println(&quot;JavaArticle produce&quot;)
-}
-
-type JavaVideo struct{}
-
-func (j *JavaVideo) produce() {
-        fmt.Println(&quot;JavaVideo produce&quot;)
-}
-
-type JavaCourseFactory struct{}
-
-func (jc *JavaCourseFactory) getVideo() Video {
-        return &amp;JavaVideo{}
-}
-
-func (jc *JavaCourseFactory) getArticle() Article {
-        return &amp;JavaArticle{}
-}
-type PythonArticle struct{}
-
-func (p *PythonArticle) produce() {
-        fmt.Println(&quot;PythonArticle produce&quot;)
-}
-
-type PythonVideo struct{}
-
-func (p *PythonVideo) produce() {
-        fmt.Println(&quot;PythonVideo produce&quot;)
-}
-
-type PythonCourseFactory struct{}
-
-func (py *PythonCourseFactory) getVideo() Video {
-        return &amp;PythonVideo{}
-}
-
-func (py *PythonCourseFactory) getArticle() Article {
-        return &amp;PythonArticle{}
-}
-import &quot;testing&quot;
-
-func getArticleAndVideo(factory CourseFactory) {
-        factory.getArticle().produce()
-        factory.getVideo().produce()
-}
-
-func TestABSFactory(t *testing.T) {
-        var f1 CourseFactory = &amp;JavaCourseFactory{}
-        getArticleAndVideo(f1)
-        var f2 CourseFactory = &amp;PythonCourseFactory{}
-        getArticleAndVideo(f2)
-}
-</code></pre>
-<h4><a id="python-code" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>python_code</h4>
-<pre><code class="language-python">from abc import ABCMeta, abstractmethod
-
-class Article(metaclass=ABCMeta):
-    
-    def produce(self):
-        pass
-    
-class Video(metaclass=ABCMeta):
-    
-    def produce(self):
-        pass
-    
-class CourseFactory(metaclass=ABCMeta):
-    
-    def get_article(self):
-        pass
-    
-    def get_video(self):
-        pass
-    
-class JavaArticle(Article):
-    
-    def produce(self):
-        print(type(self).__name__, &quot; produce&quot;)
-
-
-class JavaVideo(Video):
-
-    def produce(self):
-        print(type(self).__name__, &quot; produce&quot;)
+<div class="hero-body ct-body">
+        <div class="container">
+              <div class="columns is-centered">
+                  <div class="column  is-four-fifths">
+                      <div class="columns is-mobile">
+                          <div class="column">
+                              <h1 class="title">
+       凌云阁
+              
+                              </h1>
+                              <h2 class="subtitle">
+                                 2024 重新扬帆启航！
+                              </h2>
+                          </div>
+                          <div class="column is-narrow"><figure class="image is-128x128">
+                            
+                              <img class="is-rounded" src="https://i.loli.net/2020/02/22/Si1K7sluept2ZgR.jpg">
+                            
+                            </figure></div>
+                      </div>
+                        
+                      
+                  </div>
+                  
+                </div>
+            
+              
         
-class JavaCourseFactory(CourseFactory):
-    
-    def get_article(self):
-        return JavaArticle()
-    
-    def get_video(self):
-        return JavaVideo()
-
-
-class CppArticle(Article):
-
-    def produce(self):
-        print(type(self).__name__, &quot; produce&quot;)
-
-
-class CppVideo(Video):
-
-    def produce(self):
-        print(type(self).__name__, &quot; produce&quot;)
-
-
-class CppCourseFactory(CourseFactory):
-
-    def get_article(self):
-        return CppArticle()
-
-    def get_video(self):
-        return CppVideo()
-
-
-class PythonArticle(Article):
-
-    def produce(self):
-        print(type(self).__name__, &quot; produce&quot;)
-
-
-class PythonVideo(Video):
-
-    def produce(self):
-        print(type(self).__name__, &quot; produce&quot;)
-
-
-class PythonCourseFactory(CourseFactory):
-
-    def get_article(self):
-        return PythonArticle()
-
-    def get_video(self):
-        return PythonVideo()
-
-if __name__ == '__main__':
-
-    java = JavaCourseFactory()
-    java.get_video().produce()
-    java.get_article().produce()
-
-    cpp = CppCourseFactory()
-    cpp.get_article().produce()
-    cpp.get_video().produce()
-</code></pre>
-<h4><a id="%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82%E7%9A%84%E5%BA%94%E7%94%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>抽象工厂的应用</h4>
-<ul>
-<li>考虑这样一个实际应用：我需要完成两套 GU 的表示层，一个是在 PC 机，另一个是在平板、手机上完成这个应用程序的界面。</li>
-<li>通常一个显著的设备差别就在于分辨率。</li>
-</ul>
-<h4><a id="%E5%8A%9F%E8%83%BD" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>功能</h4>
-<ul>
-<li>抽象工厂的功能是为一系列相关对象或相互依赖的对象创建一个接口。从某种意义上看，抽象工厂其实是一个产品系列，或者是产品簇。</li>
-<li>将几个特性合并同类项</li>
-</ul>
-
-
-			
-			
-		</div>
-
-	</article>
- 
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2020-02-16T08:27:58+08:00" itemprop="datePublished">2020/02/16 08:27 上午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15818128782116.html" itemprop="url">
-		Singleton</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="%E5%8A%A8%E6%9C%BA" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>动机</h4>
-<ul>
-<li>在软件系统中，经常有这样一些特殊的类，必须保证它们在系统中只存在一个实例，才能确保它们的逻辑正确性、以及良好的效率</li>
-<li>如何绕过常规的构造器，提供一种机制来保证一个类只有一个实例？</li>
-<li>这应该是类设计者的责任，而不是使用者的责任</li>
-</ul>
-<h4><a id="%E7%BB%93%E6%9E%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>结构</h4>
-<ul>
-<li><img src="media/15818128782116/15818133316537.jpg" alt="" style="width:538px;" /></li>
-</ul>
-<h4><a id="%E8%A6%81%E7%82%B9%E6%80%BB%E7%BB%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>要点总结</h4>
-<ul>
-<li>Singleton 模式中的实例构造器可以设置为 protected 以允许子类派生。</li>
-<li>Singleton 模式一般不要支持拷贝构造函数和 Clone 接口，因为这有可能导致多个对象实例，与 Singleton 模式的初衷违背。</li>
-<li>如何实现多线程环境下安全的 Singleton？注意对双检查锁的正确实现。</li>
-</ul>
-<h4><a id="%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E9%97%AE%E9%A2%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>单例模式问题</h4>
-<ul>
-<li>单例对 OOP 特性的支持不友好</li>
-<li>单例会隐藏类之间的依赖关系 单例类不需要显示创建、不需要依赖参数传递，在函数中直接调用就可以了。如果代码比较复杂，这种调用关系就会非常隐蔽</li>
-<li>单例对代码的扩展性不友好</li>
-<li>单例对代码的可测试性不友好 单例模式的使用会影响到代码的可测试性。如果单例类依赖比较重的外部资源，比如 DB，我们在写单元测试的时候，希望能通过 mock 的方式将它替换掉。而单例类这种硬编码式的使用方式，导致无法实现 mock 替换。</li>
-<li>单例不支持有参数的构造函数 单例不支持有参数的构造函数，比如我们创建一个连接池的单例对象，我们没法通过参数来指定连接池的大小, 解决方案是将将参数放到另外一个全局变量中</li>
-</ul>
-<pre><code class="language-C++">#include &lt;iostream&gt;
-using namespace std;
-class Config {
-    public:
-    static const int argA = 123;
-    static const int argB = 123;
-};
-
-class Singleton {
-    private:
-    int argA_, argB_;
-    Singleton() : argA_(Config::argA), argB_(Config::argB) {}
-    public:
-    static Singleton* instance_;
-    static Singleton* get_instance() {
-        if (instance_ == nullptr) {
-            instance_ = new Singleton;
-        }
-        return instance_;
-    }
-};
-Singleton* Singleton::instance_ = nullptr;
-
-int main() {
-    Singleton* p1 = Singleton::get_instance();
-    Singleton* p2 = Singleton::get_instance();
-}
-</code></pre>
-<h4><a id="%E5%A4%9A%E4%BE%8B%E6%A8%A1%E5%BC%8F%E5%AE%9E%E7%8E%B0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>多例模式实现</h4>
-<ul>
-<li>“单例”指的是一个类只能创建一个对象。对应地，“多例”指的就是一个类可以创建多个对象，但是个数是有限制的，比如只能创建 3 个对象。多例的实现也比较简单，通过一个 Map 来存储对象类型和对象之间的对应关系，来控制对象的个数</li>
-</ul>
-<h4><a id="cpp-demo%E5%A4%9A%E4%BE%8B%E6%A8%A1%E5%BC%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>cpp_demo多例模式</h4>
-<pre><code class="language-c++">#include &lt;iostream&gt;
-#include &lt;map&gt;
-using namespace std;
-
-const static int num_max = 5;
-class Singleton;
-static map&lt;int, Singleton*&gt; my_map;
-class Singleton {
-    private:
-    Singleton() {
-        cout &lt;&lt; &quot;Singleton \n&quot; ;
-    }
-
-    static Singleton* instance_;
-    static int instance_cnt_;
-    public:
-    static Singleton* get_instance() {
-        instance_ = my_map[instance_cnt_];
-
-        if (instance_ == nullptr) {
-            instance_ = new Singleton;
-            my_map[instance_cnt_] = instance_;
-        }
-        
-        instance_cnt_++;
-        if (instance_cnt_ &gt; num_max) {
-            instance_cnt_ = 1;
-        }
-        return instance_;
-    }
-};
-
-Singleton* Singleton::instance_ = nullptr;
-int Singleton::instance_cnt_ = 1;
-
-int main() {
-    Singleton* p1 = Singleton::get_instance();
-    Singleton* p2 = Singleton::get_instance();
-    Singleton* p3 = Singleton::get_instance();
-    Singleton* p4 = Singleton::get_instance();
-    Singleton* p5 = Singleton::get_instance();
-    cout &lt;&lt; p1 &lt;&lt; &quot; &quot; &lt;&lt; p2 &lt;&lt; &quot; &quot; &lt;&lt; p3 &lt;&lt; &quot; &quot; &lt;&lt; p4 &lt;&lt; &quot; &quot; &lt;&lt; p5 &lt;&lt; endl;
-}
-</code></pre>
-<h4><a id="%E5%88%86%E5%B8%83%E5%BC%8F%E7%8E%AF%E5%A2%83%E4%B8%8B%E7%9A%84%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>分布式环境下的单例模式</h4>
-<ul>
-<li>一个类只允许创建唯一一个对象。那对象的唯一性的作用范围是进程范围内</li>
-</ul>
-<h5><a id="%E7%BA%BF%E7%A8%8B%E5%94%AF%E4%B8%80%E7%9A%84%E5%8D%95%E4%BE%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>线程唯一的单例</h5>
-<ul>
-<li>我们通过一个Map来存储对象，其中 key 是线程 ID，value 是对象</li>
-</ul>
-<h4><a id="%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E9%9B%86%E7%BE%A4%E7%8E%AF%E5%A2%83%E4%B8%8B%E5%8D%95%E4%BE%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>如何实现集群环境下单例</h4>
-<ul>
-<li>我们需要把这个单例对象序列化并存储到外部共享存储区（比如文件）。进程在使用这个单例对象的时候，需要先从外部共享存储区中将它读取到内存，并反序列化成对象，然后再使用，使用完成之后还需要再存储回外部共享存储区</li>
-<li>为了保证任何时刻，在进程间都只有一份对象存在，一个进程在获取到对象之后，需要对对象加锁，避免其他进程再将其获取。在进程使用完这个对象之后，还需要显式地将对象从内存中删除，并且释放对对象的加锁，这里需要分布式锁，需要lua配合redis实现比较好</li>
-</ul>
-<h4><a id="c-11-call-once" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>C++11 call_once</h4>
-<ul>
-<li>能够保证函数只能被调用一次</li>
-<li>call_once效率上比互斥量消耗的更少</li>
-<li>call_once需要与一个标记结合使用, std::once_flag</li>
-<li>调用call_once成功后，就把once_flag设置为已经调用状态</li>
-</ul>
-<pre><code class="language-C++">std::once_flag g_flag;
-static MyCAS* get_instance() {
-  std::call_once(g_flag, create_instance);
-  return m_instance;
-}
-static void create_instance() {
-    cout &lt;&lt; &quot;CreateInstance &quot; &lt;&lt; endl;
-    m_instance = new MyCAS();
-}
-</code></pre>
-<h4><a id="go%E7%9A%84%E5%AE%98%E6%96%B9%E5%AE%9E%E7%8E%B0%E4%BD%BF%E7%94%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>go的官方实现使用</h4>
-<pre><code class="language-go">type Singleton struct {
-	data string
-}
-
-var singleInstance *Singleton
-var once sync.Once
-
-func GetSingletonObj() *Singleton {
-	once.Do(func() {
-		fmt.Println(&quot;Create Obj&quot;)
-		singleInstance = new(Singleton)
-	})
-	return singleInstance
-}
-
-func TestGetSingletonObj(t *testing.T) {
-	var wg sync.WaitGroup
-	for i := 0; i &lt; 10; i++ {
-		wg.Add(1)
-		go func() {
-			obj := GetSingletonObj()
-			fmt.Printf(&quot;%X\n&quot;, unsafe.Pointer(obj))
-			wg.Done()
-		}()
-	}
-	wg.Wait()
-}
-</code></pre>
-<h4><a id="python%E5%AE%9E%E7%8E%B0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Python实现</h4>
-<h5><a id="%E4%BD%BF%E7%94%A8%E5%87%BD%E6%95%B0%E8%A3%85%E9%A5%B0%E5%99%A8%E5%AE%9E%E7%8E%B0%E5%8D%95%E4%BE%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>使用函数装饰器实现单例</h5>
-<pre><code class="language-py">def singleton(cls):
-    _instance = {}
-
-    def inner():
-        if cls not in _instance:
-            _instance[cls] = cls()
-        return _instance[cls]
-    return inner
-    
-@singleton
-class Cls(object):
-    def __init__(self):
-        pass
-
-cls1 = Cls()
-cls2 = Cls()
-print(id(cls1) == id(cls2))
-</code></pre>
-<h5><a id="%E4%BD%BF%E7%94%A8%E7%B1%BB%E8%A3%85%E9%A5%B0%E5%99%A8%E5%AE%9E%E7%8E%B0%E5%8D%95%E4%BE%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>使用类装饰器实现单例</h5>
-<pre><code class="language-py">class Singleton(object):
-    def __init__(self, cls):
-        self._cls = cls
-        self._instance = {}
-    def __call__(self):
-        if self._cls not in self._instance:
-            self._instance[self._cls] = self._cls()
-        return self._instance[self._cls]
-
-@Singleton
-class Cls2(object):
-    def __init__(self):
-        pass
-
-cls1 = Cls2()
-cls2 = Cls2()
-print(id(cls1) == id(cls2))
-</code></pre>
-<h5><a id="%E4%BD%BF%E7%94%A8new%E5%85%B3%E9%94%AE%E5%AD%97%E5%AE%9E%E7%8E%B0%E5%8D%95%E4%BE%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>使用 _<em>new</em>_ 关键字实现单例</h5>
-<pre><code class="language-py">class Single(object):
-    _instance = None
-    def __new__(cls, *args, **kw):
-        if cls._instance is None:
-            cls._instance = object.__new__(cls, *args, **kw)
-        return cls._instance
-    def __init__(self):
-        pass
-
-single1 = Single()
-single2 = Single()
-print(id(single1) == id(single2))
-</code></pre>
-<h5><a id="%E4%BD%BF%E7%94%A8metaclass%E5%AE%9E%E7%8E%B0%E5%8D%95%E4%BE%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>使用 metaclass 实现单例</h5>
-<pre><code class="language-py">class Singleton(type):
-    _instances = {}
-    def __call__(cls, *args, **kwargs):
-        if cls not in cls._instances:
-            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
-        return cls._instances[cls]
-
-class Cls4(metaclass=Singleton):
-    pass
-
-cls1 = Cls4()
-cls2 = Cls4()
-print(id(cls1) == id(cls2))
-</code></pre>
-
-
-			
-			
-		</div>
-
-	</article>
- 
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2019-12-06T07:36:43+08:00" itemprop="datePublished">2019/12/06 07:36 上午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15755890034719.html" itemprop="url">
-		Memento</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="%E5%AE%9A%E4%B9%89" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>定义</h4>
-<ul>
-<li>在组件构建过程中，某些对象的状态经常面临变化，如何对这些变化进行有效的管理？同时又维持高层模块的稳定？“状态变化模式为这一问题提供了一种解决方案。</li>
-</ul>
-<h4><a id="%E5%8A%A8%E6%9C%BA" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>动机</h4>
-<ul>
-<li>在软件构建过程中，某些对象的状态在转换过程中，可能由于某种需要，要求程序能够回溯到对象之前处于某个点时的状态。如果使用一些公有接口来让其他对象得到对象的状态，便会暴露对象的细节实现。</li>
-<li>如何实现对象状态的良好保存与恢复？但同时又不会因此而破坏对象本身的封装性。</li>
-</ul>
-<h4><a id="%E7%BB%93%E6%9E%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>结构</h4>
-<ul>
-<li>
-<p><img src="media/15755890034719/15815148061622.jpg" alt="" style="width:736px;" /></p>
-</li>
-<li>
-<p>设计模式是94年</p>
-</li>
-<li>
-<p>序列化的方案实现memento</p>
-</li>
-</ul>
-<h5><a id="golang-demo" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>golang_demo</h5>
-<pre><code class="language-go">package design_pattern
-
-type GameRole struct {
-	atk, def, vit int
-}
-
-func (g *GameRole) InitState() {
-	g.atk, g.def, g.vit = 100, 100, 100
-}
-
-func (g *GameRole) SaveState() *RoleMemento {
-	return &amp;RoleMemento{g.atk, g.def, g.vit}
-}
-
-func (g *GameRole) ResumeState(m *RoleMemento) {
-	g.atk, g.def, g.vit = m.atk, m.def, m.vit
-}
-
-func (g *GameRole) Fight() {
-	g.atk, g.def, g.vit = 0, 0, 0
-}
-
-type RoleCaretaker struct {
-	m *RoleMemento
-}
-
-type Originator struct {
-	state string
-}
-
-type Memento struct {
-	state string
-}
-
-type RoleMemento struct {
-	vit, atk, def int
-}
-
-func (o *Originator) CreateMemento() *Memento {
-	return &amp;Memento{o.state}
-}
-
-func (o *Originator) SetMemento(m *Memento) {
-	o.state = m.state
-}
-
-type Caretaker struct {
-	memento *Memento
-}
-</code></pre>
-<h4><a id="python-demo" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>python_demo</h4>
-<pre><code class="language-python">from abc import ABCMeta, abstractmethod
-
-class Snapshot(object):
-
-    def __init__(self, state):
-        self.state = state
-
-
-class Caretake(object):
-
-    def __init__(self):
-        pass
-
-    def add_snapshot(self, snapshot):
-        self.snapshot = snapshot
-
-class Editor(object):
-
-    def __init__(self, state):
-        self.state = state
-
-    def create_snapshot(self):
-        return Snapshot(self.state)
-
-    def recover_snapshot(self, snapshot):
-        self.state = snapshot.state
-
-    def change_state(self, state):
-        self.state = state
-
-if __name__ == '__main__':
-    editor = Editor(&quot;original&quot;)
-    snapshot = editor.create_snapshot()
-    print(editor.state)
-    editor.change_state(&quot;state2&quot;)
-    print(editor.state)
-    editor.recover_snapshot(snapshot)
-    print(editor.state)
-</code></pre>
-
-
-			
-			
-		</div>
-
-	</article>
- 
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2020-02-12T07:49:09+08:00" itemprop="datePublished">2020/02/12 07:49 上午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15814649492497.html" itemprop="url">
-		Simple Factory</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="%E6%8E%A5%E5%8F%A3%E7%BC%96%E7%A8%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>接口编程</h4>
-<ul>
-<li>接口从语法层面上来说，是一种特殊的抽象类，是一个纯虚的类。从软件设计的意义<br />
-上来说，我们通常用接口来定义实现类的外观，就相当于一份契约，根据外部应用需要的功能，约定了实现类应该要实现的功能</li>
-<li>软件开发中永恒的主题是“变化“，“只有变化才是永恒不変！“，接口最重要的一个设计语义就是封装变化。所谓“封装变化”就是隔离变化。</li>
-<li>从软件的整体结构上看，只要接口不变，内部实现的变化就不会影响到外部应用，从而使得系统更灵活，具有更好的扩展性和可维护性。</li>
-</ul>
-<h4><a id="%E7%AE%80%E5%8D%95%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>简单工厂模式</h4>
-<ul>
-<li>实现客户端调用和具体类的分离，实现了变化隔离</li>
-</ul>
-<pre><code class="language-C++">#include &lt;iostream&gt;
-using namespace std;
-
-class Api {
-    public:
-    virtual void test(string&amp;&amp; s) = 0;
-    protected:
-    Api(){}
-};
-
-class Impl : public Api {
-    public:
-    void test(string&amp;&amp; s) override {
-        cout &lt;&lt; &quot;Iml class &quot; &lt;&lt; s &lt;&lt; '\n';
-    }
-    using Api::Api;
-};
-
-class ImplPro : public Api {
-    public:
-    void test(string&amp;&amp; s) override {
-        cout &lt;&lt; &quot;Iml class &quot; &lt;&lt; s &lt;&lt; '\n';
-    }
-    using Api::Api;
-};
-
-
-class Factory {
-    public:
-    static Api* createApi(int type) {
-        cout &lt;&lt; &quot;Simple Factory create instance \n&quot; ;
-        Api* api = nullptr;
-        if (type == 1) {
-            api = new Impl();
-        } else if (type == 2) {
-            api = new ImplPro();
-        }
-        return api;
-    }
-};
-
-int main() {
-    Api* api = Factory::createApi(2);
-    api-&gt;test(&quot;hello&quot;);
-}
-</code></pre>
-
-
-			
-			
-		</div>
-
-	</article>
- 
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2019-11-11T07:38:20+08:00" itemprop="datePublished">2019/11/11 07:38 上午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15734291005727.html" itemprop="url">
-		Flyweight</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="%E5%8A%A8%E6%9C%BA" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>动机</h4>
-<ul>
-<li>在软件系统采用纯粹对象方案的问题在于大量细粒度的对象会很快充斥在系统中，从而带来很高的运行时代价一一主要指内存需求方面的代价。</li>
-<li>如何在避免大量细粒度对象问题的同时，让外部客户程序仍然能够透明地使用面向对象的方式来进行操作？</li>
-</ul>
-<h4><a id="%E7%BB%93%E6%9E%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>结构</h4>
-<ul>
-<li><img src="media/15734291005727/15734293143425.jpg" alt="" style="width:664px;" /></li>
-</ul>
-<h4><a id="%E8%A6%81%E7%82%B9%E6%80%BB%E7%BB%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>要点总结</h4>
-<ul>
-<li>
-<p>面向对象很好地解决了抽象性的问题，但是作为一个运行在机器中的程序实体，我们需要考虑对象的代价问题。Flyweight 主要解决面向对象的代价问题，一般不触及面向对象的抽象性问题。</p>
-</li>
-<li>
-<p>Flyweight 采用对象共享的做法来降低系统中对象的个数，从而降低细粒度对象给系统带来的内存压力。在具体实现方面，要注意对象状态的处理。</p>
-</li>
-<li>
-<p>对象的数量太大从而导致对象内存开销加大ー一什么样的数量才算大？这需要我们仔细的根据具体应用情况进行评估，而不能凭空臆断。</p>
-</li>
-</ul>
-<h4><a id="golang-demo" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>golang_demo</h4>
-<pre><code class="language-go">package design_pattern
-
-import &quot;fmt&quot;
-
-type WebUser struct {
-	name string
-}
-
-type WebSite interface {
-	Use(*WebUser)
-}
-
-type ConcreteWebsite struct {
-	name string
-}
-
-func (c *ConcreteWebsite) Use(user *WebUser) {
-	fmt.Println(&quot;Web type &quot;, c.name, &quot; UserName &quot;, user.name)
-}
-
-type NetWebSite struct {
-	*ConcreteWebsite
-}
-
-func NewNetWebsite(name string) WebSite {
-	return &amp;NetWebSite{
-		ConcreteWebsite: &amp;ConcreteWebsite{name: name},
-	}
-}
-
-type WebFactory struct {
-	factory map[string]WebSite
-}
-
-func NewWebFactory() *WebFactory {
-	return &amp;WebFactory {
-		factory: make(map[string]WebSite),
-	}
-}
-
-func (w *WebFactory) GetWebsiteCategory(key string) WebSite {
-	if _, ok := w.factory[key]; !ok {
-		webSite := NewNetWebsite(key)
-		w.factory[key] = webSite
-		println(&quot;create new product&quot;)
-	}
-
-	return w.factory[key]
-}
-
-func TestFlyWeight(t *testing.T) {
-	factory := NewWebFactory()
-
-	f1 := factory.GetWebsiteCategory(&quot;product show&quot;)
-	f1.Use(&amp;WebUser{&quot;ming&quot;})
-
-	f2 := factory.GetWebsiteCategory(&quot;product show&quot;)
-	f2.Use(&amp;WebUser{&quot;zong&quot;})
-
-	f3 := factory.GetWebsiteCategory(&quot;discus&quot;)
-	f3.Use(&amp;WebUser{&quot;jim&quot;})
-
-	f4 := factory.GetWebsiteCategory(&quot;discus&quot;)
-	f4.Use(&amp;WebUser{&quot;bob&quot;})
-}
-</code></pre>
-<h4><a id="python-code" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>python_code</h4>
-<pre><code class="language-python">from abc import ABCMeta, abstractmethod
-
-class WebUser(object):
-
-    def __init__(self, name):
-        self.name = name
-
-
-class WebSite(metaclass=ABCMeta):
-
-    @abstractmethod
-    def use(self, user):
-        pass
-
-class ConcreteWebsite(WebSite):
-
-    def __init__(self, name):
-        self.name = name
-
-    def use(self, user):
-        print('Web type {} {}'.format(self.name, user.name))
-
-
-class WebFactory(object):
-
-    def __init__(self):
-        self.factory = {}
-
-    def get_website_category(self, key):
-        if key not in self.factory:
-            print('create new website')
-            self.factory[key] = ConcreteWebsite(key)
-        return self.factory[key]
-
-if __name__ == '__main__':
-   factory = WebFactory()
-
-   f1 = factory.get_website_category(&quot;product show&quot;)
-   f1.use(WebUser('ming'))
-
-   f2 = factory.get_website_category(&quot;product show&quot;)
-   f2.use(WebUser('ming'))
-
-   f3 = factory.get_website_category(&quot;discus&quot;)
-   f3.use(WebUser('ming'))
-</code></pre>
-
-
-			
-			
-		</div>
-
-	</article>
- 
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2019-11-14T07:23:50+08:00" itemprop="datePublished">2019/11/14 07:23 上午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15736874304748.html" itemprop="url">
-		Facade</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="%E6%8E%A5%E5%8F%A3%E9%9A%94%E7%A6%BB%E6%A8%A1%E5%BC%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>接口隔离模式</h4>
-<ul>
-<li>在组件构建过程中，某些接口之间直接的依赖常常会带来很多题、甚至根本无法实现。采用添加一层间接（稳定）接口，来隔离本来互相紧密关联的接口是一种常见的解決方案。</li>
-</ul>
-<h4><a id="%E7%B3%BB%E7%BB%9F%E9%97%B4%E8%80%A6%E5%90%88%E7%9A%84%E5%A4%8D%E6%9D%82%E5%BA%A6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>系统间耦合的复杂度</h4>
-<ul>
-<li>方案的问题在于组件的客户和组件中各种复杂的子系统有了过多的耦合，随着外部客户程序和各子系统的演化，这种过多的耦合面临很多变化的挑战。</li>
-</ul>
-<h4><a id="%E7%BB%93%E6%9E%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>结构</h4>
-<ul>
-<li><img src="media/15736874304748/15807223678610.jpg" alt="" style="width:636px;" /></li>
-</ul>
-<h4><a id="%E8%A6%81%E7%82%B9%E6%80%BB%E7%BB%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>要点总结</h4>
-<ul>
-<li>从客户程序的角度来看，Facade 模式简化了整个组件系统的接口对于组件内部与外部客户程序来说达到了种“解耦”果内部学系统的程何雯化不会影到 Facades 接口的变</li>
-<li>Facade 设计模式更注重从架构的层次去看整个系统，而不是单个类的层次。Facade 很多时候更是一种架构</li>
-<li>Facade 设计模式并非、个集装箱，可以任意地放进任何多个对象。Facade 模式中组件的内部应该是、相互合关比较大的一系列组件”，而不是简单的功能集合</li>
-</ul>
-<h4><a id="cpp-demo" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>cpp_demo</h4>
-<pre><code class="language-C++">//
-// Created by 刘超 on 2019-11-14.
-//
-#include &lt;iostream&gt;
-
-class SubSystem1 {
-public:
-    SubSystem1() {}
-    ~SubSystem1() {}
-
-    void Operation() {std::cout &lt;&lt; &quot;Subsystem1 operation...&quot; &lt;&lt; std::endl;}
-};
-
-class SubSystem2 {
-public:
-    SubSystem2() {}
-    ~SubSystem2() {}
-    void Operation() {std::cout &lt;&lt; &quot;Subsystem2 operation...&quot; &lt;&lt; std::endl;}
-};
-
-class Facade {
-public:
-    Facade() {
-        sub1 = new SubSystem1();
-        sub2 = new SubSystem2();
-    }
-
-    ~Facade();
-    void OperatonWrapper() {
-        sub1-&gt;Operation();
-        sub2-&gt;Operation();
-    }
-    SubSystem1* sub1;
-    SubSystem2* sub2;
-};
-
-int main() {
-    Facade* f =  new Facade();
-    f-&gt;OperatonWrapper();
-}
-</code></pre>
-<h4><a id="go-demo" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>go_demo</h4>
-<pre><code class="language-go">package desian_pattern_practise
-
-import &quot;reflect&quot;
-
-type Subsystem1 struct {
-}
-
-func (s *Subsystem1) Operation() {
-	println(reflect.TypeOf(s).String() + &quot; Operation&quot;)
-}
-
-type Subsystem2 struct {
-}
-
-func (s *Subsystem2) Operation() {
-	println(reflect.TypeOf(s).String() + &quot; Operation&quot;)
-}
-
-type Facade struct {
-	sub1 *Subsystem1
-	sub2 *Subsystem2
-}
-
-func (f *Facade) Operation() {
-	f.sub1.Operation()
-	f.sub2.Operation()
-}
-
-func NewFacade() *Facade {
-	return &amp;Facade{
-		sub1: &amp;Subsystem1{},
-		sub2: &amp;Subsystem2{},
-	}
-}
-</code></pre>
-<h4><a id="python-demo" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>python_demo</h4>
-<pre><code class="language-python">from abc import ABCMeta, abstractmethod
-
-class SubSystem1(object):
-
-    def operation(self):
-        print('Subsystem1 operation')
-
-class SubSystem2(object):
-
-    def operation(self):
-        print('Subsystem2 operation')
-
-class Facade(object):
-
-    def __init__(self):
-        self.sub1 = SubSystem1()
-        self.sub2 = SubSystem2()
-
-    def operation_wrapper(self):
-        self.sub1.operation()
-        self.sub2.operation()
-
-if __name__ == '__main__':
-    facade = Facade()
-    facade.operation_wrapper()
-</code></pre>
-
-
-			
-			
-		</div>
-
-	</article>
- 
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2019-11-15T07:16:18+08:00" itemprop="datePublished">2019/11/15 07:16 上午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15737733784968.html" itemprop="url">
-		Proxy</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="%E5%8A%A8%E6%9C%BA" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>动机</h4>
-<ul>
-<li>在面向对象系统中，有些对象由于某种原因（比如对象创建的开消很大，或者某些操作需要安全控制，或者需要进程外的访问等）直接访问会给使用者、或者系统结构带来很多麻烦。</li>
-<li>如何在不失去透明操作对象的同时来管理/控制这些对象特有的复杂性？增加一层间接层是软件开发中常见的解決方式。</li>
-</ul>
-<h4><a id="%E7%BB%93%E6%9E%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>结构</h4>
-<ul>
-<li><img src="media/15737733784968/15807036463940.jpg" alt="" style="width:705px;" /></li>
-</ul>
-<h4><a id="%E8%A6%81%E7%82%B9%E6%80%BB%E7%BB%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>要点总结</h4>
-<ul>
-<li><img src="media/15737733784968/15737741074243.jpg" alt="" style="width:842px;" /></li>
-</ul>
-<h4><a id="cpp-demo" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>cpp_demo</h4>
-<pre><code class="language-C++">#include &lt;iostream&gt;
-
-class ITelco {
-public:
-    virtual ~ITelco() {}
-
-    virtual  void Recharge(int money) = 0;
-};
-
-class CMCC : public ITelco {
-public:
-    void Recharge(int money) override  {
-        std::cout &lt;&lt; &quot;Recharge &quot; &lt;&lt; money &lt;&lt; std::endl;
-    }
-};
-
-class Proxy : public ITelco {
-public:
-    Proxy() : m_pcMCC(nullptr) {}
-
-    void  Recharge(int money) override {
-       if (money &gt;= 50) {
-           if (m_pcMCC == nullptr)
-               m_pcMCC = new CMCC();
-           m_pcMCC-&gt;Recharge(money);
-       } else {
-           std::cout &lt;&lt; &quot;Sorry, too little money &quot; &lt;&lt; std::endl;
-       }
-    }
-
-public:
-    CMCC* m_pcMCC;
-};
-
-int main() {
-    Proxy* proxy = new Proxy();
-    proxy-&gt;Recharge(20);
-    proxy-&gt;Recharge(100);
-}
-</code></pre>
-<h4><a id="golang-demo" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>golang_demo</h4>
-<pre><code class="language-go">import &quot;fmt&quot;
-
-tyecharge(money int) {
-	fmt.Println(&quot;CMCC Recharge money &quot;, money)
-}
-
-type ProxySub struct {
-	cmcc *ClientAPP
-}
-
-func (p *ProxySub) Recharge(money int) {
-	if money &gt;= 50 {
-		if p.cmcc == nil {pe Subject1 interface {
-		Recharge(money int)
-		}
-
-			type ClientAPP struct{}
-
-			func (c *ClientAPP) R
-			p.cmcc = &amp;ClientAPP{}
-		}
-		p.cmcc.Recharge(money)
-	} else {
-		fmt.Println(&quot;Sorry too littel money&quot;)
-	}
-}
-func TestProxySub(t *testing.T) {
-	var proxy Subject1
-	proxy = &amp;ProxySub{}
-	proxy.Recharge(30)
-	proxy.Recharge(100)
-}
-</code></pre>
-<h4><a id="golang-demo" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>golang_demo</h4>
-<pre><code class="language-go">package desian_pattern_practise
-
-import &quot;fmt&quot;
-
-type IPSubject interface {
-	Request(string)
-}
-
-type PSubject struct {
-	name string
-}
-
-type RealSubject struct {
-	*PSubject
-}
-
-func (r *RealSubject) Request(content string) {
-	fmt.Println(&quot;RealSubject handle content&quot;, content)
-}
-
-type ProxySubject struct {
-	*PSubject
-	realSubject IPSubject
-}
-
-func NewRealSubject(name string) *RealSubject {
-	return &amp;RealSubject{
-		PSubject: &amp;PSubject{name: name},
-	}
-}
-
-func (p *ProxySubject) Request(content string) {
-	p.preRequest()
-	if p.realSubject != nil {
-		p.realSubject.Request(content)
-	}
-	p.afterRequest()
-}
-
-func NewProxySubject(name string, subject IPSubject) *ProxySubject {
-	return &amp;ProxySubject{
-		PSubject: &amp;PSubject{name: name},
-		realSubject: subject,
-	}
-}
-
-func (p *ProxySubject) preRequest() {
-	println(&quot;pre request&quot;)
-}
-
-func (p *ProxySubject) afterRequest() {
-	println(&quot;after request&quot;)
-}
-
-func TestProxySubject_Request(t *testing.T) {
-	realObj := NewRealSubject(&quot;realSubject&quot;)
-	proxySubject := NewProxySubject(&quot;ProxySubject&quot;, realObj)
-	proxySubject.Request(&quot;Html world&quot;)
-}
-</code></pre>
-
-
-			
-			
-		</div>
-
-	</article>
- 
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2019-11-16T08:14:40+08:00" itemprop="datePublished">2019/11/16 08:14 上午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15738632806643.html" itemprop="url">
-		Adapter</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="%E5%8A%A8%E6%9C%BA" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>动机</h4>
-<ul>
-<li>
-<p>在软件系统中，由于应用环境的变化，常常需要将““一些现存的对象”放在新的环境中应用，但是新环境要求的接口是这些现存对象所不满足的</p>
-</li>
-<li>
-<p>如何应对这种“迁移的变化“？如何既能利用现有对象的良好实现，同时又能满足新的应用环境所要求的接口？</p>
-</li>
-</ul>
-<h4><a id="%E7%BB%93%E6%9E%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>结构</h4>
-<p><img src="media/15738632806643/15808782023371.jpg" alt="" style="width:1193px;" /></p>
-<h4><a id="%E8%A6%81%E7%82%B9%E6%80%BB%E7%BB%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>要点总结</h4>
-<ul>
-<li>Adapters 模式主要应用于“希望复用一些现存的类，但是接口又与</li>
-<li>复用环境要求不一致的情況”，在遗留代码复用、类库注移等方面非常有用。</li>
-<li>GoF23 采用了两种 Adapter 模式的实现结构：对象和适配器。但类适配器采用“多继承”的实现方式般不推荐使用。对象适配器采用“对象组合“的方式，更符合松耦合精神。</li>
-<li>Adapter 模式可以实现的非常灵活，不必拘泥于 Gof23 中定义的两种结构。例如，完全可以将 Adapter 模式中现存对象”作为新的接口方法参数，来达到适配的目的。</li>
-<li>对象适配器比类适配器好</li>
-</ul>
-<h4><a id="cpp-demo" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Cpp_demo</h4>
-<pre><code class="language-C++">//
-// Created by eredinliu on 2020-02-05.
-//
-#include &lt;iostream&gt;
-using namespace std;
-
-class IAdapter {
-public:
-    virtual void Charge() = 0;
-    IAdapter() {}
-};
-
-class ITarget {
-public:
-    virtual void Process() = 0;
-    ITarget(IAdapter* adapter) : adapter_(adapter) {}
-protected:
-    IAdapter* adapter_;
-};
-
-class CNCharge : public IAdapter {
-public:
-    CNCharge() {}
-
-    void Charge() {
-        cout &lt;&lt; typeid(this).name() &lt;&lt; &quot; Charge \n&quot;;
-    }
-};
-
-class USCharge : public ITarget {
-public:
-    USCharge(IAdapter* adapter) : ITarget(adapter) {}
-
-    void Process() {
-        cout &lt;&lt; typeid(this).name() &lt;&lt; &quot; Process \n&quot;;
-        this-&gt;adapter_-&gt;Charge();
-    }
-};
-
-int main() {
-    IAdapter* cn_charge = new CNCharge();
-    ITarget* target = new USCharge(cn_charge);
-    target-&gt;Process();
-}
-</code></pre>
-<h4><a id="golang-demo" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>golang_demo</h4>
-<pre><code class="language-go">type ITarget interface {
-	Process()
-}
-
-type IAdapter interface {
-	Charge()
-}
-
-type CNCharge struct {
-}
-
-func (c *CNCharge) Charge() {
-	println(reflect.TypeOf(c).String() + &quot; Charge&quot;)
-}
-
-type USCharge struct {
-	IAdapter
-}
-
-func (u *USCharge) Process() {
-	println(reflect.TypeOf(u).String() + &quot; Process&quot;)
-	u.IAdapter.Charge()
-}
-
-func NewUSCharge(adapter IAdapter) *USCharge {
-	return &amp;USCharge{
-		IAdapter: adapter,
-	}
-}
-
-
-func TestAdapter_Request2(t *testing.T) {
-	cnCharge := &amp;CNCharge{}
-	target := NewUSCharge(cnCharge)
-	target.Process()
-}
-</code></pre>
-<h4><a id="python-code" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>python_code</h4>
-<pre><code class="language-python">from abc import ABCMeta, abstractmethod
-
-class ITarget(metaclass=ABCMeta):
-
-    @abstractmethod
-    def process(self):
-        pass
-
-    def __init__(self, adapter):
-        self.adapter = adapter
-
-class IAdapter(metaclass=ABCMeta):
-
-    @abstractmethod
-    def charge(self):
-        pass
-
-class CNCharge(IAdapter):
-
-    def charge(self):
-        print(type(self).__name__ + ' charge')
-
-class USCharge(ITarget):
-
-    def __init__(self, adapter):
-        super().__init__(adapter)
-
-    def process(self):
-        print(type(self).__name__ + ' process')
-        self.adapter.charge()
-
-if __name__ == '__main__':
-    cn_charge = CNCharge()
-    target = USCharge(cn_charge)
-    target.process()
-</code></pre>
-
-
-			
-			
-		</div>
-
-	</article>
-  
-
-</div>
-<nav id="pagenavi">
-	 <a class="prev" href="设计模式.html">Prev</a>  
-	 <a class="next" href="设计模式_2.html">Next</a> 
-	<div class="center"><a href="archives.html">Blog Archives</a></div>
-
-</nav>
-
-</div>
-
-
-
         </div>
-			<footer id="footer" class="inner">Copyright &copy; 2014
-Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a> &nbsp;&nbsp; 
-Theme by <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a>
+      </div>
+</section>
+<section class="ct-body">
+      <div class="container">
+          <div class="columns is-variable bd-klmn-columns is-4">
+              <div class="column is-two-thirds">
+                
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15782299761779.html"> 
+                            <h2 class="title">访问器模式</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15782299761779.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2020/01/05 21:12 下午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15729950422631.html"> 
+                            <h2 class="title">Abstract factory</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15729950422631.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2019/11/06 07:04 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15818128782116.html"> 
+                            <h2 class="title">Singleton</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15818128782116.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2020/02/16 08:27 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15755890034719.html"> 
+                            <h2 class="title">Memento</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15755890034719.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2019/12/06 07:36 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15814649492497.html"> 
+                            <h2 class="title">Simple Factory</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15814649492497.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2020/02/12 07:49 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15734291005727.html"> 
+                            <h2 class="title">Flyweight</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15734291005727.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2019/11/11 07:38 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15736874304748.html"> 
+                            <h2 class="title">Facade</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15736874304748.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2019/11/14 07:23 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15737733784968.html"> 
+                            <h2 class="title">Proxy</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15737733784968.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2019/11/15 07:16 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15738632806643.html"> 
+                            <h2 class="title">Adapter</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15738632806643.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2019/11/16 08:14 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html'>设计模式</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+
+                  <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+                    <a class="pagination-previous"   href="设计模式.html" ><span class="tran-prev-page">&laquo; Prev Page</span></a>  
+                    <a class="pagination-next"   href="设计模式_2.html" ><span class="tran-next-page">Next Page &raquo;</span></a>                   
+                  </nav>
+
+              </div><!-- end column -->
+              <div class="column">
+                  <div class="card">
+                      <header class="card-header">
+                        <p class="card-header-title">
+                           <span class="tran-site-categories">Categories</span> 
+                        </p>
+                     
+                      </header>
+                      <div class="card-content site-categories">
+                        <div class="content"> 
+                          <ul>
+                          
+                                <li><a href="%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95%E5%AE%9E%E6%88%98.html">代码随想录实战</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Redis%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98.html">Redis核心技术与实战</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E7%B3%BB%E7%BB%9F%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html">系统性能调优必知必会</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E5%88%86%E5%B8%83%E5%BC%8F%E5%8D%8F%E8%AE%AE%E5%92%8C%E7%AE%97%E6%B3%95%E5%AE%9E%E6%88%98.html">分布式协议和算法实战</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html">C++基础与提高</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html">设计模式</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Python.html">Python</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Golang.html">Golang</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html">设计模式之美</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%80%A7%E8%83%BD%E5%B7%A5%E7%A8%8B%E9%AB%98%E6%89%8B%E8%AF%BE.html">性能工程高手课</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95.html">性能测试</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Prometheus.html">Prometheus</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="RocketMQ.html">RocketMQ</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE.html">网络协议</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Django.html">Django</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html">深入剖析Kubernetes</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html">数据结构和算法</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E5%BE%AE%E6%9C%8D%E5%8A%A1.html">微服务</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%9E%B6%E6%9E%84.html">架构</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html">操作系统原理</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html">Mysql优化实战</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Kafka.html">Kafka</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html">linux服务器研发</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86.html">计算机组成原理</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E7%A8%8B%E5%BA%8F%E5%91%98%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB.html">程序员的自我修养</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="C%E8%AF%AD%E8%A8%80%E8%BF%9B%E9%98%B6.html">C语言进阶</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="http_study.html">http_study</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E7%8E%A9%E8%BD%AC%E7%AE%97%E6%B3%95.html">玩转算法</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="C++%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B.html">C++对象模型</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="SQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html">SQL必知必会</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Zookeeper.html">Zookeeper</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Redis%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A.html">Redis从入门到精通</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E8%BF%9B%E9%98%B6.html">数据结构和算法进阶</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Mysql%E6%80%A7%E8%83%BD%E7%AE%A1%E7%90%86%E5%92%8C%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1.html">Mysql性能管理和架构设计</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98.html">网络编程实战</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html">Redis高并发缓存</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html">Linux性能优化实战</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E5%80%99%E6%8D%B7STL.html">候捷STL</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="ElasticSearch.html">ElasticSearch</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="RabbitMQ.html">RabbitMQ</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="etcd.html">etcd</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="RocketMQ-1.html">RocketMQ</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="mysql.html">mysql</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                          </ul>
+                        </div>
+                      </div>
+                     
+                    </div>
+
+                    <div class="card">
+                        <header class="card-header">
+                          <p class="card-header-title">
+                              <span class="tran-site-tags">Tags</span> 
+                          </p>
+                       
+                        </header>
+                        <div class="card-content site-tags">
+                          <div class="content">
+                           <div class="tags">
+                            
+                              <a class="tag is-link is-light" href="tag_Docker.html">#Docker</a> 
+                            
+                              <a class="tag is-link is-light" href="tag_K8S.html">#K8S</a> 
+                            
+                              <a class="tag is-link is-light" href="tag_%E6%80%A7%E8%83%BD%E5%B7%A5%E7%A8%8B.html">#性能工程</a> 
+                            
+                              <a class="tag is-link is-light" href="tag_%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95.html">#性能测试</a> 
+                            
+                           </div>
+                             
+                          </div>
+                        </div>
+                       
+                      </div>
+
+              </div>
+            </div>
+
+          
+      </div>
+    </section>
+
+    <footer class="footer">
+        <div class="content has-text-centered">
+          <p>
+              Copyright &copy; 2024
+              Powered by <a target="_blank" href="http://www.mweb.im">geraltlau</a>&nbsp; 
+          </p>
+        </div>
       </footer>
-		</div>
-	</div>
+
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
+
+
+
+div.code-toolbar {
+  position: relative;
+}
+
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
+
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
+
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
+
 
   
     
 
 
 
-</body>
+
+  </body>
 </html>

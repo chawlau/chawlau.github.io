@@ -1,1016 +1,729 @@
-<!DOCTYPE HTML>
-<html>
-<head>
-	<meta charset="utf-8">
-	<title>  
-	  
-  	Linux性能优化实战 -        凌云阁
-  	
-	</title>
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+      
+    Linux性能优化实战 -        凌云阁
+    
+    </title>
+    <link rel="shortcut icon" href="https://i.loli.net/2020/02/22/Si1K7sluept2ZgR.jpg" type="image/png" />
 
-  <meta name="HandheldFriendly" content="True">
-  <meta name="MobileOptimized" content="320">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-	<link href="atom.xml" rel="alternate" title="       凌云阁" type="application/atom+xml">
-
-	<link href="asset/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-	<link href="asset/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
-	<script src="asset/javascripts/jquery.min.js"></script>
-	<script src="asset/highlightjs/highlight.pack.js"></script>
-	<link href="asset/highlightjs/styles/solarized_dark.css" media="screen, projection" rel="stylesheet" type="text/css">
-<script>hljs.initHighlightingOnLoad();</script>
-
-	<!--[if lt IE 9]><script src="asset/javascripts/html5.js"></script><![endif]-->
-	<!-- <link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'> -->
-	<style type="text/css">
-/* latin */
-@font-face {
-  font-family: 'Nunito';
-  font-style: normal;
-  font-weight: 300;
-  src: local('Nunito-Light'), url(asset/font/1TiHc9yag0wq3lDO9cw0voX0hVgzZQUfRDuZrPvH3D8.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
-}
-/* latin */
-@font-face {
-  font-family: 'Nunito';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Nunito-Regular'), url(asset/font/6TbRXKWJjpj6V2v_WyRbMX-_kf6ByYO6CLYdB4HQE-Y.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
-}
-/* latin */
-@font-face {
-  font-family: 'Nunito';
-  font-style: normal;
-  font-weight: 700;
-  src: local('Nunito-Bold'), url(asset/font/TttUCfJ272GBgSKaOaD7KoX0hVgzZQUfRDuZrPvH3D8.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
-}
-	</style>
-	
-	<style type="text/css">
-	.container .left-col{ opacity: 1;}
-	#pagenavi a{ font-size: 1.3em;}
-	#pagenavi .next:before{ top: 3px;}
-	#pagenavi .prev:before{ top: 3px;}
-	.container .mid-col .mid-col-container #content .archives .title{ font-size: 1.5em;}
-	.container .mid-col .mid-col-container #content article{ padding: 15px 0px;}
-	#header .subtitle {
-		line-height: 1.2em;
-		padding-top: 8px;
-	}
-	article pre{ background: none; border: none; padding: 0;}
-	article .entry-content{text-align: left;}
-	.share-comment{ padding: 25px 0px; clear: both;}
-	hr{ margin: 20px 0px;border: 0; border-top:solid 1px #ddd;}
-
-	</style>
-  
-
+    
+    
+    <link href="atom.xml" rel="alternate" title="       凌云阁" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/style.min.css">
+    <link rel="stylesheet" href="asset/css/doc.css">
+    <script src="asset/app.js"></script>
 </head>
+  <body>
+    <section class="hero">
+      <div class="hero-head">
+          <nav class="navbar" role="navigation" aria-label="main navigation">
+              <div class="container">
+              <div class="navbar-brand">
+                
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
+                
+                <a target="_self" class="navbar-item " href="archives.html">Archives</a>
+                
 
+                <a role="button" id="navbarSNSRssSwitchBtn" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarSNSRssButtons">
+                  <span aria-hidden="true"></span>
+                  <span aria-hidden="true"></span>
+                  <span aria-hidden="true"></span>
+                </a>
+              </div>
+            
+              <div id="navbarSNSRssButtons" class="navbar-menu">
+                <div class="navbar-start">
+                  
+                </div>
+            
+                <div class="navbar-end">
+                  <div class="navbar-item">
+                    <!--buttons start-->
+                    <div class="buttons">
+                      
+                        
+                        
 
-<body>
-	<div class="container">
-		<div class="left-col">
-			<div class="intrude-less">
-				<header id="header" class="inner">
-				 
-				 	<div class="profilepic">
-						<img src="https://i.loli.net/2020/02/22/Si1K7sluept2ZgR.jpg" style="width:160px;">
-					</div>
-            	
-					
-					<h1><a href="index.html">       凌云阁</a></h1>
-					<p class="subtitle">生命的意义是成为你自己！</p>
-					<nav id="main-nav">
-						<ul class="main">
-						
-						  <li id=""><a target="_self" href="index.html">Home</a></li>
-						
-						  <li id=""><a target="_self" href="archives.html">Archives</a></li>
-						
-						</ul>
-					</nav>
+                        <a href="www.facebook.com" target="_blank" title="facebook">
+                            <span class="icon is-large has-text-grey-darker">
+                               <svg class="svg-inline--fa fa-facebook fa-w-16 fa-lg" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="facebook" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M504 256C504 119 393 8 256 8S8 119 8 256c0 123.78 90.69 226.38 209.25 245V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.28c-30.8 0-40.41 19.12-40.41 38.73V256h68.78l-11 71.69h-57.78V501C413.31 482.38 504 379.78 504 256z"></path></svg><!-- <i class="fab fa-facebook fa-lg"></i> -->
+                            </span>
+                          </a>
+                        
+                        
+                        <a href="www.github.com/chawlau" target="_blank" title="github">
+                            <span class="icon is-large has-text-grey-darker">
+                               <svg class="svg-inline--fa fa-github fa-w-16 fa-lg" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="github" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" data-fa-i2svg=""><path fill="currentColor" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg><!-- <i class="fab fa-github fa-lg"></i> -->
+                            </span>
+                          </a>
+                        
+                        
+                     <a href="www.twitter.com"  target="_blank" title="twitter">
+                       <span class="icon is-large has-text-grey-darker">
+                          <svg class="svg-inline--fa fa-twitter fa-w-16 fa-lg" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="twitter" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"></path></svg><!-- <i class="fab fa-twitter fa-lg"></i> -->
+                       </span>
+                     </a>
+                      
+                      
+                      <a href="www.weibo.com" target="_blank" title="weibo">
+                          <span class="icon is-large has-text-grey-darker">
+                            <svg class="svg-inline--fa fa-weibo fa-w-16 fa-lg" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="weibo" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M407 177.6c7.6-24-13.4-46.8-37.4-41.7-22 4.8-28.8-28.1-7.1-32.8 50.1-10.9 92.3 37.1 76.5 84.8-6.8 21.2-38.8 10.8-32-10.3zM214.8 446.7C108.5 446.7 0 395.3 0 310.4c0-44.3 28-95.4 76.3-143.7C176 67 279.5 65.8 249.9 161c-4 13.1 12.3 5.7 12.3 6 79.5-33.6 140.5-16.8 114 51.4-3.7 9.4 1.1 10.9 8.3 13.1 135.7 42.3 34.8 215.2-169.7 215.2zm143.7-146.3c-5.4-55.7-78.5-94-163.4-85.7-84.8 8.6-148.8 60.3-143.4 116s78.5 94 163.4 85.7c84.8-8.6 148.8-60.3 143.4-116zM347.9 35.1c-25.9 5.6-16.8 43.7 8.3 38.3 72.3-15.2 134.8 52.8 111.7 124-7.4 24.2 29.1 37 37.4 12 31.9-99.8-55.1-195.9-157.4-174.3zm-78.5 311c-17.1 38.8-66.8 60-109.1 46.3-40.8-13.1-58-53.4-40.3-89.7 17.7-35.4 63.1-55.4 103.4-45.1 42 10.8 63.1 50.2 46 88.5zm-86.3-30c-12.9-5.4-30 .3-38 12.9-8.3 12.9-4.3 28 8.6 34 13.1 6 30.8.3 39.1-12.9 8-13.1 3.7-28.3-9.7-34zm32.6-13.4c-5.1-1.7-11.4.6-14.3 5.4-2.9 5.1-1.4 10.6 3.7 12.9 5.1 2 11.7-.3 14.6-5.4 2.8-5.2 1.1-10.9-4-12.9z"></path></svg><!-- <i class="fab fa-weibo fa-lg"></i> -->
+                          </span>
+                      </a>
+                      
+                      <a href="atom.xml" target="_blank" title="RSS">
+                          <span class="icon is-large has-text-black-bis">
+                              <svg class="svg-inline--fa fa-rss fa-w-14 fa-lg" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="rss" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M128.081 415.959c0 35.369-28.672 64.041-64.041 64.041S0 451.328 0 415.959s28.672-64.041 64.041-64.041 64.04 28.673 64.04 64.041zm175.66 47.25c-8.354-154.6-132.185-278.587-286.95-286.95C7.656 175.765 0 183.105 0 192.253v48.069c0 8.415 6.49 15.472 14.887 16.018 111.832 7.284 201.473 96.702 208.772 208.772.547 8.397 7.604 14.887 16.018 14.887h48.069c9.149.001 16.489-7.655 15.995-16.79zm144.249.288C439.596 229.677 251.465 40.445 16.503 32.01 7.473 31.686 0 38.981 0 48.016v48.068c0 8.625 6.835 15.645 15.453 15.999 191.179 7.839 344.627 161.316 352.465 352.465.353 8.618 7.373 15.453 15.999 15.453h48.068c9.034-.001 16.329-7.474 16.005-16.504z"></path></svg><!-- <i class="fas fa-rss fa-lg"></i> -->
+                          </span>
+                      </a>
+                    </div>
+                    <!--buttons end-->
 
-					<nav id="sub-nav">
-						<div class="social">
+                  </div>
+                </div>
+                </div>
+              </div>
+            </nav>
+      </div>
 
-<a target="_blank" class="facebook" href="www.facebook.com" title="Facebook">Facebook</a>
-
-
-
-
-
-
-<a target="_blank" class="weibo" href="www.weibo.com" title="weibo">Weibo</a>
-<a target="_blank" class="twitter" target="_blank" href="www.twitter.com" title="Twitter">Twitter</a>
-<a target="_blank" class="github" target="_blank" href="www.github.com/chawlau" title="GitHub">GitHub</a>
-
-
-								
-
-								<a class="rss" href="atom.xml" title="RSS">RSS</a>
-							
-						</div>
-					</nav>
-				</header>				
-			</div>
-		</div>	
-		<div class="mid-col">
-			<div class="mid-col-container"> <div id="content" class="inner">
-<div itemscope itemtype="http://schema.org/Blog">
-
-
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2019-05-12T09:38:10+08:00" itemprop="datePublished">2019/05/12 09:38 上午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15576250906291.html" itemprop="url">
-		Swap内存</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="%E5%9B%9E%E6%94%B6%E5%9C%BA%E6%99%AF" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>回收场景</h4>
-<ul>
-<li>直接内存回收</li>
-<li>内核线程回收 kswapd0</li>
-</ul>
-<h5><a id="%E4%B8%89%E7%A7%8D%E6%B0%B4%E4%BD%8D" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>三种水位</h5>
-<ul>
-<li>页最小阈值（pages_min）</li>
-<li>页低阈值（pages_low）</li>
-<li>页高阈值（pages_high<br />
-<img src="media/15576250906291/c1054f1e71037795c6f290e670b29120.png" alt="c1054f1e71037795c6f290e670b29120" /></li>
-</ul>
-<h4><a id="numa%E5%92%8Cswap" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>NUMA和Swap</h4>
-<ul>
-<li>NUMA 架构下，多个处理器被划分到不同 Node 上，且每个 Node 都拥有自己的本地内存空间。</li>
-<li>Node 内部的内存空间，实际上又可以进一步分为不同的内存域（Zone），比如直接内存访问区（DMA）、普通内存区（NORMAL）、伪内存区（MOVABLE）<br />
-<img src="media/15576250906291/be6cabdecc2ec98893f67ebd5b9aead9.png" alt="be6cabdecc2ec98893f67ebd5b9aead9" /></li>
-</ul>
-<h5><a id="%E5%9B%9E%E6%94%B6%E5%86%85%E5%AD%98%E6%A8%A1%E5%BC%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>回收内存模式</h5>
-<ul>
-<li>/proc/sys/vm/zone_reclaim_mode</li>
-<li>0 可以从其他 Node 寻找空闲内存，也可以从本地回收内存</li>
-<li>1、2、4 都表示只回收本地内存，2 表示可以回写脏数据回收内存，4 表示可以用 Swap 方式回收内存</li>
-</ul>
-<h4><a id="%E6%96%87%E4%BB%B6%E9%A1%B5%E9%9D%A2%E5%92%8C%E5%8C%BF%E5%90%8D%E9%A1%B5%E9%9D%A2" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>文件页面和匿名页面</h4>
-<ul>
-<li>对文件页的回收，当然就是直接回收缓存，或者把脏页写回磁盘后再回收。</li>
-<li>而对匿名页的回收，其实就是通过 Swap 机制，把它们写入磁盘后再释放内存</li>
-</ul>
-<h4><a id="%E5%9B%9E%E6%94%B6%E6%AF%94%E4%BE%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>回收比例</h4>
-<ul>
-<li>/proc/sys/vm/swappiness</li>
-</ul>
-<h4><a id="swap%E7%B1%BB%E5%9E%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>swap 类型</h4>
-<ul>
-<li>swap分区</li>
-<li>swap文件</li>
-<li>kbcommit，表示当前系统负载需要的内存。它实际上是为了保证系统内存不溢出，对需要内存的估计值。%commit，就是这个值相对总内存的百分比。</li>
-<li>kbactive，表示活跃内存，也就是最近使用过的内存，一般不会被系统回收。</li>
-<li>kbinact，表示非活跃内存，也就是不常访问的内存，有可能会被系统回收。</li>
-</ul>
-<h4><a id="%E6%B8%85%E7%A9%BAbuffer%E5%92%8Ccache" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>清空buffer和cache</h4>
-<ul>
-<li>sync; echo 1 &gt; /proc/sys/vm/drop_caches;</li>
-<li>echo 2 &gt; /proc/sys/vm/drop_caches;</li>
-<li>echo 3 &gt; /proc/sys/vm/drop_caches;</li>
-</ul>
-<h4><a id="%E8%A7%82%E5%AF%9F%E7%B3%BB%E7%BB%9F%E5%86%85%E5%AD%98%E5%8F%98%E5%8C%96" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>观察系统内存变化</h4>
-<ul>
-<li>watch -d grep -A 15 'Normal' /proc/zoneinfo</li>
-</ul>
-
-
-			
-			
-		</div>
-
-	</article>
  
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2018-11-26T15:41:42+08:00" itemprop="datePublished">2018/11/26 15:41 下午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15432181027120.html" itemprop="url">
-		上下文切换-CPU使用率</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="cpu%E4%B8%8A%E4%B8%8B%E6%96%87" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>cpu上下文</h4>
-<ul>
-<li>cpu寄存器和程序计数器叫上下文</li>
-<li>CPU 寄存器，是 CPU 内置的容量小、但速度极快的内存。而程序计数器，则是用来存储 CPU 正在执行的指令位置、或者即将执行的下一条指令位置。</li>
-</ul>
-<h4><a id="%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2%E5%9C%BA%E6%99%AF" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>上下文切换场景</h4>
-<ul>
-<li>进程上下文切换 包括了虚拟内存、栈、全局变量等用户空间的资源，还包括了内核堆栈、寄存器等内核空间的状态</li>
-<li>线程上下文切换</li>
-<li>中断上下文切换</li>
-<li>系统调用发生了两次上下文切换 并不会涉及到虚拟内存等进程用户态的资源，也不会切换进程。这跟我们通常所说的进程上下文切换是不一样的</li>
-<li></li>
-</ul>
-<h4><a id="%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>系统调用</h4>
-<ul>
-<li>系统调用过程通常称为特权模式切换，而不是上下文切换。但实际上，系统调用过程中，CPU 的上下文切换还是无法避免的。</li>
-<li>一次系统调用的过程，其实是发生了两次 CPU 上下文切换</li>
-</ul>
-<h4><a id="tlb%E4%BD%9C%E7%94%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>TLB作用</h4>
-<ul>
-<li>TLB（Translation Lookaside Buffer）来管理虚拟内存到物理内存的映射关系。当虚拟内存更新后，TLB 也需要刷新，内存的访问也会随之变慢。特别是在多处理器系统上，缓存是被多个处理器共享的，刷新缓存不仅会影响当前处理器的进程，还会影响共享缓存的其他处理器的进程。</li>
-</ul>
-<h4><a id="%E8%BF%9B%E7%A8%8B%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>进程上下文切换</h4>
-<ul>
-<li>进程的上下文切换就比系统调用时多了一步：在保存当前进程的内核状态和 CPU 寄存器之前，（需要先把该进程的虚拟内存、栈等保存下来；而加载了下一进程的内核态后，还需要刷新进程的虚拟内存和用户栈）。<em><strong>这个系统调用并没有</strong></em></li>
-<li><img src="media/15432181027120/15432189386717.jpg" alt="" /></li>
-<li>线程也有自己的私有数据，比如栈和寄存器等，这些在上下文切换时也是需要保存的。</li>
-<li>两个线程属于同一个进程。此时，因为虚拟内存是共享的，所以在切换时，虚拟内存这些资源就保持不动，只需要切换线程的私有数据、寄存器等不共享的数据。</li>
-</ul>
-<h4><a id="%E4%B8%AD%E6%96%AD%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>中断上下文切换</h4>
-<ul>
-<li>线程是调度的基本单位，进程是资源拥有的基本单位，同属一个进程的线程，发生上下文切换，只切换线程的私有数据，共享数据不变，速度很快。</li>
-</ul>
-<h4><a id="%E6%80%8E%E4%B9%88%E6%9F%A5%E7%9C%8B%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%B8%8A%E4%B8%8B%E6%96%87%E6%83%85%E5%86%B5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>怎么查看系统的上下文情况</h4>
-<ul>
-<li>vmstat</li>
-<li>自愿上下文切换 是指进程无法获取所需资源导致的上下文切换，比如IO,内存</li>
-<li>非自愿上下文切换， 进程由于时间片已到等时间，被系统强制调度，进而发生的上下文呢切换</li>
-</ul>
-<h4><a id="%E6%9C%89%E5%93%AA%E4%BA%9B%E5%87%8F%E5%B0%91%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2%E7%9A%84%E6%8A%80%E6%9C%AF%E7%94%A8%E4%BE%8B%EF%BC%9F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>有哪些减少上下文切换的技术用例？</h4>
-<p>数据库连接池（复用连接）、合理设置应用的最大进程，线程数、直接内存访问DMA、零拷贝技术</p>
-<h4><a id="%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>压力测试</h4>
-<ul>
-<li>sysbench --threads=10 --max-time=300 threads run</li>
-<li>线程切换 sysbench --num-threads=10 --max-time=300 --test=threads run</li>
-<li>我们可以知道，系统的就绪队列过长，也就是正在运行和等待 CPU 的进程数过多，导致了大量的上下文切换，而上下文切换又导致了系统 CPU 的占用率升高。</li>
-<li>查看中断变化watch -d cat /proc/interrupts</li>
-<li>查看进程中线程变化的数据 pidstat -wt 1</li>
-<li>Rescheduling interrupts多处理器系统（SMP）中，调度器用来分散任务到不同 CPU 的机制，通常也被称为处理器间中断（Inter-Processor Interrupts，IPI）</li>
-</ul>
-<h4><a id="%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2%E7%B1%BB%E5%9E%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>上下文切换类型</h4>
-<ul>
-<li>自愿上下文切换变多了，说明进程都在等待资源，有可能发生了 I/O 等其他问题；</li>
-<li>非自愿上下文切换变多了，说明进程都在被强制调度，也就是都在争抢 CPU，说明 CPU 的确成了瓶颈；</li>
-<li>中断次数变多了，说明 CPU 被中断处理程序占用，还需要通过查看 /proc/interrupts 文件来分析具体的中断类型。</li>
-</ul>
-<h4><a id="" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a></h4>
-
-
-			
-			
-		</div>
-
-	</article>
- 
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2018-11-30T14:28:30+08:00" itemprop="datePublished">2018/11/30 14:28 下午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15435593108560.html" itemprop="url">
-		CPU使用率</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="%E8%8A%82%E6%8B%8D%E7%8E%87" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>节拍率</h4>
-<ul>
-<li>为了维护 CPU 时间，Linux 通过事先定义的节拍率（内核中表示为 HZ），触发时间中断，并使用全局变量 Jiffies 记录了开机以来的节拍数</li>
-<li>nice 低优先级用户态CPU时间，就是进程的nice值被调整被1~19之间时的CPU时间</li>
-<li>steal 当前系统运行虚拟机的时候，被虚拟机占用的CPU时间</li>
-</ul>
-<h4><a id="cpu%E4%BD%BF%E7%94%A8%E7%8E%87" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>CPU使用率</h4>
-<ul>
-<li>CPU使用率 = 1 - (空闲时间/总CPU时间)</li>
-<li>平均CPU使用率 = 1 - (空间时间new - 空闲时间old)/(总cpu时间new - 总空闲时间old)</li>
-</ul>
-<h4><a id="pid%E4%B8%8D%E5%81%9C%E7%9A%84%E5%9C%A8%E5%8F%98%EF%BC%8Ccpu%E4%BD%BF%E7%94%A8%E7%8E%87%E9%AB%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>PID不停的在变，CPU使用率高</h4>
-<ul>
-<li>要么是这些进程在不停地重启，要么就是全新的进程，这无非也就两个原因：</li>
-<li>第一个原因，进程在不停地崩溃重启，比如因为段错误、配置错误等等，这时，进程在退出后可能又被监控系统自动重启了。</li>
-<li>第二个原因，这些进程都是短时进程，也就是在其他应用内部通过 exec 调用的外面命令。这些命令一般都只运行很短的时间就会结束，你很难用 top 这种间隔时间比较长的工具发现</li>
-</ul>
-<h4><a id="%E6%9F%A5%E7%9C%8B%E7%88%B6%E8%BF%9B%E7%A8%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>查看父进程</h4>
-<ul>
-<li>pstree | grep stress</li>
-<li>短时进程</li>
-</ul>
-<h4><a id="execsnoop" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>execsnoop</h4>
-<pre><code class="language-plain_text">  #!/bin/bash
-#
-# execsnoop - trace process exec() with arguments.
-#             Written using Linux ftrace.
-#
-# This shows the execution of new processes, especially short-lived ones that
-# can be missed by sampling tools such as top(1).
-#
-# USAGE: ./execsnoop [-hrt] [-n name]
-#
-# REQUIREMENTS: FTRACE and KPROBE CONFIG, sched:sched_process_fork tracepoint,
-# and either the sys_execve, stub_execve or do_execve kernel function. You may
-# already have these on recent kernels. And awk.
-#
-# This traces exec() from the fork()-&gt;exec() sequence, which means it won't
-# catch new processes that only fork(). With the -r option, it will also catch
-# processes that re-exec. It makes a best-effort attempt to retrieve the program
-# arguments and PPID; if these are unavailable, 0 and &quot;[?]&quot; are printed
-# respectively. There is also a limit to the number of arguments printed (by
-# default, 8), which can be increased using -a.
-#
-# This implementation is designed to work on older kernel versions, and without
-# kernel debuginfo. It works by dynamic tracing an execve kernel function to
-# read the arguments from the %si register. The sys_execve function is tried
-# first, then stub_execve and do_execve. The sched:sched_process_fork
-# tracepoint is used to get the PPID. This program is a workaround that should be
-# improved in the future when other kernel capabilities are made available. If
-# you need a more reliable tool now, then consider other tracing alternatives
-# (eg, SystemTap). This tool is really a proof of concept to see what ftrace can
-# currently do.
-#
-# From perf-tools: https://github.com/brendangregg/perf-tools
-#
-# See the execsnoop(8) man page (in perf-tools) for more info.
-#
-# COPYRIGHT: Copyright (c) 2014 Brendan Gregg.
-#
-#  This program is free software; you can redistribute it and/or
-#  modify it under the terms of the GNU General Public License
-#  as published by the Free Software Foundation; either version 2
-#  of the License, or (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software Foundation,
-#  Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-#
-#  (http://www.gnu.org/copyleft/gpl.html)
-#
-# 07-Jul-2014	Brendan Gregg	Created this.
-
-### default variables
-tracing=/sys/kernel/debug/tracing
-flock=/var/tmp/.ftrace-lock; wroteflock=0
-opt_duration=0; duration=; opt_name=0; name=; opt_time=0; opt_reexec=0
-opt_argc=0; argc=8; max_argc=16; ftext=
-trap ':' INT QUIT TERM PIPE HUP	# sends execution to end tracing section
-
-function usage {
-	cat &lt;&lt;-END &gt;&amp;2
-	USAGE: execsnoop [-hrt] [-a argc] [-d secs] [name]
-	                 -d seconds      # trace duration, and use buffers
-	                 -a argc         # max args to show (default 8)
-	                 -r              # include re-execs
-	                 -t              # include time (seconds)
-	                 -h              # this usage message
-	                 name            # process name to match (REs allowed)
-	  eg,
-	       execsnoop                 # watch exec()s live (unbuffered)
-	       execsnoop -d 1            # trace 1 sec (buffered)
-	       execsnoop grep            # trace process names containing grep
-	       execsnoop 'udevd$'        # process names ending in &quot;udevd&quot;
-
-	See the man page and example file for more info.
-END
-	exit
-}
-
-function warn {
-	if ! eval &quot;$@&quot;; then
-		echo &gt;&amp;2 &quot;WARNING: command failed \&quot;$@\&quot;&quot;
-	fi
-}
-
-function end {
-	# disable tracing
-	echo 2&gt;/dev/null
-	echo &quot;Ending tracing...&quot; 2&gt;/dev/null
-	cd $tracing
-	warn &quot;echo 0 &gt; events/kprobes/$kname/enable&quot;
-	warn &quot;echo 0 &gt; events/sched/sched_process_fork/enable&quot;
-	warn &quot;echo -:$kname &gt;&gt; kprobe_events&quot;
-	warn &quot;echo &gt; trace&quot;
-	(( wroteflock )) &amp;&amp; warn &quot;rm $flock&quot;
-}
-
-function die {
-	echo &gt;&amp;2 &quot;$@&quot;
-	exit 1
-}
-
-function edie {
-	# die with a quiet end()
-	echo &gt;&amp;2 &quot;$@&quot;
-	exec &gt;/dev/null 2&gt;&amp;1
-	end
-	exit 1
-}
-
-### process options
-while getopts a:d:hrt opt
-do
-	case $opt in
-	a)	opt_argc=1; argc=$OPTARG ;;
-	d)	opt_duration=1; duration=$OPTARG ;;
-	r)	opt_reexec=1 ;;
-	t)	opt_time=1 ;;
-	h|?)	usage ;;
-	esac
-done
-shift $(( $OPTIND - 1 ))
-if (( $# )); then
-	opt_name=1
-	name=$1
-	shift
-fi
-(( $# )) &amp;&amp; usage
-
-### option logic
-(( opt_pid &amp;&amp; opt_name )) &amp;&amp; die &quot;ERROR: use either -p or -n.&quot;
-(( opt_pid )) &amp;&amp; ftext=&quot; issued by PID $pid&quot;
-(( opt_name )) &amp;&amp; ftext=&quot; issued by process name \&quot;$name\&quot;&quot;
-(( opt_file )) &amp;&amp; ftext=&quot;$ftext for filenames containing \&quot;$file\&quot;&quot;
-(( opt_argc &amp;&amp; argc &gt; max_argc )) &amp;&amp; die &quot;ERROR: max -a argc is $max_argc.&quot;
-if (( opt_duration )); then
-	echo &quot;Tracing exec()s$ftext for $duration seconds (buffered)...&quot;
-else
-	echo &quot;Tracing exec()s$ftext. Ctrl-C to end.&quot;
-fi
-
-### select awk
-if (( opt_duration )); then
-	[[ -x /usr/bin/mawk ]] &amp;&amp; awk=mawk || awk=awk
-else
-	# workarounds for mawk/gawk fflush behavior
-	if [[ -x /usr/bin/gawk ]]; then
-		awk=gawk
-	elif [[ -x /usr/bin/mawk ]]; then
-		awk=&quot;mawk -W interactive&quot;
-	else
-		awk=awk
-	fi
-fi
-
-### check permissions
-cd $tracing || die &quot;ERROR: accessing tracing. Root user? Kernel has FTRACE?
-    debugfs mounted? (mount -t debugfs debugfs /sys/kernel/debug)&quot;
-
-### ftrace lock
-[[ -e $flock ]] &amp;&amp; die &quot;ERROR: ftrace may be in use by PID $(cat $flock) $flock&quot;
-echo $$ &gt; $flock || die &quot;ERROR: unable to write $flock.&quot;
-wroteflock=1
-
-### build probe
-if [[ -x /usr/bin/getconf ]]; then
-	bits=$(getconf LONG_BIT)
-else
-	bits=64
-	[[ $(uname -m) == i* ]] &amp;&amp; bits=32
-fi
-(( offset = bits / 8 ))
-function makeprobe {
-	func=$1
-	kname=execsnoop_$func
-	kprobe=&quot;p:$kname $func&quot;
-	i=0
-	while (( i &lt; argc + 1 )); do
-		# p:kname do_execve +0(+0(%si)):string +0(+8(%si)):string ...
-		kprobe=&quot;$kprobe +0(+$(( i * offset ))(%si)):string&quot;
-		(( i++ ))
-	done
-}
-# try in this order: sys_execve, stub_execve, do_execve
-makeprobe sys_execve
-
-### setup and begin tracing
-echo nop &gt; current_tracer
-if ! echo $kprobe &gt;&gt; kprobe_events 2&gt;/dev/null; then
-	makeprobe stub_execve
-	if ! echo $kprobe &gt;&gt; kprobe_events 2&gt;/dev/null; then
-	    makeprobe do_execve
-	    if ! echo $kprobe &gt;&gt; kprobe_events 2&gt;/dev/null; then
-		    edie &quot;ERROR: adding a kprobe for execve. Exiting.&quot;
-        fi
-	fi
-fi
-if ! echo 1 &gt; events/kprobes/$kname/enable; then
-	edie &quot;ERROR: enabling kprobe for execve. Exiting.&quot;
-fi
-if ! echo 1 &gt; events/sched/sched_process_fork/enable; then
-	edie &quot;ERROR: enabling sched:sched_process_fork tracepoint. Exiting.&quot;
-fi
-echo &quot;Instrumenting $func&quot;
-(( opt_time )) &amp;&amp; printf &quot;%-16s &quot; &quot;TIMEs&quot;
-printf &quot;%6s %6s %s\n&quot; &quot;PID&quot; &quot;PPID&quot; &quot;ARGS&quot;
-
-#
-# Determine output format. It may be one of the following (newest first):
-#           TASK-PID   CPU#  ||||    TIMESTAMP  FUNCTION
-#           TASK-PID    CPU#    TIMESTAMP  FUNCTION
-# To differentiate between them, the number of header fields is counted,
-# and an offset set, to skip the extra column when needed.
-#
-offset=$($awk 'BEGIN { o = 0; }
-	$1 == &quot;#&quot; &amp;&amp; $2 ~ /TASK/ &amp;&amp; NF == 6 { o = 1; }
-	$2 ~ /TASK/ { print o; exit }' trace)
-
-### print trace buffer
-warn &quot;echo &gt; trace&quot;
-( if (( opt_duration )); then
-	# wait then dump buffer
-	sleep $duration
-	cat -v trace
-else
-	# print buffer live
-	cat -v trace_pipe
-fi ) | $awk -v o=$offset -v opt_name=$opt_name -v name=$name \
-    -v opt_duration=$opt_duration -v opt_time=$opt_time -v kname=$kname \
-    -v opt_reexec=$opt_reexec '
-	# common fields
-	$1 != &quot;#&quot; {
-		# task name can contain dashes
-		comm = pid = $1
-		sub(/-[0-9][0-9]*/, &quot;&quot;, comm)
-		sub(/.*-/, &quot;&quot;, pid)
-	}
-
-	$1 != &quot;#&quot; &amp;&amp; $(4+o) ~ /sched_process_fork/ {
-		cpid=$0
-		sub(/.* child_pid=/, &quot;&quot;, cpid)
-		sub(/ .*/, &quot;&quot;, cpid)
-		getppid[cpid] = pid
-		delete seen[pid]
-	}
-
-	$1 != &quot;#&quot; &amp;&amp; $(4+o) ~ kname {
-		if (seen[pid])
-			next
-		if (opt_name &amp;&amp; comm !~ name)
-			next
-
-		#
-		# examples:
-		# ... arg1=&quot;/bin/echo&quot; arg2=&quot;1&quot; arg3=&quot;2&quot; arg4=&quot;3&quot; ...
-		# ... arg1=&quot;sleep&quot; arg2=&quot;2&quot; arg3=(fault) arg4=&quot;&quot; ...
-		# ... arg1=&quot;&quot; arg2=(fault) arg3=&quot;&quot; arg4=&quot;&quot; ...
-		# the last example is uncommon, and may be a race.
-		#
-		if ($0 ~ /arg1=&quot;&quot;/) {
-			args = comm &quot; [?]&quot;
-		} else {
-			args=$0
-			sub(/ arg[0-9]*=\(fault\).*/, &quot;&quot;, args)
-			sub(/.*arg1=&quot;/, &quot;&quot;, args)
-			gsub(/&quot; arg[0-9]*=&quot;/, &quot; &quot;, args)
-			sub(/&quot;$/, &quot;&quot;, args)
-			if ($0 !~ /\(fault\)/)
-				args = args &quot; [...]&quot;
-		}
-
-		if (opt_time) {
-			time = $(3+o); sub(&quot;:&quot;, &quot;&quot;, time)
-			printf &quot;%-16s &quot;, time
-		}
-		printf &quot;%6s %6d %s\n&quot;, pid, getppid[pid], args
-		if (!opt_duration)
-			fflush()
-		if (!opt_reexec) {
-			seen[pid] = 1
-			delete getppid[pid]
-		}
-	}
-
-	$0 ~ /LOST.*EVENT[S]/ { print &quot;WARNING: &quot; $0 &gt; &quot;/dev/stderr&quot; }
-'
-
-### end tracing
-end
-</code></pre>
-<ul>
-<li>基于内核BPF技术实现</li>
-</ul>
-<h4><a id="%E6%8B%93%E5%B1%95%E9%98%85%E8%AF%BB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>拓展阅读</h4>
-<ul>
-<li><a href="http://blog.bruceding.com/420.html">http://blog.bruceding.com/420.html</a></li>
-<li></li>
-</ul>
-
-
-			
-			
-		</div>
-
-	</article>
- 
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2018-12-26T09:26:56+08:00" itemprop="datePublished">2018/12/26 09:26 上午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15457876165545.html" itemprop="url">
-		Linux buffer和cache</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="buffer%E5%92%8Ccache" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>buffer和cache</h4>
-<ul>
-<li>Buffers 是内核缓冲区用到的内存，对应的是 /proc/meminfo 中的 Buffers 值。</li>
-<li>Cache 是内核页缓存和 Slab 用到的内存，对应的是 /proc/meminfo 中的 Cached 与 SReclaimable 之和。</li>
-<li>Buffers 是对原始磁盘块的临时存储，也就是用来缓存磁盘的数据，通常不会特别大（20MB 左右）。这样，内核就可以把分散的写集中起来，统一优化磁盘的写入，比如可以把多次小的写合并成单次大的写等等。</li>
-<li>Cached 是从磁盘读取文件的页缓存，也就是用来缓存从文件读取的数据。这样，下次访问这些文件数据时，就可以直接从内存中快速获取，而不需要再次访问缓慢的磁盘。</li>
-<li>SReclaimable 是 Slab 的一部分。Slab 包括两部分，其中的可回收部分，用</li>
-<li>SReclaimable 记录；而不可回收部分，用 SUnreclaim 记录。</li>
-</ul>
-<h4><a id="%E7%BB%93%E8%AE%BA" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>结论</h4>
-<ul>
-<li>Buffer 既可以用作“将要写入磁盘数据的缓存”，也可以用作“从磁盘读取数据的缓存”。</li>
-<li>Cache 既可以用作“从文件读取数据的页缓存”，也可以用作“写文件的页缓存”。</li>
-</ul>
-<h4><a id="%E6%80%9D%E8%80%83" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>思考</h4>
-<ul>
-<li>如何统计出所有进程的物理内存使用量呢？</li>
-</ul>
-<h4><a id="%E5%88%A9%E7%94%A8%E7%BC%93%E5%AD%98%E6%9D%A5%E6%8F%90%E5%8D%87%E6%95%88%E7%8E%87" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>利用缓存来提升效率</h4>
-<ul>
-<li>缓存命中率</li>
-<li>cachestat 提供了整个系统缓存的读写命中情况。</li>
-<li>cachetop 提供了每个进程的缓存命中情况。</li>
-<li>strace -p $(pgrep app) 查看进行的系统调用</li>
-<li></li>
-</ul>
-
-
-			
-			
-		</div>
-
-	</article>
- 
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2019-01-02T14:09:07+08:00" itemprop="datePublished">2019/01/02 14:09 下午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15464093479091.html" itemprop="url">
-		内存泄露实战</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="%E5%AF%BC%E8%87%B4%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2%E7%9A%84%E5%86%85%E5%AD%98%E6%AE%B5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>导致内存泄露的内存段</h4>
-<ul>
-<li>堆内存</li>
-<li>内存映射段，包括动态连接库和共享内存，其中共享内存由程序动态分配和管理，如果忘了回收也会导致内存泄露</li>
-</ul>
-<h4><a id="%E4%BD%BF%E7%94%A8memleak" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>使用memleak</h4>
-<ul>
-<li>/usr/share/bcc/tools/memleak -p $(pidof main) -a</li>
-<li>显示如下</li>
-</ul>
-<pre><code class="language-plain_text">  [22:44:58] Top 10 stacks with outstanding allocations:
-</code></pre>
-<ul>
-<li>表示没有内存泄露</li>
-</ul>
-<h4><a id="%E8%84%8F%E9%A1%B5%E5%9B%9E%E6%94%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>脏页回收</h4>
-<ul>
-<li>fsync</li>
-<li>pdflush</li>
-</ul>
-<h4><a id="%E5%A0%86%E5%86%85%E5%AD%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>堆内存</h4>
-<ul>
-<li>就是应用程序动态分配的堆内存，也就是匿名页</li>
-</ul>
-<h4><a id="%E5%86%85%E5%AD%98%E5%9B%9E%E6%94%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>内存回收</h4>
-<ul>
-<li>直接内存回收</li>
-<li>定期内存回收 kswapd0</li>
-</ul>
-<h4><a id="%E5%AE%9A%E6%9C%9F%E5%86%85%E5%AD%98%E5%9B%9E%E6%94%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>定期内存回收</h4>
-<ul>
-<li>页最小阈值（pages_min）</li>
-<li>页低阈值（pages_low）</li>
-<li>页高阈值（pages_high）</li>
-<li>剩余内存 pages_free 表示。</li>
-</ul>
-<h4><a id="%E5%8C%BF%E5%90%8D%E9%A1%B5%E5%92%8C%E6%96%87%E4%BB%B6%E9%A1%B5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>匿名页和文件页</h4>
-<ul>
-<li>对文件页的回收，当然就是直接回收缓存，或者把脏页写回磁盘后再回收。</li>
-<li>而对匿名页的回收，其实就是通过 Swap 机制，把它们写入磁盘后再释放内存。</li>
-<li>swappiness来控制匿名页和文件页的回收，数值越大，越积极使用Swap</li>
-</ul>
-<h4><a id="%E5%86%85%E5%AD%98%E6%8C%87%E6%A0%87%E5%8A%A8%E6%80%81%E7%9B%91%E6%8E%A7" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>内存指标动态监控</h4>
-<ul>
-<li>perf record -e kmem:* -p 27027 -g -- sleep 100</li>
-<li>perf script -i perf.data &amp;&gt; perf.unfold</li>
-<li>./stackcollapse-perf.pl perf.unfold &amp;&gt; perf.folded</li>
-<li>./flamegraph.pl perf.folded &gt; perf.svg</li>
-<li>perf script | ./stackcollapse-perf.pl | ./flamegraph.pl &gt; process.svg</li>
-<li></li>
-</ul>
-
-
-			
-			
-		</div>
-
-	</article>
- 
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2019-04-08T07:49:14+08:00" itemprop="datePublished">2019/04/08 07:49 上午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15546809549290.html" itemprop="url">
-		Linux性能优化总结</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="%E6%80%A7%E8%83%BD%E9%97%AE%E9%A2%98%E7%9A%84%E6%9D%A5%E6%BA%90" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>性能问题的来源</h4>
-<ul>
-<li>资源瓶颈的分析思路，跟系统资源瓶颈是一样的。</li>
-<li>依赖服务的瓶颈，可以使用全链路跟踪系统，进行快速定位。</li>
-<li>应用自身的问题，则可以通过系统调用、热点函数，或者应用自身的指标和日志等，进行分析定位。</li>
-</ul>
-<h4><a id="cpu%E4%BC%98%E5%8C%96" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>CPU优化</h4>
-<ul>
-<li>进程绑定CPU, 把进程绑定到一个或者多个 CPU 上，充分利用 CPU 缓存的本地性，并减少进程间的相互影响。</li>
-<li>中断程序多CPU负载均衡，以便在发生大量中断时，可以充分利用多CPU的优势分摊负载。</li>
-<li>使用 Cgroups 等方法，为进程设置资源限制，避免个别进程消耗过多的CPU。</li>
-<li>为核心应用程序设置更高的优先级，减少低优先级任务的影响。</li>
-</ul>
-<p>####内存优化</p>
-<ul>
-<li>禁止Swap</li>
-<li>使用 Cgroups 等方法，为进程设置内存限制</li>
-<li>核心应用，还应该降低 oom_score，避免被OOM杀死</li>
-</ul>
-<h4><a id="%E7%A3%81%E7%9B%98%E5%92%8C%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9Fio" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>磁盘和文件系统IO</h4>
-<ul>
-<li>使用SSD，使用RAID提升IO性能</li>
-<li>选择合适的I/O调度算法，SSD和虚拟机磁盘使用Noop，数据库应用使用deadline算法</li>
-<li>优化文件系统和磁盘的缓存和缓冲区</li>
-</ul>
-<p>####网络优化</p>
-<h5><a id="%E5%86%85%E6%A0%B8%E8%B5%84%E6%BA%90%E5%92%8C%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>内核资源和网络协议</h5>
-<ul>
-<li>增大套接字缓冲区、连接跟踪表、最大半连接数、最大文件描述符数、本地端口范围等内核资源配额</li>
-<li>减少TIMEOUT超时时间、SYN+ACK 重传数、Keepalive 探测时间等异常处理参数</li>
-<li>开启端口复用、反向地址校验，并调整 MTU 大小等降低内核的负担</li>
-</ul>
-<p>#####反向地址校验</p>
-<ul>
-<li>就是在一个网卡收到数据包后，把源地址和目标地址对调后查找路由出口，从而得到反身后路由出口。然后根据反向路由出口进行过滤。</li>
-<li>当rp_filter的值为1时，要求反向路由的出口必须与数据包的入口网卡是同一块，否则就会丢弃数据包。</li>
-<li>当rp_filter的值为2时，要求反向路由必须是可达的，如果反路由不可达，则会丢弃数据包。</li>
-</ul>
-<p>######作用</p>
-<ul>
-<li>减少DDoS攻击<br />
-校验数据包的反向路径，如果反向路径不合适，则直接丢弃数据包，避免过多的无效连接消耗系统资源。</li>
-<li>防止IP Spoofing<br />
-校验数据包的反向路径，如果客户端伪造的源IP地址对应的反向路径不在路由表中，或者反向路径不是最佳路径，则直接丢弃数据包，不会向伪造IP的客户端回复响应</li>
-</ul>
-<p>#####网络接口</p>
-<ul>
-<li>CPU 上执行的工作，卸载到网卡中执行，开启网卡的 GRO、GSO、RSS、VXLAN</li>
-<li>开启网络接口的多队列功能，这样，每个队列就可以用不同的中断号，调度到不同 CPU 上执行</li>
-<li>增大网络接口的缓冲区大小以及队列长度等，提升网络传输的吞吐量</li>
-</ul>
-<h5><a id="%E6%9E%81%E9%99%90%E6%80%A7%E8%83%BD" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>极限性能</h5>
-<ul>
-<li>DPDK 技术，跳过内核协议栈，直接由用户态进程用轮询的方式，来处理网络请求</li>
-<li>大页、CPU 绑定、内存对齐、流水线并发等多种机制，优化网络包的处理效率。</li>
-<li>增大网络接口的缓冲区大小以及队列长度等，提升网络传输的吞吐量</li>
-</ul>
-<h4><a id="%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E4%BC%98%E5%8C%96" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>应用程序优化</h4>
-<ul>
-<li>从 CPU 使用的角度来说，简化代码、优化算法、异步处理以及编译器优化等，都是常用的降低 CPU 使用率的方法</li>
-<li>数据访问的角度来说，使用缓存、写时复制、增加 I/O 尺寸等，都是常用的减少磁盘 I/O 的方法，</li>
-<li>内存管理的角度来说，使用大页、内存池等方法，可以预先分配内存，减少内存的动态分配，从而更好地内存访问性能</li>
-<li>网络的角度来说，使用 I/O 多路复用、长连接代替短连接、DNS 缓存等方法，可以优化网络 I/O 并减少网络请求数，从而减少网络延时带来的性能问题</li>
-<li>从进程的工作模型来说，异步处理、多线程或多进程等，可以充分利用每一个 CPU 的处理能力，从而提高应用程序的吞吐能力</li>
-<li>架构层面 消息队列、CDN、负载均衡等各种方法，来优化应用程序的架构，将原来单机要承担的任务，调度到多台服务器中并行处理</li>
-</ul>
-
-
-			
-			
-		</div>
-
-	</article>
- 
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2019-04-10T08:08:57+08:00" itemprop="datePublished">2019/04/10 08:08 上午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15548549378624.html" itemprop="url">
-		容器性能分析</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="%E5%AE%B9%E5%99%A8%E5%86%B7%E5%90%AF%E5%8A%A8%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>容器冷启动性能分析</h4>
-<ul>
-<li>ServerLess服务启动流程</li>
-<li>事件触发（比如收到新的 HTTP 调用请求）</li>
-<li>资源调度</li>
-<li>镜像拉取 缓存热点镜像</li>
-<li>网络配置 网络资源预分配加速</li>
-<li>启动应用 复用预先创建好的容器</li>
-</ul>
-<h4><a id="cpu%E7%81%AB%E7%84%B0%E5%9B%BE%E5%92%8C%E5%86%85%E5%AD%98%E7%81%AB%E7%84%B0%E5%9B%BE%E7%9A%84%E5%8C%BA%E5%88%AB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>CPU火焰图和内存火焰图的区别</h4>
-<ul>
-<li>对 CPU 火焰图来说，采集的数据主要是消耗 CPU 的函数；</li>
-<li>而对内存火焰图来说，采集的数据主要是内存分配、释放、换页等内存管理函数。</li>
-</ul>
-<h4><a id="perf-probe" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>perf probe</h4>
-<ul>
-<li>需要编译时候增加g选项</li>
-</ul>
-<h4><a id="red%E6%B3%95%E5%88%99%E7%9B%91%E6%8E%A7%E5%BE%AE%E6%9C%8D%E5%8A%A1" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>RED法则监控微服务</h4>
-<ul>
-<li>请求数（Rate）、错误数（Errors）以及响应时间（Duration）</li>
-<li>RED 方法适用于微服务应用的监控，而 USE 方法适用于系统资源的监控。</li>
-</ul>
-<h4><a id="%E7%90%86%E8%A7%A3%E5%86%85%E6%A0%B8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>理解内核</h4>
-<ul>
-<li><a href="https://elixir.bootlin.com/">https://elixir.bootlin.com/</a> 内核函数</li>
-<li><a href="https://github.com/iovisor/bcc">https://github.com/iovisor/bcc</a> BCC工具</li>
-<li></li>
-</ul>
-
-
-			
-			
-		</div>
-
-	</article>
- 
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2019-04-08T08:15:45+08:00" itemprop="datePublished">2019/04/08 08:15 上午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15546825457183.html" itemprop="url">
-		Linux性能工具总结</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<h4><a id="cpu%E6%80%A7%E8%83%BD%E5%B7%A5%E5%85%B7" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>CPU性能工具</h4>
-<ul>
-<li>主要性能指标</li>
-<li>CPU使用率</li>
-<li>平均负载</li>
-<li>上下文切换</li>
-<li>CPU缓存命中率<br />
-<img src="media/15546825457183/9a211905538faffb5b3221ee01776a69.png" alt="9a211905538faffb5b3221ee01776a69" /><img src="media/15546825457183/28cb85011289f83804c51c1fb275dab0.png" alt="28cb85011289f83804c51c1fb275dab0" /></li>
-</ul>
-<h4><a id="%E5%86%85%E5%AD%98%E6%80%A7%E8%83%BD%E5%B7%A5%E5%85%B7" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>内存性能工具</h4>
-<ul>
-<li>系统内存指标</li>
-<li>进程内存指标</li>
-<li>SWAP<br />
-<img src="media/15546825457183/ee36f73b9213063b3bcdaed2245944c0.png" alt="ee36f73b9213063b3bcdaed2245944c0" /><br />
-<img src="media/15546825457183/79ad5caf0a2c105b7e9ce77877d493f8.png" alt="79ad5caf0a2c105b7e9ce77877d493f8" /></li>
-</ul>
-<h4><a id="%E7%A3%81%E7%9B%98io%E6%80%A7%E8%83%BD%E5%B7%A5%E5%85%B7" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>磁盘IO性能工具</h4>
-<ul>
-<li>文件系统的使用、缓存和缓冲区的使用</li>
-<li>磁盘 I/O 的使用率、吞吐量和延迟等<br />
-<img src="media/15546825457183/723431a944034b51a9ef13a8a1d4d03b.png" alt="723431a944034b51a9ef13a8a1d4d03b" /><br />
-<img src="media/15546825457183/c232dcb4185f7b7ba95c126889cf6fa3.png" alt="c232dcb4185f7b7ba95c126889cf6fa3" /></li>
-</ul>
-<h4><a id="%E7%BD%91%E7%BB%9C%E6%80%A7%E8%83%BD%E5%B7%A5%E5%85%B7" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>网络性能工具</h4>
-<p><img src="media/15546825457183/37d04c213acfa650bd7467e3000356a4.png" alt="37d04c213acfa650bd7467e3000356a4" /><br />
-<img src="media/15546825457183/5dde213baffd7811ab73c82883b2a75d.png" alt="5dde213baffd7811ab73c82883b2a75d" /></p>
-<h4><a id="%E5%9F%BA%E5%87%86%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>基准测试工具</h4>
-<p><img src="media/15546825457183/f094f489049602e1058e02edc708e6e9.png" alt="f094f489049602e1058e02edc708e6e9" /></p>
-
-
-			
-			
-		</div>
-
-	</article>
- 
-	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<div class="meta">
-			<div class="date">
-				<time datetime="2019-03-29T07:36:05+08:00" itemprop="datePublished">2019/03/29 07:36 上午</time>
-			</div>
-			<div class="tags">posted in 
-			
-			    <a class='category' href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a>&nbsp;
-			 
-			</div>
-		</div>
-		<h1 class="title" itemprop="name"><a href="15538161650708.html" itemprop="url">
-		系统监控的思路</a></h1>
-		<div class="entry-content" itemprop="articleBody">
-			
-			<p>####USE法则</p>
-<ul>
-<li>使用率，表示资源用于服务的时间或容量百分比。100% 的使用率，表示容量已经用尽或者全部时间都用于服务。</li>
-<li>饱和度，表示资源的繁忙程度，通常与等待队列的长度相关。100% 的饱和度，表示资源无法接受更多的请求。</li>
-<li>错误数表示发生错误的事件个数。错误数越多，表明系统的问题越严重。<br />
-<img src="media/15538161650708/ccd7a9350c270c0168bad6cc8d0b8aee.png" alt="ccd7a9350c270c0168bad6cc8d0b8aee" /></li>
-<li>适用系统资源的监控</li>
-</ul>
-<p>####应用程序的性能监控</p>
-<ul>
-<li>请求数</li>
-<li>错误率</li>
-<li>响应时间</li>
-</ul>
-<p>####指标</p>
-<ul>
-<li>应用进程的资源使用情况，比如进程占用的 CPU、内存、磁盘 I/O、网络等。</li>
-<li>应用程序之间调用情况，比如调用频率、错误数、延时等</li>
-<li>应用程序内部核心逻辑的运行情况，比如关键环节的耗时以及执行过程中的错误等</li>
-</ul>
-<p>####Jaeger调用链<br />
-*</p>
-
-
-			
-			
-		</div>
-
-	</article>
-  
-
-</div>
-<nav id="pagenavi">
-	 <a class="prev" href="Linux性能优化实战_1.html">Prev</a>  
-	 <a class="next" href="Linux性能优化实战_3.html">Next</a> 
-	<div class="center"><a href="archives.html">Blog Archives</a></div>
-
-</nav>
-
-</div>
-
-
-
+<div class="hero-body ct-body">
+        <div class="container">
+              <div class="columns is-centered">
+                  <div class="column  is-four-fifths">
+                      <div class="columns is-mobile">
+                          <div class="column">
+                              <h1 class="title">
+       凌云阁
+              
+                              </h1>
+                              <h2 class="subtitle">
+                                 2024 重新扬帆启航！
+                              </h2>
+                          </div>
+                          <div class="column is-narrow"><figure class="image is-128x128">
+                            
+                              <img class="is-rounded" src="https://i.loli.net/2020/02/22/Si1K7sluept2ZgR.jpg">
+                            
+                            </figure></div>
+                      </div>
+                        
+                      
+                  </div>
+                  
+                </div>
+            
+              
+        
         </div>
-			<footer id="footer" class="inner">Copyright &copy; 2014
-Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a> &nbsp;&nbsp; 
-Theme by <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a>
+      </div>
+</section>
+<section class="ct-body">
+      <div class="container">
+          <div class="columns is-variable bd-klmn-columns is-4">
+              <div class="column is-two-thirds">
+                
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15576250906291.html"> 
+                            <h2 class="title">Swap内存</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15576250906291.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2019/05/12 09:38 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15432181027120.html"> 
+                            <h2 class="title">上下文切换-CPU使用率</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15432181027120.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2018/11/26 15:41 下午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15435593108560.html"> 
+                            <h2 class="title">CPU使用率</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15435593108560.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2018/11/30 14:28 下午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15457876165545.html"> 
+                            <h2 class="title">Linux buffer和cache</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15457876165545.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2018/12/26 09:26 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15464093479091.html"> 
+                            <h2 class="title">内存泄露实战</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15464093479091.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2019/01/02 14:09 下午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15546809549290.html"> 
+                            <h2 class="title">Linux性能优化总结</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15546809549290.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2019/04/08 07:49 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15548549378624.html"> 
+                            <h2 class="title">容器性能分析</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15548549378624.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2019/04/10 08:08 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15546825457183.html"> 
+                            <h2 class="title">Linux性能工具总结</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15546825457183.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2019/04/08 08:15 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div class="card">
+                    
+                      <div class="card-content">
+                        <div class="content">
+                          <a href="15538161650708.html"> 
+                            <h2 class="title">系统监控的思路</h2>
+                          </a>        
+                                                    
+                          <p> 
+                            <a href="15538161650708.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
+                            <span class="date">2019/03/29 07:36 上午</span>
+                            <span class="tran-posted-in">posted in</span>&nbsp; 
+                            
+                                <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
+                                                      
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  
+
+                  <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+                    <a class="pagination-previous"   href="Linux性能优化实战_1.html" ><span class="tran-prev-page">&laquo; Prev Page</span></a>  
+                    <a class="pagination-next"   href="Linux性能优化实战_3.html" ><span class="tran-next-page">Next Page &raquo;</span></a>                   
+                  </nav>
+
+              </div><!-- end column -->
+              <div class="column">
+                  <div class="card">
+                      <header class="card-header">
+                        <p class="card-header-title">
+                           <span class="tran-site-categories">Categories</span> 
+                        </p>
+                     
+                      </header>
+                      <div class="card-content site-categories">
+                        <div class="content"> 
+                          <ul>
+                          
+                                <li><a href="%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95%E5%AE%9E%E6%88%98.html">代码随想录实战</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Redis%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98.html">Redis核心技术与实战</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E7%B3%BB%E7%BB%9F%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html">系统性能调优必知必会</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E5%88%86%E5%B8%83%E5%BC%8F%E5%8D%8F%E8%AE%AE%E5%92%8C%E7%AE%97%E6%B3%95%E5%AE%9E%E6%88%98.html">分布式协议和算法实战</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html">C++基础与提高</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html">设计模式</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Python.html">Python</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Golang.html">Golang</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html">设计模式之美</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%80%A7%E8%83%BD%E5%B7%A5%E7%A8%8B%E9%AB%98%E6%89%8B%E8%AF%BE.html">性能工程高手课</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95.html">性能测试</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Prometheus.html">Prometheus</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="RocketMQ.html">RocketMQ</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE.html">网络协议</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Django.html">Django</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html">深入剖析Kubernetes</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html">数据结构和算法</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E5%BE%AE%E6%9C%8D%E5%8A%A1.html">微服务</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%9E%B6%E6%9E%84.html">架构</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html">操作系统原理</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html">Mysql优化实战</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Kafka.html">Kafka</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html">linux服务器研发</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86.html">计算机组成原理</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E7%A8%8B%E5%BA%8F%E5%91%98%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB.html">程序员的自我修养</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="C%E8%AF%AD%E8%A8%80%E8%BF%9B%E9%98%B6.html">C语言进阶</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="http_study.html">http_study</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E7%8E%A9%E8%BD%AC%E7%AE%97%E6%B3%95.html">玩转算法</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="C++%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B.html">C++对象模型</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="SQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html">SQL必知必会</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Zookeeper.html">Zookeeper</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Redis%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A.html">Redis从入门到精通</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E8%BF%9B%E9%98%B6.html">数据结构和算法进阶</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Mysql%E6%80%A7%E8%83%BD%E7%AE%A1%E7%90%86%E5%92%8C%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1.html">Mysql性能管理和架构设计</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98.html">网络编程实战</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html">Redis高并发缓存</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html">Linux性能优化实战</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="%E5%80%99%E6%8D%B7STL.html">候捷STL</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="ElasticSearch.html">ElasticSearch</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="RabbitMQ.html">RabbitMQ</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="etcd.html">etcd</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="RocketMQ-1.html">RocketMQ</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                                <li><a href="mysql.html">mysql</a>
+                                  
+                                  
+                                  
+                                </li> 
+                          
+                          </ul>
+                        </div>
+                      </div>
+                     
+                    </div>
+
+                    <div class="card">
+                        <header class="card-header">
+                          <p class="card-header-title">
+                              <span class="tran-site-tags">Tags</span> 
+                          </p>
+                       
+                        </header>
+                        <div class="card-content site-tags">
+                          <div class="content">
+                           <div class="tags">
+                            
+                              <a class="tag is-link is-light" href="tag_Docker.html">#Docker</a> 
+                            
+                              <a class="tag is-link is-light" href="tag_K8S.html">#K8S</a> 
+                            
+                              <a class="tag is-link is-light" href="tag_%E6%80%A7%E8%83%BD%E5%B7%A5%E7%A8%8B.html">#性能工程</a> 
+                            
+                              <a class="tag is-link is-light" href="tag_%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95.html">#性能测试</a> 
+                            
+                           </div>
+                             
+                          </div>
+                        </div>
+                       
+                      </div>
+
+              </div>
+            </div>
+
+          
+      </div>
+    </section>
+
+    <footer class="footer">
+        <div class="content has-text-centered">
+          <p>
+              Copyright &copy; 2024
+              Powered by <a target="_blank" href="http://www.mweb.im">geraltlau</a>&nbsp; 
+          </p>
+        </div>
       </footer>
-		</div>
-	</div>
+
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
+
+
+
+div.code-toolbar {
+  position: relative;
+}
+
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
+
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
+
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
+
 
   
     
 
 
 
-</body>
+
+  </body>
 </html>
