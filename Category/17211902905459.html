@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>
       
-    Day1 数组 -        凌云阁
+    day1 数组 -        凌云阁
     
     </title>
     <link rel="shortcut icon" href="https://i.loli.net/2020/02/22/Si1K7sluept2ZgR.jpg" type="image/png" />
@@ -102,7 +102,7 @@
                   <div class="post-body single-content">
                     
                     <h1 class="title">
-                            Day1 数组   
+                            day1 数组   
                       </h1>
                      
                     
@@ -139,7 +139,90 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    
+                    <h3><a id="leet-code704" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>leet_code704</h3>
+<p>力扣链接 <a href="https://leetcode.cn/problems/binary-search/description/">https://leetcode.cn/problems/binary-search/description/</a><br />
+给定一个 n 个元素有序的（升序）整型数组 nums 和一个目标值 target  ，写一个函数搜索 nums 中的 target，如果目标值存在返回下标，否则返回 -1。</p>
+<p>示例 1:</p>
+<p>输入: nums = [-1,0,3,5,9,12], target = 9<br />
+输出: 4<br />
+解释: 9 出现在 nums 中并且下标为 4<br />
+示例 2:</p>
+<p>输入: nums = [-1,0,3,5,9,12], target = 2<br />
+输出: -1<br />
+解释: 2 不存在 nums 中因此返回 -1</p>
+<h5><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h5>
+<ul>
+<li>我们定义 target 是在一个在左闭右闭的区间里，也就是[left, right] (这个很重要非常重要)。 区间的定义这就决定了二分法的代码应该如何写，因为定义target在[left, right]区间，所以有如下两点:</li>
+<li>for (left &lt;= right) 要使用 &lt;= ，因为left == right是有意义的，所以使用 &lt;=</li>
+<li>if (nums[middle] &gt; target) right 要赋值为 middle - 1，因为当前这个nums[middle]一定不是target，那么接<br />
+下来要查找的左区间结束下标位置就是 middle - 1</li>
+</ul>
+<pre><code class="language-go">func search(nums []int, target int) int {
+	left, right := 0, len(nums)-1
+	for left &lt;= right {
+		mid := left + (right-left)/2
+		if nums[mid] == target {
+			return mid
+		} else if nums[mid] &gt; target {
+			right = mid - 1
+		} else {
+			left = mid + 1
+		}
+	}
+	return -1
+}
+
+func TestSearch(t *testing.T) {
+	nums := []int{-1, 0, 3, 5, 9, 12}
+	fmt.Println(search(nums, 9))
+	fmt.Println(search(nums, 2))
+}
+</code></pre>
+<h3><a id="leetcode-27" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>leetcode 27</h3>
+<p>力扣链接 <a href="https://leetcode.cn/problems/remove-element/description/">https://leetcode.cn/problems/remove-element/description/</a><br />
+给你一个数组 nums 和一个值 val，你需要 原地 移除所有数值等于 val 的元素。元素的顺序可能发生改变。然后返回 nums 中与 val 不同的元素的数量。</p>
+<p>假设 nums 中不等于 val 的元素数量为 k，要通过此题，您需要执行以下操作：</p>
+<p>更改 nums 数组，使 nums 的前 k 个元素包含不等于 val 的元素。nums 的其余元素和 nums 的大小并不重要。<br />
+返回 k。</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<ul>
+<li>快慢指针<br />
+通过一个快指针和慢指针在一个for循环下完成两个for循环的工作<br />
+定义快慢指针<br />
+快指针:寻找新数组的元素 ，新数组就是不含有目标元素的数组 慢指针:指向更新 新数组下标的位置</li>
+</ul>
+<pre><code class="language-go">func removeElement(nums []int, target int) int {
+	slow := 0
+	
+	for _, val := range nums {
+		if val != target {
+			nums[slow] = val
+			slow++
+		}
+	}
+	return slow
+}
+</code></pre>
+<ul>
+<li>暴力解法<br />
+这个题目暴力的解法就是两层for循环，一个for i 循环遍历数组元素 ，第二个for j循环更新数组。<br />
+当找到元素是目标元素时 j = i + 1,使用 nums[j]覆盖当前目前元素的数据位置，所有元素向左移动一个位置，同时 i 也需回退，size 减一</li>
+</ul>
+<pre><code class="language-go">func removeElement(nums []int, val int) int {
+    size := len(nums)
+    for i := 0; i &lt; size; i++ {
+        if nums[i] == val {
+            for j := i + 1; j &lt; size; j++ {
+                nums[j-1] = nums[j]
+            }
+            i--
+            size--
+        }
+    }
+    return size
+}
+</code></pre>
+
                   </article>
                   <div class="comments-wrap">
                     <div class="share-comments">
@@ -248,7 +331,7 @@ div.code-toolbar > .toolbar > .toolbar-item > span:focus {
   color: inherit;
   text-decoration: none;
 }
-</style>
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   
