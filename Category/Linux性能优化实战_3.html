@@ -1,730 +1,702 @@
-<!DOCTYPE html>
-<html lang="zh">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>
-      
-    Linux性能优化实战 -        凌云阁
-    
-    </title>
-    
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>  
+	  
+  	Linux性能优化实战 -        凌云阁
+  	
+	</title>
 
-    
-    
-    <link href="atom.xml" rel="alternate" title="       凌云阁" type="application/atom+xml">
-    <link rel="stylesheet" href="asset/css/style.min.css">
-    <link rel="stylesheet" href="asset/css/doc.css">
-    <script src="asset/app.js"></script>
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="atom.xml" rel="alternate" title="       凌云阁" type="application/atom+xml">
+
+	<link href="asset/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="asset/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<script src="asset/javascripts/jquery.min.js"></script>
+	<script src="asset/highlightjs/highlight.pack.js"></script>
+	<link href="asset/highlightjs/styles/solarized_dark.css" media="screen, projection" rel="stylesheet" type="text/css">
+<script>hljs.initHighlightingOnLoad();</script>
+
+	<!--[if lt IE 9]><script src="asset/javascripts/html5.js"></script><![endif]-->
+	<!-- <link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'> -->
+	<style type="text/css">
+/* latin */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 300;
+  src: local('Nunito-Light'), url(asset/font/1TiHc9yag0wq3lDO9cw0voX0hVgzZQUfRDuZrPvH3D8.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+/* latin */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Nunito-Regular'), url(asset/font/6TbRXKWJjpj6V2v_WyRbMX-_kf6ByYO6CLYdB4HQE-Y.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+/* latin */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Nunito-Bold'), url(asset/font/TttUCfJ272GBgSKaOaD7KoX0hVgzZQUfRDuZrPvH3D8.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+	</style>
+	
+	<style type="text/css">
+	.container .left-col{ opacity: 1;}
+	#pagenavi a{ font-size: 1.3em;}
+	#pagenavi .next:before{ top: 3px;}
+	#pagenavi .prev:before{ top: 3px;}
+	.container .mid-col .mid-col-container #content .archives .title{ font-size: 1.5em;}
+	.container .mid-col .mid-col-container #content article{ padding: 15px 0px;}
+	#header .subtitle {
+		line-height: 1.2em;
+		padding-top: 8px;
+	}
+	article pre{ background: none; border: none; padding: 0;}
+	article .entry-content{text-align: left;}
+	.share-comment{ padding: 25px 0px; clear: both;}
+	hr{ margin: 20px 0px;border: 0; border-top:solid 1px #ddd;}
+
+	</style>
+  
+
 </head>
-  <body>
-    <section class="hero">
-      <div class="hero-head">
-          <nav class="navbar" role="navigation" aria-label="main navigation">
-              <div class="container">
-              <div class="navbar-brand">
-                
-                <a target="_self" class="navbar-item " href="index.html">Home</a>
-                
-                <a target="_self" class="navbar-item " href="archives.html">Archives</a>
-                
 
-                <a role="button" id="navbarSNSRssSwitchBtn" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarSNSRssButtons">
-                  <span aria-hidden="true"></span>
-                  <span aria-hidden="true"></span>
-                  <span aria-hidden="true"></span>
-                </a>
-              </div>
-            
-              <div id="navbarSNSRssButtons" class="navbar-menu">
-                <div class="navbar-start">
-                  
-                </div>
-            
-                <div class="navbar-end">
-                  <div class="navbar-item">
-                    <!--buttons start-->
-                    <div class="buttons">
-                      
-                        
-                        
 
-                        <a href="www.facebook.com" target="_blank" title="facebook">
-                            <span class="icon is-large has-text-grey-darker">
-                               <svg class="svg-inline--fa fa-facebook fa-w-16 fa-lg" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="facebook" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M504 256C504 119 393 8 256 8S8 119 8 256c0 123.78 90.69 226.38 209.25 245V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.28c-30.8 0-40.41 19.12-40.41 38.73V256h68.78l-11 71.69h-57.78V501C413.31 482.38 504 379.78 504 256z"></path></svg><!-- <i class="fab fa-facebook fa-lg"></i> -->
-                            </span>
-                          </a>
-                        
-                        
-                        <a href="www.github.com/chawlau" target="_blank" title="github">
-                            <span class="icon is-large has-text-grey-darker">
-                               <svg class="svg-inline--fa fa-github fa-w-16 fa-lg" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="github" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" data-fa-i2svg=""><path fill="currentColor" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg><!-- <i class="fab fa-github fa-lg"></i> -->
-                            </span>
-                          </a>
-                        
-                        
-                     <a href="www.twitter.com"  target="_blank" title="twitter">
-                       <span class="icon is-large has-text-grey-darker">
-                          <svg class="svg-inline--fa fa-twitter fa-w-16 fa-lg" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="twitter" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"></path></svg><!-- <i class="fab fa-twitter fa-lg"></i> -->
-                       </span>
-                     </a>
-                      
-                      
-                      <a href="www.weibo.com" target="_blank" title="weibo">
-                          <span class="icon is-large has-text-grey-darker">
-                            <svg class="svg-inline--fa fa-weibo fa-w-16 fa-lg" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="weibo" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M407 177.6c7.6-24-13.4-46.8-37.4-41.7-22 4.8-28.8-28.1-7.1-32.8 50.1-10.9 92.3 37.1 76.5 84.8-6.8 21.2-38.8 10.8-32-10.3zM214.8 446.7C108.5 446.7 0 395.3 0 310.4c0-44.3 28-95.4 76.3-143.7C176 67 279.5 65.8 249.9 161c-4 13.1 12.3 5.7 12.3 6 79.5-33.6 140.5-16.8 114 51.4-3.7 9.4 1.1 10.9 8.3 13.1 135.7 42.3 34.8 215.2-169.7 215.2zm143.7-146.3c-5.4-55.7-78.5-94-163.4-85.7-84.8 8.6-148.8 60.3-143.4 116s78.5 94 163.4 85.7c84.8-8.6 148.8-60.3 143.4-116zM347.9 35.1c-25.9 5.6-16.8 43.7 8.3 38.3 72.3-15.2 134.8 52.8 111.7 124-7.4 24.2 29.1 37 37.4 12 31.9-99.8-55.1-195.9-157.4-174.3zm-78.5 311c-17.1 38.8-66.8 60-109.1 46.3-40.8-13.1-58-53.4-40.3-89.7 17.7-35.4 63.1-55.4 103.4-45.1 42 10.8 63.1 50.2 46 88.5zm-86.3-30c-12.9-5.4-30 .3-38 12.9-8.3 12.9-4.3 28 8.6 34 13.1 6 30.8.3 39.1-12.9 8-13.1 3.7-28.3-9.7-34zm32.6-13.4c-5.1-1.7-11.4.6-14.3 5.4-2.9 5.1-1.4 10.6 3.7 12.9 5.1 2 11.7-.3 14.6-5.4 2.8-5.2 1.1-10.9-4-12.9z"></path></svg><!-- <i class="fab fa-weibo fa-lg"></i> -->
-                          </span>
-                      </a>
-                      
-                      <a href="atom.xml" target="_blank" title="RSS">
-                          <span class="icon is-large has-text-black-bis">
-                              <svg class="svg-inline--fa fa-rss fa-w-14 fa-lg" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="rss" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M128.081 415.959c0 35.369-28.672 64.041-64.041 64.041S0 451.328 0 415.959s28.672-64.041 64.041-64.041 64.04 28.673 64.04 64.041zm175.66 47.25c-8.354-154.6-132.185-278.587-286.95-286.95C7.656 175.765 0 183.105 0 192.253v48.069c0 8.415 6.49 15.472 14.887 16.018 111.832 7.284 201.473 96.702 208.772 208.772.547 8.397 7.604 14.887 16.018 14.887h48.069c9.149.001 16.489-7.655 15.995-16.79zm144.249.288C439.596 229.677 251.465 40.445 16.503 32.01 7.473 31.686 0 38.981 0 48.016v48.068c0 8.625 6.835 15.645 15.453 15.999 191.179 7.839 344.627 161.316 352.465 352.465.353 8.618 7.373 15.453 15.999 15.453h48.068c9.034-.001 16.329-7.474 16.005-16.504z"></path></svg><!-- <i class="fas fa-rss fa-lg"></i> -->
-                          </span>
-                      </a>
-                    </div>
-                    <!--buttons end-->
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+				<header id="header" class="inner">
+				 
+				 	<div class="profilepic">
+						<img src="https://i.loli.net/2020/02/22/Si1K7sluept2ZgR.jpg" style="width:160px;">
+					</div>
+            	
+					
+					<h1><a href="index.html">       凌云阁</a></h1>
+					<p class="subtitle">生命的意义是成为你自己！</p>
+					<nav id="main-nav">
+						<ul class="main">
+						
+						  <li id=""><a target="_self" href="index.html">Home</a></li>
+						
+						  <li id=""><a target="_self" href="archives.html">Archives</a></li>
+						
+						</ul>
+					</nav>
 
-                  </div>
-                </div>
-                </div>
-              </div>
-            </nav>
-      </div>
+					<nav id="sub-nav">
+						<div class="social">
 
+<a target="_blank" class="facebook" href="www.facebook.com" title="Facebook">Facebook</a>
+
+
+
+
+
+
+<a target="_blank" class="weibo" href="www.weibo.com" title="weibo">Weibo</a>
+<a target="_blank" class="twitter" target="_blank" href="www.twitter.com" title="Twitter">Twitter</a>
+<a target="_blank" class="github" target="_blank" href="www.github.com/chawlau" title="GitHub">GitHub</a>
+
+
+								
+
+								<a class="rss" href="atom.xml" title="RSS">RSS</a>
+							
+						</div>
+					</nav>
+				</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			<div class="mid-col-container"> <div id="content" class="inner">
+<div itemscope itemtype="http://schema.org/Blog">
+
+
+	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+		<div class="meta">
+			<div class="date">
+				<time datetime="2019-03-24T09:33:41+08:00" itemprop="datePublished">2019/03/24 09:33 上午</time>
+			</div>
+			<div class="tags">posted in 
+			
+			    <a class='category' href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a>&nbsp;
+			 
+			</div>
+		</div>
+		<h1 class="title" itemprop="name"><a href="15533912218590.html" itemprop="url">
+		内核动态追踪</a></h1>
+		<div class="entry-content" itemprop="articleBody">
+			
+			<p>####动态追踪技术</p>
+<ul>
+<li>动态追踪技术，通过探针机制，来采集内核或者应用程序的运行信息，从而可以不用修改内核和应用程序的代码，就获得丰富的信息，帮你分析、定位想要排查的问题。</li>
+</ul>
+<p>####DTrace工作原理</p>
+<ul>
+<li>它的运行常驻在内核中，用户可以通过 dtrace 命令，把 D 语言编写的追踪脚本，提交到内核中的运行时来执行。</li>
+</ul>
+<p>####动态追踪的机制</p>
+<ul>
+<li>Dtrace 和 SystemTap 都会把用户传入的追踪处理函数（一般称为 Action），关联到被称为探针的检测点上。这些探针，实际上也就是各种动态追踪技术所依赖的事件源</li>
+</ul>
+<p>####事件源</p>
+<ul>
+<li>硬件事件通常由性能监控计数器 PMC（Performance Monitoring Counter）产生，包括了各种硬件的性能情况，比如 CPU 的缓存、指令周期、分支预测等等</li>
+<li>静态探针，是指事先在代码中定义好，并编译到应用程序或者内核中的探针，静态探针包括内核中的跟踪点（tracepoints）和 USDT（Userland Statically Defined Tracing）探针。</li>
+<li>动态探针 则是指没有事先在代码中定义，但却可以在运行时动态添加的探针</li>
+<li>kprobes 用来跟踪内核态的函数，包括用于函数调用的 kprobe 和用于函数返回的 kretprobe。</li>
+<li>uprobes 用来跟踪用户态的函数，包括用于函数调用的 uprobe 和用于函数返回的 uretprobe。</li>
+</ul>
+<p>####Linux追踪机制</p>
+<ul>
+<li>ftrace</li>
+<li>perf</li>
+<li>eBPF(Berkeley Packet Filter)</li>
+<li>容器分析 sysdig</li>
+<li>SystemTap和BCC(BPF Compiler Collection)</li>
+</ul>
+<p>####strace的缺点</p>
+<ul>
+<li>由于 ptrace 是系统调用，就需要在内核态和用户态切换。当事件数量比较多时，繁忙的切换必然会影响原有服务的性能；</li>
+<li>ptrace 需要借助 SIGSTOP 信号挂起目标进程。这种信号控制和进程挂起，会影响目标进程的行为。</li>
+</ul>
+<p>####ftrace</p>
+<ul>
+<li>function 表示跟踪函数的执行，function_graph 则是跟踪函数的调用关系，追踪函数的执行过程</li>
+<li>trace-cmd record -p function_graph -g do_sys_open -O funcgraph-proc ls</li>
+<li>trace-cmd report</li>
+</ul>
+<p>####拓展阅读</p>
+<ul>
+<li><a href="https://leezhenghui.github.io/linux/2019/03/05/exploring-usdt-on-linux.html">https://leezhenghui.github.io/linux/2019/03/05/exploring-usdt-on-linux.html</a></li>
+</ul>
+<p>####perf添加探针</p>
+<pre><code class="language-plain_text">perf probe --add do_sys_open
+perf record -e probe:do_sys_open -aR sleep 10
+perf script
+</code></pre>
+<ul>
+<li>追踪用户空间的库函数</li>
+</ul>
+<pre><code class="language-plain_text"># 为 /bin/bash 添加 readline 探针
+$ perf probe -x /bin/bash 'readline%return +0($retval):string’
+# 采样记录
+$ perf record -e probe_bash:readline__return -aR sleep 5
+# 查看结果
+$ perf script
+# 跟踪完成后删除探针
+$ perf probe --del probe_bash:readline__return
+</code></pre>
+<p>####eBPF和BCC</p>
+<ul>
+<li>eBPF工作原理<br />
+<img src="media/15533912218590/15533978673142.jpg" alt="" /></li>
+<li>从用户跟踪程序生成 BPF 字节码；</li>
+<li>加载到内核中运行；</li>
+<li>向用户空间输出结果。</li>
+</ul>
+<p>####SystemTap和sysdig</p>
+<ul>
+<li>sysdig = strace + tcpdump + htop + iftop + lsof + docker inspect。</li>
+</ul>
+<p>####使用方法</p>
+<ul>
+<li>在不需要很高灵活性的场景中，使用 perf 对性能事件进行采样，然后再配合火焰图辅助分析，就是最常用的一种方法；</li>
+<li>而需要对事件或函数调用进行统计分析（比如观察不同大小的 I/O 分布）时，就要用 SystemTap 或者 eBPF，通过一些自定义的脚本来进行数据处理。</li>
+</ul>
+<p>####sysdig监控容器</p>
+<ul>
+<li>容器</li>
+</ul>
+<pre><code class="language-plain_text">查看机器上运行的容器列表及其资源使用情况
+sudo csysdig -vcontainers 
+查看容器上下文的进程列表 sudo csysdig -pc 
+查看运行在wordpress1容器里CPU的使用率
+sudo sysdig -pc -c topprocs_cpu container.name=wordpress1
+查看运行在wordpress1容器里网络带宽的使用率
+sudo sysdig -pc -c topprocs_net container.name=wordpress1
+查看在wordpress1容器里使用网络带宽最多的进程
+ sudo sysdig -pc -c topprocs_net container.name=wordpress1
+查看在wordpress1 容器里占用 I/O 字节最多的文件
+sudo sysdig -pc -c topfiles_bytes container.name=wordpress1
+查看在wordpress1 容器里网络连接的排名情况
+sudo sysdig -pc -c topconns container.name=wordpress1
+显示wordpress1容器里所有命令执行的情况
+sudo sysdig -pc -c spy_users container.name=wordpress1
+</code></pre>
+
+
+			
+			
+		</div>
+
+	</article>
  
-<div class="hero-body ct-body">
-        <div class="container">
-              <div class="columns is-centered">
-                  <div class="column  is-four-fifths">
-                      <div class="columns is-mobile">
-                          <div class="column">
-                              <h1 class="title">
-       凌云阁
-              
-                              </h1>
-                              <h2 class="subtitle">
-                                 生命的意义是成为你自己！
-                              </h2>
-                          </div>
-                          <div class="column is-narrow"><figure class="image is-128x128">
-                            
-                              <img class="is-rounded" src="https://i.loli.net/2020/02/22/Si1K7sluept2ZgR.jpg">
-                            
-                            </figure></div>
-                      </div>
-                        
-                      
-                  </div>
-                  
-                </div>
-            
-              
-        
+	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+		<div class="meta">
+			<div class="date">
+				<time datetime="2019-02-25T09:37:29+08:00" itemprop="datePublished">2019/02/25 09:37 上午</time>
+			</div>
+			<div class="tags">posted in 
+			
+			    <a class='category' href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a>&nbsp;
+			 
+			</div>
+		</div>
+		<h1 class="title" itemprop="name"><a href="15510586495458.html" itemprop="url">
+		优化NAT性能</a></h1>
+		<div class="entry-content" itemprop="articleBody">
+			
+			<h4><a id="%E5%8E%9F%E7%90%86" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>原理</h4>
+<ul>
+<li>NAT 技术可以重写 IP 数据包的源 IP 或者目的 IP，被普遍地用来解决公网 IP 地址短缺的问题。它的主要原理就是，网络中的多台主机，通过共享同一个公网 IP 地址，来访问外网资源</li>
+</ul>
+<h4><a id="nat%E7%B1%BB%E5%9E%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>NAT类型</h4>
+<ul>
+<li>静态 NAT，即内网 IP 与公网 IP 是一对一的永久映射关系；</li>
+<li>动态 NAT，即内网 IP 从公网 IP 池中，动态选择一个进行映射；</li>
+<li>网络地址端口转换 NAPT（Network Address and Port Translation），即把内网 IP 映射到公网 IP 的不同端口上，让多个内网 IP 可以共享同一个公网 IP 地址。</li>
+</ul>
+<h4><a id="napt%E7%B1%BB%E5%9E%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>NAPT类型</h4>
+<ul>
+<li>原地址转换SNAT</li>
+<li>目的地址转换DNAT</li>
+<li>双向地址转换SNAT和DNAT</li>
+</ul>
+<h4><a id="nat%E8%A1%A8%E5%86%85%E7%BD%AE%E7%9A%84%E4%B8%89%E4%B8%AA%E9%93%BE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>NAT表内置的三个链</h4>
+<ul>
+<li>PREROUTING，用于路由判断前所执行的规则，比如，对接收到的数据包进行 DNAT。</li>
+<li>POSTROUTING，用于路由判断后所执行的规则，比如，对发送或转发的数据包进行 SNAT 或 MASQUERADE。</li>
+<li>OUTPUT，类似于 PREROUTING，但只处理从本机发送出去的包</li>
+</ul>
+<h4><a id="snat" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>SNAT</h4>
+<ul>
+<li>是为一个子网统一配置 SNAT，并由 Linux 选择默认的出口 IP。这实际上就是经常说的 MASQUERADE</li>
+<li>iptables -t nat -A POSTROUTING -s 192.168.0.0/16 -j MASQUERADE</li>
+<li>是为具体的 IP 地址配置 SNAT，并指定转换后的源地址</li>
+<li>iptables -t nat -A POSTROUTING -s 192.168.0.2 -j SNAT --to-source 100.100.100.100</li>
+</ul>
+<h4><a id="dnat" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>DNAT</h4>
+<ul>
+<li>DNAT 需要在 nat 表的 PREROUTING 或者 OUTPUT 链中配置，其中， PREROUTING 链更常用一些</li>
+</ul>
+<h4><a id="%E5%8F%8C%E5%90%91%E5%9C%B0%E5%9D%80%E8%BD%AC%E6%8D%A2" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>双向地址转换</h4>
+<ul>
+<li>同时添加 SNAT 和 DNAT 规则，为公网 IP 和内网 IP 实现一对一的映射关系</li>
+<li>iptables -t nat -A POSTROUTING -s 192.168.0.2 -j SNAT --to-source 100.100.100.100</li>
+<li>iptables -t nat -A PREROUTING -d 100.100.100.100 -j DNAT --to-destination 192.168.0.2</li>
+<li>开启转发功能</li>
+<li>net.ipv4.ip_forward = 1</li>
+</ul>
+<h4><a id="%E9%97%AE%E9%A2%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>问题</h4>
+<ul>
+<li>假设现在有一台 Linux 服务器，使用了 MASQUERADE 的方式，为内网的所有 IP 提供出口访问功能。那么，<br />
+当多个内网 IP 地址的端口号相同时，MASQUERADE 还可以正常工作吗？<br />
+如果内网 IP 地址数量或请求数比较多，这种方式有没有什么隐患呢？</li>
+</ul>
+<h4><a id="%E5%AE%89%E8%A3%85systemtap" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>安装systemtap</h4>
+<ul>
+<li>wget  <a href="http://debuginfo.centos.org/7/x86_64/kernel-debuginfo-3.10.0-957.5.1.el7.x86_64.rpm">http://debuginfo.centos.org/7/x86_64/kernel-debuginfo-3.10.0-957.5.1.el7.x86_64.rpm</a>  &amp;&amp; wget <a href="http://debuginfo.centos.org/7/x86_64/kernel-debuginfo-common-x86_64-3.10.0-957.5.1.el7.x86_64.rpm">http://debuginfo.centos.org/7/x86_64/kernel-debuginfo-common-x86_64-3.10.0-957.5.1.el7.x86_64.rpm</a></li>
+<li>yum -y install systemtap-devel</li>
+<li>测试</li>
+<li>stap -v -e 'probe vfs.read {printf(&quot;read performed\n&quot;); exit()}'</li>
+<li>ab安装yum -y install httpd-tools</li>
+<li>启动内核追踪模块 stap --all-modules dropwatch.stp</li>
+</ul>
+<h4><a id="%E6%B5%8B%E8%AF%95%E9%95%9C%E5%83%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>测试镜像</h4>
+<ul>
+<li>docker run --name nginx_nat --privileged -p 8080:8080 -itd feisky/nginx:nat</li>
+<li>docker run --name nginx-hostnet --privileged --network=host -itd feisky/nginx:80</li>
+</ul>
+<h4><a id="%E6%8A%93%E5%86%85%E6%A0%B8%E5%88%86%E6%9E%90" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>抓内核分析</h4>
+<ul>
+<li><img src="media/15510586495458/15512346465837.jpg" alt="" /></li>
+</ul>
+<h4><a id="nf-hook-slow" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>nf_hook_slow</h4>
+<ul>
+<li>第一，接收网络包时，在连接跟踪表中查找连接，并为新的连接分配跟踪对象（Bucket）。</li>
+<li>第二，在 Linux 网桥中转发包。这是因为案例 Nginx 是一个 Docker 容器，而容器的网络通过网桥来实现；</li>
+<li>第三，接收网络包时，执行 DNAT，即把 8080 端口收到的包转发给容器。</li>
+<li>net.netfilter.nf_conntrack_count，表示当前连接跟踪数；</li>
+<li>net.netfilter.nf_conntrack_max，表示最大连接跟踪数；</li>
+<li>net.netfilter.nf_conntrack_buckets，表示连接跟踪表的大小。</li>
+</ul>
+<h4><a id="%E7%BB%9F%E8%AE%A1%E6%95%B0%E6%8D%AE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>统计数据</h4>
+<ul>
+<li>统计总的连接追踪数</li>
+<li>conntrack -L -o extended | wc -l</li>
+<li>统计 TCP 协议各个状态的连接跟踪数</li>
+<li>conntrack -L -o extended | awk '/^.<em>tcp.</em>$/ {sum[$6]++} END {for(i in sum) print i, sum[i]}'</li>
+<li>统计各个源 IP 的连接跟踪数</li>
+<li>conntrack -L -o extended | awk '{print $7}' | cut -d &quot;=&quot; -f 2 | sort | uniq -c | sort -nr | head -n 10</li>
+</ul>
+<p>####优化</p>
+<ul>
+<li>sysctl -w net.netfilter.nf_conntrack_max=131072</li>
+<li>echo 65536 &gt; /sys/module/nf_conntrack/parameters/hashsize</li>
+<li>使用无状态NAT比如tc或者DPDK开发</li>
+</ul>
+<p>####NAT扩展阅读</p>
+<ul>
+<li><a href="https://mp.weixin.qq.com/s/VYBs8iqf0HsNg9WAxktzYQ">https://mp.weixin.qq.com/s/VYBs8iqf0HsNg9WAxktzYQ</a></li>
+</ul>
+
+
+			
+			
+		</div>
+
+	</article>
+ 
+	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+		<div class="meta">
+			<div class="date">
+				<time datetime="2019-03-11T09:44:04+08:00" itemprop="datePublished">2019/03/11 09:44 上午</time>
+			</div>
+			<div class="tags">posted in 
+			
+			    <a class='category' href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a>&nbsp;
+			 
+			</div>
+		</div>
+		<h1 class="title" itemprop="name"><a href="15522686446802.html" itemprop="url">
+		容器应用启动慢</a></h1>
+		<div class="entry-content" itemprop="articleBody">
+			
+			<h4><a id="%E5%AE%B9%E5%99%A8%E6%9F%A5%E7%9C%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>容器查看</h4>
+<ul>
+<li>docker logs -f 容器ID</li>
+<li>docker inspect tomcat -f '{{json .State}}' | jq</li>
+<li>删除旧容器 docker rm -f tomcat 无须停止容器再删除</li>
+</ul>
+<h1><a id="%E8%BF%90%E8%A1%8C%E6%96%B0%E5%AE%B9%E5%99%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>运行新容器</h1>
+<ul>
+<li></li>
+</ul>
+
+
+			
+			
+		</div>
+
+	</article>
+ 
+	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+		<div class="meta">
+			<div class="date">
+				<time datetime="2019-03-06T09:40:50+08:00" itemprop="datePublished">2019/03/06 09:40 上午</time>
+			</div>
+			<div class="tags">posted in 
+			
+			    <a class='category' href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a>&nbsp;
+			 
+			</div>
+		</div>
+		<h1 class="title" itemprop="name"><a href="15518364500430.html" itemprop="url">
+		网络性能答疑</a></h1>
+		<div class="entry-content" itemprop="articleBody">
+			
+			<h4><a id="%E7%BD%91%E7%BB%9C%E6%94%B6%E5%8F%91%E7%BC%93%E5%86%B2%E5%8C%BA" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>网络收发缓冲区</h4>
+<ul>
+<li>网卡收发网络包时，通过 DMA 方式交互的环形缓冲区</li>
+<li>网卡中断处理程序为网络帧分配的，内核数据结构 sk_buff 缓冲区,链表中的每一个元素都是一个网络帧（Packet）</li>
+<li>应用程序通过套接字接口，与网络协议栈交互时的套接字缓冲区。</li>
+<li>sk_buff、套接字缓冲、连接跟踪通过slab分配器来管理, /proc/slabinfo查看</li>
+</ul>
+<h4><a id="%E5%86%85%E6%A0%B8%E5%8D%8F%E8%AE%AE%E6%A0%88%E5%A4%84%E7%90%86%E7%BA%BF%E7%A8%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>内核协议栈处理线程</h4>
+<ul>
+<li>软中断处理，就有专门的内核线程 ksoftirqd。每个 CPU 都会绑定一个 ksoftirqd 内核线程</li>
+</ul>
+<h4><a id="%E6%9C%80%E5%A4%A7%E8%BF%9E%E6%8E%A5%E6%95%B0%E7%9A%84%E9%99%90%E5%88%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>最大连接数的限制</h4>
+<ul>
+<li>Linux 协议栈，通过五元组来标志一个连接（即协议，源 IP、源端口、目的 IP、目的端口)</li>
+<li>客户端最大支持65535, 服务端是海量的</li>
+</ul>
+<h4><a id="masquerade%E6%80%A7%E8%83%BD%E9%97%AE%E9%A2%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>MASQUERADE性能问题</h4>
+<ul>
+<li>当多个内网 IP 地址的端口号相同时，MASQUERADE 当然仍可以正常工作</li>
+<li>连接跟踪</li>
+<li>MASQUERADE 机器的网络带宽</li>
+</ul>
+
+
+			
+			
+		</div>
+
+	</article>
+ 
+	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+		<div class="meta">
+			<div class="date">
+				<time datetime="2019-02-23T18:20:03+08:00" itemprop="datePublished">2019/02/23 18:20 下午</time>
+			</div>
+			<div class="tags">posted in 
+			
+			    <a class='category' href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a>&nbsp;
+			 
+			</div>
+		</div>
+		<h1 class="title" itemprop="name"><a href="15509172030624.html" itemprop="url">
+		网络延迟变大</a></h1>
+		<div class="entry-content" itemprop="articleBody">
+			
+			<h4><a id="tcp" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>tcp</h4>
+<ul>
+<li>开启NODELAY和TCP_QUICKACK</li>
+</ul>
+<h4><a id="%E5%AE%9A%E4%BD%8D%E7%BD%91%E7%BB%9C%E9%97%AE%E9%A2%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>定位网络问题</h4>
+<ul>
+<li>使用 hping3 以及 wrk 等工具，确认单次请求和并发请求情况的网络延迟是否正常。</li>
+<li>使用 traceroute，确认路由是否正确，并查看路由中每一跳网关的延迟。</li>
+<li>使用 tcpdump 和 Wireshark，确认网络包的收发是否正常。</li>
+<li>使用 strace 等，观察应用程序对网络套接字的调用情况是否正常。</li>
+</ul>
+
+
+			
+			
+		</div>
+
+	</article>
+ 
+	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+		<div class="meta">
+			<div class="date">
+				<time datetime="2019-02-18T09:54:13+08:00" itemprop="datePublished">2019/02/18 09:54 上午</time>
+			</div>
+			<div class="tags">posted in 
+			
+			    <a class='category' href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a>&nbsp;
+			 
+			</div>
+		</div>
+		<h1 class="title" itemprop="name"><a href="15504548538794.html" itemprop="url">
+		tcpdump和wireshark</a></h1>
+		<div class="entry-content" itemprop="articleBody">
+			
+			<h4><a id="tcpdump%E4%BD%BF%E7%94%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>tcpdump使用</h4>
+<ul>
+<li><img src="media/15504548538794/859d3b5c0071335429620a3fcdde4fff.png" alt="859d3b5c0071335429620a3fcdde4fff" /><img src="media/15504548538794/4870a28c032bdd2a26561604ae2f7cb3.png" alt="4870a28c032bdd2a26561604ae2f7cb3" /></li>
+</ul>
+<h4><a id="%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>注意事项</h4>
+<ul>
+<li>根据 IP 地址反查域名、根据端口号反查协议名称，是很多网络工具默认的行为，而这往往会导致性能工具的工作缓慢。所以，通常，网络性能工具都会提供一个选项（比如 -n 或者 -nn），来禁止名称解析。</li>
+<li></li>
+</ul>
+
+
+			
+			
+		</div>
+
+	</article>
+ 
+	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+		<div class="meta">
+			<div class="date">
+				<time datetime="2019-02-15T09:35:07+08:00" itemprop="datePublished">2019/02/15 09:35 上午</time>
+			</div>
+			<div class="tags">posted in 
+			
+			    <a class='category' href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a>&nbsp;
+			 
+			</div>
+		</div>
+		<h1 class="title" itemprop="name"><a href="15501945078144.html" itemprop="url">
+		DNS</a></h1>
+		<div class="entry-content" itemprop="articleBody">
+			
+			<h4><a id="dns%E8%B5%84%E6%BA%90%E8%AE%B0%E5%BD%95%E7%9A%84%E6%96%B9%E5%BC%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>DNS资源记录的方式</h4>
+<ul>
+<li>A 记录，用来把域名转换成 IP 地址；</li>
+<li>CNAME 记录，用来创建别名；</li>
+<li>NS 记录，则表示该域名对应的域名服务器地址。</li>
+</ul>
+<h4><a id="dns%E8%A7%A3%E6%9E%90%E4%B8%8D%E7%A8%B3%E5%AE%9A" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>DNS解析不稳定</h4>
+<ul>
+<li></li>
+</ul>
+
+
+			
+			
+		</div>
+
+	</article>
+ 
+	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+		<div class="meta">
+			<div class="date">
+				<time datetime="2019-02-11T14:13:21+08:00" itemprop="datePublished">2019/02/11 14:13 下午</time>
+			</div>
+			<div class="tags">posted in 
+			
+			    <a class='category' href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a>&nbsp;
+			 
+			</div>
+		</div>
+		<h1 class="title" itemprop="name"><a href="15498656013403.html" itemprop="url">
+		C10K和C10M</a></h1>
+		<div class="entry-content" itemprop="articleBody">
+			
+			<h4><a id="%E5%B9%B6%E5%8F%91%E8%AF%B7%E6%B1%82%E9%97%AE%E9%A2%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>并发请求问题</h4>
+<ul>
+<li>怎样在一个线程内处理多个请求，也就是要在一个线程内响应多个网络 I/O</li>
+<li>怎么更节省资源地处理客户请求，也就是要用更少的线程来服务这些请求</li>
+</ul>
+<h4><a id="%E6%83%8A%E7%BE%A4%E9%97%AE%E9%A2%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>惊群问题</h4>
+<ul>
+<li>accept() 和 epoll_wait() 调用，还存在一个惊群的问题。换句话说，当网络 I/O 事件发生时，多个进程被同时唤醒，但实际上只有一个进程来响应这个事件，其他被唤醒的进程都会重新休眠。</li>
+<li>EPOLLEXCLUSIVE</li>
+</ul>
+<h4><a id="nginx%E8%A7%A3%E5%86%B3%E6%83%8A%E7%BE%A4%E9%97%AE%E9%A2%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>nginx解决惊群问题</h4>
+<ul>
+<li>Nginx 在每个 worker 进程中，都增加一个了全局锁（accept_mutex）。这些 worker 进程需要首先竞争到锁，只有竞争到锁的进程，才会加入到 epoll 中，这样就确保只有一个 worker 子进程被唤醒</li>
+<li>所有的进程都监听相同的接口，并且开启 SO_REUSEPORT 选项，由内核负责将请求负载均衡到这些监听进程中去。这一过程如下图所示。</li>
+<li><img src="media/15498656013403/90df0945f6ce5c910ae361bf2b135bbd.png" alt="90df0945f6ce5c910ae361bf2b135bbd" /></li>
+<li>由内核确保只有一个进程被唤醒</li>
+</ul>
+<h4><a id="c1000k" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>C1000K</h4>
+<ul>
+<li>文件描述符的数量</li>
+<li>连接状态的跟踪（CONNTRACK）</li>
+<li>网络协议栈的缓存大小</li>
+<li>多队列网卡</li>
+<li>中断负载均衡</li>
+<li>CPU 绑定</li>
+<li>RPS/RFS（软中断负载均衡到多个 CPU 核上</li>
+<li>网络包的处理卸载（Offload）</li>
+</ul>
+<h4><a id="c10m" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>C10M</h4>
+<ul>
+<li>DPDK</li>
+<li>是用户态网络的标准。它跳过内核协议栈，直接由用户态进程通过轮询的方式，来处理网络接收。<br />
+<img src="media/15498656013403/998fd2f52f0a48a910517ada9f2bb23a.png" alt="998fd2f52f0a48a910517ada9f2bb23a" /></li>
+<li>实际工作时间远远高于查询时间</li>
+<li>在 PPS 非常高的场景中，查询时间比实际工作时间少了很多，绝大部分时间都在处理网络包，而跳过内核协议栈后，就省去了繁杂的硬中断、软中断再到 Linux 网络协议栈逐层处理的过程，应用程序可以针对应用的实际场景，有针对性地优化网络包的处理逻辑，而不需要关注所有的细节。</li>
+<li>大页、CPU 绑定、内存对齐、流水线并发等多种机制</li>
+</ul>
+<h4><a id="xdp" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>XDP</h4>
+<ul>
+<li>Linux 内核提供的一种高性能网络数据路径。它允许网络包，在进入内核协议栈之前，就进行处理，也可以带来更高的性能。XDP 底层跟我们之前用到的 bcc-tools 一样，都是基于 Linux 内核的 eBPF 机制实现的。</li>
+<li></li>
+</ul>
+
+
+			
+			
+		</div>
+
+	</article>
+ 
+	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+		<div class="meta">
+			<div class="date">
+				<time datetime="2019-02-10T10:36:43+08:00" itemprop="datePublished">2019/02/10 10:36 上午</time>
+			</div>
+			<div class="tags">posted in 
+			
+			    <a class='category' href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a>&nbsp;
+			 
+			</div>
+		</div>
+		<h1 class="title" itemprop="name"><a href="15497662031906.html" itemprop="url">
+		Linux网络</a></h1>
+		<div class="entry-content" itemprop="articleBody">
+			
+			<h4><a id="%E9%80%9A%E7%94%A8ip%E7%BD%91%E7%BB%9C%E6%A0%88" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>通用IP网络栈</h4>
+<p><img src="media/15497662031906/c7b5b16539f90caabb537362ee7c27ac.png" alt="c7b5b16539f90caabb537362ee7c27a" /></p>
+<h4><a id="%E7%BD%91%E7%BB%9C%E6%94%B6%E5%8F%91%E6%B5%81%E7%A8%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>网络收发流程</h4>
+<ul>
+<li>当一个网络帧到达网卡后，网卡会通过 DMA 方式，把这个网络包放到收包队列中；然后通过硬中断，告诉中断处理程序已经收到了网络包。</li>
+<li>网卡中断处理程序会为网络帧分配内核数据结构（sk_buff），并将其拷贝到 sk_buff 缓冲区中；然后再通过软中断，通知内核收到了新的网络帧。</li>
+<li>内核协议栈从缓冲区中取出网络帧，并通过网络协议栈，从下到上逐层处理这个网络帧。</li>
+</ul>
+<h4><a id="%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>性能指标</h4>
+<ul>
+<li>带宽，表示链路的最大传输速率，单位通常为 b/s （比特 / 秒）。</li>
+<li>吞吐量，表示没丢包时的最大数据传输速率，单位通常为 b/s（比特 / 秒）或者 B/s（字节 / 秒）。吞吐量受带宽限制，而吞吐量 / 带宽，也就是该网络的使用率。</li>
+<li>延时，表示从网络请求发出后，一直到收到远端响应，所需要的时间延迟。在不同场景中，这一指标可能会有不同含义。比如，它可以表示，建立连接需要的时间（比如 TCP 握手延时），或一个数据包往返所需的时间（比如 RTT）。</li>
+<li>PPS，是 Packet Per Second（包 / 秒）的缩写，表示以网络包为单位的传输速率。PPS 通常用来评估网络的转发能力，比如硬件交换机，通常可以达到线性转发（即 PPS 可以达到或者接近理论最大值）。而基于 Linux 服务器的转发，则容易受网络包大小的影响。</li>
+<li>并发连接数，丢包率，重传率</li>
+</ul>
+<h4><a id="%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>常见错误</h4>
+<ul>
+<li>errors 表示发生错误的数据包数，比如校验错误、帧同步错误等；</li>
+<li>dropped 表示丢弃的数据包数，即数据包已经收到了 Ring Buffer，但因为内存不足等原因丢包；</li>
+<li>overruns 表示超限数据包数，即网络 I/O 速度过快，导致 Ring Buffer 中的数据包来不及处理（队列满）而导致的丢包；</li>
+<li>carrier 表示发生 carrirer 错误的数据包数，比如双工模式不匹配、物理电缆出现问题等；</li>
+<li>collisions 表示碰撞数据包数。</li>
+</ul>
+<h4><a id="%E6%8E%A5%E6%94%B6%E9%98%9F%E5%88%97%E5%92%8C%E5%8F%91%E9%80%81%E9%98%9F%E5%88%97" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>接收队列和发送队列</h4>
+<ul>
+<li>当套接字处于连接状态（Established）时，<br />
+Recv-Q 表示套接字缓冲还没有被应用程序取走的字节数（即接收队列长度）。<br />
+Send-Q 表示还没有被远端主机确认的字节数（即发送队列长度）。</li>
+<li>当套接字处于监听状态（Listening）时，<br />
+Recv-Q 表示 syn backlog 的当前值。<br />
+Send-Q 表示最大的 syn backlog 值。<br />
+syn backlog 是 TCP 协议栈中的半连接队列长度，相应的也有一个全连接队列（accept queue），它们都是维护 TCP 状态的重要机制。</li>
+</ul>
+<h4><a id="%E5%8D%8A%E8%BF%9E%E6%8E%A5%E5%92%8C%E5%85%A8%E8%BF%9E%E6%8E%A5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>半连接和全连接</h4>
+<ul>
+<li>半连接，就是还没有完成 TCP 三次握手的连接，连接只进行了一半，而服务器收到了客户端的 SYN 包后，就会把这个连接放到半连接队列中，然后再向客户端发送 SYN+ACK 包。</li>
+<li>全连接，则是指服务器收到了客户端的 ACK，完成了 TCP 三次握手，然后就会把这个连接挪到全连接队列中。这些全连接中的套接字，还需要再被 accept() 系统调用取走，这样，服务器就可以开始真正处理客户端的请求了。</li>
+</ul>
+<h4><a id="%E7%BD%91%E7%BB%9C%E5%90%9E%E5%90%90%E5%92%8Cpps" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>网络吞吐和PPS</h4>
+<ul>
+<li>rxpck/s 和 txpck/s 分别是接收和发送的 PPS，单位为包 / 秒。</li>
+<li>rxkB/s 和 txkB/s 分别是接收和发送的吞吐量，单位是 KB/ 秒。</li>
+<li>rxcmp/s 和 txcmp/s 分别是接收和发送的压缩数据包数，单位是包 / 秒。</li>
+<li>%ifutil 是网络接口的使用率，即半双工模式下为 (rxkB/s+txkB/s)/Bandwidth，而全双工模式下为 max(rxkB/s, txkB/s)/Bandwidth。</li>
+</ul>
+<h4><a id="" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a></h4>
+
+
+			
+			
+		</div>
+
+	</article>
+  
+
+</div>
+<nav id="pagenavi">
+	 <a class="prev" href="Linux性能优化实战_2.html">Prev</a>  
+	 <a class="next" href="Linux性能优化实战_4.html">Next</a> 
+	<div class="center"><a href="archives.html">Blog Archives</a></div>
+
+</nav>
+
+</div>
+
+
+
         </div>
-      </div>
-</section>
-<section class="ct-body">
-      <div class="container">
-          <div class="columns is-variable bd-klmn-columns is-4">
-              <div class="column is-two-thirds">
-                
-                  <div class="card">
-                    
-                      <div class="card-content">
-                        <div class="content">
-                          <a href="15533912218590.html"> 
-                            <h2 class="title">内核动态追踪</h2>
-                          </a>        
-                                                    
-                          <p> 
-                            <a href="15533912218590.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
-                            <span class="date">2019/03/24 09:33 上午</span>
-                            <span class="tran-posted-in">posted in</span>&nbsp; 
-                            
-                                <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-                                                      
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  
-                  <div class="card">
-                    
-                      <div class="card-content">
-                        <div class="content">
-                          <a href="15510586495458.html"> 
-                            <h2 class="title">优化NAT性能</h2>
-                          </a>        
-                                                    
-                          <p> 
-                            <a href="15510586495458.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
-                            <span class="date">2019/02/25 09:37 上午</span>
-                            <span class="tran-posted-in">posted in</span>&nbsp; 
-                            
-                                <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-                                                      
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  
-                  <div class="card">
-                    
-                      <div class="card-content">
-                        <div class="content">
-                          <a href="15522686446802.html"> 
-                            <h2 class="title">容器应用启动慢</h2>
-                          </a>        
-                                                    
-                          <p> 
-                            <a href="15522686446802.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
-                            <span class="date">2019/03/11 09:44 上午</span>
-                            <span class="tran-posted-in">posted in</span>&nbsp; 
-                            
-                                <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-                                                      
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  
-                  <div class="card">
-                    
-                      <div class="card-content">
-                        <div class="content">
-                          <a href="15518364500430.html"> 
-                            <h2 class="title">网络性能答疑</h2>
-                          </a>        
-                                                    
-                          <p> 
-                            <a href="15518364500430.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
-                            <span class="date">2019/03/06 09:40 上午</span>
-                            <span class="tran-posted-in">posted in</span>&nbsp; 
-                            
-                                <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-                                                      
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  
-                  <div class="card">
-                    
-                      <div class="card-content">
-                        <div class="content">
-                          <a href="15509172030624.html"> 
-                            <h2 class="title">网络延迟变大</h2>
-                          </a>        
-                                                    
-                          <p> 
-                            <a href="15509172030624.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
-                            <span class="date">2019/02/23 18:20 下午</span>
-                            <span class="tran-posted-in">posted in</span>&nbsp; 
-                            
-                                <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-                                                      
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  
-                  <div class="card">
-                    
-                      <div class="card-content">
-                        <div class="content">
-                          <a href="15504548538794.html"> 
-                            <h2 class="title">tcpdump和wireshark</h2>
-                          </a>        
-                                                    
-                          <p> 
-                            <a href="15504548538794.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
-                            <span class="date">2019/02/18 09:54 上午</span>
-                            <span class="tran-posted-in">posted in</span>&nbsp; 
-                            
-                                <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-                                                      
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  
-                  <div class="card">
-                    
-                      <div class="card-content">
-                        <div class="content">
-                          <a href="15501945078144.html"> 
-                            <h2 class="title">DNS</h2>
-                          </a>        
-                                                    
-                          <p> 
-                            <a href="15501945078144.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
-                            <span class="date">2019/02/15 09:35 上午</span>
-                            <span class="tran-posted-in">posted in</span>&nbsp; 
-                            
-                                <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-                                                      
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  
-                  <div class="card">
-                    
-                      <div class="card-content">
-                        <div class="content">
-                          <a href="15498656013403.html"> 
-                            <h2 class="title">C10K和C10M</h2>
-                          </a>        
-                                                    
-                          <p> 
-                            <a href="15498656013403.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
-                            <span class="date">2019/02/11 14:13 下午</span>
-                            <span class="tran-posted-in">posted in</span>&nbsp; 
-                            
-                                <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-                                                      
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  
-                  <div class="card">
-                    
-                      <div class="card-content">
-                        <div class="content">
-                          <a href="15497662031906.html"> 
-                            <h2 class="title">Linux网络</h2>
-                          </a>        
-                                                    
-                          <p> 
-                            <a href="15497662031906.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
-                            <span class="date">2019/02/10 10:36 上午</span>
-                            <span class="tran-posted-in">posted in</span>&nbsp; 
-                            
-                                <span class="posted-in"><a href='Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html'>Linux性能优化实战</a></span>
-                                                      
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  
-
-                  <nav class="pagination is-centered" role="navigation" aria-label="pagination">
-                    <a class="pagination-previous"   href="Linux性能优化实战_2.html" ><span class="tran-prev-page">&laquo; Prev Page</span></a>  
-                    <a class="pagination-next"   href="Linux性能优化实战_4.html" ><span class="tran-next-page">Next Page &raquo;</span></a>                   
-                  </nav>
-
-              </div><!-- end column -->
-              <div class="column">
-                  <div class="card">
-                      <header class="card-header">
-                        <p class="card-header-title">
-                           <span class="tran-site-categories">Categories</span> 
-                        </p>
-                     
-                      </header>
-                      <div class="card-content site-categories">
-                        <div class="content"> 
-                          <ul>
-                          
-                                <li><a href="Rpc.html">Rpc</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="Redis%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98.html">Redis核心技术与实战</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="%E7%B3%BB%E7%BB%9F%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html">系统性能调优必知必会</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="%E5%88%86%E5%B8%83%E5%BC%8F%E5%8D%8F%E8%AE%AE%E5%92%8C%E7%AE%97%E6%B3%95%E5%AE%9E%E6%88%98.html">分布式协议和算法实战</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html">C++基础与提高</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html">设计模式</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="Python.html">Python</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="Golang.html">Golang</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html">设计模式之美</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="%E6%80%A7%E8%83%BD%E5%B7%A5%E7%A8%8B%E9%AB%98%E6%89%8B%E8%AF%BE.html">性能工程高手课</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95.html">性能测试</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="Prometheus.html">Prometheus</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="RocketMQ.html">RocketMQ</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE.html">网络协议</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="Django.html">Django</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html">深入剖析Kubernetes</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html">数据结构和算法</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="%E5%BE%AE%E6%9C%8D%E5%8A%A1.html">微服务</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="%E6%9E%B6%E6%9E%84.html">架构</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html">操作系统原理</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html">Mysql优化实战</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="Kafka.html">Kafka</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html">linux服务器研发</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86.html">计算机组成原理</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="%E7%A8%8B%E5%BA%8F%E5%91%98%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB.html">程序员的自我修养</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="C%E8%AF%AD%E8%A8%80%E8%BF%9B%E9%98%B6.html">C语言进阶</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="http_study.html">http_study</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="%E7%8E%A9%E8%BD%AC%E7%AE%97%E6%B3%95.html">玩转算法</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="C++%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B.html">C++对象模型</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="SQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html">SQL必知必会</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="Zookeeper.html">Zookeeper</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="Redis%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A.html">Redis从入门到精通</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E8%BF%9B%E9%98%B6.html">数据结构和算法进阶</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="Mysql%E6%80%A7%E8%83%BD%E7%AE%A1%E7%90%86%E5%92%8C%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1.html">Mysql性能管理和架构设计</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98.html">网络编程实战</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html">Redis高并发缓存</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html">Linux性能优化实战</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="%E5%80%99%E6%8D%B7STL.html">候捷STL</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="ElasticSearch.html">ElasticSearch</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="RabbitMQ.html">RabbitMQ</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="etcd.html">etcd</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="RocketMQ-1.html">RocketMQ</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="mysql.html">mysql</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                          </ul>
-                        </div>
-                      </div>
-                     
-                    </div>
-
-                    <div class="card">
-                        <header class="card-header">
-                          <p class="card-header-title">
-                              <span class="tran-site-tags">Tags</span> 
-                          </p>
-                       
-                        </header>
-                        <div class="card-content site-tags">
-                          <div class="content">
-                           <div class="tags">
-                            
-                              <a class="tag is-link is-light" href="tag_Docker.html">#Docker</a> 
-                            
-                              <a class="tag is-link is-light" href="tag_K8S.html">#K8S</a> 
-                            
-                              <a class="tag is-link is-light" href="tag_%E6%80%A7%E8%83%BD%E5%B7%A5%E7%A8%8B.html">#性能工程</a> 
-                            
-                              <a class="tag is-link is-light" href="tag_%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95.html">#性能测试</a> 
-                            
-                           </div>
-                             
-                          </div>
-                        </div>
-                       
-                      </div>
-
-              </div>
-            </div>
-
-          
-      </div>
-    </section>
-
-    <footer class="footer">
-        <div class="content has-text-centered">
-          <p>
-              Copyright &copy; 2019
-              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
-              Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
-          </p>
-        </div>
+			<footer id="footer" class="inner">Copyright &copy; 2014
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a> &nbsp;&nbsp; 
+Theme by <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a>
       </footer>
-
-<style>.mweb-charts{background:#fff;}
-body{ box-sizing: border-box;
-    margin: 0 auto;}
-@media print{
-    pre, code, pre code {
-     overflow: visible !important;
-     white-space: pre-wrap !important;       /* css-3 */
-     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
-     white-space: -pre-wrap !important;      /* Opera 4-6 */
-     white-space: -o-pre-wrap !important;    /* Opera 7 */
-     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
-    }
-    html,body{margin:0;padding:4px;}
-}
-
-
-
-div.code-toolbar {
-  position: relative;
-}
-
-div.code-toolbar > .toolbar {
-  position: absolute;
-  z-index: 10;
-  top: .3em;
-  right: .2em;
-  transition: opacity 0.3s ease-in-out;
-  opacity: 0;
-}
-
-div.code-toolbar:hover > .toolbar {
-  opacity: 1;
-}
-
-/* Separate line b/c rules are thrown out if selector is invalid.
-   IE11 and old Edge versions don't support :focus-within. */
-div.code-toolbar:focus-within > .toolbar {
-  opacity: 1;
-}
-
-div.code-toolbar > .toolbar > .toolbar-item {
-  display: inline-block;
-}
-
-div.code-toolbar > .toolbar > .toolbar-item > a {
-  cursor: pointer;
-}
-
-div.code-toolbar > .toolbar > .toolbar-item > button {
-  background: none;
-  border: 0;
-  color: inherit;
-  font: inherit;
-  line-height: normal;
-  overflow: visible;
-  padding: 0;
-  -webkit-user-select: none; /* for button */
-  -moz-user-select: none;
-  -ms-user-select: none;
-}
-
-div.code-toolbar > .toolbar > .toolbar-item > a,
-div.code-toolbar > .toolbar > .toolbar-item > button,
-div.code-toolbar > .toolbar > .toolbar-item > span {
-  color: inherit;
-  font-size: .8em;
-  padding: 4px .5em;
-  background: #f5f2f0;
-  background: rgba(224, 224, 224, 0.4);
-  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
-  border-radius: .5em;
-}
-
-div.code-toolbar > .toolbar > .toolbar-item > a:hover,
-div.code-toolbar > .toolbar > .toolbar-item > a:focus,
-div.code-toolbar > .toolbar > .toolbar-item > button:hover,
-div.code-toolbar > .toolbar > .toolbar-item > button:focus,
-div.code-toolbar > .toolbar > .toolbar-item > span:hover,
-div.code-toolbar > .toolbar > .toolbar-item > span:focus {
-  color: inherit;
-  text-decoration: none;
-}
-</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
-
+		</div>
+	</div>
 
   
     
 
 
 
-
-  </body>
+</body>
 </html>

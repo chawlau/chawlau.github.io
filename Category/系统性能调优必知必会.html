@@ -1,730 +1,515 @@
-<!DOCTYPE html>
-<html lang="zh">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>
-      
-    系统性能调优必知必会 -        凌云阁
-    
-    </title>
-    
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>  
+	  
+  	系统性能调优必知必会 -        凌云阁
+  	
+	</title>
 
-    
-    
-    <link href="atom.xml" rel="alternate" title="       凌云阁" type="application/atom+xml">
-    <link rel="stylesheet" href="asset/css/style.min.css">
-    <link rel="stylesheet" href="asset/css/doc.css">
-    <script src="asset/app.js"></script>
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="atom.xml" rel="alternate" title="       凌云阁" type="application/atom+xml">
+
+	<link href="asset/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="asset/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<script src="asset/javascripts/jquery.min.js"></script>
+	<script src="asset/highlightjs/highlight.pack.js"></script>
+	<link href="asset/highlightjs/styles/solarized_dark.css" media="screen, projection" rel="stylesheet" type="text/css">
+<script>hljs.initHighlightingOnLoad();</script>
+
+	<!--[if lt IE 9]><script src="asset/javascripts/html5.js"></script><![endif]-->
+	<!-- <link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'> -->
+	<style type="text/css">
+/* latin */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 300;
+  src: local('Nunito-Light'), url(asset/font/1TiHc9yag0wq3lDO9cw0voX0hVgzZQUfRDuZrPvH3D8.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+/* latin */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Nunito-Regular'), url(asset/font/6TbRXKWJjpj6V2v_WyRbMX-_kf6ByYO6CLYdB4HQE-Y.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+/* latin */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Nunito-Bold'), url(asset/font/TttUCfJ272GBgSKaOaD7KoX0hVgzZQUfRDuZrPvH3D8.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+	</style>
+	
+	<style type="text/css">
+	.container .left-col{ opacity: 1;}
+	#pagenavi a{ font-size: 1.3em;}
+	#pagenavi .next:before{ top: 3px;}
+	#pagenavi .prev:before{ top: 3px;}
+	.container .mid-col .mid-col-container #content .archives .title{ font-size: 1.5em;}
+	.container .mid-col .mid-col-container #content article{ padding: 15px 0px;}
+	#header .subtitle {
+		line-height: 1.2em;
+		padding-top: 8px;
+	}
+	article pre{ background: none; border: none; padding: 0;}
+	article .entry-content{text-align: left;}
+	.share-comment{ padding: 25px 0px; clear: both;}
+	hr{ margin: 20px 0px;border: 0; border-top:solid 1px #ddd;}
+
+	</style>
+  
+
 </head>
-  <body>
-    <section class="hero">
-      <div class="hero-head">
-          <nav class="navbar" role="navigation" aria-label="main navigation">
-              <div class="container">
-              <div class="navbar-brand">
-                
-                <a target="_self" class="navbar-item " href="index.html">Home</a>
-                
-                <a target="_self" class="navbar-item " href="archives.html">Archives</a>
-                
 
-                <a role="button" id="navbarSNSRssSwitchBtn" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarSNSRssButtons">
-                  <span aria-hidden="true"></span>
-                  <span aria-hidden="true"></span>
-                  <span aria-hidden="true"></span>
-                </a>
-              </div>
-            
-              <div id="navbarSNSRssButtons" class="navbar-menu">
-                <div class="navbar-start">
-                  
-                </div>
-            
-                <div class="navbar-end">
-                  <div class="navbar-item">
-                    <!--buttons start-->
-                    <div class="buttons">
-                      
-                        
-                        
 
-                        <a href="www.facebook.com" target="_blank" title="facebook">
-                            <span class="icon is-large has-text-grey-darker">
-                               <svg class="svg-inline--fa fa-facebook fa-w-16 fa-lg" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="facebook" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M504 256C504 119 393 8 256 8S8 119 8 256c0 123.78 90.69 226.38 209.25 245V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.28c-30.8 0-40.41 19.12-40.41 38.73V256h68.78l-11 71.69h-57.78V501C413.31 482.38 504 379.78 504 256z"></path></svg><!-- <i class="fab fa-facebook fa-lg"></i> -->
-                            </span>
-                          </a>
-                        
-                        
-                        <a href="www.github.com/chawlau" target="_blank" title="github">
-                            <span class="icon is-large has-text-grey-darker">
-                               <svg class="svg-inline--fa fa-github fa-w-16 fa-lg" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="github" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" data-fa-i2svg=""><path fill="currentColor" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg><!-- <i class="fab fa-github fa-lg"></i> -->
-                            </span>
-                          </a>
-                        
-                        
-                     <a href="www.twitter.com"  target="_blank" title="twitter">
-                       <span class="icon is-large has-text-grey-darker">
-                          <svg class="svg-inline--fa fa-twitter fa-w-16 fa-lg" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="twitter" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"></path></svg><!-- <i class="fab fa-twitter fa-lg"></i> -->
-                       </span>
-                     </a>
-                      
-                      
-                      <a href="www.weibo.com" target="_blank" title="weibo">
-                          <span class="icon is-large has-text-grey-darker">
-                            <svg class="svg-inline--fa fa-weibo fa-w-16 fa-lg" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="weibo" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M407 177.6c7.6-24-13.4-46.8-37.4-41.7-22 4.8-28.8-28.1-7.1-32.8 50.1-10.9 92.3 37.1 76.5 84.8-6.8 21.2-38.8 10.8-32-10.3zM214.8 446.7C108.5 446.7 0 395.3 0 310.4c0-44.3 28-95.4 76.3-143.7C176 67 279.5 65.8 249.9 161c-4 13.1 12.3 5.7 12.3 6 79.5-33.6 140.5-16.8 114 51.4-3.7 9.4 1.1 10.9 8.3 13.1 135.7 42.3 34.8 215.2-169.7 215.2zm143.7-146.3c-5.4-55.7-78.5-94-163.4-85.7-84.8 8.6-148.8 60.3-143.4 116s78.5 94 163.4 85.7c84.8-8.6 148.8-60.3 143.4-116zM347.9 35.1c-25.9 5.6-16.8 43.7 8.3 38.3 72.3-15.2 134.8 52.8 111.7 124-7.4 24.2 29.1 37 37.4 12 31.9-99.8-55.1-195.9-157.4-174.3zm-78.5 311c-17.1 38.8-66.8 60-109.1 46.3-40.8-13.1-58-53.4-40.3-89.7 17.7-35.4 63.1-55.4 103.4-45.1 42 10.8 63.1 50.2 46 88.5zm-86.3-30c-12.9-5.4-30 .3-38 12.9-8.3 12.9-4.3 28 8.6 34 13.1 6 30.8.3 39.1-12.9 8-13.1 3.7-28.3-9.7-34zm32.6-13.4c-5.1-1.7-11.4.6-14.3 5.4-2.9 5.1-1.4 10.6 3.7 12.9 5.1 2 11.7-.3 14.6-5.4 2.8-5.2 1.1-10.9-4-12.9z"></path></svg><!-- <i class="fab fa-weibo fa-lg"></i> -->
-                          </span>
-                      </a>
-                      
-                      <a href="atom.xml" target="_blank" title="RSS">
-                          <span class="icon is-large has-text-black-bis">
-                              <svg class="svg-inline--fa fa-rss fa-w-14 fa-lg" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="rss" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M128.081 415.959c0 35.369-28.672 64.041-64.041 64.041S0 451.328 0 415.959s28.672-64.041 64.041-64.041 64.04 28.673 64.04 64.041zm175.66 47.25c-8.354-154.6-132.185-278.587-286.95-286.95C7.656 175.765 0 183.105 0 192.253v48.069c0 8.415 6.49 15.472 14.887 16.018 111.832 7.284 201.473 96.702 208.772 208.772.547 8.397 7.604 14.887 16.018 14.887h48.069c9.149.001 16.489-7.655 15.995-16.79zm144.249.288C439.596 229.677 251.465 40.445 16.503 32.01 7.473 31.686 0 38.981 0 48.016v48.068c0 8.625 6.835 15.645 15.453 15.999 191.179 7.839 344.627 161.316 352.465 352.465.353 8.618 7.373 15.453 15.999 15.453h48.068c9.034-.001 16.329-7.474 16.005-16.504z"></path></svg><!-- <i class="fas fa-rss fa-lg"></i> -->
-                          </span>
-                      </a>
-                    </div>
-                    <!--buttons end-->
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+				<header id="header" class="inner">
+				 
+				 	<div class="profilepic">
+						<img src="https://i.loli.net/2020/02/22/Si1K7sluept2ZgR.jpg" style="width:160px;">
+					</div>
+            	
+					
+					<h1><a href="index.html">       凌云阁</a></h1>
+					<p class="subtitle">生命的意义是成为你自己！</p>
+					<nav id="main-nav">
+						<ul class="main">
+						
+						  <li id=""><a target="_self" href="index.html">Home</a></li>
+						
+						  <li id=""><a target="_self" href="archives.html">Archives</a></li>
+						
+						</ul>
+					</nav>
 
-                  </div>
-                </div>
-                </div>
-              </div>
-            </nav>
-      </div>
+					<nav id="sub-nav">
+						<div class="social">
 
+<a target="_blank" class="facebook" href="www.facebook.com" title="Facebook">Facebook</a>
+
+
+
+
+
+
+<a target="_blank" class="weibo" href="www.weibo.com" title="weibo">Weibo</a>
+<a target="_blank" class="twitter" target="_blank" href="www.twitter.com" title="Twitter">Twitter</a>
+<a target="_blank" class="github" target="_blank" href="www.github.com/chawlau" title="GitHub">GitHub</a>
+
+
+								
+
+								<a class="rss" href="atom.xml" title="RSS">RSS</a>
+							
+						</div>
+					</nav>
+				</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			<div class="mid-col-container"> <div id="content" class="inner">
+<div itemscope itemtype="http://schema.org/Blog">
+
+
+	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+		<div class="meta">
+			<div class="date">
+				<time datetime="2020-12-29T18:08:24+08:00" itemprop="datePublished">2020/12/29 18:08 下午</time>
+			</div>
+			<div class="tags">posted in 
+			
+			    <a class='category' href='%E7%B3%BB%E7%BB%9F%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>系统性能调优必知必会</a>&nbsp;
+			 
+			</div>
+		</div>
+		<h1 class="title" itemprop="name"><a href="16092365041151.html" itemprop="url">
+		零拷贝技术</a></h1>
+		<div class="entry-content" itemprop="articleBody">
+			
+			<h4><a id="%E6%AD%A3%E5%B8%B8%E5%86%99%E5%85%A5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>正常写入</h4>
+<p><img src="media/16092365041151/16092366575350.jpg" alt="" /></p>
+<h4><a id="%E9%9B%B6%E6%8B%B7%E8%B4%9D%E6%8A%80%E6%9C%AF" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>零拷贝技术</h4>
+<p><img src="media/16092365041151/16092366819655.jpg" alt="" /></p>
+<h4><a id="%E6%94%AF%E6%8C%81sg-dma%E7%9A%84%E7%BD%91%E5%8D%A1" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>支持SG-DMA的网卡</h4>
+<p><img src="media/16092365041151/16092367091080.jpg" alt="" /></p>
+
+
+			
+			
+		</div>
+
+	</article>
  
-<div class="hero-body ct-body">
-        <div class="container">
-              <div class="columns is-centered">
-                  <div class="column  is-four-fifths">
-                      <div class="columns is-mobile">
-                          <div class="column">
-                              <h1 class="title">
-       凌云阁
-              
-                              </h1>
-                              <h2 class="subtitle">
-                                 生命的意义是成为你自己！
-                              </h2>
-                          </div>
-                          <div class="column is-narrow"><figure class="image is-128x128">
-                            
-                              <img class="is-rounded" src="https://i.loli.net/2020/02/22/Si1K7sluept2ZgR.jpg">
-                            
-                            </figure></div>
-                      </div>
-                        
-                      
-                  </div>
-                  
-                </div>
-            
-              
-        
+	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+		<div class="meta">
+			<div class="date">
+				<time datetime="2020-12-29T18:12:15+08:00" itemprop="datePublished">2020/12/29 18:12 下午</time>
+			</div>
+			<div class="tags">posted in 
+			
+			    <a class='category' href='%E7%B3%BB%E7%BB%9F%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>系统性能调优必知必会</a>&nbsp;
+			 
+			</div>
+		</div>
+		<h1 class="title" itemprop="name"><a href="16092367351886.html" itemprop="url">
+		协程</a></h1>
+		<div class="entry-content" itemprop="articleBody">
+			
+			<h4><a id="%E9%AB%98%E5%B9%B6%E5%8F%91%E5%AE%9E%E7%8E%B0%E6%9D%A1%E4%BB%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>高并发实现条件</h4>
+<p>由内核实现的请求切换工作，交由用户态的代码来完成就可以了</p>
+<h4><a id="%E4%B8%BA%E4%BB%80%E4%B9%88%E5%BF%85%E9%A1%BB%E9%9D%9E%E9%98%BB%E5%A1%9E" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>为什么必须非阻塞</h4>
+<p>协程必须重新封装所有的阻塞系统调用，否则，一旦协程触发了线程切换，会导致这个线程进入休眠状态，进而其上的所有协程都得不到执行</p>
+<h4><a id="%E5%8D%8F%E7%A8%8B%E5%88%87%E6%8D%A2" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>协程切换</h4>
+<ul>
+<li>就是保存SP&amp;IP的状态</li>
+</ul>
+<h4><a id="%E5%8D%8F%E7%A8%8B%E7%9A%84%E4%BB%A3%E4%BB%B7" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>协程的代价</h4>
+<p>线程的栈有 8MB，而协程栈的大小通常只有几十 KB。而且，C 库内存池也不会为协程预分配内存，它感知不到协程的存在。这样，更低的内存占用空间为高并发提供了保证，毕竟十万并发请求，就意味着 10 万个协程</p>
+
+
+			
+			
+		</div>
+
+	</article>
+ 
+	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+		<div class="meta">
+			<div class="date">
+				<time datetime="2021-01-02T16:19:41+08:00" itemprop="datePublished">2021/01/02 16:19 下午</time>
+			</div>
+			<div class="tags">posted in 
+			
+			    <a class='category' href='%E7%B3%BB%E7%BB%9F%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>系统性能调优必知必会</a>&nbsp;
+			 
+			</div>
+		</div>
+		<h1 class="title" itemprop="name"><a href="16095755818010.html" itemprop="url">
+		提升tcp三次握手的性能</a></h1>
+		<div class="entry-content" itemprop="articleBody">
+			
+			<h4><a id="%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E4%BC%98%E5%8C%96" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>客户端的优化</h4>
+<ul>
+<li>tcp_syn_retries 根据网络稳定性和目标服务器繁忙程度修改重试次数，适当调低重试次数，尽快把错误暴露给应用程序</li>
+<li>重试6次，总共2分钟</li>
+</ul>
+<h4><a id="%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E7%9A%84%E4%BC%98%E5%8C%96" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>服务器端的优化</h4>
+<ul>
+<li>调大半连接队列，tcp_max_syn_backlog</li>
+<li>如果半连接满了，开启 syncookies 功能就可以在不使用 SYN 队列的情况下成功建立连接，tcp_syncookies = 1 表示队列满的时候使用</li>
+<li>调整sync_ack重试次数 tcp_synack_retries</li>
+<li>如果accept队列溢出，tcp_abort_on_overflow = 1 告诉客户端已经失败</li>
+<li>accept队列大小 net.core.somaxconn</li>
+</ul>
+<h4><a id="%E7%BB%95%E8%BF%87%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>绕过三次握手</h4>
+<ul>
+<li>第一阶段为首次建立连接，这时走正常的三次握手，但在客户端的 SYN 报文会明确地告诉服务器它想使用 TFO 功能，这样服务器会把客户端 IP 地址用只有自己知道的密钥加密（比如 AES 加密算法），作为 Cookie 携带在返回的 SYN+ACK 报文中，客户端收到后会将 Cookie 缓存在本地。</li>
+<li>如果客户端再次向服务器建立连接，就可以在第一个 SYN 报文中携带请求数据，同时还要附带缓存的 Cookie，需要使用send_to&amp;sendmsg</li>
+<li>net.ipv4.tcp_fastopen = 3</li>
+</ul>
+
+
+			
+			
+		</div>
+
+	</article>
+ 
+	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+		<div class="meta">
+			<div class="date">
+				<time datetime="2021-01-02T16:36:18+08:00" itemprop="datePublished">2021/01/02 16:36 下午</time>
+			</div>
+			<div class="tags">posted in 
+			
+			    <a class='category' href='%E7%B3%BB%E7%BB%9F%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>系统性能调优必知必会</a>&nbsp;
+			 
+			</div>
+		</div>
+		<h1 class="title" itemprop="name"><a href="16095765789421.html" itemprop="url">
+		如何提升tcp四次挥手的性能</a></h1>
+		<div class="entry-content" itemprop="articleBody">
+			
+			<h4><a id="%E8%A2%AB%E5%8A%A8%E6%96%B9%E5%A6%82%E4%BD%95%E5%85%B3%E9%97%AD" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>被动方如何关闭</h4>
+<ul>
+<li>CLOSE_WAIT 状态时，进程的 read 函数会返回 0</li>
+<li>开发人员就会有针对性地调用 close 函数，然后状态变成LAST_ACK</li>
+</ul>
+<h4><a id="%E4%B8%BB%E5%8A%A8%E6%96%B9%E7%9A%84%E4%BC%98%E5%8C%96" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>主动方的优化</h4>
+<ul>
+<li>close 和 shutdown都会发FIN报文</li>
+</ul>
+<h4><a id="%E5%AD%A4%E5%84%BF%E8%BF%9E%E6%8E%A5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>孤儿连接</h4>
+<ul>
+<li>当进程调用 close 函数关闭连接后，无论该连接是在 FIN_WAIT1 状态，还是确实关闭了，这个连接都与该进程无关了，它变成了孤儿连接</li>
+<li>tcp_max_orphans 最大孤儿连接</li>
+<li>tcp_fin_timeout = 60s</li>
+<li>tcp_orphan_retries 控制</li>
+</ul>
+<h4><a id="timewait" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>TimeWait</h4>
+<ul>
+<li>连接的端口恢复了自由身，可以复用于新连接了</li>
+<li>被动方的 FIN 报文可能再次到达，这既可能是网络中的路由器重复发送</li>
+<li>正常通讯的新连接就可能被重复发送的 FIN 报文误关闭</li>
+</ul>
+<h4><a id="%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AF2msl" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>为什么是2MSL</h4>
+<ul>
+<li>这其实是相当于至少允许报文丢失一次。比如，若 ACK 在一个 MSL 内丢失，这样被动方重发的 FIN 会在第 2 个 MSL 内到达，TIME_WAIT 状态的连接可以应对</li>
+</ul>
+<h4><a id="%E5%8F%82%E6%95%B0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>参数</h4>
+<ul>
+<li>tcp_max_tw_buckets，TIME_WAIT 的连接数量超过该参数时，新关闭的连接就不再经历 TIME_WAIT 而直接关闭</li>
+<li>tcp_tw_reuse=1 服务器主动向上游服务器发起连接可以复用 需要tcp_timestamps=1 来设置</li>
+</ul>
+<h4><a id="%E8%A2%AB%E5%8A%A8%E6%96%B9%E7%9A%84%E4%BC%98%E5%8C%96" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>被动方的优化</h4>
+<ul>
+<li>大量close_wait</li>
+<li>要么是程序出现了 Bug，read 函数返回 0 时忘记调用 close 函数关闭连接</li>
+<li>close 程序负载太高，close 函数所在的回调函数被延迟执行了</li>
+</ul>
+<h4><a id="%E5%90%8C%E6%97%B6%E5%8F%91%E8%B5%B7fin" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>同时发起FIN</h4>
+<ul>
+<li>两边都处于CLOSING，类似于LAST_ACK</li>
+<li>接收ACK就关闭</li>
+</ul>
+
+
+			
+			
+		</div>
+
+	</article>
+ 
+	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+		<div class="meta">
+			<div class="date">
+				<time datetime="2021-01-19T08:59:10+08:00" itemprop="datePublished">2021/01/19 08:59 上午</time>
+			</div>
+			<div class="tags">posted in 
+			
+			    <a class='category' href='%E7%B3%BB%E7%BB%9F%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>系统性能调优必知必会</a>&nbsp;
+			 
+			</div>
+		</div>
+		<h1 class="title" itemprop="name"><a href="16110179503339.html" itemprop="url">
+		如何调整TCP拥塞控制技能</a></h1>
+		<div class="entry-content" itemprop="articleBody">
+			
+			<h4><a id="%E5%87%BA%E7%8E%B0%E7%BD%91%E7%BB%9C%E6%8B%A5%E5%A1%9E" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>出现网络拥塞</h4>
+<ul>
+<li>通过定时器明确探测到了丢包；</li>
+<li>拥塞窗口的增长到达了慢启动阈值 ssthresh（全称为 slow start threshold），也就是之前发现网络拥塞时的窗口大小；</li>
+<li>接收到重复的 ACK 报文，可能存在丢包。</li>
+</ul>
+<h4><a id="%E6%B5%8B%E9%87%8F%E5%B8%A6%E5%AE%BD%E6%97%B6%E5%BB%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>测量带宽时延</h4>
+<ul>
+<li>测量带宽、时延来确定拥塞的方法，在丢包率较高的网络中应用效果尤其好</li>
+<li></li>
+</ul>
+
+
+			
+			
+		</div>
+
+	</article>
+ 
+	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+		<div class="meta">
+			<div class="date">
+				<time datetime="2021-01-26T09:37:53+08:00" itemprop="datePublished">2021/01/26 09:37 上午</time>
+			</div>
+			<div class="tags">posted in 
+			
+			    <a class='category' href='%E7%B3%BB%E7%BB%9F%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>系统性能调优必知必会</a>&nbsp;
+			 
+			</div>
+		</div>
+		<h1 class="title" itemprop="name"><a href="16116250738231.html" itemprop="url">
+		性能监控</a></h1>
+		<div class="entry-content" itemprop="articleBody">
+			
+			<h4><a id="%E6%80%A7%E8%83%BD%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>性能监控系统</h4>
+<ul>
+<li>首先要把五花八门的日志用正则表达式提取为结构化的监控数据；</li>
+<li>其次用半结构化的列式数据库存放集群中的所有日志，便于后续的汇聚分析；</li>
+<li>第三，使用统一的请求 ID 将各组件串联在一起，并使用 MapReduce 算法对大量的监控数据做离线分析；</li>
+<li>最后，通过实时流计算框架，对监控数据做实时汇聚分析</li>
+</ul>
+
+
+			
+			
+		</div>
+
+	</article>
+ 
+	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+		<div class="meta">
+			<div class="date">
+				<time datetime="2021-01-19T08:47:35+08:00" itemprop="datePublished">2021/01/19 08:47 上午</time>
+			</div>
+			<div class="tags">posted in 
+			
+			    <a class='category' href='%E7%B3%BB%E7%BB%9F%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>系统性能调优必知必会</a>&nbsp;
+			 
+			</div>
+		</div>
+		<h1 class="title" itemprop="name"><a href="16110172553490.html" itemprop="url">
+		修改TCP缓冲区</a></h1>
+		<div class="entry-content" itemprop="articleBody">
+			
+			<h4><a id="%E8%AE%BE%E7%BD%AE%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E5%A4%A7%E5%B0%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>设置滑动窗口大小</h4>
+<ul>
+<li>net.ipv4.tcp_window_scaling = 1</li>
+</ul>
+<h4><a id="%E5%B8%A6%E5%AE%BD%E6%97%B6%E5%BB%B6%E7%A7%AF%E5%A6%82%E4%BD%95%E7%A1%AE%E5%AE%9A%E6%9C%80%E5%A4%A7%E4%BC%A0%E8%BE%93%E9%80%9F%E5%BA%A6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>带宽时延积如何确定最大传输速度</h4>
+<ul>
+<li>飞行报文超过了 1MB，就一定会让网络过载，最终导致丢包</li>
+</ul>
+<h4><a id="%E6%80%8E%E6%A0%B7%E8%B0%83%E6%95%B4%E7%BC%93%E5%86%B2%E5%8C%BA%E5%8E%BB%E9%80%82%E9%85%8D%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>怎样调整缓冲区去适配滑动窗口</h4>
+<ul>
+<li>缓冲区动态调节功能</li>
+<li>发送缓冲区 net.ipv4.tcp_wmem = 4096        16384   4194304</li>
+<li>接收缓冲区  net.ipv4.tcp_moderate_rcvbuf = 1</li>
+<li>net.ipv4.tcp_mem = 88560        118080  177120</li>
+<li>千万不要在 socket 上直接设置 SO_SNDBUF 或者 SO_RCVBUF，这样会关闭缓冲区的动态调整功能。</li>
+<li></li>
+</ul>
+
+
+			
+			
+		</div>
+
+	</article>
+ 
+	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+		<div class="meta">
+			<div class="date">
+				<time datetime="2020-12-23T09:07:12+08:00" itemprop="datePublished">2020/12/23 09:07 上午</time>
+			</div>
+			<div class="tags">posted in 
+			
+			    <a class='category' href='%E7%B3%BB%E7%BB%9F%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>系统性能调优必知必会</a>&nbsp;
+			 
+			</div>
+		</div>
+		<h1 class="title" itemprop="name"><a href="16086856325080.html" itemprop="url">
+		CPU缓存</a></h1>
+		<div class="entry-content" itemprop="articleBody">
+			
+			<h4><a id="cpu%E7%BC%93%E5%AD%98%E5%A4%A7%E5%B0%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>CPU缓存大小</h4>
+<ul>
+<li>一级缓存是32KB</li>
+<li>二级缓存是256KB</li>
+<li>三级缓存是20MB</li>
+<li>每个核心都有自己的一、二级缓存，但三级缓存却是一颗 CPU 上所有核心共享的<br />
+<img src="media/16086856325080/16091085335903.jpg" alt="" /><br />
+CPU 访问一次内存通常需要 100 个时钟周期以上，而访问一级缓存只需要 4~5 个时钟周期，二级缓存大约 12 个时钟周期，三级缓存大约 30 个时钟周期</li>
+</ul>
+<h4><a id="cache-line" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Cache line</h4>
+<ul>
+<li>内核中coherency_line_size定义</li>
+<li>nginx的哈希表桶的大小等于Cache line</li>
+<li>按照 cpu cache line（比如 64 字节）来访问内存时，不会出现多核 CPU 下的伪共享问题，可以尽量减少访问内存的次数</li>
+</ul>
+<h4><a id="%E6%98%BE%E5%BC%8F%E9%A2%84%E6%B5%8B%E5%88%86%E6%94%AF%E6%A6%82%E7%8E%87" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>显式预测分支概率</h4>
+<ul>
+<li>likely&amp;unlikely</li>
+</ul>
+<h4><a id="%E6%80%9D%E8%80%83%E9%A2%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>思考题</h4>
+<ul>
+<li>多线程并行访问不同的变量，这些变量在内存布局是相邻的，此时 CPU 缓存就会失效，为什么？</li>
+<li>一片连续的内存被加载到不同cpu核心中（就是同一个cache line在不同的cpu核心），其中一个cpu核心中修改cache line,其它核心都失效，加锁也是加在cache line上，其它核心线程也被锁住，降低了性能。解决办法是填充无用字节数，使分开</li>
+</ul>
+
+
+			
+			
+		</div>
+
+	</article>
+ 
+	<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+		<div class="meta">
+			<div class="date">
+				<time datetime="2021-01-04T06:39:40+08:00" itemprop="datePublished">2021/01/04 06:39 上午</time>
+			</div>
+			<div class="tags">posted in 
+			
+			    <a class='category' href='%E7%B3%BB%E7%BB%9F%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>系统性能调优必知必会</a>&nbsp;
+			 
+			</div>
+		</div>
+		<h1 class="title" itemprop="name"><a href="16097135804073.html" itemprop="url">
+		GEO</a></h1>
+		<div class="entry-content" itemprop="articleBody">
+			
+			<h4><a id="%E4%BA%8C%E5%88%86%E5%8C%BA%E9%97%B4%EF%BC%8C%E5%8C%BA%E9%97%B4%E7%BC%96%E7%A0%81" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>二分区间，区间编码</h4>
+<ul>
+<li>经度范围[-180,180]会被分成两个子区间</li>
+<li>如果是落在左分区，我们就用 0 表示；如果落在右分区，就用 1 表示</li>
+<li>维度范围[-90, 90]会被分成两个子区间</li>
+<li>如果是落在左分区，我们就用 0 表示；如果落在右分区，就用 1 表示</li>
+</ul>
+<h4><a id="%E7%BB%84%E5%90%88%E8%A7%84%E5%88%99" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>组合规则</h4>
+<ul>
+<li>一组经纬度值都编完码后，我们再把它们的各自编码值组合在一起，组合的规则是：最终编码值的偶数位上依次是经度的编码值，奇数位上依次是纬度的编码值</li>
+<li>有的编码值虽然在大小上接近，但实际对应的方格却距离比较远</li>
+</ul>
+<h4><a id="%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>操作指令</h4>
+<ul>
+<li>GEOADD</li>
+<li>GEORADIUS</li>
+<li></li>
+</ul>
+
+
+			
+			
+		</div>
+
+	</article>
+  
+
+</div>
+<nav id="pagenavi">
+	 
+	 <a class="next" href="系统性能调优必知必会_1.html">Next</a> 
+	<div class="center"><a href="archives.html">Blog Archives</a></div>
+
+</nav>
+
+</div>
+
+
+
         </div>
-      </div>
-</section>
-<section class="ct-body">
-      <div class="container">
-          <div class="columns is-variable bd-klmn-columns is-4">
-              <div class="column is-two-thirds">
-                
-                  <div class="card">
-                    
-                      <div class="card-content">
-                        <div class="content">
-                          <a href="16092365041151.html"> 
-                            <h2 class="title">零拷贝技术</h2>
-                          </a>        
-                                                    
-                          <p> 
-                            <a href="16092365041151.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
-                            <span class="date">2020/12/29 18:08 下午</span>
-                            <span class="tran-posted-in">posted in</span>&nbsp; 
-                            
-                                <span class="posted-in"><a href='%E7%B3%BB%E7%BB%9F%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>系统性能调优必知必会</a></span>
-                                                      
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  
-                  <div class="card">
-                    
-                      <div class="card-content">
-                        <div class="content">
-                          <a href="16092367351886.html"> 
-                            <h2 class="title">协程</h2>
-                          </a>        
-                                                    
-                          <p> 
-                            <a href="16092367351886.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
-                            <span class="date">2020/12/29 18:12 下午</span>
-                            <span class="tran-posted-in">posted in</span>&nbsp; 
-                            
-                                <span class="posted-in"><a href='%E7%B3%BB%E7%BB%9F%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>系统性能调优必知必会</a></span>
-                                                      
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  
-                  <div class="card">
-                    
-                      <div class="card-content">
-                        <div class="content">
-                          <a href="16095755818010.html"> 
-                            <h2 class="title">提升tcp三次握手的性能</h2>
-                          </a>        
-                                                    
-                          <p> 
-                            <a href="16095755818010.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
-                            <span class="date">2021/01/02 16:19 下午</span>
-                            <span class="tran-posted-in">posted in</span>&nbsp; 
-                            
-                                <span class="posted-in"><a href='%E7%B3%BB%E7%BB%9F%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>系统性能调优必知必会</a></span>
-                                                      
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  
-                  <div class="card">
-                    
-                      <div class="card-content">
-                        <div class="content">
-                          <a href="16095765789421.html"> 
-                            <h2 class="title">如何提升tcp四次挥手的性能</h2>
-                          </a>        
-                                                    
-                          <p> 
-                            <a href="16095765789421.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
-                            <span class="date">2021/01/02 16:36 下午</span>
-                            <span class="tran-posted-in">posted in</span>&nbsp; 
-                            
-                                <span class="posted-in"><a href='%E7%B3%BB%E7%BB%9F%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>系统性能调优必知必会</a></span>
-                                                      
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  
-                  <div class="card">
-                    
-                      <div class="card-content">
-                        <div class="content">
-                          <a href="16110179503339.html"> 
-                            <h2 class="title">如何调整TCP拥塞控制技能</h2>
-                          </a>        
-                                                    
-                          <p> 
-                            <a href="16110179503339.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
-                            <span class="date">2021/01/19 08:59 上午</span>
-                            <span class="tran-posted-in">posted in</span>&nbsp; 
-                            
-                                <span class="posted-in"><a href='%E7%B3%BB%E7%BB%9F%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>系统性能调优必知必会</a></span>
-                                                      
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  
-                  <div class="card">
-                    
-                      <div class="card-content">
-                        <div class="content">
-                          <a href="16116250738231.html"> 
-                            <h2 class="title">性能监控</h2>
-                          </a>        
-                                                    
-                          <p> 
-                            <a href="16116250738231.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
-                            <span class="date">2021/01/26 09:37 上午</span>
-                            <span class="tran-posted-in">posted in</span>&nbsp; 
-                            
-                                <span class="posted-in"><a href='%E7%B3%BB%E7%BB%9F%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>系统性能调优必知必会</a></span>
-                                                      
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  
-                  <div class="card">
-                    
-                      <div class="card-content">
-                        <div class="content">
-                          <a href="16110172553490.html"> 
-                            <h2 class="title">修改TCP缓冲区</h2>
-                          </a>        
-                                                    
-                          <p> 
-                            <a href="16110172553490.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
-                            <span class="date">2021/01/19 08:47 上午</span>
-                            <span class="tran-posted-in">posted in</span>&nbsp; 
-                            
-                                <span class="posted-in"><a href='%E7%B3%BB%E7%BB%9F%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>系统性能调优必知必会</a></span>
-                                                      
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  
-                  <div class="card">
-                    
-                      <div class="card-content">
-                        <div class="content">
-                          <a href="16086856325080.html"> 
-                            <h2 class="title">CPU缓存</h2>
-                          </a>        
-                                                    
-                          <p> 
-                            <a href="16086856325080.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
-                            <span class="date">2020/12/23 09:07 上午</span>
-                            <span class="tran-posted-in">posted in</span>&nbsp; 
-                            
-                                <span class="posted-in"><a href='%E7%B3%BB%E7%BB%9F%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>系统性能调优必知必会</a></span>
-                                                      
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  
-                  <div class="card">
-                    
-                      <div class="card-content">
-                        <div class="content">
-                          <a href="16097135804073.html"> 
-                            <h2 class="title">GEO</h2>
-                          </a>        
-                                                    
-                          <p> 
-                            <a href="16097135804073.html"><span class="tran-readmore">Read more...</span></a>&nbsp;&nbsp; 
-                            <span class="date">2021/01/04 06:39 上午</span>
-                            <span class="tran-posted-in">posted in</span>&nbsp; 
-                            
-                                <span class="posted-in"><a href='%E7%B3%BB%E7%BB%9F%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html'>系统性能调优必知必会</a></span>
-                                                      
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  
-
-                  <nav class="pagination is-centered" role="navigation" aria-label="pagination">
-                    <a class="pagination-previous"  disabled="disabled" ><span class="tran-prev-page">&laquo; Prev Page</span></a>  
-                    <a class="pagination-next"   href="系统性能调优必知必会_1.html" ><span class="tran-next-page">Next Page &raquo;</span></a>                   
-                  </nav>
-
-              </div><!-- end column -->
-              <div class="column">
-                  <div class="card">
-                      <header class="card-header">
-                        <p class="card-header-title">
-                           <span class="tran-site-categories">Categories</span> 
-                        </p>
-                     
-                      </header>
-                      <div class="card-content site-categories">
-                        <div class="content"> 
-                          <ul>
-                          
-                                <li><a href="Rpc.html">Rpc</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="Redis%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98.html">Redis核心技术与实战</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="%E7%B3%BB%E7%BB%9F%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html">系统性能调优必知必会</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="%E5%88%86%E5%B8%83%E5%BC%8F%E5%8D%8F%E8%AE%AE%E5%92%8C%E7%AE%97%E6%B3%95%E5%AE%9E%E6%88%98.html">分布式协议和算法实战</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="C++%E5%9F%BA%E7%A1%80%E4%B8%8E%E6%8F%90%E9%AB%98.html">C++基础与提高</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html">设计模式</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="Python.html">Python</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="Golang.html">Golang</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%BE%8E.html">设计模式之美</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="%E6%80%A7%E8%83%BD%E5%B7%A5%E7%A8%8B%E9%AB%98%E6%89%8B%E8%AF%BE.html">性能工程高手课</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95.html">性能测试</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="Prometheus.html">Prometheus</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="RocketMQ.html">RocketMQ</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE.html">网络协议</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="Django.html">Django</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes.html">深入剖析Kubernetes</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.html">数据结构和算法</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="%E5%BE%AE%E6%9C%8D%E5%8A%A1.html">微服务</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="%E6%9E%B6%E6%9E%84.html">架构</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.html">操作系统原理</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="Mysql%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html">Mysql优化实战</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="Kafka.html">Kafka</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A0%94%E5%8F%91.html">linux服务器研发</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86.html">计算机组成原理</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="%E7%A8%8B%E5%BA%8F%E5%91%98%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB.html">程序员的自我修养</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="C%E8%AF%AD%E8%A8%80%E8%BF%9B%E9%98%B6.html">C语言进阶</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="http_study.html">http_study</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="%E7%8E%A9%E8%BD%AC%E7%AE%97%E6%B3%95.html">玩转算法</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="C++%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B.html">C++对象模型</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="SQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A.html">SQL必知必会</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="Zookeeper.html">Zookeeper</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="Redis%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A.html">Redis从入门到精通</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E8%BF%9B%E9%98%B6.html">数据结构和算法进阶</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="Mysql%E6%80%A7%E8%83%BD%E7%AE%A1%E7%90%86%E5%92%8C%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1.html">Mysql性能管理和架构设计</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98.html">网络编程实战</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="Redis%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98.html">Redis高并发缓存</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98.html">Linux性能优化实战</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="%E5%80%99%E6%8D%B7STL.html">候捷STL</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="ElasticSearch.html">ElasticSearch</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="RabbitMQ.html">RabbitMQ</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="etcd.html">etcd</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="RocketMQ-1.html">RocketMQ</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                                <li><a href="mysql.html">mysql</a>
-                                  
-                                  
-                                  
-                                </li> 
-                          
-                          </ul>
-                        </div>
-                      </div>
-                     
-                    </div>
-
-                    <div class="card">
-                        <header class="card-header">
-                          <p class="card-header-title">
-                              <span class="tran-site-tags">Tags</span> 
-                          </p>
-                       
-                        </header>
-                        <div class="card-content site-tags">
-                          <div class="content">
-                           <div class="tags">
-                            
-                              <a class="tag is-link is-light" href="tag_Docker.html">#Docker</a> 
-                            
-                              <a class="tag is-link is-light" href="tag_K8S.html">#K8S</a> 
-                            
-                              <a class="tag is-link is-light" href="tag_%E6%80%A7%E8%83%BD%E5%B7%A5%E7%A8%8B.html">#性能工程</a> 
-                            
-                              <a class="tag is-link is-light" href="tag_%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95.html">#性能测试</a> 
-                            
-                           </div>
-                             
-                          </div>
-                        </div>
-                       
-                      </div>
-
-              </div>
-            </div>
-
-          
-      </div>
-    </section>
-
-    <footer class="footer">
-        <div class="content has-text-centered">
-          <p>
-              Copyright &copy; 2019
-              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
-              Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
-          </p>
-        </div>
+			<footer id="footer" class="inner">Copyright &copy; 2014
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a> &nbsp;&nbsp; 
+Theme by <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a>
       </footer>
-
-<style>.mweb-charts{background:#fff;}
-body{ box-sizing: border-box;
-    margin: 0 auto;}
-@media print{
-    pre, code, pre code {
-     overflow: visible !important;
-     white-space: pre-wrap !important;       /* css-3 */
-     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
-     white-space: -pre-wrap !important;      /* Opera 4-6 */
-     white-space: -o-pre-wrap !important;    /* Opera 7 */
-     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
-    }
-    html,body{margin:0;padding:4px;}
-}
-
-
-
-div.code-toolbar {
-  position: relative;
-}
-
-div.code-toolbar > .toolbar {
-  position: absolute;
-  z-index: 10;
-  top: .3em;
-  right: .2em;
-  transition: opacity 0.3s ease-in-out;
-  opacity: 0;
-}
-
-div.code-toolbar:hover > .toolbar {
-  opacity: 1;
-}
-
-/* Separate line b/c rules are thrown out if selector is invalid.
-   IE11 and old Edge versions don't support :focus-within. */
-div.code-toolbar:focus-within > .toolbar {
-  opacity: 1;
-}
-
-div.code-toolbar > .toolbar > .toolbar-item {
-  display: inline-block;
-}
-
-div.code-toolbar > .toolbar > .toolbar-item > a {
-  cursor: pointer;
-}
-
-div.code-toolbar > .toolbar > .toolbar-item > button {
-  background: none;
-  border: 0;
-  color: inherit;
-  font: inherit;
-  line-height: normal;
-  overflow: visible;
-  padding: 0;
-  -webkit-user-select: none; /* for button */
-  -moz-user-select: none;
-  -ms-user-select: none;
-}
-
-div.code-toolbar > .toolbar > .toolbar-item > a,
-div.code-toolbar > .toolbar > .toolbar-item > button,
-div.code-toolbar > .toolbar > .toolbar-item > span {
-  color: inherit;
-  font-size: .8em;
-  padding: 4px .5em;
-  background: #f5f2f0;
-  background: rgba(224, 224, 224, 0.4);
-  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
-  border-radius: .5em;
-}
-
-div.code-toolbar > .toolbar > .toolbar-item > a:hover,
-div.code-toolbar > .toolbar > .toolbar-item > a:focus,
-div.code-toolbar > .toolbar > .toolbar-item > button:hover,
-div.code-toolbar > .toolbar > .toolbar-item > button:focus,
-div.code-toolbar > .toolbar > .toolbar-item > span:hover,
-div.code-toolbar > .toolbar > .toolbar-item > span:focus {
-  color: inherit;
-  text-decoration: none;
-}
-</style>
-
+		</div>
+	</div>
 
   
     
 
 
 
-
-  </body>
+</body>
 </html>
