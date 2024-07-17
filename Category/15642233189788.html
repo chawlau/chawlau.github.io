@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,26 +139,21 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>网络架构</h4>
-
+                    <h4><a id="%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>网络架构</h4>
 <ul>
-<li><img src="media/15642233189788/e1ae8884999175dac0c6e21beb2f7e6e.png" alt="e1ae8884999175dac0c6e21beb2f7e6e"/></li>
-<li><img src="media/15642233189788/d8a7d6f0bdf9dc3af4ff55ff79b42068.png" alt="d8a7d6f0bdf9dc3af4ff55ff79b42068"/></li>
+<li><img src="media/15642233189788/e1ae8884999175dac0c6e21beb2f7e6e.png" alt="e1ae8884999175dac0c6e21beb2f7e6e" /></li>
+<li><img src="media/15642233189788/d8a7d6f0bdf9dc3af4ff55ff79b42068.png" alt="d8a7d6f0bdf9dc3af4ff55ff79b42068" /></li>
 <li>io线程池的num.io.threads</li>
 <li>请求队列是所有网络线程共享的，而响应队列则是每个网络线程专属的</li>
 </ul>
-
-<h4>Purgatory</h4>
-
+<h4><a id="purgatory" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Purgatory</h4>
 <ul>
 <li>延时请求，就是那些一时未满足条件不能立刻处理的请求</li>
 </ul>
-
-<h4>控制类请求</h4>
-
+<h4><a id="%E6%8E%A7%E5%88%B6%E7%B1%BB%E8%AF%B7%E6%B1%82" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>控制类请求</h4>
 <ul>
-<li> PRODUCE 和 FETCH 这类请求称为数据类请求，把 LeaderAndIsr、StopReplica 这类请求称为控制类请求</li>
-<li> 网络线程池和 IO 线程池，它们分别处理数据类请求和控制类请求</li>
+<li>PRODUCE 和 FETCH 这类请求称为数据类请求，把 LeaderAndIsr、StopReplica 这类请求称为控制类请求</li>
+<li>网络线程池和 IO 线程池，它们分别处理数据类请求和控制类请求</li>
 </ul>
 
                   </article>
@@ -181,29 +176,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

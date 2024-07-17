@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,29 +139,22 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>协调者</h4>
-
+                    <h4><a id="%E5%8D%8F%E8%B0%83%E8%80%85" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>协调者</h4>
 <ul>
 <li>专门为 Consumer Group 服务，负责为 Group 执行 Rebalance 以及提供位移管理和组成员管理等</li>
 </ul>
-
-<h4>确定Coordinator所在broker</h4>
-
+<h4><a id="%E7%A1%AE%E5%AE%9Acoordinator%E6%89%80%E5%9C%A8broker" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>确定Coordinator所在broker</h4>
 <ul>
 <li>确定由位移主题的哪个分区来保存该 Group 数据：</li>
 <li>找出该分区 Leader 副本所在的 Broker，该 Broker 即为对应的 Coordinator</li>
 </ul>
-
-<h4>rebalance机制</h4>
-
+<h4><a id="rebalance%E6%9C%BA%E5%88%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>rebalance机制</h4>
 <ul>
 <li>Rebalance 影响 Consumer 端 TPS。这个之前也反复提到了，这里就不再具体讲了。总之就是，在 Rebalance 期间，Consumer 会停下手头的事情，什么也干不了。</li>
 <li>Rebalance 很慢</li>
 <li>Rebalance 效率不高。当前 Kafka 的设计机制决定了每次 Rebalance 时，Group 下的所有成员都要参与进来，而且通常不会考虑局部性原理，但局部性原理对提升系统性能是特别重要的</li>
 </ul>
-
-<h4>规避</h4>
-
+<h4><a id="%E8%A7%84%E9%81%BF" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>规避</h4>
 <ul>
 <li>Consumer实例会被 Coordinator 错误地认为“已停止”从而被“踢出”Group</li>
 <li>session.timout.ms 决定了 Consumer 存活性的时间间隔</li>
@@ -171,14 +164,12 @@
 <li>第二类非必要 Rebalance 是 Consumer 消费时间过长导致的</li>
 <li>Consumer 端的 GC 表现，比如是否出现了频繁的 Full GC 导致的长时间停顿，从而引发了 Rebalance</li>
 </ul>
-
-<h4>总结</h4>
-
+<h4><a id="%E6%80%BB%E7%BB%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>总结</h4>
 <ul>
-<li>session.timeout.ms</li>
-<li>heartbeat.interval.ms</li>
-<li>max.poll.interval.ms</li>
-<li>GC 参数</li>
+<li>session.timeout.ms=6s</li>
+<li>heartbeat.interval.ms=2s</li>
+<li>max.poll.interval.ms， 比根据下游客户端消费者将数据写入持久化设备的时间略长一点</li>
+<li>GC参数 消费端是否出现了频繁的 Full GC 导致的长时间停顿，从而引发了 Rebalance，现实业务非常常见，</li>
 </ul>
 
                   </article>
@@ -201,29 +192,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

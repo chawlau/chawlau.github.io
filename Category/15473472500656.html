@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,17 +139,14 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>binlog写入机制</h4>
-
+                    <h4><a id="binlog%E5%86%99%E5%85%A5%E6%9C%BA%E5%88%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>binlog写入机制</h4>
 <ul>
 <li>binlog cache 内存 --&gt; write page cache --&gt; fsync --&gt; binlog 磁盘</li>
 <li>sync_binlog=0, 只write, 不fsync</li>
 <li>sync_binlog=1, 每次提交事务都会fsync</li>
 <li>sync_binlog 累积N个事务才fsync, 会丢失N个事务的binlog日志</li>
 </ul>
-
-<h4>redo log写入机制</h4>
-
+<h4><a id="redo-log%E5%86%99%E5%85%A5%E6%9C%BA%E5%88%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>redo log写入机制</h4>
 <ul>
 <li>三种状态</li>
 <li>redo log buffer 内存</li>
@@ -157,80 +154,58 @@
 <li>hard disk 持久化到磁盘</li>
 <li>innodb_flush_log_at_trx_commit 0 buffer 1 磁盘 2 page_cache</li>
 </ul>
-
-<h4>Mysql双一配置</h4>
-
+<h4><a id="mysql%E5%8F%8C%E4%B8%80%E9%85%8D%E7%BD%AE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Mysql双一配置</h4>
 <ul>
-<li> sync_binlog 和 innodb_flush_log_at_trx_commit 都设置成 1。也就是说，一个事务完整提交前，需要等待两次刷盘，一次是 redo log（prepare 阶段），一次是 binlog。</li>
+<li>sync_binlog 和 innodb_flush_log_at_trx_commit 都设置成 1。也就是说，一个事务完整提交前，需要等待两次刷盘，一次是 redo log（prepare 阶段），一次是 binlog。</li>
 </ul>
-
-<h4>日志逻辑序列号</h4>
-
+<h4><a id="%E6%97%A5%E5%BF%97%E9%80%BB%E8%BE%91%E5%BA%8F%E5%88%97%E5%8F%B7" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>日志逻辑序列号</h4>
 <ul>
 <li>LSN</li>
-<li>多个事务刷盘采用组提交策略
-<img src="media/15473472500656/933fdc052c6339de2aa3bf3f65b188cc.png" alt="933fdc052c6339de2aa3bf3f65b188c"/></li>
+<li>多个事务刷盘采用组提交策略<br />
+<img src="media/15473472500656/933fdc052c6339de2aa3bf3f65b188cc.png" alt="933fdc052c6339de2aa3bf3f65b188c" /></li>
 </ul>
-
-<h4>binlog 组提交</h4>
-
+<h4><a id="binlog%E7%BB%84%E6%8F%90%E4%BA%A4" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>binlog 组提交</h4>
 <ul>
 <li>binlog_group_commit_sync_delay 参数，表示延迟多少微秒后才调用 fsync;</li>
 <li>binlog_group_commit_sync_no_delay_count 参数，表示累积多少次以后才调用 fsync。</li>
 </ul>
-
-<h4>WAL机制的优点</h4>
-
+<h4><a id="wal%E6%9C%BA%E5%88%B6%E7%9A%84%E4%BC%98%E7%82%B9" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>WAL机制的优点</h4>
 <ul>
 <li>redo log和 binlog都是顺序写</li>
 <li>组提交机制</li>
 </ul>
-
-<h4>mysql出现IO性能瓶颈</h4>
-
+<h4><a id="mysql%E5%87%BA%E7%8E%B0io%E6%80%A7%E8%83%BD%E7%93%B6%E9%A2%88" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>mysql出现IO性能瓶颈</h4>
 <ul>
 <li>设置 binlog_group_commit_sync_delay 和 binlog_group_commit_sync_no_delay_count 参数，减少 binlog 的写盘次数。这个方法是基于“额外的故意等待”来实现的，因此可能会增加语句的响应时间，但没有丢失数据的风险。</li>
 <li>将 sync_binlog 设置为大于 1 的值（比较常见是 100~1000）。这样做的风险是，主机掉电时会丢 binlog 日志。</li>
-<li>将 innodb_flush_log_at_trx_commit 设置为 2。这样做的风险是，主机掉电的时候会丢数据。 </li>
+<li>将 innodb_flush_log_at_trx_commit 设置为 2。这样做的风险是，主机掉电的时候会丢数据。</li>
 </ul>
-
-<h4>两阶段提交的本质</h4>
-
+<h4><a id="%E4%B8%A4%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4%E7%9A%84%E6%9C%AC%E8%B4%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>两阶段提交的本质</h4>
 <ul>
-<li> redo log 的写入拆成了两个步骤：prepare 和 commit，这就是&quot;两阶段提交&quot;。</li>
+<li>redo log 的写入拆成了两个步骤：prepare 和 commit，这就是&quot;两阶段提交&quot;。</li>
 </ul>
-
-<h4>Binlog两种模式</h4>
-
+<h4><a id="binlog%E4%B8%A4%E7%A7%8D%E6%A8%A1%E5%BC%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Binlog两种模式</h4>
 <ul>
 <li>statement 格式的话是记sql语句</li>
 <li>row格式会记录行的内容，记两条，更新前和更新后都有。</li>
 </ul>
-
-<h4>writepos和checkpoint</h4>
-
+<h4><a id="writepos%E5%92%8Ccheckpoint" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>writepos和checkpoint</h4>
 <ul>
-<li>“空着的部分”，就是write pos 到3号文件末尾，再加上0号文件开头到checkpoint 的部分。可以写入新的事物日志
-<img src="media/15473472500656/b075250cad8d9f6c791a52b6a600f69c.jpg" alt="b075250cad8d9f6c791a52b6a600f69"/></li>
+<li>“空着的部分”，就是write pos 到3号文件末尾，再加上0号文件开头到checkpoint 的部分。可以写入新的事物日志<br />
+<img src="media/15473472500656/b075250cad8d9f6c791a52b6a600f69c.jpg" alt="b075250cad8d9f6c791a52b6a600f69" /></li>
 </ul>
-
-<h4>事务奔溃恢复原则</h4>
-
+<h4><a id="%E4%BA%8B%E5%8A%A1%E5%A5%94%E6%BA%83%E6%81%A2%E5%A4%8D%E5%8E%9F%E5%88%99" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>事务奔溃恢复原则</h4>
 <ul>
 <li>如果 redo log 里面的事务是完整的，也就是已经有了 commit 标识，则直接提交；</li>
-<li>如果 redo log 里面的事务只有完整的 prepare，则判断对应的事务 binlog 是否存在并完整：<br/>
-a. 如果是，则提交事务；<br/>
+<li>如果 redo log 里面的事务只有完整的 prepare，则判断对应的事务 binlog 是否存在并完整：<br />
+a. 如果是，则提交事务；<br />
 b. 否则，回滚事务。</li>
 </ul>
-
-<h4>sync_binlog</h4>
-
+<h4><a id="sync-binlog" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>sync_binlog</h4>
 <ul>
-<li>sync_binlog-&gt;binlog_group_commit_sync_no_delay_count </li>
+<li>sync_binlog-&gt;binlog_group_commit_sync_no_delay_count</li>
 </ul>
-
-<h4>binlog cache 是每个线程自己维护的，而 redo log buffer 是全局共用的？</h4>
-
+<h4><a id="binlog-cache%E6%98%AF%E6%AF%8F%E4%B8%AA%E7%BA%BF%E7%A8%8B%E8%87%AA%E5%B7%B1%E7%BB%B4%E6%8A%A4%E7%9A%84%EF%BC%8C%E8%80%8C-redo-log-buffer%E6%98%AF%E5%85%A8%E5%B1%80%E5%85%B1%E7%94%A8%E7%9A%84%EF%BC%9F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>binlog cache 是每个线程自己维护的，而 redo log buffer 是全局共用的？</h4>
 <ul>
 <li>MySQL 这么设计的主要原因是，binlog 是不能“被打断的”。一个事务的 binlog 必须连续写，因此要整个事务完成后，再一起写到文件里。</li>
 <li>而 redo log 并没有这个要求，中间有生成的日志可以写到 redo log buffer 中。redo log buffer 中的内容还能“搭便车”，其他事务提交的时候可以被一起写到磁盘中。</li>
@@ -256,29 +231,96 @@ b. 否则，回滚事务。</li>
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

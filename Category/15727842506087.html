@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,16 +139,15 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>输入输出</h4>
-
-<pre class="line-numbers"><code class="language-python">import re
+                    <h4><a id="%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>输入输出</h4>
+<pre><code class="language-python">import re
 
 def parse(text):
-    text = re.sub(r&#39;[^\w]&#39;, &#39; &#39;, text)
+    text = re.sub(r'[^\w]', ' ', text)
 
     text = text.lower()
 
-    word_list = text.split(&#39; &#39;)
+    word_list = text.split(' ')
 
     word_list = filter(None, word_list)
 
@@ -164,56 +163,50 @@ def parse(text):
     return sorted_word_cnt
 
 def main():
-  with open(&#39;./demo.txt&#39;, &#39;r&#39;) as fin:
+  with open('./demo.txt', 'r') as fin:
     text = fin.read()
 
   word_and_freq = parse(text)
 
   print(word_and_freq)
 
-  with open(&#39;./out.txt&#39;, &#39;w&#39;) as fout:
+  with open('./out.txt', 'w') as fout:
       for word, freq in word_and_freq:
-          fout.write(&#39;{}{}\n&#39;.format(word, freq))
+          fout.write('{}{}\n'.format(word, freq))
 
 
-if __name__ == &#39;__main__&#39;:
+if __name__ == '__main__':
     main()
 </code></pre>
-
-<h4>json</h4>
-
+<h4><a id="json" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>json</h4>
 <ul>
 <li>json.dumps() 这个函数，接受 Python 的基本数据类型，然后将其序列化为 string</li>
 <li>json.loads() 这个函数，接受一个合法字符串，然后将其反序列化为 Python 的基本数据类型。</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-python">import json
+<pre><code class="language-python">import json
 
 params = {
-    &#39;symbol&#39; : &#39;123456&#39;,
-    &#39;type&#39;: &#39;limit&#39;,
-    &#39;price&#39;: 123.4,
-    &#39;amount&#39;: 23
+    'symbol' : '123456',
+    'type': 'limit',
+    'price': 123.4,
+    'amount': 23
 }
 
 json_str = json.dumps(params)
 
 print(json_str)
 
-print(&#39;json_str {} params {}&#39;.format(type(json_str), params))
+print('json_str {} params {}'.format(type(json_str), params))
 
 origin_params = json.loads(json_str)
 
-print(&#39;type origin={}, origin={}&#39;.format(type(origin_params), origin_params))
+print('type origin={}, origin={}'.format(type(origin_params), origin_params))
 </code></pre>
-
-<h4>for&amp;while</h4>
-
+<h4><a id="for-while" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>for&amp;while</h4>
 <ul>
 <li>range() 函数是直接由 C 语言写的，调用它速度非常快。而 while 循环中的“i += 1”这个操作，得通过 Python 的解释器间接调用底层的 C 语言；并且这个简单的操作，又涉及到了对象的创建和删除（因为 i 是整型，是 immutable，i += 1 相当于 i = new int(i + 1)）。所以，显然，for 循环的效率更胜一筹</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-python">
+<pre><code class="language-python">
 i = 0
 while i &lt; 1000000:
     i += 1
@@ -221,20 +214,16 @@ while i &lt; 1000000:
 for i in range(0, 1000000):
     pass
 </code></pre>
-
-<h4>条件与循环的复用</h4>
-
-<pre class="line-numbers"><code class="language-python">expression for item in iterable if condition
+<h4><a id="%E6%9D%A1%E4%BB%B6%E4%B8%8E%E5%BE%AA%E7%8E%AF%E7%9A%84%E5%A4%8D%E7%94%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>条件与循环的复用</h4>
+<pre><code class="language-python">expression for item in iterable if condition
 
 [(xx, yy) for xx in x for yy in y if xx != yy]
 </code></pre>
-
-<h4>demo</h4>
-
-<pre class="line-numbers"><code class="language-python">attributes = [&#39;name&#39;, &#39;dob&#39;, &#39;gender&#39;]
-values = [[&#39;jason&#39;, &#39;2000-01-01&#39;, &#39;male&#39;],
-[&#39;mike&#39;, &#39;1999-01-01&#39;, &#39;male&#39;],
-[&#39;nancy&#39;, &#39;2001-02-01&#39;, &#39;female&#39;]
+<h4><a id="demo" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>demo</h4>
+<pre><code class="language-python">attributes = ['name', 'dob', 'gender']
+values = [['jason', '2000-01-01', 'male'],
+['mike', '1999-01-01', 'male'],
+['nancy', '2001-02-01', 'female']
 ]
 
 res = [dict(zip(attributes, value)) for value in values]
@@ -261,31 +250,96 @@ print(res)
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
-<script src="asset/prism.js"></script>
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   

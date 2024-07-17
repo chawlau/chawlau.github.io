@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,44 +139,61 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>TCP/IP问题</h4>
-
+                    <h4><a id="tcpip%E9%97%AE%E9%A2%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>TCP/IP问题</h4>
 <ul>
-<li>滑动窗口如何实现</li>
-<li>sk_buff是什么</li>
-<li>TCP_NODELAY设置,针对的是对端收到包的时候的ACK发送回来是立即发送还是延迟发送，</li>
-<li>epoll检测网络IO的时候，ET和LT如何判断</li>
-<li>服务器端出现大量close wait如何解决， 客户端大量close</li>
-<li><p>DDOS攻击 </p>
-<ul>
-<li>半连接队列越来越长，创建一些字节流结构体，导致内核协议栈数据不断变大，IO无法约束</li>
-<li>防火墙是等三次连接建立后才进行转发</li>
-<li>防火墙工作在ip层</li>
-<li>DDOS攻击tcp层</li>
-</ul></li>
-<li><p>发送和接收缓冲区设置为0会怎么样</p></li>
-<li><p>如何发送syn包 raw socket</p></li>
-<li><p>buffer一般设置多大比较合适 流数据2MB, 字节数据KB字节</p></li>
+<li>
+<p>滑动窗口如何实现</p>
+</li>
+<li>
+<p>sk_buff是什么</p>
+</li>
+<li>
+<p>TCP_NODELAY设置,针对的是对端收到包的时候的ACK发送回来是立即发送还是延迟发送，</p>
+</li>
+<li>
+<p>epoll检测网络IO的时候，ET和LT如何判断</p>
+</li>
+<li>
+<p>服务器端出现大量close wait如何解决， 客户端大量close</p>
+</li>
+<li>
+<p>DDOS攻击</p>
+</li>
+<li>
+<p>半连接队列越来越长，创建一些字节流结构体，导致内核协议栈数据不断变大，IO无法约束</p>
+</li>
+<li>
+<p>防火墙是等三次连接建立后才进行转发</p>
+</li>
+<li>
+<p>防火墙工作在ip层</p>
+</li>
+<li>
+<p>DDOS攻击tcp层</p>
+</li>
+<li>
+<p>发送和接收缓冲区设置为0会怎么样</p>
+</li>
+<li>
+<p>如何发送syn包 raw socket</p>
+</li>
+<li>
+<p>buffer一般设置多大比较合适 流数据2MB, 字节数据KB字节</p>
+</li>
 </ul>
-
-<h4>C10M</h4>
-
+<h4><a id="c10m" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>C10M</h4>
 <ul>
 <li>10M连接</li>
 <li>响应时间</li>
 <li>10M增长速度</li>
 <li>吞吐量-&gt; 10M</li>
 </ul>
-
-<h4>网卡作用</h4>
-
+<h4><a id="%E7%BD%91%E5%8D%A1%E4%BD%9C%E7%94%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>网卡作用</h4>
 <ul>
 <li>模拟信号转数字信号</li>
 <li>数字信号送入内核网络协议栈</li>
 </ul>
-
-<h4>软件中断和硬中断</h4>
-
+<h4><a id="%E8%BD%AF%E4%BB%B6%E4%B8%AD%E6%96%AD%E5%92%8C%E7%A1%AC%E4%B8%AD%E6%96%AD" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>软件中断和硬中断</h4>
 <ul>
 <li>软中断由操作系统发起</li>
 <li>硬中断没有操作系统参与</li>
@@ -203,29 +220,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,38 +139,27 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>动态追踪技术</h4>
-
+                    <p>####动态追踪技术</p>
 <ul>
 <li>动态追踪技术，通过探针机制，来采集内核或者应用程序的运行信息，从而可以不用修改内核和应用程序的代码，就获得丰富的信息，帮你分析、定位想要排查的问题。</li>
 </ul>
-
-<h4>DTrace工作原理</h4>
-
+<p>####DTrace工作原理</p>
 <ul>
 <li>它的运行常驻在内核中，用户可以通过 dtrace 命令，把 D 语言编写的追踪脚本，提交到内核中的运行时来执行。</li>
 </ul>
-
-<h4>动态追踪的机制</h4>
-
+<p>####动态追踪的机制</p>
 <ul>
 <li>Dtrace 和 SystemTap 都会把用户传入的追踪处理函数（一般称为 Action），关联到被称为探针的检测点上。这些探针，实际上也就是各种动态追踪技术所依赖的事件源</li>
 </ul>
-
-<h4>事件源</h4>
-
+<p>####事件源</p>
 <ul>
 <li>硬件事件通常由性能监控计数器 PMC（Performance Monitoring Counter）产生，包括了各种硬件的性能情况，比如 CPU 的缓存、指令周期、分支预测等等</li>
 <li>静态探针，是指事先在代码中定义好，并编译到应用程序或者内核中的探针，静态探针包括内核中的跟踪点（tracepoints）和 USDT（Userland Statically Defined Tracing）探针。</li>
-<li>动态探针 则是指没有事先在代码中定义，但却可以在运行时动态添加的探针 
-<ul>
+<li>动态探针 则是指没有事先在代码中定义，但却可以在运行时动态添加的探针</li>
 <li>kprobes 用来跟踪内核态的函数，包括用于函数调用的 kprobe 和用于函数返回的 kretprobe。</li>
 <li>uprobes 用来跟踪用户态的函数，包括用于函数调用的 uprobe 和用于函数返回的 uretprobe。</li>
-</ul></li>
 </ul>
-
-<h4>Linux追踪机制</h4>
-
+<p>####Linux追踪机制</p>
 <ul>
 <li>ftrace</li>
 <li>perf</li>
@@ -178,41 +167,31 @@
 <li>容器分析 sysdig</li>
 <li>SystemTap和BCC(BPF Compiler Collection)</li>
 </ul>
-
-<h4>strace的缺点</h4>
-
+<p>####strace的缺点</p>
 <ul>
 <li>由于 ptrace 是系统调用，就需要在内核态和用户态切换。当事件数量比较多时，繁忙的切换必然会影响原有服务的性能；</li>
 <li>ptrace 需要借助 SIGSTOP 信号挂起目标进程。这种信号控制和进程挂起，会影响目标进程的行为。</li>
 </ul>
-
-<h4>ftrace</h4>
-
+<p>####ftrace</p>
 <ul>
 <li>function 表示跟踪函数的执行，function_graph 则是跟踪函数的调用关系，追踪函数的执行过程</li>
-<li> trace-cmd record -p function_graph -g do_sys_open -O funcgraph-proc ls</li>
-<li> trace-cmd report</li>
+<li>trace-cmd record -p function_graph -g do_sys_open -O funcgraph-proc ls</li>
+<li>trace-cmd report</li>
 </ul>
-
-<h4>拓展阅读</h4>
-
+<p>####拓展阅读</p>
 <ul>
 <li><a href="https://leezhenghui.github.io/linux/2019/03/05/exploring-usdt-on-linux.html">https://leezhenghui.github.io/linux/2019/03/05/exploring-usdt-on-linux.html</a></li>
 </ul>
-
-<h4>perf添加探针</h4>
-
-<pre class="line-numbers"><code class="language-text">perf probe --add do_sys_open
+<p>####perf添加探针</p>
+<pre><code class="language-plain_text">perf probe --add do_sys_open
 perf record -e probe:do_sys_open -aR sleep 10
 perf script
 </code></pre>
-
 <ul>
 <li>追踪用户空间的库函数</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-text"># 为 /bin/bash 添加 readline 探针
-$ perf probe -x /bin/bash &#39;readline%return +0($retval):string’
+<pre><code class="language-plain_text"># 为 /bin/bash 添加 readline 探针
+$ perf probe -x /bin/bash 'readline%return +0($retval):string’
 # 采样记录
 $ perf record -e probe_bash:readline__return -aR sleep 5
 # 查看结果
@@ -220,37 +199,28 @@ $ perf script
 # 跟踪完成后删除探针
 $ perf probe --del probe_bash:readline__return
 </code></pre>
-
-<h4>eBPF和BCC</h4>
-
+<p>####eBPF和BCC</p>
 <ul>
-<li>eBPF工作原理
-<img src="media/15533912218590/15533978673142.jpg" alt=""/></li>
+<li>eBPF工作原理<br />
+<img src="media/15533912218590/15533978673142.jpg" alt="" /></li>
 <li>从用户跟踪程序生成 BPF 字节码；</li>
 <li>加载到内核中运行；</li>
 <li>向用户空间输出结果。</li>
 </ul>
-
-<h4>SystemTap和sysdig</h4>
-
+<p>####SystemTap和sysdig</p>
 <ul>
-<li> sysdig = strace + tcpdump + htop + iftop + lsof + docker inspect。</li>
+<li>sysdig = strace + tcpdump + htop + iftop + lsof + docker inspect。</li>
 </ul>
-
-<h4>使用方法</h4>
-
+<p>####使用方法</p>
 <ul>
 <li>在不需要很高灵活性的场景中，使用 perf 对性能事件进行采样，然后再配合火焰图辅助分析，就是最常用的一种方法；</li>
 <li>而需要对事件或函数调用进行统计分析（比如观察不同大小的 I/O 分布）时，就要用 SystemTap 或者 eBPF，通过一些自定义的脚本来进行数据处理。</li>
 </ul>
-
-<h4>sysdig监控容器</h4>
-
+<p>####sysdig监控容器</p>
 <ul>
 <li>容器</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-text">查看机器上运行的容器列表及其资源使用情况
+<pre><code class="language-plain_text">查看机器上运行的容器列表及其资源使用情况
 sudo csysdig -vcontainers 
 查看容器上下文的进程列表 sudo csysdig -pc 
 查看运行在wordpress1容器里CPU的使用率
@@ -287,31 +257,96 @@ sudo sysdig -pc -c spy_users container.name=wordpress1
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
-<script src="asset/prism.js"></script>
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   

@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,50 +139,39 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>构成</h4>
-
+                    <h4><a id="%E6%9E%84%E6%88%90" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>构成</h4>
 <ul>
 <li>埋点数据收集，负责在服务端进行埋点，来收集服务调用的上下文数据。</li>
 <li>实时数据处理，负责对收集到的链路信息，按照 traceId 和 spanId 进行串联和存储。</li>
 <li>数据链路展示，把处理后的服务调用数据，按照调用链的形式展示出来。</li>
 </ul>
-
-<h4>开源实现</h4>
-
+<h4><a id="%E5%BC%80%E6%BA%90%E5%AE%9E%E7%8E%B0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>开源实现</h4>
 <ul>
 <li>阿里的鹰眼、Twitter 开源的 OpenZipkin，还有 Naver 开源的 Pinpoint</li>
 </ul>
-
-<h4>OpenZipkin</h4>
-
+<h4><a id="openzipkin" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>OpenZipkin</h4>
 <ul>
-<li><img src="media/15497683539807/699916c60cd31a2b8d7ab0335038cf33.png" alt="699916c60cd31a2b8d7ab0335038cf33"/></li>
+<li><img src="media/15497683539807/699916c60cd31a2b8d7ab0335038cf33.png" alt="699916c60cd31a2b8d7ab0335038cf33" /></li>
 <li>Collector：负责收集探针 Reporter 埋点采集的数据，经过验证处理并建立索引。</li>
 <li>Storage：存储服务调用的链路数据，默认使用的是 Cassandra，是因为 Twitter 内部大量使用了 Cassandra，你也可以替换成 Elasticsearch 或者 MySQL。</li>
 <li>API：将格式化和建立索引的链路数据以 API 的方式对外提供服务，比如被 UI 调用。</li>
 <li>UI：以图形化的方式展示服务调用的链路数据</li>
 </ul>
-
-<h4>Pinpoint</h4>
-
+<h4><a id="pinpoint" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Pinpoint</h4>
 <ul>
-<li><img src="media/15497683539807/d8b526a56b633c34364924a2d00905a4.png" alt="d8b526a56b633c34364924a2d00905a4"/></li>
+<li><img src="media/15497683539807/d8b526a56b633c34364924a2d00905a4.png" alt="d8b526a56b633c34364924a2d00905a4" /></li>
 <li>Pinpoint Agent：通过 Java 字节码注入的方式，来收集 JVM 中的调用数据，通过 UDP 协议传递给 Collector，数据采用 Thrift 协议进行编码。</li>
 <li>Pinpoint Collector：收集 Agent 传过来的数据，然后写到 HBase Storgage。</li>
 <li>HBase Storage：采用 HBase 集群存储服务调用的链路信息。</li>
 <li>Pinpoint Web UI：通过 Web UI 展示服务调用的详细链路信息。</li>
 </ul>
-
-<h4>服务追踪系统</h4>
-
+<h4><a id="%E6%9C%8D%E5%8A%A1%E8%BF%BD%E8%B8%AA%E7%B3%BB%E7%BB%9F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>服务追踪系统</h4>
 <ul>
 <li>埋点探针支持平台的广泛性</li>
 <li>系统集成难易程度</li>
 <li>调用链路数据的精确度</li>
 </ul>
-
-<h4>OpenZipkin 在探针采集完数据后有两种方式把数据传递给 Collector，一种是通过 HTTP 调用，一种是基于 MQ 的异步通信方式，比如使用 RabbitMQ 或者 Kafka，你觉得哪种方式更好一些？为什么？</h4>
-
+<h4><a id="openzipkin%E5%9C%A8%E6%8E%A2%E9%92%88%E9%87%87%E9%9B%86%E5%AE%8C%E6%95%B0%E6%8D%AE%E5%90%8E%E6%9C%89%E4%B8%A4%E7%A7%8D%E6%96%B9%E5%BC%8F%E6%8A%8A%E6%95%B0%E6%8D%AE%E4%BC%A0%E9%80%92%E7%BB%99-collector%EF%BC%8C%E4%B8%80%E7%A7%8D%E6%98%AF%E9%80%9A%E8%BF%87-http%E8%B0%83%E7%94%A8%EF%BC%8C%E4%B8%80%E7%A7%8D%E6%98%AF%E5%9F%BA%E4%BA%8E-mq%E7%9A%84%E5%BC%82%E6%AD%A5%E9%80%9A%E4%BF%A1%E6%96%B9%E5%BC%8F%EF%BC%8C%E6%AF%94%E5%A6%82%E4%BD%BF%E7%94%A8-rabbitmq%E6%88%96%E8%80%85-kafka%EF%BC%8C%E4%BD%A0%E8%A7%89%E5%BE%97%E5%93%AA%E7%A7%8D%E6%96%B9%E5%BC%8F%E6%9B%B4%E5%A5%BD%E4%B8%80%E4%BA%9B%EF%BC%9F%E4%B8%BA%E4%BB%80%E4%B9%88%EF%BC%9F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>OpenZipkin 在探针采集完数据后有两种方式把数据传递给 Collector，一种是通过 HTTP 调用，一种是基于 MQ 的异步通信方式，比如使用 RabbitMQ 或者 Kafka，你觉得哪种方式更好一些？为什么？</h4>
 <ul>
 <li></li>
 </ul>
@@ -207,29 +196,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

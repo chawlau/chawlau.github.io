@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,15 +139,13 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>特点</h4>
-
+                    <h4><a id="%E7%89%B9%E7%82%B9" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>特点</h4>
 <ul>
 <li>是个匿名函数, 可调用的代码单元</li>
 <li>返回类型可以自动推导，可以省略</li>
 <li>没有参数的时候()可以省略·</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-cpp">auto f = [](int a)-&gt;int {
+<pre><code class="language-C++">auto f = [](int a)-&gt;int {
     return a + 1;
   };
 
@@ -157,49 +155,40 @@
 
   auto f2 = [] {return  2;};
 </code></pre>
-
-<h4>捕获列表</h4>
-
+<h4><a id="%E6%8D%95%E8%8E%B7%E5%88%97%E8%A1%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>捕获列表</h4>
 <ul>
 <li>捕获一定范围内的变量</li>
 <li>lambda可以捕获局部静态变量</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-cpp">  static int i = 9;
+<pre><code class="language-C++">  static int i = 9;
   auto f3 = [] {
     return i;
   };
 
 </code></pre>
-
 <ul>
 <li>[&amp;] 捕获所有外部变量</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-cpp">  int j = 9;
+<pre><code class="language-C++">  int j = 9;
   auto f4 = [&amp;] {
     j = 10;
   };
   f4();
 </code></pre>
-
 <ul>
 <li>[=] 值使用，只能用，不能修改</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-cpp">auto f5 = [=] {
+<pre><code class="language-C++">auto f5 = [=] {
     cout &lt;&lt; &quot;j &quot; &lt;&lt; j &lt;&lt; endl;
   };
   f5();
 
 </code></pre>
-
 <ul>
 <li>[this] 用于类中，拥有和成员函数一样的权限</li>
 <li>[变量名] 表示按值捕获，同时不捕获其他变量，按值分隔</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-cpp">class CT {
+<pre><code class="language-C++">class CT {
  public:
   int m_i = 5;
   void func(int x, int y) {
@@ -213,12 +202,10 @@
   }
 };
 </code></pre>
-
 <ul>
 <li>[=,&amp;变量名] 按值捕获所有变量, 但按引用捕获&amp;中所指的变量，第一个都是默认捕获，隐式捕获方式，其他的是显式捕获，后面的引用方式是相反的[&amp;,x]</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-cpp"> int x = 2, y = 3;
+<pre><code class="language-C++"> int x = 2, y = 3;
   auto f6 = [=, &amp;x, &amp;y] {
     cout &lt;&lt; &quot;j &quot; &lt;&lt; j &lt;&lt; endl;
   };
@@ -229,53 +216,43 @@
   };
   f6();
 </code></pre>
-
-<h4>lambda表达式延迟调用易出错</h4>
-
-<pre class="line-numbers"><code class="language-cpp">  int x1 = 5;
+<h4><a id="lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%BB%B6%E8%BF%9F%E8%B0%83%E7%94%A8%E6%98%93%E5%87%BA%E9%94%99" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>lambda表达式延迟调用易出错</h4>
+<pre><code class="language-C++">  int x1 = 5;
   auto f8 = [=] {
     return x1;
   };
   x1 = 10;
   cout &lt;&lt; f8() &lt;&lt; endl;//5
 </code></pre>
-
 <ul>
 <li>lamda表达式引用外部变量的那一刻，复制了一份存储在表达式中</li>
 <li>如果采用引用，就不会出错</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-cpp"> int x1 = 5;
+<pre><code class="language-C++"> int x1 = 5;
   auto f8 = [&amp;] {
     return x1;
   };
   x1 = 10;
   cout &lt;&lt; f8() &lt;&lt; endl;//5
 </code></pre>
-
-<h4>mutable</h4>
-
-<pre class="line-numbers"><code class="language-cpp">  int x2 = 5;
+<h4><a id="mutable" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>mutable</h4>
+<pre><code class="language-C++">  int x2 = 5;
   auto f9 = [=]() mutable {
     x2 = 7;
     return x2;
   };
   cout &lt;&lt; f9() &lt;&lt; endl;
 </code></pre>
-
 <ul>
 <li>可以修改按值捕获的变量</li>
 </ul>
-
-<h4>表达式类型和存储</h4>
-
+<h4><a id="%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%B1%BB%E5%9E%8B%E5%92%8C%E5%AD%98%E5%82%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>表达式类型和存储</h4>
 <ul>
 <li>Closure Type</li>
 <li>闭包 函数内的函数，本质就是lambda表达式创建时运行时间对象</li>
 <li>闭包类的类型的对象，可以认为是带有operator()的类型的对象</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-cpp">int x = 5;
+<pre><code class="language-C++">int x = 5;
 auto f = [&amp;] {
   return x;
 }
@@ -289,10 +266,8 @@ function&lt;int(int)&gt; fc2 = bind(
       16
       );
 </code></pre>
-
-<h4>总结</h4>
-
-<pre class="line-numbers"><code class="language-cpp">  vector&lt;int&gt; vec = {10,20,30,40,50};
+<h4><a id="%E6%80%BB%E7%BB%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>总结</h4>
+<pre><code class="language-C++">  vector&lt;int&gt; vec = {10,20,30,40,50};
   int sum = 0;
   for_each (vec.begin(), vec.end(), [&amp;sum](int val) {
             sum += val;
@@ -328,31 +303,96 @@ function&lt;int(int)&gt; fc2 = bind(
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
-<script src="asset/prism.js"></script>
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   

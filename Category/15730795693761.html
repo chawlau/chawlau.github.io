@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,34 +139,25 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>模式定义</h4>
-
+                    <h4><a id="%E6%A8%A1%E5%BC%8F%E5%AE%9A%E4%B9%89" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>模式定义</h4>
 <ul>
 <li>使用原型实例指定创建对象的种类，然后通过拷贝这些原型来创建新的对象。</li>
 </ul>
-
-<h4>结构</h4>
-
-<p><img src="media/15730795693761/15806429826202.jpg" alt="" style="width:719px;"/></p>
-
-<h4>动机</h4>
-
+<h4><a id="%E7%BB%93%E6%9E%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>结构</h4>
+<p><img src="media/15730795693761/15806429826202.jpg" alt="" style="width:719px;" /></p>
+<h4><a id="%E5%8A%A8%E6%9C%BA" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>动机</h4>
 <ul>
 <li>在软件系统中，经常面临着“某些结构复杂的对象“的创建工作；由于需求的变化，这些对象经常面临着剧烈的变化，但是它们却拥有七较稳定一致的接口。</li>
 <li>如何应对这种变化？如何向“客户程序（使用这些对象的程序）“隔离出“这些易变对象”，从而使得“依赖这些易变对象的客户程序”不随着需求改变而改变？</li>
 </ul>
-
-<h4>要点总结</h4>
-
+<h4><a id="%E8%A6%81%E7%82%B9%E6%80%BB%E7%BB%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>要点总结</h4>
 <ul>
 <li>Prototype 模式同样用于隔离类对象的使用者和具体类型（易变类）之间的耦合关系，它同样要求这些“易变类”拥有“稳定的接口“”。</li>
 <li>Prototype 模式对于“如何创建易变类的实体对象”“采用“原型克隆”的方法来做，它使得我们可以非常灵活地动态创建“拥有某些稳定接口“的新对象一一所需工作仅仅是注册一个新类的对象（即原型然后在任何需要的地方 Clone。</li>
 <li>Prototype 模式中的 Clone 方法可以利用某些框架中的序列化来实现深拷贝。</li>
 </ul>
-
-<h4>cpp_demo</h4>
-
-<pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
+<h4><a id="cpp-demo" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>cpp_demo</h4>
+<pre><code class="language-C++">#include &lt;iostream&gt;
 
 using namespace std;
 
@@ -202,10 +193,8 @@ int main() {
   m3-&gt;Play();
 }
 </code></pre>
-
-<h3>golang_demo</h3>
-
-<pre class="line-numbers"><code class="language-go">package prototype
+<h3><a id="golang-demo" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>golang_demo</h3>
+<pre><code class="language-go">package prototype
 
 import &quot;fmt&quot;
 
@@ -233,10 +222,8 @@ func TestPrototype(t *testing.T) {
         m3.Play()
 }
 </code></pre>
-
-<h4>python_code</h4>
-
-<pre class="line-numbers"><code class="language-python">
+<h4><a id="python-code" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>python_code</h4>
+<pre><code class="language-python">
 from abc import ABCMeta, abstractmethod
 
 class Prototype(metaclass=ABCMeta):
@@ -253,7 +240,7 @@ class Knight(object):
 
         file_name = &quot;./{}_{}.dat&quot;.format(self.unit_type, level)
         print(file_name)
-        with open(file_name, &#39;r&#39;) as parameter_file:
+        with open(file_name, 'r') as parameter_file:
             lines = parameter_file.read().split(&quot;\n&quot;)
             self.life = lines[0]
             self.attack_power = lines[1]
@@ -283,7 +270,7 @@ class Archer(object):
 
         file_name = &quot;./{}_{}.dat&quot;.format(self.unit_type, level)
         print(file_name)
-        with open(file_name, &#39;r&#39;) as parameter_file:
+        with open(file_name, 'r') as parameter_file:
             lines = parameter_file.read().split(&quot;\n&quot;)
             self.life = lines[0]
             self.attack_power = lines[1]
@@ -323,134 +310,130 @@ class Barracks(object):
         return self.units[unit_type][level].clone()
 
 
-if __name__ == &#39;__main__&#39;:
+if __name__ == '__main__':
     barracks = Barracks()
     archer1 = barracks.build_units(&quot;archer&quot;, 2)
     knight1 = barracks.build_units(&quot;knight&quot;, 1)
-    print(&#39;knight {}&#39;.format(knight1))
-    print(&#39;archer {}&#39;.format(archer1))
+    print('knight {}'.format(knight1))
+    print('archer {}'.format(archer1))
 </code></pre>
-
-<h4>建筑者和简历</h4>
-
-<pre class="line-numbers"><code class="language-go">package design_pattern
+<h4><a id="%E5%BB%BA%E7%AD%91%E8%80%85%E5%92%8C%E7%AE%80%E5%8E%86" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>建筑者和简历</h4>
+<pre><code class="language-go">package design_pattern
 
 type ProtoType interface {
-    clone() ProtoType
+	clone() ProtoType
 }
 
 type Knight struct {
-    Name,Weapon string
+	Name,Weapon string
 }
 
 func (k *Knight) clone() ProtoType {
-    knight := (*k)
-    return &amp;knight
+	knight := (*k)
+	return &amp;knight
 }
 
 func (k *Knight) setWeapon(weapon string) {
-    k.Weapon = weapon
+	k.Weapon = weapon
 }
 
 type Archer struct {
-    Name,Weapon string
+	Name,Weapon string
 }
 
 func (r *Archer) clone() ProtoType {
-    archer := (*r)
-    return &amp;archer
+	archer := (*r)
+	return &amp;archer
 }
 
 type Barracks struct {
-    units map[string]interface{}
+	units map[string]interface{}
 }
 
 func NewBarracks() *Barracks {
-    return &amp;Barracks{
-        units: make(map[string]interface{}),
-    }
+	return &amp;Barracks{
+		units: make(map[string]interface{}),
+	}
 }
 
 func (b *Barracks) Add(name string, types ProtoType) {
-    b.units[name] = types
+	b.units[name] = types
 }
 
 func (b *Barracks) Build(name string) ProtoType {
-    return b.units[name].(ProtoType).clone()
+	return b.units[name].(ProtoType).clone()
 }
 
 type WorkExperience struct {
-    date, company string
+	date, company string
 }
 
 
 func (w *WorkExperience) clone() ProtoType {
-    work := (*w)
-    return &amp;work
+	work := (*w)
+	return &amp;work
 }
 
 type PersonInfo struct {
-    name, sex, age string
+	name, sex, age string
 }
 
 type Resume struct {
-    name, sex, age string
-    work *WorkExperience
+	name, sex, age string
+	work *WorkExperience
 }
 
 func (r *Resume) clone() ProtoType {
-    resume := &amp;Resume{
-        name: r.name,
-    }
-    return resume
+	resume := &amp;Resume{
+		name: r.name,
+	}
+	return resume
 }
 
 func (r *Resume) setPerson(sex, age string) {
-    r.sex, r.age = sex, age
+	r.sex, r.age = sex, age
 }
 
 func (r *Resume) setWork(date, company string) {
-    r.work = &amp;WorkExperience{}
-    r.work.date, r.work.company = date, company
+	r.work = &amp;WorkExperience{}
+	r.work.date, r.work.company = date, company
 }
 
 package design_pattern
 
 import (
-    &quot;fmt&quot;
-    &quot;testing&quot;
+	&quot;fmt&quot;
+	&quot;testing&quot;
 )
 
 func TestPrototype(t *testing.T) {
-    barracks := NewBarracks()
-    knight := &amp;Knight{&quot;knight&quot;, &quot;long bow&quot;}
-    archer := &amp;Archer{&quot;archer&quot;, &quot;short bow&quot;}
-    barracks.Add(&quot;knight&quot;, knight)
-    barracks.Add(&quot;archer&quot;, archer)
+	barracks := NewBarracks()
+	knight := &amp;Knight{&quot;knight&quot;, &quot;long bow&quot;}
+	archer := &amp;Archer{&quot;archer&quot;, &quot;short bow&quot;}
+	barracks.Add(&quot;knight&quot;, knight)
+	barracks.Add(&quot;archer&quot;, archer)
 
-    k1 := barracks.Build(&quot;knight&quot;)
-    a1 := barracks.Build(&quot;archer&quot;)
-    k2 := barracks.Build(&quot;knight&quot;)
-    a2 := barracks.Build(&quot;archer&quot;)
-    fmt.Println(k1, a1)
-    fmt.Println(k2, a2)
+	k1 := barracks.Build(&quot;knight&quot;)
+	a1 := barracks.Build(&quot;archer&quot;)
+	k2 := barracks.Build(&quot;knight&quot;)
+	a2 := barracks.Build(&quot;archer&quot;)
+	fmt.Println(k1, a1)
+	fmt.Println(k2, a2)
 }
 
 func TestResume(t *testing.T) {
-    var resume ProtoType = &amp;Resume{name : &quot;a&quot;}
-    resume.(*Resume).setPerson(&quot;male&quot;, &quot;29&quot;)
-    resume.(*Resume).setWork(&quot;2019-02-01&quot;, &quot;apple&quot;)
+	var resume ProtoType = &amp;Resume{name : &quot;a&quot;}
+	resume.(*Resume).setPerson(&quot;male&quot;, &quot;29&quot;)
+	resume.(*Resume).setWork(&quot;2019-02-01&quot;, &quot;apple&quot;)
 
-    resume2 := resume.clone()
-    resume2.(*Resume).setPerson(&quot;male&quot;, &quot;30&quot;)
-    resume2.(*Resume).setWork(&quot;2019-02-17&quot;, &quot;alia&quot;)
-    fmt.Println(resume, resume2)
+	resume2 := resume.clone()
+	resume2.(*Resume).setPerson(&quot;male&quot;, &quot;30&quot;)
+	resume2.(*Resume).setWork(&quot;2019-02-17&quot;, &quot;alia&quot;)
+	fmt.Println(resume, resume2)
 }
 </code></pre>
-
-<h4>cpp_code</h4>
-
-<pre class="line-numbers"><code class="language-cpp">//
+<h4><a id="cpp-code" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>cpp_code</h4>
+<pre><code class="language-C++">//
 // Created by eredinliu on 2020-02-02.
 //
 
@@ -476,11 +459,11 @@ public:
     }
 
     void Show() {
-        cout &lt;&lt; &quot;I&#39;m &quot; &lt;&lt; this-&gt;name_ &lt;&lt; &quot; age &quot; &lt;&lt; this-&gt;age_ &lt;&lt; endl;
+        cout &lt;&lt; &quot;I'm &quot; &lt;&lt; this-&gt;name_ &lt;&lt; &quot; age &quot; &lt;&lt; this-&gt;age_ &lt;&lt; endl;
     }
 
     void Coding() {
-        cout &lt;&lt; &quot;I&#39;m programmer, coding change world \n&quot;;
+        cout &lt;&lt; &quot;I'm programmer, coding change world \n&quot;;
     }
 
 private:
@@ -495,49 +478,45 @@ int main() {
     clone-&gt;Show();
 }
 </code></pre>
-
-<h4>golang_code</h4>
-
-<pre class="line-numbers"><code class="language-go">package desian_pattern_practise
+<h4><a id="golang-code" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>golang_code</h4>
+<pre><code class="language-go">package desian_pattern_practise
 
 
 type IClone interface {
-    Clone() IClone
-    Show()
-    Coding()
+	Clone() IClone
+	Show()
+	Coding()
 }
 
 type Career struct {
-    name, age string
+	name, age string
 }
 
 func (c *Career) Show() {
-    println(&quot;I&#39;m&quot;, c.name, &quot;Age&quot;, c.age)
+	println(&quot;I'm&quot;, c.name, &quot;Age&quot;, c.age)
 }
 
 func (c *Career) Coding() {
-    println(&quot;I&#39;m programmer, coding change world&quot;)
+	println(&quot;I'm programmer, coding change world&quot;)
 }
 
 func (c *Career) Clone() IClone {
-    return &amp;Career{
-        name: c.name,
-        age: c.age,
-    }
+	return &amp;Career{
+		name: c.name,
+		age: c.age,
+	}
 }
 
 func TestCareer_Clone(t *testing.T) {
-    career := &amp;Career{&quot;ming&quot;, &quot;IT&quot;}
+	career := &amp;Career{&quot;ming&quot;, &quot;IT&quot;}
 
-    var c1 IClone = career.Clone()
-    c1.Show()
-    c1.Coding()
+	var c1 IClone = career.Clone()
+	c1.Show()
+	c1.Coding()
 }
 </code></pre>
-
-<h4>python_code</h4>
-
-<pre class="line-numbers"><code class="language-python">from copy import copy, deepcopy
+<h4><a id="python-code" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>python_code</h4>
+<pre><code class="language-python">from copy import copy, deepcopy
 
 class Clone(object):
 
@@ -554,20 +533,20 @@ class Person(Clone):
         self.__age = age
 
     def show(self):
-        print(&quot;I&#39;m {} age {}&quot;.format(self.__name, self.__age))
+        print(&quot;I'm {} age {}&quot;.format(self.__name, self.__age))
 
     def coding(self):
-        print(&quot;I&#39;m programmer, coding change world&quot;)
+        print(&quot;I'm programmer, coding change world&quot;)
 
     def reading(self):
-        print(&#39;reading make me happy&#39;)
+        print('reading make me happy')
 
     def fall_love(self):
-        print(&#39;fall in love&#39;)
+        print('fall in love')
 
-if __name__ == &#39;__main__&#39;:
+if __name__ == '__main__':
 
-    tony = Person(&#39;tony&#39;, 27)
+    tony = Person('tony', 27)
     tony.show()
     tony.coding()
 
@@ -596,31 +575,96 @@ if __name__ == &#39;__main__&#39;:
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
-<script src="asset/prism.js"></script>
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   

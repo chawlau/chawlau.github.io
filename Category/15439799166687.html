@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,33 +139,27 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>mysql选择索引依据</h4>
-
+                    <h4><a id="mysql%E9%80%89%E6%8B%A9%E7%B4%A2%E5%BC%95%E4%BE%9D%E6%8D%AE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>mysql选择索引依据</h4>
 <ul>
 <li>扫描行数</li>
 <li>是否使用临时表</li>
 <li>是否排序</li>
 </ul>
-
-<h4>Mysql获取索引基数</h4>
-
+<h4><a id="mysql%E8%8E%B7%E5%8F%96%E7%B4%A2%E5%BC%95%E5%9F%BA%E6%95%B0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Mysql获取索引基数</h4>
 <ul>
 <li>采样统计的时候，InnoDB 默认会选择 N 个数据页，统计这些页面上的不同值，得到一个平均值，然后乘以这个索引的页面数，就得到了这个索引的基数。</li>
 <li>而数据表是会持续更新的，索引统计信息也不会固定不变。所以，当变更的数据行数超过 1/M 的时候，会自动触发重新做一次索引统计。</li>
 <li>设置为 on 的时候，表示统计信息会持久化存储。这时，默认的 N 是 20，M 是 10。</li>
 <li>设置为 off 的时候，表示统计信息只存储在内存中。这时，默认的 N 是 8，M 是 16。</li>
 </ul>
-
-<h4>索引选择不准确矫正</h4>
-
+<h4><a id="%E7%B4%A2%E5%BC%95%E9%80%89%E6%8B%A9%E4%B8%8D%E5%87%86%E7%A1%AE%E7%9F%AB%E6%AD%A3" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>索引选择不准确矫正</h4>
 <ul>
 <li>索引统计信息不准确导致的问题，你可以用 analyze table 来解决。</li>
 <li>优化器误判的情况，你可以在应用端用force index来强行指定索引</li>
 <li>也可以通过修改语句来引导优化器</li>
 <li>还可以通过增加或者删除索引来绕过这个问题</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-text"> CREATE TABLE `t` (
+<pre><code class="language-plain_text"> CREATE TABLE `t` (
   `id` int(11) NOT NULL,
   `a` int(11) DEFAULT NULL,
   `b` int(11) DEFAULT NULL,
@@ -174,39 +168,29 @@
   KEY `b` (`b`)
 ) ENGINE=InnoDB
 </code></pre>
-
-<h4>开启慢查询日志</h4>
-
-<pre class="line-numbers"><code class="language-text">  show variables like &#39;log_%&#39;;
+<h4><a id="%E5%BC%80%E5%90%AF%E6%85%A2%E6%9F%A5%E8%AF%A2%E6%97%A5%E5%BF%97" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>开启慢查询日志</h4>
+<pre><code class="language-plain_text">  show variables like 'log_%';
   set sql_long_query=0;
   set global long_query_time=0;
   show variables like &quot;%slow%&quot;;
-  set slow_query_log=&#39;ON&#39;;
+  set slow_query_log='ON';
   show variables like &quot;%slow%&quot;;
 </code></pre>
-
-<h4>查询优化</h4>
-
-<pre class="line-numbers"><code class="language-text">mysql&gt; select * from t where a between 10000 and 20000 and b between 50000 and 100000 order by b limit 1;
+<h4><a id="%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>查询优化</h4>
+<pre><code class="language-plain_text">mysql&gt; select * from t where a between 10000 and 20000 and b between 50000 and 100000 order by b limit 1;
 Empty set (0.05 sec)
 
 mysql&gt; select * from t force index(a) where a between 10000 and 20000 and b between 50000 and 100000 order by b limit 1;
 Empty set (0.02 sec)
 </code></pre>
-
-<h4>清空查询缓存</h4>
-
-<pre class="line-numbers"><code class="language-text"> reset query cache;
+<h4><a id="%E6%B8%85%E7%A9%BA%E6%9F%A5%E8%AF%A2%E7%BC%93%E5%AD%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>清空查询缓存</h4>
+<pre><code class="language-plain_text"> reset query cache;
 </code></pre>
-
-<h4>选择错误索引原因</h4>
-
+<h4><a id="%E9%80%89%E6%8B%A9%E9%94%99%E8%AF%AF%E7%B4%A2%E5%BC%95%E5%8E%9F%E5%9B%A0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>选择错误索引原因</h4>
 <ul>
 <li>每次从索引 a 上拿到一个值，都要回到主键索引上查出整行数据，这个代价优化器也要算进去的。如果选择扫描 10 万行，是直接在主键索引上扫描的，没有额外的代价。优化器会估算这两个选择的代价，从结果看来，优化器认为直接扫描主键索引更快。当然，从执行时间看来，这个选择并不是最优的。</li>
 </ul>
-
-<h4>优化错误索引</h4>
-
+<h4><a id="%E4%BC%98%E5%8C%96%E9%94%99%E8%AF%AF%E7%B4%A2%E5%BC%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>优化错误索引</h4>
 <ul>
 <li>force index</li>
 <li>修改语句，引导mysql使用我们期望的索引</li>
@@ -234,31 +218,96 @@ Empty set (0.02 sec)
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
-<script src="asset/prism.js"></script>
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   

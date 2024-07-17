@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,60 +139,46 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>基准测试的目的</h4>
-
+                    <h4><a id="%E5%9F%BA%E5%87%86%E6%B5%8B%E8%AF%95%E7%9A%84%E7%9B%AE%E7%9A%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>基准测试的目的</h4>
 <ul>
 <li>建立mysql服务器的性能基准线</li>
 <li>模拟比当前系统更高的负载，找出系统的扩展瓶劲</li>
 <li>测试不同硬件，软件和操作系统</li>
 <li>证明新的硬件设备是否配置正确</li>
 </ul>
-
-<h4>基准测试常见指标</h4>
-
+<h4><a id="%E5%9F%BA%E5%87%86%E6%B5%8B%E8%AF%95%E5%B8%B8%E8%A7%81%E6%8C%87%E6%A0%87" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>基准测试常见指标</h4>
 <ul>
 <li>TPS</li>
 <li>QPS</li>
-<li>响应时间
-<ul>
+<li>响应时间</li>
 <li>平均响应时间，最小响应时间，最大响应时间，各时间响应百分比</li>
-</ul></li>
 <li>并发量</li>
 <li>正在工作中的并发的操作数或同事工作的数量</li>
 </ul>
-
-<h4>计划和设计基准测试</h4>
-
+<h4><a id="%E8%AE%A1%E5%88%92%E5%92%8C%E8%AE%BE%E8%AE%A1%E5%9F%BA%E5%87%86%E6%B5%8B%E8%AF%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>计划和设计基准测试</h4>
 <ul>
 <li>整个系统还是单一组件</li>
 <li>使用什么样的数据</li>
 </ul>
-
-<h4>基准测试的步骤</h4>
-
+<h4><a id="%E5%9F%BA%E5%87%86%E6%B5%8B%E8%AF%95%E7%9A%84%E6%AD%A5%E9%AA%A4" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>基准测试的步骤</h4>
 <ul>
 <li>准备基准测试数据和收集脚本</li>
 <li>运行基准测试</li>
 <li>保存以及分析基准测试结果</li>
 </ul>
-
-<h4>基准测试的问题</h4>
-
+<p>####基准测试的问题</p>
 <ul>
 <li>使用生产环境数据，只使用了部分数据</li>
 <li>多用户场景，只做单用户测试</li>
 <li>单服务器上测试分布式应用</li>
 <li>反复执行同一个查询，容易命中缓存，无法反应真实的查询性能</li>
 </ul>
-
-<h4>mysqlslap</h4>
-
+<h4><a id="mysqlslap" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>mysqlslap</h4>
 <ul>
 <li>可以模拟服务器负载，并输出相关统计信息可以指定也可以自动生成查询语句</li>
 <li>常用参数说明</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-mysql">--auto-generate-sql由系统自动生成SQL脚本进行测试
+<pre><code class="language-mysql">--auto-generate-sql由系统自动生成SQL脚本进行测试
 --auto-generate-sql-add-autoincrement在牛成的表中增加自增ID
 --auto-generate sql-load-type指定测试中使用的询类型
 --auto-generate sql-write number指定初始化数据时生成的数据量
@@ -208,21 +194,15 @@
 --query 用于指定自定义 SQL 的脚本
 --only-print 并不运行测试脚本，而是把生成的脚本打
 </code></pre>
-
-<h4>测试案例</h4>
-
-<pre class="line-numbers"><code class="language-text">mysqlslap --concurrency=1,50,100,200 --iterations=3 --number-int-cols=5 --number-char-cols=5 --auto-generate-sql --auto-generate-sql-add-autoincrement --engine=myisam,innodb --number-of-queries=10 --create-schema=sbtest -uroot -pL19880901c-
+<h4><a id="%E6%B5%8B%E8%AF%95%E6%A1%88%E4%BE%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>测试案例</h4>
+<pre><code class="language-plain_text">mysqlslap --concurrency=1,50,100,200 --iterations=3 --number-int-cols=5 --number-char-cols=5 --auto-generate-sql --auto-generate-sql-add-autoincrement --engine=myisam,innodb --number-of-queries=10 --create-schema=sbtest -uroot -pL19880901c-
 </code></pre>
-
-<h4>sysbench</h4>
-
-<h5>常用参数</h5>
-
+<h4><a id="sysbench" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>sysbench</h4>
+<h5><a id="%E5%B8%B8%E7%94%A8%E5%8F%82%E6%95%B0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>常用参数</h5>
 <ul>
-<li>test 用于指定所要执行的测试类型，支持以下参数 Fileid 文件系统 O 性能測试 cpu cpu&#39;性能试 memory 内存性能观试 oltp 测试要指定具体的 lua 脚本</li>
+<li>test 用于指定所要执行的测试类型，支持以下参数 Fileid 文件系统 O 性能測试 cpu cpu'性能试 memory 内存性能观试 oltp 测试要指定具体的 lua 脚本</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-sql">mysqa-db 用于指定执行基准测试的数据库名
+<pre><code class="language-sql">mysqa-db 用于指定执行基准测试的数据库名
 mysql-table-engine 用于指定所使用的存储引擎
 oltp-tables-count 执行测试的表的数量
 oltp-table-size 指定每个表中的数据行数
@@ -235,17 +215,13 @@ prepare 用于准备测试数据
 run 用于实际进行测试
 cleanup 用于清理测试数据
 </code></pre>
-
-<h4>测试案例</h4>
-
-<pre class="line-numbers"><code class="language-text">sysbench --test=cpu --cpu-max-prime=10000 run
+<h4><a id="%E6%B5%8B%E8%AF%95%E6%A1%88%E4%BE%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>测试案例</h4>
+<pre><code class="language-plain_text">sysbench --test=cpu --cpu-max-prime=10000 run
 sysbench --test-fileio --num-thread=8 --init-rng=on --file-total-size=5G \
 --file-test-mode=rndrw --report-interval=1s
 </code></pre>
-
-<h5>mysql性能测试</h5>
-
-<pre class="line-numbers"><code class="language-text">sysbench ./oltp.lua --mysql-host=192.168.31.186 --mysql-port=3306 --mysql-user=root --mysql-password=&quot;L19880901c-&quot; --mysq1-table-engine=innodb --oltp-tables-count=10 --oltp-table-size=100000 --threads=10 --time=120 --report-interval=10 prepare
+<h5><a id="mysql%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>mysql性能测试</h5>
+<pre><code class="language-plain_text">sysbench ./oltp.lua --mysql-host=192.168.31.186 --mysql-port=3306 --mysql-user=root --mysql-password=&quot;L19880901c-&quot; --mysq1-table-engine=innodb --oltp-tables-count=10 --oltp-table-size=100000 --threads=10 --time=120 --report-interval=10 prepare
 </code></pre>
 
                   </article>
@@ -268,31 +244,96 @@ sysbench --test-fileio --num-thread=8 --init-rng=on --file-total-size=5G \
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
-<script src="asset/prism.js"></script>
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   

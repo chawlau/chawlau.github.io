@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,8 +139,7 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>复制</h4>
-
+                    <h4><a id="%E5%A4%8D%E5%88%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>复制</h4>
 <ul>
 <li>实现在不同服务器上的数据分布</li>
 <li>实现数据读取的负载均衡</li>
@@ -148,18 +147,13 @@
 <li>实现数据库高可用和故障切换</li>
 <li>实现数据库在线升级</li>
 </ul>
-
-<h4>binlog</h4>
-
-<h5>statement</h5>
-
+<h4><a id="binlog" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>binlog</h4>
+<h5><a id="statement" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>statement</h5>
 <ul>
-<li>基于段的格式
-<img src="media/15691944800581/15691948341088.jpg" alt="" style="width:1183px;"/></li>
+<li>基于段的格式<br />
+<img src="media/15691944800581/15691948341088.jpg" alt="" style="width:1183px;" /></li>
 </ul>
-
-<h5>row</h5>
-
+<h5><a id="row" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>row</h5>
 <ul>
 <li>基于行的格式</li>
 <li>同-SQL 语句修改了 10000 条数据的情况下基于段的日志格式只会记录这个 SQL 语句</li>
@@ -173,34 +167,25 @@
 <li>minimal：在before和after影像中，仅仅记录被更改的以及能够唯一识别数据行的列值；</li>
 <li>noblob：在before和after影像中，记录所有的列值，但是BLOB 与 TEXT列除外（如未更改）。</li>
 </ul>
-
-<h5>mixed</h5>
-
+<h5><a id="mixed" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>mixed</h5>
 <ul>
 <li>根据SQL语句由系统决定在基于段和基于行的日志格式中进行选择</li>
 </ul>
-
-<h5>建议</h5>
-
+<h5><a id="%E5%BB%BA%E8%AE%AE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>建议</h5>
 <ul>
 <li>row</li>
 <li>minimal</li>
 </ul>
-
-<h5>复制总结</h5>
-
-<h5>基于SQL语句的复制（SBR)</h5>
-
+<h5><a id="%E5%A4%8D%E5%88%B6%E6%80%BB%E7%BB%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>复制总结</h5>
+<h5><a id="%E5%9F%BA%E4%BA%8Esql%E8%AF%AD%E5%8F%A5%E7%9A%84%E5%A4%8D%E5%88%B6%EF%BC%88sbr" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>基于SQL语句的复制（SBR)</h5>
 <ul>
-<li>二进制日志格式使用的是 statement </li>
+<li>二进制日志格式使用的是 statement</li>
 <li>缺点</li>
 <li>对于非确定性事件，无法保证主从复制数据的一致性</li>
 <li>对于存储过程，触法器，自定义函数进行的修改也可能造成数据不一致</li>
 <li>相比于基于行的复制方式在从上执行时需要更多的行锁</li>
 </ul>
-
-<h5>基于行的复制（RBR)</h5>
-
+<h5><a id="%E5%9F%BA%E4%BA%8E%E8%A1%8C%E7%9A%84%E5%A4%8D%E5%88%B6%EF%BC%88rbr" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>基于行的复制（RBR)</h5>
 <ul>
 <li>二进制日志格式使用的是基于行的日志格式</li>
 <li>优点</li>
@@ -210,59 +195,45 @@
 <li>要求主从数据庳的表结构相同，否则可能会中断复制</li>
 <li>无法在从服务器上单独执行触法器</li>
 </ul>
-
-<h4>复制工作方式</h4>
-
+<h4><a id="%E5%A4%8D%E5%88%B6%E5%B7%A5%E4%BD%9C%E6%96%B9%E5%BC%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>复制工作方式</h4>
 <ul>
 <li>主将变更写入二进制日志</li>
 <li>从读取主的二进制日志变更并写入到 Relay_log 中</li>
 <li>在从上重放 relay_log 中的日志</li>
 <li>基于 SQL 段的日志是在从库上重新执行记录的 SQL 基王行的日赤则是在从库上直接应用对数据库行的修改</li>
 </ul>
-
-<h4>主配置</h4>
-
-<pre class="line-numbers"><code class="language-text">bin_log=mysql-bin
+<h4><a id="%E4%B8%BB%E9%85%8D%E7%BD%AE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>主配置</h4>
+<pre><code class="language-plain_text">bin_log=mysql-bin
 server_id=100
 </code></pre>
-
-<h4>从服务器配置</h4>
-
-<pre class="line-numbers"><code class="language-text">bin_log=mysql-bin
+<h4><a id="%E4%BB%8E%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%85%8D%E7%BD%AE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>从服务器配置</h4>
+<pre><code class="language-plain_text">bin_log=mysql-bin
 server_id=100
 relay_log=mysql-relay-bin
 log_slave_update=on //链路配置
 read_only=on //防止错误配置
 </code></pre>
-
-<h4>GTID</h4>
-
+<h4><a id="gtid" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>GTID</h4>
 <ul>
 <li>GTID 即全局事务 ID，其保证为每一个在主上提交的事务在复制集群中可以生成一个唯一的 ID</li>
 <li>source_id:transaction_id</li>
-<li>Create table. Select<br/>
+<li>Create table. Select<br />
 在事务中使用 Create temporary table 建立临时表使用关联更新事务表和非事务表都是会报错的</li>
 </ul>
-
-<h4>从服务器</h4>
-
-<pre class="line-numbers"><code class="language-text">Log-slave-updates = on read_only=on【建议】
+<h4><a id="%E4%BB%8E%E6%9C%8D%E5%8A%A1%E5%99%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>从服务器</h4>
+<pre><code class="language-plain_text">Log-slave-updates = on read_only=on【建议】
 master info_ repository= TABLE【建议】
 relay_log_info_ repository= TABLE【建议】
 gtid_mode =on
 enforce-gtid-consistency
 </code></pre>
-
 <ul>
 <li>查询授权</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-text">select user,host  from user;
-show grants for shui@&#39;192.168.31.%&#39;
+<pre><code class="language-plain_text">select user,host  from user;
+show grants for shui@'192.168.31.%'
 </code></pre>
-
-<h4>GTID复制的优缺点</h4>
-
+<h4><a id="gtid%E5%A4%8D%E5%88%B6%E7%9A%84%E4%BC%98%E7%BC%BA%E7%82%B9" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>GTID复制的优缺点</h4>
 <ul>
 <li>优点</li>
 <li>可以很方便的进行故障转移从库不会丢失主库上的任何修改</li>
@@ -270,34 +241,25 @@ show grants for shui@&#39;192.168.31.%&#39;
 <li>故障处理比较复杂</li>
 <li>对执行的 SQL 有一定的限制</li>
 </ul>
-
-<h4>选择复制模式要考虑的问题</h4>
-
+<h4><a id="%E9%80%89%E6%8B%A9%E5%A4%8D%E5%88%B6%E6%A8%A1%E5%BC%8F%E8%A6%81%E8%80%83%E8%99%91%E7%9A%84%E9%97%AE%E9%A2%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>选择复制模式要考虑的问题</h4>
 <ul>
 <li>所使用的MYSQL版本</li>
 <li>复制架构及主从切换的方式</li>
 <li>所使用的高可用管理组件</li>
 </ul>
-
-<h4>复制拓扑</h4>
-
+<h4><a id="%E5%A4%8D%E5%88%B6%E6%8B%93%E6%89%91" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>复制拓扑</h4>
 <ul>
 <li>MYSQL5.7 之前，一个从库只能有一个主库</li>
 <li>MYSQL5.7 之后支持一从多主架构</li>
 </ul>
-
-<h4>一主多从</h4>
-
+<h4><a id="%E4%B8%80%E4%B8%BB%E5%A4%9A%E4%BB%8E" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>一主多从</h4>
 <ul>
 <li>为不同业务使用不同的从库</li>
 <li>将一台从库放到远程 IDC，用作灾备恢复</li>
 <li>分担主库的读负载，由于要复制主库的写，所以不能分担写负载</li>
 </ul>
-
-<h4>主主复制拓扑</h4>
-
-<h5>主主模式</h5>
-
+<h4><a id="%E4%B8%BB%E4%B8%BB%E5%A4%8D%E5%88%B6%E6%8B%93%E6%89%91" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>主主复制拓扑</h4>
+<h5><a id="%E4%B8%BB%E4%B8%BB%E6%A8%A1%E5%BC%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>主主模式</h5>
 <ul>
 <li>产生数据冲突而造成复制链路的中断</li>
 <li>耗费大量的时间</li>
@@ -307,9 +269,7 @@ show grants for shui@&#39;192.168.31.%&#39;
 <li>auto increment increment= 2</li>
 <li>auto_increment_offset=12</li>
 </ul>
-
-<h4>主备</h4>
-
+<h4><a id="%E4%B8%BB%E5%A4%87" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>主备</h4>
 <ul>
 <li>只有一台主服务器对外提供服务</li>
 <li>一台服务器处于只读状态并且只作为热备使用在对外提供服务的主库出现故障或是计划性的维护时才会进行切换</li>
@@ -319,33 +279,25 @@ show grants for shui@&#39;192.168.31.%&#39;
 <li>确保两台服务器上已经启动 biolog 并且有不同的 server id</li>
 <li>在两台服务器上启用 log_ slave_ updates 参数在初始的备库上启用 read_only</li>
 </ul>
-
-<h4>拓扑结构</h4>
-
-<p><img src="media/15691944800581/15692711891670.jpg" alt="" style="width:1026px;"/></p>
-
+<h4><a id="%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>拓扑结构</h4>
+<p><img src="media/15691944800581/15692711891670.jpg" alt="" style="width:1026px;" /></p>
 <ul>
-<li>级联复制
-<img src="media/15691944800581/15692712403802.jpg" alt="" style="width:1034px;"/></li>
+<li>级联复制<br />
+<img src="media/15691944800581/15692712403802.jpg" alt="" style="width:1034px;" /></li>
 </ul>
-
-<h4>复制优化</h4>
-
+<h4><a id="%E5%A4%8D%E5%88%B6%E4%BC%98%E5%8C%96" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>复制优化</h4>
 <ul>
 <li>控制主库的事务大小分割大事务,大表修改无法分割</li>
 <li>二进制日志传输时间 mixed，row-&gt;set binlog_row_image=minimal;</li>
 <li>默认情况下从只有一个 SQ인L 线程，主上并发的修改在从上变成了串行</li>
 <li>在 MYSQL5.7 中可以按照逻辑时钟的方式来分配 SQL 线程</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-text">stop slave;
-set global slave_parallel_type=&#39;logical_clock&#39;;
+<pre><code class="language-plain_text">stop slave;
+set global slave_parallel_type='logical_clock';
 set global slave_parallel_workers=4; 
 start slave;
 </code></pre>
-
-<h4>复制常见问题</h4>
-
+<h4><a id="%E5%A4%8D%E5%88%B6%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>复制常见问题</h4>
 <ul>
 <li>主库或从库意外宕机引起的错误</li>
 <li>使用跳过二进制日志事件</li>
@@ -357,36 +309,28 @@ start slave;
 <li>不唯一的 server id 或 server_uuid</li>
 <li>max_allow_packeti 设置引起的主从复制错</li>
 </ul>
-
-<h4>复制解决不了的问题</h4>
-
+<h4><a id="%E5%A4%8D%E5%88%B6%E8%A7%A3%E5%86%B3%E4%B8%8D%E4%BA%86%E7%9A%84%E9%97%AE%E9%A2%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>复制解决不了的问题</h4>
 <ul>
 <li>分担主数据库的写负载</li>
 <li>自动进行故障转移及主从切换</li>
 <li>提供读写分离功能</li>
 </ul>
-
-<h4>高可用</h4>
-
-<p><img src="media/15691944800581/15692724432770.jpg" alt="" style="width:723px;"/></p>
-
-<h5>避免导致系统不可用的因素，减少系统不可用的时间</h5>
-
+<h4><a id="%E9%AB%98%E5%8F%AF%E7%94%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>高可用</h4>
+<p><img src="media/15691944800581/15692724432770.jpg" alt="" style="width:723px;" /></p>
+<h5><a id="%E9%81%BF%E5%85%8D%E5%AF%BC%E8%87%B4%E7%B3%BB%E7%BB%9F%E4%B8%8D%E5%8F%AF%E7%94%A8%E7%9A%84%E5%9B%A0%E7%B4%A0%EF%BC%8C%E5%87%8F%E5%B0%91%E7%B3%BB%E7%BB%9F%E4%B8%8D%E5%8F%AF%E7%94%A8%E7%9A%84%E6%97%B6%E9%97%B4" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>避免导致系统不可用的因素，减少系统不可用的时间</h5>
 <ul>
 <li>建立完善的监控及报警系统</li>
 <li>对备份数据进行恢复测试</li>
 <li>正确配置数据库环境</li>
 <li>对不需要的数据进行归档和清理</li>
 </ul>
-
-<h5>增加系统冗余，保证发生系统不可用时可以尽快恢复</h5>
-
+<h5><a id="%E5%A2%9E%E5%8A%A0%E7%B3%BB%E7%BB%9F%E5%86%97%E4%BD%99%EF%BC%8C%E4%BF%9D%E8%AF%81%E5%8F%91%E7%94%9F%E7%B3%BB%E7%BB%9F%E4%B8%8D%E5%8F%AF%E7%94%A8%E6%97%B6%E5%8F%AF%E4%BB%A5%E5%B0%BD%E5%BF%AB%E6%81%A2%E5%A4%8D" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>增加系统冗余，保证发生系统不可用时可以尽快恢复</h5>
 <ul>
 <li>避免存在单点故障</li>
-<li>利用SUN共享存储或DRDB磁盘复制解决MYSQL单点故障
-<img src="media/15691944800581/15693677885166.jpg" alt="" style="width:637px;"/></li>
-<li>利用多写集群或NDB集群来解决Mysql单点故障
-<img src="media/15691944800581/15693678313849.jpg" alt="" style="width:377px;"/></li>
+<li>利用SUN共享存储或DRDB磁盘复制解决MYSQL单点故障<br />
+<img src="media/15691944800581/15693677885166.jpg" alt="" style="width:637px;" /></li>
+<li>利用多写集群或NDB集群来解决Mysql单点故障<br />
+<img src="media/15691944800581/15693678313849.jpg" alt="" style="width:377px;" /></li>
 <li>利用MySQL主从复制来解决MySQL单点故障</li>
 <li>问题</li>
 <li>主服务器切换后如何通知应用新的主服务器的 IP 地址</li>
@@ -394,36 +338,28 @@ start slave;
 <li>如何处理从服务器和新主服务器之间的那种复制关系</li>
 <li>主从切换及故障转移</li>
 </ul>
-
-<h4>MMM</h4>
-
+<h4><a id="mmm" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>MMM</h4>
 <ul>
 <li>监控和管理 MYSQL 的主主复制拓扑，并在当前的主服务器失效时，进行主和主备服务器之间的主从切换和故障转移等工作</li>
 <li>MMM监控 MySQL 主从复制健康情况</li>
 <li>在主库出现宕机时进行故障转移并自动配置其它从对新主的复制</li>
-<li><img src="media/15691944800581/15693682010691.jpg" alt="" style="width:888px;"/>
-<img src="media/15691944800581/15693681373072.jpg" alt="" style="width:670px;"/></li>
-<li>提供了主，写虚拟 IP，在主从服务器出现问题时可以自动迁移虚拟 IP
-<img src="media/15691944800581/15693682624344.jpg" alt="" style="width:918px;"/></li>
+<li><img src="media/15691944800581/15693682010691.jpg" alt="" style="width:888px;" /><br />
+<img src="media/15691944800581/15693681373072.jpg" alt="" style="width:670px;" /></li>
+<li>提供了主，写虚拟 IP，在主从服务器出现问题时可以自动迁移虚拟 IP<br />
+<img src="media/15691944800581/15693682624344.jpg" alt="" style="width:918px;" /></li>
 </ul>
-
-<h5>需要资源</h5>
-
-<p><img src="media/15691944800581/15693682900151.jpg" alt="" style="width:947px;"/></p>
-
-<h5>部署步骤</h5>
-
+<h5><a id="%E9%9C%80%E8%A6%81%E8%B5%84%E6%BA%90" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>需要资源</h5>
+<p><img src="media/15691944800581/15693682900151.jpg" alt="" style="width:947px;" /></p>
+<h5><a id="%E9%83%A8%E7%BD%B2%E6%AD%A5%E9%AA%A4" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>部署步骤</h5>
 <ul>
 <li>配置主主复制及主从同步集群</li>
 <li>安装主从节点所需要的支持包</li>
 <li>安装及配置 MMM 工具集</li>
-<li>运行 MMM 监控服务测试
-<img src="media/15691944800581/15693685291641.jpg" alt="" style="width:651px;"/></li>
-<li><img src="media/15691944800581/15693685352329.jpg" alt="" style="width:883px;"/></li>
+<li>运行 MMM 监控服务测试<br />
+<img src="media/15691944800581/15693685291641.jpg" alt="" style="width:651px;" /></li>
+<li><img src="media/15691944800581/15693685352329.jpg" alt="" style="width:883px;" /></li>
 </ul>
-
-<h5>优点</h5>
-
+<h5><a id="%E4%BC%98%E7%82%B9" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>优点</h5>
 <ul>
 <li>使用 PerI 脚本语言开发及完全开源</li>
 <li>提供了读写 VIP（虚拟 IP），使服务器角色的变更对前端应用透明</li>
@@ -432,9 +368,7 @@ start slave;
 <li>MMM 提供了主数据库故障转移后从服务器对新主的重新同步功能</li>
 <li>很容易对发生故障的主数据库重新上线</li>
 </ul>
-
-<h5>缺点</h5>
-
+<h5><a id="%E7%BC%BA%E7%82%B9" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>缺点</h5>
 <ul>
 <li>发布时间比较早不支持 MYSQLI 新的复制功能</li>
 <li>不支持多线程复制功能</li>
@@ -442,18 +376,14 @@ start slave;
 <li>在进行主从切换时，容易造成数据丟失，重复递交事务</li>
 <li>MMM 监控服务存在单点故障</li>
 </ul>
-
-<h4>MHA</h4>
-
+<h4><a id="mha" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>MHA</h4>
 <ul>
 <li>30秒内完成切换</li>
 <li>监控主数据库服务器是否可用</li>
 <li>当主 DB 不可用时，从多个从服务器中选举出新的主数据库服务器</li>
 <li>提供了主从切换和故障转移功能</li>
 </ul>
-
-<h5>主从切换流程</h5>
-
+<h5><a id="%E4%B8%BB%E4%BB%8E%E5%88%87%E6%8D%A2%E6%B5%81%E7%A8%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>主从切换流程</h5>
 <ul>
 <li>尝试从出现故障的主数据库保存二进制日志</li>
 <li>从多个备选从服务器中选举出新的备选主服务器</li>
@@ -461,52 +391,37 @@ start slave;
 <li>应用从原主 DB 服器上保存的二进制日志</li>
 <li>迁移集群中的其它从 DB 作为新的主 DB 的从服务器</li>
 </ul>
-
-<h5>MHA架构</h5>
-
-<p><img src="media/15691944800581/15693704382563.jpg" alt="" style="width:757px;"/></p>
-
+<h5><a id="mha%E6%9E%B6%E6%9E%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>MHA架构</h5>
+<p><img src="media/15691944800581/15693704382563.jpg" alt="" style="width:757px;" /></p>
 <ul>
-<li><img src="media/15691944800581/15693704552779.jpg" alt="" style="width:643px;"/></li>
+<li><img src="media/15691944800581/15693704552779.jpg" alt="" style="width:643px;" /></li>
 </ul>
-
-<h5>配置步骤</h5>
-
+<h5><a id="%E9%85%8D%E7%BD%AE%E6%AD%A5%E9%AA%A4" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>配置步骤</h5>
 <ul>
 <li>建立主从复制集群</li>
 <li>配制 MHA 管理节点</li>
 <li>使用 masterha_ check_ssh 和 masterha_ check_repl 对配置进行检验</li>
 <li>启动并测试 MHA 服务</li>
 </ul>
-
-<h4>MHA的优点和缺点</h4>
-
-<h5>优点</h5>
-
+<h4><a id="mha%E7%9A%84%E4%BC%98%E7%82%B9%E5%92%8C%E7%BC%BA%E7%82%B9" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>MHA的优点和缺点</h4>
+<h5><a id="%E4%BC%98%E7%82%B9" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>优点</h5>
 <ul>
 <li>同样是由 Per 语言开发的开源工具</li>
 <li>可以支持基于 GTD 的复制模式</li>
 <li>MHA 在进行故障转移时更不易产生数据丟失</li>
 <li>同一个监控节点可以监控多个集群</li>
 </ul>
-
-<h5>缺点</h5>
-
+<h5><a id="%E7%BC%BA%E7%82%B9" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>缺点</h5>
 <ul>
 <li>需要编写脚本或利用第三方工具来实现 Vip 的配置</li>
 <li>MHA 启动后只会对主数据库进行监控，不能排查从服务器故障</li>
 <li>需要基于 SSH 兔认证配置，存在一定的安全隐患</li>
 <li>没有提供从服务器的读负载均衡功能</li>
 </ul>
-
-<h4>负载均衡</h4>
-
-<h4>读写分离</h4>
-
-<p><img src="media/15691944800581/15696236063092.jpg" alt="" style="width:1110px;"/></p>
-
-<h5>程序实现读写分离</h5>
-
+<h4><a id="%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>负载均衡</h4>
+<h4><a id="%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>读写分离</h4>
+<p><img src="media/15691944800581/15696236063092.jpg" alt="" style="width:1110px;" /></p>
+<h5><a id="%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%8E%B0%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>程序实现读写分离</h5>
 <ul>
 <li>优点</li>
 <li>由开发人员控制什么样查询在从库中执行，因此比较灵活</li>
@@ -515,9 +430,7 @@ start slave;
 <li>增加了开发的工作量，使程序代码更加复杂</li>
 <li>人为控制，容易出现错误</li>
 </ul>
-
-<h5>中间件来实现读写分离</h5>
-
+<h5><a id="%E4%B8%AD%E9%97%B4%E4%BB%B6%E6%9D%A5%E5%AE%9E%E7%8E%B0%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>中间件来实现读写分离</h5>
 <ul>
 <li>mysql-proxy</li>
 <li>maxScale</li>
@@ -527,16 +440,12 @@ start slave;
 <li>缺点</li>
 <li>由于增加了中间层，所以对查询效率有损耗 消耗50%</li>
 </ul>
-
-<h5>总结</h5>
-
+<h5><a id="%E6%80%BB%E7%BB%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>总结</h5>
 <ul>
 <li>读写分离要解决的是如何在复制集群的不同角色上，去执行不同的 SQL 语句。</li>
 <li>读的负载均衡主要解决的是具有相同角色的数据库，如何共同分担相同的负载。</li>
 </ul>
-
-<h4>MaxScale</h4>
-
+<h4><a id="maxscale" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>MaxScale</h4>
 <ul>
 <li>Authentication 认证插件</li>
 <li>Protocal 协议插件</li>
@@ -544,10 +453,8 @@ start slave;
 <li>Monitor 监控插件</li>
 <li>Filter&amp;Logging 日志和过滤插件</li>
 </ul>
-
-<h4>高可用架构</h4>
-
-<p><img src="media/15691944800581/15696250203347.jpg" alt="" style="width:1204px;"/></p>
+<h4><a id="%E9%AB%98%E5%8F%AF%E7%94%A8%E6%9E%B6%E6%9E%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>高可用架构</h4>
+<p><img src="media/15691944800581/15696250203347.jpg" alt="" style="width:1204px;" /></p>
 
                   </article>
                   <div class="comments-wrap">
@@ -569,31 +476,96 @@ start slave;
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
-<script src="asset/prism.js"></script>
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   

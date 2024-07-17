@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,39 +139,31 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>索引类型</h4>
-
-<h4>B+tree索引</h4>
-
+                    <h4><a id="%E7%B4%A2%E5%BC%95%E7%B1%BB%E5%9E%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>索引类型</h4>
+<h4><a id="b-tree%E7%B4%A2%E5%BC%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>B+tree索引</h4>
 <ul>
 <li>B-tree 过引以 B+树的结构存储数据</li>
 <li>Innodb通过主键。Myisam通过物理位置引用物理行</li>
 <li>B-tree 索引能够加快数据的查询速度</li>
 <li>B-tree 索引更适合进行范围查找</li>
 </ul>
-
-<h5>能够使用索引的场景</h5>
-
+<h5><a id="%E8%83%BD%E5%A4%9F%E4%BD%BF%E7%94%A8%E7%B4%A2%E5%BC%95%E7%9A%84%E5%9C%BA%E6%99%AF" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>能够使用索引的场景</h5>
 <ul>
 <li>全值匹配的查询</li>
 <li>匹配最左前缀的查询</li>
-<li>匹配列前缀查询 orders_sn like &#39;9876%&#39;</li>
-<li>匹配范围值的查询 </li>
+<li>匹配列前缀查询 orders_sn like '9876%'</li>
+<li>匹配范围值的查询</li>
 <li>精确匹配左前列并范围匹配另外一列</li>
 <li>只访问索引的查询 覆盖索引</li>
 </ul>
-
-<h5>使用限制</h5>
-
+<h5><a id="%E4%BD%BF%E7%94%A8%E9%99%90%E5%88%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>使用限制</h5>
 <ul>
 <li>如果不是按照索引最左列开始查找，则无法使用索引</li>
 <li>使用索引时不能跳过索引中的列</li>
 <li>Not in和&lt;&gt;无法使用</li>
 <li>如果査询中有某个列的范围查询，则其右边所有列都无法使用索引</li>
 </ul>
-
-<h4>Hash索引</h4>
-
+<h4><a id="hash%E7%B4%A2%E5%BC%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Hash索引</h4>
 <ul>
 <li>只能等值查询</li>
 <li>Hash 索引是基于 Hash 表实现的，只有查询条件精确匹配 Hash 索引中的所有列时，才能够使用到 hash 索引。</li>
@@ -181,47 +173,33 @@
 <li>Hash 索引不支持部分索引查找也不支持范闺查找</li>
 <li>Hash 索引中 Hash 码的计算可能存在 Hash冲突</li>
 </ul>
-
-<h4>为什么使用索引</h4>
-
+<h4><a id="%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8%E7%B4%A2%E5%BC%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>为什么使用索引</h4>
 <ul>
 <li>索引大大減少了存储引孳需要扫描的数据量</li>
 <li>索引可以帮助我们进行排序以避免使用临时表</li>
 <li>索引可以把随机I/O変为顺序I/O</li>
 </ul>
-
-<h4>索引是不是越多越好</h4>
-
+<h4><a id="%E7%B4%A2%E5%BC%95%E6%98%AF%E4%B8%8D%E6%98%AF%E8%B6%8A%E5%A4%9A%E8%B6%8A%E5%A5%BD" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>索引是不是越多越好</h4>
 <ul>
 <li>索引会增加写操作的成本</li>
 <li>太多的索引会增加查询优化器的选择时间</li>
 </ul>
-
-<h4>索引优化策略</h4>
-
-<h5>索引列上不能使用表达式或函数</h5>
-
-<p><img src="media/15697112820357/15697127274946.jpg" alt="" style="width:1103px;"/></p>
-
-<h5>前缀索引和索引列的选择性</h5>
-
-<p><img src="media/15697112820357/15697128097620.jpg" alt="" style="width:952px;"/></p>
-
+<h4><a id="%E7%B4%A2%E5%BC%95%E4%BC%98%E5%8C%96%E7%AD%96%E7%95%A5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>索引优化策略</h4>
+<h5><a id="%E7%B4%A2%E5%BC%95%E5%88%97%E4%B8%8A%E4%B8%8D%E8%83%BD%E4%BD%BF%E7%94%A8%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%88%96%E5%87%BD%E6%95%B0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>索引列上不能使用表达式或函数</h5>
+<p><img src="media/15697112820357/15697127274946.jpg" alt="" style="width:1103px;" /></p>
+<h5><a id="%E5%89%8D%E7%BC%80%E7%B4%A2%E5%BC%95%E5%92%8C%E7%B4%A2%E5%BC%95%E5%88%97%E7%9A%84%E9%80%89%E6%8B%A9%E6%80%A7" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>前缀索引和索引列的选择性</h5>
+<p><img src="media/15697112820357/15697128097620.jpg" alt="" style="width:952px;" /></p>
 <ul>
-<li>索引的选择性是不重复的索引值和表的记录数的比值
-<img src="media/15697112820357/15697128954405.jpg" alt="" style="width:700px;"/></li>
+<li>索引的选择性是不重复的索引值和表的记录数的比值<br />
+<img src="media/15697112820357/15697128954405.jpg" alt="" style="width:700px;" /></li>
 </ul>
-
-<h5>联合索引</h5>
-
+<h5><a id="%E8%81%94%E5%90%88%E7%B4%A2%E5%BC%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>联合索引</h5>
 <ul>
 <li>经常会被使用到的列优先</li>
 <li>选择高的列优先</li>
 <li>宽度小的列优先</li>
 </ul>
-
-<h5>覆盖索引</h5>
-
+<h5><a id="%E8%A6%86%E7%9B%96%E7%B4%A2%E5%BC%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>覆盖索引</h5>
 <ul>
 <li>可以优化缓存，减少磁盘IO操作</li>
 <li>可以减少随机 IO，変随机 IO 操作变为 O 操作</li>
@@ -232,43 +210,32 @@
 <li>査询中使用了太多的列</li>
 <li>使用了双%号的 like 查询</li>
 </ul>
-
-<h4>适用索引来优化查询</h4>
-
-<h5>通过排序操作</h5>
-
+<h4><a id="%E9%80%82%E7%94%A8%E7%B4%A2%E5%BC%95%E6%9D%A5%E4%BC%98%E5%8C%96%E6%9F%A5%E8%AF%A2" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>适用索引来优化查询</h4>
+<h5><a id="%E9%80%9A%E8%BF%87%E6%8E%92%E5%BA%8F%E6%93%8D%E4%BD%9C" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>通过排序操作</h5>
 <ul>
 <li>innodb索引顺序和主键顺序是一致的</li>
 <li>索引的列顺序和 Order By 子句的顺序完全一致</li>
-<li>索引中所有列的方向升序降序和 Order by 子句完全致 Order by 中的字段全部在关联表中的第一张表中
-<img src="media/15697112820357/15697147233050.jpg" alt="" style="width:1733px;"/></li>
+<li>索引中所有列的方向升序降序和 Order by 子句完全致 Order by 中的字段全部在关联表中的第一张表中<br />
+<img src="media/15697112820357/15697147233050.jpg" alt="" style="width:1733px;" /></li>
 </ul>
-
-<h5>按照索引顺序扫描数据</h5>
-
-<h4>模拟hash索引</h4>
-
+<h5><a id="%E6%8C%89%E7%85%A7%E7%B4%A2%E5%BC%95%E9%A1%BA%E5%BA%8F%E6%89%AB%E6%8F%8F%E6%95%B0%E6%8D%AE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>按照索引顺序扫描数据</h5>
+<h4><a id="%E6%A8%A1%E6%8B%9Fhash%E7%B4%A2%E5%BC%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>模拟hash索引</h4>
 <ul>
 <li>只能处理键值的全值匹配查找</li>
 <li>所使用的 Hash 函数决定着索引键的大小</li>
 </ul>
-
-<h4>索引效果</h4>
-
+<h4><a id="%E7%B4%A2%E5%BC%95%E6%95%88%E6%9E%9C" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>索引效果</h4>
 <ul>
 <li>减少锁定的行数</li>
 <li>加快锁的释放，增加并发</li>
 </ul>
-
-<h4>索引的维护和优化</h4>
-
+<h4><a id="%E7%B4%A2%E5%BC%95%E7%9A%84%E7%BB%B4%E6%8A%A4%E5%92%8C%E4%BC%98%E5%8C%96" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>索引的维护和优化</h4>
 <ul>
 <li>删除重复和冗余的索引</li>
 <li>使用工具pt-duplicat-key-checker h = 127.0.0.1</li>
 <li>查找未被使用过的索引</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-text">select object_schema,object_name,index_name,b.`TABLE_ROWS` FROM  
+<pre><code class="language-plain_text">select object_schema,object_name,index_name,b.`TABLE_ROWS` FROM  
 performance_schema.table_io_waits_summary_by_index_usage a 
 JOIN information_schema.tables b ON
 a.`OBJECT_SCHEMA`=b.`TABLE_SCHEMA` AND
@@ -277,7 +244,6 @@ WHERE index_name IS NOT NULL
 AND count_star = 0
 ORDER BY object_schema,object_name;
 </code></pre>
-
 <ul>
 <li>更新索引统计信息较少索引碎片</li>
 <li>analysz table table_name</li>
@@ -305,31 +271,96 @@ ORDER BY object_schema,object_name;
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
-<script src="asset/prism.js"></script>
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   

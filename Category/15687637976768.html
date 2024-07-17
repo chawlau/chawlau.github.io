@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,8 +139,7 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>导航</h4>
-
+                    <h4><a id="%E5%AF%BC%E8%88%AA" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>导航</h4>
 <ul>
 <li>消息如何保障 100%的投递成功？</li>
 <li>幂等性概念详解</li>
@@ -151,40 +150,28 @@
 <li>消息的限流</li>
 <li>TTL 消息</li>
 </ul>
-
-<h4>消息有序性</h4>
-
+<h4><a id="%E6%B6%88%E6%81%AF%E6%9C%89%E5%BA%8F%E6%80%A7" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>消息有序性</h4>
 <ul>
 <li>exclude</li>
 <li>如果消息不能路由到queue，消息就会被丢弃</li>
 </ul>
-
-<h4>可靠性投递</h4>
-
+<h4><a id="%E5%8F%AF%E9%9D%A0%E6%80%A7%E6%8A%95%E9%80%92" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>可靠性投递</h4>
 <ul>
 <li>保障消息的成功发出</li>
 <li>保障 MQ 节点的成功接收</li>
 <li>发送端收到 MQ 节点（Broker）确认应答</li>
 <li>完善的消息进行补偿机制</li>
 </ul>
-
-<h5>消息落库，对消息状态进行打标</h5>
-
-<p><img src="media/15687637976768/15687639498887.jpg" alt="" style="width:1249px;"/></p>
-
-<h5>业务消息落库</h5>
-
-<p><img src="media/15687637976768/15687640188248.jpg" alt="" style="width:1300px;"/></p>
-
-<h4>幂等性</h4>
-
+<h5><a id="%E6%B6%88%E6%81%AF%E8%90%BD%E5%BA%93%EF%BC%8C%E5%AF%B9%E6%B6%88%E6%81%AF%E7%8A%B6%E6%80%81%E8%BF%9B%E8%A1%8C%E6%89%93%E6%A0%87" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>消息落库，对消息状态进行打标</h5>
+<p><img src="media/15687637976768/15687639498887.jpg" alt="" style="width:1249px;" /></p>
+<h5><a id="%E4%B8%9A%E5%8A%A1%E6%B6%88%E6%81%AF%E8%90%BD%E5%BA%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>业务消息落库</h5>
+<p><img src="media/15687637976768/15687640188248.jpg" alt="" style="width:1300px;" /></p>
+<h4><a id="%E5%B9%82%E7%AD%89%E6%80%A7" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>幂等性</h4>
 <ul>
 <li>多次操作结果都是一样的</li>
-<li><img src="media/15687637976768/15717869014026.jpg" alt="" style="width:779px;"/></li>
+<li><img src="media/15687637976768/15717869014026.jpg" alt="" style="width:779px;" /></li>
 </ul>
-
-<h5>唯一ID+指纹码机制，利用数据库主键去重利用</h5>
-
+<h5><a id="%E5%94%AF%E4%B8%80id%E6%8C%87%E7%BA%B9%E7%A0%81%E6%9C%BA%E5%88%B6%EF%BC%8C%E5%88%A9%E7%94%A8%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%BB%E9%94%AE%E5%8E%BB%E9%87%8D%E5%88%A9%E7%94%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>唯一ID+指纹码机制，利用数据库主键去重利用</h5>
 <ul>
 <li>唯一 ID+指纹码机制，利用数据库主键去重</li>
 <li>SELECT COUNT (1) FROM T ORDER WHERE D=唯一 ID+指纹码</li>
@@ -192,81 +179,64 @@
 <li>坏处：高并发下有数据库写入的性能瓶颈</li>
 <li>解决方案：跟进 ID 进行分库分表进行算法路由</li>
 </ul>
-
-<h5>Redise 的原子性去实现</h5>
-
+<h5><a id="redise%E7%9A%84%E5%8E%9F%E5%AD%90%E6%80%A7%E5%8E%BB%E5%AE%9E%E7%8E%B0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Redise 的原子性去实现</h5>
 <ul>
 <li>使用 Redis 进行幂等，需要考虑的问题</li>
 <li>第一：我们是否要进行数据落库，如果落库的话，关键解決的问题是数据库和缓存如何做到原子性？</li>
 <li>第二：如果不进行落库，那么都存储到缓存中，如何设置定时同步的策略？</li>
 </ul>
-
-<h4>Confirm机制</h4>
-
+<h4><a id="confirm%E6%9C%BA%E5%88%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Confirm机制</h4>
 <ul>
 <li>消息的确认，是指生产者投递消息后，如果 Brokerl 收到消息，则会给我们生产者一个应答。</li>
 <li>生产者进行接收应答，用来确定这条消息是否正常的发送到 Broker，这种方式也是消息的可靠性投递的核心保障！</li>
-<li><img src="media/15687637976768/15687655634522.jpg" alt="" style="width:1141px;"/></li>
+<li><img src="media/15687637976768/15687655634522.jpg" alt="" style="width:1141px;" /></li>
 <li>第一步：在 channel 上开启确认模式：Confirm</li>
 <li>第二步：在 channel 上添加监听：NotifyConfirm(ack, nack chan uint64) 监听成功和失败的返回结果，根据具体的结果对消息进行重新发送、或记录日志等后续处理！</li>
 <li>如果ACK和NACK都没有，利用定时任务抓去做中间状态进行补偿</li>
 </ul>
-
-<h4>Exchange</h4>
-
+<h4><a id="exchange" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Exchange</h4>
 <ul>
 <li>在客户端和服务端声明都可以</li>
 <li>如果声明的时候路由key不一样，则会生成两个</li>
 <li></li>
 </ul>
-
-<h4>Return消息机制</h4>
-
+<h4><a id="return%E6%B6%88%E6%81%AF%E6%9C%BA%E5%88%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Return消息机制</h4>
 <ul>
 <li>Return Listener 用于处理一些不可路由的消息</li>
 <li>我们的消息生产者，通过指定一个 Exchange 和 Routingkey，把消息送达到某一个队列中去，然后我们的消费者监听队列，进行消费处理操作！</li>
 <li>但是在某些情况下，如果我们在发送消息的时候，当前的 exchange不存在或者指定的路由 key 略由不到，这个时候如果我们需要监听这种不可达的消息，就要使用 Return Listener</li>
 <li>Mandatory：如果为 true，则监听器会接收到路由不可达的消息，然后进行后续处理，如果为 false，那么 brokers 端自动删除该消息</li>
-<li><img src="media/15687637976768/15688492958280.jpg" alt="" style="width:943px;"/></li>
+<li><img src="media/15687637976768/15688492958280.jpg" alt="" style="width:943px;" /></li>
 </ul>
-
-<h4>消费端限流</h4>
-
+<h4><a id="%E6%B6%88%E8%B4%B9%E7%AB%AF%E9%99%90%E6%B5%81" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>消费端限流</h4>
 <ul>
 <li>Rabbit MQ 提供了一种 qos（服务质量保证）功能，即在非自动确认消息的前提下，如果一定数目的消息（通过基于 Consume 或者 channeli 设置 Qos 的值）未被确认前，不进行消费新的消息。</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-text">type basicQos struct {
+<pre><code class="language-plain_text">type basicQos struct {
   PrefetchSize  uint32 0不做限制
   PrefetchCount uint16 一次处理多少条消息
   Global        bool //channel true consumer false
 }
 </code></pre>
-
 <ul>
 <li>Prefetchsize: 0</li>
 <li>Prefetch Count：会告诉 Rabbitmq 不要同时给一个消费者推送多于 N 个消息，即一旦有 N 个消息还没有 ack，则该 consumer 将 block 掉，直到有消息 ack</li>
 <li>global: true\false 是否将上面设置应用于 channel简单点说，就是上面限制是 chann인l 级别的还是 consumer client级别</li>
 <li>autoAck设置为false</li>
 </ul>
-
-<h4>消费端ACK和重回队列</h4>
-
+<h4><a id="%E6%B6%88%E8%B4%B9%E7%AB%AFack%E5%92%8C%E9%87%8D%E5%9B%9E%E9%98%9F%E5%88%97" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>消费端ACK和重回队列</h4>
 <ul>
 <li>消费端的手工 ACK 和 NACK， NACK保证消息重回队列</li>
-<li>消费端进行消费的时候，如果由于业务异常我们可以进行日志的记<br/>
+<li>消费端进行消费的时候，如果由于业务异常我们可以进行日志的记<br />
 录，然后进行补偿</li>
 <li>如果由于服务器宕机等严重问题，那我们就需要手工进行 ACK 保障消费端消费成功</li>
 </ul>
-
-<h5>重回队列</h5>
-
+<h5><a id="%E9%87%8D%E5%9B%9E%E9%98%9F%E5%88%97" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>重回队列</h5>
 <ul>
 <li>消费端重回队列是为了对没有处理成功的消息，把消息重新会递给Broker</li>
 <li>一般我们在实际应用中，都会关闭重回队列，也就是设置为 False</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-text">type basicNack struct {
+<pre><code class="language-plain_text">type basicNack struct {
   DeliveryTag uint64
   Multiple    bool
   Requeue     bool
@@ -280,9 +250,7 @@ multiple 是否批量
 requeue 是否重回队列
 Ack(tag uint64, multiple bool)
 </code></pre>
-
-<h4>TTL队列/消息</h4>
-
+<h4><a id="ttl%E9%98%9F%E5%88%97%E6%B6%88%E6%81%AF" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>TTL队列/消息</h4>
 <ul>
 <li>TTL 是 Time To Live 的缩写，也就是生存时间</li>
 <li>Rabbitmq 支持消息的过期时间，在消息发送时可以进行指定</li>
@@ -290,27 +258,21 @@ Ack(tag uint64, multiple bool)
 <li>针对队列</li>
 <li>expiration针对单个消息</li>
 </ul>
-
-<h4>死信队列</h4>
-
+<h4><a id="%E6%AD%BB%E4%BF%A1%E9%98%9F%E5%88%97" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>死信队列</h4>
 <ul>
 <li>死信队列：DLX, Dead- Letter- Exchange</li>
 <li>利用 DLX，当消息在一个队列中变成死信（dead message）之后</li>
 <li>它能被重新 publish 到另一个 Exchange，这个 Exchange 就是 DLX</li>
-<li><img src="media/15687637976768/15718066699196.jpg" alt="" style="width:1159px;"/></li>
+<li><img src="media/15687637976768/15718066699196.jpg" alt="" style="width:1159px;" /></li>
 </ul>
-
-<h5>分类</h5>
-
+<h5><a id="%E5%88%86%E7%B1%BB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>分类</h5>
 <ul>
 <li>消息被拒绝（basic. Reject/ basic. Nack）并且 requeue= false 消息 TTL 过期队列达到最大长度</li>
 <li>DLX 也是一个正常的 Exchange，和一般的 xchange 没有区別，它能在任何的队列上被指定，实际上就是设置某个队列的属性。</li>
 <li>当这个队列中有死信时，Rabbitmq 就会自动的将这个消息重新发布到设置的 Exchange 上去，进而被路由到另一个队列</li>
 <li>可以监听这个队列中消息做相应的处理，这个特性可以弥补 Rabbitmq 3.0 以前支持的 immediate 参数的功能。</li>
 </ul>
-
-<h5>设置</h5>
-
+<h5><a id="%E8%AE%BE%E7%BD%AE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>设置</h5>
 <ul>
 <li>首先需要设置死信队列的 exchange 和 queue，然后进行绑定</li>
 <li>Exchange: dlx. Exchange</li>
@@ -318,9 +280,7 @@ Ack(tag uint64, multiple bool)
 <li>arguments.Put(&quot;x-dead-letter-exchange&quot;, dlx.exchange&quot;)</li>
 <li>这样消息在过期、requeue、队列在达到最大长度时，消息就可以直接路由到死信队列！</li>
 </ul>
-
-<h4>总结</h4>
-
+<h4><a id="%E6%80%BB%E7%BB%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>总结</h4>
 <ul>
 <li>本章节主要和大家一起学习了 Rabbitmqp 的高级特性，首先介绍了互联网大厂在实际使用中是如何保障 100%的消息投递成功和幕等性的，以及对 Rabbitmqf 的确认消息、返回消息、ACK 与重回队列、消息的限流，以及对超时时间、死信队列的使用</li>
 </ul>
@@ -345,31 +305,96 @@ Ack(tag uint64, multiple bool)
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
-<script src="asset/prism.js"></script>
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   

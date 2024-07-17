@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,25 +139,20 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>fork操作</h4>
-
+                    <h4><a id="fork%E6%93%8D%E4%BD%9C" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>fork操作</h4>
 <ul>
 <li>同步操作</li>
 <li>与内存量有关，内存越大，耗时越长</li>
 <li>info: latest_fork_usec</li>
 </ul>
-
-<h4>改善fork</h4>
-
+<h4><a id="%E6%94%B9%E5%96%84fork" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>改善fork</h4>
 <ul>
 <li>优先使用物理机</li>
 <li>控制redis最大可用内存maxmemory</li>
 <li>合理配置linux内存分配策略: vm.overcommit_memory=1</li>
 <li>降低fork频率</li>
 </ul>
-
-<h4>子进程开销和优化</h4>
-
+<h4><a id="%E5%AD%90%E8%BF%9B%E7%A8%8B%E5%BC%80%E9%94%80%E5%92%8C%E4%BC%98%E5%8C%96" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>子进程开销和优化</h4>
 <ul>
 <li>RDB和AOF文件生成，属于CPU密集型</li>
 <li>不做CPU绑定，不和CPU密集型部署</li>
@@ -171,11 +166,9 @@
 <li>根据写入量决定磁盘类型</li>
 <li>单机多实例持久化目录可以考虑分盘</li>
 </ul>
-
-<h4>AOG追加阻塞</h4>
-
+<h4><a id="aog%E8%BF%BD%E5%8A%A0%E9%98%BB%E5%A1%9E" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>AOG追加阻塞</h4>
 <ul>
-<li><img src="media/15677194643630/15677203315569.jpg" alt="" style="width:524px;"/></li>
+<li><img src="media/15677194643630/15677203315569.jpg" alt="" style="width:524px;" /></li>
 <li>Redis日志</li>
 <li>info persistence</li>
 </ul>
@@ -200,29 +193,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

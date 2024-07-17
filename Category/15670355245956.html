@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,30 +139,23 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>概念</h4>
-
+                    <h4><a id="%E6%A6%82%E5%BF%B5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>概念</h4>
 <ul>
 <li>列式存储适合大批量数据查询，可以降低 I/O，但如果对实时性要求高，则更适合行式存储。</li>
 </ul>
-
-<h4>count(1)&amp;count(*)&amp;count(字段)</h4>
-
+<h4><a id="count-1-count-count%E5%AD%97%E6%AE%B5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>count(1)&amp;count(*)&amp;count(字段)</h4>
 <ul>
 <li>如果想要查找具体的行，那么采用主键索引的效率更高。如果有多个二级索引，会使用 key_len 小的二级索引进行扫描。当没有二级索引的时候，才会采用主键索引来进行统计。</li>
 </ul>
-
-<h4>通配符</h4>
-
+<h4><a id="%E9%80%9A%E9%85%8D%E7%AC%A6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>通配符</h4>
 <ul>
-<li>SELECT name FROM heros WHERE name LIKE &#39;_% 太 %&#39;</li>
+<li>SELECT name FROM heros WHERE name LIKE '_% 太 %'</li>
 <li>_匹配任意一个字符，%匹配大于等于0个任意字符</li>
 </ul>
-
-<h4>排序</h4>
-
+<h4><a id="%E6%8E%92%E5%BA%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>排序</h4>
 <ul>
-<li> FileSort 和 Index 排序。在 Index 排序中，索引可以保证数据的有序性，不需要再进行排序，效率更高。而 FileSort 排序则一般在内存中进行排序，占用 CPU 较多。</li>
-<li> ORDER BY 子句时，应该尽量使用 Index 排序，避免使用 FileSort 排序。当然你可以使用 explain 来查看执行计划，看下优化器是否采用索引进行排序</li>
+<li>FileSort 和 Index 排序。在 Index 排序中，索引可以保证数据的有序性，不需要再进行排序，效率更高。而 FileSort 排序则一般在内存中进行排序，占用 CPU 较多。</li>
+<li>ORDER BY 子句时，应该尽量使用 Index 排序，避免使用 FileSort 排序。当然你可以使用 explain 来查看执行计划，看下优化器是否采用索引进行排序</li>
 </ul>
 
                   </article>
@@ -185,29 +178,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

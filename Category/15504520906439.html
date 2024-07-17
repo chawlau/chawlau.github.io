@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,38 +139,29 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>全局权限</h4>
-
+                    <h4><a id="%E5%85%A8%E5%B1%80%E6%9D%83%E9%99%90" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>全局权限</h4>
 <ul>
-<li>磁盘上，将 mysql.user 表里，用户’ua’@’%&#39;这一行的所有表示权限的字段的值都修改为‘Y’；</li>
+<li>磁盘上，将 mysql.user 表里，用户’ua’@’%'这一行的所有表示权限的字段的值都修改为‘Y’；</li>
 <li>内存里，从数组 acl_users 中找到这个用户对应的对象，将 access 值（权限位）修改为二进制的“全 1”</li>
 </ul>
-
-<h4>db权限</h4>
-
+<h4><a id="db%E6%9D%83%E9%99%90" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>db权限</h4>
 <ul>
 <li>磁盘上，往 mysql.db 表中插入了一行记录，所有权限位字段设置为“Y”；</li>
 <li>内存里，增加一个对象到数组 acl_dbs 中，这个对象的权限位为“全 1”。</li>
 </ul>
-
-<h4>flush privileges原理</h4>
-
+<h4><a id="flush-privileges%E5%8E%9F%E7%90%86" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>flush privileges原理</h4>
 <ul>
 <li>flush privileges 命令会清空 acl_users 数组，然后从 mysql.user 表中读取数据重新加载，重新构造一个 acl_users 数组。也就是说，以数据表中的数据为准，会将全局权限内存数组重新加载一遍。</li>
 <li>flush privileges 命令会清空 acl_users 数组，然后从 mysql.user 表中读取数据重新加载，重新构造一个 acl_users 数组。也就是说，以数据表中的数据为准，会将全局权限内存数组重新加载一遍</li>
 </ul>
-
-<h4>flush privileges使用场景</h4>
-
+<h4><a id="flush-privileges%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>flush privileges使用场景</h4>
 <ul>
 <li>当数据表中的权限数据跟内存中的权限数据不一致的时候，flush privileges 语句可以用来重建内存数据，达到一致状态。</li>
 <li>直接操作系统表是不规范的操作</li>
 </ul>
-
-<h4>权限范围和修改策略总结</h4>
-
+<h4><a id="%E6%9D%83%E9%99%90%E8%8C%83%E5%9B%B4%E5%92%8C%E4%BF%AE%E6%94%B9%E7%AD%96%E7%95%A5%E6%80%BB%E7%BB%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>权限范围和修改策略总结</h4>
 <ul>
-<li><img src="media/15504520906439/d1885ed1ly1g0ab2twmjaj21gs0js78u.jpg" alt="d1885ed1ly1g0ab2twmjaj21gs0js78u"/></li>
+<li><img src="media/15504520906439/d1885ed1ly1g0ab2twmjaj21gs0js78u.jpg" alt="d1885ed1ly1g0ab2twmjaj21gs0js78u" /></li>
 </ul>
 
                   </article>
@@ -193,29 +184,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,17 +139,14 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>并发安全字典对键的类型有要求吗</h4>
-
+                    <h4><a id="%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8%E5%AD%97%E5%85%B8%E5%AF%B9%E9%94%AE%E7%9A%84%E7%B1%BB%E5%9E%8B%E6%9C%89%E8%A6%81%E6%B1%82%E5%90%97" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>并发安全字典对键的类型有要求吗</h4>
 <ul>
 <li>有要求。键的实际类型不能是函数类型、字典类型和切片类型</li>
 <li>由于这些键值的实际类型只有在程序运行期间才能够确定，所以 Go 语言编译器是无法在编译期对它们进行检查的，不正确的键值实际类型肯定会引发 panic</li>
 <li>应该在每次操作并发安全字典的时候，都去显式地检查键值的实际类型。无论是存、取还是删，都应该如此。</li>
 </ul>
-
-<h4>使用sync.map</h4>
-
-<pre class="line-numbers"><code class="language-text">type IntStrMap struct {
+<h4><a id="%E4%BD%BF%E7%94%A8sync-map" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>使用sync.map</h4>
+<pre><code class="language-plain_text">type IntStrMap struct {
  m sync.Map
 }
 func (iMap *IntStrMap) Range(f func(key int, value string) bool) {
@@ -159,15 +156,11 @@ func (iMap *IntStrMap) Range(f func(key int, value string) bool) {
  iMap.m.Range(f1)
 }
 </code></pre>
-
-<h4>怎样保证并发安全字典中的键和值的类型正确性？</h4>
-
+<h4><a id="%E6%80%8E%E6%A0%B7%E4%BF%9D%E8%AF%81%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8%E5%AD%97%E5%85%B8%E4%B8%AD%E7%9A%84%E9%94%AE%E5%92%8C%E5%80%BC%E7%9A%84%E7%B1%BB%E5%9E%8B%E6%AD%A3%E7%A1%AE%E6%80%A7%EF%BC%9F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>怎样保证并发安全字典中的键和值的类型正确性？</h4>
 <ul>
 <li>通过封装sync.map，添加reflect.Type来判断key和value来使用</li>
 </ul>
-
-<h4>并发字典如何做到尽量避免安全锁</h4>
-
+<h4><a id="%E5%B9%B6%E5%8F%91%E5%AD%97%E5%85%B8%E5%A6%82%E4%BD%95%E5%81%9A%E5%88%B0%E5%B0%BD%E9%87%8F%E9%81%BF%E5%85%8D%E5%AE%89%E5%85%A8%E9%94%81" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>并发字典如何做到尽量避免安全锁</h4>
 <ul>
 <li>使用大量原子操作来读取键和值</li>
 <li>这两个字典在存储键和值的时候都只会存入它们的某个指针，而不是基本值。</li>
@@ -175,9 +168,7 @@ func (iMap *IntStrMap) Range(f func(key int, value string) bool) {
 <li>读操作有很多但写操作却很少的情况下，并发安全字典的性能往往会更好。</li>
 <li>性能影响 新增键值对 &gt; 删除 &gt; 修改</li>
 </ul>
-
-<h4>sync.Map修改value</h4>
-
+<h4><a id="sync-map%E4%BF%AE%E6%94%B9value" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>sync.Map修改value</h4>
 <ul>
 <li>只读字典虽然不会增减其中的键，但却允许变更其中的键所对应的值。所以，它并不是传统意义上的快照，它的只读特性只是对于其中键的集合而言的。</li>
 <li></li>
@@ -203,31 +194,96 @@ func (iMap *IntStrMap) Range(f func(key int, value string) bool) {
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
-<script src="asset/prism.js"></script>
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   

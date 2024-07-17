@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,8 +139,7 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>Inode与块</h4>
-
+                    <h4><a id="inode%E4%B8%8E%E5%9D%97" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Inode与块</h4>
 <ul>
 <li>硬盘分成相同大小的单元，我们称为块（Block）。一块的大小是扇区大小的整数倍，默认是 4K</li>
 <li>元数据需要Inode来存放</li>
@@ -148,26 +147,20 @@
 <li>i_ctime 修改inode的时间 用户和权限</li>
 <li>i_mtime 更改文件内容的时间,修改数据</li>
 </ul>
-
-<h4>EXT4</h4>
-
+<h4><a id="ext4" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>EXT4</h4>
 <ul>
 <li>前 12 项直接保存了块的位置，也就是说，我们可以通过 i_block[0-11]，直接得到保存文件内容的块</li>
 <li>i_block[12]一级间接块, i_block[13]二级间接块, i_block[14]三级间接块</li>
-<li><img src="media/15593496513250/73349c0fab1a92d4e1ae0c684cfe06e2.jpeg" alt="73349c0fab1a92d4e1ae0c684cfe06e2"/></li>
+<li><img src="media/15593496513250/73349c0fab1a92d4e1ae0c684cfe06e2.jpeg" alt="73349c0fab1a92d4e1ae0c684cfe06e2" /></li>
 </ul>
-
-<h4>Extents</h4>
-
+<h4><a id="extents" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Extents</h4>
 <ul>
 <li>解决多级间接块访问速度过慢的问题</li>
 <li>存放128M的连续块</li>
 <li>采用树状结构</li>
-<li><img src="media/15593496513250/b8f184696be8d37ad6f2e2a4f12d002a.jpeg" alt="b8f184696be8d37ad6f2e2a4f12d002a"/></li>
+<li><img src="media/15593496513250/b8f184696be8d37ad6f2e2a4f12d002a.jpeg" alt="b8f184696be8d37ad6f2e2a4f12d002a" /></li>
 </ul>
-
-<h4>inode 位图和块位图</h4>
-
+<h4><a id="inode%E4%BD%8D%E5%9B%BE%E5%92%8C%E5%9D%97%E4%BD%8D%E5%9B%BE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>inode 位图和块位图</h4>
 <ul>
 <li>用一个块中的位表示一个块</li>
 <li>用一个块中的位表示一个inode节点</li>
@@ -176,45 +169,34 @@
 <li>ext4_create-&gt;ext4_new_inode_start_handle-&gt;__ext4_new_inode</li>
 <li>创建新的inode</li>
 </ul>
-
-<h4>文件系统的格式</h4>
-
-<h5>一个块组组成</h5>
-
+<h4><a id="%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%A0%BC%E5%BC%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>文件系统的格式</h4>
+<h5><a id="%E4%B8%80%E4%B8%AA%E5%9D%97%E7%BB%84%E7%BB%84%E6%88%90" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>一个块组组成</h5>
 <ul>
 <li>ext4_group_desc</li>
 <li>inode位图 bg_inode_bitmap_lo</li>
 <li>块位图 bg_block_bitmap_lo</li>
 <li>inode列表 bg_inode_table_lo</li>
 </ul>
-
-<h4>超级块</h4>
-
+<h4><a id="%E8%B6%85%E7%BA%A7%E5%9D%97" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>超级块</h4>
 <ul>
 <li>ext4_super_block</li>
-<li><img src="media/15593496513250/e3718f0af6a2523a43606a0c4003631b.jpeg" alt="e3718f0af6a2523a43606a0c4003631b"/></li>
+<li><img src="media/15593496513250/e3718f0af6a2523a43606a0c4003631b.jpeg" alt="e3718f0af6a2523a43606a0c4003631b" /></li>
 </ul>
-
-<h4>Meta Block Groups</h4>
-
+<h4><a id="meta-block-groups" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Meta Block Groups</h4>
 <ul>
 <li>将一个块组切分多个组</li>
-<li><img src="media/15593496513250/b0bf4690882253a70705acc7368983b9.jpeg" alt="b0bf4690882253a70705acc7368983b9"/></li>
+<li><img src="media/15593496513250/b0bf4690882253a70705acc7368983b9.jpeg" alt="b0bf4690882253a70705acc7368983b9" /></li>
 </ul>
-
-<h4>目录的存储格式</h4>
-
+<h4><a id="%E7%9B%AE%E5%BD%95%E7%9A%84%E5%AD%98%E5%82%A8%E6%A0%BC%E5%BC%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>目录的存储格式</h4>
 <ul>
 <li>查找一个目录下面的文件名，可以通过名称取哈希</li>
-<li> <img src="media/15593496513250/3ea2ad5704f20538d9c911b02f42086d-2.jpeg" alt="3ea2ad5704f20538d9c911b02f42086d-2"/></li>
+<li><img src="media/15593496513250/3ea2ad5704f20538d9c911b02f42086d-2.jpeg" alt="3ea2ad5704f20538d9c911b02f42086d-2" /></li>
 </ul>
-
-<h4>软硬连接的存储格式</h4>
-
+<h4><a id="%E8%BD%AF%E7%A1%AC%E8%BF%9E%E6%8E%A5%E7%9A%84%E5%AD%98%E5%82%A8%E6%A0%BC%E5%BC%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>软硬连接的存储格式</h4>
 <ul>
 <li>硬链接与原始文件共用一个 inode 的，但是 inode 是不跨文件系统的，每个文件系统都有自己的 inode 列表，因而硬链接是没有办法跨文件系统的</li>
 <li>软链接不同，软链接相当于重新创建了一个文件。这个文件也有独立的 inode，只不过打开这个文件看里面内容的时候，内容指向另外的一个文件</li>
-<li><img src="media/15593496513250/45a6cfdd9d45e30dc2f38f0d2572be7b.jpeg" alt="45a6cfdd9d45e30dc2f38f0d2572be7b"/></li>
+<li><img src="media/15593496513250/45a6cfdd9d45e30dc2f38f0d2572be7b.jpeg" alt="45a6cfdd9d45e30dc2f38f0d2572be7b" /></li>
 </ul>
 
                   </article>
@@ -237,29 +219,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

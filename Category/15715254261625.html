@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,38 +139,30 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>分布式架构图</h4>
-
+                    <h4><a id="%E5%88%86%E5%B8%83%E5%BC%8F%E6%9E%B6%E6%9E%84%E5%9B%BE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>分布式架构图</h4>
 <ul>
 <li>分片机制</li>
 <li>cluster discovery（集群发现机制）</li>
 <li>shard负载均衡</li>
-<li>shard副本，请求路由，集群扩容，shard重分配
-<img src="media/15715254261625/15715256398976.jpg" alt="" style="width:1036px;"/></li>
+<li>shard副本，请求路由，集群扩容，shard重分配<br />
+<img src="media/15715254261625/15715256398976.jpg" alt="" style="width:1036px;" /></li>
 <li>增减或减少节点时的数据rebalance</li>
 </ul>
-
-<h4>master节点</h4>
-
+<h4><a id="master%E8%8A%82%E7%82%B9" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>master节点</h4>
 <ul>
 <li>（1）创建或删除索引</li>
 <li>（2）增加或删除节点</li>
 </ul>
-
-<h4>节点平等的分布式架构</h4>
-
+<h4><a id="%E8%8A%82%E7%82%B9%E5%B9%B3%E7%AD%89%E7%9A%84%E5%88%86%E5%B8%83%E5%BC%8F%E6%9E%B6%E6%9E%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>节点平等的分布式架构</h4>
 <ul>
 <li>（1）节点对等，每个节点都能接收所有的请求</li>
 <li>（2）自动请求路由</li>
 <li>（3）响应收集</li>
 </ul>
-
-<h4>shard&amp;replica</h4>
-
-<p><img src="media/15715254261625/15715261474060.jpg" alt="" style="width:1001px;"/></p>
-
+<h4><a id="shard-replica" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>shard&amp;replica</h4>
+<p><img src="media/15715254261625/15715261474060.jpg" alt="" style="width:1001px;" /></p>
 <ul>
-<li> (1) index包含多个shard</li>
+<li>(1) index包含多个shard</li>
 <li>（2）每个shard都是一个最小工作单元，承载部分数据，lucene实例，完整的建立索引和处理请求的能力</li>
 <li>（3）增减节点时，shard会自动在nodes中负载均衡</li>
 <li>（4）primary shard和replica shard，每个document肯定只存在于某一个primary shard以及其对应的replica shard中，不可能存在于多个primary shard</li>
@@ -179,24 +171,18 @@
 <li>（7）primary shard的默认数量是5，replica默认是1，默认有10个shard，5个primary shard，5个replica shard</li>
 <li>（8）primary shard不能和自己的replica shard放在同一个节点上（否则节点宕机，primary shard和副本都丢失，起不到容错的作用），但是可以和其他primary shard的replica shard放在同一个节点上</li>
 </ul>
-
-<h4>单节点创建index</h4>
-
+<h4><a id="%E5%8D%95%E8%8A%82%E7%82%B9%E5%88%9B%E5%BB%BAindex" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>单节点创建index</h4>
 <ul>
 <li>（1）单node环境下，创建一个index，有3个primary shard，3个replica shard</li>
 <li>（2）集群status是yellow</li>
 <li>（3）这个时候，只会将3个primary shard分配到仅有的一个node上去，另外3个replica shard是无法分配的</li>
 <li>（4）集群可以正常工作，但是一旦出现节点宕机，数据全部丢失，而且集群不可用，无法承接任何请求</li>
 </ul>
-
-<h4>双节点创建</h4>
-
+<h4><a id="%E5%8F%8C%E8%8A%82%E7%82%B9%E5%88%9B%E5%BB%BA" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>双节点创建</h4>
 <ul>
-<li><img src="media/15715254261625/15715267988059.jpg" alt="" style="width:670px;"/></li>
+<li><img src="media/15715254261625/15715267988059.jpg" alt="" style="width:670px;" /></li>
 </ul>
-
-<h4>横向扩展和扩容</h4>
-
+<h4><a id="%E6%A8%AA%E5%90%91%E6%89%A9%E5%B1%95%E5%92%8C%E6%89%A9%E5%AE%B9" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>横向扩展和扩容</h4>
 <ul>
 <li>primary shard数量不可改变。只能修改repli shard</li>
 <li>（1）primary&amp;replica自动负载均衡，6个shard，3 primary，3 replica</li>
@@ -204,7 +190,7 @@
 <li>（3）扩容的极限，6个shard（3 primary，3 replica），最多扩容到6台机器，每个shard可以占用单台服务器的所有资源，性能最好</li>
 <li>（4）超出扩容极限，动态修改replica数量，9个shard（3primary，6 replica），扩容到9台机器，比3台机器时，拥有3倍的读吞吐量</li>
 <li>（5）3台机器下，9个shard（3 primary，6 replica），资源更少，但是容错性更好，最多容纳2台机器宕机，6个shard只能容纳1台机器宕机</li>
-<li><img src="media/15715254261625/15715276826331.jpg" alt="" style="width:896px;"/></li>
+<li><img src="media/15715254261625/15715276826331.jpg" alt="" style="width:896px;" /></li>
 </ul>
 
                   </article>
@@ -227,29 +213,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,26 +139,21 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>Docker简介</h4>
-
+                    <h4><a id="docker%E7%AE%80%E4%BB%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Docker简介</h4>
 <ul>
 <li>Docker是基于 Linux 内核的 cgroup，namespace，以及 AUFS 类的 Union FS 等技术，对进程进行封装隔离，属于操作系统层面的虚拟化技术</li>
-<li>相比传统的虚拟机，Docker没有自己的内核，无需硬件模拟，相对而言更加轻便，无需操作系统
-<img src="media/15439151260869/virtualization.png" alt="virtualization"/>
-<img src="media/15439151260869/docker.png" alt="docke"/></li>
+<li>相比传统的虚拟机，Docker没有自己的内核，无需硬件模拟，相对而言更加轻便，无需操作系统<br />
+<img src="media/15439151260869/virtualization.png" alt="virtualization" /><br />
+<img src="media/15439151260869/docker.png" alt="docke" /></li>
 </ul>
-
-<h4>Docker的优势</h4>
-
+<h4><a id="docker%E7%9A%84%E4%BC%98%E5%8A%BF" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Docker的优势</h4>
 <ul>
 <li>更高效的利用系统资源，容器不需要进行硬件虚拟以及运行完整操作系统等额外开销</li>
 <li>更快速的启动时间，传统的虚拟机技术启动应用服务往往需要数分钟， Docker容器应用可以做到秒级、甚至毫秒级的启动时间</li>
 <li>更轻松的迁移，由于 Docker 确保了执行环境的一致性，使得应用的迁移更加容易</li>
 <li>更轻松的维护和扩展，Docker 使用的分层存储以及镜像的技术，使得应用重复部分的复用更为容易，也使得应用的维护更新更加简单，基于基础镜像进一步扩展镜像也变得非常简单。</li>
 </ul>
-
-<h4>对比传统虚拟机总结</h4>
-
+<h4><a id="%E5%AF%B9%E6%AF%94%E4%BC%A0%E7%BB%9F%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%80%BB%E7%BB%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>对比传统虚拟机总结</h4>
 <table>
 <thead>
 <tr>
@@ -167,7 +162,6 @@
 <th style="text-align: center">虚拟机</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td style="text-align: center">启动</td>
@@ -191,69 +185,52 @@
 </tr>
 </tbody>
 </table>
-
-<h4>容器&amp;镜像&amp;仓库&amp;Docker daemon &amp;Docker client</h4>
-
+<h4><a id="%E5%AE%B9%E5%99%A8%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93docker-daemon-docker-client" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>容器&amp;镜像&amp;仓库&amp;Docker daemon &amp;Docker client</h4>
 <ul>
 <li>容器的实质是进程，相对于系统的普通进程，容器应用的文件系统，网络配置，进程空间都是运行在一个隔离的环境，如下图所示</li>
 </ul>
-
-<p><img src="media/15439151260869/v2-4c8aea533a4cd6c1939b66eb4cbf536a_hd.jpg" alt="v2-4c8aea533a4cd6c1939b66eb4cbf536a_hd"/></p>
-
+<p><img src="media/15439151260869/v2-4c8aea533a4cd6c1939b66eb4cbf536a_hd.jpg" alt="v2-4c8aea533a4cd6c1939b66eb4cbf536a_hd" /></p>
 <ul>
 <li>镜像相对于容器就像二进制程序和二进制程序运行的进程类似，镜像是静态的定义，容器是运行的实体</li>
 <li>仓库就是存储一个软件不同版本的镜像，用标签来标签来标识，例如ubuntu这个镜像，有两个版本，分别就表示为ubuntu:14.04，ubuntu:16.04 ，：后面就是镜像的标签</li>
 <li>Docker daemon就是用来管理容器运行和镜像的平台，用来运行，停止，删除容器。更新升级容器的镜像</li>
 <li>Docker client就是用来操作Docker平台的入口，通过Docker client的pull start stop等指令来操作管理Docker平台的容器和镜像</li>
-<li>关系如下图
-<img src="media/15439151260869/high-level-overview-of-docker-architecture.png" alt="high-level-overview-of-docker-architecture"/></li>
+<li>关系如下图<br />
+<img src="media/15439151260869/high-level-overview-of-docker-architecture.png" alt="high-level-overview-of-docker-architecture" /></li>
 </ul>
-
-<h4>DockerFile</h4>
-
+<h4><a id="dockerfile" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>DockerFile</h4>
 <ul>
 <li>Dockerfile 是一个文本文件，其内包含了一条条的指令(Instruction)，每一条指令构建一层，因此每一条指令的内容，就是描述该层应当如何构建容器的镜像</li>
-<li>DockerFile和容器与镜像的关系如下图
-<img src="media/15439151260869/WechatIMG38.png" alt="WechatIMG38"/></li>
+<li>DockerFile和容器与镜像的关系如下图<br />
+<img src="media/15439151260869/WechatIMG38.png" alt="WechatIMG38" /></li>
 </ul>
-
-<h4>制作镜像环境</h4>
-
+<h4><a id="%E5%88%B6%E4%BD%9C%E9%95%9C%E5%83%8F%E7%8E%AF%E5%A2%83" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>制作镜像环境</h4>
 <ul>
 <li>创建一个文件夹专门用于制作镜像</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-text">  mkdir docker_build
+<pre><code class="language-plain_text">  mkdir docker_build
 </code></pre>
-
 <ul>
 <li>创建一个名为Dockerile的文件</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-text">  touch Dcokerfile
+<pre><code class="language-plain_text">  touch Dcokerfile
 </code></pre>
-
-<h4>FROM</h4>
-
+<h4><a id="from" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>FROM</h4>
 <ul>
 <li>制作镜像基础镜像是必须指定的。而FROM 就是指定基础镜像，因此一个Dockerfile 中 FROM 是必备的指令，并且必须是第一条指令。</li>
 <li>FROM是构建应用程序的docker镜像的基础镜像，表示应用程序在此基础上构建</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-text">  FROM centos:latest/debain/ubuntu/
+<pre><code class="language-plain_text">  FROM centos:latest/debain/ubuntu/
 </code></pre>
-
-<h4>RUN</h4>
-
+<h4><a id="run" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>RUN</h4>
 <ul>
 <li>RUN 指令是用来执行命令行命令的,用于程序构建项目所需要的基础环境，应用程序依赖的第三方库和一些插件和运行环境</li>
 <li>Dockerfile 中每一指令都会建立一层，尽量缩减层数，减少构建部署时间，Union FS 是有最大层数限制的, docker的AUFS现在是不得超过127层。</li>
 <li>需要合并指令,简化指令</li>
 </ul>
+<pre><code class="language-plain_text">FROM debian:jessie
 
-<pre class="line-numbers"><code class="language-text">FROM debian:jessie
-
-RUN buildDeps=&#39;gcc libc6-dev make&#39; \
+RUN buildDeps='gcc libc6-dev make' \
     &amp;&amp; apt-get update \
     &amp;&amp; apt-get install -y $buildDeps \
     &amp;&amp; wget -O redis.tar.gz &quot;http://download.redis.io/releases/redis-3.2.5.tar.gz&quot; \
@@ -266,112 +243,81 @@ RUN buildDeps=&#39;gcc libc6-dev make&#39; \
     &amp;&amp; rm -r /usr/src/redis \
     &amp;&amp; apt-get purge -y --auto-remove $buildDeps
 </code></pre>
-
-<h4>COPY</h4>
-
+<h4><a id="copy" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>COPY</h4>
 <ul>
 <li>将一些应用程序所需要的第三方程序和插件，拷贝进制作的docker镜像的容器中</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-text">  COPY file /docker_image_dir
+<pre><code class="language-plain_text">  COPY file /docker_image_dir
 </code></pre>
-
 <ul>
 <li>使用 COPY 指令，源文件的各种元数据都会保留。比如读、写、执行权限、文件变更时间等, 可以通过--chown来改变用户和属组属性</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-text">COPY --chown=55:mygroup files* /mydir/
+<pre><code class="language-plain_text">COPY --chown=55:mygroup files* /mydir/
 COPY --chown=bin files* /mydir/
 COPY --chown=1 files* /mydir/
 COPY --chown=10:11 files* /mydir/
 </code></pre>
-
-<h4>ADD</h4>
-
+<h4><a id="add" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>ADD</h4>
 <ul>
 <li>ADD 指令和 COPY 的格式和性质基本一致。但是在 COPY 基础上增加了一些功能。在 Docker 官方的 Dockerfile 最佳实践文档 中要求，尽可能的使用 COPY，因为 COPY 的语义很明确，就是复制文件而已，而 ADD 则包含了更复杂的功能，其行为也不一定很清晰。最适合使用 ADD 的场合，就是所提及的需要自动解压缩的场合。</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-text">  ADD ubuntu-xenial-core-cloudimg-amd64-root.tar.gz /
+<pre><code class="language-plain_text">  ADD ubuntu-xenial-core-cloudimg-amd64-root.tar.gz /
 </code></pre>
-
-<h4>WORKDIR</h4>
-
+<h4><a id="workdir" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>WORKDIR</h4>
 <ul>
 <li>使用 WORKDIR 指令可以来指定工作目录（或者称为当前目录），以后各层的当前目录就被改为指定的目录，如该目录不存在，WORKDIR 会帮你建立目录。一般就是应用程序二进制的运行目录/bin/</li>
 </ul>
-
-<h4>EXPOSE</h4>
-
+<h4><a id="expose" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>EXPOSE</h4>
 <ul>
 <li>EXPOSE 指令是声明运行时容器提供服务端口，这只是一个声明，在运行时并不会因为这个,声明应用就会开启这个端口的服务。这个端口是给调用方进行API调用通信使用</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-text">  EXPOSE Port
+<pre><code class="language-plain_text">  EXPOSE Port
 </code></pre>
-
-<h4>VOLUME</h4>
-
+<h4><a id="volume" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>VOLUME</h4>
 <ul>
 <li>有些数据需要持久化数据的需要挂载卷，然后在容器外部将外部卷映射对应到容器内部的目录，这个目录给容器中运行的程序需要存储的数据提供存储</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-text">  docker run -it -v outside_dir:docker_dir:read_write_privilege
+<pre><code class="language-plain_text">  docker run -it -v outside_dir:docker_dir:read_write_privilege
 </code></pre>
-
-<h4>ENTRYPOINT&amp;CMD</h4>
-
+<h4><a id="entrypoint-cmd" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>ENTRYPOINT&amp;CMD</h4>
 <ul>
 <li>ENTRYPOINT指令用于服务启动前的一些准备工作，比如配置一些变量，初始化运行环境</li>
 <li>CMD用于启动容器中二进制程序的命令</li>
-<li>ENTRYPOINT先执行，然后再执行CMD命令 </li>
+<li>ENTRYPOINT先执行，然后再执行CMD命令</li>
 <li>例子中就会先执行docker-entrypoint.sh，然后执行服务启动命令</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-text">  &lt;ENTRYPOINT&gt; &quot;&lt;CMD&gt;&quot;
+<pre><code class="language-plain_text">  &lt;ENTRYPOINT&gt; &quot;&lt;CMD&gt;&quot;
   ENTRYPOINT [&quot;docker-entrypoint.sh&quot;]
   CMD [ &quot;sh&quot; &quot;-c&quot;, &quot;start.sh start&quot; ]
 </code></pre>
-
-<h4>ENV</h4>
-
+<h4><a id="env" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>ENV</h4>
 <ul>
 <li>设置容器内部的全局环境变量</li>
 <li>可以进行后期定制升级操作</li>
 <li>下面例子可以看出，后期如果需要升级和变动，只需要修改NODE_VERSION就可以了</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-text">ENV NODE_VERSION 7.2.0
+<pre><code class="language-plain_text">ENV NODE_VERSION 7.2.0
 
 RUN curl -SLO &quot;https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.xz&quot; \
   &amp;&amp; curl -SLO &quot;https://nodejs.org/dist/v$NODE_VERSION/
 </code></pre>
-
-<h4>build image</h4>
-
+<h4><a id="build-image" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>build image</h4>
 <ul>
 <li>执行命令，用于构建应用程序的docker镜像</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-text"> docker build -t image_name:version .
+<pre><code class="language-plain_text"> docker build -t image_name:version .
 </code></pre>
-
-<h4>build image from container</h4>
-
+<h4><a id="build-image-from-container" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>build image from container</h4>
 <ul>
 <li>以当前容器id为参数制作镜像</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-text">  docker commit container_id  docker_image_name:version
+<pre><code class="language-plain_text">  docker commit container_id  docker_image_name:version
 </code></pre>
-
-<h4>push image</h4>
-
+<h4><a id="push-image" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>push image</h4>
 <ul>
 <li>将制作的镜像推送到指定的镜像仓库</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-text">docker tag image_id docker_image_name:version
+<pre><code class="language-plain_text">docker tag image_id docker_image_name:version
 docker push docker_image_name:version
 </code></pre>
 
@@ -395,31 +341,96 @@ docker push docker_image_name:version
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
-<script src="asset/prism.js"></script>
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   

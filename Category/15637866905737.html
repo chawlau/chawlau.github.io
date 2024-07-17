@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,63 +139,49 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>考虑方面</h4>
-
+                    <h4><a id="%E8%80%83%E8%99%91%E6%96%B9%E9%9D%A2" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>考虑方面</h4>
 <ul>
 <li>减少内存碎片</li>
 <li>提高效率</li>
 <li>避免内存泄漏</li>
 </ul>
-
-<h4>内存池考虑</h4>
-
+<h4><a id="%E5%86%85%E5%AD%98%E6%B1%A0%E8%80%83%E8%99%91" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>内存池考虑</h4>
 <ul>
 <li>线程安全</li>
 <li>尺寸固定</li>
 </ul>
-
-<h4>kfifo的内存池</h4>
-
+<h4><a id="kfifo%E7%9A%84%E5%86%85%E5%AD%98%E6%B1%A0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>kfifo的内存池</h4>
 <ul>
 <li>ringbuffer_from_dev</li>
 </ul>
-
-<h4>应用层协议</h4>
-
+<h4><a id="%E5%BA%94%E7%94%A8%E5%B1%82%E5%8D%8F%E8%AE%AE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>应用层协议</h4>
 <ul>
 <li>TLV</li>
 </ul>
-
-<h4>boost pool</h4>
-
+<h4><a id="boost-pool" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>boost pool</h4>
 <ul>
 <li>pfirst管理空闲内存，使用内存踢出去</li>
 <li>重栽运算符</li>
 </ul>
-
-<h4>zmq的内存池</h4>
-
+<h4><a id="zmq%E7%9A%84%E5%86%85%E5%AD%98%E6%B1%A0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>zmq的内存池</h4>
 <ul>
-<li> 传输层和应用层更简单的接口</li>
-<li> 尽量少的申请内存，尽量使用即将释放的内存</li>
-<li> 一个读线程，一个写线程，读写之间使用无锁解决互斥</li>
-<li> 批量写入，预取机制，提高效率</li>
+<li>传输层和应用层更简单的接口</li>
+<li>尽量少的申请内存，尽量使用即将释放的内存</li>
+<li>一个读线程，一个写线程，读写之间使用无锁解决互斥</li>
+<li>批量写入，预取机制，提高效率</li>
 </ul>
-
-<h4>chunk_t</h4>
-
+<h4><a id="chunk-t" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>chunk_t</h4>
 <ul>
 <li>begin_chunk 读取的块 begin_pos 读取的位置</li>
 <li>back_chunk 写入的块 back_pos 写入的位置</li>
-<li>end_chunk 指向新申请的内存块 </li>
+<li>end_chunk 指向新申请的内存块</li>
 <li>push()只是申请了空间</li>
 <li>chunk_t *sc = spare_chunk.xchg (NULL); 拿取一个值，然后用NULL去填充</li>
 <li>back()是存储了数据</li>
 <li>begin_pos 正在读取的位置 begin_pos = N 时说明已经全部释放了，所以直接使用物理释放</li>
 <li>back_pos 写的位置</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-text">inline void pop ()
+<pre><code class="language-plain_text">inline void pop ()
     {
         if (++_begin_pos == N) {
             chunk_t *o = _begin_chunk;
@@ -210,23 +196,20 @@
     }
 
 </code></pre>
-
-<h4>ypipe_t</h4>
-
-<h5>flush</h5>
-
-<pre class="line-numbers"><code class="language-text">  inline bool flush ()
+<h4><a id="ypipe-t" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>ypipe_t</h4>
+<h5><a id="flush" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>flush</h5>
+<pre><code class="language-plain_text">  inline bool flush ()
   {
     //  If there are no un-flushed items, do nothing.
     if (_w == _f)
       return true;
 
-    //  Try to set &#39;c&#39; to &#39;f&#39;.
+    //  Try to set 'c' to 'f'.
     if (_c.cas (_w, _f) != _w) {
-      //  Compare-and-swap was unseccessful because &#39;c&#39; is NULL.
-      //  This means that the reader is asleep. Therefore we don&#39;t
+      //  Compare-and-swap was unseccessful because 'c' is NULL.
+      //  This means that the reader is asleep. Therefore we don't
       //  care about thread-safeness and update c in non-atomic
-      //  manner. We&#39;ll return false to let the caller know
+      //  manner. We'll return false to let the caller know
       //  that reader is sleeping.
       _c.set (_f);
       _w = _f;
@@ -234,7 +217,7 @@
     }
 
     //  Reader is alive. Nothing special to do now. Just move
-    //  the &#39;first un-flushed item&#39; pointer to &#39;f&#39;.
+    //  the 'first un-flushed item' pointer to 'f'.
     _w = _f;
     return true;
   }
@@ -249,13 +232,10 @@
                 f = &amp;queue.back ();
         }
 </code></pre>
-
-<p><img src="media/15637866905737/15640480390126.jpg" alt=""/><br/>
-<img src="media/15637866905737/15640480483880.jpg" alt=""/></p>
-
-<h5>read</h5>
-
-<pre class="line-numbers"><code class="language-text">r指针没有指向begin_pos说明已经预读好了
+<p><img src="media/15637866905737/15640480390126.jpg" alt="" /><br />
+<img src="media/15637866905737/15640480483880.jpg" alt="" /></p>
+<h5><a id="read" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>read</h5>
+<pre><code class="language-plain_text">r指针没有指向begin_pos说明已经预读好了
  inline bool read (T *value_)
     {
         //  Try to prefetch a value.
@@ -279,7 +259,7 @@
       //_c=NULL, _r-&gt;_c的位置
 
       //  If there are no elements prefetched, exit.
-      //  During pipe&#39;s lifetime r should never be NULL, however,
+      //  During pipe's lifetime r should never be NULL, however,
       //  it can happen during pipe shutdown when items
       //  are being deallocated.
       if (&amp;_queue.front () == _r || !_r)
@@ -289,10 +269,8 @@
       return true;
     }
 </code></pre>
-
-<p><img src="media/15637866905737/15640481057426.jpg" alt=""/><br/>
-<img src="media/15637866905737/15640481129653.jpg" alt=""/></p>
-
+<p><img src="media/15637866905737/15640481057426.jpg" alt="" /><br />
+<img src="media/15637866905737/15640481129653.jpg" alt="" /></p>
 <ul>
 <li>f刷新指针</li>
 <li></li>
@@ -318,31 +296,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
-<script src="asset/prism.js"></script>
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   

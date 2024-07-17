@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,48 +139,36 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>超时</h4>
-
+                    <h4><a id="%E8%B6%85%E6%97%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>超时</h4>
 <ul>
 <li>参照服务提供者线上真实的服务水平，取 P999 或者 P9999 的值，也就是以 99.9% 或者 99.99% 的调用都在多少毫秒内返回为准。</li>
 </ul>
-
-<h4>重试</h4>
-
-<h4>双发</h4>
-
+<h4><a id="%E9%87%8D%E8%AF%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>重试</h4>
+<h4><a id="%E5%8F%8C%E5%8F%91" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>双发</h4>
 <ul>
 <li>一个简单的提高服务调用成功率的办法就是每次服务消费者要发起服务调用的时候，都同时发起两次服务调用，一方面可以提高调用的成功率，另一方面两次服务调用哪个先返回就采用哪次的返回结果</li>
 <li>备份请求”（Backup Requests），它的大致思想是服务消费者发起一次服务调用后，在给定的时间内如果没有返回请求结果，那么服务消费者就立刻发起另一次服务调用</li>
 <li>最大重试比例可以设置成 15%</li>
 </ul>
-
-<h4>熔断</h4>
-
+<h4><a id="%E7%86%94%E6%96%AD" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>熔断</h4>
 <ul>
 <li>熔断就是把客户端的每一次服务调用用断路器封装起来，通过断路器来监控每一次服务调用。如果某一段时间内，服务调用失败的次数达到一定阈值，那么断路器就会被触发，后续的服务调用就直接返回，也就不会再向服务提供者发起请求了。</li>
 <li>熔断中断路器</li>
 <li>Closed状态</li>
 <li>Open状态: 当服务调用失败次数达到一定阈值时，断路器就会处于开启状态，后续的服务调用就直接返回，不会向服务提供者发起请求</li>
 <li>Half Open 状态：当断路器开启后，每隔一段时间，会进入半打开状态，这时候会向服务提供者发起探测调用，以确定服务提供者是否恢复正常。如果调用成功了，断路器就关闭；如果没有成功，断路器就继续保持开启状态，并等待下一个周期重新进入半打开状态。</li>
-<li><img src="media/15501086782135/caf39c417373e0261da5717d1442958a.png" alt="caf39c417373e0261da5717d1442958a"/></li>
+<li><img src="media/15501086782135/caf39c417373e0261da5717d1442958a.png" alt="caf39c417373e0261da5717d1442958a" /></li>
 </ul>
-
-<h4>Hystrix</h4>
-
+<h4><a id="hystrix" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Hystrix</h4>
 <ul>
 <li>滑动窗口包含 10 个桶，每个桶时间宽度为 1 秒，每个桶内记录了这 1 秒内所有服务调用中成功的、失败的、超时的以及被线程拒绝的次数。当新的 1 秒到来时，滑动窗口就会往前滑动，丢弃掉最旧的 1 个桶，把最新 1 个桶包含进来。</li>
 <li>0 个桶内记录的所有失败的、超时的、被线程拒绝的调用次数之和除以总的调用次数就是滑动窗口内所有服务的调用的失败率</li>
 </ul>
-
-<h4>总结</h4>
-
+<h4><a id="%E6%80%BB%E7%BB%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>总结</h4>
 <ul>
 <li>采用双发对长尾请求的场景十分有效</li>
 </ul>
-
-<h4>思考题</h4>
-
+<h4><a id="%E6%80%9D%E8%80%83%E9%A2%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>思考题</h4>
 <ul>
 <li>Hystrix 采用了线程池隔离的方式来实现不同的服务调用相互之间不影响，你认为这种方式的优缺点有哪些？</li>
 <li>（1）线程池隔离模式：使用一个线程池来存储当前的请求，线程池对请求作处理，设置任务返回处理超时时间，堆积的请求堆积入线程池队列。这种方式需要为每个依赖的服务申请线程池，有一定的资源消耗，好处是可以应对突发流量（流量洪峰来临时，处理不完可将数据存储到线程池队里慢慢处理）</li>
@@ -188,9 +176,7 @@
 <li>优点：可以防止某个服务占满可以使用的线程，影响其他服务</li>
 <li>缺点：如果运行线程特别多，线程上下文切换成本较高。</li>
 </ul>
-
-<h4>幂等性</h4>
-
+<h4><a id="%E5%B9%82%E7%AD%89%E6%80%A7" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>幂等性</h4>
 <ul>
 <li>对同一个系统，使用同样的条件，一次请求和重复的多次请求对系统资源的影响是一致的</li>
 <li>MVCC</li>
@@ -218,29 +204,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

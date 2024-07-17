@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,16 +139,13 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>InnoDB读取数据</h4>
-
+                    <h4><a id="innodb%E8%AF%BB%E5%8F%96%E6%95%B0%E6%8D%AE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>InnoDB读取数据</h4>
 <ul>
 <li>InnoDB 的数据是按数据页为单位来读写的。也就是说，当需要读一条记录的时候，并不是将这个记录本身从磁盘读出来，而是以页为单位，将其整体读入内存。在 InnoDB 中，每个数据页的大小默认是 16KB。</li>
 <li>因为引擎是按页读写的，所以说，当找到 k=5 的记录的时候，它所在的数据页就都在内存里了。那么，对于普通索引来说，要多做的那一次“查找和判断下一条记录”的操作，就只需要一次指针寻找和一次计算。</li>
 <li>当然，如果 k=5 这个记录刚好是这个数据页的最后一个记录，那么要取下一个记录，必须读取下一个数据页，这个操作会稍微复杂一些。</li>
 </ul>
-
-<h4>change buffer</h4>
-
+<h4><a id="change-buffer" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>change buffer</h4>
 <ul>
 <li>change buffer 在内存中有拷贝，也会被写入到磁盘上</li>
 <li>对于唯一索引来说，所有的更新操作都要先判断这个操作是否违反唯一性约束,必须要把数据页载入内存才能实现</li>
@@ -157,26 +154,19 @@
 <li>更新后紧跟着这个记录的查询，change buffer应该关闭，其他情况下应该打开</li>
 <li>操作流程</li>
 </ul>
-
-<p><img src="media/15438265348573/15562408037391.jpg" alt="" style="width:583px;"/></p>
-
-<h4>redo log 和 binlog的区别</h4>
-
+<p><img src="media/15438265348573/15562408037391.jpg" alt="" style="width:583px;" /></p>
+<h4><a id="redo-log%E5%92%8C-binlog%E7%9A%84%E5%8C%BA%E5%88%AB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>redo log 和 binlog的区别</h4>
 <ul>
 <li>redo log 是 InnoDB 引擎特有的；binlog 是 MySQL 的 Server 层实现的，所有引擎都可以使用。</li>
 <li>redo log 是物理日志，记录的是修改；binlog 是逻辑日志，记录的是这个语句的原始操作逻辑</li>
 <li>redo log 是循环写的，空间固定会用完；binlog 是可以追加写入的。“追加写”是指 binlog 文件写到一定大小后会切换到下一个，并不会覆盖以前的日志。</li>
 </ul>
-
-<h4>redo log 和change buffer</h4>
-
+<h4><a id="redo-log%E5%92%8C-change-buffer" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>redo log 和change buffer</h4>
 <ul>
 <li>redo log 主要节省的是随机写磁盘的 IO 消耗（转成顺序写）</li>
 <li>而 change buffer 主要节省的则是随机读磁盘的 IO 消耗。</li>
 </ul>
-
-<h4>change buffer的merge的流程</h4>
-
+<h4><a id="change-buffer%E7%9A%84merge%E7%9A%84%E6%B5%81%E7%A8%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>change buffer的merge的流程</h4>
 <ul>
 <li>从磁盘读入数据页到内存（老版本的数据页）；</li>
 <li>从 change buffer 里找出这个数据页的 change buffer 记录 (可能有多个），依次应用，得到新版数据页；</li>
@@ -205,29 +195,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

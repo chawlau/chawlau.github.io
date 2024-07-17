@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,54 +139,41 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>三个点</h4>
-
+                    <h4><a id="%E4%B8%89%E4%B8%AA%E7%82%B9" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>三个点</h4>
 <ul>
-<li>Consistency、Availability、Partition Tolerance </li>
+<li>Consistency、Availability、Partition Tolerance</li>
 </ul>
-
-<h4>一致性</h4>
-
+<h4><a id="%E4%B8%80%E8%87%B4%E6%80%A7" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>一致性</h4>
 <ul>
 <li>对某个指定的客户端来说，读操作保证能够返回最新的写操作结果</li>
 <li>第一版从节点 node 的角度描述，第二版从客户端 client 的角度描述。</li>
 <li>第一版强调同一时刻拥有相同数据（same time + same data），第二版并没有强调这点。</li>
 <li>对于系统执行事务来说，在事务执行过程中，系统其实处于一个不一致的状态，不同的节点的数据并不完全一致</li>
 </ul>
-
-<h4>可用性</h4>
-
+<h4><a id="%E5%8F%AF%E7%94%A8%E6%80%A7" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>可用性</h4>
 <ul>
 <li>第一版是 every request，第二版强调了 A non-failing node</li>
 <li>第一版的 response 分为 success 和 failure，第二版用了两个 reasonable：reasonable response 和 reasonable time，而且特别强调了 no error or timeout</li>
 </ul>
-
-<h4>分区容忍性</h4>
-
+<h4><a id="%E5%88%86%E5%8C%BA%E5%AE%B9%E5%BF%8D%E6%80%A7" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>分区容忍性</h4>
 <ul>
 <li>当出现网络分区后，系统能够继续“履行职责”。</li>
 <li>第一版用的是 work，第二版用的是 function。</li>
 </ul>
-
-<h4>CAP关键细节点</h4>
-
+<h4><a id="cap%E5%85%B3%E9%94%AE%E7%BB%86%E8%8A%82%E7%82%B9" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>CAP关键细节点</h4>
 <ul>
 <li>CAP关注的粒度是数据，不是整个系统</li>
 <li>CAP是忽略网络延迟的</li>
 <li>正常运行情况下，不存在 CP 和 AP 的选择，可以同时满足 CA</li>
 <li>放弃并不等于什么都不做，需要为分区恢复后做准备</li>
 </ul>
-
-<h4>BASE</h4>
-
+<h4><a id="base" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>BASE</h4>
 <ul>
 <li>BASE 是指基本可用（Basically Available）、软状态（ Soft State）、最终一致性（ Eventual Consistency），核心思想是即使无法做到强一致性（CAP 的一致性就是强一致性），但应用可以采用适合的方式达到最终一致性。</li>
 <li>BASE 是 CAP 理论中 AP 方案的延伸</li>
 <li>分布式系统中，节点之间的数据同步是基于网络的。由于网络本身固有的不可靠属性，极端情况下会出现网络不可用的情况，进而将网络两端的节点孤立开来，这就是所谓的“网络分区”现象。</li>
 </ul>
-
-<h4>CAP电商系统的设计</h4>
-
+<h4><a id="cap%E7%94%B5%E5%95%86%E7%B3%BB%E7%BB%9F%E7%9A%84%E8%AE%BE%E8%AE%A1" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>CAP电商系统的设计</h4>
 <ul>
 <li>电商网站核心功能有用户、产品、订单、支付、库存，相应的数据有用户、产品、订单、支付、库存。</li>
 <li>对于用户数据，选择CP。因为用户注册后，可能几分钟后重新登录，所以需要满足一致性；在网络出现分区时，因为需要满足一致性而暂时不能提供写服务，所以无法满足可用性；对于分区容错性，只要能返回一个合理的响应就能满足，这一点能很好满足。</li>
@@ -216,29 +203,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

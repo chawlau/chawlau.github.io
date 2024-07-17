@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,13 +139,11 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>过滤方案</h4>
-
+                    <h4><a id="%E8%BF%87%E6%BB%A4%E6%96%B9%E6%A1%88" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>过滤方案</h4>
 <ul>
-<li><img src="media/15813101435484/15813111759180.jpg" alt="" style="width:663px;"/></li>
+<li><img src="media/15813101435484/15813111759180.jpg" alt="" style="width:663px;" /></li>
 </ul>
-
-<pre class="line-numbers"><code class="language-python">from random import randint
+<pre><code class="language-python">from random import randint
 
 randint(-10, 10)
 l = [randint(-10, 10) for _ in range(10)]
@@ -157,7 +155,7 @@ g = filter(lambda x: x &gt;= 0,l)
 g = filter(lambda x: x &gt;= 0,l)
 list(g)
 
-d = {&#39;student%d&#39; % i : randint(50,100) for i in range(1, 21)}
+d = {'student%d' % i : randint(50,100) for i in range(1, 21)}
 
 {k:v for k, v in d.items() if v &gt;= 90}
 
@@ -168,15 +166,12 @@ s = {randint(0, 20) for _ in range(20)}
 
 {x for x in s if x % 3 == 0}
 </code></pre>
-
-<h4>元组访问</h4>
-
+<h4><a id="%E5%85%83%E7%BB%84%E8%AE%BF%E9%97%AE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>元组访问</h4>
 <ul>
 <li>匿名元组访问</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-python">#%%
-s = (&#39;jim&#39;, 16, &#39;male&#39;, &#39;zm@gamil.com&#39;)
+<pre><code class="language-python">#%%
+s = ('jim', 16, 'male', 'zm@gamil.com')
 from enum import IntEnum
 class StudentEnum(IntEnum):
     NAME = 0
@@ -189,24 +184,21 @@ StudentEnum.AGE
 
 #%%
 from collections import namedtuple
-Student = namedtuple(&#39;Student&#39;, [&#39;name&#39;, &#39;age&#39;, &#39;sex&#39;, &#39;email&#39;])
-s2 = Student(&#39;jim&#39;, 16, &#39;male&#39;, &#39;zm@gamil.com&#39;)
+Student = namedtuple('Student', ['name', 'age', 'sex', 'email'])
+s2 = Student('jim', 16, 'male', 'zm@gamil.com')
 s2
 s2.name
 s2.age
 </code></pre>
-
-<h4>字典排序</h4>
-
+<h4><a id="%E5%AD%97%E5%85%B8%E6%8E%92%E5%BA%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>字典排序</h4>
 <ul>
-<li><img src="media/15813101435484/15813207725478.jpg" alt="" style="width:890px;"/></li>
+<li><img src="media/15813101435484/15813207725478.jpg" alt="" style="width:890px;" /></li>
 </ul>
-
-<pre class="line-numbers"><code class="language-python">#%%
+<pre><code class="language-python">#%%
 (3, 2) &gt; (1, 4)
 from random import randint
 
-d = {k:randint(60, 100) for k in &#39;abcdefgh&#39;}
+d = {k:randint(60, 100) for k in 'abcdefgh'}
 l = [(v, k) for k, v in d.items()]
 sorted(l)
 sorted(l, reverse=True)
@@ -229,12 +221,9 @@ for i, (k, v) in enumerate (p, 1):
     
 {k:(i, v) for i, (k, v) in enumerate(p, 1)}
 </code></pre>
-
-<h4>统计数据</h4>
-
-<p><img src="media/15813101435484/15813957488080.jpg" alt="" style="width:1120px;"/></p>
-
-<pre class="line-numbers"><code class="language-python">#%%
+<h4><a id="%E7%BB%9F%E8%AE%A1%E6%95%B0%E6%8D%AE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>统计数据</h4>
+<p><img src="media/15813101435484/15813957488080.jpg" alt="" style="width:1120px;" /></p>
+<pre><code class="language-python">#%%
 from random import randint
 data = [randint(0, 20) for _ in range(30)]
 d = dict.fromkeys(data, 0)
@@ -257,23 +246,20 @@ c.most_common(3)
 
 from collections import Counter
 import re
-txt = open(&#39;bible.txt&#39;).read()
+txt = open('bible.txt').read()
 print(txt)
-ret = re.split(&#39;\W+&#39;, txt)
+ret = re.split('\W+', txt)
 print(ret)
 c2 = Counter(ret)
 print(c2.most_common(10))
 </code></pre>
-
-<h4>字典key的交集</h4>
-
-<p><img src="media/15813101435484/15815113280295.jpg" alt="" style="width:1068px;"/></p>
-
-<pre class="line-numbers"><code class="language-python">from random import randint, sample
-sample(&#39;abcdefgh&#39;, 3)
-d1 = {k: randint(1,4) for k in sample(&#39;abcdefgh&#39;, randint(3, 6))}
-d2 = {k: randint(1,4) for k in sample(&#39;abcdefgh&#39;, randint(3, 6))}
-d3 = {k: randint(1,4) for k in sample(&#39;abcdefgh&#39;, randint(3, 6))}
+<h4><a id="%E5%AD%97%E5%85%B8key%E7%9A%84%E4%BA%A4%E9%9B%86" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>字典key的交集</h4>
+<p><img src="media/15813101435484/15815113280295.jpg" alt="" style="width:1068px;" /></p>
+<pre><code class="language-python">from random import randint, sample
+sample('abcdefgh', 3)
+d1 = {k: randint(1,4) for k in sample('abcdefgh', randint(3, 6))}
+d2 = {k: randint(1,4) for k in sample('abcdefgh', randint(3, 6))}
+d3 = {k: randint(1,4) for k in sample('abcdefgh', randint(3, 6))}
 
 d1 = [d1, d2, d3]
 [k for k in d1[0] if all(map(lambda d: k in d, d1[1:]))]
@@ -283,19 +269,16 @@ s1 &amp; s2
 from functools import reduce
 reduce(lambda a, b : a &amp; b, map(dict.keys, d1))
 </code></pre>
-
-<h4>如果让字典保持有序</h4>
-
-<p><img src="media/15813101435484/15815127429423.jpg" alt="" style="width:1184px;"/></p>
-
-<pre class="line-numbers"><code class="language-python">from collections import OrderedDict
+<h4><a id="%E5%A6%82%E6%9E%9C%E8%AE%A9%E5%AD%97%E5%85%B8%E4%BF%9D%E6%8C%81%E6%9C%89%E5%BA%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>如果让字典保持有序</h4>
+<p><img src="media/15813101435484/15815127429423.jpg" alt="" style="width:1184px;" /></p>
+<pre><code class="language-python">from collections import OrderedDict
 d = OrderedDict()
-d[&#39;c&#39;] = 1
-d[&#39;b&#39;] = 2
-d[&#39;a&#39;] = 3
+d['c'] = 1
+d['b'] = 2
+d['a'] = 3
 d.keys()
 
-players = list(&#39;abcdefgh&#39;)
+players = list('abcdefgh')
 from random import shuffle
 shuffle(players)
 od = OrderedDict()
@@ -305,7 +288,7 @@ print(od)
 
 def query_by_name(d, name):
     return d[name]
-query_by_name(od, &#39;c&#39;)
+query_by_name(od, 'c')
     
 from itertools import islice
 list(islice(range(10), 3, 6))
@@ -318,12 +301,9 @@ def query_by_order(d, a, b = None):
 
 query_by_order(od, 3, 6)
 </code></pre>
-
-<h4>实现用户的历史记录功能</h4>
-
-<p><img src="media/15813101435484/15815134856840.jpg" alt="" style="width:1095px;"/></p>
-
-<pre class="line-numbers"><code class="language-python">from collections import deque
+<h4><a id="%E5%AE%9E%E7%8E%B0%E7%94%A8%E6%88%B7%E7%9A%84%E5%8E%86%E5%8F%B2%E8%AE%B0%E5%BD%95%E5%8A%9F%E8%83%BD" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>实现用户的历史记录功能</h4>
+<p><img src="media/15813101435484/15815134856840.jpg" alt="" style="width:1095px;" /></p>
+<pre><code class="language-python">from collections import deque
 q = deque([], 5)
 q.append(1)
 q.append(2)
@@ -334,9 +314,9 @@ q.append(6)
 
 # 将一个python对象存入文件
 import pickle
-pickle.dump(q, open(&#39;save.pkl&#39;, &#39;wb&#39;))
+pickle.dump(q, open('save.pkl', 'wb'))
 
-q2 = pickle.load(open(&#39;save.pkl&#39;, &#39;rb&#39;))
+q2 = pickle.load(open('save.pkl', 'rb'))
 print(q2)
 </code></pre>
 
@@ -360,31 +340,96 @@ print(q2)
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
-<script src="asset/prism.js"></script>
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   

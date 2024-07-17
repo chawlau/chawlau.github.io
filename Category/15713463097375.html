@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,34 +139,27 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>direct模式</h4>
-
+                    <h4><a id="direct%E6%A8%A1%E5%BC%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>direct模式</h4>
 <ul>
 <li>1、消费者 1 和消费者 2 获取到的消息鬥容是不同的，同一个消息只能被一个消费者获取。</li>
 <li>2、消费者 1 和消费者 2 获取到的消息的数量是相同的，一个是奇数一个是偶数。</li>
 </ul>
-
-<h4>work模式能者多劳</h4>
-
+<h4><a id="work%E6%A8%A1%E5%BC%8F%E8%83%BD%E8%80%85%E5%A4%9A%E5%8A%B3" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>work模式能者多劳</h4>
 <ul>
 <li>Qos每次只发一条消息</li>
 <li>消费者从队列中获取消息，服务端如何宍道消息已经被消呢？</li>
-<li>模式 1: 自动确认只要消息从队列中获取，无论消费者获取到消息后是否成功消息，都认为是消息已经成功消费模式 </li>
+<li>模式 1: 自动确认只要消息从队列中获取，无论消费者获取到消息后是否成功消息，都认为是消息已经成功消费模式</li>
 <li>2: 手动确认消费者从队列中获取消息后，服务器会将该消息标记为不可用状态，等待消费者的反馈，如果消费者一直没有反馈，那么该消息将一直处于不可用状态</li>
-<li>手动情况 </li>
+<li>手动情况</li>
 </ul>
-
-<h4>订阅模式</h4>
-
+<h4><a id="%E8%AE%A2%E9%98%85%E6%A8%A1%E5%BC%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>订阅模式</h4>
 <ul>
-<li><img src="media/15713463097375/15713470609557.jpg" alt="" style="width:517px;"/></li>
+<li><img src="media/15713463097375/15713470609557.jpg" alt="" style="width:517px;" /></li>
 <li>交换机只是转发，没有存储消息功能</li>
 <li>消息发送到没有队列绑定的交换机时，消息将丢失，因为，交换机没有存储消息的力，消息只能存在在队列中。</li>
 <li>同一个消息被多个消费者获取</li>
 </ul>
-
-<h4>订阅模式实现商品的同步</h4>
-
+<h4><a id="%E8%AE%A2%E9%98%85%E6%A8%A1%E5%BC%8F%E5%AE%9E%E7%8E%B0%E5%95%86%E5%93%81%E7%9A%84%E5%90%8C%E6%AD%A5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>订阅模式实现商品的同步</h4>
 <ul>
 <li>可以的。</li>
 <li>后台系统就是消息的生产者。前台系统和搜索系统是消息的消费者。</li>
@@ -174,9 +167,7 @@
 <li>消息，新增商品、修改商品、删除商品。</li>
 <li>消费者有选择性的接收消息</li>
 </ul>
-
-<h4>持久化</h4>
-
+<h4><a id="%E6%8C%81%E4%B9%85%E5%8C%96" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>持久化</h4>
 <ul>
 <li>非持久化性能高于持久化</li>
 </ul>
@@ -201,29 +192,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

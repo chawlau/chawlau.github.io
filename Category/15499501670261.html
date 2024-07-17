@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,45 +139,36 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>优点</h4>
-
+                    <h4><a id="%E4%BC%98%E7%82%B9" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>优点</h4>
 <ul>
 <li>事件驱动</li>
 <li>专注于网络</li>
 <li>支持I/O，定时器和信号</li>
 </ul>
-
-<h4>函数解析</h4>
-
+<h4><a id="%E5%87%BD%E6%95%B0%E8%A7%A3%E6%9E%90" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>函数解析</h4>
 <ul>
-<li>event_new(struct event_base <em>base, evutil_socket_t fd, short events, void (</em>cb)(evutil_socket_t, short, void *), void *arg)</li>
+<li>event_new(struct event_base *base, evutil_socket_t fd, short events, void (*cb)(evutil_socket_t, short, void *), void *arg)</li>
 <li>arg的参数通过回调用函数的第三个参数传进来</li>
 <li>buffer io event是带缓冲的event</li>
 <li>尽量不要使用bufferevent</li>
 <li>epoll_create和epoll_create1的区别</li>
 <li>persistent event被激活了一次是不会被删掉的</li>
 </ul>
-
-<h4>libevent结构</h4>
-
+<h4><a id="libevent%E7%BB%93%E6%9E%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>libevent结构</h4>
 <ul>
-<li><img src="media/15499501670261/15502973029899.jpg" alt=""/></li>
-<li><img src="media/15499501670261/15502971650987.jpg" alt=""/></li>
+<li><img src="media/15499501670261/15502973029899.jpg" alt="" /></li>
+<li><img src="media/15499501670261/15502971650987.jpg" alt="" /></li>
 </ul>
-
-<h4>thrift</h4>
-
+<h4><a id="thrift" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>thrift</h4>
 <ul>
 <li>IO线程是和客户端绑定</li>
 <li>监听的socket所在的线程会调用registerEvents，创建2个event：serverEvent用于服务监听，notificationEvent是一个socketpair，用于线程池里线程间的通信；</li>
 <li>当serverEvent变成可读时，调用到handleEvent，接受该请求，并且调用createConnection创建TConnection对象，然后再把tconnectionevent时间添加到libevent；</li>
-<li>当TConnection对象被libevent调用到有事件发生时，读取对端发送过来的内容（workSocket），并且调用transition，把读取到的内容封装成一个task<br/>
+<li>当TConnection对象被libevent调用到有事件发生时，读取对端发送过来的内容（workSocket），并且调用transition，把读取到的内容封装成一个task<br />
 添加到ThreadManager，之后由ThreadManager::Worker（具体的线程）主动去任务池里获取任务并调用任务的run方法。</li>
 <li>此时IO线程中的TConnection等待Worker执行完通知，在被通知之前会把事件从libevent中删除，等收到通知后，再重新添加事件到libevent中。</li>
 </ul>
-
-<h4>thrift不足</h4>
-
+<h4><a id="thrift%E4%B8%8D%E8%B6%B3" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>thrift不足</h4>
 <ul>
 <li>Worker主动从任务队列中获取任务，需要加锁和解锁，这并不是一种优良的处理方法；</li>
 <li>IO Thread在处理客户端同一次连接的多个调用的时序性上，依赖把event从libevent中删掉，等处理完单个调用后再添加进去，影响IO的执行效率。</li>
@@ -205,29 +196,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

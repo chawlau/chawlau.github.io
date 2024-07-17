@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,28 +139,21 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>动机</h4>
-
+                    <h4><a id="%E5%8A%A8%E6%9C%BA" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>动机</h4>
 <ul>
 <li>在面向对象系统中，有些对象由于某种原因（比如对象创建的开消很大，或者某些操作需要安全控制，或者需要进程外的访问等）直接访问会给使用者、或者系统结构带来很多麻烦。</li>
 <li>如何在不失去透明操作对象的同时来管理/控制这些对象特有的复杂性？增加一层间接层是软件开发中常见的解決方式。</li>
 </ul>
-
-<h4>结构</h4>
-
+<h4><a id="%E7%BB%93%E6%9E%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>结构</h4>
 <ul>
-<li><img src="media/15737733784968/15807036463940.jpg" alt="" style="width:705px;"/></li>
+<li><img src="media/15737733784968/15807036463940.jpg" alt="" style="width:705px;" /></li>
 </ul>
-
-<h4>要点总结</h4>
-
+<h4><a id="%E8%A6%81%E7%82%B9%E6%80%BB%E7%BB%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>要点总结</h4>
 <ul>
-<li><img src="media/15737733784968/15737741074243.jpg" alt="" style="width:842px;"/></li>
+<li><img src="media/15737733784968/15737741074243.jpg" alt="" style="width:842px;" /></li>
 </ul>
-
-<h4>cpp_demo</h4>
-
-<pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
+<h4><a id="cpp-demo" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>cpp_demo</h4>
+<pre><code class="language-C++">#include &lt;iostream&gt;
 
 class ITelco {
 public:
@@ -200,103 +193,99 @@ int main() {
     proxy-&gt;Recharge(100);
 }
 </code></pre>
-
-<h4>golang_demo</h4>
-
-<pre class="line-numbers"><code class="language-go">import &quot;fmt&quot;
+<h4><a id="golang-demo" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>golang_demo</h4>
+<pre><code class="language-go">import &quot;fmt&quot;
 
 tyecharge(money int) {
-    fmt.Println(&quot;CMCC Recharge money &quot;, money)
+	fmt.Println(&quot;CMCC Recharge money &quot;, money)
 }
 
 type ProxySub struct {
-    cmcc *ClientAPP
+	cmcc *ClientAPP
 }
 
 func (p *ProxySub) Recharge(money int) {
-    if money &gt;= 50 {
-        if p.cmcc == nil {pe Subject1 interface {
-        Recharge(money int)
-        }
+	if money &gt;= 50 {
+		if p.cmcc == nil {pe Subject1 interface {
+		Recharge(money int)
+		}
 
-            type ClientAPP struct{}
+			type ClientAPP struct{}
 
-            func (c *ClientAPP) R
-            p.cmcc = &amp;ClientAPP{}
-        }
-        p.cmcc.Recharge(money)
-    } else {
-        fmt.Println(&quot;Sorry too littel money&quot;)
-    }
+			func (c *ClientAPP) R
+			p.cmcc = &amp;ClientAPP{}
+		}
+		p.cmcc.Recharge(money)
+	} else {
+		fmt.Println(&quot;Sorry too littel money&quot;)
+	}
 }
 func TestProxySub(t *testing.T) {
-    var proxy Subject1
-    proxy = &amp;ProxySub{}
-    proxy.Recharge(30)
-    proxy.Recharge(100)
+	var proxy Subject1
+	proxy = &amp;ProxySub{}
+	proxy.Recharge(30)
+	proxy.Recharge(100)
 }
 </code></pre>
-
-<h4>golang_demo</h4>
-
-<pre class="line-numbers"><code class="language-go">package desian_pattern_practise
+<h4><a id="golang-demo" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>golang_demo</h4>
+<pre><code class="language-go">package desian_pattern_practise
 
 import &quot;fmt&quot;
 
 type IPSubject interface {
-    Request(string)
+	Request(string)
 }
 
 type PSubject struct {
-    name string
+	name string
 }
 
 type RealSubject struct {
-    *PSubject
+	*PSubject
 }
 
 func (r *RealSubject) Request(content string) {
-    fmt.Println(&quot;RealSubject handle content&quot;, content)
+	fmt.Println(&quot;RealSubject handle content&quot;, content)
 }
 
 type ProxySubject struct {
-    *PSubject
-    realSubject IPSubject
+	*PSubject
+	realSubject IPSubject
 }
 
 func NewRealSubject(name string) *RealSubject {
-    return &amp;RealSubject{
-        PSubject: &amp;PSubject{name: name},
-    }
+	return &amp;RealSubject{
+		PSubject: &amp;PSubject{name: name},
+	}
 }
 
 func (p *ProxySubject) Request(content string) {
-    p.preRequest()
-    if p.realSubject != nil {
-        p.realSubject.Request(content)
-    }
-    p.afterRequest()
+	p.preRequest()
+	if p.realSubject != nil {
+		p.realSubject.Request(content)
+	}
+	p.afterRequest()
 }
 
 func NewProxySubject(name string, subject IPSubject) *ProxySubject {
-    return &amp;ProxySubject{
-        PSubject: &amp;PSubject{name: name},
-        realSubject: subject,
-    }
+	return &amp;ProxySubject{
+		PSubject: &amp;PSubject{name: name},
+		realSubject: subject,
+	}
 }
 
 func (p *ProxySubject) preRequest() {
-    println(&quot;pre request&quot;)
+	println(&quot;pre request&quot;)
 }
 
 func (p *ProxySubject) afterRequest() {
-    println(&quot;after request&quot;)
+	println(&quot;after request&quot;)
 }
 
 func TestProxySubject_Request(t *testing.T) {
-    realObj := NewRealSubject(&quot;realSubject&quot;)
-    proxySubject := NewProxySubject(&quot;ProxySubject&quot;, realObj)
-    proxySubject.Request(&quot;Html world&quot;)
+	realObj := NewRealSubject(&quot;realSubject&quot;)
+	proxySubject := NewProxySubject(&quot;ProxySubject&quot;, realObj)
+	proxySubject.Request(&quot;Html world&quot;)
 }
 </code></pre>
 
@@ -320,31 +309,96 @@ func TestProxySubject_Request(t *testing.T) {
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
-<script src="asset/prism.js"></script>
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   

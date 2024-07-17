@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,43 +139,34 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>中断处理</h4>
-
+                    <h4><a id="%E4%B8%AD%E6%96%AD%E5%A4%84%E7%90%86" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>中断处理</h4>
 <ul>
 <li>unsigned int irq 是中断信号；</li>
 <li>q_ handler_ t handler 是中断处理函数；unsigned long flags 是一些标识位；const char*name 是设备名称；</li>
 <li>void<em>dev 这个通用指针应该和中断处理函数的 void</em>dev 相对应。</li>
 </ul>
-
-<h4>中断处理成员</h4>
-
+<h4><a id="%E4%B8%AD%E6%96%AD%E5%A4%84%E7%90%86%E6%88%90%E5%91%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>中断处理成员</h4>
 <ul>
 <li>中断处理函数 handler;</li>
 <li>void* dev id 为设备 id; rq 为中断信</li>
 <li>如果中断处理函数在单独的线程运行，则有 thread_fn 是线程的执行函数，thread 是线程task struct</li>
 </ul>
-
-<h4>中断层次</h4>
-
+<h4><a id="%E4%B8%AD%E6%96%AD%E5%B1%82%E6%AC%A1" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>中断层次</h4>
 <ul>
 <li>第一个层次是外部设备给中断控制器发送物理中断信号。</li>
 <li>第二个层次是中断控制器将物理中断信号转换成为中断向量 Interrupt vector，发给各个 CPU。</li>
 <li>第三个层次是每个 CPU 都会有一个中断向量表，根据 Interrupt vector 调用一个 IRQ处理函数。注意这里的 IRQ 处理函数还不是咱们上面指定的 irq_ handler_t，到这一层还是 CPU 硬件的要求。</li>
-<li>第四个层次是在 IRQ 处理函数中，将 interrupt vector 转化为抽象中断层的中断信号 irq 调用中断信号 irq 对应的中断描述结构里面的 irq_ handler_t。
-<img src="media/15602962403070/15602980613927.jpg" alt=""/></li>
+<li>第四个层次是在 IRQ 处理函数中，将 interrupt vector 转化为抽象中断层的中断信号 irq 调用中断信号 irq 对应的中断描述结构里面的 irq_ handler_t。<br />
+<img src="media/15602962403070/15602980613927.jpg" alt="" /></li>
 </ul>
-
-<h4>中断向量表</h4>
-
+<h4><a id="%E4%B8%AD%E6%96%AD%E5%90%91%E9%87%8F%E8%A1%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>中断向量表</h4>
 <ul>
-<li> 0 到 31 的前 32 位是系统陷入或者系统异常，这些错误无法屏蔽，一定要处理</li>
-<li> 外加一位 32 位系统调用</li>
+<li>0 到 31 的前 32 位是系统陷入或者系统异常，这些错误无法屏蔽，一定要处理</li>
+<li>外加一位 32 位系统调用</li>
 </ul>
-
-<h4>总结</h4>
-
+<h4><a id="%E6%80%BB%E7%BB%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>总结</h4>
 <ul>
-<li><img src="media/15602962403070/26bde4fa2279f66098856c5b2b6d308f.png" alt="26bde4fa2279f66098856c5b2b6d308f"/></li>
+<li><img src="media/15602962403070/26bde4fa2279f66098856c5b2b6d308f.png" alt="26bde4fa2279f66098856c5b2b6d308f" /></li>
 </ul>
 
                   </article>
@@ -198,29 +189,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

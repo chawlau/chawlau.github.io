@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,47 +139,36 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>内存映射</h4>
-
+                    <h4><a id="%E5%86%85%E5%AD%98%E6%98%A0%E5%B0%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>内存映射</h4>
 <ul>
 <li>物理内存和虚拟内存之间的映射</li>
 <li>文件中的内容映射到虚拟内存空间</li>
-<li><img src="media/15587428626726/f0dcb83fcaa4f185a8e36c9d28f12345.jpg" alt="f0dcb83fcaa4f185a8e36c9d28f12345"/></li>
+<li><img src="media/15587428626726/f0dcb83fcaa4f185a8e36c9d28f12345.jpg" alt="f0dcb83fcaa4f185a8e36c9d28f12345" /></li>
 </ul>
-
-<h4>内存映射文件流程</h4>
-
+<h4><a id="%E5%86%85%E5%AD%98%E6%98%A0%E5%B0%84%E6%96%87%E4%BB%B6%E6%B5%81%E7%A8%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>内存映射文件流程</h4>
 <ul>
 <li>通过文件描述符fd获取struct file</li>
 <li>调用 get_unmapped_area 找到一个没有映射的区域；</li>
 <li>调用 mmap_region 映射这个区域</li>
 </ul>
-
-<h5>匿名映射</h5>
-
+<h5><a id="%E5%8C%BF%E5%90%8D%E6%98%A0%E5%B0%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>匿名映射</h5>
 <ul>
 <li>调用 mm_struct 里面的get_unmapped_area 函数</li>
 <li>查找vm_area_struct红黑树的位置</li>
 </ul>
-
-<h5>文件映射</h5>
-
+<h5><a id="%E6%96%87%E4%BB%B6%E6%98%A0%E5%B0%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>文件映射</h5>
 <ul>
 <li>struct file-&gt;file_operations-&gt;thp_get_unmapped_area</li>
 <li>get_unmapped_area</li>
 </ul>
-
-<h4>映射内存区域</h4>
-
+<h4><a id="%E6%98%A0%E5%B0%84%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>映射内存区域</h4>
 <ul>
 <li>找到前一个虚拟内存区域的vm_area_struct</li>
 <li>如果不能合并，创建新的vm_area_struct加入队列</li>
 <li>通过__vma_link_file建立文件到内存的映射关系</li>
 <li>struct_file的vm_area_struct挂在i_mmap的红黑树上</li>
 </ul>
-
-<h4>用户态缺页异常</h4>
-
+<h4><a id="%E7%94%A8%E6%88%B7%E6%80%81%E7%BC%BA%E9%A1%B5%E5%BC%82%E5%B8%B8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>用户态缺页异常</h4>
 <ul>
 <li>访问虚拟内存没有对应的物理页面</li>
 <li>调用handle_mm_fault映射区域</li>
@@ -189,26 +178,20 @@
 <li>页表也分为用户地址空间的页表和内核页表</li>
 <li>用户地址空间需要等到进程在CPU上运行，对内存访问的时候</li>
 </ul>
-
-<h4>访问物理内存</h4>
-
+<h4><a id="%E8%AE%BF%E9%97%AE%E7%89%A9%E7%90%86%E5%86%85%E5%AD%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>访问物理内存</h4>
 <ul>
 <li>context_switch-&gt;switch_mm_irqs_off-&gt;load_new_mm_cr3</li>
-<li><img src="media/15587428626726/15587453477914.jpg" alt="" style="width:649px;"/></li>
+<li><img src="media/15587428626726/15587453477914.jpg" alt="" style="width:649px;" /></li>
 </ul>
-
-<h4>映射</h4>
-
+<h4><a id="%E6%98%A0%E5%B0%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>映射</h4>
 <ul>
 <li>匿名页面 分配页表项-&gt;分配页</li>
 <li>文件映射  filemap_fault  kmap_atomic，将物理内存映射到内核的虚拟地址空间，得到内核中的地址 kaddr</li>
 <li>swap page  kmap_atomic 映射</li>
 </ul>
-
-<h4>总结</h4>
-
+<h4><a id="%E6%80%BB%E7%BB%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>总结</h4>
 <ul>
-<li><img src="media/15587428626726/f0dcb83fcaa4f185a8e36c9d28f12345.jpg" alt="f0dcb83fcaa4f185a8e36c9d28f12345"/></li>
+<li><img src="media/15587428626726/f0dcb83fcaa4f185a8e36c9d28f12345.jpg" alt="f0dcb83fcaa4f185a8e36c9d28f12345" /></li>
 </ul>
 
                   </article>
@@ -231,29 +214,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,35 +139,26 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>seconds_behind_master</h4>
-
+                    <h4><a id="seconds-behind-master" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>seconds_behind_master</h4>
 <ul>
 <li>每个事务的 binlog 里面都有一个时间字段，用于记录主库上写入的时间；</li>
 <li>备库取出当前正在执行的事务的时间字段的值，计算它与当前系统时间的差值，得到 seconds_behind_master。</li>
 </ul>
-
-<h4>主备延迟</h4>
-
+<h4><a id="%E4%B8%BB%E5%A4%87%E5%BB%B6%E8%BF%9F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>主备延迟</h4>
 <ul>
 <li>备库机器性能比较差</li>
-<li>备库压力大
-<ul>
+<li>备库压力大</li>
 <li>一主多从</li>
-<li>通过binlog输出到外部系统如hadoop </li>
-</ul></li>
+<li>通过binlog输出到外部系统如hadoop</li>
 <li>大事务 一次性删除太多历史数据 大表DDL</li>
 <li>备库的并行复制能力</li>
 </ul>
-
-<h4>可靠性优先策略</h4>
-
+<h4><a id="%E5%8F%AF%E9%9D%A0%E6%80%A7%E4%BC%98%E5%85%88%E7%AD%96%E7%95%A5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>可靠性优先策略</h4>
 <ul>
 <li>双M结构下主从切换，然后等切换成主库的备库的seconds_behind_master=0,把备库改成可读写状态</li>
-<li><img src="media/15477155524350/54f4c7c31e6f0f807c2ab77f78c8844a.png" alt="54f4c7c31e6f0f807c2ab77f78c8844a"/></li>
+<li><img src="media/15477155524350/54f4c7c31e6f0f807c2ab77f78c8844a.png" alt="54f4c7c31e6f0f807c2ab77f78c8844a" /></li>
 </ul>
-
-<h4>可用性优先策略</h4>
-
+<h4><a id="%E5%8F%AF%E7%94%A8%E6%80%A7%E4%BC%98%E5%85%88%E7%AD%96%E7%95%A5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>可用性优先策略</h4>
 <ul>
 <li>双M主备的切换过程中，不等主备同步，直接把连接切到备库</li>
 <li>如果binglog是statement会导致主备不一致，如果是row则会抛出异常不会执行</li>
@@ -194,29 +185,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

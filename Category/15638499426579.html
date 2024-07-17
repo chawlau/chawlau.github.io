@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -142,14 +142,11 @@
                     <ul>
 <li>排序: 选择排序 插入排序 归并排序 快速排序</li>
 </ul>
-
-<h4>题目</h4>
-
+<h4><a id="%E9%A2%98%E7%9B%AE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>题目</h4>
 <ul>
 <li>leetcode 283</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given an array nums, write a function to move all 0&#39;s to the end of it while maintaining the relative order of the non-zero elements.
+<pre><code class="language-C++">Given an array nums, write a function to move all 0's to the end of it while maintaining the relative order of the non-zero elements.
 
 For example, given nums = [0, 1, 0, 3, 12], after calling your function, nums should be [1, 3, 12, 0, 0].
 
@@ -168,19 +165,15 @@ public:
     }
 };
 </code></pre>
-
 <ul>
 <li>k [0,k) 保存所有遍历过的非0元素</li>
 </ul>
-
-<h4>code</h4>
-
+<h4><a id="code" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>code</h4>
 <ul>
 <li>给定一个数组nums和一个数组val，将数组中所有等于val的元素删除，返回剩余的元素个数</li>
 <li>leetcode26</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given a sorted array  nums , remove the duplicates in-place such that each element appear only  once  and return the new length.
+<pre><code class="language-C++">Given a sorted array  nums , remove the duplicates in-place such that each element appear only  once  and return the new length.
 
 Do not allocate extra space for another array, you must do this by modifying the input array in-place with O(1) extra memory.
 
@@ -190,7 +183,7 @@ Given _nums_ = [1,1,2],
 
 Your function should return length = 2, with the first two elements of _nums_ being 1 and 2 respectively.
 
-It doesn&#39;t matter what you leave beyond the returned length.
+It doesn't matter what you leave beyond the returned length.
 class Solution {
 public:
     int removeDuplicates(vector&lt;int&gt;&amp; nums) {
@@ -202,16 +195,14 @@ public:
     }
 };
 </code></pre>
-
 <ul>
 <li>leetcode27</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given an array  nums  and a value  val , remove all instances of that value in-place and return the new length.
+<pre><code class="language-C++">Given an array  nums  and a value  val , remove all instances of that value in-place and return the new length.
 
 Do not allocate extra space for another array, you must do this by modifying the input array in-place with O(1) extra memory.
 
-The order of elements can be changed. It doesn&#39;t matter what you leave beyond the new length.
+The order of elements can be changed. It doesn't matter what you leave beyond the new length.
 
 Example 1:
 
@@ -219,7 +210,7 @@ Given _nums_ = [3,2,2,3], _val_ = 3,
 
 Your function should return length = 2, with the first two elements of _nums_ being 2.
 
-It doesn&#39;t matter what you leave beyond the returned length.
+It doesn't matter what you leave beyond the returned length.
 class Solution {
 public:
     int removeElement(vector&lt;int&gt;&amp; nums, int val) {
@@ -231,12 +222,10 @@ public:
     }
 };
 </code></pre>
-
 <ul>
 <li>leetcode80</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given a sorted array  nums , remove the duplicates in-place such that duplicates appeared at most  twice  and return the new length.
+<pre><code class="language-C++">Given a sorted array  nums , remove the duplicates in-place such that duplicates appeared at most  twice  and return the new length.
 
 Do not allocate extra space for another array, you must do this by modifying the input array in-place with O(1) extra memory.
 
@@ -246,21 +235,22 @@ Given _nums_ = [1,1,1,2,2,3],
 
 Your function should return length = 5, with the first five elements of _nums_ being 1, 1, 2, 2 and 3 respectively.
 
-It doesn&#39;t matter what you leave beyond the returned length.
+It doesn't matter what you leave beyond the returned length.
 class Solution {
 public:
-    int removeDuplicates(vector&lt;int&gt;&amp; nums) {
-        int pre = 0, cur = 1, cnt = 1, n = nums.size();
-        while (cur &lt; n) {
-            if (nums[pre] == nums[cur] &amp;&amp; cnt == 0) ++cur;
-            else {
-                if (nums[pre] == nums[cur]) --cnt;
-                else cnt = 1;
-                nums[++pre] = nums[cur++];
-            }
+   int removeDuplicates(vector&lt;int&gt;&amp; nums) {
+    int slow = 0, fast = 1, count = 0;
+
+    for (; fast &lt; nums.size(); fast++) {
+        if (nums[fast] == nums[slow]) count++;
+        else count = 0;
+
+        if (count &lt; 2) {
+            nums[++slow] = nums[fast];
         }
-        return nums.empty() ? 0 : pre + 1;
     }
+    return slow + 1;
+ }
 };
 class Solution {
 public:
@@ -275,18 +265,15 @@ public:
     }
 };
 </code></pre>
-
-<h4>Sort Colors</h4>
-
+<h4><a id="sort-colors" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Sort Colors</h4>
 <ul>
 <li>leet_code75</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given an array with  n  objects colored red, white or blue, sort them in-place so that objects of the same color are adjacent, with the colors in the order red, white and blue.
+<pre><code class="language-C++">Given an array with  n  objects colored red, white or blue, sort them in-place so that objects of the same color are adjacent, with the colors in the order red, white and blue.
 
 Here, we will use the integers 0, 1, and 2 to represent the color red, white, and blue respectively.
 
-Note: You are not suppose to use the library&#39;s sort function for this problem.
+Note: You are not suppose to use the library's sort function for this problem.
 
 Example:
 
@@ -306,12 +293,10 @@ public:
     }
 };
 </code></pre>
-
 <ul>
 <li>leet_code88</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given two sorted integer arrays  nums1  and  nums2 , merge  nums2  into  nums1  as one sorted array.
+<pre><code class="language-C++">Given two sorted integer arrays  nums1  and  nums2 , merge  nums2  into  nums1  as one sorted array.
 
 Note:
 
@@ -336,12 +321,10 @@ public:
     }
 };
 </code></pre>
-
 <ul>
 <li>leet_code215</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-cpp">Find the kth largest element in an unsorted array. Note that it is the kth largest element in the sorted order, not the kth distinct element.
+<pre><code class="language-C++">Find the kth largest element in an unsorted array. Note that it is the kth largest element in the sorted order, not the kth distinct element.
 
 Example 1:
 
@@ -371,19 +354,16 @@ public:
   }
 };
 </code></pre>
-
-<h4>two_sum</h4>
-
+<h4><a id="two-sum" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>two_sum</h4>
 <ul>
 <li>leet_125</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given a string, determine if it is a palindrome, considering only alphanumeric characters and ignoring cases.
+<pre><code class="language-C++">Given a string, determine if it is a palindrome, considering only alphanumeric characters and ignoring cases.
 
 For example,
 &quot;A man, a plan, a canal: Panama&quot; is a palindrome.
 &quot;race a car&quot; is not a palindrome
-//判断大小写等价if ((s[left] + 32 - &#39;a&#39;) %32 != (s[right] + 32 - &#39;a&#39;) % 32)
+//判断大小写等价if ((s[left] + 32 - 'a') %32 != (s[right] + 32 - 'a') % 32)
 class Solution {
 public:
     bool isPalindrome(string s) {
@@ -391,7 +371,7 @@ public:
         while (left &lt; right) {
             if (!isAlphaNum(s[left])) ++left;
             else if (!isAlphaNum(s[right])) --right;
-            else if ((s[left] + 32 - &#39;a&#39;) %32 != (s[right] + 32 - &#39;a&#39;) % 32) return false; 
+            else if ((s[left] + 32 - 'a') %32 != (s[right] + 32 - 'a') % 32) return false; 
             else {
                 ++left; --right;
             }
@@ -399,19 +379,17 @@ public:
         return true;
     }
     bool isAlphaNum(char &amp;ch) {
-        if (ch &gt;= &#39;a&#39; &amp;&amp; ch &lt;= &#39;z&#39;) return true;
-        if (ch &gt;= &#39;A&#39; &amp;&amp; ch &lt;= &#39;Z&#39;) return true;
-        if (ch &gt;= &#39;0&#39; &amp;&amp; ch &lt;= &#39;9&#39;) return true;
+        if (ch &gt;= 'a' &amp;&amp; ch &lt;= 'z') return true;
+        if (ch &gt;= 'A' &amp;&amp; ch &lt;= 'Z') return true;
+        if (ch &gt;= '0' &amp;&amp; ch &lt;= '9') return true;
         return false;
     }
 };
 </code></pre>
-
 <ul>
 <li>leet_344</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-cpp">字符串反转
+<pre><code class="language-C++">字符串反转
 class Solution {
 public:
     void reverseString(vector&lt;char&gt;&amp; s) {
@@ -422,12 +400,10 @@ public:
     }
 };
 </code></pre>
-
 <ul>
 <li>leet_345</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-cpp">Write a function that takes a string as input and reverse only the vowels of a string.
+<pre><code class="language-C++">Write a function that takes a string as input and reverse only the vowels of a string.
 
 Example 1:
 Given s = &quot;hello&quot;, return &quot;holle&quot;.
@@ -450,16 +426,14 @@ public:
         return s;
     }
     bool isVowel(char c) {
-        return c == &#39;a&#39; || c == &#39;e&#39; || c == &#39;i&#39; || c == &#39;o&#39; || c == &#39;u&#39; || c == &#39;A&#39; || c == &#39;E&#39; || c == &#39;I&#39; || c == &#39;O&#39; || c == &#39;U&#39;;
+        return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' || c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U';
     }
 };
 </code></pre>
-
 <ul>
 <li>leet_11</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given n non-negative integers a1, a2, ..., an , where each represents a point at coordinate (i, ai). n vertical lines are drawn such that the two endpoints of line i is at (i, ai) and (i, 0). Find two lines, which together with x-axis forms a container, such that the container contains the most water.
+<pre><code class="language-C++">Given n non-negative integers a1, a2, ..., an , where each represents a point at coordinate (i, ai). n vertical lines are drawn such that the two endpoints of line i is at (i, ai) and (i, 0). Find two lines, which together with x-axis forms a container, such that the container contains the most water.
 class Solution {
 public:
     int maxArea(vector&lt;int&gt;&amp; height) {
@@ -473,15 +447,12 @@ public:
     }
 };
 </code></pre>
-
-<h4>双索引技术</h4>
-
+<h4><a id="%E5%8F%8C%E7%B4%A2%E5%BC%95%E6%8A%80%E6%9C%AF" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>双索引技术</h4>
 <ul>
 <li>滑动窗口</li>
 <li>leet_209 暴力解法优化到O(n2) //TODO</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-cpp">Given an array of n positive integers and a positive integer s, find the minimal length of a contiguous subarray of which the sum ≥ s. If there isn&#39;t one, return 0 instead.
+<pre><code class="language-C++">Given an array of n positive integers and a positive integer s, find the minimal length of a contiguous subarray of which the sum ≥ s. If there isn't one, return 0 instead.
 
 Example: 
 
@@ -512,13 +483,87 @@ class Solution {
   }
 };
 </code></pre>
-
 <ul>
 <li>leet_3 字符集？ 只有字母?  字母 + 数字 ? ASCII 大小写是否敏感</li>
-<li>leet_438 字符集范围 英文小写字母 返回的解的顺序</li>
-<li>leet_76 字符范围 没有解 多个解 </li>
-<li>字符包含 Input: S = &quot;ADOBECODEBANC&quot;, T = &quot;ABC&quot; Output: &quot;BANC&quot;</li>
 </ul>
+<pre><code class="language-C++">给定一个字符串，请你找出其中不含有重复字符的 最长子串 的长度。
+输入: s = &quot;abcabcbb&quot;
+输出: 3 
+解释: 因为无重复字符的最长子串是 &quot;abc&quot;，所以其长度为 3。
+
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) 
+    {
+        int l = 0;
+        int r = 0;
+        int maxLength = 0;
+        int usedChar[256] = { 0 };
+        while (l &lt; s.size())
+        {
+            if (r &lt; s.size() &amp;&amp; usedChar[s[r]] == 0)
+            {
+                usedChar[s[r++]] += 1;
+            }
+            else
+            {
+                usedChar[s[l++]] -= 1;
+            }
+            maxLength = max(maxLength, r - l);
+        }
+        return maxLength;
+    }
+};
+int main()
+{
+    string s = &quot;abcabcbb&quot;;
+    cout &lt;&lt; Solution().lengthOfLongestSubstring(s) &lt;&lt; endl;
+    return 0;
+}
+</code></pre>
+<ul>
+<li>leet_438 字符集范围 英文小写字母 返回的解的顺序</li>
+</ul>
+<pre><code class="language-C++">Given a string s and a non-empty string p, find all the start indices of p's anagrams in s.
+
+class Solution 
+{
+public:
+    vector&lt;int&gt; findAnagrams(string s, string p) 
+    {
+        int count = p.size();
+        int pChar[256] = { 0 };
+        vector&lt;int&gt; result;
+        for (auto&amp; i : p)
+        {
+            ++pChar[i];
+        }
+        for (int i = 0; i &lt; s.size(); ++i)
+        {
+            if (pChar[s[i]] &gt;= 1) --count;
+            --pChar[s[i]];
+            if (i &gt;= p.size())
+            {
+                if (pChar[s[i - p.size()]] &gt;= 0) ++count;
+                ++pChar[s[i - p.size()]];
+            }
+            if (count == 0) result.push_back(i - p.size() + 1);
+        }
+        return result;
+    }
+};
+int main()
+{
+    string s = &quot;cbaebabacd&quot;;
+    string p = &quot;abc&quot;;
+    for (auto&amp; i : Solution().findAnagrams(s, p))
+    {
+        cout &lt;&lt; i &lt;&lt; &quot; &quot;;
+    }
+    cout &lt;&lt; endl;
+    return 0;
+}
+</code></pre>
 
                   </article>
                   <div class="comments-wrap">
@@ -540,31 +585,96 @@ class Solution {
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
-<script src="asset/prism.js"></script>
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   

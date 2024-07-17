@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,31 +139,24 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>虚拟文件系统</h4>
-
+                    <h4><a id="%E8%99%9A%E6%8B%9F%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>虚拟文件系统</h4>
 <ul>
 <li>目录项，记录了文件的名字，以及文件与其他目录项之间的目录关系。</li>
 <li>索引节点，记录了文件的元数据。</li>
 <li>逻辑块，是由连续磁盘扇区构成的最小读写单元，用来存储文件数据。</li>
 <li>超级块，用来记录文件系统整体的状态，如索引节点和逻辑块的使用情况等。</li>
 </ul>
-
-<h4>固态硬盘和机械磁盘</h4>
-
+<h4><a id="%E5%9B%BA%E6%80%81%E7%A1%AC%E7%9B%98%E5%92%8C%E6%9C%BA%E6%A2%B0%E7%A3%81%E7%9B%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>固态硬盘和机械磁盘</h4>
 <ul>
 <li>机械磁盘的最小读写单位是扇区，一般大小为 512 字节。</li>
 <li>而固态磁盘的最小读写单位是页，通常大小是 4KB、8KB 等。</li>
 </ul>
-
-<h4>通用块层</h4>
-
+<h4><a id="%E9%80%9A%E7%94%A8%E5%9D%97%E5%B1%82" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>通用块层</h4>
 <ul>
 <li>为文件系统和应用程序，提供访问块设备的标准接口；向下，把各种异构的磁盘设备抽象为统一的块设备，并提供统一框架来管理这些设备的驱动程序。</li>
 <li>通用块层还会给文件系统和应用程序发来的 I/O 请求排队，并通过重新排序、请求合并等方式，提高磁盘读写的效率。</li>
 </ul>
-
-<h4>磁盘性能指标</h4>
-
+<h4><a id="%E7%A3%81%E7%9B%98%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>磁盘性能指标</h4>
 <ul>
 <li>使用率，是指磁盘处理 I/O 的时间百分比。过高的使用率（比如超过 80%），通常意味着磁盘 I/O 存在性能瓶颈。</li>
 <li>饱和度，是指磁盘处理 I/O 的繁忙程度。过高的饱和度，意味着磁盘存在严重的性能瓶颈。当饱和度为 100% 时，磁盘无法接受新的 I/O 请求。</li>
@@ -172,9 +165,7 @@
 <li>响应时间，是指 I/O 请求从发出到收到响应的间隔时间。</li>
 <li>在数据库、大量小文件等这类随机读写比较多的场景中，IOPS 更能反映系统的整体性能；而在多媒体等顺序读写较多的场景中，吞吐量才更能反映系统的整体性能。</li>
 </ul>
-
-<h4>iostat指标</h4>
-
+<h4><a id="iostat%E6%8C%87%E6%A0%87" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>iostat指标</h4>
 <ul>
 <li>%util 磁盘IO使用率</li>
 <li>r/s + w/s 就是IOPS</li>
@@ -203,29 +194,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,8 +139,7 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>概念</h4>
-
+                    <h4><a id="%E6%A6%82%E5%BF%B5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>概念</h4>
 <ul>
 <li>客户端不应该强迫依赖它不需要的接口。其中的“客户端”，可以理解为接口的调用者或者使用者</li>
 <li>接口理解</li>
@@ -148,146 +147,142 @@
 <li>单个API接口或函数</li>
 <li>OOP中的接口概念</li>
 </ul>
-
-<h4>demo</h4>
-
-<pre class="line-numbers"><code class="language-go">package design_pattern
+<h4><a id="demo" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>demo</h4>
+<pre><code class="language-go">package design_pattern
 
 import (
-    &quot;fmt&quot;
-    &quot;reflect&quot;
-    &quot;time&quot;
+	&quot;fmt&quot;
+	&quot;reflect&quot;
+	&quot;time&quot;
 )
 
 type Updater interface {
-    updater()
+	updater()
 }
 
 type ConfigSource struct {
-    address string
-    timeOut, maxTotal int64
+	address string
+	timeOut, maxTotal int64
 }
 
 
 type RedisConfig struct {
-    configSource *ConfigSource
-    address string
-    timeOut, maxTotal int64
+	configSource *ConfigSource
+	address string
+	timeOut, maxTotal int64
 }
 
 
 func (r *RedisConfig) getAddress() string {
-    return r.address
+	return r.address
 }
 
 func (r *RedisConfig) updater() {
-    //r.address = r.configSource.address
-    //r.timeOut, r.maxTotal = r.configSource.timeOut, r.configSource.timeOut
-    fmt.Println(&quot;Time to update config &quot;, reflect.TypeOf(r).String())
+	//r.address = r.configSource.address
+	//r.timeOut, r.maxTotal = r.configSource.timeOut, r.configSource.timeOut
+	fmt.Println(&quot;Time to update config &quot;, reflect.TypeOf(r).String())
 }
 
 type KafkaConfig struct {
-    configSource *ConfigSource
-    address string
-    timeOut, maxTotal int64
+	configSource *ConfigSource
+	address string
+	timeOut, maxTotal int64
 }
 
 func (k *KafkaConfig) updater() {
-    //k.address = k.configSource.address
-    //k.timeOut, k.maxTotal = k.configSource.timeOut, k.configSource.timeOut
-    fmt.Println(&quot;Time to update config &quot;, reflect.TypeOf(k).String())
+	//k.address = k.configSource.address
+	//k.timeOut, k.maxTotal = k.configSource.timeOut, k.configSource.timeOut
+	fmt.Println(&quot;Time to update config &quot;, reflect.TypeOf(k).String())
 }
 
 type MysqlConfig struct {
-    configSource *ConfigSource
-    address string
-    timeOut, maxTotal int64
+	configSource *ConfigSource
+	address string
+	timeOut, maxTotal int64
 }
 
 type Executor struct {
-    t *time.Ticker
+	t *time.Ticker
 }
 
 func (e *Executor) run(updater Updater) {
-    for {
-        select {
-          case &lt;- e.t.C:
-            updater.updater()
-        }
-    }
+	for {
+		select {
+		  case &lt;- e.t.C:
+		  	updater.updater()
+		}
+	}
 }
 
 type ScheduleUpdater struct {
-    Updater
-    delayTime int64
-    executor *Executor
+	Updater
+	delayTime int64
+	executor *Executor
 }
 
 func (s *ScheduleUpdater) run() {
-    s.executor.run(s.Updater)
+	s.executor.run(s.Updater)
 }
 
 func NewScheduleUpdater(updater Updater, delayTime int64) *ScheduleUpdater {
-    return &amp;ScheduleUpdater {
-        Updater: updater,
-        delayTime: delayTime,
-        executor: &amp;Executor{
-            t: time.NewTicker(time.Duration(delayTime)),
-        },
-    }
+	return &amp;ScheduleUpdater {
+		Updater: updater,
+		delayTime: delayTime,
+		executor: &amp;Executor{
+			t: time.NewTicker(time.Duration(delayTime)),
+		},
+	}
 }
 
 import &quot;testing&quot;
 
 func TestConfig(t *testing.T) {
-    configSource := &amp;ConfigSource{&quot;localhost&quot;, 2, 3}
-    redisConfig := &amp;RedisConfig{configSource: configSource}
-    kafkaConfig := &amp;KafkaConfig{configSource: configSource}
-    //mysqlConfig := &amp;MysqlConfig{configSource: configSource}
+	configSource := &amp;ConfigSource{&quot;localhost&quot;, 2, 3}
+	redisConfig := &amp;RedisConfig{configSource: configSource}
+	kafkaConfig := &amp;KafkaConfig{configSource: configSource}
+	//mysqlConfig := &amp;MysqlConfig{configSource: configSource}
 
-    var updaterList []*ScheduleUpdater
-    redisUpdater := NewScheduleUpdater(redisConfig, 10000)
-    updaterList = append(updaterList, redisUpdater)
+	var updaterList []*ScheduleUpdater
+	redisUpdater := NewScheduleUpdater(redisConfig, 10000)
+	updaterList = append(updaterList, redisUpdater)
 
-    kafkaUpdater := NewScheduleUpdater(kafkaConfig, 10000)
-    updaterList = append(updaterList, kafkaUpdater)
+	kafkaUpdater := NewScheduleUpdater(kafkaConfig, 10000)
+	updaterList = append(updaterList, kafkaUpdater)
 
-    for _, v := range updaterList {
-        go v.run()
-    }
-    select {}
+	for _, v := range updaterList {
+		go v.run()
+	}
+	select {}
 }
 </code></pre>
-
-<h4>添加接口查看</h4>
-
-<pre class="line-numbers"><code class="language-go">package design_pattern
+<h4><a id="%E6%B7%BB%E5%8A%A0%E6%8E%A5%E5%8F%A3%E6%9F%A5%E7%9C%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>添加接口查看</h4>
+<pre><code class="language-go">package design_pattern
 
 import (
-    &quot;container/list&quot;
-    &quot;fmt&quot;
-    &quot;github.com/luci/go-render/render&quot;
-    &quot;reflect&quot;
-    &quot;time&quot;
+	&quot;container/list&quot;
+	&quot;fmt&quot;
+	&quot;github.com/luci/go-render/render&quot;
+	&quot;reflect&quot;
+	&quot;time&quot;
 )
 
 type Updater interface {
-    updater()
+	updater()
 }
 
 type Viewer interface {
-    outPutInPlainText() string
-    output() map[string]string
-    containsKey(string) bool
+	outPutInPlainText() string
+	output() map[string]string
+	containsKey(string) bool
 }
 
 type ConfigSource interface {
-    add()
+	add()
 }
 
 type ZookeeperConfigSource struct {
-    address string
-    timeOut, maxTotal int64
+	address string
+	timeOut, maxTotal int64
 }
 
 func (z *ZookeeperConfigSource) add() {
@@ -295,173 +290,171 @@ func (z *ZookeeperConfigSource) add() {
 
 
 type RedisConfig struct {
-    configSource ConfigSource
-    address string
-    timeOut, maxTotal int64
+	configSource ConfigSource
+	address string
+	timeOut, maxTotal int64
 }
 
 
 func (r *RedisConfig) getAddress() string {
-    return r.address
+	return r.address
 }
 
 func (r *RedisConfig) updater() {
-    //r.address = r.configSource.address
-    //r.timeOut, r.maxTotal = r.configSource.timeOut, r.configSource.timeOut
-    fmt.Println(&quot;Time to update config &quot;, reflect.TypeOf(r).String())
+	//r.address = r.configSource.address
+	//r.timeOut, r.maxTotal = r.configSource.timeOut, r.configSource.timeOut
+	fmt.Println(&quot;Time to update config &quot;, reflect.TypeOf(r).String())
 }
 
 func (r *RedisConfig) outPutInPlainText() string {
-    fmt.Println(&quot;outPutInPlainText &quot;, reflect.TypeOf(r).String())
-    return &quot;outPutInPlainText &quot; + reflect.TypeOf(r).String()
+	fmt.Println(&quot;outPutInPlainText &quot;, reflect.TypeOf(r).String())
+	return &quot;outPutInPlainText &quot; + reflect.TypeOf(r).String()
 }
 
 func (r *RedisConfig) output() map[string]string {
-    ret := make(map[string]string)
-    ret[&quot;outPut&quot;] = reflect.TypeOf(r).String()
-    fmt.Println(&quot;output &quot;, render.Render(ret))
-    return ret
+	ret := make(map[string]string)
+	ret[&quot;outPut&quot;] = reflect.TypeOf(r).String()
+	fmt.Println(&quot;output &quot;, render.Render(ret))
+	return ret
 }
 
 
 func (r *RedisConfig) containsKey(key string) bool {
-    return false
+	return false
 }
 
 type KafkaConfig struct {
-    configSource ConfigSource
-    address string
-    timeOut, maxTotal int64
+	configSource ConfigSource
+	address string
+	timeOut, maxTotal int64
 }
 
 func (k *KafkaConfig) updater() {
-    //k.address = k.configSource.address
-    //k.timeOut, k.maxTotal = k.configSource.timeOut, k.configSource.timeOut
-    fmt.Println(&quot;Time to update config &quot;, reflect.TypeOf(k).String())
+	//k.address = k.configSource.address
+	//k.timeOut, k.maxTotal = k.configSource.timeOut, k.configSource.timeOut
+	fmt.Println(&quot;Time to update config &quot;, reflect.TypeOf(k).String())
 }
 
 func (k *KafkaConfig) outPutInPlainText() string {
-    fmt.Println(&quot;outPutInPlainText &quot;, reflect.TypeOf(k).String())
-    return &quot;outPutInPlainText &quot; + reflect.TypeOf(k).String()
+	fmt.Println(&quot;outPutInPlainText &quot;, reflect.TypeOf(k).String())
+	return &quot;outPutInPlainText &quot; + reflect.TypeOf(k).String()
 }
 
 func (k *KafkaConfig) output() map[string]string {
-    ret := make(map[string]string)
-    ret[&quot;outPut&quot;] = reflect.TypeOf(k).String()
-    fmt.Println(&quot;output &quot;, render.Render(ret))
-    return ret
+	ret := make(map[string]string)
+	ret[&quot;outPut&quot;] = reflect.TypeOf(k).String()
+	fmt.Println(&quot;output &quot;, render.Render(ret))
+	return ret
 }
 
 type MysqlConfig struct {
-    configSource ConfigSource
-    address string
-    timeOut, maxTotal int64
+	configSource ConfigSource
+	address string
+	timeOut, maxTotal int64
 }
 
 func (m *MysqlConfig) outPutInPlainText() string {
-    fmt.Println(&quot;outPutInPlainText &quot;, reflect.TypeOf(m).String())
-    return &quot;outPutInPlainText &quot; + reflect.TypeOf(m).String()
+	fmt.Println(&quot;outPutInPlainText &quot;, reflect.TypeOf(m).String())
+	return &quot;outPutInPlainText &quot; + reflect.TypeOf(m).String()
 }
 
 func (m *MysqlConfig) output() map[string]string {
-    ret := make(map[string]string)
-    ret[&quot;outPut&quot;] = reflect.TypeOf(m).String()
-    fmt.Println(&quot;output &quot;, render.Render(ret))
-    return ret
+	ret := make(map[string]string)
+	ret[&quot;outPut&quot;] = reflect.TypeOf(m).String()
+	fmt.Println(&quot;output &quot;, render.Render(ret))
+	return ret
 }
 
 func (r *MysqlConfig) containsKey(key string) bool {
-    return false
+	return false
 }
 
 type Executor struct {
-    t *time.Timer
-    d time.Duration
+	t *time.Timer
+	d time.Duration
 }
 
 func (e *Executor) run(updater Updater) {
-    for {
-        select {
-          case &lt;- e.t.C:
-            updater.updater()
-                e.t.Reset(e.d)
-        }
-    }
+	for {
+		select {
+		  case &lt;- e.t.C:
+		  	updater.updater()
+				e.t.Reset(e.d)
+		}
+	}
 }
 
 type ScheduleUpdater struct {
-    Updater
-    delayTime int64
-    executor *Executor
+	Updater
+	delayTime int64
+	executor *Executor
 }
 
 func (s *ScheduleUpdater) run() {
-    s.executor.run(s.Updater)
+	s.executor.run(s.Updater)
 }
 
 func NewScheduleUpdater(updater Updater, delayTime int64) *ScheduleUpdater {
-    dur :=  time.Duration(delayTime) * time.Second
-    return &amp;ScheduleUpdater {
-        Updater: updater,
-        delayTime: delayTime,
-        executor: &amp;Executor{
-            d: dur,
-            t: time.NewTimer(dur),
-        },
-    }
+	dur :=  time.Duration(delayTime) * time.Second
+	return &amp;ScheduleUpdater {
+		Updater: updater,
+		delayTime: delayTime,
+		executor: &amp;Executor{
+			d: dur,
+			t: time.NewTimer(dur),
+		},
+	}
 }
 
 type HttpServer struct {
-    host string
-    port int
-    viewers map[string]*list.List
+	host string
+	port int
+	viewers map[string]*list.List
 }
 
 func (h *HttpServer) addViewers(urlDic string, viewer Viewer) {
-    if !viewer.containsKey(urlDic) {
-        viewList := list.New()
-        h.viewers[urlDic] = viewList
+	if !viewer.containsKey(urlDic) {
+		viewList := list.New()
+		h.viewers[urlDic] = viewList
 
-        h.viewers[urlDic].PushBack(viewer)
-    }
+		h.viewers[urlDic].PushBack(viewer)
+	}
 }
 
 func (h *HttpServer) run() {
-    fmt.Println(&quot;HttpServer viewer &quot;, render.Render(h.viewers))
+	fmt.Println(&quot;HttpServer viewer &quot;, render.Render(h.viewers))
 }
 
 func TestConfig(t *testing.T) {
-    configSource := &amp;ZookeeperConfigSource{&quot;localhost&quot;, 2, 3}
-    redisConfig := &amp;RedisConfig{configSource: configSource}
-    kafkaConfig := &amp;KafkaConfig{configSource: configSource}
-    mysqlConfig := &amp;MysqlConfig{configSource: configSource}
+	configSource := &amp;ZookeeperConfigSource{&quot;localhost&quot;, 2, 3}
+	redisConfig := &amp;RedisConfig{configSource: configSource}
+	kafkaConfig := &amp;KafkaConfig{configSource: configSource}
+	mysqlConfig := &amp;MysqlConfig{configSource: configSource}
 
-    updaterList := list.New()
-    redisUpdater := NewScheduleUpdater(redisConfig, 2)
-    updaterList.PushBack(redisUpdater)
+	updaterList := list.New()
+	redisUpdater := NewScheduleUpdater(redisConfig, 2)
+	updaterList.PushBack(redisUpdater)
 
-    kafkaUpdater := NewScheduleUpdater(kafkaConfig, 2)
-    updaterList.PushBack(kafkaUpdater)
+	kafkaUpdater := NewScheduleUpdater(kafkaConfig, 2)
+	updaterList.PushBack(kafkaUpdater)
 
-    for e := updaterList.Front(); e != nil; e = e.Next() {
-        go e.Value.(*ScheduleUpdater).run()
-    }
+	for e := updaterList.Front(); e != nil; e = e.Next() {
+		go e.Value.(*ScheduleUpdater).run()
+	}
 
-    httpServer := &amp;HttpServer{
-        host: &quot;127.0.0.1&quot;,
-        port: 2389,
-        viewers: make(map[string]*list.List),
-    }
+	httpServer := &amp;HttpServer{
+		host: &quot;127.0.0.1&quot;,
+		port: 2389,
+		viewers: make(map[string]*list.List),
+	}
 
-    httpServer.addViewers(&quot;/config&quot;, redisConfig)
-    httpServer.addViewers(&quot;/config&quot;, mysqlConfig)
-    httpServer.run()
-    select {}
+	httpServer.addViewers(&quot;/config&quot;, redisConfig)
+	httpServer.addViewers(&quot;/config&quot;, mysqlConfig)
+	httpServer.run()
+	select {}
 }
 </code></pre>
-
-<h4>接口隔离原则</h4>
-
+<h4><a id="%E6%8E%A5%E5%8F%A3%E9%9A%94%E7%A6%BB%E5%8E%9F%E5%88%99" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>接口隔离原则</h4>
 <ul>
 <li>理解“接口隔离原则”的重点是理解其中的“接口”二字。这里有三种不同的理解。</li>
 <li>如果把“接口”理解为一组接口集合，可以是某个微服务的接口，也可以是某个类库的接口等。如果部分接口只被部分调用者使用，我们就需要将这部分接口隔离出来，单独给这部分调用者使用，而不强迫其他调用者也依赖这部分不会被用到的接口。</li>
@@ -489,31 +482,96 @@ func TestConfig(t *testing.T) {
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
-<script src="asset/prism.js"></script>
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   

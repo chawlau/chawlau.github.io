@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,22 +139,17 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>同步</h4>
-
+                    <h4><a id="%E5%90%8C%E6%AD%A5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>同步</h4>
 <ul>
 <li>指代码调用IO操作时，必须等待IO操作完成后才返回的调用方式</li>
 <li>异步是指代码调用IO操作时，不必等IO操作完成就返回的调用方式</li>
 </ul>
-
-<h4>阻塞和非阻塞</h4>
-
+<h4><a id="%E9%98%BB%E5%A1%9E%E5%92%8C%E9%9D%9E%E9%98%BB%E5%A1%9E" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>阻塞和非阻塞</h4>
 <ul>
 <li>阻塞是指调用函数时候当前线程被挂起。</li>
 <li>阻塞是指调用函数时候当前线程不会被挂起，而是立即返回</li>
 </ul>
-
-<h4>回调函数</h4>
-
+<h4><a id="%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>回调函数</h4>
 <ul>
 <li>如果回调函数执行不正常该如何？</li>
 <li>如如果回调里面还要嵌套回调怎么办？</li>
@@ -163,82 +158,70 @@
 <li>如果有个数据需要被每个回调都处理怎么办？</li>
 <li>怎么使用当前函数中的局部变量？</li>
 </ul>
-
-<h4>需求</h4>
-
+<h4><a id="%E9%9C%80%E6%B1%82" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>需求</h4>
 <ul>
 <li>采用同步的方式去编写异步的代码</li>
 <li>使用单线程去切换任务：</li>
 <li>线程是由操作系统切换的，单线程切换意味着我们需要程序员自己去调度任务</li>
 <li>不在需要锁，并发性高，如果单线程内切换函数，性能远高于线程切换，并发性更高</li>
 </ul>
-
-<h4>生成器</h4>
-
+<h4><a id="%E7%94%9F%E6%88%90%E5%99%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>生成器</h4>
 <ul>
-<li> next 和 send</li>
-<li> send可以传递值进入生成器内部,同时还可以重启生成器进入到下一个yield位置</li>
+<li>next 和 send</li>
+<li>send可以传递值进入生成器内部,同时还可以重启生成器进入到下一个yield位置</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-python">def gen_func():
+<pre><code class="language-python">def gen_func():
     html = yield &quot;http://projectedu.com&quot;
     print(html)
     yield 2
     yield 3
-    return &#39;bobby&#39;
+    return 'bobby'
 
-if __name__ == &#39;__main__&#39;:
+if __name__ == '__main__':
     gen = gen_func()
     url = next(gen)
     html = &quot;bobby&quot;
     gen.send(html)
 </code></pre>
-
 <ul>
 <li>第一次调用send的时候不能调用一个非None值，因为生成器还没有执行到那一行代码</li>
 <li>next则可以</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-python">def gen_func():
+<pre><code class="language-python">def gen_func():
     html = yield &quot;http://projectedu.com&quot;
     print(html)
     yield 2
     yield 3
-    return &#39;bobby&#39;
+    return 'bobby'
 
-if __name__ == &#39;__main__&#39;:
+if __name__ == '__main__':
     gen = gen_func()
     # url = next(gen)
     gen.send(None)
     html = &quot;bobby&quot;
     print(gen.send(html))
 </code></pre>
-
 <ul>
 <li>GeneratorExit是继承BaseException, Exception</li>
 </ul>
-
-<h4>throw</h4>
-
-<pre class="line-numbers"><code class="language-python">def gen_func():
+<h4><a id="throw" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>throw</h4>
+<pre><code class="language-python">def gen_func():
     try:
         html = yield &quot;http://projectedu.com&quot;
     except Exception as e:
         pass
     yield 2
     yield 3
-    return &#39;bobby&#39;
+    return 'bobby'
 
-if __name__ == &#39;__main__&#39;:
+if __name__ == '__main__':
     gen = gen_func()
     print(next(gen))
-    gen.throw(Exception, &#39;download error&#39;)
+    gen.throw(Exception, 'download error')
     print(next(gen))
-    gen.throw(Exception, &#39;download error&#39;)
+    gen.throw(Exception, 'download error')
 </code></pre>
-
-<h4>yield from</h4>
-
+<h4><a id="yield-from" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>yield from</h4>
 <ul>
 <li></li>
 </ul>
@@ -263,31 +246,96 @@ if __name__ == &#39;__main__&#39;:
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
-<script src="asset/prism.js"></script>
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   

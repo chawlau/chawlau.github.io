@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,39 +139,30 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>缓存穿透</h4>
-
+                    <h4><a id="%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>缓存穿透</h4>
 <ul>
 <li>存储数据不存在</li>
 <li>如果查询存储系统的数据没有找到，则直接设置一个默认值（可以是空值，也可以是具体的值）存到缓存中，这样第二次读取缓存时就会获取到默认值，而不会继续访问存储系统。</li>
 <li>缓存数据生成耗费大量时间或者资源</li>
 </ul>
-
-<h4>缓存雪崩</h4>
-
+<h4><a id="%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>缓存雪崩</h4>
 <ul>
 <li>对缓存更新操作进行加锁保护，保证只有一个线程能够进行缓存更新，未能获取更新锁的线程要么等待锁释放后重新读取缓存，要么就返回空值或者默认值</li>
 <li>后台更新</li>
 <li>后台线程除了定时更新缓存，还要频繁地去读取缓存</li>
 <li>业务线程发现缓存失效后，通过消息队列发送一条消息通知后台线程更新缓存</li>
 </ul>
-
-<h4>缓存热点</h4>
-
+<h4><a id="%E7%BC%93%E5%AD%98%E7%83%AD%E7%82%B9" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>缓存热点</h4>
 <ul>
 <li>缓存热点的解决方案就是复制多份缓存副本，将请求分散到多个缓存服务器上，减轻缓存热点导致的单台缓存服务器压力</li>
 </ul>
-
-<h4>思考题</h4>
-
+<h4><a id="%E6%80%9D%E8%80%83%E9%A2%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>思考题</h4>
 <ul>
 <li>所在的业务发生过哪些因为缓存导致的线上问题？采取了什么样的解决方案？效果如何？</li>
 <li>双key策略：要缓存的key过期时间是t，key1没有过期时间。每次缓存读取不到key时就返回key1的内容，然后触发一个事件。这个事件会同时更新key和key1。</li>
 <li>下线这个缓存加载功能，改造缓存加载方式，用后台进程去更新缓存，而不用业务访问加载</li>
 </ul>
-
-<h4>缓存设计方案考虑的点</h4>
-
+<h4><a id="%E7%BC%93%E5%AD%98%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%A1%88%E8%80%83%E8%99%91%E7%9A%84%E7%82%B9" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>缓存设计方案考虑的点</h4>
 <ul>
 <li>1.什么数据应该缓存</li>
 <li>2.什么时机触发缓存和以及触发方式是什么</li>
@@ -180,24 +171,38 @@
 <li>5.缓存的监控指标和故障应对方案</li>
 <li>6.可视化缓存数据如 redis 具体 key 内容和大小</li>
 </ul>
-
-<h4>mysql缓存的局限性</h4>
-
+<h4><a id="mysql%E7%BC%93%E5%AD%98%E7%9A%84%E5%B1%80%E9%99%90%E6%80%A7" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>mysql缓存的局限性</h4>
 <ul>
-<li>1. mysql第一种缓存叫sql语句结果缓存，但条件比较苛刻，程序员不可控，我们的dba线上都关闭这个功能，具体实现可以查一下</li>
-<li>2. mysql第二种缓存是innodb buffer pool，缓存的是磁盘上的分页数据，不是sql的查询结果，sql的执行过程省不了。而mc，redis这些实际上都是缓存sql的结果，两种缓存方式，性能差很远。</li>
+<li>
+<ol>
+<li>mysql第一种缓存叫sql语句结果缓存，但条件比较苛刻，程序员不可控，我们的dba线上都关闭这个功能，具体实现可以查一下</li>
+</ol>
+</li>
+<li>
+<ol start="2">
+<li>mysql第二种缓存是innodb buffer pool，缓存的是磁盘上的分页数据，不是sql的查询结果，sql的执行过程省不了。而mc，redis这些实际上都是缓存sql的结果，两种缓存方式，性能差很远。</li>
+</ol>
+</li>
 </ul>
-
-<h4>热点数据存在相当的突发性，临时的扩容似乎也来不及，能否从缓存架构角度如何避免类似微博宕机的事件</h4>
-
+<h4><a id="%E7%83%AD%E7%82%B9%E6%95%B0%E6%8D%AE%E5%AD%98%E5%9C%A8%E7%9B%B8%E5%BD%93%E7%9A%84%E7%AA%81%E5%8F%91%E6%80%A7%EF%BC%8C%E4%B8%B4%E6%97%B6%E7%9A%84%E6%89%A9%E5%AE%B9%E4%BC%BC%E4%B9%8E%E4%B9%9F%E6%9D%A5%E4%B8%8D%E5%8F%8A%EF%BC%8C%E8%83%BD%E5%90%A6%E4%BB%8E%E7%BC%93%E5%AD%98%E6%9E%B6%E6%9E%84%E8%A7%92%E5%BA%A6%E5%A6%82%E4%BD%95%E9%81%BF%E5%85%8D%E7%B1%BB%E4%BC%BC%E5%BE%AE%E5%8D%9A%E5%AE%95%E6%9C%BA%E7%9A%84%E4%BA%8B%E4%BB%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>热点数据存在相当的突发性，临时的扩容似乎也来不及，能否从缓存架构角度如何避免类似微博宕机的事件</h4>
 <ul>
-<li>1. 限流</li>
-<li>2. 容器化+动态化</li>
-<li>3. 业务降级，例如限制评论</li>
+<li>
+<ol>
+<li>限流</li>
+</ol>
+</li>
+<li>
+<ol start="2">
+<li>容器化+动态化</li>
+</ol>
+</li>
+<li>
+<ol start="3">
+<li>业务降级，例如限制评论</li>
+</ol>
+</li>
 </ul>
-
-<h4>拓展阅读</h4>
-
+<h4><a id="%E6%8B%93%E5%B1%95%E9%98%85%E8%AF%BB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>拓展阅读</h4>
 <ul>
 <li><a href="https://github.com/qiujiayu/AutoLoadCache">https://github.com/qiujiayu/AutoLoadCache</a></li>
 <li></li>
@@ -223,29 +228,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

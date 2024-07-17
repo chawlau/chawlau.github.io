@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,36 +139,27 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>kubelet工作原理</h4>
-
+                    <h4><a id="kubelet%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>kubelet工作原理</h4>
 <ul>
-<li><img src="media/15502009179020/914e097aed10b9ff39b509759f8b1d03.png" alt="914e097aed10b9ff39b509759f8b1d03"/></li>
+<li><img src="media/15502009179020/914e097aed10b9ff39b509759f8b1d03.png" alt="914e097aed10b9ff39b509759f8b1d03" /></li>
 </ul>
-
-<h4>kubernetes架构图</h4>
-
+<h4><a id="kubernetes%E6%9E%B6%E6%9E%84%E5%9B%BE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>kubernetes架构图</h4>
 <ul>
-<li><img src="media/15502009179020/5161bd6201942f7a1ed6d70d7d55acfe.png" alt="5161bd6201942f7a1ed6d70d7d55acfe"/></li>
+<li><img src="media/15502009179020/5161bd6201942f7a1ed6d70d7d55acfe.png" alt="5161bd6201942f7a1ed6d70d7d55acfe" /></li>
 </ul>
-
-<h4>CRI shim</h4>
-
+<h4><a id="cri-shim" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>CRI shim</h4>
 <ul>
-<li><img src="media/15502009179020/62c591c4d832d44fed6f76f60be88e3d.png" alt="62c591c4d832d44fed6f76f60be88e3d"/></li>
+<li><img src="media/15502009179020/62c591c4d832d44fed6f76f60be88e3d.png" alt="62c591c4d832d44fed6f76f60be88e3d" /></li>
 <li>第一组，是 RuntimeService。它提供的接口，主要是跟容器相关的操作。比如，创建和启动容器、删除容器、执行 exec 命令等等。</li>
 <li>第二组，则是 ImageService。它提供的接口，主要是容器镜像相关的操作，比如拉取镜像、删除镜像等等</li>
 </ul>
-
-<h4>kata container&amp; gVisor</h4>
-
+<h4><a id="kata-container-gvisor" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>kata container&amp; gVisor</h4>
 <ul>
-<li><img src="media/15502009179020/d9fb7404c5dc9e0b5c902f74df9d7a61.png" alt="d9fb7404c5dc9e0b5c902f74df9d7a61"/></li>
+<li><img src="media/15502009179020/d9fb7404c5dc9e0b5c902f74df9d7a61.png" alt="d9fb7404c5dc9e0b5c902f74df9d7a61" /></li>
 </ul>
-
-<h4>CRI shim实现机制</h4>
-
+<h4><a id="cri-shim%E5%AE%9E%E7%8E%B0%E6%9C%BA%E5%88%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>CRI shim实现机制</h4>
 <ul>
-<li><img src="media/15502009179020/a8e7ff6a6b0c9591a0a4f2b8e9e9bdef.png" alt="a8e7ff6a6b0c9591a0a4f2b8e9e9bdef"/></li>
+<li><img src="media/15502009179020/a8e7ff6a6b0c9591a0a4f2b8e9e9bdef.png" alt="a8e7ff6a6b0c9591a0a4f2b8e9e9bdef" /></li>
 <li>kubectl command --&gt;API Server--&gt; kubelet-&gt; Exec api--&gt;CRI--&gt;exec</li>
 <li>CRI shim--&gt;(URL) kubelet --&gt; API Server</li>
 <li>API Server --&gt; Streaming Server</li>
@@ -195,29 +186,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

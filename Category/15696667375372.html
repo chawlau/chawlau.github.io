@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,9 +139,8 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>引用折叠</h4>
-
-<pre class="line-numbers"><code class="language-cpp">template&lt;typename T&gt;
+                    <h4><a id="%E5%BC%95%E7%94%A8%E6%8A%98%E5%8F%A0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>引用折叠</h4>
+<pre><code class="language-C++">template&lt;typename T&gt;
 void func(T &amp;&amp;tmp)
 
 int main(){
@@ -152,13 +151,11 @@ int main(){
   void func(int&amp; tmp) {} //编译器展现出来的
 }
 </code></pre>
-
 <ul>
 <li>引用折叠</li>
 <li>左值引用&amp;, 右值引用&amp;&amp;</li>
 <li>T是第一组左值引用， &amp;&amp;tmp第二组右值引用</li>
 </ul>
-
 <table>
 <thead>
 <tr>
@@ -167,7 +164,6 @@ int main(){
 <th style="text-align: center">结果</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td style="text-align: center">&amp;左值引用</td>
@@ -191,30 +187,23 @@ int main(){
 </tr>
 </tbody>
 </table>
-
 <ul>
 <li>折叠规则，只要有任意一个引用为左值引用，结果就是左值引用，否则就是右值引用</li>
 </ul>
-
-<h4>引用的引用</h4>
-
-<pre class="line-numbers"><code class="language-cpp">int b = 500;
+<h4><a id="%E5%BC%95%E7%94%A8%E7%9A%84%E5%BC%95%E7%94%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>引用的引用</h4>
+<pre><code class="language-C++">int b = 500;
 int &amp;rb = b;
 int &amp; &amp;rrb = b; //引用的引用，两个&amp;之间有空格
 </code></pre>
-
 <ul>
 <li>引用的引用是非法的</li>
 <li>编译器内部推断</li>
 </ul>
-
-<h4>转发和完美转发</h4>
-
+<h4><a id="%E8%BD%AC%E5%8F%91%E5%92%8C%E5%AE%8C%E7%BE%8E%E8%BD%AC%E5%8F%91" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>转发和完美转发</h4>
 <ul>
 <li>函数模版把收到的参数以及这些参数的类型转发给其他函数</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-cpp">void func2(int t1, int&amp; t2) {
+<pre><code class="language-C++">void func2(int t1, int&amp; t2) {
   cout &lt;&lt; &quot; t1 + t2 &quot; &lt;&lt; t1 + t2 &lt;&lt; endl;
   t2++;
 }
@@ -223,20 +212,16 @@ void func(F f, T1 t1, T2&amp;&amp; t2) {
   f(t1, t2)
 }
 </code></pre>
-
 <ul>
 <li>要保持t2的引用属性，T2改成万能引用T2&amp;&amp;，可以推导所有的实参类型</li>
 <li>T2改成T2&amp;不能保留左值或者右值属性</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-cpp"> int&amp;&amp; rval = 80;//右值引用必须要绑定右值, &amp;&amp;rval是右值引用,但是rval本身是个左值
+<pre><code class="language-C++"> int&amp;&amp; rval = 80;//右值引用必须要绑定右值, &amp;&amp;rval是右值引用,但是rval本身是个左值
   func3(rval, j);//err
   func3(80, j);//right
 </code></pre>
-
-<h4>完美转发</h4>
-
-<pre class="line-numbers"><code class="language-cpp">void func3(int&amp;&amp; t1, int&amp; t2) {
+<h4><a id="%E5%AE%8C%E7%BE%8E%E8%BD%AC%E5%8F%91" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>完美转发</h4>
+<pre><code class="language-C++">void func3(int&amp;&amp; t1, int&amp; t2) {
   cout &lt;&lt; &quot; t1 + t2 &quot; &lt;&lt; t1 + t2 &lt;&lt; endl;
   t2++;
 }
@@ -257,7 +242,6 @@ int main() {
   func(func3, 80, j);
 }
 </code></pre>
-
 <ul>
 <li>接受任意实参的函数模板</li>
 <li>目标函数会接收到与转发函数所收到的完全相同</li>
@@ -269,8 +253,7 @@ int main() {
 <li>实参如果原来是右值，形参变成了左值，forward会把左值信息还原为右值</li>
 <li>万能引用会保存实参的左值右值的信息，</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-cpp">void func4(int &amp;t) {
+<pre><code class="language-C++">void func4(int &amp;t) {
   cout&lt;&lt; &quot;left  value &quot; &lt;&lt; endl;
 }
 
@@ -285,19 +268,15 @@ void testF(T&amp;&amp; t) {
   func4(move(t));//move是左值转右值。
 }
 </code></pre>
-
 <ul>
 <li>forward是有条件的转发，左值转右值</li>
 <li>move无条件强制类型转换成右值</li>
 </ul>
-
-<h4>万能引用</h4>
-
+<h4><a id="%E4%B8%87%E8%83%BD%E5%BC%95%E7%94%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>万能引用</h4>
 <ul>
 <li>可以合并代码，达到简化代码的效果</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-cpp">class shape {};
+<pre><code class="language-C++">class shape {};
 class circle : public shape {};
 void foo(const shape&amp;)
 {
@@ -356,31 +335,96 @@ int main()
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
-<script src="asset/prism.js"></script>
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   

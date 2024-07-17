@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,33 +139,26 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>原理</h4>
-
+                    <h4><a id="%E5%8E%9F%E7%90%86" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>原理</h4>
 <ul>
 <li>（1）客户端选择一个node发送请求过去，这个node就是coordinating node（协调节点）</li>
 <li>（2）coordinating node，对document进行路由，将请求转发给对应的node（有primary shard）</li>
 <li>（3）实际的node上的primary shard处理请求，然后将数据同步到replica node</li>
-<li>（4）coordinating node，如果发现primary node和所有replica node都搞定之后，收到primary node和replica node就返回响应结果给客户端
-<img src="media/15721329525504/15721331929885.jpg" alt="" style="width:1084px;"/></li>
+<li>（4）coordinating node，如果发现primary node和所有replica node都搞定之后，收到primary node和replica node就返回响应结果给客户端<br />
+<img src="media/15721329525504/15721331929885.jpg" alt="" style="width:1084px;" /></li>
 </ul>
-
-<h4>quorum机制</h4>
-
+<h4><a id="quorum%E6%9C%BA%E5%88%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>quorum机制</h4>
 <ul>
 <li>quorum机制，写之前必须确保大多数shard都可用，int( (primary + number_of_replicas) / 2 ) + 1，当number_of_replicas&gt;1时才生效</li>
 <li>quorum不齐全时，wait，默认1分钟，timeout，100，30s</li>
-<li>等待期间，期望活跃的shard数量可以增加，最后实在不行，就会timeout<br/>
+<li>等待期间，期望活跃的shard数量可以增加，最后实在不行，就会timeout<br />
 我们其实可以在写操作的时候，加一个timeout参数，比如说put /index/type/id?timeout=30，这个就是说自己去设定quorum不齐全的时候，es的timeout时长，可以缩短，也可以增长</li>
 </ul>
-
-<h5>条件不满足时</h5>
-
+<h5><a id="%E6%9D%A1%E4%BB%B6%E4%B8%8D%E6%BB%A1%E8%B6%B3%E6%97%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>条件不满足时</h5>
 <ul>
-<li><img src="media/15721329525504/15721351161712.jpg" alt="" style="width:846px;"/></li>
+<li><img src="media/15721329525504/15721351161712.jpg" alt="" style="width:846px;" /></li>
 </ul>
-
-<h4>请求转发的时候</h4>
-
+<h4><a id="%E8%AF%B7%E6%B1%82%E8%BD%AC%E5%8F%91%E7%9A%84%E6%97%B6%E5%80%99" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>请求转发的时候</h4>
 <ul>
 <li>特殊情况：document如果还在建立索引过程中，可能只有primary shard有，任何一个replica shard都没有，此时可能会导致无法读取到document，但是document完成索引建立之后，primary shard和replica shard就都有了</li>
 </ul>
@@ -190,29 +183,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

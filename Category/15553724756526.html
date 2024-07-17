@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,23 +139,18 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>32位系统的调用流程</h4>
-
-<p><img src="media/15553724756526/566299fe7411161bae25b62e7fe20506.jpg" alt="566299fe7411161bae25b62e7fe20506"/></p>
-
+                    <h4><a id="32%E4%BD%8D%E7%B3%BB%E7%BB%9F%E7%9A%84%E8%B0%83%E7%94%A8%E6%B5%81%E7%A8%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>32位系统的调用流程</h4>
+<p><img src="media/15553724756526/566299fe7411161bae25b62e7fe20506.jpg" alt="566299fe7411161bae25b62e7fe20506" /></p>
 <ul>
 <li>将调用参数放入寄存器中, 由系统调用名得到系统调用号, 放入 eax</li>
 <li>执行 ENTER_KERNEL(一个宏), 对应 int $0x80 触发软中断, 进入内核</li>
 <li>调用软中断处理函数 entry_INT80_32(内核启动时, 由 trap_init() 配置)</li>
-<li>entry_INT80_32 将用户态寄存器存入 pt_regs 中(保存现场以及系统调用参数), 调用 do_syscall_32_iraq_on </li>
+<li>entry_INT80_32 将用户态寄存器存入 pt_regs 中(保存现场以及系统调用参数), 调用 do_syscall_32_iraq_on</li>
 <li>do_syscall_32_iraq_on 从 pt_regs 中取系统调用号(eax), 从系统调用表得到对应实现函数, 取 pt_regs 中存储的参数, 调用系统调用</li>
 <li>entry_INT80_32 调用 INTERRUPT_RUTURN(一个宏)对应 iret 指令, 系统调用结果存在 pt_regs 的 eax 位置, 根据 pt_regs 恢复用户态进程</li>
 </ul>
-
-<h4>64位系统的调用流程</h4>
-
-<p><img src="media/15553724756526/1fc62ab8406c218de6e0b8c7e01fdbd7.jpg" alt="1fc62ab8406c218de6e0b8c7e01fdbd7"/></p>
-
+<h4><a id="64%E4%BD%8D%E7%B3%BB%E7%BB%9F%E7%9A%84%E8%B0%83%E7%94%A8%E6%B5%81%E7%A8%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>64位系统的调用流程</h4>
+<p><img src="media/15553724756526/1fc62ab8406c218de6e0b8c7e01fdbd7.jpg" alt="1fc62ab8406c218de6e0b8c7e01fdbd7" /></p>
 <ul>
 <li>通过系统调用名得到系统调用号, 存入 rax; 不同中断, 执行 syscall 指令</li>
 <li>MSR(特殊模块寄存器), 辅助完成某些功能(包括系统调用)</li>
@@ -166,10 +161,8 @@
 <li>do_syscall_64 从 rax 取系统调用号, 从系统调用表得到对应实现函数, 取 pt_regs 中存储的参数, 调用系统调用</li>
 <li>返回执行 USERGS_SYSRET64(一个宏), 对应执行 swapgs 和 sysretq 指令; 系统调用结果存在 pt_regs 的 ax 位置, 根据 pt_regs 恢复用户态进程</li>
 </ul>
-
-<h4>64位系统调用的流程</h4>
-
-<p><img src="media/15553724756526/868db3f559ad08659ddc74db07a9a0a5-2.jpg" alt="868db3f559ad08659ddc74db07a9a0a5-2"/></p>
+<h4><a id="64%E4%BD%8D%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%E7%9A%84%E6%B5%81%E7%A8%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>64位系统调用的流程</h4>
+<p><img src="media/15553724756526/868db3f559ad08659ddc74db07a9a0a5-2.jpg" alt="868db3f559ad08659ddc74db07a9a0a5-2" /></p>
 
                   </article>
                   <div class="comments-wrap">
@@ -191,29 +184,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,12 +139,9 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>架构图</h4>
-
-<p><img src="media/15691931782312/15691932664810.jpg" alt="" style="width:1373px;"/></p>
-
-<h4>MQ组件实现功能点</h4>
-
+                    <h4><a id="%E6%9E%B6%E6%9E%84%E5%9B%BE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>架构图</h4>
+<p><img src="media/15691931782312/15691932664810.jpg" alt="" style="width:1373px;" /></p>
+<h4><a id="mq%E7%BB%84%E4%BB%B6%E5%AE%9E%E7%8E%B0%E5%8A%9F%E8%83%BD%E7%82%B9" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>MQ组件实现功能点</h4>
 <ul>
 <li>支持消息高性能的序列化转换、异步化发送消息</li>
 <li>支持消息生产实例与消费实例的链接池化缓存化提升性能</li>
@@ -157,36 +154,26 @@
 <li>支持集群消息负载均衡，保障消息落到具体 ST 集群的负載均衡</li>
 <li>支持消息路由策略，指定某些消息路由到指定的 SET 集群</li>
 </ul>
-
-<h4>迅速消息发送</h4>
-
+<h4><a id="%E8%BF%85%E9%80%9F%E6%B6%88%E6%81%AF%E5%8F%91%E9%80%81" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>迅速消息发送</h4>
 <ul>
 <li>迅速消息是指消息不进行落库存储，不做可靠性的保障</li>
 <li>在一些非核心消息、日志数据、或者统计分析等场景下比较合适</li>
-<li>迅速消息的优点就是性能最高，吞吐量最大
-<img src="media/15691931782312/15691934495696.jpg" alt="" style="width:984px;"/></li>
+<li>迅速消息的优点就是性能最高，吞吐量最大<br />
+<img src="media/15691931782312/15691934495696.jpg" alt="" style="width:984px;" /></li>
 </ul>
-
-<h4>确认消息发送</h4>
-
-<p><img src="media/15691931782312/15691934804861.jpg" alt="" style="width:1310px;"/></p>
-
-<h4>批量消息发送</h4>
-
-<p><img src="media/15691931782312/15691936700066.jpg" alt="" style="width:1328px;"/><br/>
-<img src="media/15691931782312/15691936915904.jpg" alt="" style="width:1363px;"/></p>
-
-<h4>延迟消息发送</h4>
-
+<h4><a id="%E7%A1%AE%E8%AE%A4%E6%B6%88%E6%81%AF%E5%8F%91%E9%80%81" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>确认消息发送</h4>
+<p><img src="media/15691931782312/15691934804861.jpg" alt="" style="width:1310px;" /></p>
+<h4><a id="%E6%89%B9%E9%87%8F%E6%B6%88%E6%81%AF%E5%8F%91%E9%80%81" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>批量消息发送</h4>
+<p><img src="media/15691931782312/15691936700066.jpg" alt="" style="width:1328px;" /><br />
+<img src="media/15691931782312/15691936915904.jpg" alt="" style="width:1363px;" /></p>
+<h4><a id="%E5%BB%B6%E8%BF%9F%E6%B6%88%E6%81%AF%E5%8F%91%E9%80%81" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>延迟消息发送</h4>
 <ul>
 <li>延迟消息相对简单，就是我们在 Message 封装的时候添加 delay Time 属性即可，使得我们的消息可以进行延迟发送，根据具体的业务场景也可以很好的使用得到</li>
 <li>应用场景</li>
 <li>电商平台买到的商品签收后，不点击确认支付，那么系统自动会在 7 天（一定时间）去进行支付操作。</li>
 <li>还有一些自动超时作废的场景,你的优惠券/红包有使用时间限制，也可以用延迟消息机制</li>
 </ul>
-
-<h4>顺序消息</h4>
-
+<h4><a id="%E9%A1%BA%E5%BA%8F%E6%B6%88%E6%81%AF" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>顺序消息</h4>
 <ul>
 <li>发送的顺序消息，必须保障消息投递到同一个队列，且这个消费者只能有一个独占模式）</li>
 <li>然后需要统一提交（可能是合并成一个大消息，也可能是拆分为多个消息），并且所有消息的会话 ID 一致</li>
@@ -194,29 +181,25 @@
 <li>并行进行发送给自身的延退消息（注意带上关键属性：会话 ID、SIZE）进行后续处理消费</li>
 <li>当收到延迟消息后，根据会话ID、SIZE抽取数据库数据进行处理即可</li>
 <li>定时轮训补偿机制，对于异常情况</li>
-<li>备注：比如生产端消息没有完全投追成功、或者消费端落库异常导致消费端落库后缺少消息条目的情況）
-<img src="media/15691931782312/15691939630945.jpg" alt="" style="width:1429px;"/></li>
+<li>备注：比如生产端消息没有完全投追成功、或者消费端落库异常导致消费端落库后缺少消息条目的情況）<br />
+<img src="media/15691931782312/15691939630945.jpg" alt="" style="width:1429px;" /></li>
 </ul>
-
-<h4>事务消息</h4>
-
+<h4><a id="%E4%BA%8B%E5%8A%A1%E6%B6%88%E6%81%AF" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>事务消息</h4>
 <ul>
 <li>txSelect</li>
 <li>我们采用类似可靠性投递的机制，也就是补偿机制</li>
-<li>但是我们的数据源必须是同一个，也就是业务操作 DB1 数据库和消息记录 DB2 数据库使用同一个数据源。
-<img src="media/15691931782312/15691943270894.jpg" alt="" style="width:1184px;"/></li>
+<li>但是我们的数据源必须是同一个，也就是业务操作 DB1 数据库和消息记录 DB2 数据库使用同一个数据源。<br />
+<img src="media/15691931782312/15691943270894.jpg" alt="" style="width:1184px;" /></li>
 </ul>
-
-<h4>消息幂等性</h4>
-
-<h5>出现重复消费的情况</h5>
-
+<h4><a id="%E6%B6%88%E6%81%AF%E5%B9%82%E7%AD%89%E6%80%A7" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>消息幂等性</h4>
+<h5><a id="%E5%87%BA%E7%8E%B0%E9%87%8D%E5%A4%8D%E6%B6%88%E8%B4%B9%E7%9A%84%E6%83%85%E5%86%B5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>出现重复消费的情况</h5>
 <ul>
 <li>可靠性消息投递机制</li>
 <li>MQ Broker服务与消费端传输消息的过程中的网络抖动</li>
-<li>消费端故障或异常
-<img src="media/15691931782312/15691944331805.jpg" alt="" style="width:1358px;"/></li>
+<li>消费端故障或异常<br />
+<img src="media/15691931782312/15691944331805.jpg" alt="" style="width:1358px;" /></li>
 </ul>
+<h5><a id="" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a></h5>
 
                   </article>
                   <div class="comments-wrap">
@@ -238,29 +221,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

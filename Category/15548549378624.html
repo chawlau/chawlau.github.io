@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,8 +139,7 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>容器冷启动性能分析</h4>
-
+                    <h4><a id="%E5%AE%B9%E5%99%A8%E5%86%B7%E5%90%AF%E5%8A%A8%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>容器冷启动性能分析</h4>
 <ul>
 <li>ServerLess服务启动流程</li>
 <li>事件触发（比如收到新的 HTTP 调用请求）</li>
@@ -149,29 +148,21 @@
 <li>网络配置 网络资源预分配加速</li>
 <li>启动应用 复用预先创建好的容器</li>
 </ul>
-
-<h4>CPU火焰图和内存火焰图的区别</h4>
-
+<h4><a id="cpu%E7%81%AB%E7%84%B0%E5%9B%BE%E5%92%8C%E5%86%85%E5%AD%98%E7%81%AB%E7%84%B0%E5%9B%BE%E7%9A%84%E5%8C%BA%E5%88%AB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>CPU火焰图和内存火焰图的区别</h4>
 <ul>
 <li>对 CPU 火焰图来说，采集的数据主要是消耗 CPU 的函数；</li>
 <li>而对内存火焰图来说，采集的数据主要是内存分配、释放、换页等内存管理函数。</li>
 </ul>
-
-<h4>perf probe</h4>
-
+<h4><a id="perf-probe" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>perf probe</h4>
 <ul>
 <li>需要编译时候增加g选项</li>
 </ul>
-
-<h4>RED法则监控微服务</h4>
-
+<h4><a id="red%E6%B3%95%E5%88%99%E7%9B%91%E6%8E%A7%E5%BE%AE%E6%9C%8D%E5%8A%A1" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>RED法则监控微服务</h4>
 <ul>
 <li>请求数（Rate）、错误数（Errors）以及响应时间（Duration）</li>
 <li>RED 方法适用于微服务应用的监控，而 USE 方法适用于系统资源的监控。</li>
 </ul>
-
-<h4>理解内核</h4>
-
+<h4><a id="%E7%90%86%E8%A7%A3%E5%86%85%E6%A0%B8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>理解内核</h4>
 <ul>
 <li><a href="https://elixir.bootlin.com/">https://elixir.bootlin.com/</a> 内核函数</li>
 <li><a href="https://github.com/iovisor/bcc">https://github.com/iovisor/bcc</a> BCC工具</li>
@@ -198,29 +189,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

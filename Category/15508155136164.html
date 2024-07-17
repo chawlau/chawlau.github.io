@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,35 +139,26 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>类型</h4>
-
+                    <h4><a id="%E7%B1%BB%E5%9E%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>类型</h4>
 <ul>
 <li>耗尽带宽</li>
 <li>耗尽操作系统的资源</li>
 <li>消耗应用程序的运行资源</li>
 </ul>
-
-<h4>优化</h4>
-
+<h4><a id="%E4%BC%98%E5%8C%96" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>优化</h4>
 <ul>
-<li> 通过iptables限制syn并发数</li>
-<li> 限制单个IP在60s新建立的连接数</li>
+<li>通过iptables限制syn并发数</li>
+<li>限制单个IP在60s新建立的连接数</li>
 </ul>
-
-<h5>修改tcp参数</h5>
-
+<h5><a id="%E4%BF%AE%E6%94%B9tcp%E5%8F%82%E6%95%B0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>修改tcp参数</h5>
 <ul>
 <li>net.ipv4.tcp_syncookies = 1</li>
 <li>net.ipv4.tcp_synack_retries = 1</li>
 <li>net.ipv4.tcp_max_syn_backlog = 1024</li>
 </ul>
-
-<h5>基于XDP和DPDK构建DDOS方案，跳过内核协议栈，来识别并丢弃DDos报文</h5>
-
-<h4>流量清洗设备和网络防火墙</h4>
-
-<h4>查看攻击源头的Ddos地址</h4>
-
+<h5><a id="%E5%9F%BA%E4%BA%8Exdp%E5%92%8Cdpdk%E6%9E%84%E5%BB%BAddos%E6%96%B9%E6%A1%88%EF%BC%8C%E8%B7%B3%E8%BF%87%E5%86%85%E6%A0%B8%E5%8D%8F%E8%AE%AE%E6%A0%88%EF%BC%8C%E6%9D%A5%E8%AF%86%E5%88%AB%E5%B9%B6%E4%B8%A2%E5%BC%83ddos%E6%8A%A5%E6%96%87" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>基于XDP和DPDK构建DDOS方案，跳过内核协议栈，来识别并丢弃DDos报文</h5>
+<h4><a id="%E6%B5%81%E9%87%8F%E6%B8%85%E6%B4%97%E8%AE%BE%E5%A4%87%E5%92%8C%E7%BD%91%E7%BB%9C%E9%98%B2%E7%81%AB%E5%A2%99" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>流量清洗设备和网络防火墙</h4>
+<h4><a id="%E6%9F%A5%E7%9C%8B%E6%94%BB%E5%87%BB%E6%BA%90%E5%A4%B4%E7%9A%84ddos%E5%9C%B0%E5%9D%80" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>查看攻击源头的Ddos地址</h4>
 <ul>
 <li>sar -n  DEV 4</li>
 <li>netstat  | wc -l</li>
@@ -194,29 +185,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

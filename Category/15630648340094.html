@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,32 +139,24 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>socket write</h4>
-
+                    <h4><a id="socket-write" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>socket write</h4>
 <ul>
 <li>struct file-&gt;struct socket-&gt;sock_sendmsg-&gt;sock_sendmsg_nosec</li>
 <li>msg-&gt;struct sk_buff-&gt;tcp写入队列-&gt;mss-&gt;数据拷贝到连续数据区域-&gt;发送网络包</li>
 </ul>
-
-<h4>分散聚合</h4>
-
+<h4><a id="%E5%88%86%E6%95%A3%E8%81%9A%E5%90%88" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>分散聚合</h4>
 <ul>
 <li>IP层通过内存拷贝进行聚合，让散的数据零散的放在原处，在设备层进行聚合。如果使用这种模式，网络包的数据就不会放在连续的数据区域</li>
-<li><img src="media/15630648340094/9ad34c3c748978f915027d5085a858b8-2.png" alt="9ad34c3c748978f915027d5085a858b8-2"/></li>
+<li><img src="media/15630648340094/9ad34c3c748978f915027d5085a858b8-2.png" alt="9ad34c3c748978f915027d5085a858b8-2" /></li>
 </ul>
-
-<h4>tcp_write_xmit</h4>
-
+<h4><a id="tcp-write-xmit" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>tcp_write_xmit</h4>
 <ul>
 <li>TSO 分段-&gt;硬件网卡去做</li>
 <li>拥塞窗口</li>
 <li>tcp_transmit_skb-&gt;ip_queue_xmit</li>
 </ul>
-
-<h4>总结</h4>
-
-<p><img src="media/15630648340094/dc66535fa7e1a10fd6d728865f6c9344.png" alt="dc66535fa7e1a10fd6d728865f6"/></p>
-
+<h4><a id="%E6%80%BB%E7%BB%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>总结</h4>
+<p><img src="media/15630648340094/dc66535fa7e1a10fd6d728865f6c9344.png" alt="dc66535fa7e1a10fd6d728865f6" /></p>
 <ul>
 <li>VFS 层：write 系统调用找到 struct file，根据里面的 file_operations 的定义，调用 sock_write_iter 函数。sock_write_iter 函数调用 sock_sendmsg 函数。</li>
 <li>Socket 层：从 struct file 里面的 private_data 得到 struct socket，根据里面 ops 的定义，调用 inet_sendmsg 函数。</li>
@@ -172,33 +164,25 @@
 <li>TCP 层：tcp_sendmsg 函数会调用 tcp_write_xmit 函数，tcp_write_xmit 函数会调用 tcp_transmit_skb，在这里实现了 TCP 层面向连接的逻辑。</li>
 <li>IP 层：扩展 struct sock，得到 struct inet_connection_sock，根据里面 icsk_af_ops 的定义，调用 ip_queue_xmit 函数。</li>
 </ul>
-
-<h4>ip层发送</h4>
-
+<h4><a id="ip%E5%B1%82%E5%8F%91%E9%80%81" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>ip层发送</h4>
 <ul>
 <li>第一部分，选取路由，也即我要发送这个包应该从哪个网卡出去。</li>
 <li>路由规则Trie树进行匹配</li>
 <li>就是准备 IP 层的头，往里面填充内容。这就要对着 IP 层的头的格式进行理解。</li>
-<li>第三部分，就是调用 ip_local_out 发送 IP 包。__ip_local_out是决定转发规则 
-<ul>
+<li>第三部分，就是调用 ip_local_out 发送 IP 包。__ip_local_out是决定转发规则</li>
 <li>dst_output是真正的发送数据</li>
-</ul></li>
 </ul>
-
-<h4>mac层发送</h4>
-
+<h4><a id="mac%E5%B1%82%E5%8F%91%E9%80%81" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>mac层发送</h4>
 <ul>
 <li>dev_queue_xmit</li>
 <li>网络设备发送队列 struct netdev_queue *txq</li>
 <li>qdisc pfifo_fast 内核如果需要通过某个网络接口发送数据包，都需要按照为这个接口配置的 qdisc（排队规则）把数据包加入队列</li>
-<li> __dev_xmit_skb -&gt; <strong>qdisc_run-&gt;</strong>netif_schedule-&gt; __netif_reschedule</li>
+<li>__dev_xmit_skb -&gt; __qdisc_run-&gt;__netif_schedule-&gt; __netif_reschedule</li>
 <li>NET_TX_SOFTIRQ</li>
 <li>NET_RX_SOFTIRQ</li>
 <li>net_tx_action-&gt;qdisc_run-&gt;qdisc_restart-&gt;sch_direct_xmit-&gt;dev_hard_start_xmit-&gt;xmit_one-&gt;netdev_start_xmit-&gt;__netdev_start_xmit-&gt;ixgb_xmit_frame</li>
 </ul>
-
-<h4>发送总流程</h4>
-
+<h4><a id="%E5%8F%91%E9%80%81%E6%80%BB%E6%B5%81%E7%A8%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>发送总流程</h4>
 <ul>
 <li>VFS 层：write 系统调用找到 struct file，根据里面的 file_operations 的定义，调用 sock_write_iter 函数。sock_write_iter 函数调用 sock_sendmsg 函数。</li>
 <li>Socket 层：从 struct file 里面的 private_data 得到 struct socket，根据里面 ops 的定义，调用 inet_sendmsg 函数。</li>
@@ -213,7 +197,7 @@
 <li>有了 MAC 地址，就可以调用 dev_queue_xmit 发送二层网络包了，它会调用 __dev_xmit_skb 会将请求放入队列。</li>
 <li>设备层：网络包的发送回触发一个软中断 NET_TX_SOFTIRQ 来处理队列中的数据。这个软中断的处理函数是 net_tx_action。</li>
 <li>在软中断处理函数中，会将网络包从队列上拿下来，调用网络设备的传输函数 ixgb_xmit_frame，将网络包发的设备的队列上去。</li>
-<li><img src="media/15630648340094/79cc42f3163d159a66e163c006d9f36f-2.png" alt="79cc42f3163d159a66e163c006d9f36f-2"/></li>
+<li><img src="media/15630648340094/79cc42f3163d159a66e163c006d9f36f-2.png" alt="79cc42f3163d159a66e163c006d9f36f-2" /></li>
 </ul>
 
                   </article>
@@ -236,29 +220,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

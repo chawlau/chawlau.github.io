@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,8 +139,7 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>解决的问题</h4>
-
+                    <h4><a id="%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解决的问题</h4>
 <ul>
 <li>问题一：如何规定远程调用的语法？</li>
 <li>问题二：如果传递参数？</li>
@@ -148,18 +147,14 @@
 <li>问题四：如何知道一个服务端都实现了哪些远程调用？从哪个端口可以访问这个远程调用？</li>
 <li>问题五：发生了错误、重传、丢包、性能等问题怎么办？</li>
 </ul>
-
-<h4>协议约定问题</h4>
-
+<h4><a id="%E5%8D%8F%E8%AE%AE%E7%BA%A6%E5%AE%9A%E9%97%AE%E9%A2%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>协议约定问题</h4>
 <ul>
-<li><img src="media/15489915615746/8534c52daf3682cd1cfe5a3375ec9525.jpg" alt="8534c52daf3682cd1cfe5a3375e"/></li>
+<li><img src="media/15489915615746/8534c52daf3682cd1cfe5a3375ec9525.jpg" alt="8534c52daf3682cd1cfe5a3375e" /></li>
 <li>用户层 专注业务逻辑处理</li>
 <li>Stub 处理双方约定好的语法语义</li>
 <li>RPCRuntime 处理高性能的传输，以及网络的错误和异常</li>
 </ul>
-
-<h4>RPC</h4>
-
+<h4><a id="rpc" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>RPC</h4>
 <ul>
 <li>处理的数据类型</li>
 <li>Boolean</li>
@@ -167,33 +162,25 @@
 <li>变长数组</li>
 <li>链表</li>
 </ul>
-
-<h4>协议约定</h4>
-
+<h4><a id="%E5%8D%8F%E8%AE%AE%E7%BA%A6%E5%AE%9A" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>协议约定</h4>
 <ul>
 <li>TLV Tag,Length,Value</li>
 </ul>
-
-<h4>网络传输</h4>
-
+<h4><a id="%E7%BD%91%E7%BB%9C%E4%BC%A0%E8%BE%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>网络传输</h4>
 <ul>
 <li>单向RPC</li>
 <li>服务流式RPC</li>
 <li>客户流式RPC</li>
 <li>双向流式RPC</li>
 </ul>
-
-<h4>服务发现和服务治理</h4>
-
+<h4><a id="%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0%E5%92%8C%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>服务发现和服务治理</h4>
 <ul>
 <li>Envoy负载均衡器</li>
 <li>配置路由策略</li>
 <li>负载均衡策略</li>
 <li>Serivce Mesh，也即应用之间的相互调用全部由 Envoy 进行代理，服务之间的治理也被 Envoy 进行代理，完全将服务治理抽象出来，到平台层解决</li>
 </ul>
-
-<h4>Service Mesh 的时候，我们说了，希望 Envoy 能够在服务不感知的情况下，将服务之间的调用全部代理了的内部原理</h4>
-
+<h4><a id="service-mesh%E7%9A%84%E6%97%B6%E5%80%99%EF%BC%8C%E6%88%91%E4%BB%AC%E8%AF%B4%E4%BA%86%EF%BC%8C%E5%B8%8C%E6%9C%9B-envoy%E8%83%BD%E5%A4%9F%E5%9C%A8%E6%9C%8D%E5%8A%A1%E4%B8%8D%E6%84%9F%E7%9F%A5%E7%9A%84%E6%83%85%E5%86%B5%E4%B8%8B%EF%BC%8C%E5%B0%86%E6%9C%8D%E5%8A%A1%E4%B9%8B%E9%97%B4%E7%9A%84%E8%B0%83%E7%94%A8%E5%85%A8%E9%83%A8%E4%BB%A3%E7%90%86%E4%BA%86%E7%9A%84%E5%86%85%E9%83%A8%E5%8E%9F%E7%90%86" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Service Mesh 的时候，我们说了，希望 Envoy 能够在服务不感知的情况下，将服务之间的调用全部代理了的内部原理</h4>
 <ul>
 <li>容器系统中，是通过 sidecar 模式来解决的，服务容器都是直接和 envoy sidecar 互通，envoy 的配置变化，网络拓扑的改变对服务容器都是不可感知的。service mesh 还更进一步的发展，istio 和 conduit，他们都是在 sidecar 基础上，又加了一个总的数据控制平面，来加强 service mesh 的掌控能力。</li>
 <li></li>
@@ -219,29 +206,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

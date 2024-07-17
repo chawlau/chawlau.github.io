@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,248 +139,192 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>伸缩原理</h4>
-
+                    <h4><a id="%E4%BC%B8%E7%BC%A9%E5%8E%9F%E7%90%86" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>伸缩原理</h4>
 <ul>
-<li><img src="media/15680680837389/15680681507398.jpg" alt="" style="width:940px;"/></li>
+<li><img src="media/15680680837389/15680681507398.jpg" alt="" style="width:940px;" /></li>
 <li>槽和数据在节点之间移动</li>
 </ul>
-
-<h4>集群扩容</h4>
-
+<h4><a id="%E9%9B%86%E7%BE%A4%E6%89%A9%E5%AE%B9" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>集群扩容</h4>
 <ul>
 <li>准备新节点</li>
 <li>加入集群</li>
 <li>迁移槽和数据</li>
 </ul>
-
-<h4>加入集群</h4>
-
+<h4><a id="%E5%8A%A0%E5%85%A5%E9%9B%86%E7%BE%A4" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>加入集群</h4>
 <ul>
 <li>为它迁移槽和数据实现扩容</li>
 <li>作为从节点负责故障转移</li>
 </ul>
-
-<h4>迁移槽数据</h4>
-
+<h4><a id="%E8%BF%81%E7%A7%BB%E6%A7%BD%E6%95%B0%E6%8D%AE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>迁移槽数据</h4>
 <ul>
 <li>槽迁移计算</li>
 <li>迁移数据</li>
 <li>添加从节点</li>
-<li><img src="media/15680680837389/15680687611415.jpg" alt="" style="width:876px;"/></li>
+<li><img src="media/15680680837389/15680687611415.jpg" alt="" style="width:876px;" /></li>
 </ul>
-
-<h4>数据迁移</h4>
-
+<h4><a id="%E6%95%B0%E6%8D%AE%E8%BF%81%E7%A7%BB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>数据迁移</h4>
 <ul>
 <li>对目标节点发送：cluster setslot{ slot) importing{ source Nodeld}命令，让目标节点准备导入槽的数据。</li>
 <li>对源节点发送：cluster setslot{slot} migrating{ target Nodelc아命令，让源节点准备迁出槽的数据。</li>
 <li>源节点循环执行 cluster getkeysinslot{slot{ count}命令，每次获取 count 个属于槽的健</li>
 <li>在源节点上执行 migrate  (ftargetlp)  (targetport) key0{ timeout 命令把指定 key 迁移重复执行步骤 3~4 直到槽下所有的键数据迁移到目标节点。</li>
 <li>向集群内所有主节点发送 cluster setslot{ slot) node ftargetnodeld}命令，通知槽分配给目标节点。</li>
-<li><img src="media/15680680837389/15680691770164.jpg" alt="" style="width:596px;"/></li>
+<li><img src="media/15680680837389/15680691770164.jpg" alt="" style="width:596px;" /></li>
 <li>pipeline migrate</li>
-<li><img src="media/15680680837389/15680692695123.jpg" alt="" style="width:833px;"/></li>
+<li><img src="media/15680680837389/15680692695123.jpg" alt="" style="width:833px;" /></li>
 </ul>
-
-<h4>集群收缩</h4>
-
+<h4><a id="%E9%9B%86%E7%BE%A4%E6%94%B6%E7%BC%A9" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>集群收缩</h4>
 <ul>
-<li><img src="media/15680680837389/15680704949393.jpg" alt="" style="width:711px;"/></li>
+<li><img src="media/15680680837389/15680704949393.jpg" alt="" style="width:711px;" /></li>
 <li>cluster forget</li>
 <li>redis-trib reshard --from nodeid --to nodeid --slots nums ip port</li>
 <li>redis-trib del-node ip:port nodeid</li>
 <li>先主后从</li>
 </ul>
-
-<h4>客户端</h4>
-
+<h4><a id="%E5%AE%A2%E6%88%B7%E7%AB%AF" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>客户端</h4>
 <ul>
-<li><img src="media/15680680837389/15680710106807.jpg" alt="" style="width:264px;"/></li>
+<li><img src="media/15680680837389/15680710106807.jpg" alt="" style="width:264px;" /></li>
 </ul>
-
-<h4>重定向</h4>
-
+<h4><a id="%E9%87%8D%E5%AE%9A%E5%90%91" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>重定向</h4>
 <ul>
 <li>move重定向</li>
-<li><img src="media/15680680837389/15680711361230.jpg" alt="" style="width:822px;"/></li>
+<li><img src="media/15680680837389/15680711361230.jpg" alt="" style="width:822px;" /></li>
 <li>ask重定向</li>
-<li><img src="media/15680680837389/15680721661878.jpg" alt="" style="width:424px;"/></li>
-<li><img src="media/15680680837389/15680722142345.jpg" alt="" style="width:874px;"/></li>
+<li><img src="media/15680680837389/15680721661878.jpg" alt="" style="width:424px;" /></li>
+<li><img src="media/15680680837389/15680722142345.jpg" alt="" style="width:874px;" /></li>
 <li>对比</li>
-<li><img src="media/15680680837389/15680722554912.jpg" alt="" style="width:450px;"/></li>
+<li><img src="media/15680680837389/15680722554912.jpg" alt="" style="width:450px;" /></li>
 <li>随机访问和性能</li>
 </ul>
-
-<h4>smart客户端</h4>
-
+<h4><a id="smart%E5%AE%A2%E6%88%B7%E7%AB%AF" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>smart客户端</h4>
 <ul>
-<li><img src="media/15680680837389/15680724129947.jpg" alt="" style="width:785px;"/></li>
-<li><img src="media/15680680837389/15680724793536.jpg" alt="" style="width:857px;"/></li>
+<li><img src="media/15680680837389/15680724129947.jpg" alt="" style="width:785px;" /></li>
+<li><img src="media/15680680837389/15680724793536.jpg" alt="" style="width:857px;" /></li>
 </ul>
-
-<h4>批量操作</h4>
-
+<h4><a id="%E6%89%B9%E9%87%8F%E6%93%8D%E4%BD%9C" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>批量操作</h4>
 <ul>
 <li>mget mset必须在同一个槽</li>
 <li>串行mget</li>
 <li>串行IO</li>
-<li><img src="media/15680680837389/15680733968971.jpg" alt="" style="width:1458px;"/></li>
+<li><img src="media/15680680837389/15680733968971.jpg" alt="" style="width:1458px;" /></li>
 <li>并行IO</li>
-<li><img src="media/15680680837389/15680734290342.jpg" alt="" style="width:1469px;"/></li>
+<li><img src="media/15680680837389/15680734290342.jpg" alt="" style="width:1469px;" /></li>
 <li>hash_tag</li>
-<li><img src="media/15680680837389/15680734688574.jpg" alt="" style="width:1360px;"/></li>
-<li><img src="media/15680680837389/15680734909089.jpg" alt="" style="width:1457px;"/></li>
+<li><img src="media/15680680837389/15680734688574.jpg" alt="" style="width:1360px;" /></li>
+<li><img src="media/15680680837389/15680734909089.jpg" alt="" style="width:1457px;" /></li>
 <li>hash_tag Redis中引入了HashTag的概念，可以让算法只对key的某一部分进行计算，让key落到相同数据分片。</li>
 </ul>
-
-<h4>故障转移</h4>
-
+<h4><a id="%E6%95%85%E9%9A%9C%E8%BD%AC%E7%A7%BB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>故障转移</h4>
 <ul>
 <li>故障发现</li>
 <li>ping/pong消息实现故障发现</li>
 <li>主观下线</li>
-<li><img src="media/15680680837389/15680737537823.jpg" alt="" style="width:1091px;"/></li>
+<li><img src="media/15680680837389/15680737537823.jpg" alt="" style="width:1091px;" /></li>
 <li>客观下线</li>
-<li><img src="media/15680680837389/15680739618953.jpg" alt="" style="width:1212px;"/></li>
-<li><img src="media/15680680837389/15680740159698.jpg" alt="" style="width:1344px;"/></li>
+<li><img src="media/15680680837389/15680739618953.jpg" alt="" style="width:1212px;" /></li>
+<li><img src="media/15680680837389/15680740159698.jpg" alt="" style="width:1344px;" /></li>
 </ul>
-
-<h4>故障恢复</h4>
-
+<h4><a id="%E6%95%85%E9%9A%9C%E6%81%A2%E5%A4%8D" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>故障恢复</h4>
 <ul>
 <li>资格检查</li>
-<li><img src="media/15680680837389/15680741572842.jpg" alt="" style="width:1308px;"/></li>
+<li><img src="media/15680680837389/15680741572842.jpg" alt="" style="width:1308px;" /></li>
 <li>准备选举时间</li>
-<li><img src="media/15680680837389/15680741882554.jpg" alt="" style="width:966px;"/></li>
+<li><img src="media/15680680837389/15680741882554.jpg" alt="" style="width:966px;" /></li>
 <li>选举投票</li>
-<li><img src="media/15680680837389/15680742011334.jpg" alt="" style="width:786px;"/></li>
+<li><img src="media/15680680837389/15680742011334.jpg" alt="" style="width:786px;" /></li>
 <li>替换主节点</li>
-<li><img src="media/15680680837389/15680742546123.jpg" alt="" style="width:1164px;"/></li>
+<li><img src="media/15680680837389/15680742546123.jpg" alt="" style="width:1164px;" /></li>
 </ul>
-
-<h4>集群完整性</h4>
-
+<h4><a id="%E9%9B%86%E7%BE%A4%E5%AE%8C%E6%95%B4%E6%80%A7" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>集群完整性</h4>
 <ul>
 <li>Cluster-require- full-coverages 默认为 yes</li>
 <li>集群中 16384 个槽全部可用：保证集群完整性 17680648932 正在看</li>
 <li>节点故障或者正在故障转移 (error) CLUSTERDOWN The cluster is down</li>
 <li>大多数业务无法容忍，cluster-require- full-coverages 建议设置为 no</li>
 </ul>
-
-<h4>带宽消耗</h4>
-
+<h4><a id="%E5%B8%A6%E5%AE%BD%E6%B6%88%E8%80%97" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>带宽消耗</h4>
 <ul>
-<li><img src="media/15680680837389/15681614212661.jpg" alt="" style="width:1370px;"/></li>
+<li><img src="media/15680680837389/15681614212661.jpg" alt="" style="width:1370px;" /></li>
 <li>消息发送频率：节点发现与其它节点最后通信时间超过 cluster node- timeout,/2时会直接发送ping消息 0463941</li>
 <li>消息数据量：slots槽数组(2KB空间)和整个集群1/10的状态数据（10 个节点状态数据约 1 KB)</li>
 <li>节点部署的机器规模：集群分布的机器越多且每台机器划分的节点数越均匀，则集群内整体的可用带宽越高。</li>
 </ul>
-
-<h5>优化</h5>
-
+<h5><a id="%E4%BC%98%E5%8C%96" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>优化</h5>
 <ul>
 <li>避免多业务使用一个集群，大业务可以多集群</li>
 <li>cluster-node-timeout 带宽和故障转移速度的均衡。尽量均匀分配到多机器上</li>
 <li>保证高可用和带宽</li>
 </ul>
-
-<h4>Pub/Sub 广播</h4>
-
+<h4><a id="pubsub%E5%B9%BF%E6%92%AD" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Pub/Sub 广播</h4>
 <ul>
-<li><img src="media/15680680837389/15681616136157.jpg" alt="" style="width:925px;"/></li>
+<li><img src="media/15680680837389/15681616136157.jpg" alt="" style="width:925px;" /></li>
 <li>问题：publish 在集群每个节点广播：加重带宽</li>
 <li>解决：单独“走”一套 Redis Sentinel</li>
 </ul>
-
-<h4>数据倾斜</h4>
-
-<h5>内存不均</h5>
-
+<h4><a id="%E6%95%B0%E6%8D%AE%E5%80%BE%E6%96%9C" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>数据倾斜</h4>
+<h5><a id="%E5%86%85%E5%AD%98%E4%B8%8D%E5%9D%87" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>内存不均</h5>
 <ul>
 <li>节点和槽分配不均</li>
 <li>redis-cli info ip:port</li>
 <li>redis-cli reshard ip:port</li>
 </ul>
-
-<h5>不同槽对应键值数量差异较大</h5>
-
+<h5><a id="%E4%B8%8D%E5%90%8C%E6%A7%BD%E5%AF%B9%E5%BA%94%E9%94%AE%E5%80%BC%E6%95%B0%E9%87%8F%E5%B7%AE%E5%BC%82%E8%BE%83%E5%A4%A7" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>不同槽对应键值数量差异较大</h5>
 <ul>
 <li>CRC16 正常情况下比较均匀</li>
 <li>可能存在 hash_tag</li>
 <li>cluster countkeysinslot{slt}获取槽对应键值个数</li>
 </ul>
-
-<h5>包含bigkey</h5>
-
+<h5><a id="%E5%8C%85%E5%90%ABbigkey" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>包含bigkey</h5>
 <ul>
 <li>Bigley：例如大字符串、几百万的元素的 hash、set 等从节点：</li>
 <li>redis-cli- bigkeys</li>
 <li>优化：优化数据结构。</li>
 </ul>
-
-<h5>内存相关配置不一致</h5>
-
+<h5><a id="%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3%E9%85%8D%E7%BD%AE%E4%B8%8D%E4%B8%80%E8%87%B4" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>内存相关配置不一致</h5>
 <ul>
-<li>Hash-max-ziplist-value, set-max-intset-entriess </li>
+<li>Hash-max-ziplist-value, set-max-intset-entriess</li>
 <li>优化：定期“检查”配置一致性</li>
 </ul>
-
-<h5>请求倾斜</h5>
-
+<h5><a id="%E8%AF%B7%E6%B1%82%E5%80%BE%E6%96%9C" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>请求倾斜</h5>
 <ul>
-<li>热点 key：重要的 key 或者 bigley </li>
+<li>热点 key：重要的 key 或者 bigley</li>
 <li>优化避免 bigley 热键</li>
 <li>不要用 hash_tag</li>
 <li>当一致性不高时，可以用本地缓存+MQ</li>
 </ul>
-
-<h4>集群读写分离</h4>
-
-<h5>只读连接：集群模式的从节点不接受任何读写请求</h5>
-
+<h4><a id="%E9%9B%86%E7%BE%A4%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>集群读写分离</h4>
+<h5><a id="%E5%8F%AA%E8%AF%BB%E8%BF%9E%E6%8E%A5%EF%BC%9A%E9%9B%86%E7%BE%A4%E6%A8%A1%E5%BC%8F%E7%9A%84%E4%BB%8E%E8%8A%82%E7%82%B9%E4%B8%8D%E6%8E%A5%E5%8F%97%E4%BB%BB%E4%BD%95%E8%AF%BB%E5%86%99%E8%AF%B7%E6%B1%82" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>只读连接：集群模式的从节点不接受任何读写请求</h5>
 <ul>
 <li>重定向到负责槽的主节点</li>
 <li>readonly 命令可以读：连接级别命令</li>
 </ul>
-
-<h5>读写分离：更加复杂</h5>
-
+<h5><a id="%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB%EF%BC%9A%E6%9B%B4%E5%8A%A0%E5%A4%8D%E6%9D%82" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>读写分离：更加复杂</h5>
 <ul>
 <li>同样的问题：复制延退、读取过期数据、从节点故障</li>
 <li>修改客户端：cluster slaves{ nodeld}</li>
 </ul>
-
-<h4>数据迁移</h4>
-
-<h5>redis-trib.rb import</h5>
-
+<h4><a id="%E6%95%B0%E6%8D%AE%E8%BF%81%E7%A7%BB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>数据迁移</h4>
+<h5><a id="redis-trib-rb-import" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>redis-trib.rb import</h5>
 <ul>
 <li>只能从单机迁移到集群不支持在线迁移：</li>
 <li>source 需要停写</li>
 <li>不支持断点续传</li>
 <li>单线程迁移：影响速度</li>
 </ul>
-
-<h5>在线迁移</h5>
-
+<h5><a id="%E5%9C%A8%E7%BA%BF%E8%BF%81%E7%A7%BB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>在线迁移</h5>
 <ul>
-<li>唯品会 redis- migrate-tool </li>
+<li>唯品会 redis- migrate-tool</li>
 <li>豌豆英：redis-port</li>
 </ul>
-
-<h4>集群限制</h4>
-
+<h4><a id="%E9%9B%86%E7%BE%A4%E9%99%90%E5%88%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>集群限制</h4>
 <ul>
-<li>Key 批量操作支持有限：例如 mget、mset 必须在一个 slot </li>
-<li>Key 事务和 Lua 支持有限：操作的 key 必须在一个节点 </li>
+<li>Key 批量操作支持有限：例如 mget、mset 必须在一个 slot</li>
+<li>Key 事务和 Lua 支持有限：操作的 key 必须在一个节点</li>
 <li>Key 是数据分区的最小粒度：不支持 bigkey 分区</li>
 <li>不支持多个数据库：集群模式下只有一个 db0</li>
 <li>复制只支持一层。不支持树形复制</li>
 </ul>
-
-<h4>分布式Redis</h4>
-
+<h4><a id="%E5%88%86%E5%B8%83%E5%BC%8Fredis" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>分布式Redis</h4>
 <ul>
 <li>Redis Cluster：满足容量和性能的扩展性，很多业务”不需要”</li>
 <li>大多数时客户端性能会”降低”。</li>
@@ -388,9 +332,7 @@
 <li>客户端维护更复杂：SDK 和应用本身消耗（例如更多的连接池）。</li>
 <li>很多场景 Redis Sentinel 已经足够好。</li>
 </ul>
-
-<h4>集群总结</h4>
-
+<h4><a id="%E9%9B%86%E7%BE%A4%E6%80%BB%E7%BB%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>集群总结</h4>
 <ul>
 <li>使用 smart 客户端操作集群达到通信效率最大化，客户端内部负责计算维护键-》槽-》节点的映射，用于快速定位到目标节点。</li>
 <li>集群自动故障转移过程分为故障发现和节点恢复。节点下线分为主观下线和客观下线，当超过半数主节点认为故障节点为主观下线时标记它为客观下线状态。从节点负责对客观下线的主节点触发故障恢复流程，保证集群的可用性。</li>
@@ -418,29 +360,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

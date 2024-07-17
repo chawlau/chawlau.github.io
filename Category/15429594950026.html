@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,55 +139,42 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>索引常见数据结构</h4>
-
+                    <h4><a id="%E7%B4%A2%E5%BC%95%E5%B8%B8%E8%A7%81%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>索引常见数据结构</h4>
 <ul>
 <li>哈希表 适用于等值查询的场景</li>
 <li>有序数据</li>
 <li>搜索树</li>
 </ul>
-
-<h4>主键索引和非主键索引</h4>
-
+<h4><a id="%E4%B8%BB%E9%94%AE%E7%B4%A2%E5%BC%95%E5%92%8C%E9%9D%9E%E4%B8%BB%E9%94%AE%E7%B4%A2%E5%BC%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>主键索引和非主键索引</h4>
 <ul>
 <li>从图中不难看出，根据叶子节点的内容，索引类型分为主键索引和非主键索引。</li>
 <li>主键索引的叶子节点存的是整行数据。在 InnoDB 里，主键索引也被称为聚簇索引（clustered index）。</li>
 <li>非主键索引的叶子节点内容是主键的值。在 InnoDB 里，非主键索引也被称为二级索引（secondary index）。</li>
 <li>先索引非主键索树，得到主键的值，在根据主键索引树搜索一次，这个过程叫回表</li>
 </ul>
-
-<h4>AutoIncrement</h4>
-
+<h4><a id="autoincrement" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>AutoIncrement</h4>
 <ul>
 <li>自增主键的插入数据模式，正符合了我们前面提到的递增插入的场景。每次插入一条新记录，都是追加操作，都不涉及到挪动其他记录，也不会触发叶子节点的分裂。</li>
 <li>由于每个非主键索引的叶子节点上都是主键的值。如果用身份证号做主键，那么每个二级索引的叶子节点占用约 20 个字节，而如果用整型做主键，则只要 4 个字节，如果是长整型（bigint）则是 8 个字节。</li>
 <li>显然，主键长度越小，普通索引的叶子节点就越小，普通索引占用的空间也就越小。</li>
 </ul>
-
-<h4>适合业务字段直接做主键</h4>
-
+<h4><a id="%E9%80%82%E5%90%88%E4%B8%9A%E5%8A%A1%E5%AD%97%E6%AE%B5%E7%9B%B4%E6%8E%A5%E5%81%9A%E4%B8%BB%E9%94%AE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>适合业务字段直接做主键</h4>
 <ul>
 <li>只有一个索引</li>
 <li>该索引必须是唯一索引</li>
 </ul>
-
-<h4>重建索引</h4>
-
+<h4><a id="%E9%87%8D%E5%BB%BA%E7%B4%A2%E5%BC%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>重建索引</h4>
 <ul>
-<li>如果删除，新建主键索引，会同时去修改普通索引对应的主键索引，性能消耗比较大。<br/>
+<li>如果删除，新建主键索引，会同时去修改普通索引对应的主键索引，性能消耗比较大。<br />
 删除重建普通索引貌似影响不大，不过要注意在业务低谷期操作，避免影响业务。</li>
 <li>二级索引重建应该新建索引再做删除，如果有查询用到这个索引，此时索引已被删除，会导致业务抖动.主键重建不能采用drop这种方式去按操作，因为所有数据都是以主键组织的，删了主键后，InnoDB会自己找一个主键组织数据，再次添加主键又会重新组织数据，重建表的次已达二次，我们可以直接Optimiz这个表</li>
 </ul>
-
-<h4>mysql语句</h4>
-
-<pre class="line-numbers"><code class="language-text">select * from T where k between 3 and 5
+<h4><a id="mysql%E8%AF%AD%E5%8F%A5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>mysql语句</h4>
+<pre><code class="language-plain_text">select * from T where k between 3 and 5
 select ID from T where k between 3 and 5 覆盖索引，无须回表
 </code></pre>
-
-<h4>优化语句</h4>
-
-<pre class="line-numbers"><code class="language-text"> CREATE TABLE `geek` (
+<h4><a id="%E4%BC%98%E5%8C%96%E8%AF%AD%E5%8F%A5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>优化语句</h4>
+<pre><code class="language-plain_text"> CREATE TABLE `geek` (
   `a` int(11) NOT NULL,
   `b` int(11) NOT NULL,
   `c` int(11) NOT NULL,
@@ -200,9 +187,7 @@ select ID from T where k between 3 and 5 覆盖索引，无须回表
 select * from geek where c=N order by a limit 1;
 select * from geek where c=N order by b limit 1;
 </code></pre>
-
-<h4>案例</h4>
-
+<h4><a id="%E6%A1%88%E4%BE%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>案例</h4>
 <ul>
 <li>表实际内容的大小才10G, 而他的索引却有30G. 在阿里云控制面板上看,就是占了40G空间. 后来了解到是 InnoDB 这种引擎导致的,虽然删除了表的部分记录,但是它的索引还在, 并未释放.只能是重新建表才能重建索引.</li>
 <li></li>
@@ -228,31 +213,96 @@ select * from geek where c=N order by b limit 1;
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
-<script src="asset/prism.js"></script>
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   

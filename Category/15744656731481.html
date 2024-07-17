@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,15 +139,13 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>三种方法对比</h4>
-
+                    <h4><a id="%E4%B8%89%E7%A7%8D%E6%96%B9%E6%B3%95%E5%AF%B9%E6%AF%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>三种方法对比</h4>
 <ul>
 <li>对象方法，定义中，传入的第一个参数必须是 self，表示实例本身，在其中可使用 self.attr 获取实例的属性。</li>
 <li>class_method 无需实例化，但与实例方法第一个参数必须是 self 类似，类方法第一个参数表示类自身的 cls 参数，可以来调用类的属性、类的方法、类的实例化对象等</li>
 <li>static_method无需 self 参数，无需 cls 参数，直接声明一个静态方法，可无需实例化，直接由类调用，也可实例化后调用</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-python">class Date:
+<pre><code class="language-python">class Date:
     def __init__(self, year, month, day):
         self.year = year
         self.month = month
@@ -158,12 +156,12 @@
 
     @staticmethod
     def parse_from_string(data_str):
-        year, month, day = tuple(data_str.split(&#39;-&#39;))
+        year, month, day = tuple(data_str.split('-'))
         return Date(int(year), int(month), int(day))
 
     @staticmethod
     def valid_str(date_str):
-        year, month, day = tuple(date_str.split(&#39;-&#39;))
+        year, month, day = tuple(date_str.split('-'))
         if int(year) &gt; 0 and (int(month) &gt; 0 and int(month) &lt;=12) and (int(day) &gt; 0 and int(day) &lt;=31):
             return True
         else:
@@ -171,19 +169,19 @@
 
     @classmethod
     def from_string(cls, date_str):
-        year, month, day = tuple(date_str.split(&#39;-&#39;))
+        year, month, day = tuple(date_str.split('-'))
         return cls(int(year), int(month), int(day))
 
     def __str__(self):
         return &quot;{year}/{month}/{day}&quot;.format(year=self.year, month=self.month, day=self.day)
 
-if __name__ == &#39;__main__&#39;:
+if __name__ == '__main__':
     new_day = Date(2018, 12, 31)
     new_day.tomorrow()
     print(new_day)
 
-    date_str = &#39;2018-12-31&#39;
-    year, month, day = tuple(date_str.split(&#39;-&#39;))
+    date_str = '2018-12-31'
+    year, month, day = tuple(date_str.split('-'))
     new_day = Date(int(year), int(month), int(day))
     print (new_day)
 
@@ -195,15 +193,12 @@ if __name__ == &#39;__main__&#39;:
     
     print(Date.valid_str(&quot;2018-12-32&quot;))
 </code></pre>
-
-<h4>私有属性</h4>
-
+<h4><a id="%E7%A7%81%E6%9C%89%E5%B1%9E%E6%80%A7" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>私有属性</h4>
 <ul>
 <li>双下划线将私有变量进行变形</li>
 <li>通过反射机制也可以拿到这个数值</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-python">from method import Date
+<pre><code class="language-python">from method import Date
 
 class User:
     def __init__(self, birthday):
@@ -212,24 +207,22 @@ class User:
         return 2019 - self.__birthday.year
 
 
-if __name__ == &#39;__main__&#39;:
+if __name__ == '__main__':
     user = User(Date(2018, 10, 1))
     print(user.get_age())
 </code></pre>
-
-<h4>dict和dir查询属性·</h4>
-
-<pre class="line-numbers"><code class="language-python">from method import Date
+<h4><a id="dict%E5%92%8Cdir%E6%9F%A5%E8%AF%A2%E5%B1%9E%E6%80%A7%C2%B7" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>dict和dir查询属性·</h4>
+<pre><code class="language-python">from method import Date
 
 class Person:
-    name = &#39;user&#39;
+    name = 'user'
 
 class Student(Person):
     def __init__(self, school_name):
         self.school_name = school_name
 
-if __name__ == &#39;__main__&#39;:
-    user = Student(&#39;IMooc&#39;)
+if __name__ == '__main__':
+    user = Student('IMooc')
     print(user.__dict__)
     user.__dict__[&quot;school_addr&quot;] = &quot;Beijing&quot;
     print(user.school_addr)
@@ -238,21 +231,17 @@ if __name__ == &#39;__main__&#39;:
     a = [1, 2]
     print(dir(a))
 </code></pre>
-
 <ul>
 <li>dict获取属性</li>
 </ul>
-
-<h4>上下文管理器协议</h4>
-
+<h4><a id="%E4%B8%8A%E4%B8%8B%E6%96%87%E7%AE%A1%E7%90%86%E5%99%A8%E5%8D%8F%E8%AE%AE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>上下文管理器协议</h4>
 <ul>
-<li><img src="media/15744656731481/15744763032317.jpg" alt="" style="width:324px;"/></li>
+<li><img src="media/15744656731481/15744763032317.jpg" alt="" style="width:324px;" /></li>
 </ul>
-
-<pre class="line-numbers"><code class="language-python">class Sample:
+<pre><code class="language-python">class Sample:
     def __enter__(self):
         #获取资源
-        print(&#39;enter&#39;)
+        print('enter')
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -265,10 +254,8 @@ if __name__ == &#39;__main__&#39;:
 with Sample() as sample:
     sample.do_something()
 </code></pre>
-
-<h4>contextlib协议</h4>
-
-<pre class="line-numbers"><code class="language-python">import contextlib
+<h4><a id="contextlib%E5%8D%8F%E8%AE%AE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>contextlib协议</h4>
+<pre><code class="language-python">import contextlib
 
 @contextlib.contextmanager
 def file_open(file_name):
@@ -300,31 +287,96 @@ with file_open(&quot;bobby.txt&quot;) as f_opened:
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
-<script src="asset/prism.js"></script>
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   

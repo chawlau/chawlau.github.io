@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,15 +139,12 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>cpu上下文</h4>
-
+                    <h4><a id="cpu%E4%B8%8A%E4%B8%8B%E6%96%87" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>cpu上下文</h4>
 <ul>
 <li>cpu寄存器和程序计数器叫上下文</li>
 <li>CPU 寄存器，是 CPU 内置的容量小、但速度极快的内存。而程序计数器，则是用来存储 CPU 正在执行的指令位置、或者即将执行的下一条指令位置。</li>
 </ul>
-
-<h4>上下文切换场景</h4>
-
+<h4><a id="%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2%E5%9C%BA%E6%99%AF" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>上下文切换场景</h4>
 <ul>
 <li>进程上下文切换 包括了虚拟内存、栈、全局变量等用户空间的资源，还包括了内核堆栈、寄存器等内核空间的状态</li>
 <li>线程上下文切换</li>
@@ -155,49 +152,35 @@
 <li>系统调用发生了两次上下文切换 并不会涉及到虚拟内存等进程用户态的资源，也不会切换进程。这跟我们通常所说的进程上下文切换是不一样的</li>
 <li></li>
 </ul>
-
-<h4>系统调用</h4>
-
+<h4><a id="%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>系统调用</h4>
 <ul>
 <li>系统调用过程通常称为特权模式切换，而不是上下文切换。但实际上，系统调用过程中，CPU 的上下文切换还是无法避免的。</li>
 <li>一次系统调用的过程，其实是发生了两次 CPU 上下文切换</li>
 </ul>
-
-<h4>TLB作用</h4>
-
+<h4><a id="tlb%E4%BD%9C%E7%94%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>TLB作用</h4>
 <ul>
 <li>TLB（Translation Lookaside Buffer）来管理虚拟内存到物理内存的映射关系。当虚拟内存更新后，TLB 也需要刷新，内存的访问也会随之变慢。特别是在多处理器系统上，缓存是被多个处理器共享的，刷新缓存不仅会影响当前处理器的进程，还会影响共享缓存的其他处理器的进程。</li>
 </ul>
-
-<h4>进程上下文切换</h4>
-
+<h4><a id="%E8%BF%9B%E7%A8%8B%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>进程上下文切换</h4>
 <ul>
-<li>进程的上下文切换就比系统调用时多了一步：在保存当前进程的内核状态和 CPU 寄存器之前，（需要先把该进程的虚拟内存、栈等保存下来；而加载了下一进程的内核态后，还需要刷新进程的虚拟内存和用户栈）。<strong><em>这个系统调用并没有</em></strong></li>
-<li><img src="media/15432181027120/15432189386717.jpg" alt=""/></li>
+<li>进程的上下文切换就比系统调用时多了一步：在保存当前进程的内核状态和 CPU 寄存器之前，（需要先把该进程的虚拟内存、栈等保存下来；而加载了下一进程的内核态后，还需要刷新进程的虚拟内存和用户栈）。<em><strong>这个系统调用并没有</strong></em></li>
+<li><img src="media/15432181027120/15432189386717.jpg" alt="" /></li>
 <li>线程也有自己的私有数据，比如栈和寄存器等，这些在上下文切换时也是需要保存的。</li>
 <li>两个线程属于同一个进程。此时，因为虚拟内存是共享的，所以在切换时，虚拟内存这些资源就保持不动，只需要切换线程的私有数据、寄存器等不共享的数据。</li>
 </ul>
-
-<h4>中断上下文切换</h4>
-
+<h4><a id="%E4%B8%AD%E6%96%AD%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>中断上下文切换</h4>
 <ul>
 <li>线程是调度的基本单位，进程是资源拥有的基本单位，同属一个进程的线程，发生上下文切换，只切换线程的私有数据，共享数据不变，速度很快。</li>
 </ul>
-
-<h4>怎么查看系统的上下文情况</h4>
-
+<h4><a id="%E6%80%8E%E4%B9%88%E6%9F%A5%E7%9C%8B%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%B8%8A%E4%B8%8B%E6%96%87%E6%83%85%E5%86%B5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>怎么查看系统的上下文情况</h4>
 <ul>
 <li>vmstat</li>
 <li>自愿上下文切换 是指进程无法获取所需资源导致的上下文切换，比如IO,内存</li>
 <li>非自愿上下文切换， 进程由于时间片已到等时间，被系统强制调度，进而发生的上下文呢切换</li>
 </ul>
-
-<h4>有哪些减少上下文切换的技术用例？</h4>
-
+<h4><a id="%E6%9C%89%E5%93%AA%E4%BA%9B%E5%87%8F%E5%B0%91%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2%E7%9A%84%E6%8A%80%E6%9C%AF%E7%94%A8%E4%BE%8B%EF%BC%9F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>有哪些减少上下文切换的技术用例？</h4>
 <p>数据库连接池（复用连接）、合理设置应用的最大进程，线程数、直接内存访问DMA、零拷贝技术</p>
-
-<h4>压力测试</h4>
-
+<h4><a id="%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>压力测试</h4>
 <ul>
 <li>sysbench --threads=10 --max-time=300 threads run</li>
 <li>线程切换 sysbench --num-threads=10 --max-time=300 --test=threads run</li>
@@ -206,14 +189,13 @@
 <li>查看进程中线程变化的数据 pidstat -wt 1</li>
 <li>Rescheduling interrupts多处理器系统（SMP）中，调度器用来分散任务到不同 CPU 的机制，通常也被称为处理器间中断（Inter-Processor Interrupts，IPI）</li>
 </ul>
-
-<h4>上下文切换类型</h4>
-
+<h4><a id="%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2%E7%B1%BB%E5%9E%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>上下文切换类型</h4>
 <ul>
 <li>自愿上下文切换变多了，说明进程都在等待资源，有可能发生了 I/O 等其他问题；</li>
 <li>非自愿上下文切换变多了，说明进程都在被强制调度，也就是都在争抢 CPU，说明 CPU 的确成了瓶颈；</li>
 <li>中断次数变多了，说明 CPU 被中断处理程序占用，还需要通过查看 /proc/interrupts 文件来分析具体的中断类型。</li>
 </ul>
+<h4><a id="" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a></h4>
 
                   </article>
                   <div class="comments-wrap">
@@ -235,29 +217,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

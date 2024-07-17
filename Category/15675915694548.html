@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,8 +139,7 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>概念</h4>
-
+                    <h4><a id="%E6%A6%82%E5%BF%B5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>概念</h4>
 <ul>
 <li>weak_ptr弱 强 shared_ptr</li>
 <li>智能指针，指向由shared_ptr管理的对象</li>
@@ -150,31 +149,25 @@
 <li>weak_ptr 监视shared_ptr的生命周期，是shared_ptr的扩充</li>
 <li>不是独立的智能指针。不能用来操作所指向的资源，监视对象是否存在</li>
 </ul>
-
-<h4>常规操作</h4>
-
+<h4><a id="%E5%B8%B8%E8%A7%84%E6%93%8D%E4%BD%9C" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>常规操作</h4>
 <ul>
 <li>weak_ptr不能直接来访问对象</li>
 <li>需要lock来访问，如果存在，lock就返回一个对象的shared_ptr指针</li>
 <li>如果不存在，就返回一个空的shared_ptr</li>
 <li>weak_ptr能够判断对象是否存在</li>
 </ul>
-
-<h4>常用指针</h4>
-
+<h4><a id="%E5%B8%B8%E7%94%A8%E6%8C%87%E9%92%88" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>常用指针</h4>
 <ul>
 <li>use_count 获取对象强引用的数量</li>
 <li>expired 是否过期，如果use_count=0,对象不存在，观测对象的资源是否被释放</li>
 <li>reset 将弱引用指针设置为空，不影响强引用，</li>
 </ul>
-
-<h4>尺寸问题</h4>
-
+<h4><a id="%E5%B0%BA%E5%AF%B8%E9%97%AE%E9%A2%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>尺寸问题</h4>
 <ul>
 <li>weak_ptr和shared_ptr一样大。裸指针的两倍</li>
 <li>第一个指针指向智能指向对象</li>
 <li>第二个指针指向shared_ptr生成的控制块</li>
-<li><img src="media/15675915694548/15675935853040.jpg" alt="" style="width:898px;"/></li>
+<li><img src="media/15675915694548/15675935853040.jpg" alt="" style="width:898px;" /></li>
 <li></li>
 </ul>
 
@@ -198,29 +191,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

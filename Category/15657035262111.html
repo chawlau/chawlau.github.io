@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,51 +139,43 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>virtio</h4>
-
+                    <h4><a id="virtio" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>virtio</h4>
 <ul>
 <li>virtio 负责对于虚拟机提供统一的接口</li>
-<li><img src="media/15657035262111/1e13ffd5ac846c52739291cb489d0233.png" alt="1e13ffd5ac846c52739291cb489d0233"/></li>
+<li><img src="media/15657035262111/1e13ffd5ac846c52739291cb489d0233.png" alt="1e13ffd5ac846c52739291cb489d0233" /></li>
 </ul>
-
-<h4>架构四层</h4>
-
+<h4><a id="%E6%9E%B6%E6%9E%84%E5%9B%9B%E5%B1%82" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>架构四层</h4>
 <ul>
 <li>虚拟机里面的 virtio 前端，针对不同类型的设备有不同的驱动程序，但是接口都是统一的</li>
 <li>在宿主机的 qemu 里面，实现 virtio 后端的逻辑，主要就是操作硬件的设备</li>
 <li>virtio 的前端和后端之间，有一个通信层，里面包含virtio 层和virtio-ring 层</li>
 </ul>
-
-<h4>总结</h4>
-
+<h4><a id="%E6%80%BB%E7%BB%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>总结</h4>
 <ul>
 <li>前端有前端的块设备驱动 Front-end driver，在客户机的内核里面，它符合普通设备驱动的格式，对外通过 VFS 暴露文件系统接口给客户机里面的应用。这一部分这一节我们没有讲，放在下一节解析。</li>
 <li>后端有后端的设备驱动 Back-end driver，在宿主机的 qemu 进程中，当收到客户机的写入请求的时候，调用文件系统的 write 函数，写入宿主机的 VFS 文件系统，最终写到物理硬盘设备上的 qcow2 文件。</li>
 <li>中间的队列用于前端和后端之间传输数据，在前端的设备驱动和后端的设备驱动，都有类似的数据结构 virt-queue 来管理这些队列</li>
-<li><img src="media/15657035262111/1f0c3043a11d6ea1a802f7d0f3b0b34b.jpg" alt="1f0c3043a11d6ea1a802f7d0f3b0b34b"/></li>
+<li><img src="media/15657035262111/1f0c3043a11d6ea1a802f7d0f3b0b34b.jpg" alt="1f0c3043a11d6ea1a802f7d0f3b0b34b" /></li>
 </ul>
-
-<h4>前端设备驱动virtio_blk</h4>
-
+<h4><a id="%E5%89%8D%E7%AB%AF%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8virtio-blk" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>前端设备驱动virtio_blk</h4>
 <ul>
-<li><p>virtqueue 是一个介于客户机前端和 qemu 后端的一个结构，用于在这两端之间传递数据</p>
-<pre class="line-numbers"><code class="language-text">struct vring_virtqueue {
-struct virtqueue vq;<br/>
-/* Actual memory layout for this queue */<br/>
-struct vring vring;<br/>
-......<br/>
+<li>virtqueue 是一个介于客户机前端和 qemu 后端的一个结构，用于在这两端之间传递数据</li>
+</ul>
+<pre><code class="language-plain_text">struct vring_virtqueue {
+   struct virtqueue vq;
+
+   /* Actual memory layout for this queue */
+   struct vring vring;
+......
 }
 </code></pre>
 <ul>
 <li>struct virtio_device 里面有一个 struct vring_virtqueue，在 struct vring_virtqueue 里面有一个 struct vring</li>
-<li><img src="media/15657035262111/49414d5acc81933b66410bbba102b0db.jpg" alt="49414d5acc81933b66410bbba102b0db"/></li>
-</ul></li>
+<li><img src="media/15657035262111/49414d5acc81933b66410bbba102b0db.jpg" alt="49414d5acc81933b66410bbba102b0db" /></li>
 </ul>
-
-<h4>总结</h4>
-
+<h4><a id="%E6%80%BB%E7%BB%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>总结</h4>
 <ul>
-<li><img src="media/15657035262111/79ad143a3149ea36bc80219940d7d00c.jpg" alt="79ad143a3149ea36bc80219940d7d00"/></li>
+<li><img src="media/15657035262111/79ad143a3149ea36bc80219940d7d00c.jpg" alt="79ad143a3149ea36bc80219940d7d00" /></li>
 </ul>
 
                   </article>
@@ -206,31 +198,96 @@ struct vring vring;<br/>
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
-<script src="asset/prism.js"></script>
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   

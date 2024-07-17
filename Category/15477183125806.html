@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,15 +139,12 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>coordinator分发</h4>
-
+                    <h4><a id="coordinator%E5%88%86%E5%8F%91" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>coordinator分发</h4>
 <ul>
 <li>不能造成更新覆盖。这就要求更新同一行的两个事务，必须被分发到同一个worker中</li>
 <li>同一个事务不能被拆开，必须放到同一个worker中。</li>
 </ul>
-
-<h4>并行复制策略</h4>
-
+<h4><a id="%E5%B9%B6%E8%A1%8C%E5%A4%8D%E5%88%B6%E7%AD%96%E7%95%A5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>并行复制策略</h4>
 <ul>
 <li>按表分发策略</li>
 <li>worker线程维护库名+表名 + 冲突 (该线程修改这个表的事物数目)</li>
@@ -156,9 +153,7 @@
 <li>如果只跟一个 worker 冲突，coordinator 线程就会把这个事务分配给这个存在冲突关系的 worker</li>
 <li>不足 如果碰到热点表，比如所有的更新事务都会涉及到某一个表的时候，所有事务都会被分配到同一个 worker 中，就变成单线程复制了。</li>
 </ul>
-
-<h4>按行分发策略</h4>
-
+<h4><a id="%E6%8C%89%E8%A1%8C%E5%88%86%E5%8F%91%E7%AD%96%E7%95%A5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>按行分发策略</h4>
 <ul>
 <li>如果两个事务没有更新相同的行，它们在备库上可以并行执行。显然，这个模式要求 binlog 格式必须是 row。</li>
 <li>每个worker的hash表的key是库名 + 表名 + 唯一键的名字 + 唯一的键的值</li>
@@ -169,15 +164,11 @@
 <li>耗费内存。比如一个语句要删除 100 万行数据，这时候 hash 表就要记录 100 万个项。</li>
 <li>耗费 CPU。解析 binlog，然后计算 hash 值，对于大事务，这个成本还是很高的。</li>
 </ul>
-
-<h4>社区并行复制策略</h4>
-
+<h4><a id="%E7%A4%BE%E5%8C%BA%E5%B9%B6%E8%A1%8C%E5%A4%8D%E5%88%B6%E7%AD%96%E7%95%A5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>社区并行复制策略</h4>
 <ul>
 <li>按库分发</li>
 </ul>
-
-<h4>maradb</h4>
-
+<h4><a id="maradb" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>maradb</h4>
 <ul>
 <li>利用特性</li>
 <li>能够在同一组里提交的事务，一定不会修改同一行；</li>
@@ -188,9 +179,7 @@
 <li>传到备库应用的时候，相同 commit_id 的事务分发到多个 worker 执行；</li>
 <li>这一组全部执行完成后，coordinator 再去取下一批。</li>
 </ul>
-
-<h4>mysql5.7并行复制策略</h4>
-
+<h4><a id="mysql5-7%E5%B9%B6%E8%A1%8C%E5%A4%8D%E5%88%B6%E7%AD%96%E7%95%A5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>mysql5.7并行复制策略</h4>
 <ul>
 <li>LOGICAL_CLOCK</li>
 <li>同时处于 prepare 状态的事务，在备库执行时是可以并行的；</li>
@@ -229,29 +218,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

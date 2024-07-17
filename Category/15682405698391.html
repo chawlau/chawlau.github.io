@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,36 +139,27 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>存储结构</h4>
-
+                    <h4><a id="%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>存储结构</h4>
 <ul>
-<li><img src="media/15682405698391/112d7669450e3968e63e9de524ab13b7.jpg" alt="112d7669450e3968e63e9de524ab13b7"/></li>
+<li><img src="media/15682405698391/112d7669450e3968e63e9de524ab13b7.jpg" alt="112d7669450e3968e63e9de524ab13b7" /></li>
 <li>一个表空间包括了一个或多个段，一个段包括了一个或多个区，一个区包括了多个页，而一个页中可以有多行记录</li>
 <li>区大小是64*16KB</li>
 <li>创建一张表时会创建一个表段，创建一个索引时会创建一个索引段</li>
 <li>表空间从管理上可以划分为系统表空间、用户表空间、撤销表空间、临时表空间等</li>
 </ul>
-
-<h4>数据页结构</h4>
-
-<p><img src="media/15682405698391/9490bd9641f6a9be208a6d6b2d1b1353.jpg" alt="9490bd9641f6a9be208a6d6b2d1b1353"/></p>
-
+<h4><a id="%E6%95%B0%E6%8D%AE%E9%A1%B5%E7%BB%93%E6%9E%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>数据页结构</h4>
+<p><img src="media/15682405698391/9490bd9641f6a9be208a6d6b2d1b1353.jpg" alt="9490bd9641f6a9be208a6d6b2d1b1353" /></p>
 <ul>
 <li>文件头中有两个字段，分别是 FIL_PAGE_PREV 和 FIL_PAGE_NEXT，它们的作用相当于指针，分别指向上一个数据页和下一个数据页。连接起来的页相当于一个双向的链表</li>
 <li>数据页之间不需要是物理上的连续，而是逻辑上的连续</li>
 <li>数据页内数据的物理存放顺序与索引顺序是一致的</li>
 </ul>
-
-<h4>数据页检索</h4>
-
-<p><img src="media/15682405698391/ccfaffc92b9414db3fe68d2ad9df2577.jpg" alt="ccfaffc92b9414db3fe68d2ad9df2577"/></p>
-
+<h4><a id="%E6%95%B0%E6%8D%AE%E9%A1%B5%E6%A3%80%E7%B4%A2" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>数据页检索</h4>
+<p><img src="media/15682405698391/ccfaffc92b9414db3fe68d2ad9df2577.jpg" alt="ccfaffc92b9414db3fe68d2ad9df2577" /></p>
 <ul>
 <li>页目录，它起到了记录的索引作用，因为在页中，记录是以单向链表的形式进行存储的。单向链表的特点就是插入、删除非常方便，但是检索效率不高，最差的情况下需要遍历链表上的所有节点才能完成检索，因此在页目录中提供了二分查找的方式，用来提高记录的检索效率</li>
 </ul>
-
-<h4>查询成本</h4>
-
+<h4><a id="%E6%9F%A5%E8%AF%A2%E6%88%90%E6%9C%AC" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>查询成本</h4>
 <ul>
 <li>last_query_cost 需要的数据页面</li>
 <li></li>
@@ -194,29 +185,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

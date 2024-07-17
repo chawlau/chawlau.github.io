@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,37 +139,28 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>join</h4>
-
+                    <h4><a id="join" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>join</h4>
 <ul>
-<li> join 语句执行过程中，驱动表是走全表扫描，而被驱动表是走树搜索</li>
+<li>join 语句执行过程中，驱动表是走全表扫描，而被驱动表是走树搜索</li>
 </ul>
-
-<h4>join结论</h4>
-
+<h4><a id="join%E7%BB%93%E8%AE%BA" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>join结论</h4>
 <ul>
 <li>使用 join 语句，性能比强行拆成多个单表执行 SQL 语句的性能要好；</li>
 <li>如果使用 join 语句的话，需要让小表做驱动表。</li>
 </ul>
-
-<h4>BNL</h4>
-
+<h4><a id="bnl" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>BNL</h4>
 <ul>
-<li>把表 t1 的数据读入线程内存 join_buffer 中，由于我们这个语句中写的是 select *，因此是把整个表 t1 放入了内存；<br/>
+<li>把表 t1 的数据读入线程内存 join_buffer 中，由于我们这个语句中写的是 select *，因此是把整个表 t1 放入了内存；<br />
 扫描表 t2，把表 t2 中的每一行取出来，跟 join_buffer 中的数据做对比，满足 join 条件的，作为结果集的一部分返回。</li>
-<li><img src="media/15488183158298/15ae4f17c46bf71e8349a8f2ef70d573.jpg" alt="15ae4f17c46bf71e8349a8f2ef70d573"/></li>
+<li><img src="media/15488183158298/15ae4f17c46bf71e8349a8f2ef70d573.jpg" alt="15ae4f17c46bf71e8349a8f2ef70d573" /></li>
 <li>join_buffer_szie设置大一些</li>
 </ul>
-
-<h4>join语句判断</h4>
-
+<h4><a id="join%E8%AF%AD%E5%8F%A5%E5%88%A4%E6%96%AD" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>join语句判断</h4>
 <ul>
 <li>如果可以使用 Index Nested-Loop Join 算法，也就是说可以用上被驱动表上的索引，其实是没问题的；</li>
 <li>如果使用 Block Nested-Loop Join 算法，扫描行数就会过多。尤其是在大表上的 join 操作，这样可能要扫描被驱动表很多次，会占用大量的系统资源。所以这种 join 尽量不要用</li>
 </ul>
-
-<h4>小表</h4>
-
+<h4><a id="%E5%B0%8F%E8%A1%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>小表</h4>
 <ul>
 <li>在决定哪个表做驱动表的时候，应该是两个表按照各自的条件过滤，过滤完成之后，计算参与 join 的各个字段的总数据量，数据量小的那个表，就是“小表”，应该作为驱动表。</li>
 <li></li>
@@ -195,29 +186,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

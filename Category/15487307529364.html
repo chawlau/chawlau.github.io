@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,16 +139,13 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>概念</h4>
-
+                    <h4><a id="%E6%A6%82%E5%BF%B5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>概念</h4>
 <ul>
 <li>PVC 可以理解为持久化存储的“接口”，它提供了对某种持久化存储的描述，但不提供具体的实现；而这个持久化存储的实现部分则由 PV 负责完成。</li>
 <li>专门处理持久化存储的控制器，叫作 Volume Controller。</li>
-<li> PersistentVolumeController</li>
+<li>PersistentVolumeController</li>
 </ul>
-
-<h4>两阶段处理</h4>
-
+<h4><a id="%E4%B8%A4%E9%98%B6%E6%AE%B5%E5%A4%84%E7%90%86" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>两阶段处理</h4>
 <ul>
 <li>为虚拟机挂载远程磁盘的操作 Attach</li>
 <li>磁盘设备格式化并挂载到 Volume 宿主机目录的操作，对应的正是“两阶段处理”的第二个阶段，我们一般称为：Mount</li>
@@ -157,42 +154,31 @@
 <li>对于“第一阶段”（Attach），Kubernetes 提供的可用参数是 nodeName，即宿主机的名字。</li>
 <li>而对于“第二阶段”（Mount），Kubernetes 提供的可用参数是 dir，即 Volume 的宿主机目录。</li>
 </ul>
-
-<h4>操作原理</h4>
-
+<h4><a id="%E6%93%8D%E4%BD%9C%E5%8E%9F%E7%90%86" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>操作原理</h4>
 <ul>
 <li>第一阶段的 Attach（以及 Dettach）操作，是由 Volume Controller 负责维护的，这个控制循环的名字叫作：AttachDetachController。</li>
 <li>第二阶段的 Mount（以及 Unmount）操作，发生在 Pod 对应的宿主机上，是 kubelet 组件的一部分。这个控制循环的名字，叫作VolumeManagerReconciler</li>
 </ul>
-
-<h4>StorageClass</h4>
-
+<h4><a id="storageclass" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>StorageClass</h4>
 <ul>
 <li>第一，PV 的属性。比如，存储类型、Volume 的大小等等。</li>
-<li>第二，创建这种 PV 需要用到的存储插件。比如，Ceph 等等。
-<img src="media/15487307529364/e8b2586e4e14eb54adf8ff95c5c18cd9.png" alt="e8b2586e4e14eb54adf8ff95c5c18cd9"/></li>
+<li>第二，创建这种 PV 需要用到的存储插件。比如，Ceph 等等。<br />
+<img src="media/15487307529364/e8b2586e4e14eb54adf8ff95c5c18cd9.png" alt="e8b2586e4e14eb54adf8ff95c5c18cd9" /></li>
 </ul>
-
-<h4>PV和PVC绑定关系</h4>
-
-<p><img src="media/15487307529364/15487329114289.jpg" alt=""/><br/>
-<img src="media/15487307529364/15487329471814.jpg" alt=""/></p>
-
+<h4><a id="pv%E5%92%8Cpvc%E7%BB%91%E5%AE%9A%E5%85%B3%E7%B3%BB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>PV和PVC绑定关系</h4>
+<p><img src="media/15487307529364/15487329114289.jpg" alt="" /><br />
+<img src="media/15487307529364/15487329471814.jpg" alt="" /></p>
 <ul>
 <li>所谓将一个 PV 与 PVC 进行“绑定”，其实就是将这个 PV 对象的名字，填在了 PVC 对象的 spec.volumeName 字段上。</li>
 </ul>
-
-<h4>Local Persistent Volume</h4>
-
+<h4><a id="local-persistent-volume" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Local Persistent Volume</h4>
 <ul>
 <li>本地磁盘抽象成PV</li>
 <li>保证Pod始终正确的调度到所请求的Local Persistent Volume</li>
 <li>延迟绑定</li>
 <li>正是由于需要使用“延迟绑定”这个特性，Local Persistent Volume 目前还不能支持 Dynamic Provisioning</li>
 </ul>
-
-<h4>ETCD原理</h4>
-
+<h4><a id="etcd%E5%8E%9F%E7%90%86" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>ETCD原理</h4>
 <ul>
 <li><a href="https://www.infoq.cn/article/etcd-interpretation-application-scenario-implement-principle">https://www.infoq.cn/article/etcd-interpretation-application-scenario-implement-principle</a></li>
 <li></li>
@@ -218,29 +204,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

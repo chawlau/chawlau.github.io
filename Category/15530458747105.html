@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,16 +139,13 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>特殊进程</h4>
-
+                    <h4><a id="%E7%89%B9%E6%AE%8A%E8%BF%9B%E7%A8%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>特殊进程</h4>
 <ul>
 <li>0 号进程为 idle 进程，这也是系统创建的第一个进程，它在初始化 1 号和 2 号进程后，演变为空闲任务。当 CPU 上没有其他任务执行时，就会运行它。</li>
 <li>1 号进程为 init 进程，通常是 systemd 进程，在用户态运行，用来管理其他用户态进程。</li>
 <li>2 号进程为 kthreadd 进程，在内核态运行，用来管理内核线程。</li>
 </ul>
-
-<h4>内核线程</h4>
-
+<h4><a id="%E5%86%85%E6%A0%B8%E7%BA%BF%E7%A8%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>内核线程</h4>
 <ul>
 <li>kswapd0：用于内存回收。在 Swap 变高 案例中，我曾介绍过它的工作原理。</li>
 <li>kworker：用于执行内核工作队列，分为绑定 CPU （名称格式为 kworker/CPU86330）和未绑定 CPU（名称格式为 kworker/uPOOL86330）两类。</li>
@@ -156,25 +153,19 @@
 <li>jbd2/sda1-8：jbd 是 Journaling Block Device 的缩写，用来为文件系统提供日志功能，以保证数据的完整性；名称中的 sda1-8，表示磁盘分区名称和设备号。每个使用了 ext4 文件系统的磁盘分区，都会有一个 jbd2 内核线程。</li>
 <li>pdflush：用于将内存中的脏页（被修改过，但还未写入磁盘的文件页）写入磁盘（已经在 3.10 中合并入了 kworker 中）</li>
 </ul>
-
-<h4>实验</h4>
-
+<h4><a id="%E5%AE%9E%E9%AA%8C" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>实验</h4>
 <ul>
-<li>perf record -a -g -p 9 -- sleep 30
-<img src="media/15530458747105/15530482433793.jpg" alt="" style="width:1166px;"/></li>
+<li>perf record -a -g -p 9 -- sleep 30<br />
+<img src="media/15530458747105/15530482433793.jpg" alt="" style="width:1166px;" /></li>
 </ul>
-
-<h4>ksoftirqd调用流程</h4>
-
+<h4><a id="ksoftirqd%E8%B0%83%E7%94%A8%E6%B5%81%E7%A8%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>ksoftirqd调用流程</h4>
 <ul>
 <li>net_rx_action 和 netif_receive_skb，表明这是接收网络包（rx 表示 receive）。</li>
 <li>br_handle_frame ，表明网络包经过了网桥（br 表示 bridge）。</li>
 <li>br_nf_pre_routing ，表明在网桥上执行了 netfilter 的 PREROUTING（nf 表示 netfilter）。而我们已经知道 PREROUTING 主要用来执行 DNAT，所以可以猜测这里有 DNAT 发生。</li>
 <li>br_pass_frame_up，表明网桥处理后，再交给桥接的其他桥接网卡进一步处理。比如，在新的网卡上接收网络包、执行 netfilter 过滤规则等等。</li>
 </ul>
-
-<h4>生成火焰图</h4>
-
+<h4><a id="%E7%94%9F%E6%88%90%E7%81%AB%E7%84%B0%E5%9B%BE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>生成火焰图</h4>
 <ul>
 <li>perf script -i /root/perf.data | ./stackcollapse-perf.pl --all |  ./flamegraph.pl &gt; ksoftirqd.svg</li>
 </ul>
@@ -199,29 +190,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

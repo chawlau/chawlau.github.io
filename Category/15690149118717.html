@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -145,83 +145,63 @@
 <li>集群的配置文件与集群运维故障、失败转移讲解</li>
 <li>高级插件的使用</li>
 </ul>
-
-<h4>集群架构模式</h4>
-
+<h4><a id="%E9%9B%86%E7%BE%A4%E6%9E%B6%E6%9E%84%E6%A8%A1%E5%BC%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>集群架构模式</h4>
 <ul>
 <li>主备模式：实现 Rabbitmqp 的高可用集群，一般在并发和数据量不高的情况下，这种模型非常的好用且简单。主备模式也称之为 Warren 模式</li>
-<li><img src="media/15690149118717/15690156274138.jpg" alt="" style="width:942px;"/></li>
+<li><img src="media/15690149118717/15690156274138.jpg" alt="" style="width:942px;" /></li>
 </ul>
-
-<h4>HAProxy</h4>
-
+<h4><a id="haproxy" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>HAProxy</h4>
 <ul>
-<li><img src="media/15690149118717/15690157084976.jpg" alt="" style="width:972px;"/>
+<li><img src="media/15690149118717/15690157084976.jpg" alt="" style="width:972px;" /><br />
 备注：rabbitmq 集群节点配置#inter 每隔五秒对 mq 集群做健康检查，2 次正确证明服务器可用，2 次失败证明服务器不可用，并且配置主备机</li>
 </ul>
-
-<h4>远程模式</h4>
-
+<h4><a id="%E8%BF%9C%E7%A8%8B%E6%A8%A1%E5%BC%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>远程模式</h4>
 <ul>
 <li>远程模式：远程模式可以实现双活的一种模式，简称 Shovel 模式，所谓 Shovel 就是我们可以把消息进行不同数据中心的复制工作，我们可以跨地域的让俩个 mq 集群互联</li>
 <li>远程模式：远距离通信和复制，所谓 Shovel 就是我们可以把消息进行不同数据中心的复制工作，我们可以跨地域的让俩个 mq 集群互联。我们们下面看一下 Shovel 架构模型</li>
-<li><img src="media/15690149118717/15690158773792.jpg" alt="" style="width:1151px;"/></li>
-<li><img src="media/15690149118717/15690159808973.jpg" alt="" style="width:1006px;"/></li>
-<li>rabbitmq-plugins enable amqp_client </li>
-<li>rabbitmq-plugins enable rabbitma shovel </li>
-<li><img src="media/15690149118717/15690160849763.jpg" alt="" style="width:1170px;"/></li>
+<li><img src="media/15690149118717/15690158773792.jpg" alt="" style="width:1151px;" /></li>
+<li><img src="media/15690149118717/15690159808973.jpg" alt="" style="width:1006px;" /></li>
+<li>rabbitmq-plugins enable amqp_client</li>
+<li>rabbitmq-plugins enable rabbitma shovel</li>
+<li><img src="media/15690149118717/15690160849763.jpg" alt="" style="width:1170px;" /></li>
 </ul>
-
-<h4>镜像模式</h4>
-
+<h4><a id="%E9%95%9C%E5%83%8F%E6%A8%A1%E5%BC%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>镜像模式</h4>
 <ul>
 <li>镜像模式：集群模式非常经典的就是 Mirr 镜像模式，保证 100%数据不丢失，在实际工作中也是用的最多的。并且实现集群非常的简单，一般互联网大厂都会构建这种镜像集群模式</li>
 <li>mirror镜像队列，目的是为了保证 rabbitmq 数据的高可靠性解决方案，主要就是实现数据的同步，一般来讲是 2-3 个节点实现数据同步（对于 100%数据可靠性解决方案一般是 3 节点）集群架构如下</li>
-<li><img src="media/15690149118717/15690162262774.jpg" alt="" style="width:1199px;"/></li>
+<li><img src="media/15690149118717/15690162262774.jpg" alt="" style="width:1199px;" /></li>
 </ul>
-
-<h4>多活模式</h4>
-
+<h4><a id="%E5%A4%9A%E6%B4%BB%E6%A8%A1%E5%BC%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>多活模式</h4>
 <ul>
 <li>多活模式：这种模式也是实现异地数据复制的主流模式，因为 Shovel 模式配置比较复杂，所以一般来说实现异地集群都是使用这种双活或者多活模型来取实现的。这种模型需要依赖 rabbitmg 的 federation 插件，可以实现持续的可靠的 AMQP 数据通信，多活模式在实际配置与应用非常的简单</li>
-<li><img src="media/15690149118717/15690165040414.jpg" alt="" style="width:1166px;"/></li>
+<li><img src="media/15690149118717/15690165040414.jpg" alt="" style="width:1166px;" /></li>
 <li>Federation 插件是一个不需要构建 Cluster，而在 Brokers 之间传输消息的高性能插件，Federation 插件可以在 Brokers 或者 Cluster 之间传输消息，连接的双方可以使用不同的 users 和 virtual hosts，双方也可以使用版本不同的 Rabbitmq 和 Erlang。Federation 插件使用 AMQP 协议通讯，可以接受不连续的传输</li>
-<li><img src="media/15690149118717/15690166447455.jpg" alt="" style="width:1076px;"/></li>
+<li><img src="media/15690149118717/15690166447455.jpg" alt="" style="width:1076px;" /></li>
 <li>Federation Exchanges，可以看成 Downstream 从 Upstream 主动拉取消息，但并不是拉取所有消息，必须是在 Downstream 上已经明确定义 Bindings 关系的 Exchange，也就是有实际的物理 Queue 来接收消息，才会从 Upstream 拉取消息到 Downstream。使用 AMQP 协议实施代理间通信，Downstream 会将绑定关系 组合在一起,绑定/解除绑定命令将发送到∪ pstream 交换机。因此，Federation Exchange 只接收具有订阅的消消</li>
 </ul>
-
-<h4>镜像模式构建</h4>
-
+<h4><a id="%E9%95%9C%E5%83%8F%E6%A8%A1%E5%BC%8F%E6%9E%84%E5%BB%BA" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>镜像模式构建</h4>
 <ul>
-<li><img src="media/15690149118717/15690169031673.jpg" alt="" style="width:1171px;"/></li>
+<li><img src="media/15690149118717/15690169031673.jpg" alt="" style="width:1171px;" /></li>
 </ul>
-
-<h4>Haproxy</h4>
-
+<h4><a id="haproxy" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Haproxy</h4>
 <ul>
-<li>Haproxy 借助于 OS 上几种常见的技术来实现性能的最大化 </li>
+<li>Haproxy 借助于 OS 上几种常见的技术来实现性能的最大化</li>
 <li>单进程、事件驱动模型显著降低了上下文切换的开销及内存占用</li>
 <li>在任何可用的情况下，单缓冲（(single buffering）机制能以不复制任何数据的方式完成读写操作，这会节约大量的 CPU 时钟周期及内存带宽</li>
 <li>3 借助于 Linux2.6 (&gt; =2.6.27.19) 上的 splice 系统调用，Haproxy 可以实现零复制转发（Zero- copy forwarding），在 Linux3.5 及以上的 OS 中还可以实现零复制启动（zero- starting)</li>
 <li>4 内存分配器在固定大小的内存池中可实现即时内存分配，这能够显著减少创建个会话的时长</li>
 <li>5 树型存储：侧重于使用作者多年前开发的弹性二叉树，实现了以 O (og (N）的低开销来保持计时器命令、保持运行队列命令及管理轮询及最少连接队列</li>
 </ul>
-
-<h4>KeepAlived</h4>
-
+<h4><a id="keepalived" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>KeepAlived</h4>
 <ul>
 <li>Keepalived 软件主要是通过 VRRP 协议实现高可用功能的。VRRP 是 Virtual Router Redundancy Protocol（虚拟路由器元余协议）的缩写 VRRP 出现的目的就是为了解决静态路由单点故障问题的，它能够保证当个别节点宕机时，整个网络可以不间断地运行所以，Keepalived-方面具有配置管理∨VS 的功能，同时还具有对 LVS 下面节点进行健康检查的功能，另一方面也可实现系统网络服务的高可用功能</li>
 </ul>
-
-<h5>功能</h5>
-
-<p>Keepalived 服务的三个重要功能<br/>
-管理∨S 负载妁衡软件<br/>
-实现 VS 集群节点的健康检査中<br/>
+<h5><a id="%E5%8A%9F%E8%83%BD" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>功能</h5>
+<p>Keepalived 服务的三个重要功能<br />
+管理∨S 负载妁衡软件<br />
+实现 VS 集群节点的健康检査中<br />
 作为系统网络服务的高可用性（failover)</p>
-
-<h4>集群配置文件</h4>
-
+<h4><a id="%E9%9B%86%E7%BE%A4%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>集群配置文件</h4>
 <ul>
 <li>Tcp_ listerners 设置 rabbimg 的监听端口，默认为【5672</li>
 <li>disk free limit 磁盘低水位线，若磁盘容量低于指定值则停止接收数据，默</li>
@@ -232,20 +212,16 @@
 <li>force fine_ statlstlcs，该参数属于 rabbimg_ management，若为 true 则进行精细化的统计，但会影响性能</li>
 <li>集群节点模式： Disk为磁盘模式存储/Ramn为内存模式存储</li>
 </ul>
-
-<h4>集群恢复和故障转移</h4>
-
+<h4><a id="%E9%9B%86%E7%BE%A4%E6%81%A2%E5%A4%8D%E5%92%8C%E6%95%85%E9%9A%9C%E8%BD%AC%E7%A7%BB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>集群恢复和故障转移</h4>
 <ul>
-<li><img src="media/15690149118717/15690206360764.jpg" alt="" style="width:1216px;"/></li>
-<li><img src="media/15690149118717/15690206459784.jpg" alt="" style="width:1287px;"/></li>
-<li><img src="media/15690149118717/15690206702174.jpg" alt="" style="width:1266px;"/></li>
-<li><img src="media/15690149118717/15690207258964.jpg" alt="" style="width:1325px;"/></li>
-<li><img src="media/15690149118717/15690208366480.jpg" alt="" style="width:1199px;"/></li>
-<li><img src="media/15690149118717/15690209799298.jpg" alt="" style="width:1303px;"/></li>
+<li><img src="media/15690149118717/15690206360764.jpg" alt="" style="width:1216px;" /></li>
+<li><img src="media/15690149118717/15690206459784.jpg" alt="" style="width:1287px;" /></li>
+<li><img src="media/15690149118717/15690206702174.jpg" alt="" style="width:1266px;" /></li>
+<li><img src="media/15690149118717/15690207258964.jpg" alt="" style="width:1325px;" /></li>
+<li><img src="media/15690149118717/15690208366480.jpg" alt="" style="width:1199px;" /></li>
+<li><img src="media/15690149118717/15690209799298.jpg" alt="" style="width:1303px;" /></li>
 </ul>
-
-<h4>延迟插件</h4>
-
+<h4><a id="%E5%BB%B6%E8%BF%9F%E6%8F%92%E4%BB%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>延迟插件</h4>
 <ul>
 <li>延迟队列可以做什么事情？</li>
 <li>比如消息的延迟推送、定时任务（消息）的执行。包括一些消息重试策略的配合使用，以及用于业务削峰限流降级的异步延迟消息机制，都是延迟队列的实际应用场景</li>
@@ -272,29 +248,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

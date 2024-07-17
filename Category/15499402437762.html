@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,24 +139,19 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>关系数据库的弱点</h4>
-
+                    <h4><a id="%E5%85%B3%E7%B3%BB%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%BC%B1%E7%82%B9" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>关系数据库的弱点</h4>
 <ul>
 <li>关系数据库存储的是行记录，无法存储数据结构</li>
 <li>关系数据库的 schema 扩展很不方便</li>
 <li>关系数据库在大数据场景下 I/O 较高</li>
 <li>关系数据库的全文搜索功能比较弱</li>
 </ul>
-
-<h4>K-V存储</h4>
-
+<h4><a id="k-v%E5%AD%98%E5%82%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>K-V存储</h4>
 <ul>
 <li>解决关系数据库无法存储数据结构的问题</li>
 <li>Redis并不支持完整的ACID事务</li>
 </ul>
-
-<h4>文档数据库</h4>
-
+<h4><a id="%E6%96%87%E6%A1%A3%E6%95%B0%E6%8D%AE%E5%BA%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>文档数据库</h4>
 <ul>
 <li>解决关系数据库强 schema 约束的问题</li>
 <li>新增字段简单</li>
@@ -166,17 +161,13 @@
 <li>不支持事务</li>
 <li>无法实现join操作</li>
 </ul>
-
-<h4>列式数据库</h4>
-
+<h4><a id="%E5%88%97%E5%BC%8F%E6%95%B0%E6%8D%AE%E5%BA%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>列式数据库</h4>
 <ul>
 <li>业务同时读取多个列时效率高，因为这些列都是按行存储在一起的，一次磁盘操作就能够把一行数据中的各个列都读取到内存中。</li>
 <li>能够一次性完成对一行中的多个列的写操作，保证了针对行数据写操作的原子性和一致性；否则如果采用列存储，可能会出现某次写操作，有的列成功了，有的列失败了，导致数据不一致</li>
 <li>离线的大数据分析和统计场景中，因为这种场景主要是针对部分列单列进行操作，且数据写入后就无须再更新删除。</li>
 </ul>
-
-<h4>全文搜索引擎</h4>
-
+<h4><a id="%E5%85%A8%E6%96%87%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>全文搜索引擎</h4>
 <ul>
 <li>全文搜索的条件可以随意排列组合，如果通过索引来满足，则索引的数量会非常多。</li>
 <li>全文搜索的模糊匹配方式，索引无法满足，只能用 like 查询，而 like 查询是整表扫描，效率非常低。</li>
@@ -205,29 +196,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

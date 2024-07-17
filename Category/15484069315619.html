@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,8 +139,7 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>过期读优化方案</h4>
-
+                    <h4><a id="%E8%BF%87%E6%9C%9F%E8%AF%BB%E4%BC%98%E5%8C%96%E6%96%B9%E6%A1%88" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>过期读优化方案</h4>
 <ul>
 <li>强制走主库方案；</li>
 <li>sleep 方案；</li>
@@ -149,49 +148,37 @@
 <li>等主库位点方案；</li>
 <li>等 GTID 方案。</li>
 </ul>
-
-<h4>对比位点</h4>
-
+<h4><a id="%E5%AF%B9%E6%AF%94%E4%BD%8D%E7%82%B9" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>对比位点</h4>
 <ul>
 <li>Master_Log_File 和 Relay_Master_Log_File、Read_Master_Log_Pos 和 Exec_Master_Log_Pos</li>
 </ul>
-
-<h4>GTID 集合确保主备无延迟</h4>
-
+<h4><a id="gtid%E9%9B%86%E5%90%88%E7%A1%AE%E4%BF%9D%E4%B8%BB%E5%A4%87%E6%97%A0%E5%BB%B6%E8%BF%9F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>GTID 集合确保主备无延迟</h4>
 <ul>
 <li>Auto_Position=1 ，表示这对主备关系使用了 GTID 协议。</li>
 <li>Retrieved_Gtid_Set，是备库收到的所有日志的 GTID 集合；</li>
 <li>Executed_Gtid_Set，是备库所有已经执行完成的 GTID 集合。</li>
 </ul>
-
-<h4>semi-sync</h4>
-
+<h4><a id="semi-sync" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>semi-sync</h4>
 <ul>
 <li>半同步设计</li>
 <li>事务提交的时候，主库把 binlog 发给从库；</li>
 <li>从库收到 binlog 以后，发回给主库一个 ack，表示收到了；</li>
 <li>主库收到这个 ack 以后，才能给客户端返回“事务完成”的确认。</li>
 </ul>
-
-<h4>semi-sync存在的问题</h4>
-
+<h4><a id="semi-sync%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>semi-sync存在的问题</h4>
 <ul>
 <li>一主多从的时候，在某些从库执行查询请求会存在过期读的现象；</li>
 <li>在持续延迟的情况下，可能出现过度等待的问题。</li>
 </ul>
-
-<h4>等待位点方案</h4>
-
+<h4><a id="%E7%AD%89%E5%BE%85%E4%BD%8D%E7%82%B9%E6%96%B9%E6%A1%88" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>等待位点方案</h4>
 <ul>
 <li>trx1 事务更新完成后，马上执行 show master status 得到当前主库执行到的 File 和 Position；</li>
 <li>选定一个从库执行查询语句；</li>
 <li>在从库上执行 select master_pos_wait(File, Position, 1)；</li>
 <li>如果返回值是 &gt;=0 的正整数，则在这个从库执行查询语句；如果 1 秒内 master_pos_wait 返回一个大于等于 0 的整数，就确保了从库上执行的这个查询结果一定包含了 trx1 的数据。</li>
-<li>否则，到主库执行查询语句。 </li>
+<li>否则，到主库执行查询语句。</li>
 </ul>
-
-<h4>等待gtid方案</h4>
-
+<h4><a id="%E7%AD%89%E5%BE%85gtid%E6%96%B9%E6%A1%88" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>等待gtid方案</h4>
 <ul>
 <li>trx1 事务更新完成后，从返回包直接获取这个事务的 GTID，记为 gtid1；</li>
 <li>选定一个从库执行查询语句；</li>
@@ -199,11 +186,9 @@
 <li>如果返回值是 0，则在这个从库执行查询语句；</li>
 <li>否则，到主库执行查询语句。</li>
 </ul>
-
-<h4>事物更新完直接获取GTID</h4>
-
+<h4><a id="%E4%BA%8B%E7%89%A9%E6%9B%B4%E6%96%B0%E5%AE%8C%E7%9B%B4%E6%8E%A5%E8%8E%B7%E5%8F%96gtid" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>事物更新完直接获取GTID</h4>
 <ul>
-<li>参数 session_track_gtids 设置为 OWN_GTID，然后通过 API 接口mysql_session_track_get_first 从返回包解析出 GTID </li>
+<li>参数 session_track_gtids 设置为 OWN_GTID，然后通过 API 接口mysql_session_track_get_first 从返回包解析出 GTID</li>
 <li></li>
 </ul>
 
@@ -227,29 +212,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,23 +139,18 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>服务器控制</h4>
-
+                    <h4><a id="%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%8E%A7%E5%88%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>服务器控制</h4>
 <ul>
 <li>no_store：不允许缓存，用于某些变化非常频繁的数据，例如秒杀页面；</li>
 <li>no_cache：它的字面含义容易与 no_store 搞混，实际的意思并不是不允许缓存，而是可以缓存，但在使用之前必须要去服务器验证是否过期，是否有最新的版本；</li>
 <li>must-revalidate：又是一个和 no_cache 相似的词，它的意思是如果缓存不过期就可以继续使用，但过期了如果还想用就必须去服务器验证。</li>
-<li><img src="media/15636770588929/8a67535620ab9c7764560363f83982b2.png" alt="8a67535620ab9c7764560363f83982b2"/></li>
+<li><img src="media/15636770588929/8a67535620ab9c7764560363f83982b2.png" alt="8a67535620ab9c7764560363f83982b2" /></li>
 </ul>
-
-<h4>cache-control</h4>
-
+<h4><a id="cache-control" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>cache-control</h4>
 <ul>
 <li>客户端和服务端都有</li>
 </ul>
-
-<h4>控制缓存</h4>
-
+<h4><a id="%E6%8E%A7%E5%88%B6%E7%BC%93%E5%AD%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>控制缓存</h4>
 <ul>
 <li>client if-Modified-Since和If-None-Match</li>
 <li>server Last-modified和ETag</li>
@@ -163,9 +158,7 @@
 <li>ETag是实体标签（Entity Tag）的缩写，是资源的一个唯一标识，主要是用来解决修改时间无法准确区分文件变化的问题</li>
 <li>强 ETag 要求资源在字节级别必须完全相符，弱 ETag 在值前有个“W/”标记，只要求资源在语义上没有变化，但内部可能会有部分发生了改变</li>
 </ul>
-
-<h4>注意</h4>
-
+<h4><a id="%E6%B3%A8%E6%84%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>注意</h4>
 <ul>
 <li>no_cache等同于max-age=0,must-revalidate</li>
 <li>如果只有last-modified，没有Cache-Control和Expires，使用启发算法计算缓存时间</li>
@@ -192,29 +185,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

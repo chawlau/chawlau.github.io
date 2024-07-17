@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,124 +139,89 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>fPIC</h4>
-
+                    <h4><a id="fpic" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>fPIC</h4>
 <ul>
 <li>把指令中那些需要被修改的部分分离出来，跟数据部分放在一起，这样指令部分就可以保持不变，而数据部分可以在每个进程中拥有一个副本。这种方案就是目前被称为地址无关代码（PIC, Position independent Code）的技术。</li>
 <li>动态链接模块被装载映射至虚拟空间后，指令部分是在多个进程之间共享的，由于装载时重定位的方法需要修改指令，所以没有办法做到同一份指令被多个进程共享</li>
 </ul>
-
-<h4>共享对象模块的地址引用</h4>
-
+<h4><a id="%E5%85%B1%E4%BA%AB%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9D%97%E7%9A%84%E5%9C%B0%E5%9D%80%E5%BC%95%E7%94%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>共享对象模块的地址引用</h4>
 <ul>
 <li>模块内部引用和模块外部引用</li>
 <li>按照不同的引用方式又可以分为指令引用和数据访问</li>
 </ul>
-
-<h4>动态库访问原理</h4>
-
-<p><img src="media/15602501379556/15684206512381.jpg" alt="" style="width:862px;"/></p>
-
-<h4>依赖库</h4>
-
+<h4><a id="%E5%8A%A8%E6%80%81%E5%BA%93%E8%AE%BF%E9%97%AE%E5%8E%9F%E7%90%86" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>动态库访问原理</h4>
+<p><img src="media/15602501379556/15684206512381.jpg" alt="" style="width:862px;" /></p>
+<h4><a id="%E4%BE%9D%E8%B5%96%E5%BA%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>依赖库</h4>
 <ul>
 <li>VDSO(Virtual Dynamically-linked Shared Object)</li>
 <li>内核虚拟共享对象linux-vdso.so.1</li>
 <li>它将内核态的调用映射到用户态的地址空间中, 使得调用开销更小, 路径更好.</li>
 <li>较新的内核提供了进程随机地址化功能, linux-vdso.so.1的地址每次cat /proc/self/maps都会变化</li>
 </ul>
-
-<h4>引用外部函数</h4>
-
+<h4><a id="%E5%BC%95%E7%94%A8%E5%A4%96%E9%83%A8%E5%87%BD%E6%95%B0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>引用外部函数</h4>
 <ul>
 <li>如果是在静态模块中，按照静态链接的规则重定位</li>
 <li>如果是动态共享对象中的函数，链接器将这个符号的引用标记为一个动态链接的符号</li>
 <li>链接器解析的时候发现动态符号，可以做动态引用</li>
 </ul>
-
-<h4>装载时重定位</h4>
-
+<h4><a id="%E8%A3%85%E8%BD%BD%E6%97%B6%E9%87%8D%E5%AE%9A%E4%BD%8D" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>装载时重定位</h4>
 <ul>
 <li>基地址重置</li>
 </ul>
-
-<h4>引用方式</h4>
-
+<h4><a id="%E5%BC%95%E7%94%A8%E6%96%B9%E5%BC%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>引用方式</h4>
 <ul>
 <li>模块内部函数跳转</li>
 <li>模块内部数据访问</li>
 <li>模块外部函数调用、跳转</li>
 <li>模块外部数据访问</li>
 </ul>
-
-<h4>模块内部跳转</h4>
-
+<h4><a id="%E6%A8%A1%E5%9D%97%E5%86%85%E9%83%A8%E8%B7%B3%E8%BD%AC" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>模块内部跳转</h4>
 <ul>
 <li>基于寄存器的相对调用，不需要重定位</li>
 </ul>
-
-<h4>模块内部数据访问</h4>
-
+<h4><a id="%E6%A8%A1%E5%9D%97%E5%86%85%E9%83%A8%E6%95%B0%E6%8D%AE%E8%AE%BF%E9%97%AE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>模块内部数据访问</h4>
 <ul>
 <li>获取PC寄存器的值，然后加上偏移量访问相应变量</li>
 </ul>
-
-<h4>模块外部数据访问</h4>
-
+<h4><a id="%E6%A8%A1%E5%9D%97%E5%A4%96%E9%83%A8%E6%95%B0%E6%8D%AE%E8%AE%BF%E9%97%AE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>模块外部数据访问</h4>
 <ul>
-<li><img src="media/15602501379556/15605664830807.jpg" alt="" style="width:592px;"/></li>
+<li><img src="media/15602501379556/15605664830807.jpg" alt="" style="width:592px;" /></li>
 </ul>
-
-<h4>模块间跳转</h4>
-
+<h4><a id="%E6%A8%A1%E5%9D%97%E9%97%B4%E8%B7%B3%E8%BD%AC" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>模块间跳转</h4>
 <ul>
 <li>通过Got中函数的相对位置跳转</li>
 </ul>
-
-<h4>共享模块全局变量</h4>
-
+<h4><a id="%E5%85%B1%E4%BA%AB%E6%A8%A1%E5%9D%97%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>共享模块全局变量</h4>
 <ul>
-<li>一个模块引用了定义在共享对象的全局变量的时候，全部当作其他模块引用处理
-<img src="media/15602501379556/15605672406780.jpg" alt="" style="width:385px;"/></li>
+<li>一个模块引用了定义在共享对象的全局变量的时候，全部当作其他模块引用处理<br />
+<img src="media/15602501379556/15605672406780.jpg" alt="" style="width:385px;" /></li>
 </ul>
-
-<h4>数据段地址无关性</h4>
-
+<h4><a id="%E6%95%B0%E6%8D%AE%E6%AE%B5%E5%9C%B0%E5%9D%80%E6%97%A0%E5%85%B3%E6%80%A7" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>数据段地址无关性</h4>
 <ul>
 <li>绝对地址引用，编译器和链接器产生重定位表，包含了类型的重定位入口</li>
 </ul>
-
-<h4>延迟绑定</h4>
-
+<h4><a id="%E5%BB%B6%E8%BF%9F%E7%BB%91%E5%AE%9A" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>延迟绑定</h4>
 <ul>
 <li>动态链接访问全局和静态数据需要GOT定位和间接跳转</li>
 <li>链接工作是在运行时完成</li>
 </ul>
-
-<h4>PLT原理</h4>
-
+<h4><a id="plt%E5%8E%9F%E7%90%86" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>PLT原理</h4>
 <ul>
 <li>函数符号引用在重定位表rel.plt的下标</li>
-<li>模块ID压栈
-<img src="media/15602501379556/15605680932671.jpg" alt="" style="width:547px;"/></li>
+<li>模块ID压栈<br />
+<img src="media/15602501379556/15605680932671.jpg" alt="" style="width:547px;" /></li>
 </ul>
-
-<h4>加载原理</h4>
-
+<h4><a id="%E5%8A%A0%E8%BD%BD%E5%8E%9F%E7%90%86" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>加载原理</h4>
 <ul>
 <li>读取可执行文件的头部，检查合法性</li>
 <li>从头部的header读取各个segment，映射到进程虚拟空间</li>
 </ul>
-
-<h4>动态符号表</h4>
-
+<h4><a id="%E5%8A%A8%E6%80%81%E7%AC%A6%E5%8F%B7%E8%A1%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>动态符号表</h4>
 <ul>
 <li>.dynsym</li>
 <li>.symtab 包含所有符号</li>
 </ul>
-
-<h4>装载时重定位</h4>
-
+<h4><a id="%E8%A3%85%E8%BD%BD%E6%97%B6%E9%87%8D%E5%AE%9A%E4%BD%8D" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>装载时重定位</h4>
 <ul>
 <li>.rel.dyn 数据，函数非-fPIC编译时也在回dyn中</li>
 <li>.rel.plt 函数引用</li>
@@ -282,29 +247,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

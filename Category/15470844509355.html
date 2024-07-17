@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,12 +139,9 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>k8s结构图</h4>
-
-<p><img src="media/15470844509355/8ee9f2fa987eccb490cfaa91c6484f67.png" alt="8ee9f2fa987eccb490cfaa91c6484f67"/></p>
-
-<h4>结构剖析</h4>
-
+                    <h4><a id="k8s%E7%BB%93%E6%9E%84%E5%9B%BE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>k8s结构图</h4>
+<p><img src="media/15470844509355/8ee9f2fa987eccb490cfaa91c6484f67.png" alt="8ee9f2fa987eccb490cfaa91c6484f67" /></p>
+<h4><a id="%E7%BB%93%E6%9E%84%E5%89%96%E6%9E%90" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>结构剖析</h4>
 <ul>
 <li>控制节点</li>
 <li>负责API服务的kube-apiserver</li>
@@ -152,29 +149,23 @@
 <li>负责容器编排的kube-controller-manager</li>
 <li>计算节点</li>
 </ul>
-
-<h4>kubelet组件</h4>
-
+<h4><a id="kubelet%E7%BB%84%E4%BB%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>kubelet组件</h4>
 <ul>
 <li>容器通过CRI接入Kuberbetes</li>
 <li>通过OCI翻译CRI的请求与底层的Linux操作系统交互</li>
 <li>CNI调用网络插件为容器配置网络</li>
 <li>CSI调用存储插件为容器配置持久存储</li>
 </ul>
-
-<h4>解决问题</h4>
-
+<h4><a id="%E8%A7%A3%E5%86%B3%E9%97%AE%E9%A2%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解决问题</h4>
 <ul>
 <li>运行在大规模集群中的各种任务之间，实际上存在着各种各样的关系。这些关系的处理，才是作业编排和管理系统最困难的地方。</li>
-<li><img src="media/15470844509355/16c095d6efb8d8c226ad9b098689f306.png" alt="16c095d6efb8d8c226ad9b098689f306"/></li>
+<li><img src="media/15470844509355/16c095d6efb8d8c226ad9b098689f306.png" alt="16c095d6efb8d8c226ad9b098689f306" /></li>
 <li>deployment解决Pod的多实例管理器</li>
 <li>service解决固定IP地址访问的问题</li>
 <li>secret解决访问时的授权信息</li>
 <li>daemonset描述每个宿主机必须只能运行一个副本的守护任务</li>
 </ul>
-
-<h4>和过去集群管理的区别</h4>
-
+<h4><a id="%E5%92%8C%E8%BF%87%E5%8E%BB%E9%9B%86%E7%BE%A4%E7%AE%A1%E7%90%86%E7%9A%84%E5%8C%BA%E5%88%AB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>和过去集群管理的区别</h4>
 <ul>
 <li>过去很多的集群管理项目（比如 Yarn、Mesos，以及 Swarm）所擅长的，都是把一个容器，按照某种规则，放置在某个最佳节点上运行起来。这种功能，我们称为“调度”。</li>
 <li>而 Kubernetes 项目所擅长的，是按照用户的意愿和整个系统的规则，完全自动化地处理好容器之间的各种关系。这种功能，就是我们经常听到的一个概念：编排。</li>
@@ -201,29 +192,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

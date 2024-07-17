@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,17 +139,14 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>软硬中断区别</h4>
-
+                    <h4><a id="%E8%BD%AF%E7%A1%AC%E4%B8%AD%E6%96%AD%E5%8C%BA%E5%88%AB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>软硬中断区别</h4>
 <ul>
 <li>(1) 硬中断是有外设硬件发出的，需要有中断控制器参与，而软中断则通常是由硬中断处理程序或者进程调度程序等软件程序发出的中断信号，无需中断控制器参与。</li>
 <li>(2) 硬中断直接以硬件的方式引发，处理速度快。软中断以软件指令之方式适合于对响应速度要求不是特别严格的场景。</li>
 <li>(3) 硬中断通过设置 CPU 的屏蔽位可进行屏蔽，软中断则由于是指令之方式给出, 不能屏蔽。</li>
 <li>(4)硬中断和软中断均会引起上下文切换(进程/线程之切换），进程切换的过程是差不多的</li>
 </ul>
-
-<h4>诊断中断</h4>
-
+<h4><a id="%E8%AF%8A%E6%96%AD%E4%B8%AD%E6%96%AD" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>诊断中断</h4>
 <ul>
 <li>top</li>
 <li>cat /proc/interrupts | grep ens33 获取中断号</li>
@@ -159,37 +156,28 @@
 <li>cat /proc/irq/19/smp_affinity_list 查看网卡中断集中在哪个cpu上</li>
 <li>echo 1 &gt; /proc/irq/19/smp_affinity_list 设置网卡中断亲和</li>
 </ul>
-
-<h4>配置 RPS 绑定网卡队列到 CPU</h4>
-
+<h4><a id="%E9%85%8D%E7%BD%AErps%E7%BB%91%E5%AE%9A%E7%BD%91%E5%8D%A1%E9%98%9F%E5%88%97%E5%88%B0-cpu" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>配置 RPS 绑定网卡队列到 CPU</h4>
 <ul>
 <li>echo 0,1 &gt; /proc/irq/19/smp_affinity_list 仍然会导致网卡中断集中在一个cpu上</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-text">echo f &gt; /sys/class/net/ens33/queues/rx-0/rps_cpus
+<pre><code class="language-plain_text">echo f &gt; /sys/class/net/ens33/queues/rx-0/rps_cpus
 sysctl net.core.rps_sock_flow_entries=32768
 echo 32678 &gt; /sys/class/net/ens33/queues/rx-0/rps_flow_cnt
 </code></pre>
-
 <ul>
 <li>软件层面模拟实现硬件的多队列网卡功能。</li>
 </ul>
-
-<h4>使用IRQBalance服务</h4>
-
-<h4>RSS</h4>
-
+<h4><a id="%E4%BD%BF%E7%94%A8irqbalance%E6%9C%8D%E5%8A%A1" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>使用IRQBalance服务</h4>
+<h4><a id="rss" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>RSS</h4>
 <ul>
 <li>RSS (Receive Side Scaling）是网卡的硬件特性，实现了多队列。通过多队列网卡驱动加载，就可以获取网卡型号，得到网卡的硬件队列数量，并结合 CPU 核的数量，最终得出所要激活的网卡队列的数量。</li>
 <li>ethtool -l eth0</li>
 <li>ethtool -L eth0 combined num//最多支持的队列数目</li>
 <li>手动绑定,获取网卡的中断号</li>
-<li>cat /proc/interrupts | awk &#39;{print \(1, \)NF}&#39; | grep eth0-TxRx</li>
+<li>cat /proc/interrupts | awk '{print $1, $NF}' | grep eth0-TxRx</li>
 <li>echo 中断号 &gt; /proc/irq/19/smp_affinity_list</li>
 </ul>
-
-<h4>如果队列数目小于cpu数目</h4>
-
+<h4><a id="%E5%A6%82%E6%9E%9C%E9%98%9F%E5%88%97%E6%95%B0%E7%9B%AE%E5%B0%8F%E4%BA%8Ecpu%E6%95%B0%E7%9B%AE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>如果队列数目小于cpu数目</h4>
 <ul>
 <li>如果手动绑定 CPU 与中断号ーー对应，就会出现软中断负载跑在 0-7 核上，8-1 5 核不处理软中断的情况，这样一来，CPU 的 0-7 核负载依然会很高。</li>
 <li>RFS (Receive Flow Steering）是 RPS 的扩展，由于 RPS 只是单纯的把数据包均衡到不同的 CPU 上，此时如果应用程序所在 CPU 和中断处理的 CPU 不在同个核，将会对 CPU Cache 影响很大，RFS 的作用就是将应用程序和软中断处理分配到同一个 CPU 上</li>
@@ -216,34 +204,96 @@ echo 32678 &gt; /sys/class/net/ens33/queues/rx-0/rps_flow_cnt
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
-
-
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-<script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
-
-  
-
-
-
-
-
-
-
-
-
-
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
 
-<script src="asset/prism.js"></script>
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
+
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
+
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   

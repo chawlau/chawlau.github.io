@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,52 +139,39 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>时间片</h4>
-
+                    <p>####时间片</p>
 <ul>
 <li>计算机隔一段时间触发时钟中断</li>
 <li>计算进程分配的实际运行时间</li>
 <li>进程总共执行的实际时间 - 上次被调度时总的的运行时间 = 本次实际运行时间</li>
-<li>被调度条件
-<ul>
+<li>被调度条件</li>
 <li>本次实际运行时间 &gt; 计算进程分配的实际运行时间</li>
 <li>当前进程的 vruntime 大于红黑树中最小的进程的 vruntime</li>
 <li>差值大于 ideal_runtime</li>
-</ul></li>
 </ul>
-
-<h4>调度</h4>
-
+<h4><a id="%E8%B0%83%E5%BA%A6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>调度</h4>
 <ul>
 <li>打上TIF_NEED_RESCHED标签</li>
 </ul>
-
-<h4>进程被唤醒</h4>
-
+<h4><a id="%E8%BF%9B%E7%A8%8B%E8%A2%AB%E5%94%A4%E9%86%92" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>进程被唤醒</h4>
 <ul>
 <li>当被唤醒的进程优先级高于 CPU 上的当前进程，就会触发抢占</li>
 <li>这个唤醒的任务添加到队列当中</li>
 <li>激活任务</li>
 <li>标记被抢占</li>
 </ul>
-
-<h4>用户态抢占时机</h4>
-
+<h4><a id="%E7%94%A8%E6%88%B7%E6%80%81%E6%8A%A2%E5%8D%A0%E6%97%B6%E6%9C%BA" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>用户态抢占时机</h4>
 <ul>
 <li>用户态抢占时机 系统调用中返回的那个时刻，是一个被抢占的时机</li>
 <li>中断中返回的那个时刻</li>
 </ul>
-
-<h4>内核态抢占时机</h4>
-
+<h4><a id="%E5%86%85%E6%A0%B8%E6%80%81%E6%8A%A2%E5%8D%A0%E6%97%B6%E6%9C%BA" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>内核态抢占时机</h4>
 <ul>
 <li>preempt_disable()--&gt;preempt_enable()</li>
 <li>内核态中断返回</li>
 </ul>
-
-<h4>进程调度总结</h4>
-
-<p><img src="media/15571872879168/93588d71abd7f007397979f0ba7def7f.png" alt="93588d71abd7f007397979f0ba7def7f"/></p>
+<h4><a id="%E8%BF%9B%E7%A8%8B%E8%B0%83%E5%BA%A6%E6%80%BB%E7%BB%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>进程调度总结</h4>
+<p><img src="media/15571872879168/93588d71abd7f007397979f0ba7def7f.png" alt="93588d71abd7f007397979f0ba7def7f" /></p>
 
                   </article>
                   <div class="comments-wrap">
@@ -206,29 +193,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

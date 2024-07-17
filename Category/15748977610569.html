@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,51 +139,38 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>定义</h4>
-
+                    <h4><a id="%E5%AE%9A%E4%B9%89" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>定义</h4>
 <ul>
 <li>在组件构建过程中，某些对象的状态经常面临变化，如何对这些变化进行有效的管理？同时又维持高层模块的稳定？“状态变化“模式为这一问题提供了一种解决方案。</li>
 </ul>
-
-<h4>典型模式</h4>
-
+<h4><a id="%E5%85%B8%E5%9E%8B%E6%A8%A1%E5%BC%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>典型模式</h4>
 <ul>
 <li>State</li>
 <li>Memento</li>
 </ul>
-
-<h4>动机</h4>
-
+<h4><a id="%E5%8A%A8%E6%9C%BA" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>动机</h4>
 <ul>
 <li>在软件构建过程中，某些对象的状态如果改变，其行为也会随之而发生变化，比如文档处于只读状态，其支持的行为和读写状态支持的行为就可能完全不同。</li>
 <li>如何在运行时根据对象的状态来透明地更改对象的行为？而不会为对象操作和状态转化之间引入紧耦合？</li>
 <li>虚函数本质上是运行态的if else</li>
 </ul>
-
-<h4>模式定义</h4>
-
+<h4><a id="%E6%A8%A1%E5%BC%8F%E5%AE%9A%E4%B9%89" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>模式定义</h4>
 <ul>
 <li>允许一个对象在其内部状态改变时改变它的行为。从而使对象看起来似乎修改了其行为。</li>
 </ul>
-
-<h4>结构</h4>
-
+<h4><a id="%E7%BB%93%E6%9E%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>结构</h4>
 <ul>
-<li><img src="media/15748977610569/15818114887619.jpg" alt="" style="width:673px;"/></li>
+<li><img src="media/15748977610569/15818114887619.jpg" alt="" style="width:673px;" /></li>
 </ul>
-
-<h4>要点总结</h4>
-
+<h4><a id="%E8%A6%81%E7%82%B9%E6%80%BB%E7%BB%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>要点总结</h4>
 <ul>
-<li>State 模式将所有与个特定状态相关的行为都放入ー个 State 的子<br/>
+<li>State 模式将所有与个特定状态相关的行为都放入ー个 State 的子<br />
 类对象中，往对象状态切換时应的对象但同时维持State的接口，这样实现了具体操作与状态转换之间的解耦。</li>
 <li>为不同的状态引入不同的对象使得状态转换变得更加明确，而且可以保证不会出现状态不一致的情况，因为转换是原子性的-即要么彻底转换过来，要么不转换</li>
 <li>如果State对象没有实例变量，那么各个上下文可以共享同一个State对象，从而节省开销</li>
 </ul>
-
-<h4>cpp_demo</h4>
-
-<pre class="line-numbers"><code class="language-cpp">//
+<h4><a id="cpp-demo" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>cpp_demo</h4>
+<pre><code class="language-C++">//
 // Created by geraltliu on 2019-12-07.
 //
 
@@ -363,195 +350,189 @@ int main() {
     process-&gt;Operation3();
 }
 </code></pre>
-
-<h4>golang_demo</h4>
-
-<pre class="line-numbers"><code class="language-go">package geek
+<h4><a id="golang-demo" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>golang_demo</h4>
+<pre><code class="language-go">package geek
 
 import &quot;fmt&quot;
 
 type Week interface {
-    Today()
-    Next(*DayContext)
+	Today()
+	Next(*DayContext)
 }
 
 type DayContext struct {
-    today Week
+	today Week
 }
 
 func NewDayContext() *DayContext {
-    return &amp;DayContext{
-        today: &amp;Sunday{},
-    }
+	return &amp;DayContext{
+		today: &amp;Sunday{},
+	}
 }
 
 func (d *DayContext) Today() {
-    d.today.Today()
+	d.today.Today()
 }
 
 func (d *DayContext) Next() {
-    d.today.Next(d)
+	d.today.Next(d)
 }
 
 type Sunday struct{}
 
 func (*Sunday) Today() {
-    fmt.Println(&quot;Sunday&quot;)
+	fmt.Println(&quot;Sunday&quot;)
 }
 
 func (*Sunday) Next(ctx *DayContext) {
-    ctx.today = &amp;Monday{}
+	ctx.today = &amp;Monday{}
 }
 
 type Monday struct{}
 
 func (*Monday) Today() {
-    fmt.Println(&quot;Monday&quot;)
+	fmt.Println(&quot;Monday&quot;)
 }
 
 func (*Monday) Next(ctx *DayContext) {
-    ctx.today = &amp;Monday{}
+	ctx.today = &amp;Monday{}
 }
 
 type Tuesday struct{}
 
 func (*Tuesday) Today() {
-    fmt.Println(&quot;Tuesday&quot;)
+	fmt.Println(&quot;Tuesday&quot;)
 }
 
 func (*Tuesday) Next(ctx *DayContext) {
-    ctx.today = &amp;Tuesday{}
+	ctx.today = &amp;Tuesday{}
 }
 func TestWeek(t *testing.T) {
-    ctx := NewDayContext()
-    todayAndNext := func() {
-        ctx.Today()
-        ctx.Next()
-    }
+	ctx := NewDayContext()
+	todayAndNext := func() {
+		ctx.Today()
+		ctx.Next()
+	}
 
-    for i := 0; i &lt; 3; i++ {
-        todayAndNext()
-    }
+	for i := 0; i &lt; 3; i++ {
+		todayAndNext()
+	}
 }
 </code></pre>
-
-<h4>golang_demo2</h4>
-
-<pre class="line-numbers"><code class="language-go">package design_pattern
+<h4><a id="golang-demo2" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>golang_demo2</h4>
+<pre><code class="language-go">package design_pattern
 
 import (
-    &quot;fmt&quot;
-    &quot;sync&quot;
+	&quot;fmt&quot;
+	&quot;sync&quot;
 )
 
 var (
-    openState    *OpenState
-    connectState *ConnectState
-    closeState   *CloseState
-    stateCtx     *StateContext
-    open         sync.Once
-    conn         sync.Once
-    close        sync.Once
-    state        sync.Once
+	openState    *OpenState
+	connectState *ConnectState
+	closeState   *CloseState
+	stateCtx     *StateContext
+	open         sync.Once
+	conn         sync.Once
+	close        sync.Once
+	state        sync.Once
 )
 
 type NetWorkState interface {
-    State()
-    Next(*StateContext)
+	State()
+	Next(*StateContext)
 }
 
 type StateContext struct {
-    netState NetWorkState
+	netState NetWorkState
 }
 
 func GetStateCtxInstance() *StateContext {
-    state.Do(func () {
-        stateCtx = &amp;StateContext{
-            netState: &amp;OpenState{},
-        }
-    })
-    return stateCtx
+	state.Do(func () {
+		stateCtx = &amp;StateContext{
+			netState: &amp;OpenState{},
+		}
+	})
+	return stateCtx
 }
 
 func (s *StateContext) State() {
-    s.netState.State()
+	s.netState.State()
 }
 
 func (s *StateContext) Next() {
-    s.netState.Next(s)
+	s.netState.Next(s)
 }
 
 type OpenState struct{}
 
 func GetOpenInstance() *OpenState {
-    open.Do(func() {
-        openState = &amp;OpenState{}
-    })
-    return openState
+	open.Do(func() {
+		openState = &amp;OpenState{}
+	})
+	return openState
 }
 
 func (o *OpenState) State() {
-    fmt.Println(&quot;OpenState&quot;)
+	fmt.Println(&quot;OpenState&quot;)
 }
 
 func (o *OpenState) Next(ctx *StateContext) {
-    ctx.netState = GetConnectInstance()
+	ctx.netState = GetConnectInstance()
 }
 
 type ConnectState struct{}
 
 func GetConnectInstance() *ConnectState {
-    conn.Do(func() {
-        connectState = &amp;ConnectState{}
-    })
-    return connectState
+	conn.Do(func() {
+		connectState = &amp;ConnectState{}
+	})
+	return connectState
 }
 
 func (o *ConnectState) State() {
-    fmt.Println(&quot;ConnectState&quot;)
+	fmt.Println(&quot;ConnectState&quot;)
 }
 
 func (o *ConnectState) Next(ctx *StateContext) {
-    ctx.netState = GetCloseInstance()
+	ctx.netState = GetCloseInstance()
 }
 
 type CloseState struct{}
 
 func GetCloseInstance() *CloseState {
-    close.Do(func() {
-        closeState = &amp;CloseState{}
-    })
-    return closeState
+	close.Do(func() {
+		closeState = &amp;CloseState{}
+	})
+	return closeState
 }
 
 func (o *CloseState) State() {
-    fmt.Println(&quot;CloseState&quot;)
+	fmt.Println(&quot;CloseState&quot;)
 }
 
 func (o *CloseState) Next(ctx *StateContext) {
-    ctx.netState = GetOpenInstance()
+	ctx.netState = GetOpenInstance()
 }
 
 
 func TestState(t *testing.T) {
-    stateCtx = GetStateCtxInstance()
-    stateCtx.State()
-    stateCtx.Next()
+	stateCtx = GetStateCtxInstance()
+	stateCtx.State()
+	stateCtx.Next()
 
-    stateCtx.State()
-    stateCtx.Next()
+	stateCtx.State()
+	stateCtx.Next()
 
-    stateCtx.State()
-    stateCtx.Next()
+	stateCtx.State()
+	stateCtx.Next()
 
-    stateCtx.State()
-    stateCtx.Next()
+	stateCtx.State()
+	stateCtx.Next()
 }
 </code></pre>
-
-<h4>python_code</h4>
-
-<pre class="line-numbers"><code class="language-python">from abc import abstractmethod, ABCMeta
+<h4><a id="python-code" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>python_code</h4>
+<pre><code class="language-python">from abc import abstractmethod, ABCMeta
 
 class Week(metaclass=ABCMeta):
    @abstractmethod
@@ -615,16 +596,14 @@ class Friday(Week):
    def next(self, context):
       context.day = Sunday()
 
-if __name__ == &#39;__main__&#39;:
+if __name__ == '__main__':
   context = DayContext(Sunday())
   context.today()
   context.next()
   context.today()
 </code></pre>
-
-<h4>python_demo3</h4>
-
-<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
+<h4><a id="python-demo3" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>python_demo3</h4>
+<pre><code class="language-python">from abc import ABCMeta, abstractmethod
 
 
 class Context(metaclass=ABCMeta):
@@ -670,9 +649,9 @@ class Water(Context):
 
     def __init__(self):
         super().__init__()
-        self.add_state(SolidState(&#39;Solid&#39;))
-        self.add_state(LiquidState(&#39;Liquid&#39;))
-        self.add_state(GaseousState(&#39;Gaseous&#39;))
+        self.add_state(SolidState('Solid'))
+        self.add_state(LiquidState('Liquid'))
+        self.add_state(GaseousState('Gaseous'))
         self.set_temperature(25)
 
     def set_temperature(self, temp):
@@ -759,7 +738,7 @@ class GaseousState(State):
         print(&quot;GaseousState current temperature {} C &quot;.format(
             context.get_temperature()))
 
-if __name__ == &#39;__main__&#39;:
+if __name__ == '__main__':
     # water = Water(LiquidState(&quot;Liquid&quot;))
     water = Water()
     water.behavior()
@@ -772,180 +751,176 @@ if __name__ == &#39;__main__&#39;:
     water.set_temperature(180)
     water.behavior()
 </code></pre>
-
-<h4>golang_demo</h4>
-
-<pre class="line-numbers"><code class="language-go">package desian_pattern_practise
+<h4><a id="golang-demo" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>golang_demo</h4>
+<pre><code class="language-go">package desian_pattern_practise
 
 import (
-    &quot;fmt&quot;
-    &quot;reflect&quot;
-    &quot;sync&quot;
+	&quot;fmt&quot;
+	&quot;reflect&quot;
+	&quot;sync&quot;
 )
 
 var  (
   once sync.Once
   liquidState *LiquidState
   solidState  *SolidState
-    gaseousState *GaseousState
+	gaseousState *GaseousState
 )
 
 
 type Context interface {
-    AddState(IState)
-    ChangeState(IState)
+	AddState(IState)
+	ChangeState(IState)
 }
 
 type Water struct {
-    states map[IState]bool
-    curState IState
-    temperature float64
+	states map[IState]bool
+	curState IState
+	temperature float64
 }
 
 func NewWater() *Water {
-    water := &amp;Water{
-        states: make(map[IState]bool),
-        curState: nil,
-        temperature: 25,
-    }
-    water.AddState(NewLiquidState(&quot;Liquid&quot;))
-    water.AddState(NewSolidState(&quot;Solid&quot;))
-    water.AddState(NewGaseousState(&quot;Gaseous&quot;))
-    return water
+	water := &amp;Water{
+		states: make(map[IState]bool),
+		curState: nil,
+		temperature: 25,
+	}
+	water.AddState(NewLiquidState(&quot;Liquid&quot;))
+	water.AddState(NewSolidState(&quot;Solid&quot;))
+	water.AddState(NewGaseousState(&quot;Gaseous&quot;))
+	return water
 }
 
 func (w *Water) AddState(state IState) {
-    if _, ok := w.states[state]; !ok {
-      w.states[state] = true
-    }
+	if _, ok := w.states[state]; !ok {
+	  w.states[state] = true
+	}
 }
 
 func (w *Water) ChangeState(state IState) {
-    if state == nil {
-        return
-    }
+	if state == nil {
+		return
+	}
 
-    if w.curState == nil {
-        fmt.Println(&quot;Init State &quot;, reflect.TypeOf(w).String())
-    } else {
-        fmt.Println(&quot;change from state &quot;, reflect.TypeOf(w.curState).String(),
-            &quot; to state &quot;, reflect.TypeOf(state).String())
-    }
+	if w.curState == nil {
+		fmt.Println(&quot;Init State &quot;, reflect.TypeOf(w).String())
+	} else {
+		fmt.Println(&quot;change from state &quot;, reflect.TypeOf(w.curState).String(),
+			&quot; to state &quot;, reflect.TypeOf(state).String())
+	}
 
-    w.curState = state
-    w.AddState(state)
+	w.curState = state
+	w.AddState(state)
 }
 
 func (w *Water) Behavior() {
-    if w.curState != nil {
-      w.curState.Behavior(w)
-    }
+	if w.curState != nil {
+	  w.curState.Behavior(w)
+	}
 }
 
 func (w *Water) SetTemperature(temp float64) {
-    w.temperature = temp
-    for k, _ :=range w.states {
-        if k.IsMatch(temp) {
-            w.ChangeState(k)
-        }
-    }
+	w.temperature = temp
+	for k, _ :=range w.states {
+		if k.IsMatch(temp) {
+			w.ChangeState(k)
+		}
+	}
 }
 
 func (w *Water) RiseTemperature(temp float64) {
-    w.SetTemperature(w.temperature + temp)
+	w.SetTemperature(w.temperature + temp)
 }
 
 func (w *Water) ReduceTemperature(temp float64) {
-    w.SetTemperature(w.temperature - temp)
+	w.SetTemperature(w.temperature - temp)
 }
 
 type IState interface {
-    Behavior(Context)
-    IsMatch(float64) bool
+	Behavior(Context)
+	IsMatch(float64) bool
 }
 
 type State struct {
-    name string
+	name string
 }
 
 func (s *State) Behavior(ctx Context) {
 }
 
 type LiquidState struct {
-    *State
+	*State
 }
 
 func (l *LiquidState) IsMatch(temp float64) bool {
-    return temp &gt; 0 &amp;&amp; temp &lt; 100;
+	return temp &gt; 0 &amp;&amp; temp &lt; 100;
 }
 
 func NewLiquidState(name string) *LiquidState {
-    once.Do(func() {
-        liquidState = &amp;LiquidState{State: &amp;State{name:name}}
-    })
-    return liquidState
+	once.Do(func() {
+		liquidState = &amp;LiquidState{State: &amp;State{name:name}}
+	})
+	return liquidState
 }
 
 func (l *LiquidState) Behavior(ctx Context) {
-    fmt.Println(reflect.TypeOf(l).String() + &quot;current temperature is &quot;,
-        ctx.(*Water).temperature, &quot; C&quot;)
+	fmt.Println(reflect.TypeOf(l).String() + &quot;current temperature is &quot;,
+		ctx.(*Water).temperature, &quot; C&quot;)
 }
 
 type SolidState struct {
-    *State
+	*State
 }
 
 func (l *SolidState) IsMatch(temp float64) bool {
-    return temp &lt;= 0;
+	return temp &lt;= 0;
 }
 
 func NewSolidState(name string) *SolidState {
-    once.Do(func() {
-        solidState = &amp;SolidState{State: &amp;State{name:name}}
-    })
-    return solidState
+	once.Do(func() {
+		solidState = &amp;SolidState{State: &amp;State{name:name}}
+	})
+	return solidState
 }
 
 func (l *SolidState) Behavior(ctx Context) {
-    fmt.Println(reflect.TypeOf(l).String() + &quot;current temperature is &quot;,
-        ctx.(*Water).temperature, &quot; C&quot;)
+	fmt.Println(reflect.TypeOf(l).String() + &quot;current temperature is &quot;,
+		ctx.(*Water).temperature, &quot; C&quot;)
 }
 
 type GaseousState struct {
-    *State
+	*State
 }
 
 func (l *GaseousState) IsMatch(temp float64) bool {
-    return temp &gt;= 100;
+	return temp &gt;= 100;
 }
 
 func NewGaseousState(name string) *GaseousState {
-    once.Do(func() {
-        gaseousState = &amp;GaseousState{State: &amp;State{name:name}}
-    })
-    return gaseousState
+	once.Do(func() {
+		gaseousState = &amp;GaseousState{State: &amp;State{name:name}}
+	})
+	return gaseousState
 }
 
 func (l *GaseousState) Behavior(ctx Context) {
-    fmt.Println(reflect.TypeOf(l).String() + &quot;current temperature is &quot;,
-        ctx.(*Water).temperature, &quot; C&quot;)
+	fmt.Println(reflect.TypeOf(l).String() + &quot;current temperature is &quot;,
+		ctx.(*Water).temperature, &quot; C&quot;)
 }
 
 func TestState_Behavior(t *testing.T) {
-    water := NewWater()
-    water.Behavior()
-    water.SetTemperature(-4)
-    water.Behavior()
-    water.SetTemperature(100)
-    water.Behavior()
-    water.ReduceTemperature(50)
-    water.Behavior()
+	water := NewWater()
+	water.Behavior()
+	water.SetTemperature(-4)
+	water.Behavior()
+	water.SetTemperature(100)
+	water.Behavior()
+	water.ReduceTemperature(50)
+	water.Behavior()
 }
 </code></pre>
-
-<h4>cpp_demo</h4>
-
-<pre class="line-numbers"><code class="language-cpp">//
+<h4><a id="cpp-demo" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>cpp_demo</h4>
+<pre><code class="language-c++">//
 // Created by eredinliu on 2020-01-30.
 //
 
@@ -1160,31 +1135,96 @@ int main() {
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
-<script src="asset/prism.js"></script>
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   

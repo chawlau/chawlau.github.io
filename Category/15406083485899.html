@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,56 +139,42 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>QUIC</h4>
-
+                    <h4><a id="quic" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>QUIC</h4>
 <ul>
 <li>Quick UDP Internet Connections 快速UDP互联网连接</li>
 </ul>
-
-<h4>TCP</h4>
-
+<h4><a id="tcp" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>TCP</h4>
 <ul>
 <li>A 建立连接的时候，请求包重复发了几次，有的请求包绕了一大圈又回来了，B 会认为这也是一个正常的的请求的话，因此建立了连接，可以想象，这个连接不会进行下去，也没有个终结的时候</li>
 <li>所以四次握手是可以的，四十次都可以，关键四百次也不能保证就真的可靠了。只要双方的消息都有去有回，就基本可以了。</li>
 </ul>
-
-<h4>为什么每次连接需要不同的序列号</h4>
-
+<h4><a id="%E4%B8%BA%E4%BB%80%E4%B9%88%E6%AF%8F%E6%AC%A1%E8%BF%9E%E6%8E%A5%E9%9C%80%E8%A6%81%E4%B8%8D%E5%90%8C%E7%9A%84%E5%BA%8F%E5%88%97%E5%8F%B7" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>为什么每次连接需要不同的序列号</h4>
 <ul>
 <li>A 连上 B 之后，发送了 1、2、3 三个包，但是发送 3 的时候，中间丢了，或者绕路了，于是重新发送，后来 A 掉线了，重新连上 B 后，序号又从 1 开始，然后发送 2，但是压根没想发送 3，但是上次绕路的那个 3 又回来了，发给了 B，B 自然认为，这就是下一个包，于是发生了错误。</li>
 </ul>
-
-<h4>结束连接</h4>
-
+<h4><a id="%E7%BB%93%E6%9D%9F%E8%BF%9E%E6%8E%A5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>结束连接</h4>
 <ul>
 <li>A进入FIN_WAIT2的状态，B直接跑路，A将永远处于这个状态,通过tcp_fin_timeout处理超时</li>
 <li>timewait状态的作用保证B能够收到ACK，保证B没有收到FIN的ACK，会重发FIN，A会重新发送ACK给B</li>
 <li>A结束后A的端口空出来后，新的应用会收到上个连接B发的包，会产生混乱</li>
 <li>B超过2MSL时间后，仍然没有收到FIN的ACK，会重发FIN，A会回答RST</li>
 </ul>
-
-<h4>滑动窗口</h4>
-
-<p><img src="media/15406083485899/15428547616802.jpg" alt=""/></p>
-
+<h4><a id="%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>滑动窗口</h4>
+<p><img src="media/15406083485899/15428547616802.jpg" alt="" /></p>
 <ul>
 <li>LastByteAckend</li>
 <li>LastByteSent</li>
 <li>AdvertisedWindow</li>
 <li>快速重传是发送3个冗余的ACK，让对方快速发送丢失的包</li>
 </ul>
-
-<h4>HTTP2.0</h4>
-
+<h4><a id="http2-0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>HTTP2.0</h4>
 <ul>
 <li>对HTTP头进行压缩，将大量的key-value的两端建立索引表，相同的头只发索引表的索引</li>
 <li>将连接切分成多个流，每个流都有自己的ID</li>
 <li>将传输信息分割成更小的消息和帧，采用二进制编码</li>
 <li>HTTP 2.0 的客户端可以将多个请求分到不同的流中，然后将请求内容拆成帧，进行二进制传输。这些帧可以打散乱序发送， 然后根据每个帧首部的流标识符重新组装，并且可以根据优先级，决定优先处理哪个流的数据。</li>
 </ul>
-
-<h4>QUIC</h4>
-
+<h4><a id="quic" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>QUIC</h4>
 <ul>
 <li>自定义连接机制，以64位的随机数作为ID来标识</li>
 <li>自定义重传机制，任何一个序列号的包只发送一次，下次就要加1，数据流里面有个偏移量 offset，根据这个来识别包</li>
@@ -216,29 +202,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

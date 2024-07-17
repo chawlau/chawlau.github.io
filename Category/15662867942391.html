@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,18 +139,15 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>成员函数的调用方式</h4>
-
+                    <h4><a id="%E6%88%90%E5%91%98%E5%87%BD%E6%95%B0%E7%9A%84%E8%B0%83%E7%94%A8%E6%96%B9%E5%BC%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>成员函数的调用方式</h4>
 <ul>
 <li>成员函数的调用转换成了全局的函数</li>
 <li>成员函数有独立的内存地址，跟着类走的，成员函数的地址是编译时确定好的</li>
 <li>编译器额外增加了一个this形参，指向生成的对象</li>
 <li>常规成员变量的存取，都通过形参来进行。比如this-&gt;m_i</li>
 </ul>
-
-<h4>虚函数调用</h4>
-
-<pre class="line-numbers"><code class="language-text">  class Obj{
+<h4><a id="%E8%99%9A%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>虚函数调用</h4>
+<pre><code class="language-plain_text">  class Obj{
  public:
   int m_i;
   void func(int abc) {
@@ -163,192 +160,157 @@
   void virtual virfunc2() {}
 };
 pmyacls-&gt;myvirfunc(); //要通过虚函数表指针查找虚函数表，通过虚函数表在好到虚函数的入口地址，完成对虚函数的调用
-    //编译器视角
-    //(*pmyacls-&gt;vptr[0])(pmyacls);
-    //a)vptr，编译器给生成的虚函数表指针，指向虚函数表
-    //b)[0] 虚函数表中第一项。代表myvirfunc()地址
-    //c)传递一个参数进去，就是this，也是编译器给加的
-    //d)*就得到了虚函数的地址
+	//编译器视角
+	//(*pmyacls-&gt;vptr[0])(pmyacls);
+	//a)vptr，编译器给生成的虚函数表指针，指向虚函数表
+	//b)[0] 虚函数表中第一项。代表myvirfunc()地址
+	//c)传递一个参数进去，就是this，也是编译器给加的
+	//d)*就得到了虚函数的地址
 </code></pre>
-
-<h4>静态函数</h4>
-
+<h4><a id="%E9%9D%99%E6%80%81%E5%87%BD%E6%95%B0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>静态函数</h4>
 <ul>
 <li>各种调用方式都是类名调用</li>
 <li>静态函数不需要this指针</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-text">void func(int abc) {
+<pre><code class="language-plain_text">void func(int abc) {
     //m_i += abc;
     printf(&quot;func&quot;);
 }
 ((Obj *)0)-&gt;func(2);可以执行
 希望成员函数支持类对象之外的存取操作
 //静态成员函数特性
-    //a)静态成员函数没有this指针，这点最重要
-    //b)无法直接存取类中普通的非静态成员变量；
-    //c)静态成员函数不能在屁股后使用const，也不能设置为virtual 
-    //d)可以用类对象调用，但不非一定要用类对象调用。
-    //e)静态成员函数等同于非成员函数，有的需要提供回调函数的这种场合，可以将静态成员函数作为回调函数；
+	//a)静态成员函数没有this指针，这点最重要
+	//b)无法直接存取类中普通的非静态成员变量；
+	//c)静态成员函数不能在屁股后使用const，也不能设置为virtual 
+	//d)可以用类对象调用，但不非一定要用类对象调用。
+	//e)静态成员函数等同于非成员函数，有的需要提供回调函数的这种场合，可以将静态成员函数作为回调函数；
 </code></pre>
+<h4><a id="%E7%BB%A7%E6%89%BF%E7%9A%84%E9%9D%9E%E8%99%9A%E5%87%BD%E6%95%B0%E5%9D%91" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>继承的非虚函数坑</h4>
+<pre><code class="language-plain_text"> Derive derive;
+	Derive *pderive = &amp;derive;
+	pderive-&gt;myfunc(); //Derive::myfunc()子类
 
-<h4>继承的非虚函数坑</h4>
-
-<pre class="line-numbers"><code class="language-text"> Derive derive;
-    Derive *pderive = &amp;derive;
-    pderive-&gt;myfunc(); //Derive::myfunc()子类
-
-    Base *pbase = &amp;derive;
-    pbase-&gt;myfunc();//调用父类
+	Base *pbase = &amp;derive;
+	pbase-&gt;myfunc();//调用父类
 </code></pre>
-
 <ul>
 <li>普通成员函数是静态绑定，换句话说，myfunc() 是普通成员函数。这里到底调用父类的myfunc还是子类的myfunc取决于调用者的静态类型；</li>
 </ul>
-
-<h4>虚函数缺省参数的动态坑</h4>
-
-<pre class="line-numbers"><code class="language-text">class Base
+<h4><a id="%E8%99%9A%E5%87%BD%E6%95%B0%E7%BC%BA%E7%9C%81%E5%8F%82%E6%95%B0%E7%9A%84%E5%8A%A8%E6%80%81%E5%9D%91" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>虚函数缺省参数的动态坑</h4>
+<pre><code class="language-plain_text">class Base
 {
 public:
-    void myfunc() //普通成员函数
-    {
-        cout &lt;&lt; &quot;Base::myfunc()&quot; &lt;&lt; endl;
-    }
-    virtual void myvirfunc(int value = 1)
-    {
-        cout &lt;&lt; &quot;Base::myvirfunc(),value = &quot; &lt;&lt; value &lt;&lt; endl;
-    }
+	void myfunc() //普通成员函数
+	{
+		cout &lt;&lt; &quot;Base::myfunc()&quot; &lt;&lt; endl;
+	}
+	virtual void myvirfunc(int value = 1)
+	{
+		cout &lt;&lt; &quot;Base::myvirfunc(),value = &quot; &lt;&lt; value &lt;&lt; endl;
+	}
 };
 class Derive :public Base
 {
 public:
-    void myfunc() //普通成员函数
-    {
-        cout &lt;&lt; &quot;Derive::myfunc()&quot; &lt;&lt; endl;
-    }
-    virtual void myvirfunc(int value = 2)
-    {
-        cout &lt;&lt; &quot;Derive::myvirfunc(),value = &quot; &lt;&lt; value &lt;&lt; endl;
-    }
+	void myfunc() //普通成员函数
+	{
+		cout &lt;&lt; &quot;Derive::myfunc()&quot; &lt;&lt; endl;
+	}
+	virtual void myvirfunc(int value = 2)
+	{
+		cout &lt;&lt; &quot;Derive::myvirfunc(),value = &quot; &lt;&lt; value &lt;&lt; endl;
+	}
 };
 </code></pre>
-
 <ul>
 <li>虚函数缺省参数是静态绑定，考虑到执行效率的问题</li>
 <li>不要重新定义虚函数缺省参数的值</li>
 <li>不应该在子类中重新定义一个继承来的非虚函数</li>
 </ul>
-
-<h4>多态</h4>
-
+<h4><a id="%E5%A4%9A%E6%80%81" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>多态</h4>
 <ul>
 <li>调用虚函数没有查询虚函数表，不一定是多态</li>
 <li>有继承关系</li>
 <li>父类指针或者引用指向子类对象</li>
 <li>派生类重写了子类的虚函数</li>
 </ul>
-
-<h4>单继承</h4>
-
-<pre class="line-numbers"><code class="language-text">Base* pb = new Derived()
+<h4><a id="%E5%8D%95%E7%BB%A7%E6%89%BF" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>单继承</h4>
+<pre><code class="language-plain_text">Base* pb = new Derived()
 pb-&gt;g()
 编译器视角
 (*pb)-&gt;vptr[1](pb)
 </code></pre>
-
 <ul>
 <li>执行期间需要确定的就是哪个虚函数表来调用虚函数</li>
 </ul>
-
-<h4>回顾和一些测试</h4>
-
+<h4><a id="%E5%9B%9E%E9%A1%BE%E5%92%8C%E4%B8%80%E4%BA%9B%E6%B5%8B%E8%AF%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>回顾和一些测试</h4>
 <ul>
 <li>虚函数地址，编译期间确认下来</li>
 <li>顺序记录每个虚函数的地址</li>
 <li>vptr编译期间产生，编译器在构造函数中插入了给vptr赋值的代码。</li>
 <li>纯虚函数依然会在虚函数表中占据一个表项目</li>
 </ul>
-
-<h4>多继承虚函数，第二基类，虚析构</h4>
-
-<pre class="line-numbers"><code class="language-text">Base* pb2 = new Derived()
+<h4><a id="%E5%A4%9A%E7%BB%A7%E6%89%BF%E8%99%9A%E5%87%BD%E6%95%B0%EF%BC%8C%E7%AC%AC%E4%BA%8C%E5%9F%BA%E7%B1%BB%EF%BC%8C%E8%99%9A%E6%9E%90%E6%9E%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>多继承虚函数，第二基类，虚析构</h4>
+<pre><code class="language-plain_text">Base* pb2 = new Derived()
 Derived* tmp = new Derived()
 Base2* pb2 = (Base2*)((char*)tmp + sizeof(Base))
 </code></pre>
-
 <ul>
 <li>如何成功删除用第二基类指针new出来的继承类对象</li>
 <li>非虚析构函数仍然是个普通析构函数，系统释放的是pb2开头的内存仍然异常</li>
 <li>Base2有个虚的析构函数则编译器实际执行~Derived(),~Base2(),Base()</li>
 <li>Derived没有虚析构函数，编译器会为其合成虚析构函数，虚析构函数名可以跟父类不一样</li>
-<li><img src="media/15662867942391/15663764207329.jpg" alt="" style="width:1174px;"/></li>
+<li><img src="media/15662867942391/15663764207329.jpg" alt="" style="width:1174px;" /></li>
 </ul>
-
-<h4>thunk</h4>
-
+<h4><a id="thunk" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>thunk</h4>
 <ul>
 <li>汇编代码</li>
 <li>在多重继承中用于this指针调整</li>
 <li>调用Derived析构函数</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-text">0000000000000044 &lt;non-virtual thunk to Derive::~Derive()&gt;:
+<pre><code class="language-plain_text">0000000000000044 &lt;non-virtual thunk to Derive::~Derive()&gt;:
   44:   48 83 ef 08             sub    rdi,0x8 this指针指向derived对象首地址
   48:   eb b6                   jmp    0 &lt;Derive::~Derive()&gt;
 000000000000002b &lt;non-virtual thunk to Derive::~Derive()&gt;:
   2b:   48 83 ef 08             sub    rdi,0x8
   2f:   eb cf                   jmp    0 &lt;Derive::~Derive()&gt;
 </code></pre>
-
 <ul>
-<li><img src="media/15662867942391/15663775575835.jpg" alt="" style="width:1112px;"/></li>
+<li><img src="media/15662867942391/15663775575835.jpg" alt="" style="width:1112px;" /></li>
 </ul>
-
-<h4>多继承第二基类虚函数支持和虚继承带虚函数</h4>
-
-<p>通过指向第二个基类的指针调用继承类的虚函数；<br/>
-Base2 *pb2 = new Derive();<br/>
-delete pb2; 调用继承类的虚析构函数<br/>
-一个指向派生类的指针，调用第二个基类中的虚函数<br/>
-Derive *pd2 = new Derive();<br/>
-pd2-&gt;hBase2();<br/>
-允许虚函数的返回值类型有所变化<br/>
-Base2 *pb1 = new Derive(); pb1指向的是Base2子对象的首地址<br/>
-Base2 *pb2 = pb1-&gt;clone(); Derive::clone();<br/>
+<h4><a id="%E5%A4%9A%E7%BB%A7%E6%89%BF%E7%AC%AC%E4%BA%8C%E5%9F%BA%E7%B1%BB%E8%99%9A%E5%87%BD%E6%95%B0%E6%94%AF%E6%8C%81%E5%92%8C%E8%99%9A%E7%BB%A7%E6%89%BF%E5%B8%A6%E8%99%9A%E5%87%BD%E6%95%B0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>多继承第二基类虚函数支持和虚继承带虚函数</h4>
+<p>通过指向第二个基类的指针调用继承类的虚函数；<br />
+Base2 *pb2 = new Derive();<br />
+delete pb2; 调用继承类的虚析构函数<br />
+一个指向派生类的指针，调用第二个基类中的虚函数<br />
+Derive *pd2 = new Derive();<br />
+pd2-&gt;hBase2();<br />
+允许虚函数的返回值类型有所变化<br />
+Base2 *pb1 = new Derive(); pb1指向的是Base2子对象的首地址<br />
+Base2 *pb2 = pb1-&gt;clone(); Derive::clone();<br />
 执行clone()时，pb1首先会调整回指向Derivce对象的首地址，这样调用的是Derive版本的clone()</p>
-
-<h4>虚继承带虚函数</h4>
-
+<h4><a id="%E8%99%9A%E7%BB%A7%E6%89%BF%E5%B8%A6%E8%99%9A%E5%87%BD%E6%95%B0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>虚继承带虚函数</h4>
 <ul>
-<li><img src="media/15662867942391/15663819139099.jpg" alt="" style="width:378px;"/></li>
+<li><img src="media/15662867942391/15663819139099.jpg" alt="" style="width:378px;" /></li>
 </ul>
-
-<h4>RTTI</h4>
-
+<h4><a id="rtti" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>RTTI</h4>
 <ul>
 <li>RTTI实现原理 typeid返回的是一个常量对象的引用，这个常量对象的类型一般是type_info（类）</li>
-<li><img src="media/15662867942391/15664624057485.jpg" alt="" style="width:1035px;"/></li>
+<li><img src="media/15662867942391/15664624057485.jpg" alt="" style="width:1035px;" /></li>
 <li>vptr vtbl rtti的 type_info信息编译之后就存在</li>
 </ul>
-
-<h4>编译器优化</h4>
-
+<h4><a id="%E7%BC%96%E8%AF%91%E5%99%A8%E4%BC%98%E5%8C%96" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>编译器优化</h4>
 <ul>
 <li>优化循环，把循环优化成1条语句；</li>
 <li>在编译期间，编译器也具有运算能力，有些运算编译器在编译期间就能搞定；</li>
 </ul>
-
-<h4>多重继承</h4>
-
+<h4><a id="%E5%A4%9A%E9%87%8D%E7%BB%A7%E6%89%BF" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>多重继承</h4>
 <ul>
 <li>继承关系深度增加，开销一般也会增加</li>
 <li>很多情况下，随着继承深度的增加，开销或者说执行时间也会增加；</li>
 <li>多重继承一般也会导致开销增加</li>
 </ul>
-
-<h4>成员函数指针&amp;&amp;vall</h4>
-
+<h4><a id="%E6%88%90%E5%91%98%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88vall" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>成员函数指针&amp;&amp;vall</h4>
 <ul>
 <li>通过成员函数指针对常规的成员函数调用的成本，和通过普通的函数指针来调用静态成员函数，成本上差不多；</li>
 <li>成员函数指针里保存的是vcall = virtual call 虚调用(vcall trunk)地址</li>
@@ -356,9 +318,7 @@ Base2 *pb2 = pb1-&gt;clone(); Derive::clone();<br/>
 <li>vcall地址就是虚函数在虚函数表中的偏移值，结合对象指针，就能确定具体的虚函数地址</li>
 <li>成员函数地址是真正的地址</li>
 </ul>
-
-<h4>inline函数</h4>
-
+<h4><a id="inline%E5%87%BD%E6%95%B0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>inline函数</h4>
 <ul>
 <li>inline会导致编译器内部有一个比较复杂的测试算法来评估这个inline函数的复杂度</li>
 <li>赋值次数和内部函数调用，调用次数</li>
@@ -388,31 +348,96 @@ Base2 *pb2 = pb1-&gt;clone(); Derive::clone();<br/>
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
-<script src="asset/prism.js"></script>
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   

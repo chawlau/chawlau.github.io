@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,20 +139,15 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>通用IP网络栈</h4>
-
-<p><img src="media/15497662031906/c7b5b16539f90caabb537362ee7c27ac.png" alt="c7b5b16539f90caabb537362ee7c27a"/></p>
-
-<h4>网络收发流程</h4>
-
+                    <h4><a id="%E9%80%9A%E7%94%A8ip%E7%BD%91%E7%BB%9C%E6%A0%88" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>通用IP网络栈</h4>
+<p><img src="media/15497662031906/c7b5b16539f90caabb537362ee7c27ac.png" alt="c7b5b16539f90caabb537362ee7c27a" /></p>
+<h4><a id="%E7%BD%91%E7%BB%9C%E6%94%B6%E5%8F%91%E6%B5%81%E7%A8%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>网络收发流程</h4>
 <ul>
 <li>当一个网络帧到达网卡后，网卡会通过 DMA 方式，把这个网络包放到收包队列中；然后通过硬中断，告诉中断处理程序已经收到了网络包。</li>
 <li>网卡中断处理程序会为网络帧分配内核数据结构（sk_buff），并将其拷贝到 sk_buff 缓冲区中；然后再通过软中断，通知内核收到了新的网络帧。</li>
 <li>内核协议栈从缓冲区中取出网络帧，并通过网络协议栈，从下到上逐层处理这个网络帧。</li>
 </ul>
-
-<h4>性能指标</h4>
-
+<h4><a id="%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>性能指标</h4>
 <ul>
 <li>带宽，表示链路的最大传输速率，单位通常为 b/s （比特 / 秒）。</li>
 <li>吞吐量，表示没丢包时的最大数据传输速率，单位通常为 b/s（比特 / 秒）或者 B/s（字节 / 秒）。吞吐量受带宽限制，而吞吐量 / 带宽，也就是该网络的使用率。</li>
@@ -160,9 +155,7 @@
 <li>PPS，是 Packet Per Second（包 / 秒）的缩写，表示以网络包为单位的传输速率。PPS 通常用来评估网络的转发能力，比如硬件交换机，通常可以达到线性转发（即 PPS 可以达到或者接近理论最大值）。而基于 Linux 服务器的转发，则容易受网络包大小的影响。</li>
 <li>并发连接数，丢包率，重传率</li>
 </ul>
-
-<h4>常见错误</h4>
-
+<h4><a id="%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>常见错误</h4>
 <ul>
 <li>errors 表示发生错误的数据包数，比如校验错误、帧同步错误等；</li>
 <li>dropped 表示丢弃的数据包数，即数据包已经收到了 Ring Buffer，但因为内存不足等原因丢包；</li>
@@ -170,34 +163,29 @@
 <li>carrier 表示发生 carrirer 错误的数据包数，比如双工模式不匹配、物理电缆出现问题等；</li>
 <li>collisions 表示碰撞数据包数。</li>
 </ul>
-
-<h4>接收队列和发送队列</h4>
-
+<h4><a id="%E6%8E%A5%E6%94%B6%E9%98%9F%E5%88%97%E5%92%8C%E5%8F%91%E9%80%81%E9%98%9F%E5%88%97" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>接收队列和发送队列</h4>
 <ul>
-<li>当套接字处于连接状态（Established）时，<br/>
-Recv-Q 表示套接字缓冲还没有被应用程序取走的字节数（即接收队列长度）。<br/>
+<li>当套接字处于连接状态（Established）时，<br />
+Recv-Q 表示套接字缓冲还没有被应用程序取走的字节数（即接收队列长度）。<br />
 Send-Q 表示还没有被远端主机确认的字节数（即发送队列长度）。</li>
-<li>当套接字处于监听状态（Listening）时，<br/>
-Recv-Q 表示 syn backlog 的当前值。<br/>
-Send-Q 表示最大的 syn backlog 值。<br/>
+<li>当套接字处于监听状态（Listening）时，<br />
+Recv-Q 表示 syn backlog 的当前值。<br />
+Send-Q 表示最大的 syn backlog 值。<br />
 syn backlog 是 TCP 协议栈中的半连接队列长度，相应的也有一个全连接队列（accept queue），它们都是维护 TCP 状态的重要机制。</li>
 </ul>
-
-<h4>半连接和全连接</h4>
-
+<h4><a id="%E5%8D%8A%E8%BF%9E%E6%8E%A5%E5%92%8C%E5%85%A8%E8%BF%9E%E6%8E%A5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>半连接和全连接</h4>
 <ul>
 <li>半连接，就是还没有完成 TCP 三次握手的连接，连接只进行了一半，而服务器收到了客户端的 SYN 包后，就会把这个连接放到半连接队列中，然后再向客户端发送 SYN+ACK 包。</li>
 <li>全连接，则是指服务器收到了客户端的 ACK，完成了 TCP 三次握手，然后就会把这个连接挪到全连接队列中。这些全连接中的套接字，还需要再被 accept() 系统调用取走，这样，服务器就可以开始真正处理客户端的请求了。</li>
 </ul>
-
-<h4>网络吞吐和PPS</h4>
-
+<h4><a id="%E7%BD%91%E7%BB%9C%E5%90%9E%E5%90%90%E5%92%8Cpps" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>网络吞吐和PPS</h4>
 <ul>
 <li>rxpck/s 和 txpck/s 分别是接收和发送的 PPS，单位为包 / 秒。</li>
 <li>rxkB/s 和 txkB/s 分别是接收和发送的吞吐量，单位是 KB/ 秒。</li>
 <li>rxcmp/s 和 txcmp/s 分别是接收和发送的压缩数据包数，单位是包 / 秒。</li>
 <li>%ifutil 是网络接口的使用率，即半双工模式下为 (rxkB/s+txkB/s)/Bandwidth，而全双工模式下为 max(rxkB/s, txkB/s)/Bandwidth。</li>
 </ul>
+<h4><a id="" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a></h4>
 
                   </article>
                   <div class="comments-wrap">
@@ -219,29 +207,96 @@ syn backlog 是 TCP 协议栈中的半连接队列长度，相应的也有一个
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

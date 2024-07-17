@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,38 +139,29 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>watch</h4>
-
+                    <h4><a id="watch" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>watch</h4>
 <ul>
 <li>所谓的 Watch 通知功能。一旦 znode 节点被创建、删除，子节点数量发生变化，抑或是 znode 所存的数据本身变更，ZooKeeper 会通过节点变更监听器 (ChangeHandler) 的方式显式通知客户端</li>
 </ul>
-
-<h4>控制器数据</h4>
-
-<p><img src="media/15649279845988/38ff78fdeb2a86943ae60f15c3ad28c8.jpg" alt="38ff78fdeb2a86943ae60f15c3ad28"/></p>
-
-<h4>控制器组件</h4>
-
+<h4><a id="%E6%8E%A7%E5%88%B6%E5%99%A8%E6%95%B0%E6%8D%AE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>控制器数据</h4>
+<p><img src="media/15649279845988/38ff78fdeb2a86943ae60f15c3ad28c8.jpg" alt="38ff78fdeb2a86943ae60f15c3ad28" /></p>
+<h4><a id="%E6%8E%A7%E5%88%B6%E5%99%A8%E7%BB%84%E4%BB%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>控制器组件</h4>
 <ul>
 <li>控制器组件（Controller），是 Apache Kafka 的核心组件。它的主要作用是在 Apache ZooKeeper 的帮助下管理和协调整个 Kafka 集群</li>
 <li>主题管理</li>
 <li>分区重分配</li>
 <li>领导者选举</li>
 <li>集群成员管理 存活机制 每个 Broker 启动后，会在 /brokers/ids 下创建一个临时 znode。当 Broker 宕机或主动关闭后，该 Broker 与 ZooKeeper 的会话结束，这个 znode 会被自动删除。通过watch机制观察</li>
-<li>数据服务 </li>
+<li>数据服务</li>
 </ul>
-
-<h4>内部设计原理</h4>
-
+<h4><a id="%E5%86%85%E9%83%A8%E8%AE%BE%E8%AE%A1%E5%8E%9F%E7%90%86" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>内部设计原理</h4>
 <ul>
 <li>统一处理各种控制</li>
-<li><img src="media/15649279845988/b14c6f2d246cbf637f2fda5dae1688e5.png" alt="b14c6f2d246cbf637f2fda5dae1688e5"/>
+<li><img src="media/15649279845988/b14c6f2d246cbf637f2fda5dae1688e5.png" alt="b14c6f2d246cbf637f2fda5dae1688e5" /><br />
 器事件，然后控制器将原来执行的操作全部建模成一个个独立的事件，发送到专属的事件队列中，供此线程消费</li>
 <li>之前同步操作 ZooKeeper 全部改为异步操作</li>
 </ul>
-
-<h4>快速删除主题</h4>
-
+<h4><a id="%E5%BF%AB%E9%80%9F%E5%88%A0%E9%99%A4%E4%B8%BB%E9%A2%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>快速删除主题</h4>
 <ul>
 <li>ZooKeeper 中手动删除 /controller 节点</li>
 </ul>
@@ -195,29 +186,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

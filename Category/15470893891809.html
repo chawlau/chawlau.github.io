@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,21 +139,16 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>k8s本质</h4>
-
+                    <h4><a id="k8s%E6%9C%AC%E8%B4%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>k8s本质</h4>
 <ul>
 <li>就是操作系统</li>
 <li>pod的本质就是进程组共享了一些资源的容器</li>
 </ul>
-
-<h4>容器进程模型</h4>
-
+<h4><a id="%E5%AE%B9%E5%99%A8%E8%BF%9B%E7%A8%8B%E6%A8%A1%E5%9E%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>容器进程模型</h4>
 <ul>
 <li>并不是指容器只能运行一个进程，而是指容器没有管理多个进程的能力</li>
 </ul>
-
-<h4>Pod</h4>
-
+<h4><a id="pod" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Pod</h4>
 <ul>
 <li>互相之间会发生直接的文件交换</li>
 <li>使用 localhost 或者 Socket 文件进行本地通信</li>
@@ -161,41 +156,31 @@
 <li>需要共享某些 Linux Namespace（比如，一个容器要加入另一个容器的 Network Namespace）</li>
 <li>Pod里的所有容器共享一个NetWork NameSpace,可以声明共享同一个Volume</li>
 <li>通过infra中间容器来创建其他容器</li>
-<li><img src="media/15470893891809/8c016391b4b17923f38547c498e434cf.png" alt="8c016391b4b17923f38547c498e434cf"/></li>
+<li><img src="media/15470893891809/8c016391b4b17923f38547c498e434cf.png" alt="8c016391b4b17923f38547c498e434cf" /></li>
 <li>infra使用k8s.gcr.io/pause镜像</li>
 <li>Init Container和 Container</li>
 </ul>
-
-<h4>sidecar设计模式</h4>
-
+<h4><a id="sidecar%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>sidecar设计模式</h4>
 <ul>
 <li>sidecar 指的就是我们可以在一个 Pod 中，启动一个辅助容器，来完成一些独立于主进程（主容器）之外的工作</li>
 <li>微服务治理Istio</li>
 </ul>
-
-<h4>Init Container</h4>
-
+<h4><a id="init-container" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Init Container</h4>
 <ul>
 <li>Init Container 定义的容器，都会比 spec.containers 定义的用户容器先启动。并且，Init Container 容器会按顺序逐一启动，而直到它们都启动并且退出了，用户容器才会启动。</li>
 <li>Tomcat 容器是我们要使用的主容器，而 WAR 包容器的存在，只是为了给它提供一个 WAR 包而已。所以，我们用 Init Container 的方式优先运行 WAR 包容器，扮演了一个 sidecar 的角色。</li>
 </ul>
-
-<h4>Pod本质</h4>
-
+<h4><a id="pod%E6%9C%AC%E8%B4%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Pod本质</h4>
 <ul>
 <li>Pod本质是在扮演传统基础设施的虚拟机角色</li>
 <li>Pod相当于传统环境的机器，容器是运行在这个机器的程序</li>
 <li>凡是调度,网络，存储和安全相关的，基本都是Pod级别的</li>
 </ul>
-
-<h4>Lifecycle</h4>
-
+<h4><a id="lifecycle" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Lifecycle</h4>
 <ul>
 <li>它定义的是 Container Lifecycle Hooks。顾名思义，Container Lifecycle Hooks 的作用，是在容器状态发生变化时触发一系列“钩子”</li>
 </ul>
-
-<h4>Pod Status</h4>
-
+<h4><a id="pod-status" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Pod Status</h4>
 <ul>
 <li>Pending。这个状态意味着，Pod 的 YAML 文件已经提交给了 Kubernetes，API 对象已经被创建并保存在 Etcd 当中。但是，这个 Pod 里有些容器因为某种原因而不能被顺利创建。比如，调度不成功。</li>
 <li>Running。这个状态下，Pod 已经调度成功，跟一个具体的节点绑定。它包含的容器都已经创建成功，并且至少有一个正在运行中。</li>
@@ -203,31 +188,24 @@
 <li>Failed。这个状态下，Pod 里至少有一个容器以不正常的状态（非 0 的返回码）退出。这个状态的出现，意味着你得想办法 Debug 这个容器的应用，比如查看 Pod 的 Events 和日志。</li>
 <li>Unknown。这是一个异常状态，意味着 Pod 的状态不能持续地被 kubelet 汇报给 kube-apiserver，这很有可能是主从节点（Master 和 Kubelet）间的通信出现了问题。</li>
 </ul>
-
-<h4>Project Volume</h4>
-
+<h4><a id="project-volume" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Project Volume</h4>
 <ul>
 <li>Secret；</li>
 <li>ConfigMap；</li>
 <li>Downward API；</li>
 <li>ServiceAccountToken</li>
 </ul>
-
-<h4>Service Account</h4>
-
-<pre class="line-numbers"><code class="language-text"> Volumes:
+<h4><a id="service-account" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Service Account</h4>
+<pre><code class="language-plain_text"> Volumes:
   default-token-2djhh:
     Type:        Secret (a volume populated by a Secret)
     SecretName:  default-token-2djhh
     Optional:    false
 </code></pre>
-
 <ul>
 <li>把 Kubernetes 客户端以容器的方式运行在集群里，然后使用 default Service Account 自动授权的方式，被称作“InClusterConfig”</li>
 </ul>
-
-<h4>容器健康检查和恢复机制</h4>
-
+<h4><a id="%E5%AE%B9%E5%99%A8%E5%81%A5%E5%BA%B7%E6%A3%80%E6%9F%A5%E5%92%8C%E6%81%A2%E5%A4%8D%E6%9C%BA%E5%88%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>容器健康检查和恢复机制</h4>
 <ul>
 <li>livenessProbe</li>
 <li>exec</li>
@@ -259,31 +237,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
-<script src="asset/prism.js"></script>
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   

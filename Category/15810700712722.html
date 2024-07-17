@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,24 +139,23 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>namedtuple</h4>
+                    <h4><a id="namedtuple" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>namedtuple</h4>
+<pre><code class="language-python">from collections import namedtuple
 
-<pre class="line-numbers"><code class="language-python">from collections import namedtuple
+User = namedtuple('User', ['name', 'age', 'height', 'edu'])
+user = User(name = 'bobby', age = 29, height=175, edu='master')
 
-User = namedtuple(&#39;User&#39;, [&#39;name&#39;, &#39;age&#39;, &#39;height&#39;, &#39;edu&#39;])
-user = User(name = &#39;bobby&#39;, age = 29, height=175, edu=&#39;master&#39;)
-
-user_tuple = (&#39;bobby&#39;, 29, 175, &#39;super master&#39;)
-user_list = (&#39;bobby&#39;, 29, 175)
+user_tuple = ('bobby', 29, 175, 'super master')
+user_list = ('bobby', 29, 175)
 user = User(*user_tuple)
 user_dict = {
-    &#39;name&#39;: &#39;bobby&#39;,
-    &#39;age&#39;: 29,
-    &#39;height&#39;: 175,
-    &#39;edu&#39;: &#39;pre master&#39;
+    'name': 'bobby',
+    'age': 29,
+    'height': 175,
+    'edu': 'pre master'
 }
 user = User(**user_dict)
-# user = User._make(user_list, &#39;pre master&#39;)
+# user = User._make(user_list, 'pre master')
 
 # namedtuple 直接转换成dict
 user_info_dict = user._asdict()
@@ -167,16 +166,13 @@ name
 age
 other
 </code></pre>
-
 <ul>
 <li>属性少，没有成员函数的类</li>
 </ul>
-
-<h5>defaultdict</h5>
-
-<pre class="line-numbers"><code class="language-python">from collections import defaultdict
+<h5><a id="defaultdict" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>defaultdict</h5>
+<pre><code class="language-python">from collections import defaultdict
 user_dict = {}
-users = [&#39;bobby1&#39;, &#39;bobby2&#39;, &#39;bobby3&#39;]
+users = ['bobby1', 'bobby2', 'bobby3']
 for user in users:
     if user not in user_dict:
         user_dict[user] = 1
@@ -201,29 +197,25 @@ def gen_default():
     }
 
 user_dict = defaultdict(gen_default)
-user_dict[&#39;group1&#39;]
+user_dict['group1']
 user_dict
 </code></pre>
+<h5><a id="deque" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>deque</h5>
+<pre><code class="language-python">from collections import deque
 
-<h5>deque</h5>
-
-<pre class="line-numbers"><code class="language-python">from collections import deque
-
-user_deque = deque((&#39;bobby1&#39;, &#39;bobby2&#39;))
-user_deque = deque([&#39;bobby1&#39;, &#39;bobby2&#39;, &#39;bobby3&#39;])
-user_deque.appendleft(&#39;9&#39;)
-user_deque.append(&#39;10&#39;)
-user_deque.insert(0, &#39;bobby3&#39;)
+user_deque = deque(('bobby1', 'bobby2'))
+user_deque = deque(['bobby1', 'bobby2', 'bobby3'])
+user_deque.appendleft('9')
+user_deque.append('10')
+user_deque.insert(0, 'bobby3')
 user_deque
 user_deque2 = user_deque.copy()
-user_deque2.appendleft(&#39;7&#39;)
+user_deque2.appendleft('7')
 </code></pre>
-
-<h4>Counter</h4>
-
-<pre class="line-numbers"><code class="language-python">from collections import Counter
-users = [&#39;bobby1&#39;, &#39;bobby2&#39;, &#39;bobby3&#39;, &#39;bobby4&#39;, &#39;bobby5&#39;, &#39;bobby6&#39;,]
-users2 = [&#39;bobby1&#39;, &#39;bobby2&#39;, &#39;bobby1&#39;, &#39;bobby2&#39;, &#39;bobby1&#39;, &#39;bobby2&#39;,]
+<h4><a id="counter" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Counter</h4>
+<pre><code class="language-python">from collections import Counter
+users = ['bobby1', 'bobby2', 'bobby3', 'bobby4', 'bobby5', 'bobby6',]
+users2 = ['bobby1', 'bobby2', 'bobby1', 'bobby2', 'bobby1', 'bobby2',]
 user_counter = Counter(users)
 user_counter.update(users2)
 # 统计前N个字符串的
@@ -231,38 +223,33 @@ ret = user_counter.most_common(2)
 user_counter
 ret
 </code></pre>
-
-<h4>Orderdict</h4>
-
-<pre class="line-numbers"><code class="language-python">from collections import OrderedDict
+<h4><a id="orderdict" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Orderdict</h4>
+<pre><code class="language-python">from collections import OrderedDict
 user_dict = dict()
 user_dict = OrderedDict()
-user_dict[&#39;b&#39;] = &#39;bobby2&#39;
-user_dict[&#39;a&#39;] = &#39;bobby1&#39;
-user_dict[&#39;c&#39;] = &#39;bobby3&#39;
-user_dict.pop(&#39;a&#39;)
-user_dict.move_to_end(&#39;b&#39;)
+user_dict['b'] = 'bobby2'
+user_dict['a'] = 'bobby1'
+user_dict['c'] = 'bobby3'
+user_dict.pop('a')
+user_dict.move_to_end('b')
 user_dict
 # 保证python2和3使用都是一样的
 </code></pre>
+<h4><a id="chainmap" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>ChainMap</h4>
+<pre><code class="language-python">from collections import ChainMap
 
-<h4>ChainMap</h4>
-
-<pre class="line-numbers"><code class="language-python">from collections import ChainMap
-
-user_dict1 = {&#39;a&#39;:&#39;bobby1&#39;, &#39;b&#39;:&#39;bobby2&#39;}
-user_dict2 = {&#39;c&#39;:&#39;bobby1&#39;, &#39;d&#39;:&#39;bobby2&#39;}
+user_dict1 = {'a':'bobby1', 'b':'bobby2'}
+user_dict2 = {'c':'bobby1', 'd':'bobby2'}
 new_dict = ChainMap(user_dict1, user_dict2)
-new_dict.new_child({&#39;aa&#39;:&#39;aa&#39;, &#39;bb&#39;:&#39;bb&#39;})
+new_dict.new_child({'aa':'aa', 'bb':'bb'})
 
 #如果有重复元素，就不会再出现第二次
 for k, v in new_dict.items():
     print(k, v)
 new_dict.maps
-new_dict.maps[0][&#39;a&#39;] = &#39;bobby&#39;
+new_dict.maps[0]['a'] = 'bobby'
 new_dict.maps
 </code></pre>
-
 <ul>
 <li>访问多个map， 合并访问</li>
 </ul>
@@ -287,31 +274,96 @@ new_dict.maps
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
-<script src="asset/prism.js"></script>
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   

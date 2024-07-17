@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,9 +139,8 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>死锁情况</h4>
-
-<pre class="line-numbers"><code class="language-python">#2. 锁会引起死锁
+                    <h4><a id="%E6%AD%BB%E9%94%81%E6%83%85%E5%86%B5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>死锁情况</h4>
+<pre><code class="language-python">#2. 锁会引起死锁
 #死锁的情况 A（a，b）
 A(a、b)
 acquire (a)
@@ -151,15 +150,12 @@ B(a、b)
 acquire (a)
 acquire (b)
 </code></pre>
-
-<h4>可重入的锁</h4>
-
+<h4><a id="%E5%8F%AF%E9%87%8D%E5%85%A5%E7%9A%84%E9%94%81" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>可重入的锁</h4>
 <ul>
 <li>同一个线程里面，可以连续调用多次acquire,一定要注意acquire的次数</li>
 <li>RLock可重入锁</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-python">from threading import Lock, RLock, Condition
+<pre><code class="language-python">from threading import Lock, RLock, Condition
 
 total = 0
 lock = RLock()
@@ -195,10 +191,8 @@ thread2.join()
 thread2.join()
 print(&quot;total {}&quot;.format(total))
 </code></pre>
-
-<h4>协同</h4>
-
-<pre class="line-numbers"><code class="language-python">import threading
+<h4><a id="%E5%8D%8F%E5%90%8C" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>协同</h4>
+<pre><code class="language-python">import threading
 
 class XiaoAi(threading.Thread):
     def __init__(self, lock):
@@ -225,10 +219,10 @@ class TianMao(threading.Thread):
         self.lock.release()
 
         self.lock.acquire()
-        print(&quot;{} : let&#39;s talk&quot;.format(self.name))
+        print(&quot;{} : let's talk&quot;.format(self.name))
         self.lock.release()
 
-if __name__ == &#39;__main__&#39;:
+if __name__ == '__main__':
     lock = threading.Lock()
     thread1 = XiaoAi(lock)
     thread2 = TianMao(lock)
@@ -237,14 +231,12 @@ if __name__ == &#39;__main__&#39;:
     thread1.join()
     thread2.join()
 </code></pre>
-
 <ul>
 <li>condition启动顺序很重要,在调用with cond之后才能调用wait或者notify方法</li>
-<li>condition有两层锁， 一把底层锁会在线程调用了wait方法的时候释放， 上面的锁会在每次调用wait的时候分配一把并放入到cond的等待队列中，等到notify方法的唤醒<br/>
+<li>condition有两层锁， 一把底层锁会在线程调用了wait方法的时候释放， 上面的锁会在每次调用wait的时候分配一把并放入到cond的等待队列中，等到notify方法的唤醒<br />
 xiaoai.start()</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-python">import threading
+<pre><code class="language-python">import threading
 
 class XiaoAi(threading.Thread):
     def __init__(self, cond):
@@ -254,27 +246,27 @@ class XiaoAi(threading.Thread):
     def run(self):
         with self.cond:
             self.cond.wait()
-            print(&#39;{}: 在 &#39;.format(self.name))
+            print('{}: 在 '.format(self.name))
             self.cond.notify()
 
             self.cond.wait()
-            print(&#39;{}: 好阿 &#39;.format(self.name))
+            print('{}: 好阿 '.format(self.name))
             self.cond.notify()
 
             self.cond.wait()
-            print(&#39;{}: 君住长江尾 &#39;.format(self.name))
+            print('{}: 君住长江尾 '.format(self.name))
             self.cond.notify()
 
             self.cond.wait()
-            print(&#39;{}: 共饮长江水 &#39;.format(self.name))
+            print('{}: 共饮长江水 '.format(self.name))
             self.cond.notify()
 
             self.cond.wait()
-            print(&#39;{}: 此恨何时已 &#39;.format(self.name))
+            print('{}: 此恨何时已 '.format(self.name))
             self.cond.notify()
 
             self.cond.wait()
-            print(&#39;{}: 定不负相思意 &#39;.format(self.name))
+            print('{}: 定不负相思意 '.format(self.name))
             self.cond.notify()
 
 class TianMao(threading.Thread):
@@ -284,31 +276,31 @@ class TianMao(threading.Thread):
 
     def run(self):
         with self.cond:
-            print(&#39;{}: 小爱同学 &#39;.format(self.name))
+            print('{}: 小爱同学 '.format(self.name))
             self.cond.notify()
             self.cond.wait()
 
-            print(&#39;{}: 我们来对古诗吧 &#39;.format(self.name))
+            print('{}: 我们来对古诗吧 '.format(self.name))
             self.cond.notify()
             self.cond.wait()
 
-            print(&#39;{}: 我住长江头 &#39;.format(self.name))
+            print('{}: 我住长江头 '.format(self.name))
             self.cond.notify()
             self.cond.wait()
 
-            print(&#39;{}: 日日思君不见君 &#39;.format(self.name))
+            print('{}: 日日思君不见君 '.format(self.name))
             self.cond.notify()
             self.cond.wait()
 
-            print(&#39;{}: 此水几时休 &#39;.format(self.name))
+            print('{}: 此水几时休 '.format(self.name))
             self.cond.notify()
             self.cond.wait()
 
-            print(&#39;{}: 只愿君心似我心 &#39;.format(self.name))
+            print('{}: 只愿君心似我心 '.format(self.name))
             self.cond.notify()
             self.cond.wait()
 
-if __name__ == &#39;__main__&#39;:
+if __name__ == '__main__':
     from concurrent import futures
     cond = threading.Condition()
     xiaoai = XiaoAi(cond)
@@ -317,10 +309,8 @@ if __name__ == &#39;__main__&#39;:
     xiaoai.start()
     tianmao.start()
 </code></pre>
-
-<h4>ThreadPoolExcutor</h4>
-
-<pre class="line-numbers"><code class="language-python">from concurrent.futures import ThreadPoolExecutor, as_completed, wait, FIRST_COMPLETED
+<h4><a id="threadpoolexcutor" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>ThreadPoolExcutor</h4>
+<pre><code class="language-python">from concurrent.futures import ThreadPoolExecutor, as_completed, wait, FIRST_COMPLETED
 from concurrent.futures import Future
 from multiprocessing import Pool
 
@@ -329,42 +319,36 @@ import time
 
 def get_html(times):
     time.sleep(times)
-    print(&#39;get page {} process&#39;.format(times))
+    print('get page {} process'.format(times))
     return times
 
 executor = ThreadPoolExecutor(max_workers=2)
 </code></pre>
-
-<h5>执行任务获取结果</h5>
-
-<pre class="line-numbers"><code class="language-python">task1 = executor.submit(get_html, (3))
+<h5><a id="%E6%89%A7%E8%A1%8C%E4%BB%BB%E5%8A%A1%E8%8E%B7%E5%8F%96%E7%BB%93%E6%9E%9C" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>执行任务获取结果</h5>
+<pre><code class="language-python">task1 = executor.submit(get_html, (3))
 task2 = executor.submit(get_html, (2))
 #
 print(task1.result())
 print(task2.cancel()) //取消结果
 </code></pre>
-
-<h5>多任务</h5>
-
-<pre class="line-numbers"><code class="language-python">urls = [3, 2, 4]
+<h5><a id="%E5%A4%9A%E4%BB%BB%E5%8A%A1" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>多任务</h5>
+<pre><code class="language-python">urls = [3, 2, 4]
 
 all_task = [executor.submit(get_html, (url)) for url in urls]
 
 for future in as_completed(all_task):
     data = future.result()
-    print(&#39;get {} page&#39;.format(data))
+    print('get {} page'.format(data))
 
 
 #通过excutor获取已经完成的task
 for data in executor.map(get_html, urls):
-    print(&#39;get {} page&#39;.format(data))
+    print('get {} page'.format(data))
 </code></pre>
-
-<h5>wait获取结果</h5>
-
-<pre class="line-numbers"><code class="language-python">#wait
+<h5><a id="wait%E8%8E%B7%E5%8F%96%E7%BB%93%E6%9E%9C" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>wait获取结果</h5>
+<pre><code class="language-python">#wait
 wait(all_task, return_when=FIRST_COMPLETED)
-print(&#39;main&#39;)
+print('main')
 </code></pre>
 
                   </article>
@@ -387,31 +371,96 @@ print(&#39;main&#39;)
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
-<script src="asset/prism.js"></script>
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   

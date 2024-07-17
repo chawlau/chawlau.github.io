@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,46 +139,35 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>与string值相比，strings.Builder类型的值有哪些优势？</h4>
-
+                    <h4><a id="%E4%B8%8Estring%E5%80%BC%E7%9B%B8%E6%AF%94%EF%BC%8Cstrings-builder%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%80%BC%E6%9C%89%E5%93%AA%E4%BA%9B%E4%BC%98%E5%8A%BF%EF%BC%9F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>与string值相比，strings.Builder类型的值有哪些优势？</h4>
 <ul>
 <li>已经存在的内容不变，但是可以拼接更多的内容</li>
 <li>减少了内存分配和内容拷贝的次数</li>
 <li>可将内容重置，可重用值</li>
 </ul>
-
-<h4>string.Builder</h4>
-
+<h4><a id="string-builder" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>string.Builder</h4>
 <ul>
 <li>Write</li>
 <li>WriteByte</li>
 <li>WriteRune</li>
 <li>WriteString</li>
 </ul>
-
-<h4>string.Builder约束</h4>
-
+<h4><a id="string-builder%E7%BA%A6%E6%9D%9F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>string.Builder约束</h4>
 <ul>
 <li>绝不共享Builder值以及它的指针值。</li>
 </ul>
-
-<h4>为什么说strings.Reader类型的值可以高效地读取字符串？</h4>
-
+<h4><a id="%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AF%B4strings-reader%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%80%BC%E5%8F%AF%E4%BB%A5%E9%AB%98%E6%95%88%E5%9C%B0%E8%AF%BB%E5%8F%96%E5%AD%97%E7%AC%A6%E4%B8%B2%EF%BC%9F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>为什么说strings.Reader类型的值可以高效地读取字符串？</h4>
 <ul>
 <li>Reader值可以让我们很方便地读取一个字符串中的内容。它的高效主要体现在它对字符串的读取机制上。在读取的过程中，Reader值会保存已读取的字节的计数，也称已读计数。</li>
 </ul>
-
-<h4>byte.Buffer</h4>
-
+<h4><a id="byte-buffer" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>byte.Buffer</h4>
 <ul>
 <li>使用字节切片作为内容机器</li>
 <li>int类型代表已读字节的计数</li>
 <li>Buffer值的长度是未读内容的长度，而不是已存内容的总长度。它与在当前值之上的读操作和写操作都有关系</li>
 <li>Buffer值的容量指的是它的内容容器（也就是那个字节切片）的容量，它只与在当前值之上的写操作有关，并会随着内容的写入而不断增长。</li>
 </ul>
-
-<h4>byte.Buffer已读计数的作用</h4>
-
+<h4><a id="byte-buffer%E5%B7%B2%E8%AF%BB%E8%AE%A1%E6%95%B0%E7%9A%84%E4%BD%9C%E7%94%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>byte.Buffer已读计数的作用</h4>
 <ul>
 <li>读取内容时，相应方法会依据已读计数找到未读部分，并在读取后更新计数。</li>
 <li>写入内容时，如需扩容，相应方法会根据已读计数实现扩容策略。</li>
@@ -188,63 +177,59 @@
 <li>导出内容时，相应方法只会导出已读计数代表的索引之后的未读部分。</li>
 <li>获取长度时，相应方法会依据已读计数和内容容器的长度，计算未读部分的长度并返回。</li>
 </ul>
-
-<h4>对比strings.Builder和bytes.Buffer的String方法，并判断哪一个更高效？原因是什么？</h4>
-
+<h4><a id="%E5%AF%B9%E6%AF%94strings-builder%E5%92%8Cbytes-buffer%E7%9A%84string%E6%96%B9%E6%B3%95%EF%BC%8C%E5%B9%B6%E5%88%A4%E6%96%AD%E5%93%AA%E4%B8%80%E4%B8%AA%E6%9B%B4%E9%AB%98%E6%95%88%EF%BC%9F%E5%8E%9F%E5%9B%A0%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>对比strings.Builder和bytes.Buffer的String方法，并判断哪一个更高效？原因是什么？</h4>
 <ul>
 <li>strings.Builder String方法中*(*string)(unsafe.Pointer(&amp;b.buf)) 是直接取得buf的地址然后转换成string返回。而bytes.Buffer的String方法是 string(b.buf[b.off:])然后对buf进行操作</li>
 </ul>
-
-<h4>案例</h4>
-
-<pre class="line-numbers"><code class="language-go">const numbers = 100
+<h4><a id="%E6%A1%88%E4%BE%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>案例</h4>
+<pre><code class="language-go">const numbers = 100
 
 func BenchmarkSprintf(b *testing.B) {
-    b.ResetTimer()
-    for idx := 0; idx &lt; b.N; idx++ {
-        var s string
-        for i := 0; i &lt; numbers; i++ {
-            s = fmt.Sprintf(&quot;%v%v&quot;, s, i)
-        }
-    }
-    b.StopTimer()
+	b.ResetTimer()
+	for idx := 0; idx &lt; b.N; idx++ {
+		var s string
+		for i := 0; i &lt; numbers; i++ {
+			s = fmt.Sprintf(&quot;%v%v&quot;, s, i)
+		}
+	}
+	b.StopTimer()
 }
 
 func BenchmarkStringBuilder(b *testing.B) {
-    b.ResetTimer()
-    for idx := 0; idx &lt; b.N; idx++ {
-        var builder strings.Builder
-        for i := 0; i &lt; numbers; i++ {
-            builder.WriteString(strconv.Itoa(i))
+	b.ResetTimer()
+	for idx := 0; idx &lt; b.N; idx++ {
+		var builder strings.Builder
+		for i := 0; i &lt; numbers; i++ {
+			builder.WriteString(strconv.Itoa(i))
 
-        }
-        _ = builder.String()
-    }
-    b.StopTimer()
+		}
+		_ = builder.String()
+	}
+	b.StopTimer()
 }
 
 func BenchmarkBytesBuf(b *testing.B) {
-    b.ResetTimer()
-    for idx := 0; idx &lt; b.N; idx++ {
-        var buf bytes.Buffer
-        for i := 0; i &lt; numbers; i++ {
-            buf.WriteString(strconv.Itoa(i))
-        }
-        _ = buf.String()
-    }
-    b.StopTimer()
+	b.ResetTimer()
+	for idx := 0; idx &lt; b.N; idx++ {
+		var buf bytes.Buffer
+		for i := 0; i &lt; numbers; i++ {
+			buf.WriteString(strconv.Itoa(i))
+		}
+		_ = buf.String()
+	}
+	b.StopTimer()
 }
 
 func BenchmarkStringAdd(b *testing.B) {
-    b.ResetTimer()
-    for idx := 0; idx &lt; b.N; idx++ {
-        var s string
-        for i := 0; i &lt; numbers; i++ {
-            s += strconv.Itoa(i)
-        }
+	b.ResetTimer()
+	for idx := 0; idx &lt; b.N; idx++ {
+		var s string
+		for i := 0; i &lt; numbers; i++ {
+			s += strconv.Itoa(i)
+		}
 
-    }
-    b.StopTimer()
+	}
+	b.StopTimer()
 }
 </code></pre>
 
@@ -268,31 +253,96 @@ func BenchmarkStringAdd(b *testing.B) {
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
-<script src="asset/prism.js"></script>
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   

@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,25 +139,20 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>性能指标</h4>
-
+                    <h4><a id="%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>性能指标</h4>
 <ul>
 <li>响应时间</li>
 <li>吞吐率</li>
 </ul>
-
-<h4>计算机的计时单位</h4>
-
+<h4><a id="%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%9A%84%E8%AE%A1%E6%97%B6%E5%8D%95%E4%BD%8D" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>计算机的计时单位</h4>
 <ul>
 <li>CPU时钟</li>
 <li>wall clock time , Elapsed Time 记录程序运行结束的时间减去程序开始运行的时间</li>
 <li>real time，也就是我们说的 Wall Clock Time，也就是运行程序整个过程中流逝掉的时间</li>
 <li>user time，也就是 CPU 在运行你的程序，在用户态运行指令的时间</li>
-<li>sys time，是 CPU 在运行你的程序，在操作系统内核里运行指令的时间<img src="media/15566729397801/c2892bc899e5a9ad5c04c10f57705127.jpg" alt="c2892bc899e5a9ad5c04c10f57705127"/></li>
+<li>sys time，是 CPU 在运行你的程序，在操作系统内核里运行指令的时间<img src="media/15566729397801/c2892bc899e5a9ad5c04c10f57705127.jpg" alt="c2892bc899e5a9ad5c04c10f57705127" /></li>
 </ul>
-
-<h4>性能优化三指标</h4>
-
+<h4><a id="%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B8%89%E6%8C%87%E6%A0%87" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>性能优化三指标</h4>
 <ul>
 <li>程序的 CPU 执行时间 =CPU 时钟周期数×时钟周期时间</li>
 <li>程序的 CPU 执行时间 = 指令数×CPI×Clock Cycle Time</li>
@@ -165,16 +160,12 @@
 <li>每条指令的平均时钟周期数 CPI，就是一条指令到底需要多少 CPU Cycle。在后面讲解 CPU 结构的时候，我们会看到，现代的 CPU 通过流水线技术（Pipeline），让一条指令需要的 CPU Cycle 尽可能地少。因此，对于 CPI 的优化，也是计算机组成和体系结构中的重要一环。</li>
 <li>指令数，代表执行我们的程序到底需要多少条指令、用哪些指令。这个很多时候就把挑战交给了编译器。同样的代码，编译成计算机指令时候，就有各种不同的表示方式。</li>
 </ul>
-
-<h4>问题</h4>
-
+<h4><a id="%E9%97%AE%E9%A2%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>问题</h4>
 <ul>
 <li>user + sys 运行出来会比real time多</li>
 <li>是因为多核并行执行程序</li>
 </ul>
-
-<h4>跑分软件作弊</h4>
-
+<h4><a id="%E8%B7%91%E5%88%86%E8%BD%AF%E4%BB%B6%E4%BD%9C%E5%BC%8A" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>跑分软件作弊</h4>
 <ul>
 <li>一是检测到跑分软件就放开温度墙和功耗墙的限制 相当于提高主频</li>
 <li>二是跑分程序对于机型做了专门优化 相当于优化CPI和减少指令数</li>
@@ -200,29 +191,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

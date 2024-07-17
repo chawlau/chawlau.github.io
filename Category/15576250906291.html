@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,53 +139,40 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>回收场景</h4>
-
+                    <h4><a id="%E5%9B%9E%E6%94%B6%E5%9C%BA%E6%99%AF" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>回收场景</h4>
 <ul>
 <li>直接内存回收</li>
 <li>内核线程回收 kswapd0</li>
 </ul>
-
-<h5>三种水位</h5>
-
+<h5><a id="%E4%B8%89%E7%A7%8D%E6%B0%B4%E4%BD%8D" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>三种水位</h5>
 <ul>
 <li>页最小阈值（pages_min）</li>
 <li>页低阈值（pages_low）</li>
-<li>页高阈值（pages_high
-<img src="media/15576250906291/c1054f1e71037795c6f290e670b29120.png" alt="c1054f1e71037795c6f290e670b29120"/></li>
+<li>页高阈值（pages_high<br />
+<img src="media/15576250906291/c1054f1e71037795c6f290e670b29120.png" alt="c1054f1e71037795c6f290e670b29120" /></li>
 </ul>
-
-<h4>NUMA和Swap</h4>
-
+<h4><a id="numa%E5%92%8Cswap" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>NUMA和Swap</h4>
 <ul>
 <li>NUMA 架构下，多个处理器被划分到不同 Node 上，且每个 Node 都拥有自己的本地内存空间。</li>
-<li>Node 内部的内存空间，实际上又可以进一步分为不同的内存域（Zone），比如直接内存访问区（DMA）、普通内存区（NORMAL）、伪内存区（MOVABLE）
-<img src="media/15576250906291/be6cabdecc2ec98893f67ebd5b9aead9.png" alt="be6cabdecc2ec98893f67ebd5b9aead9"/></li>
+<li>Node 内部的内存空间，实际上又可以进一步分为不同的内存域（Zone），比如直接内存访问区（DMA）、普通内存区（NORMAL）、伪内存区（MOVABLE）<br />
+<img src="media/15576250906291/be6cabdecc2ec98893f67ebd5b9aead9.png" alt="be6cabdecc2ec98893f67ebd5b9aead9" /></li>
 </ul>
-
-<h5>回收内存模式</h5>
-
+<h5><a id="%E5%9B%9E%E6%94%B6%E5%86%85%E5%AD%98%E6%A8%A1%E5%BC%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>回收内存模式</h5>
 <ul>
 <li>/proc/sys/vm/zone_reclaim_mode</li>
 <li>0 可以从其他 Node 寻找空闲内存，也可以从本地回收内存</li>
 <li>1、2、4 都表示只回收本地内存，2 表示可以回写脏数据回收内存，4 表示可以用 Swap 方式回收内存</li>
 </ul>
-
-<h4>文件页面和匿名页面</h4>
-
+<h4><a id="%E6%96%87%E4%BB%B6%E9%A1%B5%E9%9D%A2%E5%92%8C%E5%8C%BF%E5%90%8D%E9%A1%B5%E9%9D%A2" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>文件页面和匿名页面</h4>
 <ul>
 <li>对文件页的回收，当然就是直接回收缓存，或者把脏页写回磁盘后再回收。</li>
-<li>而对匿名页的回收，其实就是通过 Swap 机制，把它们写入磁盘后再释放内存 </li>
+<li>而对匿名页的回收，其实就是通过 Swap 机制，把它们写入磁盘后再释放内存</li>
 </ul>
-
-<h4>回收比例</h4>
-
+<h4><a id="%E5%9B%9E%E6%94%B6%E6%AF%94%E4%BE%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>回收比例</h4>
 <ul>
 <li>/proc/sys/vm/swappiness</li>
 </ul>
-
-<h4>swap 类型</h4>
-
+<h4><a id="swap%E7%B1%BB%E5%9E%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>swap 类型</h4>
 <ul>
 <li>swap分区</li>
 <li>swap文件</li>
@@ -193,19 +180,15 @@
 <li>kbactive，表示活跃内存，也就是最近使用过的内存，一般不会被系统回收。</li>
 <li>kbinact，表示非活跃内存，也就是不常访问的内存，有可能会被系统回收。</li>
 </ul>
-
-<h4>清空buffer和cache</h4>
-
+<h4><a id="%E6%B8%85%E7%A9%BAbuffer%E5%92%8Ccache" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>清空buffer和cache</h4>
 <ul>
 <li>sync; echo 1 &gt; /proc/sys/vm/drop_caches;</li>
 <li>echo 2 &gt; /proc/sys/vm/drop_caches;</li>
 <li>echo 3 &gt; /proc/sys/vm/drop_caches;</li>
 </ul>
-
-<h4>观察系统内存变化</h4>
-
+<h4><a id="%E8%A7%82%E5%AF%9F%E7%B3%BB%E7%BB%9F%E5%86%85%E5%AD%98%E5%8F%98%E5%8C%96" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>观察系统内存变化</h4>
 <ul>
-<li>watch -d grep -A 15 &#39;Normal&#39; /proc/zoneinfo</li>
+<li>watch -d grep -A 15 'Normal' /proc/zoneinfo</li>
 </ul>
 
                   </article>
@@ -228,29 +211,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

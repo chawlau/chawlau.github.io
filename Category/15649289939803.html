@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,17 +139,14 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>高水位作用</h4>
-
+                    <h4><a id="%E9%AB%98%E6%B0%B4%E4%BD%8D%E4%BD%9C%E7%94%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>高水位作用</h4>
 <ul>
 <li>定义消息可见性，即用来标识分区下的哪些消息是可以被消费者消费的。</li>
 <li>帮助 Kafka 完成副本同步</li>
-<li><img src="media/15649289939803/c2243d5887f0ca7a20a524914b85a8dd.png" alt="c2243d5887f0ca7a20a524914b85a8dd"/></li>
+<li><img src="media/15649289939803/c2243d5887f0ca7a20a524914b85a8dd.png" alt="c2243d5887f0ca7a20a524914b85a8dd" /></li>
 <li>高水位和 LEO 是副本对象的两个重要属性。Kafka 所有副本都有对应的高水位和 LEO 值，而不仅仅是 Leader 副本</li>
 </ul>
-
-<h4>高水位更新机制</h4>
-
+<h4><a id="%E9%AB%98%E6%B0%B4%E4%BD%8D%E6%9B%B4%E6%96%B0%E6%9C%BA%E5%88%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>高水位更新机制</h4>
 <ul>
 <li>leader的broker保存远程副本，帮助leader副本 确定高水位</li>
 <li>leader的LEO通过生产者消息写入磁盘更新</li>
@@ -158,17 +155,13 @@
 <li>leader副本高水位取leader副本和所有同步的leo的最小值</li>
 <li>leader远程副本leo通过follower拉取消息上报的位移算</li>
 </ul>
-
-<h4>副本同步判断</h4>
-
+<h4><a id="%E5%89%AF%E6%9C%AC%E5%90%8C%E6%AD%A5%E5%88%A4%E6%96%AD" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>副本同步判断</h4>
 <ul>
 <li>该远程 Follower 副本在 ISR 中。</li>
 <li>该远程 Follower 副本 LEO 值落后于 Leader 副本 LEO 值的时间，不超过 Broker 端参数 replica.lag.time.max.ms 的值</li>
 <li>先更新leo，然后更新高水位</li>
 </ul>
-
-<h4>Leader Epoch</h4>
-
+<h4><a id="leader-epoch" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Leader Epoch</h4>
 <ul>
 <li>Epoch。一个单调增加的版本号。每当副本领导权发生变更时，都会增加该版本号。小版本号的 Leader 被认为是过期 Leader，不能再行使 Leader 权力。</li>
 <li>起始位移（Start Offset）。Leader 副本在该 Epoch 值上写入的首条消息的位移。</li>
@@ -194,29 +187,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

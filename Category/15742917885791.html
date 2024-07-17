@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,178 +139,174 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>动机</h4>
-
+                    <h4><a id="%E5%8A%A8%E6%9C%BA" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>动机</h4>
 <ul>
 <li>在软件构建过程中，经常会出现多个对象互相关联交互的情况，对象之间常常会维持一种复杂的引用关系，如果遇到一些需求的更改，这种直接的引用关系将面临不断的变化。</li>
 <li>在这种情況下，我们可使用一个“中介对象”来管理对象间的关联关系，避免相互交互的对象之间的紧耦合引用关系，从而更好地抵御变化。</li>
 </ul>
-
-<h4>模式定义</h4>
-
+<h4><a id="%E6%A8%A1%E5%BC%8F%E5%AE%9A%E4%B9%89" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>模式定义</h4>
 <ul>
 <li>用一个中介对象来封装（封装变化）一系列的对象交互。中介者使各对象不需要显式的相互引用（编译时依赖运行时依赖），从而使其耦合松散（管理变化），而且可以独立地改变它们之间的交互</li>
 <li>编译时依赖改成运行时依赖</li>
 </ul>
-
-<h4>结构</h4>
-
-<p><img src="media/15742917885791/15803924036000.jpg" alt="" style="width:758px;"/></p>
-
-<p><img src="media/15742917885791/15742924128916.jpg" alt="" style="width:986px;"/></p>
-
-<h4>要点总结</h4>
-
+<h4><a id="%E7%BB%93%E6%9E%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>结构</h4>
+<p><img src="media/15742917885791/15803924036000.jpg" alt="" style="width:758px;" /></p>
+<p><img src="media/15742917885791/15742924128916.jpg" alt="" style="width:986px;" /></p>
+<h4><a id="%E8%A6%81%E7%82%B9%E6%80%BB%E7%BB%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>要点总结</h4>
 <ul>
-<li><p>将多个对象间复杂的关联关系解耦，Mediator 模式将多个对象间的控制逻辑进行集中管理，变“多个对象互相关联“为“多个对象和一个中介者关联“，简化了系统的维护，抵御了可能的变化。</p></li>
-<li><p>随着控制逻辑的复杂化，Mediator 具体对象的实现可能相当复杂。这时候可以对 Mediator 对象进行分解处理。</p></li>
-<li><p>Facade 模式是解耦系统（单向）的对象关联关系；Mediator 模式是解耦系统内各个对象之间（双向）的关联关系。</p></li>
+<li>
+<p>将多个对象间复杂的关联关系解耦，Mediator 模式将多个对象间的控制逻辑进行集中管理，变“多个对象互相关联“为“多个对象和一个中介者关联“，简化了系统的维护，抵御了可能的变化。</p>
+</li>
+<li>
+<p>随着控制逻辑的复杂化，Mediator 具体对象的实现可能相当复杂。这时候可以对 Mediator 对象进行分解处理。</p>
+</li>
+<li>
+<p>Facade 模式是解耦系统（单向）的对象关联关系；Mediator 模式是解耦系统内各个对象之间（双向）的关联关系。</p>
+</li>
 </ul>
-
-<h4>golang_demo</h4>
-
-<pre class="line-numbers"><code class="language-go">package desian_pattern_practise
+<h4><a id="golang-demo" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>golang_demo</h4>
+<pre><code class="language-go">package desian_pattern_practise
 
 import (
-    &quot;reflect&quot;
-    &quot;strings&quot;
-    &quot;sync&quot;
+	&quot;reflect&quot;
+	&quot;strings&quot;
+	&quot;sync&quot;
 )
 
 var (
-    mediator *Mediator
-    monce sync.Once
+	mediator *Mediator
+	monce sync.Once
 )
 type IColleague interface {
-    GetMediator()
+	GetMediator()
 }
 
 type Colleague struct {
-    mediator IMediator
+	mediator IMediator
 }
 
 
 type IMediator interface {
-    Execute(IColleague)
+	Execute(IColleague)
 }
 
 type Mediator struct {
-    cd, cpu, videoCard, soundCard IColleague
+	cd, cpu, videoCard, soundCard IColleague
 }
 
 func (m *Mediator) SetCD(cd IColleague) {
-    m.cd = cd
+	m.cd = cd
 }
 
 func (m *Mediator) SetCpu(cpu IColleague) {
-    m.cpu = cpu
+	m.cpu = cpu
 }
 
 func (m *Mediator) SetVideoCard(videoCard IColleague) {
-    m.videoCard = videoCard
+	m.videoCard = videoCard
 }
 
 func (m *Mediator) SetSoundCard(soundCard IColleague) {
-    m.soundCard = soundCard
+	m.soundCard = soundCard
 }
 
 func GetMediator() *Mediator {
-    monce.Do(func() {
-        mediator = &amp;Mediator{}
-    })
-    return mediator
+	monce.Do(func() {
+		mediator = &amp;Mediator{}
+	})
+	return mediator
 }
 
 func (m *Mediator) Execute(i IColleague) {
-    switch i.(type) {
-    case *CDDriver:
-        m.cpu.(*Cpu).Process(i.(*CDDriver).data)
-    case *Cpu:
-        m.soundCard.(*SoundCard).Play(i.(*Cpu).audio)
-        m.videoCard.(*VideoCard).Display(i.(*Cpu).video)
-    }
+	switch i.(type) {
+	case *CDDriver:
+		m.cpu.(*Cpu).Process(i.(*CDDriver).data)
+	case *Cpu:
+		m.soundCard.(*SoundCard).Play(i.(*Cpu).audio)
+		m.videoCard.(*VideoCard).Display(i.(*Cpu).video)
+	}
 }
 
 type CDDriver struct {
-    *Colleague
-    data string
+	*Colleague
+	data string
 }
 
 func NewCDDriver() *CDDriver {
-    return &amp;CDDriver{
-        Colleague: &amp;Colleague{
-            mediator: GetMediator(),
-        },
-    }
+	return &amp;CDDriver{
+		Colleague: &amp;Colleague{
+			mediator: GetMediator(),
+		},
+	}
 }
 
 func (c *CDDriver) GetMediator() {}
 
 func (c *CDDriver) ReadData() {
-    c.data = &quot;music, image&quot;
-    println(reflect.TypeOf(c).String() + &quot; reading data&quot;)
-    c.mediator.Execute(c)
+	c.data = &quot;music, image&quot;
+	println(reflect.TypeOf(c).String() + &quot; reading data&quot;)
+	c.mediator.Execute(c)
 }
 
 type Cpu struct {
-    *Colleague
-    video, audio string
+	*Colleague
+	video, audio string
 }
 
 func NewCpu() *Cpu{
-    return &amp;Cpu {
-        Colleague: &amp;Colleague{
-            mediator: GetMediator(),
-        },
-    }
+	return &amp;Cpu {
+		Colleague: &amp;Colleague{
+			mediator: GetMediator(),
+		},
+	}
 }
 
 func (c *Cpu) GetMediator() {}
 
 func (c *Cpu) Process(data string) {
-    sp := strings.Split(data, &quot;,&quot;)
-    c.video = sp[1]
-    c.audio = sp[0]
-    println(reflect.TypeOf(c).String() + &quot; video &quot; + c.video + &quot; audio &quot;, c.audio)
-    c.mediator.Execute(c)
+	sp := strings.Split(data, &quot;,&quot;)
+	c.video = sp[1]
+	c.audio = sp[0]
+	println(reflect.TypeOf(c).String() + &quot; video &quot; + c.video + &quot; audio &quot;, c.audio)
+	c.mediator.Execute(c)
 }
 
 type VideoCard struct {
-    *Colleague
+	*Colleague
 }
 
 func NewVideoCard() *VideoCard{
-    return &amp;VideoCard {
-        Colleague: &amp;Colleague{
-            mediator: GetMediator(),
-        },
-    }
+	return &amp;VideoCard {
+		Colleague: &amp;Colleague{
+			mediator: GetMediator(),
+		},
+	}
 }
 
 func (v *VideoCard) GetMediator() {}
 
 func (v *VideoCard) Display(data string) {
-    println(reflect.TypeOf(v).String() + &quot; display data &quot;, data)
-    v.mediator.Execute(v)
+	println(reflect.TypeOf(v).String() + &quot; display data &quot;, data)
+	v.mediator.Execute(v)
 }
 
 type SoundCard struct {
-    *Colleague
+	*Colleague
 }
 
 func NewSoundCard() *SoundCard {
-    return &amp;SoundCard {
-        Colleague: &amp;Colleague{
-            mediator: GetMediator(),
-        },
-    }
+	return &amp;SoundCard {
+		Colleague: &amp;Colleague{
+			mediator: GetMediator(),
+		},
+	}
 }
 
 func (v *SoundCard) GetMediator() {}
 
 func (v *SoundCard) Play(data string) {
-    println(reflect.TypeOf(v).String() + &quot; play data &quot;, data)
-    v.mediator.Execute(v)
+	println(reflect.TypeOf(v).String() + &quot; play data &quot;, data)
+	v.mediator.Execute(v)
 }
 
 package desian_pattern_practise
@@ -318,21 +314,19 @@ package desian_pattern_practise
 import &quot;testing&quot;
 
 func TestMediator_Execute(t *testing.T) {
-    cd:= NewCDDriver()
-    cpu := NewCpu()
-    soundCard := NewSoundCard()
-    videoCard := NewVideoCard()
-    GetMediator().SetCD(cd)
-    GetMediator().SetCpu(cpu)
-    GetMediator().SetSoundCard(soundCard)
-    GetMediator().SetVideoCard(videoCard)
-    cd.ReadData()
+	cd:= NewCDDriver()
+	cpu := NewCpu()
+	soundCard := NewSoundCard()
+	videoCard := NewVideoCard()
+	GetMediator().SetCD(cd)
+	GetMediator().SetCpu(cpu)
+	GetMediator().SetSoundCard(soundCard)
+	GetMediator().SetVideoCard(videoCard)
+	cd.ReadData()
 }
 </code></pre>
-
-<h4>cpp_demo</h4>
-
-<pre class="line-numbers"><code class="language-cpp">//
+<h4><a id="cpp-demo" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>cpp_demo</h4>
+<pre><code class="language-C++">//
 // Created by eredinliu on 2020-01-31.
 //
 #include &lt;iostream&gt;
@@ -468,10 +462,8 @@ int main() {
     cd-&gt;ReadData();
 }
 </code></pre>
-
-<h4>python_code</h4>
-
-<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
+<h4><a id="python-code" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>python_code</h4>
+<pre><code class="language-python">from abc import ABCMeta, abstractmethod
 
 class Colleague(object):
 
@@ -518,10 +510,10 @@ class CDDriver(Colleague):
 
     def __init__(self, mediator):
         super().__init__(mediator)
-        self.__data = &#39;&#39;
+        self.__data = ''
 
     def read_data(self):
-        self.__data = &#39;Music,Image&#39;
+        self.__data = 'Music,Image'
         print(type(self).__name__, &quot; reading data&quot;)
         self.mediator.execute(self)
 
@@ -532,10 +524,10 @@ class Cpu(Colleague):
 
     def __init__(self, mediator):
         super().__init__(mediator)
-        self.__video = self.__sound = &#39;&#39;
+        self.__video = self.__sound = ''
 
     def process(self, data):
-        ret = data.split(&#39;,&#39;)
+        ret = data.split(',')
         self.__video = ret[1]
         self.__sound = ret[0]
         print(type(self).__name__, &quot; video {} sound {}&quot;.format(self.__video, 
@@ -567,7 +559,7 @@ class SoundCard(Colleague):
     def process(self, data):
         print(type(self).__name__, &quot; play {}&quot;.format(data))
 
-if __name__ == &#39;__main__&#39;:
+if __name__ == '__main__':
     mediator = Mediator()
     cd = CDDriver(mediator)
     cpu = Cpu(mediator)
@@ -600,31 +592,96 @@ if __name__ == &#39;__main__&#39;:
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
-<script src="asset/prism.js"></script>
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   

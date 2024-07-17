@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,18 +139,15 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>集群管理</h4>
-
+                    <h4><a id="%E9%9B%86%E7%BE%A4%E7%AE%A1%E7%90%86" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>集群管理</h4>
 <ul>
 <li>GET /_cat/health?v</li>
 <li>green：每个索引的primary shard和replica shard都是active状态的</li>
 <li>yellow：每个索引的primary shard都是active状态的，但是部分replica shard不是active状态，处于不可用的状态</li>
 <li>red：不是所有索引的primary shard都是active状态的，部分索引有数据丢失了</li>
 </ul>
-
-<h4>替换方式</h4>
-
-<pre class="line-numbers"><code class="language-text">PUT /ecommerce/product/1
+<h4><a id="%E6%9B%BF%E6%8D%A2%E6%96%B9%E5%BC%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>替换方式</h4>
+<pre><code class="language-plain_text">PUT /ecommerce/product/1
 {
     &quot;name&quot; : &quot;jiajieshi yagao&quot;,
     &quot;desc&quot; :  &quot;youxiao fangzhu&quot;,
@@ -159,27 +156,21 @@
     &quot;tags&quot;: [ &quot;fangzhu&quot; ]
 }
 </code></pre>
-
 <ul>
 <li>替换方式有一个不好，即使必须带上所有的field，才能去进行信息的修改</li>
 </ul>
-
-<h4>更新请求</h4>
-
-<pre class="line-numbers"><code class="language-text">POST /ecommerce/product/1/_update
+<h4><a id="%E6%9B%B4%E6%96%B0%E8%AF%B7%E6%B1%82" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>更新请求</h4>
+<pre><code class="language-plain_text">POST /ecommerce/product/1/_update
 {
   &quot;doc&quot;: {
     &quot;name&quot;: &quot;jiaqiangban gaolujie yagao&quot;
   }
 }
 </code></pre>
-
 <ul>
 <li>可以更新部分请求</li>
 </ul>
-
-<h4>节点</h4>
-
+<h4><a id="%E8%8A%82%E7%82%B9" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>节点</h4>
 <ul>
 <li>Data Node</li>
 <li>可以保存数据的节点，叫做 Data Node。负责保存分片数据。在数据扩展上起到了</li>
@@ -187,17 +178,13 @@
 <li>Coordinating Node</li>
 <li>负责接受 Cliente 的请求，将请求分发到合适的节点，最终把结果汇集到一起 o 每个节点默认都起到了 Coordinating Nodee 的职责</li>
 </ul>
-
-<h4>分片</h4>
-
+<h4><a id="%E5%88%86%E7%89%87" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>分片</h4>
 <ul>
-<li>主分片，用以解決数据水平扩展的题。通过主分片，可以将数据分布到集群内的所有节点之上 </li>
+<li>主分片，用以解決数据水平扩展的题。通过主分片，可以将数据分布到集群内的所有节点之上</li>
 <li>一个分片是一个运行的 Lucene 的实例</li>
-<li>主分片数在索引创建时指定，后续不允许修改，除非 Reindex </li>
+<li>主分片数在索引创建时指定，后续不允许修改，除非 Reindex</li>
 </ul>
-
-<h4>分片设置</h4>
-
+<h4><a id="%E5%88%86%E7%89%87%E8%AE%BE%E7%BD%AE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>分片设置</h4>
 <ul>
 <li>分片数设置过小 导致后续无法增加节点实现水品扩展</li>
 <li>单个分片的数据量太大，导致数据重新分配耗时</li>
@@ -226,31 +213,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
-<script src="asset/prism.js"></script>
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   

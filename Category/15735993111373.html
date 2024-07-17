@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,53 +139,41 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>函数使用</h4>
-
-<h5>rate</h5>
-
+                    <h4><a id="%E5%87%BD%E6%95%B0%E4%BD%BF%E7%94%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>函数使用</h4>
+<h5><a id="rate" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>rate</h5>
 <ul>
 <li>rate(go_goroutines[1m])</li>
 <li>counter类型的数据必须使用rate和increase函数</li>
-<li>在我们的工作中 取1m 还是取5m<br/>
+<li>在我们的工作中 取1m 还是取5m<br />
 这个取决于 我们对于监控数据的敏感性程度来挑选</li>
 <li>rate(1m) 是取一段时间增量的平均每秒数量</li>
 <li>rate() -&gt; CPU 内存 硬盘 IO 网络流量</li>
 </ul>
-
-<h5>increase</h5>
-
+<h5><a id="increase" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>increase</h5>
 <ul>
 <li>increase(1m) 则是 取一段时间增量的总量</li>
 <li>对比rate,曲线基本一致，但是纵坐标单位不一样</li>
-<li><img src="media/15725061245362/15725074004046.jpg" alt="" style="width:1631px;"/></li>
+<li><img src="media/15725061245362/15725074004046.jpg" alt="" style="width:1631px;" /></li>
 <li>如果采样点比较少，rate函数容易断链，采用increase比较平缓</li>
 </ul>
-
-<h5>sum</h5>
-
+<h5><a id="sum" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>sum</h5>
 <ul>
 <li>sum 会把结果集的输出进行总加合</li>
 <li>sum() by (cluster_name)</li>
 <li>sum() by (instance)</li>
 </ul>
-
-<h5>topk</h5>
-
+<h5><a id="topk" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>topk</h5>
 <ul>
 <li>topk(4,rate(node_network_receive_packets_total[20m]))</li>
 <li>根据给定的数字 取数值最高 &gt;=x 的数值</li>
 <li>Topk因为对于每一个时间点 都只取前三高的数值 那么必然会造成 单个机器的采集数据不连贯,实际使用的时候 一般用topk()函数进行瞬时报警 而不是为了观察曲线图</li>
 </ul>
-
-<h5>count</h5>
-
+<h5><a id="count" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>count</h5>
 <ul>
 <li>count进行一些模糊的监控判断</li>
 <li>比如说 企业中有100台服务器，那么当只有10台服务器CPU高 于80%的时候 这个时候不需要报警但是 当符合80%CPU的服务器数量 超过 30台的时候 那么就 会触发报警 count()</li>
 </ul>
-
-<h5>promethus</h5>
-
+<h5><a id="promethus" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>promethus</h5>
 <ul>
 <li>daemonize启动</li>
 <li>--web.read-timeout=5m 链接最大等待时间</li>
@@ -195,9 +183,7 @@
 <li>--query.timeout=2m</li>
 <li>--query.max-concurrency=20</li>
 </ul>
-
-<h4>配置文件</h4>
-
+<h4><a id="%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>配置文件</h4>
 <ul>
 <li>node_cpu</li>
 <li>node_memory</li>
@@ -225,29 +211,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

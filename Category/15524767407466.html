@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,31 +139,22 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>多机房负载均衡</h4>
-
-<p><img src="media/15524767407466/75c4ef7b74fa445515c9150a0c353d5d.png" alt="75c4ef7b74fa445515c9150a0c353d5d"/></p>
-
-<h4>多机房数据同步</h4>
-
-<h5>主从机房架构</h5>
-
-<h5>独立机房架构</h5>
-
+                    <h4><a id="%E5%A4%9A%E6%9C%BA%E6%88%BF%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>多机房负载均衡</h4>
+<p><img src="media/15524767407466/75c4ef7b74fa445515c9150a0c353d5d.png" alt="75c4ef7b74fa445515c9150a0c353d5d" /></p>
+<h4><a id="%E5%A4%9A%E6%9C%BA%E6%88%BF%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>多机房数据同步</h4>
+<h5><a id="%E4%B8%BB%E4%BB%8E%E6%9C%BA%E6%88%BF%E6%9E%B6%E6%9E%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>主从机房架构</h5>
+<h5><a id="%E7%8B%AC%E7%AB%8B%E6%9C%BA%E6%88%BF%E6%9E%B6%E6%9E%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>独立机房架构</h5>
 <ul>
 <li>通过一个叫 WMB 的消息同步组件把各自机房的写请求同步一份给对方机房，每个机房的处理机接收到写请求后更新各自机房的缓存，只有一个机房会更新数据库，其他机房的数据库通过 MySQL 的 binlog 同步机制实现数据同步</li>
 </ul>
-
-<h4>WMB消息同步组件</h4>
-
+<h4><a id="wmb%E6%B6%88%E6%81%AF%E5%90%8C%E6%AD%A5%E7%BB%84%E4%BB%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>WMB消息同步组件</h4>
 <ul>
 <li>reship，负责把本机房的写请求分发一份给别的机房。</li>
-<li>collector，负责从别的机房读取写请求，然后再把请求转发给本机房的处理机。<img src="media/15524767407466/e9147143867af6c73ff72d68e284c211.png" alt="e9147143867af6c73ff72d68e284"/></li>
+<li>collector，负责从别的机房读取写请求，然后再把请求转发给本机房的处理机。<img src="media/15524767407466/e9147143867af6c73ff72d68e284c211.png" alt="e9147143867af6c73ff72d68e284" /></li>
 <li>MCQ消息队列</li>
 <li>RPC调用</li>
 </ul>
-
-<h4>多机房数据的一致性</h4>
-
+<h4><a id="%E5%A4%9A%E6%9C%BA%E6%88%BF%E6%95%B0%E6%8D%AE%E7%9A%84%E4%B8%80%E8%87%B4%E6%80%A7" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>多机房数据的一致性</h4>
 <ul>
 <li>系统会给每一次写请求生成一个全局唯一的 requestId</li>
 <li>是处理成功或者失败都记录一条包含 requestId 和机房标记的处理日志，并写到 Elasticsearch 集群上去</li>
@@ -192,29 +183,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

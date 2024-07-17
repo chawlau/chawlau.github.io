@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,59 +139,44 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>场景分析</h4>
-
+                    <h4><a id="%E5%9C%BA%E6%99%AF%E5%88%86%E6%9E%90" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>场景分析</h4>
 <ul>
 <li>cwnd创建的时候就确定的</li>
 </ul>
-
-<h4>三次握手确认</h4>
-
+<h4><a id="%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E7%A1%AE%E8%AE%A4" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>三次握手确认</h4>
 <ul>
 <li>rtt,ttl</li>
 <li>mss=1024</li>
 <li>cwind是指网络承载数据的大小</li>
 <li>win是对对端期待接受的数据大小</li>
 </ul>
-
-<h4>坚持定时器</h4>
-
+<h4><a id="%E5%9D%9A%E6%8C%81%E5%AE%9A%E6%97%B6%E5%99%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>坚持定时器</h4>
 <ul>
 <li>push=1是探测包</li>
 <li>setsockopt</li>
 </ul>
-
-<h4>通过窗口</h4>
-
+<h4><a id="%E9%80%9A%E8%BF%87%E7%AA%97%E5%8F%A3" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>通过窗口</h4>
 <ul>
 <li>码流 M</li>
 <li>字符数据 K</li>
 </ul>
-
-<h4>慢启动和线性增长</h4>
-
+<h4><a id="%E6%85%A2%E5%90%AF%E5%8A%A8%E5%92%8C%E7%BA%BF%E6%80%A7%E5%A2%9E%E9%95%BF" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>慢启动和线性增长</h4>
 <ul>
 <li>慢启动回一个ack，就增加mss</li>
 <li>拥塞控制是经过一个rtt，增加mss，不再依赖ack的数量</li>
 </ul>
-
-<h4>三个重复的包</h4>
-
+<h4><a id="%E4%B8%89%E4%B8%AA%E9%87%8D%E5%A4%8D%E7%9A%84%E5%8C%85" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>三个重复的包</h4>
 <ul>
 <li>丢包 中间的网络拥塞</li>
 <li>接收超时</li>
 <li>收到重复的包</li>
 <li>ack不会重传，syn才会重传</li>
 </ul>
-
-<h4>超时重传</h4>
-
+<h4><a id="%E8%B6%85%E6%97%B6%E9%87%8D%E4%BC%A0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>超时重传</h4>
 <ul>
 <li>经过RTO没有收到任何ACK，会触发超时定时器</li>
 </ul>
-
-<h4>断开链接</h4>
-
+<h4><a id="%E6%96%AD%E5%BC%80%E9%93%BE%E6%8E%A5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>断开链接</h4>
 <ul>
 <li></li>
 </ul>
@@ -216,29 +201,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

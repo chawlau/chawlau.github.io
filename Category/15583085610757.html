@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,27 +139,20 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>经典内存使用方式</h4>
-
+                    <h4><a id="%E7%BB%8F%E5%85%B8%E5%86%85%E5%AD%98%E4%BD%BF%E7%94%A8%E6%96%B9%E5%BC%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>经典内存使用方式</h4>
 <ul>
-<li><img src="media/15583085610757/fa6c2b6166d02ac37637d7da4e4b579b.jpeg" alt="fa6c2b6166d02ac37637d7da4e4b579b"/></li>
+<li><img src="media/15583085610757/fa6c2b6166d02ac37637d7da4e4b579b.jpeg" alt="fa6c2b6166d02ac37637d7da4e4b579b" /></li>
 </ul>
-
-<h4>SMP和NUMA模式</h4>
-
+<h4><a id="smp%E5%92%8Cnuma%E6%A8%A1%E5%BC%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>SMP和NUMA模式</h4>
 <ul>
-<li><img src="media/15583085610757/8f158f58dda94ec04b26200073e15449.jpeg" alt="8f158f58dda94ec04b26200073e15449"/></li>
+<li><img src="media/15583085610757/8f158f58dda94ec04b26200073e15449.jpeg" alt="8f158f58dda94ec04b26200073e15449" /></li>
 </ul>
-
-<h4>NUMA模型</h4>
-
+<h4><a id="numa%E6%A8%A1%E5%9E%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>NUMA模型</h4>
 <ul>
 <li>内存被分成了多个节点，每个节点再被分成一个一个的页面。由于页需要全局唯一定位，页还是需要有全局唯一的页号的。但是由于物理内存不是连起来的了，页号也就不再连续了。于是内存模型就变成了非连续内存模型</li>
 <li>CPU访问内存不用过总线</li>
 </ul>
-
-<h4>节点</h4>
-
+<h4><a id="%E8%8A%82%E7%82%B9" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>节点</h4>
 <ul>
 <li>pglist_data</li>
 <li>每一个节点都有自己的 ID：node_id；</li>
@@ -168,31 +161,23 @@
 <li>node_spanned_pages 是这个节点中包含不连续的物理内存地址的页面数；</li>
 <li>node_present_pages 是真正可用的物理页面的数目。</li>
 </ul>
-
-<h4>DMA机制</h4>
-
+<h4><a id="dma%E6%9C%BA%E5%88%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>DMA机制</h4>
 <ul>
 <li>DMA 是这样一种机制：要把外设的数据读入内存或把内存的数据传送到外设，原来都要通过 CPU 控制完成，但是这会占用 CPU，影响 CPU 处理其他事情，所以有了 DMA 模式。CPU 只需向 DMA 控制器下达指令，让 DMA 控制器来处理数据的传送，数据传送完毕再把信息反馈给 CPU，这样就可以解放 CPU。</li>
 </ul>
-
-<h4>区域</h4>
-
+<h4><a id="%E5%8C%BA%E5%9F%9F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>区域</h4>
 <ul>
 <li>spanned_pages = zone_end_pfn - zone_start_pfn，也即 spanned_pages 指的是不管中间有没有物理内存空洞，反正就是最后的页号减去起始的页号。</li>
 <li>present_pages = spanned_pages - absent_pages(pages in holes)，也即 present_pages 是这个 zone 在物理内存中真实存在的所有 page 数目。</li>
 <li>managed_pages = present_pages - reserved_pages，也即 managed_pages 是这个 zone 被伙伴系统管理的所有的 page 数目，</li>
 <li>per_cpu_pageset</li>
 </ul>
-
-<h4>页面</h4>
-
+<h4><a id="%E9%A1%B5%E9%9D%A2" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>页面</h4>
 <ul>
 <li>匿名页  一整页的内存，或者直接和虚拟地址空间建立映射关系，我们把这种称为匿名页（Anonymous Page）</li>
 <li>文件页 关联一个文件，然后再和虚拟地址空间建立映射关系，这样的文件，我们称为内存映射文件（Memory-mapped File）。</li>
 </ul>
-
-<h4>匿名页</h4>
-
+<h4><a id="%E5%8C%BF%E5%90%8D%E9%A1%B5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>匿名页</h4>
 <ul>
 <li>struct address_space *mapping 就是用于内存映射，如果是匿名页，最低位为 1；如果是映射文件，最低位为 0；</li>
 <li>pgoff_t index 是在映射区的偏移量；</li>
@@ -200,16 +185,12 @@
 <li>struct list_head lru 表示这一页应该在一个链表上，例如这个页面被换出，就在换出页的链表中；</li>
 <li>compound 相关的变量用于复合页（Compound Page），就是将物理上连续的两个或多个页看成一个独立的大页</li>
 </ul>
-
-<h4>文件页</h4>
-
+<h4><a id="%E6%96%87%E4%BB%B6%E9%A1%B5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>文件页</h4>
 <ul>
 <li>分配小块内存，存储进程描述结构的对象</li>
 <li>slub allocator</li>
 </ul>
-
-<h4>页的分配</h4>
-
+<h4><a id="%E9%A1%B5%E7%9A%84%E5%88%86%E9%85%8D" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>页的分配</h4>
 <ul>
 <li>分配大内存使用伙伴系统</li>
 <li></li>
@@ -235,29 +216,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

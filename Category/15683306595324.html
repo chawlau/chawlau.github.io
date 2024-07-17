@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,8 +139,7 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>键值设计</h4>
-
+                    <h4><a id="%E9%94%AE%E5%80%BC%E8%AE%BE%E8%AE%A1" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>键值设计</h4>
 <ul>
 <li>可读性和可管理性</li>
 <li>以业务名（或数据库名）为前缀(防止 key 冲突),用冒号分割比如业务名表名，比如ugc:video:1</li>
@@ -148,117 +147,94 @@
 <li>保证语义的前提下，控制 key 的长度，当 key 较多时，内存占用也不容忽=</li>
 <li>不要包含特殊字符 反例：包含空格、换行、单双引号以及其他转义字符</li>
 </ul>
-
-<h4>内部编码</h4>
-
+<h4><a id="%E5%86%85%E9%83%A8%E7%BC%96%E7%A0%81" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>内部编码</h4>
 <ul>
 <li>embstr</li>
-<li><img src="media/15683306595324/15683312158728.jpg" alt="" style="width:1260px;"/></li>
+<li><img src="media/15683306595324/15683312158728.jpg" alt="" style="width:1260px;" /></li>
 <li>raw</li>
 <li>int</li>
 </ul>
-
-<h4>Value设计</h4>
-
-<h5>拒绝bigkey</h5>
-
+<h4><a id="value%E8%AE%BE%E8%AE%A1" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Value设计</h4>
+<h5><a id="%E6%8B%92%E7%BB%9Dbigkey" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>拒绝bigkey</h5>
 <ul>
 <li>string 类型控制在 10 KB 以内</li>
 <li>hash、list、set、zset 元素个数不要超过 5000</li>
-<li>网络阻塞
-<img src="media/15683306595324/15683314237064.jpg" alt="" style="width:1165px;"/></li>
-<li>集群节点数据不均衡
-<img src="media/15683306595324/15683315102980.jpg" alt="" style="width:1055px;"/></li>
+<li>网络阻塞<br />
+<img src="media/15683306595324/15683314237064.jpg" alt="" style="width:1165px;" /></li>
+<li>集群节点数据不均衡<br />
+<img src="media/15683306595324/15683315102980.jpg" alt="" style="width:1055px;" /></li>
 <li>Rediss阻塞</li>
-<li>频繁序列化：应用服务器 CPU 消耗
-<img src="media/15683306595324/15683315993529.jpg" alt="" style="width:1020px;"/></li>
-<li>慢查询
-<img src="media/15683306595324/15683314878389.jpg" alt="" style="width:1105px;"/></li>
+<li>频繁序列化：应用服务器 CPU 消耗<br />
+<img src="media/15683306595324/15683315993529.jpg" alt="" style="width:1020px;" /></li>
+<li>慢查询<br />
+<img src="media/15683306595324/15683314878389.jpg" alt="" style="width:1105px;" /></li>
 </ul>
-
-<h5>发现bigkey</h5>
-
+<h5><a id="%E5%8F%91%E7%8E%B0bigkey" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>发现bigkey</h5>
 <ul>
 <li>应用方的发现</li>
 <li>redis-cli --bigkeys 建议在slave节点</li>
 <li>scan + debug object</li>
 <li>主动报警：网络流量监控，客户端监控</li>
 <li>内核热点key问题优化</li>
-<li>建立堆
-<img src="media/15683306595324/15683319818275.jpg" alt="" style="width:833px;"/></li>
+<li>建立堆<br />
+<img src="media/15683306595324/15683319818275.jpg" alt="" style="width:833px;" /></li>
 </ul>
-
-<h5>bigkey删除</h5>
-
+<h5><a id="bigkey%E5%88%A0%E9%99%A4" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>bigkey删除</h5>
 <ul>
-<li>注意隐性删除
-<img src="media/15683306595324/15683324454924.jpg" alt="" style="width:1217px;"/></li>
+<li>注意隐性删除<br />
+<img src="media/15683306595324/15683324454924.jpg" alt="" style="width:1217px;" /></li>
 <li>过期事件删除导致阻塞，不会在主节点慢查询日志，在从节点慢查询有</li>
 <li>lazy delete</li>
 <li>通过scan 进行子删除</li>
 </ul>
-
-<h5>bigkey预防</h5>
-
+<h5><a id="bigkey%E9%A2%84%E9%98%B2" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>bigkey预防</h5>
 <ul>
 <li>优化数据结构</li>
 <li>优化数据结构：例如二级拆分</li>
 <li>物理隔离或者万兆网卡：不是治标方案</li>
-<li>命令优化：例如 hgetall-~ hmget、scan </li>
+<li>命令优化：例如 hgetall-~ hmget、scan</li>
 <li>报警和定期优化</li>
 </ul>
-
-<h5>bigkey总结</h5>
-
+<h5><a id="bigkey%E6%80%BB%E7%BB%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>bigkey总结</h5>
 <ul>
 <li>牢记 Reds 单线程特性</li>
 <li>选择合理的数据结构和命令</li>
 <li>凊楚自身OPS</li>
 <li>了解 bigley 的危害</li>
 </ul>
-
-<h5>选择合适的数据结构</h5>
-
+<h5><a id="%E9%80%89%E6%8B%A9%E5%90%88%E9%80%82%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>选择合适的数据结构</h5>
 <ul>
-<li><img src="media/15683306595324/15683328513846.jpg" alt="" style="width:1141px;"/>
-<img src="media/15683306595324/15683329353848.jpg" alt="" style="width:1005px;"/></li>
-<li><img src="media/15683306595324/15683329738070.jpg" alt="" style="width:1370px;"/>
-<img src="media/15683306595324/15683330641058.jpg" alt="" style="width:1043px;"/></li>
+<li><img src="media/15683306595324/15683328513846.jpg" alt="" style="width:1141px;" /><br />
+<img src="media/15683306595324/15683329353848.jpg" alt="" style="width:1005px;" /></li>
+<li><img src="media/15683306595324/15683329738070.jpg" alt="" style="width:1370px;" /><br />
+<img src="media/15683306595324/15683330641058.jpg" alt="" style="width:1043px;" /></li>
 </ul>
-
-<h4>键值生命周期</h4>
-
+<h4><a id="%E9%94%AE%E5%80%BC%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>键值生命周期</h4>
 <ul>
 <li>Redis不是垃圾桶</li>
 <li>idletime</li>
 <li>周期数据需要设置过期时间，object idletime key可以找垃圾 key-value</li>
 <li>过期时间不宜集中：缓存穿透和雪崩等问题</li>
 </ul>
-
-<h4>命令优化</h4>
-
+<h4><a id="%E5%91%BD%E4%BB%A4%E4%BC%98%E5%8C%96" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>命令优化</h4>
 <ul>
 <li>O (N）以上命令关注 N 的数量 例如：hgetal、lange、smembers、zrange、sinter 等并非不能使用，但是需要明确 N 的值。有遍历的需求可以使用 hscan、sscan、zscan 代替。</li>
 <li>禁止线上使用 keys、flushall、flushes 等，通过 redis 的 rename 机制禁掉命令，或者使用 scan 的方式渐进式处理。</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-text">rename-command FLUSHALL &quot;&quot;
+<pre><code class="language-plain_text">rename-command FLUSHALL &quot;&quot;
 rename-command FLUSHDB  &quot;&quot;
 rename-command CONFIG   &quot;&quot;
 rename-command KEYS &quot;&quot;
 </code></pre>
-
 <ul>
-<li>合理使用select </li>
+<li>合理使用select</li>
 <li>redis事务弱 不支持回滚</li>
 <li>集群版本（自研和官方）要求一次事务操作的 key 必须在一个 slot 上（可以使用 hashtag 功能解決）</li>
 <li>redis集群版本在lua上有特殊要求</li>
 <li>必要使用monitor命令，不能长时间使用</li>
-<li><img src="media/15683306595324/15683338191048.jpg" alt="" style="width:832px;"/></li>
+<li><img src="media/15683306595324/15683338191048.jpg" alt="" style="width:832px;" /></li>
 </ul>
-
-<h5>客户端优化</h5>
-
+<h5><a id="%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%BC%98%E5%8C%96" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>客户端优化</h5>
 <ul>
 <li>避免多个应用使用一个redis实例</li>
 <li>不想干的业务拆分</li>
@@ -285,31 +261,96 @@ rename-command KEYS &quot;&quot;
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
-<script src="asset/prism.js"></script>
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   

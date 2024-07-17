@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,14 +139,11 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>问题</h4>
-
+                    <h4><a id="%E9%97%AE%E9%A2%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>问题</h4>
 <ul>
 <li>共享栈</li>
 </ul>
-
-<h5>线程池与协程对比</h5>
-
+<h5><a id="%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%B8%8E%E5%8D%8F%E7%A8%8B%E5%AF%B9%E6%AF%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>线程池与协程对比</h5>
 <ul>
 <li>共享栈如何实现 Libgo-&gt;ucontext</li>
 <li>性能差不多，线程处理业务逻辑，协程处理网络IO</li>
@@ -154,29 +151,21 @@
 <li>Ucontext,setjmp/longjmp,register</li>
 <li>协程如何与进程结合</li>
 </ul>
-
-<h4>线程池和协程</h4>
-
+<h4><a id="%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%92%8C%E5%8D%8F%E7%A8%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>线程池和协程</h4>
 <ul>
 <li>协程处理网络IO的问题</li>
 <li>异步IO处理磁盘文件IO的问题</li>
 <li>线程池处理业务逻辑的问题</li>
 </ul>
-
-<h4>协程</h4>
-
+<h4><a id="%E5%8D%8F%E7%A8%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>协程</h4>
 <ul>
 <li>一个协程对应多个IO</li>
 </ul>
-
-<h4>Ucontext</h4>
-
+<h4><a id="ucontext" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Ucontext</h4>
 <ul>
 <li><a href="https://blog.csdn.net/qq910894904/article/details/41911175">https://blog.csdn.net/qq910894904/article/details/41911175</a></li>
 </ul>
-
-<h4>切换原语</h4>
-
+<h4><a id="%E5%88%87%E6%8D%A2%E5%8E%9F%E8%AF%AD" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>切换原语</h4>
 <ul>
 <li>Create</li>
 <li>Free</li>
@@ -184,9 +173,7 @@
 <li>Resume</li>
 <li>sched_key_once</li>
 </ul>
-
-<h4>拓展阅读</h4>
-
+<h4><a id="%E6%8B%93%E5%B1%95%E9%98%85%E8%AF%BB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>拓展阅读</h4>
 <ul>
 <li>libgo</li>
 <li>uconext</li>
@@ -213,29 +200,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

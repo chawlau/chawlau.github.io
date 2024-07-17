@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,16 +139,13 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>编译，链接和装载</h4>
-
+                    <h4><a id="%E7%BC%96%E8%AF%91%EF%BC%8C%E9%93%BE%E6%8E%A5%E5%92%8C%E8%A3%85%E8%BD%BD" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>编译，链接和装载</h4>
 <ul>
 <li>第一个部分由编译（Compile）、汇编（Assemble）以及链接（Link）三个阶段组成。在这三个阶段完成之后，我们就生成了一个可执行文件。</li>
-<li>第二部分，我们通过装载器（Loader）把可执行文件装载（Load）到内存中。CPU 从内存中读取指令和数据，来开始真正执行程序。
-<img src="media/15577065945094/997341ed0fa9018561c7120c19cfa2a7.jpg" alt="997341ed0fa9018561c7120c19cfa2a7"/></li>
+<li>第二部分，我们通过装载器（Loader）把可执行文件装载（Load）到内存中。CPU 从内存中读取指令和数据，来开始真正执行程序。<br />
+<img src="media/15577065945094/997341ed0fa9018561c7120c19cfa2a7.jpg" alt="997341ed0fa9018561c7120c19cfa2a7" /></li>
 </ul>
-
-<h4>ELF格式和链接</h4>
-
+<h4><a id="elf%E6%A0%BC%E5%BC%8F%E5%92%8C%E9%93%BE%E6%8E%A5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>ELF格式和链接</h4>
 <ul>
 <li>程序最终是通过装载器变成指令和数据的</li>
 <li>gcc -g -c add_lib.c link_example.c</li>
@@ -157,40 +154,30 @@
 <li>gcc -o link-example add_lib.o link_example.o</li>
 <li>objdump -d -M intel -S link-example</li>
 </ul>
-
-<h4>ELF文件</h4>
-
+<h4><a id="elf%E6%96%87%E4%BB%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>ELF文件</h4>
 <ul>
 <li>首先是.text Section，也叫作代码段或者指令段（Code Section），用来保存程序的代码和指令；</li>
 <li>接着是.data Section，也叫作数据段（Data Section），用来保存程序里面设置好的初始化数据信息；</li>
 <li>然后就是.rel.text Secion，叫作重定位表（Relocation Table）。重定位表里，保留的是当前的文件里面，哪些跳转地址其实是我们不知道的。比如上面的 link_example.o 里面，我们在 main 函数里面调用了 add 和 printf 这两个函数，但是在链接发生之前，我们并不知道该跳转到哪里，这些信息就会存储在重定位表里；</li>
-<li>最后是.symtab Section，叫作符号表（Symbol Table）。符号表保留了我们所说的当前文件里面定义的函数名称和对应地址的地址簿。
-<img src="media/15577065945094/276a740d0eabf5f4be905fe7326d9fb3-2.jpg" alt="276a740d0eabf5f4be905fe7326d9fb3-2"/></li>
+<li>最后是.symtab Section，叫作符号表（Symbol Table）。符号表保留了我们所说的当前文件里面定义的函数名称和对应地址的地址簿。<br />
+<img src="media/15577065945094/276a740d0eabf5f4be905fe7326d9fb3-2.jpg" alt="276a740d0eabf5f4be905fe7326d9fb3-2" /></li>
 </ul>
-
-<h4>链接器</h4>
-
+<h4><a id="%E9%93%BE%E6%8E%A5%E5%99%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>链接器</h4>
 <ul>
 <li>把所有符号表里的信息收集起来，构成一个全局的符号表</li>
 <li>根据重定位表，把所有不确定要跳转地址的代码，根据符号表里面存储的地址，进行一次修正</li>
 <li>把所有的目标文件的对应段进行一次合并，变成了最终的可执行代码</li>
 </ul>
-
-<h4>装载器</h4>
-
+<h4><a id="%E8%A3%85%E8%BD%BD%E5%99%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>装载器</h4>
 <ul>
 <li>解析 ELF 文件，把对应的指令和数据，加载到内存里面供 CPU 执行</li>
 </ul>
-
-<h4>linux程序不能在win执行</h4>
-
+<h4><a id="linux%E7%A8%8B%E5%BA%8F%E4%B8%8D%E8%83%BD%E5%9C%A8win%E6%89%A7%E8%A1%8C" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>linux程序不能在win执行</h4>
 <ul>
 <li>两个操作系统下可执行文件的格式不一样</li>
-<li> Linux 下的 ELF 文件格式，而 Windows 的可执行文件格式是一种叫作PE（Portable Executable Format）的文件格式。Linux 下的装载器只能解析 ELF 格式而不能解析 PE 格式</li>
+<li>Linux 下的 ELF 文件格式，而 Windows 的可执行文件格式是一种叫作PE（Portable Executable Format）的文件格式。Linux 下的装载器只能解析 ELF 格式而不能解析 PE 格式</li>
 </ul>
-
-<h4>扩展阅读</h4>
-
+<h4><a id="%E6%89%A9%E5%B1%95%E9%98%85%E8%AF%BB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>扩展阅读</h4>
 <ul>
 <li>《程序员的自我修养——链接、装载和库》</li>
 </ul>
@@ -215,29 +202,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,66 +139,49 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>导致内存泄露的内存段</h4>
-
+                    <h4><a id="%E5%AF%BC%E8%87%B4%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2%E7%9A%84%E5%86%85%E5%AD%98%E6%AE%B5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>导致内存泄露的内存段</h4>
 <ul>
 <li>堆内存</li>
 <li>内存映射段，包括动态连接库和共享内存，其中共享内存由程序动态分配和管理，如果忘了回收也会导致内存泄露</li>
 </ul>
-
-<h4>使用memleak</h4>
-
+<h4><a id="%E4%BD%BF%E7%94%A8memleak" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>使用memleak</h4>
 <ul>
 <li>/usr/share/bcc/tools/memleak -p $(pidof main) -a</li>
 <li>显示如下</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-text">  [22:44:58] Top 10 stacks with outstanding allocations:
+<pre><code class="language-plain_text">  [22:44:58] Top 10 stacks with outstanding allocations:
 </code></pre>
-
 <ul>
 <li>表示没有内存泄露</li>
 </ul>
-
-<h4>脏页回收</h4>
-
+<h4><a id="%E8%84%8F%E9%A1%B5%E5%9B%9E%E6%94%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>脏页回收</h4>
 <ul>
 <li>fsync</li>
 <li>pdflush</li>
 </ul>
-
-<h4>堆内存</h4>
-
+<h4><a id="%E5%A0%86%E5%86%85%E5%AD%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>堆内存</h4>
 <ul>
 <li>就是应用程序动态分配的堆内存，也就是匿名页</li>
 </ul>
-
-<h4>内存回收</h4>
-
+<h4><a id="%E5%86%85%E5%AD%98%E5%9B%9E%E6%94%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>内存回收</h4>
 <ul>
 <li>直接内存回收</li>
 <li>定期内存回收 kswapd0</li>
 </ul>
-
-<h4>定期内存回收</h4>
-
+<h4><a id="%E5%AE%9A%E6%9C%9F%E5%86%85%E5%AD%98%E5%9B%9E%E6%94%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>定期内存回收</h4>
 <ul>
 <li>页最小阈值（pages_min）</li>
 <li>页低阈值（pages_low）</li>
 <li>页高阈值（pages_high）</li>
 <li>剩余内存 pages_free 表示。</li>
 </ul>
-
-<h4>匿名页和文件页</h4>
-
+<h4><a id="%E5%8C%BF%E5%90%8D%E9%A1%B5%E5%92%8C%E6%96%87%E4%BB%B6%E9%A1%B5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>匿名页和文件页</h4>
 <ul>
 <li>对文件页的回收，当然就是直接回收缓存，或者把脏页写回磁盘后再回收。</li>
 <li>而对匿名页的回收，其实就是通过 Swap 机制，把它们写入磁盘后再释放内存。</li>
 <li>swappiness来控制匿名页和文件页的回收，数值越大，越积极使用Swap</li>
 </ul>
-
-<h4>内存指标动态监控</h4>
-
+<h4><a id="%E5%86%85%E5%AD%98%E6%8C%87%E6%A0%87%E5%8A%A8%E6%80%81%E7%9B%91%E6%8E%A7" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>内存指标动态监控</h4>
 <ul>
 <li>perf record -e kmem:* -p 27027 -g -- sleep 100</li>
 <li>perf script -i perf.data &amp;&gt; perf.unfold</li>
@@ -228,31 +211,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
-<script src="asset/prism.js"></script>
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   

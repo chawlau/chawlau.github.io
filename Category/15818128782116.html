@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,30 +139,23 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>动机</h4>
-
+                    <h4><a id="%E5%8A%A8%E6%9C%BA" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>动机</h4>
 <ul>
 <li>在软件系统中，经常有这样一些特殊的类，必须保证它们在系统中只存在一个实例，才能确保它们的逻辑正确性、以及良好的效率</li>
 <li>如何绕过常规的构造器，提供一种机制来保证一个类只有一个实例？</li>
 <li>这应该是类设计者的责任，而不是使用者的责任</li>
 </ul>
-
-<h4>结构</h4>
-
+<h4><a id="%E7%BB%93%E6%9E%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>结构</h4>
 <ul>
-<li><img src="media/15818128782116/15818133316537.jpg" alt="" style="width:538px;"/></li>
+<li><img src="media/15818128782116/15818133316537.jpg" alt="" style="width:538px;" /></li>
 </ul>
-
-<h4>要点总结</h4>
-
+<h4><a id="%E8%A6%81%E7%82%B9%E6%80%BB%E7%BB%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>要点总结</h4>
 <ul>
 <li>Singleton 模式中的实例构造器可以设置为 protected 以允许子类派生。</li>
 <li>Singleton 模式一般不要支持拷贝构造函数和 Clone 接口，因为这有可能导致多个对象实例，与 Singleton 模式的初衷违背。</li>
 <li>如何实现多线程环境下安全的 Singleton？注意对双检查锁的正确实现。</li>
 </ul>
-
-<h4>单例模式问题</h4>
-
+<h4><a id="%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E9%97%AE%E9%A2%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>单例模式问题</h4>
 <ul>
 <li>单例对 OOP 特性的支持不友好</li>
 <li>单例会隐藏类之间的依赖关系 单例类不需要显示创建、不需要依赖参数传递，在函数中直接调用就可以了。如果代码比较复杂，这种调用关系就会非常隐蔽</li>
@@ -170,8 +163,7 @@
 <li>单例对代码的可测试性不友好 单例模式的使用会影响到代码的可测试性。如果单例类依赖比较重的外部资源，比如 DB，我们在写单元测试的时候，希望能通过 mock 的方式将它替换掉。而单例类这种硬编码式的使用方式，导致无法实现 mock 替换。</li>
 <li>单例不支持有参数的构造函数 单例不支持有参数的构造函数，比如我们创建一个连接池的单例对象，我们没法通过参数来指定连接池的大小, 解决方案是将将参数放到另外一个全局变量中</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
+<pre><code class="language-C++">#include &lt;iostream&gt;
 using namespace std;
 class Config {
     public:
@@ -199,16 +191,12 @@ int main() {
     Singleton* p2 = Singleton::get_instance();
 }
 </code></pre>
-
-<h4>多例模式实现</h4>
-
+<h4><a id="%E5%A4%9A%E4%BE%8B%E6%A8%A1%E5%BC%8F%E5%AE%9E%E7%8E%B0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>多例模式实现</h4>
 <ul>
 <li>“单例”指的是一个类只能创建一个对象。对应地，“多例”指的就是一个类可以创建多个对象，但是个数是有限制的，比如只能创建 3 个对象。多例的实现也比较简单，通过一个 Map 来存储对象类型和对象之间的对应关系，来控制对象的个数</li>
 </ul>
-
-<h4>cpp_demo多例模式</h4>
-
-<pre class="line-numbers"><code class="language-cpp">#include &lt;iostream&gt;
+<h4><a id="cpp-demo%E5%A4%9A%E4%BE%8B%E6%A8%A1%E5%BC%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>cpp_demo多例模式</h4>
+<pre><code class="language-c++">#include &lt;iostream&gt;
 #include &lt;map&gt;
 using namespace std;
 
@@ -252,36 +240,27 @@ int main() {
     cout &lt;&lt; p1 &lt;&lt; &quot; &quot; &lt;&lt; p2 &lt;&lt; &quot; &quot; &lt;&lt; p3 &lt;&lt; &quot; &quot; &lt;&lt; p4 &lt;&lt; &quot; &quot; &lt;&lt; p5 &lt;&lt; endl;
 }
 </code></pre>
-
-<h4>分布式环境下的单例模式</h4>
-
+<h4><a id="%E5%88%86%E5%B8%83%E5%BC%8F%E7%8E%AF%E5%A2%83%E4%B8%8B%E7%9A%84%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>分布式环境下的单例模式</h4>
 <ul>
 <li>一个类只允许创建唯一一个对象。那对象的唯一性的作用范围是进程范围内</li>
 </ul>
-
-<h5>线程唯一的单例</h5>
-
+<h5><a id="%E7%BA%BF%E7%A8%8B%E5%94%AF%E4%B8%80%E7%9A%84%E5%8D%95%E4%BE%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>线程唯一的单例</h5>
 <ul>
 <li>我们通过一个Map来存储对象，其中 key 是线程 ID，value 是对象</li>
 </ul>
-
-<h4>如何实现集群环境下单例</h4>
-
+<h4><a id="%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E9%9B%86%E7%BE%A4%E7%8E%AF%E5%A2%83%E4%B8%8B%E5%8D%95%E4%BE%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>如何实现集群环境下单例</h4>
 <ul>
 <li>我们需要把这个单例对象序列化并存储到外部共享存储区（比如文件）。进程在使用这个单例对象的时候，需要先从外部共享存储区中将它读取到内存，并反序列化成对象，然后再使用，使用完成之后还需要再存储回外部共享存储区</li>
 <li>为了保证任何时刻，在进程间都只有一份对象存在，一个进程在获取到对象之后，需要对对象加锁，避免其他进程再将其获取。在进程使用完这个对象之后，还需要显式地将对象从内存中删除，并且释放对对象的加锁，这里需要分布式锁，需要lua配合redis实现比较好</li>
 </ul>
-
-<h4>C++11 call_once</h4>
-
+<h4><a id="c-11-call-once" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>C++11 call_once</h4>
 <ul>
 <li>能够保证函数只能被调用一次</li>
 <li>call_once效率上比互斥量消耗的更少</li>
 <li>call_once需要与一个标记结合使用, std::once_flag</li>
 <li>调用call_once成功后，就把once_flag设置为已经调用状态</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-cpp">std::once_flag g_flag;
+<pre><code class="language-C++">std::once_flag g_flag;
 static MyCAS* get_instance() {
   std::call_once(g_flag, create_instance);
   return m_instance;
@@ -291,43 +270,38 @@ static void create_instance() {
     m_instance = new MyCAS();
 }
 </code></pre>
-
-<h4>go的官方实现使用</h4>
-
-<pre class="line-numbers"><code class="language-go">type Singleton struct {
-    data string
+<h4><a id="go%E7%9A%84%E5%AE%98%E6%96%B9%E5%AE%9E%E7%8E%B0%E4%BD%BF%E7%94%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>go的官方实现使用</h4>
+<pre><code class="language-go">type Singleton struct {
+	data string
 }
 
 var singleInstance *Singleton
 var once sync.Once
 
 func GetSingletonObj() *Singleton {
-    once.Do(func() {
-        fmt.Println(&quot;Create Obj&quot;)
-        singleInstance = new(Singleton)
-    })
-    return singleInstance
+	once.Do(func() {
+		fmt.Println(&quot;Create Obj&quot;)
+		singleInstance = new(Singleton)
+	})
+	return singleInstance
 }
 
 func TestGetSingletonObj(t *testing.T) {
-    var wg sync.WaitGroup
-    for i := 0; i &lt; 10; i++ {
-        wg.Add(1)
-        go func() {
-            obj := GetSingletonObj()
-            fmt.Printf(&quot;%X\n&quot;, unsafe.Pointer(obj))
-            wg.Done()
-        }()
-    }
-    wg.Wait()
+	var wg sync.WaitGroup
+	for i := 0; i &lt; 10; i++ {
+		wg.Add(1)
+		go func() {
+			obj := GetSingletonObj()
+			fmt.Printf(&quot;%X\n&quot;, unsafe.Pointer(obj))
+			wg.Done()
+		}()
+	}
+	wg.Wait()
 }
 </code></pre>
-
-<h4>Python实现</h4>
-
-<h5>使用函数装饰器实现单例</h5>
-
-<pre class="line-numbers"><code class="language-python">def singleton(cls):
+<h4><a id="python%E5%AE%9E%E7%8E%B0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Python实现</h4>
+<h5><a id="%E4%BD%BF%E7%94%A8%E5%87%BD%E6%95%B0%E8%A3%85%E9%A5%B0%E5%99%A8%E5%AE%9E%E7%8E%B0%E5%8D%95%E4%BE%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>使用函数装饰器实现单例</h5>
+<pre><code class="language-py">def singleton(cls):
     _instance = {}
 
     def inner():
@@ -345,10 +319,8 @@ cls1 = Cls()
 cls2 = Cls()
 print(id(cls1) == id(cls2))
 </code></pre>
-
-<h5>使用类装饰器实现单例</h5>
-
-<pre class="line-numbers"><code class="language-python">class Singleton(object):
+<h5><a id="%E4%BD%BF%E7%94%A8%E7%B1%BB%E8%A3%85%E9%A5%B0%E5%99%A8%E5%AE%9E%E7%8E%B0%E5%8D%95%E4%BE%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>使用类装饰器实现单例</h5>
+<pre><code class="language-py">class Singleton(object):
     def __init__(self, cls):
         self._cls = cls
         self._instance = {}
@@ -366,10 +338,8 @@ cls1 = Cls2()
 cls2 = Cls2()
 print(id(cls1) == id(cls2))
 </code></pre>
-
-<h5>使用 __new__ 关键字实现单例</h5>
-
-<pre class="line-numbers"><code class="language-python">class Single(object):
+<h5><a id="%E4%BD%BF%E7%94%A8new%E5%85%B3%E9%94%AE%E5%AD%97%E5%AE%9E%E7%8E%B0%E5%8D%95%E4%BE%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>使用 _<em>new</em>_ 关键字实现单例</h5>
+<pre><code class="language-py">class Single(object):
     _instance = None
     def __new__(cls, *args, **kw):
         if cls._instance is None:
@@ -382,10 +352,8 @@ single1 = Single()
 single2 = Single()
 print(id(single1) == id(single2))
 </code></pre>
-
-<h5>使用 metaclass 实现单例</h5>
-
-<pre class="line-numbers"><code class="language-python">class Singleton(type):
+<h5><a id="%E4%BD%BF%E7%94%A8metaclass%E5%AE%9E%E7%8E%B0%E5%8D%95%E4%BE%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>使用 metaclass 实现单例</h5>
+<pre><code class="language-py">class Singleton(type):
     _instances = {}
     def __call__(cls, *args, **kwargs):
         if cls not in cls._instances:
@@ -420,31 +388,96 @@ print(id(cls1) == id(cls2))
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
-<script src="asset/prism.js"></script>
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   

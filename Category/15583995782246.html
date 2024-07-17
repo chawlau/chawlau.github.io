@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,20 +139,15 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>用户态和内核态</h4>
-
+                    <h4><a id="%E7%94%A8%E6%88%B7%E6%80%81%E5%92%8C%E5%86%85%E6%A0%B8%E6%80%81" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>用户态和内核态</h4>
 <ul>
-<li><img src="media/15583995782246/89723dc967b59f6f49419082f6ab7659.jpg" alt="89723dc967b59f6f49419082f6ab7659"/></li>
+<li><img src="media/15583995782246/89723dc967b59f6f49419082f6ab7659.jpg" alt="89723dc967b59f6f49419082f6ab7659" /></li>
 </ul>
-
-<h4>进程空间部署</h4>
-
+<h4><a id="%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4%E9%83%A8%E7%BD%B2" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>进程空间部署</h4>
 <ul>
-<li><img src="media/15583995782246/f83b8d49b4e74c0e255b5735044c1eb1.jpg" alt="f83b8d49b4e74c0e255b5735044c1eb1"/></li>
+<li><img src="media/15583995782246/f83b8d49b4e74c0e255b5735044c1eb1.jpg" alt="f83b8d49b4e74c0e255b5735044c1eb1" /></li>
 </ul>
-
-<h5>各区域的位置信息</h5>
-
+<h5><a id="%E5%90%84%E5%8C%BA%E5%9F%9F%E7%9A%84%E4%BD%8D%E7%BD%AE%E4%BF%A1%E6%81%AF" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>各区域的位置信息</h5>
 <ul>
 <li>total_vm 是总共映射的页的数目。</li>
 <li>locked_vm 就是被锁定不能换出，pinned_vm 是不能换出，也不能移动。</li>
@@ -162,49 +157,40 @@
 <li>start_stack 是栈的起始位置，栈的结束位置在寄存器的栈顶指针中。</li>
 <li>arg_start 和 arg_end 是参数列表的位置， env_start 和 env_end 是环境变量的位置。它们都位于栈中最高地址的地方。</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-text">unsigned long mmap_base;    /* base of mmap area */
-unsigned long total_vm;     /* Total pages mapped */
-unsigned long locked_vm;    /* Pages that have PG_mlocked set */
-unsigned long pinned_vm;    /* Refcount permanently increased */
-unsigned long data_vm;      /* VM_WRITE &amp; ~VM_SHARED &amp; ~VM_STACK */
-unsigned long exec_vm;      /* VM_EXEC &amp; ~VM_WRITE &amp; ~VM_STACK */
-unsigned long stack_vm;     /* VM_STACK */
+<pre><code class="language-plain_text">unsigned long mmap_base;	/* base of mmap area */
+unsigned long total_vm;		/* Total pages mapped */
+unsigned long locked_vm;	/* Pages that have PG_mlocked set */
+unsigned long pinned_vm;	/* Refcount permanently increased */
+unsigned long data_vm;		/* VM_WRITE &amp; ~VM_SHARED &amp; ~VM_STACK */
+unsigned long exec_vm;		/* VM_EXEC &amp; ~VM_WRITE &amp; ~VM_STACK */
+unsigned long stack_vm;		/* VM_STACK */
 unsigned long start_code, end_code, start_data, end_data;
 unsigned long start_brk, brk, start_stack;
 unsigned long arg_start, arg_end, env_start, env_end;
 </code></pre>
-
-<h5>各区域的属性信息</h5>
-
+<h5><a id="%E5%90%84%E5%8C%BA%E5%9F%9F%E7%9A%84%E5%B1%9E%E6%80%A7%E4%BF%A1%E6%81%AF" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>各区域的属性信息</h5>
 <ul>
 <li>每一块区域使用vm_area_struct来描述信息</li>
 <li>vm_area_struct来描述位置信息</li>
 <li>解析ELF</li>
 <li>建立内存映射</li>
 </ul>
-
-<h6>load_elf_binary</h6>
-
+<h6><a id="load-elf-binary" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>load_elf_binary</h6>
 <ul>
 <li>调用 setup_new_exec，设置内存映射区 mmap_base；</li>
 <li>调用 setup_arg_pages，设置栈的 vm_area_struct，这里面设置了 mm-&gt;arg_start 是指向栈底的，current-&gt;mm-&gt;start_stack 就是栈底；</li>
 <li>elf_map 会将 ELF 文件中的代码部分映射到内存中来；</li>
 <li>set_brk 设置了堆的 vm_area_struct，这里面设置了 current-&gt;mm-&gt;start_brk = current-&gt;mm-&gt;brk，也即堆里面还是空的；</li>
 <li>load_elf_interp 将依赖的 so 映射到内存中的内存映射区域。</li>
-<li>内存映射图
-<img src="media/15583995782246/7af58012466c7d006511a7e16143314c.jpeg" alt="7af58012466c7d006511a7e16143314"/></li>
+<li>内存映射图<br />
+<img src="media/15583995782246/7af58012466c7d006511a7e16143314c.jpeg" alt="7af58012466c7d006511a7e16143314" /></li>
 </ul>
-
-<h5>修改映射</h5>
-
+<h5><a id="%E4%BF%AE%E6%94%B9%E6%98%A0%E5%B0%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>修改映射</h5>
 <ul>
 <li>函数的调用</li>
 <li>malloc申请堆内的空间 brk 或者 mmap</li>
 </ul>
-
-<h4>堆内存分配</h4>
-
+<h4><a id="%E5%A0%86%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>堆内存分配</h4>
 <ul>
 <li>sys_brk的新堆顶地址和旧的堆顶地址进行合并</li>
 <li>考虑需要不需要分配页的问题</li>
@@ -212,20 +198,16 @@ unsigned long arg_start, arg_end, env_start, env_end;
 <li>如果是分配堆内存 当前的堆顶和下一个 vm_area_struct 之间还能不能分配一个完整的页</li>
 <li>do_brk 进一步分配堆空间，从旧堆顶开始，分配计算出的新旧堆顶之间的页数。</li>
 </ul>
-
-<h4>伙伴系统页的分配</h4>
-
+<h4><a id="%E4%BC%99%E4%BC%B4%E7%B3%BB%E7%BB%9F%E9%A1%B5%E7%9A%84%E5%88%86%E9%85%8D" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>伙伴系统页的分配</h4>
 <ul>
 <li>把所有的空闲页分组为 11 个页块链表，每个块链表分别包含很多个大小的页块，有 1、2、4、8、16、32、64、128、256、512 和 1024 个连续页的页块</li>
 <li>在一个循环中先看当前节点的 zone。如果找不到空闲页，则再看备用节点的 zone</li>
-<li>先去free_area找与当前2<sup>order匹配的队列</sup></li>
-<li>找不到去更大的2<sup>order队列中找，然后把多余的页面放入其他页面链表</sup></li>
+<li>先去free_area找与当前2^order匹配的队列</li>
+<li>找不到去更大的2^order队列中找，然后把多余的页面放入其他页面链表</li>
 </ul>
-
-<h4>物理内存的总结</h4>
-
+<h4><a id="%E7%89%A9%E7%90%86%E5%86%85%E5%AD%98%E7%9A%84%E6%80%BB%E7%BB%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>物理内存的总结</h4>
 <ul>
-<li><img src="media/15583995782246/3fa8123990e5ae2c86859f70a8351f4f.jpeg" alt="3fa8123990e5ae2c86859f70a8351f4f"/></li>
+<li><img src="media/15583995782246/3fa8123990e5ae2c86859f70a8351f4f.jpeg" alt="3fa8123990e5ae2c86859f70a8351f4f" /></li>
 </ul>
 
                   </article>
@@ -248,31 +230,96 @@ unsigned long arg_start, arg_end, env_start, env_end;
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
-<script src="asset/prism.js"></script>
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   

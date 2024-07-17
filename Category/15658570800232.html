@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,53 +139,38 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>变量绑定</h4>
-
+                    <h4><a id="%E5%8F%98%E9%87%8F%E7%BB%91%E5%AE%9A" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>变量绑定</h4>
 <ul>
 <li>编译器对成员函数的解析，是在类定义完毕以后开始，对类成员变量的解析和绑定，是在类定义完成之后发生的，只有类定义完毕后，编译器才能看到类A中的成员变量</li>
 <li>::引用全局的myvar的变量</li>
 </ul>
-
-<h4>成员函数</h4>
-
+<h4><a id="%E6%88%90%E5%91%98%E5%87%BD%E6%95%B0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>成员函数</h4>
 <ul>
 <li>成员函数参数类型在编译器第一个遇到类型的时候绑定的</li>
 <li>为了尽早的看到类型type，类型定义typedef一定要挪到类中的最早定义</li>
 </ul>
-
-<h4>进程内存空间布局</h4>
-
+<h4><a id="%E8%BF%9B%E7%A8%8B%E5%86%85%E5%AD%98%E7%A9%BA%E9%97%B4%E5%B8%83%E5%B1%80" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>进程内存空间布局</h4>
 <ul>
 <li>nm查看</li>
 <li>类的静态成员变量也存在数据段</li>
 </ul>
-
-<h4>字节对齐</h4>
-
-<pre class="line-numbers"><code class="language-text">#pragma pack(1) 不对齐
+<h4><a id="%E5%AD%97%E8%8A%82%E5%AF%B9%E9%BD%90" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>字节对齐</h4>
+<pre><code class="language-plain_text">#pragma pack(1) 不对齐
 #pragma pack() 取消不对齐，继续对齐
 </code></pre>
-
-<h4>成员变量偏移值</h4>
-
+<h4><a id="%E6%88%90%E5%91%98%E5%8F%98%E9%87%8F%E5%81%8F%E7%A7%BB%E5%80%BC" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>成员变量偏移值</h4>
 <ul>
 <li>&amp;class::m_val</li>
 </ul>
-
-<h4>静态成员变量存取</h4>
-
+<h4><a id="%E9%9D%99%E6%80%81%E6%88%90%E5%91%98%E5%8F%98%E9%87%8F%E5%AD%98%E5%8F%96" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>静态成员变量存取</h4>
 <ul>
 <li>静态成员变量地址始终不变，写入了可执行文件</li>
 </ul>
-
-<h4>非静态成员变量</h4>
-
+<h4><a id="%E9%9D%9E%E9%9D%99%E6%80%81%E6%88%90%E5%91%98%E5%8F%98%E9%87%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>非静态成员变量</h4>
 <ul>
 <li>类对象的首地址加上成员变量的偏移值</li>
 </ul>
-
-<h4>数据成员布局</h4>
-
+<h4><a id="%E6%95%B0%E6%8D%AE%E6%88%90%E5%91%98%E5%B8%83%E5%B1%80" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>数据成员布局</h4>
 <ul>
 <li>成员边界填充</li>
 <li>引入继承关系，会带来额外的内存空间的开销</li>
@@ -193,8 +178,7 @@
 <li>增加或者扩展构造函数，增加给虚函数表指针的vptr赋值的代码</li>
 <li>多重继续，子类继续2个父类，如果子类还有自己的虚函数的话和第一个基类共用vptr</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-text">class Base {
+<pre><code class="language-plain_text">class Base {
  public:
   int m_bi;
   char m_b;
@@ -219,19 +203,15 @@ class Base3 : public Base2 {
   char m_d;
 };
 </code></pre>
-
 <ul>
-<li><img src="media/15658570800232/15659459670117.jpg" alt="" style="width:1206px;"/></li>
+<li><img src="media/15658570800232/15659459670117.jpg" alt="" style="width:1206px;" /></li>
 <li>内存拷贝要谨慎Base2拷贝到Base3，会产生内存拷贝</li>
 </ul>
-
-<h5>单一继承父类不带虚函数的成员布局</h5>
-
+<h5><a id="%E5%8D%95%E4%B8%80%E7%BB%A7%E6%89%BF%E7%88%B6%E7%B1%BB%E4%B8%8D%E5%B8%A6%E8%99%9A%E5%87%BD%E6%95%B0%E7%9A%84%E6%88%90%E5%91%98%E5%B8%83%E5%B1%80" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>单一继承父类不带虚函数的成员布局</h5>
 <ul>
-<li><img src="media/15658570800232/15659491477127.jpg" alt="" style="width:337px;"/>、</li>
+<li><img src="media/15658570800232/15659491477127.jpg" alt="" style="width:337px;" />、</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-text">(gdb) p  obj
+<pre><code class="language-plain_text">(gdb) p  obj
 $1 = (Base3) {
   &lt;Base&gt; = {
     m_bi = 1
@@ -246,22 +226,18 @@ $1 = (Base3) {
 0x7fffffffdef0: 0x00000003      0x00000000      0x00400740      0x00000000
 0x7fffffffdf00: 0xffffdff0      0x00007fff      0x00000000      0x00000000
 </code></pre>
-
 <ul>
 <li>依靠偏移值不能绘制真正的数据布局</li>
 <li>vptr一直置顶</li>
 </ul>
-
-<h4>多重继承</h4>
-
+<h4><a id="%E5%A4%9A%E9%87%8D%E7%BB%A7%E6%89%BF" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>多重继承</h4>
 <ul>
-<li><img src="media/15658570800232/15660333053268.jpg" alt="" style="width:473px;"/></li>
+<li><img src="media/15658570800232/15660333053268.jpg" alt="" style="width:473px;" /></li>
 <li>访问Base1不用跳，访问Base2变量this指针要偏移</li>
 <li>先继承就顶格</li>
 <li>this指针的调整都是编译器自动调整和偏移</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-text">(gdb) x/20d bs2
+<pre><code class="language-plain_text">(gdb) x/20d bs2
 0x7fffffffdee0: 4197896 0       12      3
 0x7fffffffdef0: 6       0       -8480   32767
 0x7fffffffdf00: -8208   32767   0       0
@@ -280,61 +256,47 @@ Base1* bs1 = &amp;obj;
 bs1和bs2的地址并不相同
 bs2指向的是bs2子对象的指针
 </code></pre>
-
-<h4>虚基类中</h4>
-
+<h4><a id="%E8%99%9A%E5%9F%BA%E7%B1%BB%E4%B8%AD" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>虚基类中</h4>
 <ul>
 <li>传统多重继承，空间问题，效率问题，二义性</li>
 <li>让grand只被继承一次，在孙子类中只有一份</li>
 </ul>
-
-<h4>虚基类</h4>
-
+<h4><a id="%E8%99%9A%E5%9F%BA%E7%B1%BB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>虚基类</h4>
 <ul>
 <li>虚基类表</li>
 <li>虚基类表指针</li>
 <li>虚继承后，A1,A2会被插入一个虚基类表指针，C1会继承两个表指针</li>
-<li><img src="media/15658570800232/15661179666970.jpg" alt="" style="width:725px;"/></li>
-<li><img src="media/15658570800232/15661193718967.jpg" alt="" style="width:427px;"/></li>
+<li><img src="media/15658570800232/15661179666970.jpg" alt="" style="width:725px;" /></li>
+<li><img src="media/15658570800232/15661193718967.jpg" alt="" style="width:427px;" /></li>
 <li>虚基类表记录偏移来找到虚基类子对象</li>
 <li>虚基类表指针成员变量的首地址 + 偏移量 = 虚基类对象首地址</li>
 </ul>
-
-<h4>观察各种继承</h4>
-
+<h4><a id="%E8%A7%82%E5%AF%9F%E5%90%84%E7%A7%8D%E7%BB%A7%E6%89%BF" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>观察各种继承</h4>
 <ul>
 <li>虚基类表的偏移值</li>
 <li>虚基类表中的偏移量按照继承顺序来存放</li>
 <li>虚基类子对象一直放在最下面</li>
 </ul>
-
-<h4>虚基类1-4字节分析</h4>
-
+<h4><a id="%E8%99%9A%E5%9F%BA%E7%B1%BB1-4%E5%AD%97%E8%8A%82%E5%88%86%E6%9E%90" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>虚基类1-4字节分析</h4>
 <ul>
 <li>虚基类表指针成员变量的首地址，和本对象A1首地址的偏移量，也就是虚基类表指针 - A1的对象的首地址</li>
 <li>只有对虚基类成员进行赋值的时候，才会用到虚基类</li>
 </ul>
-
-<h4>三层结构虚基类表内容分析</h4>
-
+<h4><a id="%E4%B8%89%E5%B1%82%E7%BB%93%E6%9E%84%E8%99%9A%E5%9F%BA%E7%B1%BB%E8%A1%A8%E5%86%85%E5%AE%B9%E5%88%86%E6%9E%90" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>三层结构虚基类表内容分析</h4>
 <ul>
-<li><img src="media/15658570800232/15662039845414.jpg" alt="" style="width:743px;"/></li>
+<li><img src="media/15658570800232/15662039845414.jpg" alt="" style="width:743px;" /></li>
 <li>虚基类在编译的时候已经固定了</li>
 <li>vptr2基本没用到只用到vptr1</li>
 <li>访问虚基类的成员变量要比普通成员变量慢</li>
 </ul>
-
-<h4>成员变量地址，偏移和指针</h4>
-
-<h4>成员变量偏移值和偏移指针</h4>
-
+<h4><a id="%E6%88%90%E5%91%98%E5%8F%98%E9%87%8F%E5%9C%B0%E5%9D%80%EF%BC%8C%E5%81%8F%E7%A7%BB%E5%92%8C%E6%8C%87%E9%92%88" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>成员变量地址，偏移和指针</h4>
+<h4><a id="%E6%88%90%E5%91%98%E5%8F%98%E9%87%8F%E5%81%8F%E7%A7%BB%E5%80%BC%E5%92%8C%E5%81%8F%E7%A7%BB%E6%8C%87%E9%92%88" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>成员变量偏移值和偏移指针</h4>
 <ul>
 <li>和具体对象没有关系</li>
 <li>成员变量指针保存的是一个偏移值，不是实际内存地址</li>
 <li>没有指向任何数据成员的指针</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-text">int main() {
+<pre><code class="language-plain_text">int main() {
   Obj obj;
   obj.m_i = obj.m_j = obj.m_k = 0;
   printf(&quot;mi = %p \n&quot;, &amp;obj.m_i);
@@ -364,7 +326,6 @@ bs2指向的是bs2子对象的指针
   ptr += 1//不允许
 }
 </code></pre>
-
 <ul>
 <li></li>
 </ul>
@@ -389,31 +350,96 @@ bs2指向的是bs2子对象的指针
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
-<script src="asset/prism.js"></script>
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   

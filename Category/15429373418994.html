@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,33 +139,26 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>定义</h4>
-
+                    <h4><a id="%E5%AE%9A%E4%B9%89" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>定义</h4>
 <ul>
 <li>单位时间内，系统处于可运行状态和不可中断状态的平均进程数，和cpu使用率没有直接关系</li>
 <li>包括了正在使用 CPU 的进程，还包括等待 CPU 和等待 I/O 的进程。</li>
 <li>本质上是平均活跃进程数</li>
 <li></li>
 </ul>
-
-<h4>过载</h4>
-
+<h4><a id="%E8%BF%87%E8%BD%BD" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>过载</h4>
 <ul>
 <li>一旦1分钟的平均负载接近或超过了CPU的个数，就意味着系统正在发生过载的问题</li>
 <li>排查问题的阀门</li>
-<li><strong><em>当平均负载高于 CPU 数量 70% 的时候，你就应该分析排查负载高的问题了。</em></strong></li>
+<li><em><strong>当平均负载高于 CPU 数量 70% 的时候，你就应该分析排查负载高的问题了。</strong></em></li>
 </ul>
-
-<h4>cpu负载和cpu对应率的关系</h4>
-
+<h4><a id="cpu%E8%B4%9F%E8%BD%BD%E5%92%8Ccpu%E5%AF%B9%E5%BA%94%E7%8E%87%E7%9A%84%E5%85%B3%E7%B3%BB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>cpu负载和cpu对应率的关系</h4>
 <ul>
 <li>CPU 密集型进程，使用大量 CPU 会导致平均负载升高，此时这两者是一致的。</li>
 <li>I/O 密集型进程，等待 I/O 也会导致平均负载升高，但 CPU 使用率不一定很高。</li>
 <li>大量等待 CPU 的进程调度也会导致平均负载升高，此时的 CPU 使用率也会比较高。</li>
 </ul>
-
-<h4>工具stress和sysstat</h4>
-
+<h4><a id="%E5%B7%A5%E5%85%B7stress%E5%92%8Csysstat" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>工具stress和sysstat</h4>
 <ul>
 <li>stress系统压力测试工具</li>
 <li>sysstat作为性能工具</li>
@@ -195,29 +188,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

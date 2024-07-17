@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,16 +139,13 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>mysql commit 两段式提交</h4>
-
+                    <h4><a id="mysql-commit%E4%B8%A4%E6%AE%B5%E5%BC%8F%E6%8F%90%E4%BA%A4" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>mysql commit 两段式提交</h4>
 <ul>
 <li>写redolog 处于prepare</li>
-<li>写binlog是阶段B
-<img src="media/15450951587114/ee9af616e05e4b853eba27048351f62a.jpg" alt="ee9af616e05e4b853eba27048351f62a"/></li>
+<li>写binlog是阶段B<br />
+<img src="media/15450951587114/ee9af616e05e4b853eba27048351f62a.jpg" alt="ee9af616e05e4b853eba27048351f62a" /></li>
 </ul>
-
-<h4>奔溃恢复规则</h4>
-
+<h4><a id="%E5%A5%94%E6%BA%83%E6%81%A2%E5%A4%8D%E8%A7%84%E5%88%99" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>奔溃恢复规则</h4>
 <ul>
 <li>如果redo log的事务是完整的，有了commit标识，则直接提交</li>
 <li>如果redo log的事务只有完整的preapre，则判断对应的事物binglog是否存在并完整</li>
@@ -156,25 +153,19 @@
 <li>否则回滚事物</li>
 <li>redolog prepare --&gt; binlog --&gt;redolog commit</li>
 </ul>
-
-<h4>Mysql验证binlog完整性</h4>
-
+<h4><a id="mysql%E9%AA%8C%E8%AF%81binlog%E5%AE%8C%E6%95%B4%E6%80%A7" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Mysql验证binlog完整性</h4>
 <ul>
 <li>statement 的binlog会有commit</li>
 <li>row格式的binlog ，会有XID event</li>
 <li>redolog 和 bin log通过XID关联起来</li>
 </ul>
-
-<h4>设计事务的原因</h4>
-
+<h4><a id="%E8%AE%BE%E8%AE%A1%E4%BA%8B%E5%8A%A1%E7%9A%84%E5%8E%9F%E5%9B%A0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>设计事务的原因</h4>
 <ul>
 <li>主从复制的时候防止备库使用未提交的事物</li>
 <li>redo log是不能回滚的，如果binlog写入失败。就会导致数据和binlog不一致</li>
 <li>binlog没有能力回复数据页</li>
 </ul>
-
-<h4>更新记录和技术表顺序</h4>
-
+<h4><a id="%E6%9B%B4%E6%96%B0%E8%AE%B0%E5%BD%95%E5%92%8C%E6%8A%80%E6%9C%AF%E8%A1%A8%E9%A1%BA%E5%BA%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>更新记录和技术表顺序</h4>
 <ul>
 <li>应该先插入操作记录，再更新计数表。</li>
 <li>因为更新计数表涉及到行锁的竞争，先插入再更新能最大程度地减少事务之间的锁等待，提升并发度。</li>
@@ -201,29 +192,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,39 +139,30 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>节拍率</h4>
-
+                    <h4><a id="%E8%8A%82%E6%8B%8D%E7%8E%87" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>节拍率</h4>
 <ul>
 <li>为了维护 CPU 时间，Linux 通过事先定义的节拍率（内核中表示为 HZ），触发时间中断，并使用全局变量 Jiffies 记录了开机以来的节拍数</li>
 <li>nice 低优先级用户态CPU时间，就是进程的nice值被调整被1~19之间时的CPU时间</li>
-<li> steal 当前系统运行虚拟机的时候，被虚拟机占用的CPU时间</li>
+<li>steal 当前系统运行虚拟机的时候，被虚拟机占用的CPU时间</li>
 </ul>
-
-<h4>CPU使用率</h4>
-
+<h4><a id="cpu%E4%BD%BF%E7%94%A8%E7%8E%87" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>CPU使用率</h4>
 <ul>
 <li>CPU使用率 = 1 - (空闲时间/总CPU时间)</li>
 <li>平均CPU使用率 = 1 - (空间时间new - 空闲时间old)/(总cpu时间new - 总空闲时间old)</li>
 </ul>
-
-<h4>PID不停的在变，CPU使用率高</h4>
-
+<h4><a id="pid%E4%B8%8D%E5%81%9C%E7%9A%84%E5%9C%A8%E5%8F%98%EF%BC%8Ccpu%E4%BD%BF%E7%94%A8%E7%8E%87%E9%AB%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>PID不停的在变，CPU使用率高</h4>
 <ul>
 <li>要么是这些进程在不停地重启，要么就是全新的进程，这无非也就两个原因：</li>
 <li>第一个原因，进程在不停地崩溃重启，比如因为段错误、配置错误等等，这时，进程在退出后可能又被监控系统自动重启了。</li>
 <li>第二个原因，这些进程都是短时进程，也就是在其他应用内部通过 exec 调用的外面命令。这些命令一般都只运行很短的时间就会结束，你很难用 top 这种间隔时间比较长的工具发现</li>
 </ul>
-
-<h4>查看父进程</h4>
-
+<h4><a id="%E6%9F%A5%E7%9C%8B%E7%88%B6%E8%BF%9B%E7%A8%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>查看父进程</h4>
 <ul>
 <li>pstree | grep stress</li>
 <li>短时进程</li>
 </ul>
-
-<h4>execsnoop</h4>
-
-<pre class="line-numbers"><code class="language-text">  #!/bin/bash
+<h4><a id="execsnoop" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>execsnoop</h4>
+<pre><code class="language-plain_text">  #!/bin/bash
 #
 # execsnoop - trace process exec() with arguments.
 #             Written using Linux ftrace.
@@ -185,7 +176,7 @@
 # and either the sys_execve, stub_execve or do_execve kernel function. You may
 # already have these on recent kernels. And awk.
 #
-# This traces exec() from the fork()-&gt;exec() sequence, which means it won&#39;t
+# This traces exec() from the fork()-&gt;exec() sequence, which means it won't
 # catch new processes that only fork(). With the -r option, it will also catch
 # processes that re-exec. It makes a best-effort attempt to retrieve the program
 # arguments and PPID; if these are unavailable, 0 and &quot;[?]&quot; are printed
@@ -224,82 +215,82 @@
 #
 #  (http://www.gnu.org/copyleft/gpl.html)
 #
-# 07-Jul-2014   Brendan Gregg   Created this.
+# 07-Jul-2014	Brendan Gregg	Created this.
 
 ### default variables
 tracing=/sys/kernel/debug/tracing
 flock=/var/tmp/.ftrace-lock; wroteflock=0
 opt_duration=0; duration=; opt_name=0; name=; opt_time=0; opt_reexec=0
 opt_argc=0; argc=8; max_argc=16; ftext=
-trap &#39;:&#39; INT QUIT TERM PIPE HUP # sends execution to end tracing section
+trap ':' INT QUIT TERM PIPE HUP	# sends execution to end tracing section
 
 function usage {
-    cat &lt;&lt;-END &gt;&amp;2
-    USAGE: execsnoop [-hrt] [-a argc] [-d secs] [name]
-                     -d seconds      # trace duration, and use buffers
-                     -a argc         # max args to show (default 8)
-                     -r              # include re-execs
-                     -t              # include time (seconds)
-                     -h              # this usage message
-                     name            # process name to match (REs allowed)
-      eg,
-           execsnoop                 # watch exec()s live (unbuffered)
-           execsnoop -d 1            # trace 1 sec (buffered)
-           execsnoop grep            # trace process names containing grep
-           execsnoop &#39;udevd$&#39;        # process names ending in &quot;udevd&quot;
+	cat &lt;&lt;-END &gt;&amp;2
+	USAGE: execsnoop [-hrt] [-a argc] [-d secs] [name]
+	                 -d seconds      # trace duration, and use buffers
+	                 -a argc         # max args to show (default 8)
+	                 -r              # include re-execs
+	                 -t              # include time (seconds)
+	                 -h              # this usage message
+	                 name            # process name to match (REs allowed)
+	  eg,
+	       execsnoop                 # watch exec()s live (unbuffered)
+	       execsnoop -d 1            # trace 1 sec (buffered)
+	       execsnoop grep            # trace process names containing grep
+	       execsnoop 'udevd$'        # process names ending in &quot;udevd&quot;
 
-    See the man page and example file for more info.
+	See the man page and example file for more info.
 END
-    exit
+	exit
 }
 
 function warn {
-    if ! eval &quot;$@&quot;; then
-        echo &gt;&amp;2 &quot;WARNING: command failed \&quot;$@\&quot;&quot;
-    fi
+	if ! eval &quot;$@&quot;; then
+		echo &gt;&amp;2 &quot;WARNING: command failed \&quot;$@\&quot;&quot;
+	fi
 }
 
 function end {
-    # disable tracing
-    echo 2&gt;/dev/null
-    echo &quot;Ending tracing...&quot; 2&gt;/dev/null
-    cd $tracing
-    warn &quot;echo 0 &gt; events/kprobes/$kname/enable&quot;
-    warn &quot;echo 0 &gt; events/sched/sched_process_fork/enable&quot;
-    warn &quot;echo -:$kname &gt;&gt; kprobe_events&quot;
-    warn &quot;echo &gt; trace&quot;
-    (( wroteflock )) &amp;&amp; warn &quot;rm $flock&quot;
+	# disable tracing
+	echo 2&gt;/dev/null
+	echo &quot;Ending tracing...&quot; 2&gt;/dev/null
+	cd $tracing
+	warn &quot;echo 0 &gt; events/kprobes/$kname/enable&quot;
+	warn &quot;echo 0 &gt; events/sched/sched_process_fork/enable&quot;
+	warn &quot;echo -:$kname &gt;&gt; kprobe_events&quot;
+	warn &quot;echo &gt; trace&quot;
+	(( wroteflock )) &amp;&amp; warn &quot;rm $flock&quot;
 }
 
 function die {
-    echo &gt;&amp;2 &quot;$@&quot;
-    exit 1
+	echo &gt;&amp;2 &quot;$@&quot;
+	exit 1
 }
 
 function edie {
-    # die with a quiet end()
-    echo &gt;&amp;2 &quot;$@&quot;
-    exec &gt;/dev/null 2&gt;&amp;1
-    end
-    exit 1
+	# die with a quiet end()
+	echo &gt;&amp;2 &quot;$@&quot;
+	exec &gt;/dev/null 2&gt;&amp;1
+	end
+	exit 1
 }
 
 ### process options
 while getopts a:d:hrt opt
 do
-    case $opt in
-    a)  opt_argc=1; argc=$OPTARG ;;
-    d)  opt_duration=1; duration=$OPTARG ;;
-    r)  opt_reexec=1 ;;
-    t)  opt_time=1 ;;
-    h|?)    usage ;;
-    esac
+	case $opt in
+	a)	opt_argc=1; argc=$OPTARG ;;
+	d)	opt_duration=1; duration=$OPTARG ;;
+	r)	opt_reexec=1 ;;
+	t)	opt_time=1 ;;
+	h|?)	usage ;;
+	esac
 done
 shift $(( $OPTIND - 1 ))
 if (( $# )); then
-    opt_name=1
-    name=$1
-    shift
+	opt_name=1
+	name=$1
+	shift
 fi
 (( $# )) &amp;&amp; usage
 
@@ -310,23 +301,23 @@ fi
 (( opt_file )) &amp;&amp; ftext=&quot;$ftext for filenames containing \&quot;$file\&quot;&quot;
 (( opt_argc &amp;&amp; argc &gt; max_argc )) &amp;&amp; die &quot;ERROR: max -a argc is $max_argc.&quot;
 if (( opt_duration )); then
-    echo &quot;Tracing exec()s$ftext for $duration seconds (buffered)...&quot;
+	echo &quot;Tracing exec()s$ftext for $duration seconds (buffered)...&quot;
 else
-    echo &quot;Tracing exec()s$ftext. Ctrl-C to end.&quot;
+	echo &quot;Tracing exec()s$ftext. Ctrl-C to end.&quot;
 fi
 
 ### select awk
 if (( opt_duration )); then
-    [[ -x /usr/bin/mawk ]] &amp;&amp; awk=mawk || awk=awk
+	[[ -x /usr/bin/mawk ]] &amp;&amp; awk=mawk || awk=awk
 else
-    # workarounds for mawk/gawk fflush behavior
-    if [[ -x /usr/bin/gawk ]]; then
-        awk=gawk
-    elif [[ -x /usr/bin/mawk ]]; then
-        awk=&quot;mawk -W interactive&quot;
-    else
-        awk=awk
-    fi
+	# workarounds for mawk/gawk fflush behavior
+	if [[ -x /usr/bin/gawk ]]; then
+		awk=gawk
+	elif [[ -x /usr/bin/mawk ]]; then
+		awk=&quot;mawk -W interactive&quot;
+	else
+		awk=awk
+	fi
 fi
 
 ### check permissions
@@ -340,22 +331,22 @@ wroteflock=1
 
 ### build probe
 if [[ -x /usr/bin/getconf ]]; then
-    bits=$(getconf LONG_BIT)
+	bits=$(getconf LONG_BIT)
 else
-    bits=64
-    [[ $(uname -m) == i* ]] &amp;&amp; bits=32
+	bits=64
+	[[ $(uname -m) == i* ]] &amp;&amp; bits=32
 fi
 (( offset = bits / 8 ))
 function makeprobe {
-    func=$1
-    kname=execsnoop_$func
-    kprobe=&quot;p:$kname $func&quot;
-    i=0
-    while (( i &lt; argc + 1 )); do
-        # p:kname do_execve +0(+0(%si)):string +0(+8(%si)):string ...
-        kprobe=&quot;$kprobe +0(+$(( i * offset ))(%si)):string&quot;
-        (( i++ ))
-    done
+	func=$1
+	kname=execsnoop_$func
+	kprobe=&quot;p:$kname $func&quot;
+	i=0
+	while (( i &lt; argc + 1 )); do
+		# p:kname do_execve +0(+0(%si)):string +0(+8(%si)):string ...
+		kprobe=&quot;$kprobe +0(+$(( i * offset ))(%si)):string&quot;
+		(( i++ ))
+	done
 }
 # try in this order: sys_execve, stub_execve, do_execve
 makeprobe sys_execve
@@ -363,19 +354,19 @@ makeprobe sys_execve
 ### setup and begin tracing
 echo nop &gt; current_tracer
 if ! echo $kprobe &gt;&gt; kprobe_events 2&gt;/dev/null; then
-    makeprobe stub_execve
-    if ! echo $kprobe &gt;&gt; kprobe_events 2&gt;/dev/null; then
-        makeprobe do_execve
-        if ! echo $kprobe &gt;&gt; kprobe_events 2&gt;/dev/null; then
-            edie &quot;ERROR: adding a kprobe for execve. Exiting.&quot;
+	makeprobe stub_execve
+	if ! echo $kprobe &gt;&gt; kprobe_events 2&gt;/dev/null; then
+	    makeprobe do_execve
+	    if ! echo $kprobe &gt;&gt; kprobe_events 2&gt;/dev/null; then
+		    edie &quot;ERROR: adding a kprobe for execve. Exiting.&quot;
         fi
-    fi
+	fi
 fi
 if ! echo 1 &gt; events/kprobes/$kname/enable; then
-    edie &quot;ERROR: enabling kprobe for execve. Exiting.&quot;
+	edie &quot;ERROR: enabling kprobe for execve. Exiting.&quot;
 fi
 if ! echo 1 &gt; events/sched/sched_process_fork/enable; then
-    edie &quot;ERROR: enabling sched:sched_process_fork tracepoint. Exiting.&quot;
+	edie &quot;ERROR: enabling sched:sched_process_fork tracepoint. Exiting.&quot;
 fi
 echo &quot;Instrumenting $func&quot;
 (( opt_time )) &amp;&amp; printf &quot;%-16s &quot; &quot;TIMEs&quot;
@@ -388,91 +379,88 @@ printf &quot;%6s %6s %s\n&quot; &quot;PID&quot; &quot;PPID&quot; &quot;ARGS&quot
 # To differentiate between them, the number of header fields is counted,
 # and an offset set, to skip the extra column when needed.
 #
-offset=$($awk &#39;BEGIN { o = 0; }
-    $1 == &quot;#&quot; &amp;&amp; $2 ~ /TASK/ &amp;&amp; NF == 6 { o = 1; }
-    $2 ~ /TASK/ { print o; exit }&#39; trace)
+offset=$($awk 'BEGIN { o = 0; }
+	$1 == &quot;#&quot; &amp;&amp; $2 ~ /TASK/ &amp;&amp; NF == 6 { o = 1; }
+	$2 ~ /TASK/ { print o; exit }' trace)
 
 ### print trace buffer
 warn &quot;echo &gt; trace&quot;
 ( if (( opt_duration )); then
-    # wait then dump buffer
-    sleep $duration
-    cat -v trace
+	# wait then dump buffer
+	sleep $duration
+	cat -v trace
 else
-    # print buffer live
-    cat -v trace_pipe
+	# print buffer live
+	cat -v trace_pipe
 fi ) | $awk -v o=$offset -v opt_name=$opt_name -v name=$name \
     -v opt_duration=$opt_duration -v opt_time=$opt_time -v kname=$kname \
-    -v opt_reexec=$opt_reexec &#39;
-    # common fields
-    $1 != &quot;#&quot; {
-        # task name can contain dashes
-        comm = pid = $1
-        sub(/-[0-9][0-9]*/, &quot;&quot;, comm)
-        sub(/.*-/, &quot;&quot;, pid)
-    }
+    -v opt_reexec=$opt_reexec '
+	# common fields
+	$1 != &quot;#&quot; {
+		# task name can contain dashes
+		comm = pid = $1
+		sub(/-[0-9][0-9]*/, &quot;&quot;, comm)
+		sub(/.*-/, &quot;&quot;, pid)
+	}
 
-    $1 != &quot;#&quot; &amp;&amp; $(4+o) ~ /sched_process_fork/ {
-        cpid=$0
-        sub(/.* child_pid=/, &quot;&quot;, cpid)
-        sub(/ .*/, &quot;&quot;, cpid)
-        getppid[cpid] = pid
-        delete seen[pid]
-    }
+	$1 != &quot;#&quot; &amp;&amp; $(4+o) ~ /sched_process_fork/ {
+		cpid=$0
+		sub(/.* child_pid=/, &quot;&quot;, cpid)
+		sub(/ .*/, &quot;&quot;, cpid)
+		getppid[cpid] = pid
+		delete seen[pid]
+	}
 
-    $1 != &quot;#&quot; &amp;&amp; $(4+o) ~ kname {
-        if (seen[pid])
-            next
-        if (opt_name &amp;&amp; comm !~ name)
-            next
+	$1 != &quot;#&quot; &amp;&amp; $(4+o) ~ kname {
+		if (seen[pid])
+			next
+		if (opt_name &amp;&amp; comm !~ name)
+			next
 
-        #
-        # examples:
-        # ... arg1=&quot;/bin/echo&quot; arg2=&quot;1&quot; arg3=&quot;2&quot; arg4=&quot;3&quot; ...
-        # ... arg1=&quot;sleep&quot; arg2=&quot;2&quot; arg3=(fault) arg4=&quot;&quot; ...
-        # ... arg1=&quot;&quot; arg2=(fault) arg3=&quot;&quot; arg4=&quot;&quot; ...
-        # the last example is uncommon, and may be a race.
-        #
-        if ($0 ~ /arg1=&quot;&quot;/) {
-            args = comm &quot; [?]&quot;
-        } else {
-            args=$0
-            sub(/ arg[0-9]*=\(fault\).*/, &quot;&quot;, args)
-            sub(/.*arg1=&quot;/, &quot;&quot;, args)
-            gsub(/&quot; arg[0-9]*=&quot;/, &quot; &quot;, args)
-            sub(/&quot;$/, &quot;&quot;, args)
-            if ($0 !~ /\(fault\)/)
-                args = args &quot; [...]&quot;
-        }
+		#
+		# examples:
+		# ... arg1=&quot;/bin/echo&quot; arg2=&quot;1&quot; arg3=&quot;2&quot; arg4=&quot;3&quot; ...
+		# ... arg1=&quot;sleep&quot; arg2=&quot;2&quot; arg3=(fault) arg4=&quot;&quot; ...
+		# ... arg1=&quot;&quot; arg2=(fault) arg3=&quot;&quot; arg4=&quot;&quot; ...
+		# the last example is uncommon, and may be a race.
+		#
+		if ($0 ~ /arg1=&quot;&quot;/) {
+			args = comm &quot; [?]&quot;
+		} else {
+			args=$0
+			sub(/ arg[0-9]*=\(fault\).*/, &quot;&quot;, args)
+			sub(/.*arg1=&quot;/, &quot;&quot;, args)
+			gsub(/&quot; arg[0-9]*=&quot;/, &quot; &quot;, args)
+			sub(/&quot;$/, &quot;&quot;, args)
+			if ($0 !~ /\(fault\)/)
+				args = args &quot; [...]&quot;
+		}
 
-        if (opt_time) {
-            time = $(3+o); sub(&quot;:&quot;, &quot;&quot;, time)
-            printf &quot;%-16s &quot;, time
-        }
-        printf &quot;%6s %6d %s\n&quot;, pid, getppid[pid], args
-        if (!opt_duration)
-            fflush()
-        if (!opt_reexec) {
-            seen[pid] = 1
-            delete getppid[pid]
-        }
-    }
+		if (opt_time) {
+			time = $(3+o); sub(&quot;:&quot;, &quot;&quot;, time)
+			printf &quot;%-16s &quot;, time
+		}
+		printf &quot;%6s %6d %s\n&quot;, pid, getppid[pid], args
+		if (!opt_duration)
+			fflush()
+		if (!opt_reexec) {
+			seen[pid] = 1
+			delete getppid[pid]
+		}
+	}
 
-    $0 ~ /LOST.*EVENT[S]/ { print &quot;WARNING: &quot; $0 &gt; &quot;/dev/stderr&quot; }
-&#39;
+	$0 ~ /LOST.*EVENT[S]/ { print &quot;WARNING: &quot; $0 &gt; &quot;/dev/stderr&quot; }
+'
 
 ### end tracing
 end
 </code></pre>
-
 <ul>
 <li>基于内核BPF技术实现</li>
 </ul>
-
-<h4>拓展阅读</h4>
-
+<h4><a id="%E6%8B%93%E5%B1%95%E9%98%85%E8%AF%BB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>拓展阅读</h4>
 <ul>
-<li><a href="http://blog.bruceding.com/420.html">http://blog.bruceding.com/420.html</a> </li>
+<li><a href="http://blog.bruceding.com/420.html">http://blog.bruceding.com/420.html</a></li>
 <li></li>
 </ul>
 
@@ -496,31 +484,96 @@ end
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
-<script src="asset/prism.js"></script>
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   

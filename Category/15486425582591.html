@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,51 +139,41 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>查询语句中 where 条件是大于号和小于号，这里的“等值查询”又是从哪里来的呢？</h4>
-
+                    <h4><a id="%E6%9F%A5%E8%AF%A2%E8%AF%AD%E5%8F%A5%E4%B8%ADwhere%E6%9D%A1%E4%BB%B6%E6%98%AF%E5%A4%A7%E4%BA%8E%E5%8F%B7%E5%92%8C%E5%B0%8F%E4%BA%8E%E5%8F%B7%EF%BC%8C%E8%BF%99%E9%87%8C%E7%9A%84%E2%80%9C%E7%AD%89%E5%80%BC%E6%9F%A5%E8%AF%A2%E2%80%9D%E5%8F%88%E6%98%AF%E4%BB%8E%E5%93%AA%E9%87%8C%E6%9D%A5%E7%9A%84%E5%91%A2%EF%BC%9F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>查询语句中 where 条件是大于号和小于号，这里的“等值查询”又是从哪里来的呢？</h4>
 <ul>
 <li>select * from t where id&gt;9 and id&lt;12 order by id desc for update;</li>
 <li>首先这个查询语句的语义是 order by id desc，要拿到满足条件的所有行，优化器必须先找到“第一个 id&lt;12 的值”。</li>
 <li>在执行过程中，通过树搜索的方式定位记录的时候，用的是“等值查询”的方法。</li>
 </ul>
-
-<h4>lock in share mode 和 for update</h4>
-
+<h4><a id="lock-in-share-mode%E5%92%8C-for-update" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>lock in share mode 和 for update</h4>
 <ul>
 <li>当前事务获取共享锁后，可以读写，其他事务是否可以进行读写操作和获取共享锁：可以读，可以获取共享锁，不可以写</li>
 <li>两个事务同时获取某行数据共享锁后，是否可以进行update操作：不可以</li>
 <li>当前事务获取某行数据排他锁后，其他事务是否可以对该行数据进行读写操作和获取共享锁：其他事务可以读，不可以获取共享锁，不可以写</li>
 </ul>
-
-<h4>行锁和索引的关系</h4>
-
+<h4><a id="%E8%A1%8C%E9%94%81%E5%92%8C%E7%B4%A2%E5%BC%95%E7%9A%84%E5%85%B3%E7%B3%BB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>行锁和索引的关系</h4>
 <ul>
-<li>未加索引时，两种行锁情况为（使用表锁）： 
+<li>未加索引时，两种行锁情况为（使用表锁）：
 <ul>
-<li>事务1获取某行数据共享锁，其他事务可以获取不同行数据的共享锁，不可以获取不同行数据的排他锁 </li>
+<li>事务1获取某行数据共享锁，其他事务可以获取不同行数据的共享锁，不可以获取不同行数据的排他锁</li>
 <li>事务1获取某行数据排他锁，其他事务不可以获取不同行数据的共享锁、排他锁</li>
-</ul></li>
+</ul>
+</li>
 <li>加索引后，两种行锁为（使用行锁）：</li>
 <li>事务1获取某行数据共享锁，其他事务可以获取不同行数据的排他锁</li>
 <li>事务1获取某行数据排他锁，其他事务可以获取不同行数据的共享锁、排他锁</li>
 </ul>
-
-<h4>死锁</h4>
-
+<h4><a id="%E6%AD%BB%E9%94%81" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>死锁</h4>
 <ul>
 <li>select id from t where c in(5,20,10) lock in share mode;</li>
 <li>select id from t where c in(5,20,10) order by c desc for update;</li>
 </ul>
-
-<h4>日志锁类型</h4>
-
-<pre class="line-numbers"><code class="language-text">lock_mode X waiting表示next-key lock；
+<h4><a id="%E6%97%A5%E5%BF%97%E9%94%81%E7%B1%BB%E5%9E%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>日志锁类型</h4>
+<pre><code class="language-plain_text">lock_mode X waiting表示next-key lock；
 lock_mode X locks rec but not gap是只有行锁；
 locks gap before rec 只有间隙锁；
 </code></pre>
-
-<h4>索引优化</h4>
-
+<h4><a id="%E7%B4%A2%E5%BC%95%E4%BC%98%E5%8C%96" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>索引优化</h4>
 <ul>
 <li>lock in share mode 只锁覆盖索引，但是如果是 for update 就不一样了。 执行 for update 时，系统会认为你接下来要更新数据，因此会顺便给主键索引上满足条件的行加上行锁。</li>
 <li>索引上的等值查询，给唯一索引加锁的时候，next-key lock 退化为行锁</li>
@@ -211,31 +201,96 @@ locks gap before rec 只有间隙锁；
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
-<script src="asset/prism.js"></script>
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   

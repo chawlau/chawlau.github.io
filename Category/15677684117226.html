@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,36 +139,27 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>概述</h4>
-
+                    <h4><a id="%E6%A6%82%E8%BF%B0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>概述</h4>
 <ul>
 <li>独占式的，专属所有权，同一时刻，只能有一个unique_ptr指针指向这块对象</li>
 <li>当这个unique_ptr被销毁的时候，它所指向的对象也被销毁</li>
 </ul>
-
-<h4>make_unique</h4>
-
+<h4><a id="make-unique" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>make_unique</h4>
 <ul>
 <li>c++14才有</li>
 <li>不支持指定的删除器语法</li>
 </ul>
-
-<h4>不支持的操作</h4>
-
+<h4><a id="%E4%B8%8D%E6%94%AF%E6%8C%81%E7%9A%84%E6%93%8D%E4%BD%9C" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>不支持的操作</h4>
 <ul>
 <li>unique_ptr<string> ps1(new string(&quot;I love China&quot;));</li>
 <li>unique_ptr<string> ps2(ps1)</li>
 <li>拷贝，赋值</li>
 </ul>
-
-<h4>移动语义</h4>
-
+<h4><a id="%E7%A7%BB%E5%8A%A8%E8%AF%AD%E4%B9%89" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>移动语义</h4>
 <ul>
 <li>unique_ptr<int> ps5 = std::move(pi3);</li>
 </ul>
-
-<h4>release()</h4>
-
+<h4><a id="release" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>release()</h4>
 <ul>
 <li>放弃指针控制权，返回裸指针，将该指针置空</li>
 <li>裸指针可以释放，可以delete, 也可以初始化另外的智能指针</li>
@@ -176,49 +167,35 @@
 <li>int* tmp = p5.release();</li>
 <li>delete tmp</li>
 </ul>
-
-<h4>reset</h4>
-
+<h4><a id="reset" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>reset</h4>
 <ul>
 <li>不带参数，释放智能指针所指向的对象，并且将智能指针置为空</li>
 <li>带参数 释放智能指针所指向的对象，并且将智能指针指向新对象</li>
 <li>pi2.reset(p5.release());</li>
 </ul>
-
-<h4>nullptr</h4>
-
+<h4><a id="nullptr" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>nullptr</h4>
 <ul>
 <li>释放智能指针指向的对象，并将智能指针置空</li>
 </ul>
-
-<h4>指向数组</h4>
-
+<h4><a id="%E6%8C%87%E5%90%91%E6%95%B0%E7%BB%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>指向数组</h4>
 <ul>
 <li>unique_ptr<A> ptr(new A[10]) A没有析构函数，正常</li>
 <li>有析构函数，会导致异常</li>
 </ul>
-
-<h4>get()</h4>
-
+<h4><a id="get" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>get()</h4>
 <ul>
 <li>有些函数的参数需要内置的裸指针</li>
 <li>get的指针千万不要delete</li>
 </ul>
-
-<h4>swap</h4>
-
+<h4><a id="swap" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>swap</h4>
 <ul>
 <li>交换智能指针指向的对象</li>
 </ul>
-
-<h4>智能指针作为判断条件</h4>
-
+<h4><a id="%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88%E4%BD%9C%E4%B8%BA%E5%88%A4%E6%96%AD%E6%9D%A1%E4%BB%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>智能指针作为判断条件</h4>
 <ul>
 <li>if (ptr)</li>
 </ul>
-
-<h4>转换为shared_ptr</h4>
-
+<h4><a id="%E8%BD%AC%E6%8D%A2%E4%B8%BAshared-ptr" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>转换为shared_ptr</h4>
 <ul>
 <li>shared_ptr有个显式的构造函数。用于将shared_ptr转换为unique_ptr</li>
 <li>临时对象都是右值</li>
@@ -245,29 +222,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,106 +139,81 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>网络栈</h4>
-
+                    <h4><a id="%E7%BD%91%E7%BB%9C%E6%A0%88" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>网络栈</h4>
 <ul>
 <li>网卡</li>
 <li>回环设备</li>
 <li>路由表</li>
 <li>iptables</li>
 </ul>
-
-<h4>被隔离的容器进程，该如何跟其他 Network Namespace 里的容器进程进行交互呢？</h4>
-
+<h4><a id="%E8%A2%AB%E9%9A%94%E7%A6%BB%E7%9A%84%E5%AE%B9%E5%99%A8%E8%BF%9B%E7%A8%8B%EF%BC%8C%E8%AF%A5%E5%A6%82%E4%BD%95%E8%B7%9F%E5%85%B6%E4%BB%96network-namespace%E9%87%8C%E7%9A%84%E5%AE%B9%E5%99%A8%E8%BF%9B%E7%A8%8B%E8%BF%9B%E8%A1%8C%E4%BA%A4%E4%BA%92%E5%91%A2%EF%BC%9F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>被隔离的容器进程，该如何跟其他 Network Namespace 里的容器进程进行交互呢？</h4>
 <ul>
 <li>docker创建虚拟网桥</li>
-<li><img src="media/15488381890610/e0d28e0371f93af619e91a86eda99a66.png" alt="e0d28e0371f93af619e91a86eda99a66"/></li>
+<li><img src="media/15488381890610/e0d28e0371f93af619e91a86eda99a66.png" alt="e0d28e0371f93af619e91a86eda99a66" /></li>
 <li>被限制在 Network Namespace 里的容器进程，实际上是通过 Veth Pair 设备 + 宿主机网桥的方式，实现了跟同其他容器的数据交换</li>
 </ul>
-
-<h4>容器跨主机通讯</h4>
-
+<h4><a id="%E5%AE%B9%E5%99%A8%E8%B7%A8%E4%B8%BB%E6%9C%BA%E9%80%9A%E8%AE%AF" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>容器跨主机通讯</h4>
 <ul>
 <li>overlay网络</li>
-<li><img src="media/15488381890610/b4387a992352109398a66d1dbe6e413d.png" alt="b4387a992352109398a66d1dbe6e413d"/></li>
+<li><img src="media/15488381890610/b4387a992352109398a66d1dbe6e413d.png" alt="b4387a992352109398a66d1dbe6e413d" /></li>
 </ul>
-
-<h4>Flannel</h4>
-
+<h4><a id="flannel" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Flannel</h4>
 <ul>
 <li>VXLAN</li>
 <li>host-gw</li>
 <li>UDP</li>
 </ul>
-
-<h4>通讯原理</h4>
-
+<h4><a id="%E9%80%9A%E8%AE%AF%E5%8E%9F%E7%90%86" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>通讯原理</h4>
 <ul>
-<li><img src="media/15488381890610/e6827cecb75641d3c8838f2213543cf0.png" alt="e6827cecb75641d3c8838f2213543cf0"/></li>
-<li>VXLAN
-<img src="media/15488381890610/cefe6b99422fba768c53f0093947cd38.png" alt="cefe6b99422fba768c53f0093947cd38"/></li>
-<li>flannel VXLAN的外部帧
-<img src="media/15488381890610/43f5ebb001145ecd896fd10fb27c5c41.png" alt="43f5ebb001145ecd896fd10fb27c5"/></li>
+<li><img src="media/15488381890610/e6827cecb75641d3c8838f2213543cf0.png" alt="e6827cecb75641d3c8838f2213543cf0" /></li>
+<li>VXLAN<br />
+<img src="media/15488381890610/cefe6b99422fba768c53f0093947cd38.png" alt="cefe6b99422fba768c53f0093947cd38" /></li>
+<li>flannel VXLAN的外部帧<br />
+<img src="media/15488381890610/43f5ebb001145ecd896fd10fb27c5c41.png" alt="43f5ebb001145ecd896fd10fb27c5" /></li>
 </ul>
-
-<h4>网络模型和CNI插件</h4>
-
+<h4><a id="%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E5%92%8Ccni%E6%8F%92%E4%BB%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>网络模型和CNI插件</h4>
 <ul>
 <li>一方面，Kubernetes 项目并没有使用 Docker 的网络模型（CNM），所以它并不希望、也不具备配置 docker0 网桥的能力；</li>
 <li>另一方面，这还与 Kubernetes 如何配置 Pod，也就是 Infra 容器的 Network Namespace 密切相关。</li>
 <li>Kubernetes 在启动 Infra 容器之后，就可以直接调用 CNI 网络插件，为这个 Infra 容器的 Network Namespace，配置符合预期的网络栈。</li>
 </ul>
-
-<h4>CNI基础可执行文件</h4>
-
+<h4><a id="cni%E5%9F%BA%E7%A1%80%E5%8F%AF%E6%89%A7%E8%A1%8C%E6%96%87%E4%BB%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>CNI基础可执行文件</h4>
 <ul>
 <li>Main 插件，它是用来创建具体网络设备的二进制文件,bridge（网桥设备）、ipvlan、loopback（lo 设备）、macvlan、ptp（Veth Pair 设备），以及 vlan。</li>
 <li>IPAM（IP Address Management）插件，它是负责分配 IP 地址的二进制文件。dhcp,hostlocal分配预先制定的IP地址</li>
 <li>CNI 社区维护的内置 CNI 插件,tuning，是一个通过 sysctl 调整网络设备参数的二进制文件；portmap，是一个通过 iptables 配置端口映射的二进制文件；bandwidth，是一个使用 Token Bucket Filter (TBF) 来进行限流的二进制文件。</li>
 </ul>
-
-<h4>容器网络方案</h4>
-
+<h4><a id="%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C%E6%96%B9%E6%A1%88" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>容器网络方案</h4>
 <ul>
 <li>实现这个网络方案本身，配置宿主机路由、配置 ARP 和 FDB 表里的信息等等。</li>
 <li>实现该网络方案对应的 CNI 插件。这一部分主要需要做的，就是配置 Infra 容器里面的网络栈，并把它连接在 CNI 网桥上</li>
 </ul>
-
-<h4>host-gw</h4>
-
+<h4><a id="host-gw" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>host-gw</h4>
 <ul>
 <li>host-gw 模式的工作原理，其实就是将每个 Flannel 子网（Flannel Subnet，比如：10.244.1.0/24）的“下一跳”，设置成了该子网对应的宿主机的 IP 地址。</li>
 <li>Flannel host-gw 模式必须要求集群宿主机之间是二层连通的</li>
 </ul>
-
-<h4>Calico</h4>
-
+<h4><a id="calico" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Calico</h4>
 <ul>
 <li>BGP协议 在大规模网络中实现节点路由信息共享的一种协议</li>
 <li>在每个边界网关上都会运行着一个小程序，它们会将各自的路由表信息，通过 TCP 传输给其他的边界网关。而其他边界网关上的这个小程序，则会对收到的这些数据进行分析，然后将需要的信息添加到自己的路由表里。</li>
-<li>CNI插件 </li>
+<li>CNI插件</li>
 <li>Felix 负责在宿主机上插入路由规则（即：写入 Linux 内核的 FIB 转发信息库），以及维护 Calico 所需的网络设备等工作。</li>
 <li>BIRD 专门负责在集群里分发路由规则信息</li>
 <li>Node to Node mesh模式</li>
 <li>Route reflector</li>
 </ul>
-
-<h4>IPIP模式</h4>
-
+<h4><a id="ipip%E6%A8%A1%E5%BC%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>IPIP模式</h4>
 <ul>
-<li>IP 包进入 IP 隧道设备之后，就会被 Linux 内核的 IPIP 驱动接管。IPIP 驱动会将这个 IP 包直接封装在一个宿主机网络的 IP 包中
-<img src="media/15488381890610/83c0dfa5fbac2b9854c6d8c57b404b15.png" alt="83c0dfa5fbac2b9854c6d8c57b404b15"/></li>
+<li>IP 包进入 IP 隧道设备之后，就会被 Linux 内核的 IPIP 驱动接管。IPIP 驱动会将这个 IP 包直接封装在一个宿主机网络的 IP 包中<br />
+<img src="media/15488381890610/83c0dfa5fbac2b9854c6d8c57b404b15.png" alt="83c0dfa5fbac2b9854c6d8c57b404b15" /></li>
 <li>Node 2 的网络内核栈会使用 IPIP 驱动进行解包，从而拿到原始的 IP 包</li>
 </ul>
-
-<h4>Calio原理</h4>
-
+<h4><a id="calio%E5%8E%9F%E7%90%86" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Calio原理</h4>
 <ul>
 <li><a href="https://www.yangcs.net/posts/calico-rr/">https://www.yangcs.net/posts/calico-rr/</a></li>
 </ul>
-
-<h4>实验</h4>
-
+<h4><a id="%E5%AE%9E%E9%AA%8C" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>实验</h4>
 <ul>
 <li>Docker单机网络模型动手实验 <a href="https://github.com/mz1999/blog/blob/master/docs/docker-network-bridge.md">https://github.com/mz1999/blog/blob/master/docs/docker-network-bridge.md</a></li>
 <li>Docker跨主机Overlay网络动手实验 <a href="https://github.com/mz1999/blog/blob/master/docs/docker-overlay-networks.md">https://github.com/mz1999/blog/blob/master/docs/docker-overlay-networks.md</a></li>
@@ -264,29 +239,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

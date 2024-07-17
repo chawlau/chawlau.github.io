@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,63 +139,48 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>系统调用和虚拟文件层</h4>
-
+                    <h4><a id="%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%E5%92%8C%E8%99%9A%E6%8B%9F%E6%96%87%E4%BB%B6%E5%B1%82" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>系统调用和虚拟文件层</h4>
 <ul>
 <li>vfs_read-&gt;__vfs_read</li>
 <li>vfs_write-&gt;__vfs_write</li>
 </ul>
-
-<h4>文件I/O类型</h4>
-
+<h4><a id="%E6%96%87%E4%BB%B6io%E7%B1%BB%E5%9E%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>文件I/O类型</h4>
 <ul>
 <li>缓存I/O</li>
 <li>直接IO</li>
 </ul>
-
-<h4>address_space</h4>
-
+<h4><a id="address-space" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>address_space</h4>
 <ul>
 <li>文件和内存页面进行关联</li>
 <li>ext4_direct_IO-&gt;__blockdev_direct_IO-&gt;do_blockdev_direct_IO</li>
 </ul>
-
-<h4>带缓存的写入操作</h4>
-
+<h4><a id="%E5%B8%A6%E7%BC%93%E5%AD%98%E7%9A%84%E5%86%99%E5%85%A5%E6%93%8D%E4%BD%9C" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>带缓存的写入操作</h4>
 <ul>
 <li>对于每一页，先调用 address_space 的 write_begin 做一些准备；</li>
 <li>调用 iov_iter_copy_from_user_atomic，将写入的内容从用户态拷贝到内核态的页中；</li>
 <li>调用 address_space 的 write_end 完成写操作；</li>
 <li>调用 balance_dirty_pages_ratelimited，看脏页是否太多，需要写回硬盘。所谓脏页，就是写入到缓存，但是还没有写入到硬盘的页面。</li>
 </ul>
-
-<h4>ext4模式</h4>
-
+<h4><a id="ext4%E6%A8%A1%E5%BC%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>ext4模式</h4>
 <ul>
 <li>日志模式</li>
 <li>order模式</li>
 <li>writeback</li>
 </ul>
-
-<h4>缓存页面</h4>
-
+<h4><a id="%E7%BC%93%E5%AD%98%E9%A1%B5%E9%9D%A2" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>缓存页面</h4>
 <ul>
 <li>struct file-&gt;struct address_space-&gt;radix tree基数树-&gt;关联所有与文件相关的缓存</li>
 </ul>
-
-<h4>回写场景</h4>
-
+<h4><a id="%E5%9B%9E%E5%86%99%E5%9C%BA%E6%99%AF" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>回写场景</h4>
 <ul>
 <li>调用 balance_dirty_pages_ratelimited</li>
 <li>用户主动调用 sync，将缓存刷到硬盘上去，最终会调用 wakeup_flusher_threads，同步脏页；</li>
 <li>当内存十分紧张，以至于无法分配页面的时候，会调用 free_more_memory，最终会调用 wakeup_flusher_threads，释放脏页；</li>
 <li>脏页已经更新了较长时间，时间上超过了 timer，需要及时回写，保持内存和磁盘上数据一致性</li>
 </ul>
-
-<h4>总结</h4>
-
+<h4><a id="%E6%80%BB%E7%BB%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>总结</h4>
 <ul>
-<li><img src="media/15596925556710/0c49a870b9e6441381fec8d9bf3dee65.png" alt="0c49a870b9e6441381fec8d9bf3dee65"/></li>
+<li><img src="media/15596925556710/0c49a870b9e6441381fec8d9bf3dee65.png" alt="0c49a870b9e6441381fec8d9bf3dee65" /></li>
 </ul>
 
                   </article>
@@ -218,29 +203,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

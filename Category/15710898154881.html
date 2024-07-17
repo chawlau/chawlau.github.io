@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,12 +139,9 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>开发流程</h4>
-
-<p><img src="media/15710898154881/15710899833084.jpg" alt="" style="width:1193px;"/></p>
-
-<h4>业务功能点</h4>
-
+                    <h4><a id="%E5%BC%80%E5%8F%91%E6%B5%81%E7%A8%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>开发流程</h4>
+<p><img src="media/15710898154881/15710899833084.jpg" alt="" style="width:1193px;" /></p>
+<h4><a id="%E4%B8%9A%E5%8A%A1%E5%8A%9F%E8%83%BD%E7%82%B9" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>业务功能点</h4>
 <ul>
 <li>新建红包:在DB、cache各新增一条记录</li>
 <li>抢红包:请求访问cache，剩余红包个数大于0则可拆开红包</li>
@@ -153,37 +150,33 @@
 <li>请求访问cache，剩余红包个数大于0则继续，同时获取可抢红包数与金额 计算金额(从1分到剩余平均值2倍之间随机数，如果不是最后一个红包，剩余金额预留 最少1分给cas更新失败，最后一位拿红包的人) cas更新数据库(更新红包计数表记录【剩余红包个数、剩余红包金额】、插入领取记 录)</li>
 <li>查看红包记录:用户进来直接查DB即可</li>
 </ul>
-
-<h4>红包的库表设计</h4>
-
-<pre class="line-numbers"><code class="language-mysql">
+<h4><a id="%E7%BA%A2%E5%8C%85%E7%9A%84%E5%BA%93%E8%A1%A8%E8%AE%BE%E8%AE%A1" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>红包的库表设计</h4>
+<pre><code class="language-mysql">
 CREATE TABLE `red_packet_info` (
 `id` int(11) NOT NULL AUTO_INCREMENT,
-`red_packet_id` bigint(11) NOT NULL DEFAULT 0 COMMENT &#39;红包id，采用timestamp+5位随机数&#39;, `total_amount` int(11) NOT NULL DEFAULT 0 COMMENT &#39;红包总金额，单位分&#39;,
-`total_packet` int(11) NOT NULL DEFAULT 0 COMMENT &#39;红包总个数&#39;,
-`remaining_amount` int(11) NOT NULL DEFAULT 0 COMMENT &#39;剩余红包金额，单位分&#39;, `remaining_packet` int(11) NOT NULL DEFAULT 0 COMMENT &#39;剩余红包个数&#39;,
-`uid` int(20) NOT NULL DEFAULT 0 COMMENT &#39;新建红包用户的用户标识&#39;,
-`create_time` timestamp COMMENT &#39;创建时间&#39;,
+`red_packet_id` bigint(11) NOT NULL DEFAULT 0 COMMENT '红包id，采用timestamp+5位随机数', `total_amount` int(11) NOT NULL DEFAULT 0 COMMENT '红包总金额，单位分',
+`total_packet` int(11) NOT NULL DEFAULT 0 COMMENT '红包总个数',
+`remaining_amount` int(11) NOT NULL DEFAULT 0 COMMENT '剩余红包金额，单位分', `remaining_packet` int(11) NOT NULL DEFAULT 0 COMMENT '剩余红包个数',
+`uid` int(20) NOT NULL DEFAULT 0 COMMENT '新建红包用户的用户标识',
+`create_time` timestamp COMMENT '创建时间',
 `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-COMMENT &#39;更新时间&#39;, PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT=&#39;红包信息表，新建一个红包插 入一条记录&#39;;
+COMMENT '更新时间', PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='红包信息表，新建一个红包插 入一条记录';
 
 CREATE TABLE `red_packet_record` (
 `id` int(11) NOT NULL AUTO_INCREMENT,
-`amount` int(11) NOT NULL DEFAULT &#39;0&#39; COMMENT &#39;抢到红包的金额&#39;,
-`nick_name` varchar(32) NOT NULL DEFAULT &#39;0&#39; COMMENT &#39;抢到红包的用户的用户名&#39;,
-`img_url` varchar(255) NOT NULL DEFAULT &#39;0&#39; COMMENT &#39;抢到红包的用户的头像&#39;,
-`uid` int(20) NOT NULL DEFAULT &#39;0&#39; COMMENT &#39;抢到红包用户的用户标识&#39;,
-`red_packet_id` bigint(11) NOT NULL DEFAULT &#39;0&#39; COMMENT &#39;红包id，采用timestamp+5位随机
-数&#39;,
-`create_time` timestamp COMMENT &#39;创建时间&#39;,
+`amount` int(11) NOT NULL DEFAULT '0' COMMENT '抢到红包的金额',
+`nick_name` varchar(32) NOT NULL DEFAULT '0' COMMENT '抢到红包的用户的用户名',
+`img_url` varchar(255) NOT NULL DEFAULT '0' COMMENT '抢到红包的用户的头像',
+`uid` int(20) NOT NULL DEFAULT '0' COMMENT '抢到红包用户的用户标识',
+`red_packet_id` bigint(11) NOT NULL DEFAULT '0' COMMENT '红包id，采用timestamp+5位随机
+数',
+`create_time` timestamp COMMENT '创建时间',
 `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-COMMENT &#39;更新时间&#39;, PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT=&#39;抢红包记录表，抢一个红包插 入一条记录&#39;;
+COMMENT '更新时间', PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='抢红包记录表，抢一个红包插 入一条记录';
 </code></pre>
-
-<h4>发红包接口实现</h4>
-
+<h4><a id="%E5%8F%91%E7%BA%A2%E5%8C%85%E6%8E%A5%E5%8F%A3%E5%AE%9E%E7%8E%B0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>发红包接口实现</h4>
 <ul>
 <li>发红包功能接口开发</li>
 <li>新增一条红包记录 往mysql里面添加一条红包记录 往redis里面添加一条红包数量记录 decr 往redis里面添加一条红包金额记录 decreby</li>
@@ -196,12 +189,9 @@ COMMENT &#39;更新时间&#39;, PRIMARY KEY (`id`)
 <li>抢到红包不到能拆成功</li>
 <li>2014年的红包一点开就知道金额，分两次操作，先抢到金额，然后再转账。 2015年后的红包的拆和抢 是分离的，需要点两次，因此会出现抢到红包了，但点开后告知红包已经被领完的状况。进入到第一个 页面不代表抢到，只表示当时红包还有。</li>
 </ul>
-
-<h4>抢红包接口实现</h4>
-
-<p><img src="media/15710898154881/15710924219795.jpg" alt="" style="width:1157px;"/><br/>
-<img src="media/15710898154881/15710924361303.jpg" alt="" style="width:1127px;"/></p>
-
+<h4><a id="%E6%8A%A2%E7%BA%A2%E5%8C%85%E6%8E%A5%E5%8F%A3%E5%AE%9E%E7%8E%B0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>抢红包接口实现</h4>
+<p><img src="media/15710898154881/15710924219795.jpg" alt="" style="width:1157px;" /><br />
+<img src="media/15710898154881/15710924361303.jpg" alt="" style="width:1127px;" /></p>
 <ul>
 <li>抢红包功能接口开发</li>
 <li>在抢红包这里并不能保证用户已经能领到这个红包 抢红包只是做了一个判断，判断当前是否还有红包 有红包则返回可以领</li>
@@ -209,9 +199,7 @@ COMMENT &#39;更新时间&#39;, PRIMARY KEY (`id`)
 <li>拆红包功能接口开发</li>
 <li>拆红包才是用户能领导红包 这时候要先减redis里面的金额和红包数量 减完金额再入库</li>
 </ul>
-
-<h4>红包业务思考</h4>
-
+<h4><a id="%E7%BA%A2%E5%8C%85%E4%B8%9A%E5%8A%A1%E6%80%9D%E8%80%83" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>红包业务思考</h4>
 <ul>
 <li>take all操作 入库转账时需要保证红包个数和红包剩余金额正确</li>
 <li>高并发处理:红包如何计算被抢完?</li>
@@ -242,31 +230,96 @@ COMMENT &#39;更新时间&#39;, PRIMARY KEY (`id`)
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
-<script src="asset/prism.js"></script>
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   

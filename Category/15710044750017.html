@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,19 +139,14 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>结构</h4>
-
-<p><img src="media/15710044750017/15710044945778.jpg" alt="" style="width:1134px;"/></p>
-
-<h4>抽奖程序</h4>
-
+                    <h4><a id="%E7%BB%93%E6%9E%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>结构</h4>
+<p><img src="media/15710044750017/15710044945778.jpg" alt="" style="width:1134px;" /></p>
+<h4><a id="%E6%8A%BD%E5%A5%96%E7%A8%8B%E5%BA%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>抽奖程序</h4>
 <ul>
-<li><img src="media/15710044750017/15710046156516.jpg" alt="" style="width:1142px;"/></li>
+<li><img src="media/15710044750017/15710046156516.jpg" alt="" style="width:1142px;" /></li>
 <li>可以调整误码率，没有过滤的%1根据mysql进行过滤</li>
 </ul>
-
-<h4>google布隆过滤器</h4>
-
+<h4><a id="google%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>google布隆过滤器</h4>
 <ul>
 <li>基于内存布隆过滤器有什么特点</li>
 <li>启动时间长，</li>
@@ -160,18 +155,13 @@
 <li>本地内存无法用在分布式场景</li>
 <li>不支持大数据量存储</li>
 </ul>
-
-<h4>redis安装布隆过滤器</h4>
-
+<h4><a id="redis%E5%AE%89%E8%A3%85%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>redis安装布隆过滤器</h4>
 <ul>
 <li>loadmodule /usr/local/rebloom.so</li>
 <li>redis-cli -p 6379 bf.add myBloom redis1</li>
 </ul>
-
-<h4>秒杀系统</h4>
-
-<p><img src="media/15710044750017/15710055062721.jpg" alt="" style="width:1015px;"/></p>
-
+<h4><a id="%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>秒杀系统</h4>
+<p><img src="media/15710044750017/15710055062721.jpg" alt="" style="width:1015px;" /></p>
 <ul>
 <li>功能核心点</li>
 <li>经典互联网商品抢购秒杀功能</li>
@@ -182,56 +172,46 @@
 <li>性能瓶颈在高并发秒杀</li>
 <li>技术难题在于超卖问题</li>
 </ul>
-
-<h5>系统分析</h5>
-
+<h5><a id="%E7%B3%BB%E7%BB%9F%E5%88%86%E6%9E%90" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>系统分析</h5>
 <ul>
-<li><img src="media/15710044750017/15710057936881.jpg" alt="" style="width:1156px;"/></li>
+<li><img src="media/15710044750017/15710057936881.jpg" alt="" style="width:1156px;" /></li>
 </ul>
-
-<h4>秒杀功能步骤</h4>
-
+<h4><a id="%E7%A7%92%E6%9D%80%E5%8A%9F%E8%83%BD%E6%AD%A5%E9%AA%A4" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>秒杀功能步骤</h4>
 <ul>
 <li>首先通过数据控制模块，提前将秒杀商品缓存到读写分离 Redis，并设置秒杀开始标记如下:</li>
 <li>&quot;skuId_start&quot;: 0 //开始标记0表示秒杀开始</li>
-<li>&quot;skuId_count&quot;: 10000 //总数 </li>
+<li>&quot;skuId_count&quot;: 10000 //总数</li>
 <li>&quot;skuId_access&quot;: 12000 //接受抢购数</li>
-<li>秒杀开始前，服务集群读取 goodsId_Start 为 0，直接返回未开始。 </li>
+<li>秒杀开始前，服务集群读取 goodsId_Start 为 0，直接返回未开始。</li>
 <li>服务时间不一致可能导致流量倾斜，所有流量打到一个机器</li>
 <li>数据控制模块将 goodsId_start 改为1，标志秒杀开始。</li>
 <li>当接受下单数达到 sku_count*1.2 后，继续拦截所有请求，商品剩余数量为 0</li>
 </ul>
-
-<h4>API实战</h4>
-
+<h4><a id="api%E5%AE%9E%E6%88%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>API实战</h4>
 <ul>
 <li>判断秒杀是否开始</li>
 <li>流量拦截</li>
 </ul>
-
-<h5>信息校验层</h5>
-
+<h5><a id="%E4%BF%A1%E6%81%AF%E6%A0%A1%E9%AA%8C%E5%B1%82" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>信息校验层</h5>
 <ul>
 <li>订单信息校验层</li>
 <li>校验当前用户是否已经买过这个商品</li>
 <li>需要存储用户的uid 存数据库效率太低</li>
-<li>存Redis value方式数据太大 </li>
+<li>存Redis value方式数据太大</li>
 <li>存布隆过滤器性能高且数据量小</li>
 <li>校验完通过直接返回抢购成功</li>
 </ul>
-
-<h4>库存扣减</h4>
-
+<h4><a id="%E5%BA%93%E5%AD%98%E6%89%A3%E5%87%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>库存扣减</h4>
 <ul>
-<li>库存扣除成功，获取当前最新库存 如果库存大于0，即马上进行库存扣除，并且访问抢购成功给用户 </li>
+<li>库存扣除成功，获取当前最新库存 如果库存大于0，即马上进行库存扣除，并且访问抢购成功给用户</li>
 <li>考虑原子性问题</li>
 <li>保证原子性的方式，采用lua脚本</li>
 <li>采用lua脚本方式保证原子性带来缺点</li>
 <li>性能有所下降不保证原子性缺点，放入请求量可能大于预期值</li>
 <li>当前扣除库存场景必须保证原子性，否则会导致超卖 返回抢购结果</li>
 <li>抢购成功</li>
-<li>库存没了 ，抢购失败
-<img src="media/15710044750017/15710074434359.jpg" alt="" style="width:385px;"/></li>
+<li>库存没了 ，抢购失败<br />
+<img src="media/15710044750017/15710074434359.jpg" alt="" style="width:385px;" /></li>
 </ul>
 
                   </article>
@@ -254,29 +234,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

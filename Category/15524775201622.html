@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,34 +139,25 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>容量评估</h4>
-
+                    <h4><a id="%E5%AE%B9%E9%87%8F%E8%AF%84%E4%BC%B0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>容量评估</h4>
 <ul>
 <li>慢速比 接口响应时间高于某个阈值的比例。</li>
 </ul>
-
-<h5>选择合适的压测指标</h5>
-
+<h5><a id="%E9%80%89%E6%8B%A9%E5%90%88%E9%80%82%E7%9A%84%E5%8E%8B%E6%B5%8B%E6%8C%87%E6%A0%87" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>选择合适的压测指标</h5>
 <ul>
 <li>一类是系统类指标，比如机器的 CPU 使用率、内存占用量、磁盘 I/O 使用率以及网卡带宽等</li>
 <li>一类是服务类指标，比如接口响应的平均耗时、P999 耗时、错误率</li>
 </ul>
-
-<h5>压测获取单机的最大容量</h5>
-
+<h5><a id="%E5%8E%8B%E6%B5%8B%E8%8E%B7%E5%8F%96%E5%8D%95%E6%9C%BA%E7%9A%84%E6%9C%80%E5%A4%A7%E5%AE%B9%E9%87%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>压测获取单机的最大容量</h5>
 <ul>
 <li>单机压测一般有两种方式，一种是通过日志回放等手段，模拟线上流量来对单机进行压测；一种是通过 TCP-Copy 的方式，把线上机器的流量拷贝过来对单机进行压测</li>
 <li>集群压测是对整个集群进行压测，以获取单机的最大容量。一般做法是通过不断把线上集群的节点摘除，以减少机器数的方式，来增加线上节点单机的流量，从而达到压测的目的。</li>
 </ul>
-
-<h4>获取集群的实际运行负荷</h4>
-
+<h4><a id="%E8%8E%B7%E5%8F%96%E9%9B%86%E7%BE%A4%E7%9A%84%E5%AE%9E%E9%99%85%E8%BF%90%E8%A1%8C%E8%B4%9F%E8%8D%B7" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>获取集群的实际运行负荷</h4>
 <ul>
 <li>统计每台单机在不同耗时区间内的请求数，推送到集中处理的地方进行聚合，将同一个集群内的单机位于不同耗时区间内的请求进行汇总，就得到整个集群的请求在不同耗时区间内的分布了，再利用区间加权的方式就可以计算整个集群的运行负荷</li>
 </ul>
-
-<h4>扩容缩容</h4>
-
+<h4><a id="%E6%89%A9%E5%AE%B9%E7%BC%A9%E5%AE%B9" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>扩容缩容</h4>
 <ul>
 <li>按数量和比例扩容</li>
 <li>逐步缩容</li>
@@ -193,29 +184,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

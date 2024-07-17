@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,40 +139,30 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h5>模式定义</h5>
-
+                    <h5><a id="%E6%A8%A1%E5%BC%8F%E5%AE%9A%E4%B9%89" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>模式定义</h5>
 <ul>
 <li>定义一系列算法，把它们一个个封装起来，并且使它们可互相替換（变化）。该模式使得算法可独立于使用它的客户程序（稳定）而变化（扩展，子类化）。《设计模式》GoF</li>
 </ul>
-
-<h5>结构</h5>
-
+<h5><a id="%E7%BB%93%E6%9E%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>结构</h5>
 <ul>
-<li><img src="media/15726533521164/15808956032984.jpg" alt="" style="width:674px;"/></li>
+<li><img src="media/15726533521164/15808956032984.jpg" alt="" style="width:674px;" /></li>
 </ul>
-
-<h5>要点总结</h5>
-
+<h5><a id="%E8%A6%81%E7%82%B9%E6%80%BB%E7%BB%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>要点总结</h5>
 <p>要点总结</p>
-
 <ul>
 <li>Strategy。及其子类为组件提供了一系列可重用的算法，从而可以使得类型在运行时方便地根据需要在各个算法之间进行切換。</li>
 <li>Strategy 模式提供了用条件判断语句以外的另一种选择，消除条件判断语，就是在解耦合。含有许多条件判断语句的代码通常都需要 Strategy 模式。</li>
 <li>if else 出现的条件后，就是策略模式出现的机会，如果if else 条件保持绝对不变的情况下，不适用策略模式</li>
 <li>如果 Strategyy 对象没有实例变量，那么各个上下文可以共享同 Strategy 对象，从而节省对象开销</li>
 </ul>
-
-<h5>动机</h5>
-
+<h5><a id="%E5%8A%A8%E6%9C%BA" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>动机</h5>
 <ul>
 <li>代码段最好放在高级缓存</li>
 <li>代码过长会占用CPU高级缓存的位置</li>
 <li>适用扩展的算法应对变化</li>
 </ul>
-
-<h4>Cpp</h4>
-
-<pre class="line-numbers"><code class="language-cpp">//
+<h4><a id="cpp" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Cpp</h4>
+<pre><code class="language-C++">//
 // Created by eredinliu on 2020-02-05.
 //
 
@@ -236,66 +226,62 @@ int main() {
     ctx-&gt;Pay();
 }
 </code></pre>
-
-<h5>golang</h5>
-
-<pre class="line-numbers"><code class="language-go">package strategy
+<h5><a id="golang" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>golang</h5>
+<pre><code class="language-go">package strategy
 
 import &quot;fmt&quot;
 
 type PaymentContext struct {
-    Name, CardID string
-    Money        int
-    payment      PaymentStrategy
+	Name, CardID string
+	Money        int
+	payment      PaymentStrategy
 }
 
 func NewPaymentContext(name, cardid string, money int, payment PaymentStrategy) *PaymentContext {
-    return &amp;PaymentContext{
-        Name:    name,
-        CardID:  cardid,
-        Money:   money,
-        payment: payment,
-    }
+	return &amp;PaymentContext{
+		Name:    name,
+		CardID:  cardid,
+		Money:   money,
+		payment: payment,
+	}
 }
 
 func (p *PaymentContext) Pay() {
-    p.payment.Pay(p)
+	p.payment.Pay(p)
 }
 
 type PaymentStrategy interface {
-    Pay(*PaymentContext)
+	Pay(*PaymentContext)
 }
 
 type Cash struct{}
 
 func (*Cash) Pay(ctx *PaymentContext) {
-    fmt.Printf(&quot;Pay $%d to %s by cash&quot;, ctx.Money, ctx.Name)
+	fmt.Printf(&quot;Pay $%d to %s by cash&quot;, ctx.Money, ctx.Name)
 }
 
 type Bank struct{}
 
 func (*Bank) Pay(ctx *PaymentContext) {
-    fmt.Printf(&quot;Pay $%d to %s by bank account %s&quot;, ctx.Money, ctx.Name, ctx.CardID)
+	fmt.Printf(&quot;Pay $%d to %s by bank account %s&quot;, ctx.Money, ctx.Name, ctx.CardID)
 }
 
 func TestPayByCash(t *testing.T) {
-    ctx := NewPaymentContext(&quot;Ada&quot;, &quot;&quot;, 123, &amp;Cash{})
-    ctx.Pay()
-    // Output:
-    // Pay $123 to Ada by cash
+	ctx := NewPaymentContext(&quot;Ada&quot;, &quot;&quot;, 123, &amp;Cash{})
+	ctx.Pay()
+	// Output:
+	// Pay $123 to Ada by cash
 }
 
 func TestPayByBank(t *testing.T) {
-    ctx := NewPaymentContext(&quot;Bob&quot;, &quot;0002&quot;, 888, &amp;Bank{})
-    ctx.Pay()
-    // Output:
-    // Pay $888 to Bob by bank account 0002
+	ctx := NewPaymentContext(&quot;Bob&quot;, &quot;0002&quot;, 888, &amp;Bank{})
+	ctx.Pay()
+	// Output:
+	// Pay $888 to Bob by bank account 0002
 }
 </code></pre>
-
-<h4>python_demo</h4>
-
-<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
+<h4><a id="python-demo" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>python_demo</h4>
+<pre><code class="language-python">from abc import ABCMeta, abstractmethod
 
 class Strategy(metaclass=ABCMeta):
     @abstractmethod
@@ -325,7 +311,7 @@ class Context(object):
     def set_execute(self, strategy):
         self.strategy = strategy
 
-if __name__ == &#39;__main__&#39;:
+if __name__ == '__main__':
     c1 = ConcreteA()
     c2 = ConcreteB()
     c3 = ConcreteC()
@@ -336,10 +322,8 @@ if __name__ == &#39;__main__&#39;:
     context.set_execute(c3)
     context.execute()
 </code></pre>
-
-<h4>python_demo2</h4>
-
-<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
+<h4><a id="python-demo2" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>python_demo2</h4>
+<pre><code class="language-python">from abc import ABCMeta, abstractmethod
 
 class PaymentStrategy(metaclass=ABCMeta):
     def pay(payment_context):
@@ -370,7 +354,7 @@ class Context(object):
     def set_strategy(self, strategy):
         self.strategy = strategy
 
-if __name__ == &#39;__main__&#39;:
+if __name__ == '__main__':
     cash = Cash(&quot;Ada&quot;, 123)
     bank = Bank(&quot;Bob&quot;, 124, &quot;0001&quot;)
     ctx = Context(cash)
@@ -399,31 +383,96 @@ if __name__ == &#39;__main__&#39;:
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
-<script src="asset/prism.js"></script>
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   

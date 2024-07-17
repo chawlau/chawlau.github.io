@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,8 +139,7 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>类别</h4>
-
+                    <h4><a id="%E7%B1%BB%E5%88%AB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>类别</h4>
 <ul>
 <li>业务监控 可以包含 用户访问QPS，DAU日活，访问状态(http code)， 业务接入(登陆，注 册，聊天，上传，留言，短信，搜索)，产品转化率，充值额度，用户投诉 等等这些很宏观的概 念(上层)</li>
 <li>系统监控 主要是跟操作系统相关的 基本监控项 CPU/ 内存 / 硬盘 / IO / TCP链接 / 流量 等等 (Nagios - plugins, prometheus)</li>
@@ -148,49 +147,37 @@
 <li>日志监控 监控中的重头戏(Splunk,ELK)，往往单独设计和搭建， 全部种类的日志都有需要采 集 (syslog, soft, 网络设备，用户行为)</li>
 <li>程序监控 一般需要和开发人员配合，程序中嵌入各种接又 直接获取数据 或者特质的日志格式</li>
 </ul>
-
-<h4>采取</h4>
-
+<h4><a id="%E9%87%87%E5%8F%96" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>采取</h4>
 <ul>
 <li>自带图形调试</li>
 <li>精细数据采样到s级</li>
 </ul>
-
-<h4>不足</h4>
-
+<h4><a id="%E4%B8%8D%E8%B6%B3" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>不足</h4>
 <ul>
 <li>不支持集群</li>
 <li>被监控集群过大，性能有一定瓶颈</li>
 <li>偶尔发生数据丢失</li>
 </ul>
-
-<h4>promethus</h4>
-
+<h4><a id="promethus" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>promethus</h4>
 <ul>
 <li>prometheus本身是一个以进程方式启动,之后以多进程和多线程实现监敬据收集计算查询更新存储的这样一个C/S模型远行模式</li>
-<li><img src="media/15724252772617/15724275818078.jpg" alt="" style="width:786px;"/></li>
+<li><img src="media/15724252772617/15724275818078.jpg" alt="" style="width:786px;" /></li>
 </ul>
-
-<h4>数据存储</h4>
-
+<h4><a id="%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>数据存储</h4>
 <ul>
 <li>Prometheus 采用的是 tme- series（时间序列）的方式以一种自定义的格式存储在本地硬盘上</li>
 <li>prometheus 的本地 T-S (ime- senes）数据库以毎两小时为间隔来分 block（块）存储，每一个块中又分为</li>
-<li>多个 chunk 文件（我们以后会介绍 chunk 的概念）, chunk 文件是用来存放采集过来的数据的 TS 数据，metadata 和引文件（index </li>
+<li>多个 chunk 文件（我们以后会介绍 chunk 的概念）, chunk 文件是用来存放采集过来的数据的 TS 数据，metadata 和引文件（index</li>
 <li>index 文件是对 metrics (prometheus 中一突 KV 采集数据叫做一个 metric）和 labels（标签）进行素引之后存在 chunk 中 chunk 是作为存储的基本单位，index and metadata 是作为子集</li>
 <li>prometheus 平时是将采集过来的数据先都存放在内存之中（prometheus 对内存的消耗还是不小的）以类似缓存的方式用于加快授索和访问当出现当机时，prometheus？有一种保折机叫做 WAL 可以讲数据定期存入硬盘中以 chunk 来表示，并在重新启动时用以恢复进入内存</li>
 </ul>
-
-<h4>数据采集</h4>
-
+<h4><a id="%E6%95%B0%E6%8D%AE%E9%87%87%E9%9B%86" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>数据采集</h4>
 <ul>
 <li>pull</li>
-<li>push 指的是在客户（或者服务端）安装这个官方提供的 pushgateway 插件<br/>
+<li>push 指的是在客户（或者服务端）安装这个官方提供的 pushgateway 插件<br />
 然后，使用我们运维自行开发的各种脚本把监控数据组织成 k 的形式 metrics？形式发送给 pushgateway 之后 pushgateway 会再推送给 prometheus</li>
 </ul>
-
-<h4>prometheus metrics</h4>
-
+<h4><a id="prometheus-metrics" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>prometheus metrics</h4>
 <ul>
 <li>Gauges</li>
 <li>最简单的度量指标，只有一个简单的返回值，或者叫瞬时状态</li>
@@ -199,9 +186,7 @@
 <li>Histograms</li>
 <li>Histograms 统计数据的分布情况。比如最小值，最大值，中间值，还有中位数，75 百分位，90 百分位，95 百分位，98 百分位，99 百分位，和 99.9 百分位的值</li>
 </ul>
-
-<h4>数据格式</h4>
-
+<h4><a id="%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>数据格式</h4>
 <ul>
 <li>key value</li>
 <li>Push 的形式是把 pushgateway 安装在客户端或者服务（其实装那里都无俗谓）pushgateway，本身也是一个http服务器</li>
@@ -209,7 +194,7 @@
 <li>exporter 由于数据类型采集量大其实很多据或者说大部分数据其实我们监控中真的用不到用 pushgateway 是定义一项数据就采集着一种节省资源</li>
 <li>一个新的自定义的 pushgatewaye 脚本开发远远比开发一个全新的 exporter 简单快速的多的多的多！(exporter 的开发需要使用真正的缩程语言，shel 这种快速本是不行的而且需要了解很多 prometheus 自定的编程格式才能开始制作工作量很大）</li>
 <li>exporter 虽然已经很丰富了，但是依然有很多的我们需要的采集形式，exporter：无法提供，或者说现有的 poter 还不支持，但是如果使用 pushgatewayg 的形式就可以任意灵活想做什么都可以做到而且极快</li>
-<li><img src="media/15724252772617/15724311436825.jpg" alt="" style="width:997px;"/></li>
+<li><img src="media/15724252772617/15724311436825.jpg" alt="" style="width:997px;" /></li>
 </ul>
 
                   </article>
@@ -232,29 +217,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

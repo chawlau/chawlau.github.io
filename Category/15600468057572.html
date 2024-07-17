@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,51 +139,40 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>进程的建立</h4>
-
+                    <h4><a id="%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%BB%BA%E7%AB%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>进程的建立</h4>
 <ul>
 <li>创建一个独立的虚拟地址空间</li>
 <li>读取可执行文件头，并且建立虚拟空间与可执行文件的映射关系</li>
 <li>将cpu的指令寄存器的设置成可执行的文件的入口地址, ELF文件头的入口地址</li>
 </ul>
-
-<h4>页错误</h4>
-
+<h4><a id="%E9%A1%B5%E9%94%99%E8%AF%AF" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>页错误</h4>
 <ul>
-<li><img src="media/15600468057572/15600478741302.jpg" alt="" style="width:534px;"/></li>
+<li><img src="media/15600468057572/15600478741302.jpg" alt="" style="width:534px;" /></li>
 </ul>
-
-<h4>ELF文件链接视图和执行视图</h4>
-
+<h4><a id="elf%E6%96%87%E4%BB%B6%E9%93%BE%E6%8E%A5%E8%A7%86%E5%9B%BE%E5%92%8C%E6%89%A7%E8%A1%8C%E8%A7%86%E5%9B%BE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>ELF文件链接视图和执行视图</h4>
 <ul>
 <li>Section是从链接视图划分ELF</li>
 <li>Segment是从执行视图划分ELF</li>
 <li>相同属性的Section会被归类到一个segment，映射到同一个VMA</li>
 </ul>
-
-<h4>总结</h4>
-
+<h4><a id="%E6%80%BB%E7%BB%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>总结</h4>
 <ul>
 <li>操作系统通过给进程空间划分为一个一个VMA来管理进程虚拟空间，依据原则是相同权限属性和相同映像文件映射成一个VMA</li>
 </ul>
-
-<h4>装载过程</h4>
-
+<h4><a id="%E8%A3%85%E8%BD%BD%E8%BF%87%E7%A8%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>装载过程</h4>
 <ul>
 <li>load_elf_binary</li>
 <li>load_script</li>
 </ul>
-
-<h4>装载过程</h4>
-
+<h4><a id="%E8%A3%85%E8%BD%BD%E8%BF%87%E7%A8%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>装载过程</h4>
 <ul>
-<li>检查ELF可执行文件格式的有效性，比如魔数、程序头表中段<br/>
+<li>检查ELF可执行文件格式的有效性，比如魔数、程序头表中段<br />
 (Segment)的数量。</li>
-<li>寻找动态链技的.interp段，设置动态链接器路径(与动态链接有关，具体<br/>
+<li>寻找动态链技的.interp段，设置动态链接器路径(与动态链接有关，具体<br />
 只读数据。</li>
 <li>根据ELF文件的程序表头的描述，对ELF文件进行映射，代码，数据，只读数据</li>
 <li>初始化ELF文件进程环境</li>
-<li>将系统调用的返回地址修改成对于静态链接的ELF可执行文件的入口点，对于动态链接的<br/>
+<li>将系统调用的返回地址修改成对于静态链接的ELF可执行文件的入口点，对于动态链接的<br />
 ELF可执行文件，这个程序入口就是动态连接器</li>
 </ul>
 
@@ -207,29 +196,96 @@ ELF可执行文件，这个程序入口就是动态连接器</li>
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

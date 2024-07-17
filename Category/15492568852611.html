@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,8 +139,7 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>思考题</h4>
-
+                    <h4><a id="%E6%80%9D%E8%80%83%E9%A2%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>思考题</h4>
 <ul>
 <li>有tcp，为什么还要udp可靠传输？</li>
 <li>tcp为什么吞吐量不行</li>
@@ -149,32 +148,25 @@
 <li>什么情况下内核协议栈处理不过</li>
 <li>tcp资源多，哪些资源多</li>
 </ul>
-
-<h4>udp</h4>
-
+<h4><a id="udp" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>udp</h4>
 <ul>
 <li>udp比IP多八个字节</li>
 <li>系统的时间同步程序</li>
 <li>端口是虚拟的软件的数字</li>
 <li>fd是四元组的索引</li>
 </ul>
-
-<h4>udp为什么会粘包</h4>
-
-<h4>四元组</h4>
-
+<h4><a id="udp%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E7%B2%98%E5%8C%85" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>udp为什么会粘包</h4>
+<h4><a id="%E5%9B%9B%E5%85%83%E7%BB%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>四元组</h4>
 <ul>
 <li>local_ip local_port,remote_ip,remote_port,proto</li>
 </ul>
-
-<h4>tcp传输</h4>
-
+<h4><a id="tcp%E4%BC%A0%E8%BE%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>tcp传输</h4>
 <ul>
 <li>第一 间隔9，10的无效的重传</li>
 <li>接收端启动定时器等待确认，有新的定时器过来，重置定时器</li>
 <li>第二 延迟ACK太大</li>
 <li>发送端启动超时定时器</li>
-<li>R = a<em>R_old + (1 - a)</em>R_new</li>
+<li>R = a*R_old + (1 - a)*R_new</li>
 <li>RTT一直在变</li>
 <li>RTO = b * R_new</li>
 <li>第三 ack延迟确认会导致RTT很大比实际需要要大</li>
@@ -183,9 +175,7 @@
 <li>KCP的RTO=1.5*RTT</li>
 <li>使用时间戳来确认ACK</li>
 </ul>
-
-<h4>kcp解决TCP的三个缺点</h4>
-
+<h4><a id="kcp%E8%A7%A3%E5%86%B3tcp%E7%9A%84%E4%B8%89%E4%B8%AA%E7%BC%BA%E7%82%B9" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>kcp解决TCP的三个缺点</h4>
 <ul>
 <li>连续两次跨越同一个包就重传这个包</li>
 <li></li>
@@ -211,29 +201,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

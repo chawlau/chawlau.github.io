@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,28 +139,43 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>案例、服务器端高并发IO的keep alive方案，满足一下几个需求</h4>
-
+                    <h4><a id="%E6%A1%88%E4%BE%8B%E3%80%81%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E9%AB%98%E5%B9%B6%E5%8F%91io%E7%9A%84keep-alive%E6%96%B9%E6%A1%88%EF%BC%8C%E6%BB%A1%E8%B6%B3%E4%B8%80%E4%B8%8B%E5%87%A0%E4%B8%AA%E9%9C%80%E6%B1%82" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>案例、服务器端高并发IO的keep alive方案，满足一下几个需求</h4>
 <ul>
-<li>1. 每个IO都是自己的时间戳</li>
-<li>2. 每个IO收到自己的beat后，重置自己的定时器</li>
-<li>3. 若IO定时没有收到beat，则执行IO的回调函数，并重置定时器</li>
-<li>4. 若再次没有收到beat，销毁IO，注销定时器。</li>
+<li>
+<ol>
+<li>每个IO都是自己的时间戳</li>
+</ol>
+</li>
+<li>
+<ol start="2">
+<li>每个IO收到自己的beat后，重置自己的定时器</li>
+</ol>
+</li>
+<li>
+<ol start="3">
+<li>若IO定时没有收到beat，则执行IO的回调函数，并重置定时器</li>
+</ol>
+</li>
+<li>
+<ol start="4">
+<li>若再次没有收到beat，销毁IO，注销定时器。</li>
+</ol>
+</li>
 </ul>
-
-<h5>方案一</h5>
-
+<h5><a id="%E6%96%B9%E6%A1%88%E4%B8%80" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>方案一</h5>
 <ul>
 <li>timerfd+epoll</li>
-<li>0. 时间精准度高</li>
+<li>
+<ol start="0">
+<li>时间精准度高</li>
+</ol>
+</li>
 <li>小块代码逻辑清晰</li>
 <li>程序总体逻辑混乱</li>
 <li>代码是基于时间反应堆的</li>
 <li>回调函数中不易做较长时间操作，比如数椐库，第三方 HTP 请求中</li>
 </ul>
-
-<h5>方案三</h5>
-
+<h5><a id="%E6%96%B9%E6%A1%88%E4%B8%89" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>方案三</h5>
 <ul>
 <li>红黑树</li>
 <li>key 时间戳 val 是 io</li>
@@ -189,29 +204,96 @@
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
 
 
   

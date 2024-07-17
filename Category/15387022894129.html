@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,49 +139,37 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>内置函数</h4>
-
+                    <h4><a id="%E5%86%85%E7%BD%AE%E5%87%BD%E6%95%B0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>内置函数</h4>
 <ul>
 <li>new 用来分配值类型内存</li>
 <li>make 用来分配引用类型内存</li>
-<li>... 可以用来展开数据或者切片 </li>
+<li>... 可以用来展开数据或者切片</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-text">  a = append(a, a...)
+<pre><code class="language-plain_text">  a = append(a, a...)
 </code></pre>
-
 <ul>
 <li>打印堆栈//TODO</li>
 </ul>
-
 <blockquote>
 <p>... 两个用途 1 可变参数 2 展开数组或者切片</p>
 </blockquote>
-
-<h4>错误处理</h4>
-
+<h4><a id="%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>错误处理</h4>
 <ul>
 <li>panic,revocer</li>
 </ul>
-
-<h4>new,make</h4>
-
+<h4><a id="new-make" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>new,make</h4>
 <ul>
 <li>new出来的指针必须要用make来分配内存</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-text">  s1 := new([]int)
+<pre><code class="language-plain_text">  s1 := new([]int)
   *s1 = make([]int, 5)
   (*s1)[0] = 100
 </code></pre>
-
-<h4>闭包</h4>
-
+<h4><a id="%E9%97%AD%E5%8C%85" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>闭包</h4>
 <ul>
 <li>一个函数和其相关的引用的环境组合而成的实体</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-text">func Adder() func(int) int {
+<pre><code class="language-plain_text">func Adder() func(int) int {
   var x int
   return func(delta int) int {
     x += delta
@@ -198,43 +186,35 @@ func makeSuffixFunc(suffix string) func(string) string {
   }
 }
 </code></pre>
-
 <ul>
 <li>x 相当于类中的成员变量</li>
 <li>闭包可以实现代码的重用//TODO</li>
 </ul>
-
-<h4>数组</h4>
-
+<h4><a id="%E6%95%B0%E7%BB%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>数组</h4>
 <ul>
 <li>长度是数组类型的一部分</li>
 <li>长度固定</li>
 </ul>
-
-<h4>切片</h4>
-
+<h4><a id="%E5%88%87%E7%89%87" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>切片</h4>
 <ul>
 <li>切片是数组的一个引用</li>
 <li>切片的长度可以改变</li>
 <li>cap可以求出slice最大的容量</li>
 <li>切片的内存布局和数据结构</li>
 <li>len代表可访问的元素</li>
-<li>cap代表容量
-<img src="media/15387022894129/15387237788534.jpg" alt="" style="width:483px;"/></li>
+<li>cap代表容量<br />
+<img src="media/15387022894129/15387237788534.jpg" alt="" style="width:483px;" /></li>
 </ul>
-
-<pre class="line-numbers"><code class="language-text">  type slice struct {
+<pre><code class="language-plain_text">  type slice struct {
     ptr *[5]int
     cap int 
     len int
   }
 </code></pre>
-
 <ul>
 <li>切片的测试</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-text">func makeSlice(s slice, cap int) slice {
+<pre><code class="language-plain_text">func makeSlice(s slice, cap int) slice {
   s.ptr = new([100]int)
   s.cap = cap
   s.len = 0
@@ -253,79 +233,64 @@ func testSlice2() {
   fmt.Println(s1.ptr)
 }
 </code></pre>
-
 <ul>
 <li>通过make创建 var slice []type = make([]type, len)</li>
-<li>切片拷贝 copy(s2, s1）
-<img src="media/15387022894129/15712229217252.jpg" alt="" style="width:792px;"/></li>
+<li>切片拷贝 copy(s2, s1）<br />
+<img src="media/15387022894129/15712229217252.jpg" alt="" style="width:792px;" /></li>
 </ul>
-
-<h4>string</h4>
-
+<h4><a id="string" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>string</h4>
 <ul>
 <li>string底层布局，string是[]byte的切片</li>
 </ul>
-
-<p><img src="media/15387022894129/15387264795094.jpg" alt="" style="width:379px;"/></p>
-
+<p><img src="media/15387022894129/15387264795094.jpg" alt="" style="width:379px;" /></p>
 <ul>
 <li>string是不可变的</li>
 </ul>
-
-<pre class="line-numbers"><code class="language-text">func changeString() {
+<pre><code class="language-plain_text">func changeString() {
   s := &quot;我  hello world&quot;
   s1 := []rune(s)
-  s1[1] = &#39;0&#39;
+  s1[1] = '0'
   str := string(s1)
   fmt.Println(str)
 }
 </code></pre>
-
-<h4>Map</h4>
-
+<h4><a id="map" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Map</h4>
 <ul>
 <li>删除一个元素delete</li>
 <li>清空需要重新make</li>
 <li>判断一个maps是否为空</li>
 <li>map排序</li>
 </ul>
-
-<h4>golang中的包</h4>
-
+<h4><a id="golang%E4%B8%AD%E7%9A%84%E5%8C%85" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>golang中的包</h4>
 <ul>
 <li>golang有150个标准的包</li>
 </ul>
-
-<h4>线程同步</h4>
-
+<h4><a id="%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>线程同步</h4>
 <ul>
 <li>import sync</li>
 <li>互斥锁 var mu sync.Mutex</li>
 <li>读写锁 var mu sync.RWMutex</li>
 </ul>
-
-<h4>go中Set</h4>
-
-<p><img src="media/15387022894129/15712238021174.jpg" alt="" style="width:1173px;"/></p>
-
-<pre class="line-numbers"><code class="language-go">func TestMapForSet(t *testing.T) {
-    mySet := map[int]bool{}
-    mySet[1] = true
-    n := 3
-    if mySet[n] {
-        t.Logf(&quot;%d is existing&quot;, n)
-    } else {
-        t.Logf(&quot;%d is not existing&quot;, n)
-    }
-    mySet[3] = true
-    t.Log(len(mySet))
-    delete(mySet, 1)
-    n = 1
-    if mySet[n] {
-        t.Logf(&quot;%d is existing&quot;, n)
-    } else {
-        t.Logf(&quot;%d is not existing&quot;, n)
-    }
+<h4><a id="go%E4%B8%ADset" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>go中Set</h4>
+<p><img src="media/15387022894129/15712238021174.jpg" alt="" style="width:1173px;" /></p>
+<pre><code class="language-go">func TestMapForSet(t *testing.T) {
+	mySet := map[int]bool{}
+	mySet[1] = true
+	n := 3
+	if mySet[n] {
+		t.Logf(&quot;%d is existing&quot;, n)
+	} else {
+		t.Logf(&quot;%d is not existing&quot;, n)
+	}
+	mySet[3] = true
+	t.Log(len(mySet))
+	delete(mySet, 1)
+	n = 1
+	if mySet[n] {
+		t.Logf(&quot;%d is existing&quot;, n)
+	} else {
+		t.Logf(&quot;%d is not existing&quot;, n)
+	}
 }
 </code></pre>
 
@@ -349,31 +314,96 @@ func testSlice2() {
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
-<script src="asset/prism.js"></script>
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   

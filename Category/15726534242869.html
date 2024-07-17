@@ -25,7 +25,7 @@
               <div class="container">
               <div class="navbar-brand">
                 
-                <a target="self" class="navbar-item " href="index.html">Home</a>
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
                 
                 <a target="_self" class="navbar-item " href="archives.html">Archives</a>
                 
@@ -139,116 +139,113 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4>组件协作模式</h4>
-
+                    <h4><a id="%E7%BB%84%E4%BB%B6%E5%8D%8F%E4%BD%9C%E6%A8%A1%E5%BC%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>组件协作模式</h4>
 <ul>
-<li><img src="media/15726534242869/15726538652702.jpg" alt="" style="width:930px;"/></li>
+<li><img src="media/15726534242869/15726538652702.jpg" alt="" style="width:930px;" /></li>
 </ul>
-
-<h4>多重继承</h4>
-
+<h4><a id="%E5%A4%9A%E9%87%8D%E7%BB%A7%E6%89%BF" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>多重继承</h4>
 <ul>
 <li>一个是主的继承类</li>
 <li>其他都是抽象的接口</li>
 </ul>
-
-<h4>模式定义</h4>
-
+<h4><a id="%E6%A8%A1%E5%BC%8F%E5%AE%9A%E4%B9%89" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>模式定义</h4>
 <ul>
 <li>定义对象间的一种一对多（变化）的依赖关系，以便当一个对象（Subject）的状态发生改变时，所有依赖于它的对象都得到通知并自动更新。</li>
 </ul>
-
-<h4>结构</h4>
-
+<h4><a id="%E7%BB%93%E6%9E%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>结构</h4>
 <ul>
-<li><img src="media/15726534242869/15726577987603.jpg" alt="" style="width:887px;"/></li>
-<li><img src="media/15726534242869/15801778196036.jpg" alt="" style="width:972px;"/></li>
+<li><img src="media/15726534242869/15726577987603.jpg" alt="" style="width:887px;" /></li>
+<li><img src="media/15726534242869/15801778196036.jpg" alt="" style="width:972px;" /></li>
 <li>Subject和Object是稳定的</li>
 <li>ConcreteSubject和ConcreteObserver</li>
 </ul>
-
-<h4>要点总结</h4>
-
+<h4><a id="%E8%A6%81%E7%82%B9%E6%80%BB%E7%BB%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>要点总结</h4>
 <ul>
-<li><p>使用面向对象的抽象，Observer 模式使得我们可以独立地改变目标与观察者，从而使二者之间的依赖关系达致松耦合。</p></li>
-<li><p>目标发送通知时，无需指定观察者，通知（可以携带通知信息作</p></li>
-<li><p>为参数）会自动传播。</p></li>
-<li><p>观察者自己決定是否需要订阋通知，目标对象对此无所知。Observers 模式是基于事件的 UI 框架中非常常用的设计模式，也是</p></li>
-<li><p>MVC 模式的一个重要组成部分。</p></li>
+<li>
+<p>使用面向对象的抽象，Observer 模式使得我们可以独立地改变目标与观察者，从而使二者之间的依赖关系达致松耦合。</p>
+</li>
+<li>
+<p>目标发送通知时，无需指定观察者，通知（可以携带通知信息作</p>
+</li>
+<li>
+<p>为参数）会自动传播。</p>
+</li>
+<li>
+<p>观察者自己決定是否需要订阋通知，目标对象对此无所知。Observers 模式是基于事件的 UI 框架中非常常用的设计模式，也是</p>
+</li>
+<li>
+<p>MVC 模式的一个重要组成部分。</p>
+</li>
 </ul>
-
-<h4>code</h4>
-
-<pre class="line-numbers"><code class="language-go">package observer
+<h4><a id="code" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>code</h4>
+<pre><code class="language-go">package observer
 
 import &quot;fmt&quot;
 
 type Subject struct {
-    observers []Observer
-    context   string
+	observers []Observer
+	context   string
 }
 
 func NewSubject() *Subject {
-    return &amp;Subject{
-        observers: make([]Observer, 0),
-    }
+	return &amp;Subject{
+		observers: make([]Observer, 0),
+	}
 }
 
 func (s *Subject) Attach(o Observer) {
-    s.observers = append(s.observers, o)
+	s.observers = append(s.observers, o)
 }
 
 func (s *Subject) notify() {
-    for _, o := range s.observers {
-        o.Update(s)
-    }
+	for _, o := range s.observers {
+		o.Update(s)
+	}
 }
 
 func (s *Subject) UpdateContext(context string) {
-    s.context = context
-    s.notify()
+	s.context = context
+	s.notify()
 }
 
 type Observer interface {
-    Update(*Subject)
+	Update(*Subject)
 }
 
 type Reader struct {
-    name string
+	name string
 }
 
 func NewReader(name string) *Reader {
-    return &amp;Reader{
-        name: name,
-    }
+	return &amp;Reader{
+		name: name,
+	}
 }
 
 func (r *Reader) Update(s *Subject) {
-    fmt.Printf(&quot;%s receive %s\n&quot;, r.name, s.context)
+	fmt.Printf(&quot;%s receive %s\n&quot;, r.name, s.context)
 }
 
 package observer
 
 func ExampleObserver() {
-    subject := NewSubject()
-    reader1 := NewReader(&quot;reader1&quot;)
-    reader2 := NewReader(&quot;reader2&quot;)
-    reader3 := NewReader(&quot;reader3&quot;)
-    subject.Attach(reader1)
-    subject.Attach(reader2)
-    subject.Attach(reader3)
+	subject := NewSubject()
+	reader1 := NewReader(&quot;reader1&quot;)
+	reader2 := NewReader(&quot;reader2&quot;)
+	reader3 := NewReader(&quot;reader3&quot;)
+	subject.Attach(reader1)
+	subject.Attach(reader2)
+	subject.Attach(reader3)
 
-    subject.UpdateContext(&quot;observer mode&quot;)
-    // Output:
-    // reader1 receive observer mode
-    // reader2 receive observer mode
-    // reader3 receive observer mode
+	subject.UpdateContext(&quot;observer mode&quot;)
+	// Output:
+	// reader1 receive observer mode
+	// reader2 receive observer mode
+	// reader3 receive observer mode
 }
 </code></pre>
-
-<h4>python_demo</h4>
-
-<pre class="line-numbers"><code class="language-python">from abc import ABCMeta, abstractmethod
+<h4><a id="python-demo" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>python_demo</h4>
+<pre><code class="language-python">from abc import ABCMeta, abstractmethod
 
 
 class Subject(metaclass=ABCMeta):
@@ -265,7 +262,7 @@ class Boss(Subject):
 
     def __init__(self):
         self.observers = []
-        self.action = &#39;&#39;
+        self.action = ''
 
     def attach(self, observer):
         self.observers.append(observer)
@@ -275,7 +272,7 @@ class Boss(Subject):
             val.update()
 
     def set_section(self):
-        self.action = &#39;Boss is come back&#39;
+        self.action = 'Boss is come back'
 
 
 class IObject(metaclass=ABCMeta):
@@ -290,17 +287,17 @@ class IObject(metaclass=ABCMeta):
 class StockObserver(IObject):
 
     def update(self):
-        print(&#39;{} close stock and work {}&#39;.format(self.name,
+        print('{} close stock and work {}'.format(self.name,
                                                   self.subject.action))
 
 
 class NBAObserver(IObject):
 
     def update(self):
-        print(&#39;{} close NBA and work {}&#39;.format(self.name,
+        print('{} close NBA and work {}'.format(self.name,
                                                   self.subject.action))
 
-if __name__ == &#39;__main__&#39;:
+if __name__ == '__main__':
     boss = Boss()
 
     observer1 = StockObserver(&quot;Jim&quot;, boss)
@@ -312,10 +309,8 @@ if __name__ == &#39;__main__&#39;:
     boss.set_section()
     boss.notify()
 </code></pre>
-
-<h4>python_demo3</h4>
-
-<pre class="line-numbers"><code class="language-python">from  abc import ABCMeta, abstractmethod
+<h4><a id="python-demo3" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>python_demo3</h4>
+<pre><code class="language-python">from  abc import ABCMeta, abstractmethod
 
 class Observable(object):
 
@@ -357,14 +352,14 @@ class WasingMode(Observer):
     def update(self, observable, object=0):
         if isinstance(observable, WaterHeater) and observable.get_temperature()\
                 &gt;=50 and observable.get_temperature() &lt;= 70:
-            print(&#39;water temperature is suit for bath&#39;)
+            print('water temperature is suit for bath')
 
 class DrinkingMode(Observer):
 
     def update(self, observable, object):
         if isinstance(observable, WaterHeater) and observable.get_temperature()\
                 &gt;= 100:
-            print(&#39;water temperature is suit for drink&#39;)
+            print('water temperature is suit for drink')
 
 def test_water():
     water = WaterHeater()
@@ -380,9 +375,9 @@ def test_water():
 
 class Account(Observable):
     ip_region = {
-        &quot;104.47.18.9&quot;: &#39;hangzhou&#39;,
-        &#39;67.218.147.69&#39;: &#39;LA&#39;,
-        &#39;33.12.33.123&#39;: &#39;shanghai&#39;
+        &quot;104.47.18.9&quot;: 'hangzhou',
+        '67.218.147.69': 'LA',
+        '33.12.33.123': 'shanghai'
     }
     def __init__(self):
         super().__init__()
@@ -392,13 +387,13 @@ class Account(Observable):
     def login(self, name, ip):
         region = self.__get_region(ip)
         if self.__is_long_distance(name, region):
-            self.notify({&#39;name&#39;: name, &#39;ip&#39;:ip, &#39;region&#39;:region})
+            self.notify({'name': name, 'ip':ip, 'region':region})
         self.__region[name] = region
         self.__ip = ip
 
     def __get_region(self, ip):
         region = Account.ip_region.get(ip)
-        return &#39;&#39; if region is None else region
+        return '' if region is None else region
 
     def __is_long_distance(self, name, region):
         latest_region = self.__region.get(name)
@@ -407,114 +402,112 @@ class Account(Observable):
 class SmsSender(Observer):
 
     def update(self, observable, object):
-        print(&#39;msg send name {} region {} login ip {} &#39;.format(
-            object[&#39;name&#39;], object[&#39;region&#39;], object[&#39;ip&#39;]))
+        print('msg send name {} region {} login ip {} '.format(
+            object['name'], object['region'], object['ip']))
 
 class MailSender(Observer):
 
     def update(self, observable, object):
-        print(&#39;mail send name {} region {} login ip {}&#39;.format(
-            object[&#39;name&#39;], object[&#39;region&#39;], object[&#39;ip&#39;]
+        print('mail send name {} region {} login ip {}'.format(
+            object['name'], object['region'], object['ip']
         ))
 
 def test_region():
     account = Account()
     account.add(SmsSender())
     account.add(MailSender())
-    account.login(&#39;Tony&#39;, &#39;104.47.18.9&#39;)
-    account.login(&#39;Tony&#39;, &#39;67.218.147.69&#39;)
-    account.login(&#39;Tony&#39;, &#39;33.12.33.123&#39;)
+    account.login('Tony', '104.47.18.9')
+    account.login('Tony', '67.218.147.69')
+    account.login('Tony', '33.12.33.123')
 
 test_region()
 </code></pre>
-
-<h4>golang_demo</h4>
-
-<pre class="line-numbers"><code class="language-go">package desian_pattern_practise
+<h4><a id="golang-demo" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>golang_demo</h4>
+<pre><code class="language-go">package desian_pattern_practise
 
 type ISubject interface {
-    Attach(IObserver)
-    Detach(IObserver)
-    Notify()
+	Attach(IObserver)
+	Detach(IObserver)
+	Notify()
 }
 
 type IObserver interface {
-    Update()
+	Update()
 }
 
 type Observer struct {
-    sub ISubject
+	sub ISubject
 }
 
 type Subject struct {
-    observer map[IObserver]bool
-    temp float64
+	observer map[IObserver]bool
+	temp float64
 }
 
 func (w *Subject) Attach(IObserver IObserver) {
-    w.observer[IObserver] = true
+	w.observer[IObserver] = true
 }
 
 func (w *Subject) Detach(IObserver IObserver) {
-    delete(w.observer, IObserver)
+	delete(w.observer, IObserver)
 }
 
 func (w *Subject) Notify() {
-    for k, _ := range w.observer {
-        k.Update()
-    }
+	for k, _ := range w.observer {
+		k.Update()
+	}
 }
 
 type WaterHeater struct {
-    *Subject
-    temp float64
+	*Subject
+	temp float64
 }
 
 func NewWaterHeater() *WaterHeater {
-    return &amp;WaterHeater {
-        Subject: &amp;Subject{
-            observer: make(map[IObserver]bool),
-        },
-        temp: 25.0,
-    }
+	return &amp;WaterHeater {
+		Subject: &amp;Subject{
+			observer: make(map[IObserver]bool),
+		},
+		temp: 25.0,
+	}
 }
 
 func (w *WaterHeater) SetTemperature(temp float64) {
-    w.temp = temp
-    w.Notify()
+	w.temp = temp
+	w.Notify()
 }
 
 type WashingMode struct {
-    *Observer
+	*Observer
 }
 
 func NewWashingMode(sub ISubject) *WashingMode {
-    return &amp;WashingMode{
-        Observer: &amp;Observer{sub},
-    }
+	return &amp;WashingMode{
+		Observer: &amp;Observer{sub},
+	}
 }
 
 func (w *WashingMode) Update() {
-    if w.sub.(*WaterHeater).temp &gt;= 50 &amp;&amp;  w.sub.(*WaterHeater).temp &lt;= 70 {
-        println(&quot;Subject temperature is suitable for bath&quot;)
-    }
+	if w.sub.(*WaterHeater).temp &gt;= 50 &amp;&amp;  w.sub.(*WaterHeater).temp &lt;= 70 {
+		println(&quot;Subject temperature is suitable for bath&quot;)
+	}
 }
 
 
 type DrinkingMode struct {
-    *Observer
+	*Observer
 }
 
 func (w *DrinkingMode) Update() {
-    if w.sub.(*WaterHeater).temp &gt;= 100 {
-        println(&quot;Subject temperature is suitable for drink&quot;)
-    }
+	if w.sub.(*WaterHeater).temp &gt;= 100 {
+		println(&quot;Subject temperature is suitable for drink&quot;)
+	}
 }
 
 func NewDrinkingMode(sub ISubject) *DrinkingMode {
-    return &amp;DrinkingMode{
-        Observer: &amp;Observer{sub},
-    }
+	return &amp;DrinkingMode{
+		Observer: &amp;Observer{sub},
+	}
 }
 
 var ip_region = map[string]string {
@@ -524,113 +517,111 @@ var ip_region = map[string]string {
 }
 
 type Account struct {
-    *Subject
-    ip string
-    region map[string]string
+	*Subject
+	ip string
+	region map[string]string
 }
 
 func (a *Account) Login(name, ip string) {
-    region, ok := ip_region[ip]
+	region, ok := ip_region[ip]
 
-    if !ok {
-        println(&quot;not in record&quot;)
-        return
-    }
+	if !ok {
+		println(&quot;not in record&quot;)
+		return
+	}
 
-    if a.isLongDistance(name, region) {
-        a.region[name] = region
-        a.ip = ip
-        a.Notify()
-        return
-    }
+	if a.isLongDistance(name, region) {
+		a.region[name] = region
+		a.ip = ip
+		a.Notify()
+		return
+	}
 
-    a.region[name] = region
-    a.ip = ip
+	a.region[name] = region
+	a.ip = ip
 }
 
 func NewAccount() *Account {
-    return &amp;Account{
-        Subject: &amp;Subject{
-            observer: make(map[IObserver]bool),
-        },
-        region: make(map[string]string),
-    }
+	return &amp;Account{
+		Subject: &amp;Subject{
+			observer: make(map[IObserver]bool),
+		},
+		region: make(map[string]string),
+	}
 }
 
 
 func (a *Account) isLongDistance(name, region string) bool {
-    if val, ok := a.region[name]; ok {
-        return val != region
-    }
-    return false
+	if val, ok := a.region[name]; ok {
+		return val != region
+	}
+	return false
 }
 
 type SmsSender struct {
-    *Observer
+	*Observer
 }
 
 func (s *SmsSender) Update() {
-    ip := s.sub.(*Account).ip
-    var name, region string
-    for k, v := range s.sub.(*Account).region {
-        name, region = k, v
-    }
-    println(&quot;msg send name &quot;, name, &quot; ip &quot;, ip, &quot; region &quot;, region)
+	ip := s.sub.(*Account).ip
+	var name, region string
+	for k, v := range s.sub.(*Account).region {
+		name, region = k, v
+	}
+	println(&quot;msg send name &quot;, name, &quot; ip &quot;, ip, &quot; region &quot;, region)
 }
 
 func NewSmsSender(sub ISubject) *SmsSender {
-    return  &amp;SmsSender{
-        Observer: &amp;Observer{sub},
-    }
+	return  &amp;SmsSender{
+		Observer: &amp;Observer{sub},
+	}
 }
 
 type MailSender struct {
-    *Observer
+	*Observer
 }
 
 func (s *MailSender) Update() {
-    ip := s.sub.(*Account).ip
-    var name, region string
-    for k, v := range s.sub.(*Account).region {
-        name, region = k, v
-    }
-    println(&quot;mail send name &quot;, name, &quot; ip &quot;, ip, &quot; region &quot;, region)
+	ip := s.sub.(*Account).ip
+	var name, region string
+	for k, v := range s.sub.(*Account).region {
+		name, region = k, v
+	}
+	println(&quot;mail send name &quot;, name, &quot; ip &quot;, ip, &quot; region &quot;, region)
 }
 
 func NewMailSender(sub ISubject) *MailSender {
-    return  &amp;MailSender{
-        Observer: &amp;Observer{sub},
-    }
+	return  &amp;MailSender{
+		Observer: &amp;Observer{sub},
+	}
 }
 
 func TestDrinkingMode_Update(t *testing.T) {
-    water := NewWaterHeater()
+	water := NewWaterHeater()
 
-    washMode := NewWashingMode(water)
-    drinkingMode := NewDrinkingMode(water)
-    water.Attach(washMode)
-    water.Attach(drinkingMode)
-    water.SetTemperature(40)
-    water.SetTemperature(60)
-    water.SetTemperature(100)
+	washMode := NewWashingMode(water)
+	drinkingMode := NewDrinkingMode(water)
+	water.Attach(washMode)
+	water.Attach(drinkingMode)
+	water.SetTemperature(40)
+	water.SetTemperature(60)
+	water.SetTemperature(100)
 }
 
 func TestAccount(t *testing.T) {
-    account := NewAccount()
-    sms := NewSmsSender(account)
-    mail := NewMailSender(account)
-    account.Attach(sms)
-    account.Attach(mail)
-    account.Login(&quot;Tony&quot;, &quot;104.47.18.9&quot;)
-    account.Login(&quot;Tony&quot;, &quot;67.218.147.69&quot;)
-    account.Login(&quot;Tony&quot;, &quot;33.12.33.123&quot;)
+	account := NewAccount()
+	sms := NewSmsSender(account)
+	mail := NewMailSender(account)
+	account.Attach(sms)
+	account.Attach(mail)
+	account.Login(&quot;Tony&quot;, &quot;104.47.18.9&quot;)
+	account.Login(&quot;Tony&quot;, &quot;67.218.147.69&quot;)
+	account.Login(&quot;Tony&quot;, &quot;33.12.33.123&quot;)
 }
 
 </code></pre>
-
-<h4>cpp_code</h4>
-
-<pre class="line-numbers"><code class="language-cpp">//
+<h4><a id="cpp-code" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>cpp_code</h4>
+<pre><code class="language-cpp">//
 // Created by eredinliu on 2020-01-28.
 //
 
@@ -828,31 +819,96 @@ int main() {
     <footer class="footer">
         <div class="content has-text-centered">
           <p>
-              Copyright &copy; 2020
-              Powered by <a target="_blank" href="http://www.mweb.im">eredinliu</a>,&nbsp; 
+              Copyright &copy; 2019
+              Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
               Theme used <a target="_blank" href="https://bulma.io/">Bulma CSS</a>.
           </p>
         </div>
       </footer>
 
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
 
 
-  
 
+div.code-toolbar {
+  position: relative;
+}
 
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
 
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
 
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
 
-
-
-
-
-<script src="asset/prism.js"></script>
-
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   
