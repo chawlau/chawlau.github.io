@@ -535,6 +535,100 @@ func reverse(node *ListNode, k int) (head, tail *ListNode) {
 	return pre, node
 }
 </code></pre>
+<h3><a id="%E4%B8%A4%E6%95%B0%E7%9B%B8%E5%8A%A0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>两数相加</h3>
+<p>给你两个 非空 的链表，表示两个非负的整数。它们每位数字都是按照 逆序 的方式存储的，并且每个节点只能存储 一位 数字。</p>
+<p>请你将两个数相加，并以相同形式返回一个表示和的链表。</p>
+<p>你可以假设除了数字 0 之外，这两个数都不会以 0 开头。<br />
+<img src="media/17214389597338/17215675842542.jpg" alt="" /><br />
+输入：l1 = [2,4,3], l2 = [5,6,4]<br />
+输出：[7,0,8]<br />
+解释：342 + 465 = 807.<br />
+示例 2：</p>
+<p>输入：l1 = [0], l2 = [0]<br />
+输出：[0]<br />
+示例 3：</p>
+<p>输入：l1 = [9,9,9,9,9,9,9], l2 = [9,9,9,9]<br />
+输出：[8,9,9,9,0,0,0,1]</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<ul>
+<li>使用carry保留进位数</li>
+<li>使用dummy辅助节点</li>
+</ul>
+<pre><code class="language-go">func addTwoNumbers(l1 *ListNode, l2 *ListNode) *ListNode {
+	p1, p2, dummyNode := l1, l2, &amp;ListNode{}
+	carry := 0
+	p := dummyNode
+	for p1 != nil || p2 != nil || carry &gt; 0 {
+		val := carry
+		if p1 != nil {
+			val += p1.Val
+			p1 = p1.Next
+		}
+
+		if p2 != nil {
+			val += p2.Val
+			p2 = p2.Next
+		}
+		carry = val / 10
+		val = val % 10
+		p.Next = &amp;ListNode{Val: val}
+		p = p.Next
+	}
+	return dummyNode.Next
+ }
+</code></pre>
+<h4><a id="%E4%B8%A4%E6%95%B0%E7%9B%B8%E5%8A%A0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>两数相加</h4>
+<p>两数相加 II<br />
+给你两个 非空 链表来代表两个非负整数。数字最高位位于链表开始位置。它们的每个节点只存储一位数字。将这两数相加会返回一个新的链表。<br />
+你可以假设除了数字 0 之外，这两个数字都不会以零开头。<br />
+<img src="media/17214389597338/17215677947694.png" alt="" /><br />
+输入：l1 = [7,2,4,3], l2 = [5,6,4]<br />
+输出：[7,8,0,7]<br />
+示例2：</p>
+<p>输入：l1 = [2,4,3], l2 = [5,6,4]<br />
+输出：[8,0,7]<br />
+示例3：</p>
+<p>输入：l1 = [0], l2 = [0]<br />
+输出：[0]</p>
+<h3><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h3>
+<ul>
+<li>使用切片来模拟栈</li>
+<li>计算的节点要用头插法放入结果链表中</li>
+<li></li>
+</ul>
+<pre><code class="language-go">func addTwoNumbers(l1 *ListNode, l2 *ListNode) *ListNode {
+	var st1, st2 []int
+	for l1 != nil {
+		st1 = append(st1, l1.Val)
+		l1 = l1.Next
+	}
+
+	for l2 != nil {
+		st2 = append(st2, l2.Val)
+		l2 = l2.Next
+	}
+
+	carry := 0
+	dummy := &amp;ListNode{Next: nil}
+	for len(st1) &gt; 0 || len(st2) &gt; 0 || carry &gt; 0 {
+		val := carry
+		if len(st1) &gt; 0 {
+			val += st1[len(st1)-1]
+			st1 = st1[:len(st1)-1]
+		}
+		if len(st2) &gt; 0 {
+			val += st2[len(st2)-1]
+			st2 = st2[:len(st2)-1]
+		}
+		carry = val / 10
+		val = val % 10
+		//注意不要写错，容易造成死循环
+		node := &amp;ListNode{Next: dummy.Next, Val: val}
+		dummy.Next = node
+	}
+	return dummy.Next
+}
+</code></pre>
 
                   </article>
                   <div class="comments-wrap">
