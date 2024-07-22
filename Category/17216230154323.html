@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>
       
-    defer实现 -        凌云阁
+    数论 -        凌云阁
     
     </title>
     <link rel="shortcut icon" href="https://i.loli.net/2020/02/22/Si1K7sluept2ZgR.jpg" type="image/png" />
@@ -102,7 +102,7 @@
                   <div class="post-body single-content">
                     
                     <h1 class="title">
-                            defer实现   
+                            数论   
                       </h1>
                      
                     
@@ -119,10 +119,10 @@
                             <div class="media-content">
                               <div class="content">
                                 <p>
-                                 <span class="date">2024/07/19 10:09 上午</span>
+                                 <span class="date">2024/07/22 12:36 下午</span>
                                   <span class="tran-posted-in">posted in</span>&nbsp; 
                                   
-                                      <span class="posted-in"><a href='Golang.html'>Golang</a></span>
+                                      <span class="posted-in"><a href='%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95%E5%AE%9E%E6%88%98.html'>代码随想录实战</a></span>
                                          
                                   
 
@@ -139,25 +139,208 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <ul>
-<li>每个 defer 语句都会形成一条 deferproc 注册调用。</li>
-<li>注册调用会把函数名称，函数参数，调用函数的宿主函数 SP 寄存器地址打包。</li>
-</ul>
-<h4><a id="%E5%85%B7%E4%BD%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>具体</h4>
+                    <h3><a id="204%E8%AE%A1%E6%95%B0%E8%B4%A8%E6%95%B0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>204. 计数质数</h3>
+<p>给定整数 n ，返回 所有小于非负整数 n 的质数的数量 。<br />
+示例 1：<br />
+输入：n = 10<br />
+输出：4<br />
+解释：小于 10 的质数一共有 4 个, 它们是 2, 3, 5, 7 。<br />
+示例 2：</p>
+<p>输入：n = 0<br />
+输出：0<br />
+示例 3：</p>
+<p>输入：n = 1<br />
+输出：0</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
 <ul>
-<li>打包函数名称，参数1，RSP的寄存器地址到gorotine到G.deferlist</li>
-<li>CALL deferreturn</li>
-<li>执行完成后deferreturn 语句利用汇编执行一次非常规操作，修改 IP 值</li>
+<li>i 从 2开始，从 i * i 开始计算</li>
 </ul>
-<h4><a id="%E5%AE%9E%E8%B4%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>实质</h4>
+<pre><code class="language-go">func countPrimes(n int) int {
+	notPrime := make([]bool, n)
+
+	for i := 2; i*i &lt; n; i++ {
+		for j := i * i; j &lt; n; j += i {
+			notPrime[j] = true
+		}
+	}
+	count := 0
+	for i := 2; i &lt; n; i++ {
+		if !notPrime[i] {
+			count++
+		}
+	}
+	return count
+}
+</code></pre>
+<h3><a id="263%E4%B8%91%E6%95%B0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>263 丑数</h3>
+<p>给你输入一个数字 n，请你判断 n 是否为「丑数」。所谓「丑数」，就是只包含质因数 2、3 和 5 的正整数。<br />
+示例 1：</p>
+<p>输入：n = 6<br />
+输出：true<br />
+解释：6 = 2 × 3<br />
+示例 2：</p>
+<p>输入：n = 1<br />
+输出：true<br />
+解释：1 没有质因数，因此它的全部质因数是 {2, 3, 5} 的空集。习惯上将其视作第一个丑数。<br />
+示例 3：</p>
+<p>输入：n = 14<br />
+输出：false<br />
+解释：14 不是丑数，因为它包含了另外一个质因数 7 。</p>
+<pre><code class="language-go">func isUgly(n int) bool {
+	if n &lt;= 0 {
+		return false
+	}
+	for n%2 == 0 {
+		n /= 2
+	}
+	for n%3 == 0 {
+		n /= 3
+	}
+	for n%5 == 0 {
+		n /= 5
+	}
+	return n == 1
+}
+</code></pre>
+<h3><a id="264%E4%B8%91%E6%95%B0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>264 丑数||</h3>
+<p>给你一个整数 n ，请你找出并返回第 n 个 丑数 。<br />
+丑数 就是质因子只包含 2、3 和 5 的正整数。<br />
+示例 1：</p>
+<p>输入：n = 10<br />
+输出：12<br />
+解释：[1, 2, 3, 4, 5, 6, 8, 9, 10, 12] 是由前 10 个丑数组成的序列。<br />
+示例 2：</p>
+<p>输入：n = 1<br />
+输出：1<br />
+解释：1 通常被视为丑数。</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
 <ul>
-<li>汇编语句来实现一次人工控制的逻辑跳转</li>
-<li>利用汇编来消灭递归调用同时实现递归调用的一种功能</li>
-<li>runtime._defer 结构体是延迟调用链表上的一个元素，所有的结构体都会通过 link 字段串联成链表。</li>
-<li>只要获取到 runtime._defer 结构体，它都会被追加到所在 Goroutine _defer 链表的最前面。<br />
-<img src="media/17213549943725/17213551133382.jpg" alt="" /></li>
+<li>p2, p3, p5分别表示2, 3, 5 整除的数<br />
+<img src="media/17216230154323/17216356062663.jpg" alt="" /></li>
 </ul>
-<p>runtime.jmpdefer 是一个用汇编语言实现的运行时函数，它的主要工作是跳转到 defer 所在的代码段并在执行结束之后跳转回 runtime.deferreturn</p>
+<pre><code class="language-go">func nthUglyNumber(n int) int {
+	ugly := make([]int, n+1)
+	p2, p3, p5 := 1, 1, 1
+	pd2, pd3, pd5 := 1, 1, 1
+	p := 1
+	for p &lt;= n {
+		val := min(pd2, min(pd3, pd5))
+		ugly[p] = val
+		p++
+
+		if val == pd2 {
+			pd2 = 2 * ugly[p2]
+			p2++
+		}
+
+		if val == pd3 {
+			pd3 = 3 * ugly[p3]
+			p3++
+		}
+
+		if val == pd5 {
+			pd5 = 5 * ugly[p5]
+			p5++
+		}
+	}
+	return ugly[n]
+}
+</code></pre>
+<h3><a id="313%E8%B6%85%E7%BA%A7%E4%B8%91%E6%95%B0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>313 超级丑数</h3>
+<p>超级丑数 是一个正整数，并满足其所有质因数都出现在质数数组 primes 中。<br />
+给你一个整数 n 和一个整数数组 primes ，返回第 n 个 超级丑数 。<br />
+题目数据保证第 n 个 超级丑数 在 32-bit 带符号整数范围内。<br />
+示例 1：</p>
+<p>输入：n = 12, primes = [2,7,13,19]<br />
+输出：32<br />
+解释：给定长度为 4 的质数数组 primes = [2,7,13,19]，前 12 个超级丑数序列为：[1,2,4,7,8,13,14,16,19,26,28,32] 。<br />
+示例 2：</p>
+<p>输入：n = 1, primes = [2,3,5]<br />
+输出：1<br />
+解释：1 不含质因数，因此它的所有质因数都在质数数组 primes = [2,3,5] 中。</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<ul>
+<li>注意去重</li>
+<li>注意数组边界</li>
+</ul>
+<pre><code class="language-go">type Pair struct {
+	val, prime, index int
+}
+type PQueue []*Pair
+
+func (p PQueue) Len() int           { return len(p) }
+func (p PQueue) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
+func (p PQueue) Less(i, j int) bool { return p[i].val &lt; p[j].val }
+func (p *PQueue) Push(x interface{}) {
+	*p = append(*p, x.(*Pair))
+}
+func (p *PQueue) Pop() interface{} {
+	n := len(*p)
+	x := (*p)[n-1]
+	*p = (*p)[:n-1]
+	return x
+}
+func nthSuperUglyNumber(n int, primes []int) int {
+	pq := make(PQueue, 0)
+	heap.Init(&amp;pq)
+	for _, val := range primes {
+		heap.Push(&amp;pq, &amp;Pair{
+			val:   val,
+			prime: val,
+			index: 1,
+		})
+	}
+	p := 1
+	ugly := make([]int, n)
+	ugly[0] = 1
+	for p &lt; n {
+		node := heap.Pop(&amp;pq).(*Pair)
+		val := node.val
+		prime := node.prime
+		index := node.index
+
+		if val != ugly[p-1] {
+			ugly[p] = val
+			p++
+		}
+		newNode := &amp;Pair{
+			val:   ugly[index] * prime,
+			prime: prime,
+			index: index + 1,
+		}
+		heap.Push(&amp;pq, newNode)
+	}
+	return ugly[n-1]
+}
+</code></pre>
+<ul>
+<li>下面初始化依然可以</li>
+</ul>
+<pre><code class="language-go">for _, val := range primes {
+		heap.Push(&amp;pq, &amp;Pair{
+			val:   1,
+			prime: val,
+			index: 0,
+		})
+	}
+</code></pre>
+<p>错误的写法是</p>
+<pre><code class="language-go">for _, val := range primes {
+		heap.Push(&amp;pq, &amp;Pair{
+			val:   1,
+			prime: val,
+			index: 1,
+		})
+	}
+</code></pre>
+<p>这样会导致if val != ugly[p-1]没有执行，进而导致</p>
+<pre><code class="language-go">   newNode := &amp;Pair{
+			val:   ugly[index] * prime,
+			prime: prime,
+			index: index + 1,
+		}
+</code></pre>
+<p>push 进堆的元素全部都是 0，最后导致数组越界</p>
 
                   </article>
                   <div class="comments-wrap">
@@ -267,7 +450,7 @@ div.code-toolbar > .toolbar > .toolbar-item > span:focus {
   color: inherit;
   text-decoration: none;
 }
-</style>
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   
