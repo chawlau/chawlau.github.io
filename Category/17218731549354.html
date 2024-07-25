@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>
       
-    day8字符串part01 -        凌云阁
+    day9 字符串part02 -        凌云阁
     
     </title>
     <link rel="shortcut icon" href="https://i.loli.net/2020/02/22/Si1K7sluept2ZgR.jpg" type="image/png" />
@@ -102,7 +102,7 @@
                   <div class="post-body single-content">
                     
                     <h1 class="title">
-                            day8字符串part01   
+                            day9 字符串part02   
                       </h1>
                      
                     
@@ -119,7 +119,7 @@
                             <div class="media-content">
                               <div class="content">
                                 <p>
-                                 <span class="date">2024/07/24 10:01 上午</span>
+                                 <span class="date">2024/07/25 10:05 上午</span>
                                   <span class="tran-posted-in">posted in</span>&nbsp; 
                                   
                                       <span class="posted-in"><a href='%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95%E5%AE%9E%E6%88%98.html'>代码随想录实战</a></span>
@@ -139,51 +139,60 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h3><a id="344%E5%8F%8D%E8%BD%AC%E5%AD%97%E7%AC%A6%E4%B8%B2" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>344.反转字符串</h3>
-<p>编写一个函数，其作用是将输入的字符串反转过来。输入字符串以字符数组 char[] 的形式给出。</p>
-<p>不要给另外的数组分配额外的空间，你必须原地修改输入数组、使用 O(1) 的额外空间解决这一问题。</p>
-<p>你可以假设数组中的所有字符都是 ASCII 码表中的可打印字符。</p>
+                    <h3><a id="151%E5%8F%8D%E8%BD%AC%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%B8%AD%E7%9A%84%E5%8D%95%E8%AF%8D" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>151. 反转字符串中的单词</h3>
+<p>给定一个字符串，逐个翻转字符串中的每个单词。</p>
 <p>示例 1：<br />
-输入：[&quot;h&quot;,&quot;e&quot;,&quot;l&quot;,&quot;l&quot;,&quot;o&quot;]<br />
-输出：[&quot;o&quot;,&quot;l&quot;,&quot;l&quot;,&quot;e&quot;,&quot;h&quot;]</p>
+输入: &quot;the sky is blue&quot;<br />
+输出: &quot;blue is sky the&quot;</p>
 <p>示例 2：<br />
-输入：[&quot;H&quot;,&quot;a&quot;,&quot;n&quot;,&quot;n&quot;,&quot;a&quot;,&quot;h&quot;]<br />
-输出：[&quot;h&quot;,&quot;a&quot;,&quot;n&quot;,&quot;n&quot;,&quot;a&quot;,&quot;H&quot;]</p>
-<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
-<pre><code class="language-go">func reverseString(s []byte) {
-	i, j := 0, len(s)-1
-	for i &lt; j {
-		s[i], s[j] = s[j], s[i]
-		i++
-		j--
-	}
-}
-</code></pre>
-<h3><a id="541%E5%8F%8D%E8%BD%AC%E5%AD%97%E7%AC%A6%E4%B8%B2-ii" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>541.反转字符串 II</h3>
-<p>给定一个字符串 s 和一个整数 k，从字符串开头算起, 每计数至 2k 个字符，就反转这 2k 个字符中的前 k 个字符。</p>
-<p>如果剩余字符少于 k 个，则将剩余字符全部反转。</p>
-<p>如果剩余字符小于 2k 但大于或等于 k 个，则反转前 k 个字符，其余字符保持原样。</p>
-<p>示例:</p>
-<p>输入: s = &quot;abcdefg&quot;, k = 2<br />
-输出: &quot;bacdfeg&quot;</p>
+输入: &quot;  hello world!  &quot;<br />
+输出: &quot;world! hello&quot;<br />
+解释: 输入字符串可以在前面或者后面包含多余的空格，但是反转后的字符不能包括。</p>
+<p>示例 3：<br />
+输入: &quot;a good   example&quot;<br />
+输出: &quot;example good a&quot;<br />
+解释: 如果两个单词间有多余的空格，将反转后单词间的空格减少到只含一个。</p>
 <h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
 <ul>
-<li>i的扭转i + k &lt;= len(s)</li>
-<li>i的2k跳转是i+=2k</li>
+<li>快慢指针去除空格</li>
+<li>遇到第一个单词首字母，必须全量复制给slow</li>
+<li>遇到第一个单词首字母，只要slow不是第一个，slow赋值为' '</li>
+<li>单词反转的时候，结束条件是' '和边界</li>
 </ul>
-<pre><code class="language-go">func reverseStr(s string, k int) string {
-	str := []byte(s)
-	for i := 0; i &lt; len(s); i += 2 * k {
-		if i+k &lt;= len(s) {
-			reversek(str[i : i+k])
-		} else {
-			reversek(str[i:len(s)])
+<pre><code class="language-go">func reverseWords(s string) string {
+	t := removeExtra([]byte(s))
+	reverseStr1(t)
+	j := 0
+	//不能遗漏到达边界条件的最后一个单词
+	for i := 0; i &lt;= len(t); i++ {
+		if i == len(t) || t[i] == ' ' {
+			reverseStr1(t[j:i])
+			j = i + 1
 		}
 	}
-	return string(str)
+	return string(t)
 }
 
-func reversek(s []byte) {
+func removeExtra(s []byte) []byte {
+	slow := 0
+	for i := 0; i &lt; len(s); i++ {
+		if s[i] != ' ' {
+			if slow &gt; 0 {
+				s[slow] = ' '
+				slow++
+			}
+			for i &lt; len(s) &amp;&amp; s[i] != ' ' {//全量复制完
+				s[slow] = s[i]
+				slow++
+				i++
+			}
+		}
+		//空格直接跳过
+	}
+	return s[:slow]
+}
+
+func reverseStr1(s []byte) {
 	i, j := 0, len(s)-1
 	for i &lt; j {
 		s[i], s[j] = s[j], s[i]
@@ -192,24 +201,74 @@ func reversek(s []byte) {
 	}
 }
 </code></pre>
-<h3><a id="%E6%9B%BF%E6%8D%A2%E6%95%B0%E5%AD%97" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>替换数字</h3>
-<p>给定一个字符串 s，它包含小写字母和数字字符，请编写一个函数，将字符串中的字母字符保持不变，而将每个数字字符替换为number。</p>
-<p>例如，对于输入字符串 &quot;a1b2c3&quot;，函数应该将其转换为 &quot;anumberbnumbercnumber&quot;。</p>
-<p>对于输入字符串 &quot;a5b&quot;，函数应该将其转换为 &quot;anumberb&quot;</p>
-<pre><code class="language-go">func replaceDigitsInPlace(s string) string {
-	runes := []rune(s)
-	i := 0
-	for _, char := range runes {
-		if unicode.IsDigit(char) {
-			runes[i] = 'n'
-			runes = append(runes[:i+1], append([]rune(&quot;umber&quot;), runes[i+1:]...)...)
-			i += 6
-		} else {
-			runes[i] = char
-			i++
+<h3><a id="%E5%8F%B3%E6%97%8B%E5%AD%97%E7%AC%A6%E4%B8%B2" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>右旋字符串</h3>
+<p>字符串的右旋转操作是把字符串尾部的若干个字符转移到字符串的前面。给定一个字符串 s 和一个正整数 k，请编写一个函数，将字符串中的后面 k 个字符移到字符串的前面，实现字符串的右旋转操作。<br />
+例如，对于输入字符串 &quot;abcdefg&quot; 和整数 2，函数应该将其转换为 &quot;fgabcde&quot;。<br />
+输入：输入共包含两行，第一行为一个正整数 k，代表右旋转的位数。第二行为字符串 s，代表需要旋转的字符串。<br />
+输出：输出共一行，为进行了右旋转操作后的字符串。</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<pre><code class="language-go">func rotateStr(s string, k int) string {
+    k = k % len(s)
+	t := []byte(s)
+	reverseStr1(t[:len(s)-k])
+	reverseStr1(t[len(s)-k:])
+	reverseStr1(t[:])
+	return string(t)
+}
+
+func reverseStr1(s []byte) {
+	i, j := 0, len(s)-1
+	for i &lt; j {
+		s[i], s[j] = s[j], s[i]
+		i++
+		j--
+	}
+}
+</code></pre>
+<h3><a id="28%E6%89%BE%E5%87%BA%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%B8%AD%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%8C%B9%E9%85%8D%E9%A1%B9%E7%9A%84%E4%B8%8B%E6%A0%87" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>28 找出字符串中第一个匹配项的下标</h3>
+<p>给你两个字符串 haystack 和 needle ，请你在 haystack 字符串中找出 needle 字符串的第一个匹配项的下标（下标从 0 开始）。如果 needle 不是 haystack 的一部分，则返回  -1 。</p>
+<p>示例 1：</p>
+<p>输入：haystack = &quot;sadbutsad&quot;, needle = &quot;sad&quot;<br />
+输出：0<br />
+解释：&quot;sad&quot; 在下标 0 和 6 处匹配。<br />
+第一个匹配项的下标是 0 ，所以返回 0 。<br />
+示例 2：</p>
+<p>输入：haystack = &quot;leetcode&quot;, needle = &quot;leeto&quot;<br />
+输出：-1<br />
+解释：&quot;leeto&quot; 没有在 &quot;leetcode&quot; 中出现，所以返回 -1 。</p>
+<pre><code class="language-go">func getNext(s string) []int {
+	next := make([]int, len(s))
+	j := 0
+	next[0] = 0
+	for i := 1; i &lt; len(s); i++ {
+		for j &gt; 0 &amp;&amp; s[i] != s[j] {
+			j = next[j-1]
+		}
+		if s[i] == s[j] {
+			j++
+		}
+		next[i] = j
+	}
+	return next
+}
+func strStr(haystack string, needle string) int {
+	if len(needle) == 0 {
+		return 0
+	}
+	next := getNext(needle)
+	j := 0
+	for i := 0; i &lt; len(haystack); i++ {
+		for j &gt; 0 &amp;&amp; haystack[i] != needle[j] {
+			j = next[j-1]
+		}
+		if haystack[i] == needle[j] {
+			j++
+		}
+		if j == len(needle) {
+			return i - len(needle) + 1
 		}
 	}
-	return string(runes[:i])
+	return -1
 }
 </code></pre>
 

@@ -798,6 +798,274 @@ func kSmallestPairs(nums1 []int, nums2 []int, k int) [][]int {
 	return ans
 }
 </code></pre>
+<h3><a id="%E9%80%92%E5%BD%92206%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>递归206反转链表</h3>
+<p>给你单链表的头节点 head ，请你反转链表，并返回反转后的链表<br />
+<img src="media/17214389597338/17217921378607.jpg" alt="" /><br />
+输入：head = [1,2,3,4,5]<br />
+输出：[5,4,3,2,1]</p>
+<pre><code class="language-go">func reverseList(head *ListNode) *ListNode {
+	if head == nil || head.Next == nil {
+		return head
+	}
+	last := reverseList(head.Next)
+	head.Next.Next = head
+	head.Next = nil
+	return last
+}
+</code></pre>
+<h3><a id="%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8%E5%89%8Dn%E4%B8%AA%E8%8A%82%E7%82%B9" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>反转链表前N个节点</h3>
+<p><img src="media/17214389597338/17218056681537.jpg" alt="" /></p>
+<pre><code class="language-go">var next *ListNode
+func reverseN(head *ListNode, n int) *ListNode {
+    if n == 1 {
+       next = head.Next
+       return head
+    }
+    last := reverseN(head.Next, n - 1)
+    head.Next.Next = head
+    head.Next = next
+    return last
+}
+</code></pre>
+<h3><a id="%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8%E7%9A%84%E4%B8%80%E9%83%A8%E5%88%86" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>反转链表的一部分</h3>
+<p>给一个索引区间 [m, n]（索引从 1 开始），仅仅反转区间中的链表元素。<br />
+<img src="media/17214389597338/17218070943253.jpg" alt="" /></p>
+<pre><code class="language-go">func reverseN(head *ListNode, n int) (*ListNode, *ListNode) {
+	if n == 1 {
+		Next := head.Next
+		return head, Next
+	}
+	last, Next := reverseN(head.Next, n-1)
+	head.Next.Next = head
+	head.Next = Next
+	return last, Next
+}
+
+func reverseBetween(head *ListNode, left int, right int) *ListNode {
+	if left == 1 {
+		newHead, _ := reverseN(head, right)
+		return newHead
+	}
+	head.Next = reverseBetween(head.Next, left-1, right-1)
+	return head
+}
+</code></pre>
+<h3><a id="25-k%E4%B8%AA%E4%B8%80%E7%BB%84%E7%BF%BB%E8%BD%AC%E9%93%BE%E8%A1%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>25. K 个一组翻转链表</h3>
+<p>给你链表的头节点 head ，每 k 个节点一组进行翻转，请你返回修改后的链表。<br />
+k 是一个正整数，它的值小于或等于链表的长度。如果节点总数不是 k 的整数倍，那么请将最后剩余的节点保持原有顺序。<br />
+<img src="media/17214389597338/17215211183608.jpg" alt="" /><br />
+输入：head = [1,2,3,4,5], k = 2<br />
+输出：[2,1,4,3,5]<br />
+<img src="media/17214389597338/17215211320494.jpg" alt="" /><br />
+输入：head = [1,2,3,4,5], k = 3<br />
+输出：[3,2,1,4,5]</p>
+<pre><code class="language-go">func reverseKGroup(head *ListNode, k int) *ListNode {
+	if head == nil {
+		return head
+	}
+
+	p1, p2 := head, head
+	for i := 0; i &lt; k; i++ {
+		if p2 == nil {
+			return head
+		}
+		p2 = p2.Next
+	}
+	newHead := reverseAB(p1, p2)
+	p1.Next = reverseKGroup(p2, k)
+	return newHead
+}
+
+func reverseAB(node1, node2 *ListNode) *ListNode {
+	var pre *ListNode
+	p := node1
+	for p != node2 {
+		next := p.Next
+		p.Next = pre
+		pre = p
+		p = next
+	}
+	return pre
+}
+</code></pre>
+<h3><a id="%E5%9B%9E%E6%96%87%E9%93%BE%E8%A1%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>回文链表</h3>
+<p>给你一个单链表的头节点 head ，请你判断该链表是否为<br />
+回文链表<br />
+。如果是，返回 true ；否则，返回 false 。</p>
+<pre><code class="language-go">func isPalindrome(head *ListNode) bool {
+	ans := true
+	p1, p2 := head, head
+	var traverse func(*ListNode)
+	traverse = func(p2 *ListNode) {
+		if p2 == nil {
+			return
+		}
+		traverse(p2.Next)
+		if p1.Val != p2.Val {
+			ans = false
+		}
+		p1 = p1.Next
+	}
+	traverse(p2)
+	return ans
+}
+</code></pre>
+<p>还可以简化成</p>
+<pre><code class="language-go">func isPalindrome(head *ListNode) bool {
+	p1 := head
+	var traverse func(*ListNode) bool
+	traverse = func(p2 *ListNode) bool {
+		if p2 != nil {
+			if !traverse(p2.Next) {
+				return false
+			}
+			if p1.Val != p2.Val {
+				return false
+			}
+			p1 = p1.Next
+		}
+		return true
+	}
+	return traverse(head)
+}
+</code></pre>
+<h3><a id="143%E9%87%8D%E6%8E%92%E9%93%BE%E8%A1%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>143重排链表</h3>
+<p>给定一个单链表 L 的头节点 head ，单链表 L 表示为：<br />
+L0 → L1 → … → Ln - 1 → Ln<br />
+请将其重新排列后变为：<br />
+L0 → Ln → L1 → Ln - 1 → L2 → Ln - 2 → …<br />
+不能只是单纯的改变节点内部的值，而是需要实际的进行节点交换。<br />
+<img src="media/17214389597338/17218130437566.png" alt="" />输入：head = [1,2,3,4]<br />
+输出：[1,4,2,3]<br />
+<img src="media/17214389597338/17218130548116.png" alt="" /><br />
+输入：head = [1,2,3,4,5]<br />
+输出：[1,5,2,4,3]</p>
+<pre><code class="language-go">func reorderList(head *ListNode) {
+	slow, fast := head, head
+	for fast != nil &amp;&amp; fast.Next != nil {
+		slow = slow.Next
+		fast = fast.Next.Next
+	}
+	dummy := &amp;ListNode{Next: head}
+	p1 := dummy
+	p2 := reverseMid(slow.Next)
+	slow.Next = nil
+	for head != nil || p2 != nil {
+		if head != nil {
+			p1.Next = head
+			p1 = p1.Next
+			head = head.Next
+		}
+		if p2 != nil {
+			p1.Next = p2
+			p1 = p1.Next
+			p2 = p2.Next
+		}
+	}
+	head = dummy.Next
+}
+
+func reverseMid(head *ListNode) *ListNode {
+	var pre *ListNode
+	p := head
+	for p != nil {
+		next := p.Next
+		p.Next = pre
+		pre = p
+		p = next
+	}
+	return pre
+}
+</code></pre>
+<h3><a id="%E6%97%8B%E8%BD%AC%E9%93%BE%E8%A1%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>旋转链表</h3>
+<p>给你一个链表的头节点 head ，旋转链表，将链表每个节点向右移动 k 个位置。<br />
+<img src="media/17214389597338/17218171895645.jpg" alt="" /><br />
+输入：head = [1,2,3,4,5], k = 2<br />
+输出：[4,5,1,2,3]<br />
+<img src="media/17214389597338/17218172095933.jpg" alt="" /><br />
+输入：head = [0,1,2], k = 4<br />
+输出：[2,0,1]</p>
+<pre><code class="language-go">func rotateRight(head *ListNode, k int) *ListNode {
+	if head == nil || head.Next == nil {
+		return head
+	}
+
+	cnt := 1
+	p := head
+	for p.Next != nil {
+		p = p.Next
+		cnt++
+	}
+	left := cnt - k%cnt
+	if left == cnt {
+		return head
+	}
+	p.Next = head
+	for left &gt; 0 {
+		p = p.Next
+		left--
+	}
+	ret := p.Next
+	p.Next = nil
+	return ret
+}
+</code></pre>
+<h3><a id="148%E9%93%BE%E8%A1%A8%E6%8E%92%E5%BA%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>148链表排序</h3>
+<p>给你链表的头结点 head ，请将其按 升序 排列并返回 排序后的链表 。<br />
+<img src="media/17214389597338/17218347056207.jpg" alt="" /><br />
+输入：head = [4,2,1,3]<br />
+输出：[1,2,3,4]<br />
+<img src="media/17214389597338/17218347167339.jpg" alt="" /><br />
+输入：head = [-1,5,3,4,0]<br />
+输出：[-1,0,3,4,5]</p>
+<pre><code class="language-go">func sortList(head *ListNode) *ListNode {
+	if head == nil || head.Next == nil {
+		return head
+	}
+	slow, fast := head, head
+	var pre *ListNode
+	for fast != nil &amp;&amp; fast.Next != nil {
+		pre = slow
+		slow = slow.Next
+		fast = fast.Next.Next
+	}
+	pre.Next = nil
+	return merge(sortList(head), sortList(slow))
+}
+
+func merge(l1, l2 *ListNode) *ListNode {
+	dummy := &amp;ListNode{}
+	p := dummy
+	for l1 != nil &amp;&amp; l2 != nil {
+		if l1.Val &lt; l2.Val {
+			p.Next = l1
+			l1 = l1.Next
+		} else {
+			p.Next = l2
+			l2 = l2.Next
+		}
+		p = p.Next
+	}
+	if l1 != nil {
+		p.Next = l1
+	}
+	if l2 != nil {
+		p.Next = l2
+	}
+	return dummy.Next
+}
+</code></pre>
+<h3><a id="147%E5%AF%B9%E9%93%BE%E8%A1%A8%E8%BF%9B%E8%A1%8C%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>147 对链表进行插入排序</h3>
+<p>给定单个链表的头 head ，使用 插入排序 对链表进行排序，并返回 排序后链表的头 。</p>
+<p>插入排序 算法的步骤:</p>
+<p>插入排序是迭代的，每次只移动一个元素，直到所有元素可以形成一个有序的输出列表。<br />
+每次迭代中，插入排序只从输入数据中移除一个待排序的元素，找到它在序列中适当的位置，并将其插入。<br />
+重复直到所有输入数据插入完为止。<br />
+下面是插入排序算法的一个图形示例。部分排序的列表(黑色)最初只包含列表中的第一个元素。每次迭代时，从输入数据中删除一个元素(红色)，并就地插入已排序的列表中。</p>
+<p>对链表进行插入排序。<br />
+<img src="media/17214389597338/17218348255478.jpg" alt="" /><br />
+输入: head = [4,2,1,3]<br />
+输出: [1,2,3,4]</p>
 
                   </article>
                   <div class="comments-wrap">
