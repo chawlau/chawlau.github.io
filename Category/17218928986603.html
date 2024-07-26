@@ -377,6 +377,43 @@ func twoSumI(nums []int, start, target int) [][]int {
 	return ans
 }
 </code></pre>
+<h3><a id="303%E5%8C%BA%E5%9F%9F%E5%92%8C%E6%A3%80%E7%B4%A2%E6%95%B0%E7%BB%84%E4%B8%8D%E5%8F%AF%E5%8F%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>303. 区域和检索 - 数组不可变</h3>
+<p>给定一个整数数组  nums，处理以下类型的多个查询:</p>
+<p>计算索引 left 和 right （包含 left 和 right）之间的 nums 元素的 和 ，其中 left &lt;= right<br />
+实现 NumArray 类：</p>
+<p>NumArray(int[] nums) 使用数组 nums 初始化对象<br />
+int sumRange(int i, int j) 返回数组 nums 中索引 left 和 right 之间的元素的 总和 ，包含 left 和 right 两点（也就是 nums[left] + nums[left + 1] + ... + nums[right] )<br />
+示例 1：<br />
+输入：<br />
+[&quot;NumArray&quot;, &quot;sumRange&quot;, &quot;sumRange&quot;, &quot;sumRange&quot;]<br />
+[[[-2, 0, 3, -5, 2, -1]], [0, 2], [2, 5], [0, 5]]<br />
+输出：<br />
+[null, 1, -1, -3]</p>
+<p>解释：<br />
+NumArray numArray = new NumArray([-2, 0, 3, -5, 2, -1]);<br />
+numArray.sumRange(0, 2); // return 1 ((-2) + 0 + 3)<br />
+numArray.sumRange(2, 5); // return -1 (3 + (-5) + 2 + (-1))<br />
+numArray.sumRange(0, 5); // return -3 ((-2) + 0 + 3 + (-5) + 2 + (-1))</p>
+<pre><code class="language-go">type NumArray struct {
+	preSums []int
+}
+
+func Constructor(nums []int) NumArray {
+	preSums := make([]int, len(nums)+1)
+
+	for i := 1; i &lt; len(nums)+1; i++ {
+		preSums[i] = preSums[i-1] + nums[i-1]
+	}
+	return NumArray{
+		preSums: preSums,
+	}
+}
+
+func (n *NumArray) SumRange(left int, right int) int {
+	return n.preSums[right+1] - n.preSums[left]
+}
+</code></pre>
+<h3><a id="" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a></h3>
 
                   </article>
                   <div class="comments-wrap">
