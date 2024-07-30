@@ -545,6 +545,255 @@ func (s *SumMartix) SumRegion(x1, y1, x2, y2 int) int {
 	return -1
 }
 </code></pre>
+<h3><a id="238%E9%99%A4%E8%87%AA%E8%BA%AB%E4%BB%A5%E5%A4%96%E6%95%B0%E7%BB%84%E7%9A%84%E4%B9%98%E7%A7%AF" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>238. 除自身以外数组的乘积</h3>
+<p>给你一个整数数组 nums，返回 数组 answer ，其中 answer[i] 等于 nums 中除 nums[i] 之外其余各元素的乘积 。</p>
+<p>题目数据 保证 数组 nums之中任意元素的全部前缀元素和后缀的乘积都在  32 位 整数范围内。</p>
+<p>请不要使用除法，且在 O(n) 时间复杂度内完成此题。</p>
+<p>示例 1:</p>
+<p>输入: nums = [1,2,3,4]<br />
+输出: [24,12,8,6]<br />
+示例 2:</p>
+<p>输入: nums = [-1,1,0,-3,3]<br />
+输出: [0,0,9,0,0]</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<ul>
+<li>前缀积prefix[i] = nums[0]*...nums[i-1]</li>
+<li>后缀积postfix[i] = nums[i+1]*....nums[n-1]<br />
+<img src="media/17218928986603/17223133722403.jpg" alt="" /></li>
+</ul>
+<pre><code class="language-go">func productExceptSelf(nums []int) []int {
+	res := make([]int, len(nums))
+	prefix := 1
+	for i := 0; i &lt; len(nums); i++ {
+		res[i] = prefix
+		prefix = prefix * nums[i]
+	}
+	postfix := 1
+	for i := len(nums) - 1; i &gt;= 0; i-- {
+		res[i] = postfix * res[i]
+		postfix = postfix * nums[i]
+	}
+	return res
+}
+</code></pre>
+<h3><a id="525%E8%BF%9E%E7%BB%AD%E6%95%B0%E7%BB%84%E7%BB%99%E5%AE%9A%E4%B8%80%E4%B8%AA%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%95%B0%E7%BB%84-nums%E6%89%BE%E5%88%B0%E5%90%AB%E6%9C%89%E7%9B%B8%E5%90%8C%E6%95%B0%E9%87%8F%E7%9A%84-0%E5%92%8C-1%E7%9A%84%E6%9C%80%E9%95%BF%E8%BF%9E%E7%BB%AD%E5%AD%90%E6%95%B0%E7%BB%84%EF%BC%8C%E5%B9%B6%E8%BF%94%E5%9B%9E%E8%AF%A5%E5%AD%90%E6%95%B0%E7%BB%84%E7%9A%84%E9%95%BF%E5%BA%A6%E3%80%82" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>525. 连续数组给定一个二进制数组 nums , 找到含有相同数量的 0 和 1 的最长连续子数组，并返回该子数组的长度。</h3>
+<p>示例 1:</p>
+<p>输入: nums = [0,1]<br />
+输出: 2<br />
+说明: [0, 1] 是具有相同数量 0 和 1 的最长连续子数组。<br />
+示例 2:</p>
+<p>输入: nums = [0,1,0]<br />
+输出: 2<br />
+说明: [0, 1] (或 [1, 0]) 是具有相同数量0和1的最长连续子数组。</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<ul>
+<li>首先，我们做一个等价，题目让你找 0 和 1 数量相同的最长子数组，如果我们把 0 视作 -1，就把题目转变成了：寻找和为 0 的最长子数组。</li>
+<li>那么我们用一个哈希表 valToIndex 存储前缀和到索引的映射，给定任意 preSum[i]，我们都能通过 valToIndex 快速判断是否存在 j，使得 preSum[i] - preSum[j] == 0</li>
+</ul>
+<pre><code class="language-go">func findMaxLength(nums []int) int {
+	preSum := 0
+	index := map[int]int{}
+	index[0] = -1
+	ans := 0
+	for i := 0; i &lt; len(nums); i++ {
+		if nums[i] == 0 {
+			preSum += -1
+		} else {
+			preSum += 1
+		}
+		if _, ok := index[preSum]; !ok {
+			index[preSum] = i
+		} else {
+			ans = max(ans, i-index[preSum])
+		}
+	}
+	return ans
+}
+
+</code></pre>
+<h3><a id="523%E8%BF%9E%E7%BB%AD%E7%9A%84%E5%AD%90%E6%95%B0%E7%BB%84%E5%92%8C" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>523. 连续的子数组和</h3>
+<p>给你一个整数数组 nums 和一个整数 k ，编写一个函数来判断该数组是否含有同时满足下述条件的连续子数组：</p>
+<p>子数组大小 至少为 2 ，且<br />
+子数组元素总和为 k 的倍数。<br />
+如果存在，返回 true ；否则，返回 false 。</p>
+<p>如果存在一个整数 n ，令整数 x 符合 x = n * k ，则称 x 是 k 的一个倍数。0 始终视为 k 的一个倍数。<br />
+示例 1：</p>
+<p>输入：nums = [23,2,4,6,7], k = 6<br />
+输出：true<br />
+解释：[2,4] 是一个大小为 2 的子数组，并且和为 6 。<br />
+示例 2：</p>
+<p>输入：nums = [23,2,6,4,7], k = 6<br />
+输出：true<br />
+解释：[23, 2, 6, 4, 7] 是大小为 5 的子数组，并且和为 42 。<br />
+42 是 6 的倍数，因为 42 = 7 * 6 且 7 是一个整数。<br />
+示例 3：</p>
+<p>输入：nums = [23,2,6,4,7], k = 13<br />
+输出：false</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<ul>
+<li>寻找 i, j 使得 (preSum[i] - preSum[j]) % k == 0 且 i - j &gt;= 2</li>
+<li>使用哈希表记录 preSum[j] % k 的值以及对应的索引，就可以迅速判断 preSum[i] 是否符合条件了</li>
+</ul>
+<pre><code class="language-go">func checkSubarraySum(nums []int, k int) bool {
+	index := map[int]int{}
+	preSum := 0
+	index[0] = -1
+	for i := 0; i &lt; len(nums); i++ {
+		preSum += nums[i]
+		if j, ok := index[preSum%k]; !ok {
+			index[preSum%k] = i
+		} else {
+			if i-j &gt;= 2 {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+</code></pre>
+<h3><a id="560%E5%92%8C%E4%B8%BA-k%E7%9A%84%E5%AD%90%E6%95%B0%E7%BB%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>560. 和为 K 的子数组</h3>
+<p>给你一个整数数组 nums 和一个整数 k ，请你统计并返回 该数组中和为 k 的连续子数组的个数 。</p>
+<p>子数组是数组中元素的连续非空序列。</p>
+<p>示例 1：</p>
+<p>输入：nums = [1,1,1], k = 2<br />
+输出：2<br />
+示例 2：</p>
+<p>输入：nums = [1,2,3], k = 3<br />
+输出：2</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<ul>
+<li>寻找 i, j 使得 preSum[i] - preSum[j] == k</li>
+<li>count存储preSum[i]的个数</li>
+<li>遍历过程中边存储边遍历</li>
+</ul>
+<pre><code class="language-go">func subarraySum(nums []int, k int) int {
+	preSum := make([]int, len(nums)+1)
+	cnt := map[int]int{}
+	cnt[0] = 1
+	ans := 0
+
+	for i := 1; i &lt; len(nums)+1; i++ {
+		preSum[i] = preSum[i-1] + nums[i-1]
+		need := preSum[i] - k
+		if val, ok := cnt[need]; ok {
+			ans += val
+		}
+		cnt[preSum[i]]++
+	}
+	return ans
+}
+</code></pre>
+<h3><a id="325%E5%92%8C%E7%AD%89%E4%BA%8E-k%E7%9A%84%E6%9C%80%E9%95%BF%E5%AD%90%E6%95%B0%E7%BB%84%E9%95%BF%E5%BA%A6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>325. 和等于 k 的最长子数组长度</h3>
+<p>给定一个数组 nums 和一个目标值 k，找到和等于 k 的最长连续子数组长度。如果不存在任意一个符合要求的子数组，则返回 0。</p>
+<p>示例 1:</p>
+<p>输入: nums = [1,-1,5,-2,3], k = 3<br />
+输出: 4<br />
+解释: 子数组 [1, -1, 5, -2] 和等于 3，且长度最长。<br />
+示例 2:</p>
+<p>输入: nums = [-2,-1,2,1], k = 1<br />
+输出: 2<br />
+解释: 子数组 [-1, 2] 和等于 1，且长度最长。</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<ul>
+<li>preSum[i] - preSum[j] == k 且 i - j 尽可能的大</li>
+<li>preSum[i] - preSum[j] == k 其实就是 preSum[j] == preSum[i] - k</li>
+</ul>
+<pre><code class="language-go">func maxSubArrayLen(nums []int, k int) int {
+	index := map[int]int{}
+	ans := 0
+	preSum := 0
+	index[0] = -1
+	for i := 0; i &lt; len(nums); i++ {
+		preSum += nums[i]
+		if _, ok := index[preSum]; !ok {
+			index[preSum] = i
+		}
+		need := preSum - k
+		if j, ok := index[need]; ok {
+			ans = max(ans, i-j)
+		}
+		if preSum == k {
+			ans = max(ans, i+1)
+		}
+	}
+	return ans
+}
+</code></pre>
+<h3><a id="974%E5%92%8C%E5%8F%AF%E8%A2%AB-k%E6%95%B4%E9%99%A4%E7%9A%84%E5%AD%90%E6%95%B0%E7%BB%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>974. 和可被 K 整除的子数组</h3>
+<p>给定一个整数数组 nums 和一个整数 k ，返回其中元素之和可被 k 整除的（连续、非空） 子数组 的数目。</p>
+<p>子数组 是数组的 连续 部分。</p>
+<p>示例 1：</p>
+<p>输入：nums = [4,5,0,-2,-3,1], k = 5<br />
+输出：7<br />
+解释：<br />
+有 7 个子数组满足其元素之和可被 k = 5 整除：<br />
+[4, 5, 0, -2, -3, 1], [5], [5, 0], [5, 0, -2, -3], [0], [0, -2, -3],</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<pre><code class="language-go">func subarraysDivByK(nums []int, k int) int {
+	preSum := 0
+	index := map[int]int{}
+	index[0] = 1
+	ans := 0
+	for i := 0; i &lt; len(nums); i++ {
+		preSum += nums[i]
+		val := preSum % k
+		if val &lt; 0 {
+			val += k
+		}
+		if num, ok := index[val]; ok {
+			ans += num
+			index[val]++
+		} else {
+			index[val] = 1
+		}
+	}
+	return ans
+}
+</code></pre>
+<h3><a id="1124%E8%A1%A8%E7%8E%B0%E8%89%AF%E5%A5%BD%E7%9A%84%E6%9C%80%E9%95%BF%E6%97%B6%E9%97%B4%E6%AE%B5" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>1124. 表现良好的最长时间段</h3>
+<p>给你一份工作时间表 hours，上面记录着某一位员工每天的工作小时数。</p>
+<p>我们认为当员工一天中的工作小时数大于 8 小时的时候，那么这一天就是「劳累的一天」。</p>
+<p>所谓「表现良好的时间段」，意味在这段时间内，「劳累的天数」是严格 大于「不劳累的天数」。</p>
+<p>请你返回「表现良好时间段」的最大长度。</p>
+<p>示例 1：</p>
+<p>输入：hours = [9,9,6,0,6,6,9]<br />
+输出：3<br />
+解释：最长的表现良好时间段是 [9,9,6]。<br />
+示例 2：</p>
+<p>输入：hours = [6,6,6]<br />
+输出：0</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<ul>
+<li>hours[i] 以 8 作为分界线，那么我们就要条件反射地想到对数据进行「归一化」处理，比如把所有大于 8 的元素视为 +1，把所有小于 8 的元素视为 -1，这样一来，这道题就改造成了：计算数组中元素和大于 0 的子数组的最大长度</li>
+</ul>
+<pre><code class="language-go">func longestWPI(hours []int) int {
+	preSum := 0
+	index := map[int]int{}
+	index[0] = -1
+	ans := 0
+	for i := 0; i &lt; len(hours); i++ {
+		if hours[i] &gt; 8 {
+			preSum += 1
+		} else {
+			preSum += -1
+		}
+
+		if _, ok := index[preSum]; !ok {
+			index[preSum] = i
+		}
+
+		if preSum &gt; 0 {
+			ans = max(ans, i+1)
+		} else {
+			if j, ok := index[preSum-1]; ok {
+				ans = max(ans, i-j)
+			}
+		}
+	}
+	return ans
+}
+</code></pre>
 
                   </article>
                   <div class="comments-wrap">
