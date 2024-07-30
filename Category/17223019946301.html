@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>
       
-    数组实战 -        凌云阁
+    day13 二叉树part02 -        凌云阁
     
     </title>
     <link rel="shortcut icon" href="https://i.loli.net/2020/02/22/Si1K7sluept2ZgR.jpg" type="image/png" />
@@ -102,7 +102,7 @@
                   <div class="post-body single-content">
                     
                     <h1 class="title">
-                            数组实战   
+                            day13 二叉树part02   
                       </h1>
                      
                     
@@ -119,7 +119,7 @@
                             <div class="media-content">
                               <div class="content">
                                 <p>
-                                 <span class="date">2024/07/25 15:34 下午</span>
+                                 <span class="date">2024/07/30 09:13 上午</span>
                                   <span class="tran-posted-in">posted in</span>&nbsp; 
                                   
                                       <span class="posted-in"><a href='%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95%E5%AE%9E%E6%88%98.html'>代码随想录实战</a></span>
@@ -139,410 +139,171 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h3><a id="26%E5%88%A0%E9%99%A4%E6%9C%89%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E9%87%8D%E5%A4%8D%E9%A1%B9" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>26. 删除有序数组中的重复项</h3>
-<p>给你一个 非严格递增排列 的数组 nums ，请你 原地 删除重复出现的元素，使每个元素 只出现一次 ，返回删除后数组的新长度。元素的 相对顺序 应该保持 一致 。然后返回 nums 中唯一元素的个数。<br />
-考虑 nums 的唯一元素的数量为 k ，你需要做以下事情确保你的题解可以被通过：<br />
-更改数组 nums ，使 nums 的前 k 个元素包含唯一元素，并按照它们最初在 nums 中出现的顺序排列。nums 的其余元素与 nums 的大小不重要。<br />
-返回 k 。</p>
+                    <h3><a id="226%E7%BF%BB%E8%BD%AC%E4%BA%8C%E5%8F%89%E6%A0%91" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>226.翻转二叉树</h3>
+<p>翻转一棵二叉树。<br />
+<img src="media/17223019946301/17223020547571.png" alt="" /></p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<h5><a id="%E5%85%88%E5%BA%8F%E9%80%92%E5%BD%92%E8%A7%A3%E6%B3%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>先序递归解法</h5>
+<pre><code class="language-go">func invertTree(root *TreeNode) *TreeNode {
+	if root == nil {
+		return root
+	}
+	root.Left, root.Right = root.Right, root.Left
+	invertTree(root.Left)
+	invertTree(root.Right)
+	return root
+}
+</code></pre>
+<h5><a id="%E5%85%88%E5%BA%8F%E8%BF%AD%E4%BB%A3%E8%A7%A3%E6%B3%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>先序迭代解法</h5>
+<pre><code class="language-go">func invertTree(root *TreeNode) *TreeNode {
+	if root == nil {
+		return root
+	}
+	st := list.New()
+	st.PushBack(root)
+	for st.Len() &gt; 0 {
+		node := st.Remove(st.Back()).(*TreeNode)
+		node.Left, node.Right = node.Right, node.Left
+		if node.Right != nil {
+			st.PushBack(node.Right)
+		}
+		if node.Left != nil {
+			st.PushBack(node.Left)
+		}
+	}
+	return root
+}
+</code></pre>
+<h5><a id="%E5%B1%82%E6%AC%A1%E8%BF%AD%E4%BB%A3%E8%A7%A3%E6%B3%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>层次迭代解法</h5>
+<pre><code class="language-go">func invertTree(root *TreeNode) *TreeNode {
+	if root == nil {
+		return root
+	}
+	st := list.New()
+	st.PushBack(root)
+	for st.Len() &gt; 0 {
+		level := st.Len()
+		for level &gt; 0 {
+			node := st.Remove(st.Back()).(*TreeNode)
+			node.Left, node.Right = node.Right, node.Left
+			if node.Right != nil {
+				st.PushBack(node.Right)
+			}
+			if node.Left != nil {
+				st.PushBack(node.Left)
+			}
+			level--
+		}
+	}
+	return root
+}
+</code></pre>
+<h3><a id="101%E5%AF%B9%E7%A7%B0%E4%BA%8C%E5%8F%89%E6%A0%91" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>101. 对称二叉树</h3>
+<p>给你一个二叉树的根节点 root ， 检查它是否轴对称。<br />
+<img src="media/17223019946301/17223040190908.png" alt="" /><br />
+输入：root = [1,2,2,3,4,4,3]<br />
+输出：true<br />
+<img src="media/17223019946301/17223040366361.png" alt="" /><br />
+输入：root = [1,2,2,null,3,null,3]<br />
+输出：false</p>
 <h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
 <ul>
-<li>使用快慢指针，快指针覆盖慢指针的变量</li>
+<li>要遍历两棵树而且要比较内侧和外侧节点，所以准确的来说是一个树的遍历顺序是左右中，一个树的遍历顺序是右左中</li>
+<li>左右节点值相等，并且左右子树相等</li>
 </ul>
-<pre><code class="language-go">func removeDuplicates(nums []int) int {
-	slow, fast := 0, 0
-	for ; fast &lt; len(nums); fast++ {
-		if nums[fast] != nums[slow] {
-			slow++
-			nums[slow] = nums[fast]
-		}
+<h5><a id="%E9%80%92%E5%BD%92%E8%A7%A3%E6%B3%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>递归解法</h5>
+<pre><code class="language-go">func isSymmetric(root *TreeNode) bool {
+	if root == nil {
+		return true
 	}
-	return slow + 1
+	return compare(root.Left, root.Right)
 }
-</code></pre>
-<h3><a id="83%E5%88%A0%E9%99%A4%E6%8E%92%E5%BA%8F%E9%93%BE%E8%A1%A8%E4%B8%AD%E7%9A%84%E9%87%8D%E5%A4%8D%E5%85%83%E7%B4%A0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>83. 删除排序链表中的重复元素</h3>
-<p>给定一个已排序的链表的头 head ， 删除所有重复的元素，使每个元素只出现一次 。返回 已排序的链表 。<br />
-<img src="media/17218928986603/17218936792429.jpg" alt="" /><br />
-输入：head = [1,1,2]<br />
-输出：[1,2]<br />
-<img src="media/17218928986603/17218936917115.jpg" alt="" /><br />
-输入：head = [1,1,2,3,3]<br />
-输出：[1,2,3]</p>
-<pre><code class="language-go">func deleteDuplicates(head *ListNode) *ListNode {
-	if head == nil {
-		return nil
-	}
 
-	slow, fast := head, head
-	for fast != nil {
-		if slow.Val != fast.Val {
-			slow.Next = fast
-			slow = fast
-		}
-		fast = fast.Next
+func compare(left, right *TreeNode) bool {
+	if left == nil &amp;&amp; right != nil {
+		return false
+	} else if left != nil &amp;&amp; right == nil {
+		return false
+	} else if left == nil &amp;&amp; right == nil {
+		return true
+	} else if left.Val != right.Val {
+		return false
 	}
-	slow.Next = nil
-	return head
+	l := compare(left.Left, right.Right)
+	r := compare(left.Right, right.Left)
+	return l &amp;&amp; r
 }
 </code></pre>
-<h3><a id="167%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C-ii%E8%BE%93%E5%85%A5%E6%9C%89%E5%BA%8F%E6%95%B0%E7%BB%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>167. 两数之和 II - 输入有序数组</h3>
-<p>给你一个下标从 1 开始的整数数组 numbers ，该数组已按 非递减顺序排列  ，请你从数组中找出满足相加之和等于目标数 target 的两个数。如果设这两个数分别是 numbers[index1] 和 numbers[index2] ，则 1 &lt;= index1 &lt; index2 &lt;= numbers.length 。</p>
-<p>以长度为 2 的整数数组 [index1, index2] 的形式返回这两个整数的下标 index1 和 index2。</p>
-<p>你可以假设每个输入 只对应唯一的答案 ，而且你 不可以 重复使用相同的元素。</p>
-<p>你所设计的解决方案必须只使用常量级的额外空间</p>
+<h5><a id="%E8%BF%AD%E4%BB%A3%E8%A7%A3%E6%B3%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>迭代解法</h5>
+<pre><code class="language-go">func isSymmetric(root *TreeNode) bool {
+	if root == nil {
+		return true
+	}
+	st := list.New()
+	st.PushBack(root.Left)
+	st.PushBack(root.Right)
+	for st.Len() &gt; 0 {
+		left := st.Remove(st.Front()).(*TreeNode)
+		right := st.Remove(st.Front()).(*TreeNode)
+		if left == nil &amp;&amp; right == nil {
+			continue
+		}
+
+		if left == nil &amp;&amp; right != nil {
+			return false
+		} else if left != nil &amp;&amp; right == nil {
+			return false
+		} else if left.Val != right.Val {
+			return false
+		}
+		st.PushBack(left.Left)
+		st.PushBack(right.Right)
+		st.PushBack(left.Right)
+		st.PushBack(right.Left)
+	}
+	return true
+}
+</code></pre>
+<h3><a id="104%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E6%9C%80%E5%A4%A7%E6%B7%B1%E5%BA%A6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>104.二叉树的最大深度</h3>
+<p>给定一个二叉树，找出其最大深度。</p>
+<p>二叉树的深度为根节点到最远叶子节点的最长路径上的节点数。</p>
+<p>说明: 叶子节点是指没有子节点的节点。<br />
+示例： 给定二叉树 [3,9,20,null,null,15,7]，<br />
+<img src="media/17223019946301/17223070873962.png" alt="" /></p>
+<ul>
+<li>高度是后序遍历</li>
+<li>深度是前序遍历</li>
+</ul>
+<pre><code class="language-go">func maxDepth(root *TreeNode) int {
+	if root == nil {
+		return 0
+	}
+	left := maxDepth(root.Left)
+	right := maxDepth(root.Right)
+	return 1 + max(left, right)
+}
+</code></pre>
+<h3><a id="111%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E6%9C%80%E5%B0%8F%E6%B7%B1%E5%BA%A6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>111.二叉树的最小深度</h3>
+<p>给定一个二叉树，找出其最小深度。</p>
+<p>最小深度是从根节点到最近叶子节点的最短路径上的节点数量。</p>
+<p>说明: 叶子节点是指没有子节点的节点。<br />
+给定二叉树 [3,9,20,null,null,15,7],<img src="media/17223019946301/17223088944219.png" alt="" /></p>
 <h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
 <ul>
-<li>使用快慢指针</li>
+<li>注意一个很大的误区<br />
+<img src="media/17223019946301/17223089197629.png" alt="" /></li>
 </ul>
-<pre><code class="language-go">func twoSum(numbers []int, target int) []int {
-	i, j := 0, len(numbers)-1
-	for i &lt; j {
-		sum := numbers[i] + numbers[j]
-		if sum == target {
-			return []int{i + 1, j + 1}
-		} else if sum &lt; target {
-			i++
-		} else {
-			j--
-		}
+<pre><code class="language-go">func minDepth(root *TreeNode) int {
+	if root == nil {
+		return 0
 	}
-	return []int{-1, -1}
-}
-</code></pre>
-<h3><a id="5%E6%9C%80%E9%95%BF%E5%9B%9E%E6%96%87%E5%AD%90%E4%B8%B2" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>5. 最长回文子串</h3>
-<p>给你一个字符串 s，找到 s 中最长的<br />
-回文子串<br />
-示例 1：</p>
-<p>输入：s = &quot;babad&quot;<br />
-输出：&quot;bab&quot;<br />
-解释：&quot;aba&quot; 同样是符合题意的答案。<br />
-示例 2：</p>
-<p>输入：s = &quot;cbbd&quot;<br />
-输出：&quot;bb</p>
-<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
-<pre><code class="language-go">for 0 &lt;= i &lt; len(s):
-    找到以 s[i] 为中心的回文串
-    找到以 s[i] 和 s[i+1] 为中心的回文串
-    更新答案
-</code></pre>
-<pre><code class="language-go">func longestPalindrome(s string) string {
-	var ans string
-	for i := 0; i &lt; len(s); i++ {
-		s1 := Palindrome(s, i, i)
-		s2 := Palindrome(s, i, i+1)
-		if len(ans) &lt; len(s1) {
-			ans = s1
-		}
-		if len(ans) &lt; len(s2) {
-			ans = s2
-		}
+	if root.Left == nil &amp;&amp; root.Right != nil {
+		return 1 + minDepth(root.Right)
 	}
-	return ans
-}
-
-func Palindrome(s string, l, r int) string {
-	for l &gt;= 0 &amp;&amp; r &lt; len(s) &amp;&amp; s[l] == s[r] {
-		l--
-		r++
+	if root.Right == nil &amp;&amp; root.Left != nil {
+		return 1 + minDepth(root.Left)
 	}
-	return s[l+1 : r]
-}
-</code></pre>
-<h3><a id="1%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>1. 两数之和</h3>
-<p>给定一个整数数组 nums 和一个整数目标值 target，请你在该数组中找出 和为目标值 target  的那 两个 整数，并返回它们的数组下标。</p>
-<p>你可以假设每种输入只会对应一个答案。但是，数组中同一个元素在答案里不能重复出现。<br />
-示例 1：<br />
-输入：nums = [2,7,11,15], target = 9<br />
-输出：[0,1]<br />
-解释：因为 nums[0] + nums[1] == 9 ，返回 [0, 1] 。</p>
-<pre><code class="language-go">func twoSum(nums []int, target int) []int {
-	// 先对数组排序
-	sort.Ints(nums)
-	// 左右指针
-	lo, hi := 0, len(nums)-1
-	for lo &lt; hi {
-		sum := nums[lo] + nums[hi]
-		// 根据 sum 和 target 的比较，移动左右指针
-		if sum &lt; target {
-			lo++
-		} else if sum &gt; target {
-			hi--
-		} else if sum == target {
-			return []int{lo, hi}
-		}
-	}
-	return []int{}
-}
-</code></pre>
-<h3><a id="15%E4%B8%89%E6%95%B0%E4%B9%8B%E5%92%8C" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>15. 三数之和</h3>
-<p>给你一个整数数组 nums ，判断是否存在三元组 [nums[i], nums[j], nums[k]] 满足 i != j、i != k 且 j != k ，同时还满足 nums[i] + nums[j] + nums[k] == 0 。请你返回所有和为 0 且不重复的三元组。</p>
-<pre><code class="language-go">func threeSum(nums []int) [][]int {
-	sort.Ints(nums)
-	n := len(nums)
-	res := [][]int{}
-	// 穷举 threeSum 的第一个数
-	for i := 0; i &lt; n; i++ {
-		// 对 target - nums[i] 计算 twoSum
-		if i &gt; 0 &amp;&amp; nums[i] == nums[i-1] {
-			continue
-		}
-		tuples := twoSumTarget(nums, i+1, -nums[i])
-		// 如果存在满足条件的二元组，再加上 nums[i] 就是结果三元组
-		for _, tuple := range tuples {
-			res = append(res, append(tuple, nums[i]))
-		}
-	}
-	return res
-}
-
-func twoSumTarget(nums []int, start, target int) [][]int {
-	l, r := start, len(nums)-1
-	var ans [][]int
-	for l &lt; r {
-		sum := nums[l] + nums[r]
-		left, right := nums[l], nums[r]
-		if sum == target {
-			ans = append(ans, []int{nums[l], nums[r]})
-			for l &lt; r &amp;&amp; nums[l] == left {
-				l++
-			}
-			for l &lt; r &amp;&amp; nums[r] == right {
-				r--
-			}
-		} else if sum &gt; target {
-			r--
-		} else if sum &lt; target {
-			l++
-		}
-	}
-	return ans
-}
-</code></pre>
-<h3><a id="18%E5%9B%9B%E6%95%B0%E4%B9%8B%E5%92%8C" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>18. 四数之和</h3>
-<p>给你一个由 n 个整数组成的数组 nums ，和一个目标值 target 。请你找出并返回满足下述全部条件且不重复的四元组 [nums[a], nums[b], nums[c], nums[d]] （若两个四元组元素一一对应，则认为两个四元组重复）<br />
-0 &lt;= a, b, c, d &lt; n<br />
-a、b、c 和 d 互不相同<br />
-nums[a] + nums[b] + nums[c] + nums[d] == target<br />
-示例 1<br />
-输入：nums = [1,0,-1,0,-2,2], target = 0<br />
-输出：[[-2,-1,1,2],[-2,0,0,2],[-1,0,0,1]]</p>
-<pre><code class="language-go">func fourSum(nums []int, target int) [][]int {
-	sort.Ints(nums)
-	var ans [][]int
-	for i := 0; i &lt; len(nums); i++ {
-		if i &gt; 0 &amp;&amp; nums[i] == nums[i-1] {
-			continue
-		}
-		ret := threeSumI(nums, i+1, target-nums[i])
-		for _, val := range ret {
-			ans = append(ans, append(val, nums[i]))
-		}
-	}
-	return ans
-}
-
-func threeSumI(nums []int, start, target int) [][]int {
-	ans := [][]int{}
-	for i := start; i &lt; len(nums); i++ {
-		if i &gt; start &amp;&amp; nums[i] == nums[i-1] {
-			continue
-		}
-		ret := twoSumI(nums, i+1, target-nums[i])
-		for _, val := range ret {
-			ans = append(ans, append(val, nums[i]))
-		}
-	}
-	return ans
-}
-
-func twoSumI(nums []int, start, target int) [][]int {
-	l, r := start, len(nums)-1
-	ans := [][]int{}
-	for l &lt; r {
-		sum := nums[l] + nums[r]
-		left, right := nums[l], nums[r]
-		if sum == target {
-			ans = append(ans, []int{nums[l], nums[r]})
-			for l &lt; r &amp;&amp; nums[l] == left {
-				l++
-			}
-			for l &lt; r &amp;&amp; nums[r] == right {
-				r--
-			}
-		} else if sum &gt; target {
-			r--
-		} else {
-			l++
-		}
-	}
-	return ans
-}
-</code></pre>
-<h3><a id="303%E5%8C%BA%E5%9F%9F%E5%92%8C%E6%A3%80%E7%B4%A2%E6%95%B0%E7%BB%84%E4%B8%8D%E5%8F%AF%E5%8F%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>303. 区域和检索 - 数组不可变</h3>
-<p>给定一个整数数组  nums，处理以下类型的多个查询:</p>
-<p>计算索引 left 和 right （包含 left 和 right）之间的 nums 元素的 和 ，其中 left &lt;= right<br />
-实现 NumArray 类：</p>
-<p>NumArray(int[] nums) 使用数组 nums 初始化对象<br />
-int sumRange(int i, int j) 返回数组 nums 中索引 left 和 right 之间的元素的 总和 ，包含 left 和 right 两点（也就是 nums[left] + nums[left + 1] + ... + nums[right] )<br />
-示例 1：<br />
-输入：<br />
-[&quot;NumArray&quot;, &quot;sumRange&quot;, &quot;sumRange&quot;, &quot;sumRange&quot;]<br />
-[[[-2, 0, 3, -5, 2, -1]], [0, 2], [2, 5], [0, 5]]<br />
-输出：<br />
-[null, 1, -1, -3]</p>
-<p>解释：<br />
-NumArray numArray = new NumArray([-2, 0, 3, -5, 2, -1]);<br />
-numArray.sumRange(0, 2); // return 1 ((-2) + 0 + 3)<br />
-numArray.sumRange(2, 5); // return -1 (3 + (-5) + 2 + (-1))<br />
-numArray.sumRange(0, 5); // return -3 ((-2) + 0 + 3 + (-5) + 2 + (-1))</p>
-<pre><code class="language-go">type NumArray struct {
-	preSums []int
-}
-
-func Constructor(nums []int) NumArray {
-	preSums := make([]int, len(nums)+1)
-
-	for i := 1; i &lt; len(nums)+1; i++ {
-		preSums[i] = preSums[i-1] + nums[i-1]
-	}
-	return NumArray{
-		preSums: preSums,
-	}
-}
-
-func (n *NumArray) SumRange(left int, right int) int {
-	return n.preSums[right+1] - n.preSums[left]
-}
-</code></pre>
-<h3><a id="304%E4%BA%8C%E7%BB%B4%E5%8C%BA%E5%9F%9F%E5%92%8C%E6%A3%80%E7%B4%A2%E7%9F%A9%E9%98%B5%E4%B8%8D%E5%8F%AF%E5%8F%98" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>304. 二维区域和检索 - 矩阵不可变</h3>
-<p>给定一个二维矩阵 matrix，以下类型的多个请求：</p>
-<p>计算其子矩形范围内元素的总和，该子矩阵的 左上角 为 (row1, col1) ，右下角 为 (row2, col2) 。<br />
-实现 NumMatrix 类：</p>
-<p>NumMatrix(int[][] matrix) 给定整数矩阵 matrix 进行初始化<br />
-int sumRegion(int row1, int col1, int row2, int col2) 返回 左上角 (row1, col1) 、右下角 (row2, col2) 所描述的子矩阵的元素 总和 。<br />
-<img src="media/17218928986603/17219956846716.png" alt="" /><br />
-输入:<br />
-[&quot;NumMatrix&quot;,&quot;sumRegion&quot;,&quot;sumRegion&quot;,&quot;sumRegion&quot;]<br />
-[[[[3,0,1,4,2],[5,6,3,2,1],[1,2,0,1,5],[4,1,0,1,7],[1,0,3,0,5]]],[2,1,4,3],[1,1,2,2],[1,2,2,4]]<br />
-输出:<br />
-[null, 8, 11, 12]</p>
-<pre><code class="language-go">type NumMatrix struct {
-	preSum [][]int
-}
-
-func Constructor(matrix [][]int) NumMatrix {
-	m, n := len(matrix), len(matrix[0])
-	if m == 0 || n == 0 {
-		return NumMatrix{}
-	}
-	preSum := make([][]int, m+1)
-	for i := 0; i &lt;= m; i++ {
-		preSum[i] = make([]int, n+1)
-	}
-
-	for i := 1; i &lt; m+1; i++ {
-		for j := 1; j &lt; n+1; j++ {
-			preSum[i][j] = preSum[i-1][j] + preSum[i][j-1] + matrix[i-1][j-1] - preSum[i-1][j-1]
-		}
-	}
-	return NumMatrix{preSum: preSum}
-}
-
-func (n *NumMatrix) SumRegion(x1 int, y1 int, x2 int, y2 int) int {
-	return n.preSum[x2+1][y2+1] - n.preSum[x2+1][y1] - n.preSum[x1][y2+1] + n.preSum[x1][y1]
-}
-</code></pre>
-<h3><a id="1314%E7%9F%A9%E9%98%B5%E5%8C%BA%E5%9F%9F%E5%92%8C" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>1314. 矩阵区域和</h3>
-<p>给你一个 m x n 的矩阵 mat 和一个整数 k ，请你返回一个矩阵 answer ，其中每个 answer[i][j] 是所有满足下述条件的元素 mat[r][c] 的和：</p>
-<p>i - k &lt;= r &lt;= i + k,<br />
-j - k &lt;= c &lt;= j + k 且<br />
-(r, c) 在矩阵内。<br />
-示例 1：</p>
-<p>输入：mat = [[1,2,3],[4,5,6],[7,8,9]], k = 1<br />
-输出：[[12,21,16],[27,45,33],[24,39,28]]<br />
-示例 2：</p>
-<p>输入：mat = [[1,2,3],[4,5,6],[7,8,9]], k = 2<br />
-输出：[[45,45,45],[45,45,45],[45,45,45]]</p>
-<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
-<pre><code class="language-go">func matrixBlockSum(mat [][]int, k int) [][]int {
-	m, n := len(mat), len(mat[0])
-	if m == 0 || n == 0 {
-		return [][]int{}
-	}
-	ans := make([][]int, m)
-	for i := range ans {
-		ans[i] = make([]int, n)
-	}
-
-	sumMartix := NewSumMatrix(mat)
-	for i := 0; i &lt; m; i++ {
-		for j := 0; j &lt; n; j++ {
-			x1 := max(i-k, 0)
-			y1 := max(j-k, 0)
-			x2 := min(i+k, m-1)
-			y2 := min(j+k, n-1)
-			ans[i][j] = sumMartix.SumRegion(x1, y1, x2, y2)
-		}
-	}
-	return ans
-}
-
-type SumMartix struct {
-	preSum [][]int
-}
-
-func NewSumMatrix(mat [][]int) SumMartix {
-	m, n := len(mat), len(mat[0])
-	if m == 0 || n == 0 {
-		return SumMartix{}
-	}
-	preSum := make([][]int, m+1)
-	for i := range preSum {
-		preSum[i] = make([]int, n+1)
-	}
-	for i := 1; i &lt;= m; i++ {
-		for j := 1; j &lt;= n; j++ {
-			preSum[i][j] = preSum[i-1][j] + preSum[i][j-1] - preSum[i-1][j-1] + mat[i-1][j-1]
-		}
-	}
-	return SumMartix{preSum: preSum}
-}
-
-func (s *SumMartix) SumRegion(x1, y1, x2, y2 int) int {
-	return s.preSum[x2+1][y2+1] - s.preSum[x1][y2+1] - s.preSum[x2+1][y1] + s.preSum[x1][y1]
-}
-</code></pre>
-<h3><a id="724%E5%AF%BB%E6%89%BE%E6%95%B0%E7%BB%84%E7%9A%84%E4%B8%AD%E5%BF%83%E4%B8%8B%E6%A0%87" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>724. 寻找数组的中心下标</h3>
-<p>给你一个整数数组 nums ，请计算数组的 中心下标 。</p>
-<p>数组 中心下标 是数组的一个下标，其左侧所有元素相加的和等于右侧所有元素相加的和。</p>
-<p>如果中心下标位于数组最左端，那么左侧数之和视为 0 ，因为在下标的左侧不存在元素。这一点对于中心下标位于数组最右端同样适用。</p>
-<p>如果数组有多个中心下标，应该返回 最靠近左边 的那一个。如果数组不存在中心下标，返回 -1<br />
-示例 1：<br />
-输入：nums = [1, 7, 3, 6, 5, 6]<br />
-输出：3<br />
-解释：<br />
-中心下标是 3 。<br />
-左侧数之和 sum = nums[0] + nums[1] + nums[2] = 1 + 7 + 3 = 11 ，<br />
-右侧数之和 sum = nums[4] + nums[5] = 5 + 6 = 11 ，二者相等。<br />
-示例 2：<br />
-输入：nums = [1, 2, 3]<br />
-输出：-1<br />
-解释：<br />
-数组中不存在满足此条件的中心下标。</p>
-<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
-<pre><code class="language-go">func pivotIndex(nums []int) int {
-	n := len(nums)
-	preSum := make([]int, n+1)
-	for i := 1; i &lt; n+1; i++ {
-		preSum[i] = preSum[i-1] + nums[i-1]
-	}
-	for i := 1; i &lt;= n; i++ {
-		left := preSum[i-1] - preSum[0]
-		right := preSum[n] - preSum[i]
-		if left == right {
-			return i - 1
-		}
-	}
-	return -1
+	return 1 + min(minDepth(root.Left), minDepth(root.Right))
 }
 </code></pre>
 
