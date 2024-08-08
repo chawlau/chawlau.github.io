@@ -1474,6 +1474,98 @@ abs(nums[i] - nums[j]) &lt;= valueDiff --&gt; abs(1 - 1) &lt;= 0<br />
 <p>输入：nums = [1,5,9,1,5,9], indexDiff = 2, valueDiff = 3<br />
 输出：false<br />
 解释：尝试所有可能的下标对 (i, j) ，均无法满足这 3 个条件，因此返回 false</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<ul>
+<li>对于元素 x，其影响的区间为 [x−t,x+t]。于是我们可以设定桶的大小为 t+1。如果两个元素同属一个桶，那么这两个元素必然符合条件。如果两个元素属于相邻桶，那么我们需要校验这两个元素是否差值不超过 t。如果两个元素既不属于同一个桶，也不属于相邻桶，那么这两个元素必然不符合条件。</li>
+<li>我们遍历该序列，假设当前遍历到元素 x，那么我们首先检查 x 所属于的桶是否已经存在元素，如果存在，那么我们就找到了一对符合条件的元素，否则我们继续检查两个相邻的桶内是否存在符合条件的元素</li>
+<li>我们将 int 范围内的每一个整数 x 表示为 x=(t+1)×a+b(0≤b≤t) 的形式，这样 x 即归属于编号为 a 的桶</li>
+</ul>
+<pre><code class="language-go">func containsNearbyAlmostDuplicate(nums []int, k int, t int) bool {
+
+	getId := func(x, w int) int {
+		if x &gt;= 0 {
+			return x / w
+		}
+		return (x+1)/w - 1
+	}
+	window := map[int]int{}
+	w := t + 1
+	for i := 0; i &lt; len(nums); i++ {
+		m := getId(nums[i], w)
+		if _, ok := window[m]; ok {
+			return true
+		}
+		if val, ok := window[m-1]; ok &amp;&amp; math.Abs(float64(nums[i]-val)) &lt; float64(w) {
+			return true
+		}
+		if val, ok := window[m+1]; ok &amp;&amp; math.Abs(float64(nums[i]-val)) &lt; float64(w) {
+			return true
+		}
+		window[m] = nums[i]
+		if i &gt;= k {
+			delete(window, getId(nums[i-k], w))
+		}
+	}
+	return false
+}
+
+</code></pre>
+<h3><a id="395%E8%87%B3%E5%B0%91%E6%9C%89-k%E4%B8%AA%E9%87%8D%E5%A4%8D%E5%AD%97%E7%AC%A6%E7%9A%84%E6%9C%80%E9%95%BF%E5%AD%90%E4%B8%B2" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>395. 至少有 K 个重复字符的最长子串</h3>
+<p>给你一个字符串 s 和一个整数 k ，请你找出 s 中的最长子串， 要求该子串中的每一字符出现次数都不少于 k 。返回这一子串的长度。</p>
+<p>如果不存在这样的子字符串，则返回 0。</p>
+<p>示例 1：</p>
+<p>输入：s = &quot;aaabb&quot;, k = 3<br />
+输出：3<br />
+解释：最长子串为 &quot;aaa&quot; ，其中 'a' 重复了 3 次。<br />
+示例 2：</p>
+<p>输入：s = &quot;ababbc&quot;, k = 2<br />
+输出：5<br />
+解释：最长子串为 &quot;ababb&quot; ，其中 'a' 重复了 2 次， 'b' 重复了 3 次。</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<p>1、什么时候应该扩大窗口？窗口中字符种类小于 count 时扩大窗口。</p>
+<p>2、什么时候应该缩小窗口？窗口中字符种类大于 count 时扩大窗口。</p>
+<p>3、什么时候得到一个合法的答案？窗口中所有字符出现的次数都大于等于 k 时，得到一个合法的子串。<br />
+4、用count来表示窗口内的所有字符个数都达到 k 就有效，记录下来</p>
+<pre><code class="language-go">func longestSubstring(s string, k int) int {
+	var res int
+	for i := 1; i &lt;= 26; i++ {
+		res = max(res, longestSubstringK(s, k, i))
+	}
+	return res
+}
+
+func longestSubstringK(s string, k int, count int) int {
+	res, left, right := 0, 0, 0
+	window := map[rune]int{}
+	uniqCount, validCount := 0, 0
+	for right &lt; len(s) {
+		c := rune(s[right])
+		if window[c] == 0 {
+			uniqCount++
+		}
+		window[c]++
+		if window[c] == k {
+			validCount++
+		}
+		right++
+		for uniqCount &gt; count {
+			d := rune(s[left])
+			if window[d] == k {
+				validCount--
+			}
+			left++
+			window[d]--
+			if window[d] == 0 {
+				uniqCount--
+			}
+		}
+		if validCount == count {
+			res = max(res, right-left)
+		}
+	}
+	return res
+}
+</code></pre>
 
                   </article>
                   <div class="comments-wrap">
