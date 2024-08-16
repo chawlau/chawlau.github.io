@@ -215,6 +215,145 @@
 	p.Right = right
 }
 </code></pre>
+<h3><a id="652%E5%AF%BB%E6%89%BE%E9%87%8D%E5%A4%8D%E7%9A%84%E5%AD%90%E6%A0%91" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>652. 寻找重复的子树</h3>
+<p>给你一棵二叉树的根节点 root ，返回所有 重复的子树 。</p>
+<p>对于同一类的重复子树，你只需要返回其中任意 一棵 的根结点即可。</p>
+<p>如果两棵树具有 相同的结构 和 相同的结点值 ，则认为二者是 重复 的。<br />
+<img src="media/17237099130982/17237978371624.jpg" alt="" /><br />
+输入：root = [1,2,3,4,null,2,4,null,null,4]<br />
+输出：[[2,4],[4]]</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<ul>
+<li>子树需要去重</li>
+</ul>
+<pre><code class="language-go">func findDuplicateSubtrees(root *TreeNode) []*TreeNode {
+	ans := []*TreeNode{}
+	treeArray := map[string]int{}
+	var travel func(node *TreeNode) string
+	travel = func(node *TreeNode) string {
+		if node == nil {
+			return &quot;#&quot;
+		}
+		left := travel(node.Left)
+		right := travel(node.Right)
+		res := left + &quot;,&quot; + right + &quot;,&quot; + strconv.Itoa(node.Val)
+		if treeArray[res] == 1 {
+			ans = append(ans, node)
+		}
+		treeArray[res]++
+		return res
+	}
+	travel(root)
+	return ans
+}
+</code></pre>
+<h3><a id="%E5%BA%8F%E5%88%97%E5%8C%96" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>序列化</h3>
+<ul>
+<li>什么样的序列化的数据可以反序列化出唯一的一棵二叉树</li>
+<li>前序和后序</li>
+<li>因为前序/后序遍历的结果中，可以确定根节点的位置，而中序遍历的结果中，根节点的位置是无法确定的</li>
+<li>中序无法还原</li>
+</ul>
+<h3><a id="297%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%BA%8F%E5%88%97%E5%8C%96%E4%B8%8E%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>297. 二叉树的序列化与反序列化</h3>
+<p>序列化是将一个数据结构或者对象转换为连续的比特位的操作，进而可以将转换后的数据存储在一个文件或者内存中，同时也可以通过网络传输到另一个计算机环境，采取相反方式重构得到原数据。</p>
+<p>请设计一个算法来实现二叉树的序列化与反序列化。这里不限定你的序列 / 反序列化算法执行逻辑，你只需要保证一个二叉树可以被序列化为一个字符串并且将这个字符串反序列化为原始的树结构。</p>
+<p>提示: 输入输出格式与 LeetCode 目前使用的方式一致，详情请参阅 LeetCode 序列化二叉树的格式。你并非必须采取这种方式，你也可以采用其他的方法解决这个问题。<br />
+<img src="media/17237099130982/17238049344232.jpg" alt="" /><br />
+输入：root = [1,2,3,null,null,4,5]<br />
+输出：[1,2,3,null,null,4,5]</p>
+<pre><code class="language-go">type Codec struct {
+}
+
+func Constructor() Codec {
+	return Codec{}
+}
+
+// Serializes a tree to a single string.
+func (c *Codec) serialize(root *TreeNode) string {
+	if root == nil {
+		return &quot;&quot;
+	}
+	queue := list.New()
+	queue.PushBack(root)
+	ans := &quot;&quot;
+	for queue.Len() &gt; 0 {
+		n := queue.Len()
+		for i := 0; i &lt; n; i++ {
+			node := queue.Remove(queue.Front()).(*TreeNode)
+			if node == nil {
+				ans += &quot;null,&quot;
+				continue
+			}
+			ans += strconv.Itoa(node.Val) + &quot;,&quot;
+			queue.PushBack(node.Left)
+			queue.PushBack(node.Right)
+		}
+	}
+	return ans
+}
+
+// Deserializes your encoded data to tree.
+func (c *Codec) deserialize(data string) *TreeNode {
+	if len(data) == 0 {
+		return nil
+	}
+	nodes := strings.Split(data, &quot;,&quot;)
+	val, _ := strconv.Atoi(nodes[0])
+	root := &amp;TreeNode{Val: val}
+	queue := list.New()
+	queue.PushBack(root)
+	nodes = nodes[1:]
+	for queue.Len() &gt; 0 {
+		n := queue.Len()
+		for i := 0; i &lt; n; i++ {
+			node := queue.Remove(queue.Front()).(*TreeNode)
+			if nodes[0] != &quot;null&quot; {
+				val, _ := strconv.Atoi(nodes[0])
+				node.Left = &amp;TreeNode{Val: val}
+				queue.PushBack(node.Left)
+			}
+			nodes = nodes[1:]
+			if nodes[0] != &quot;null&quot; {
+				val, _ := strconv.Atoi(nodes[0])
+				node.Right = &amp;TreeNode{Val: val}
+				queue.PushBack(node.Right)
+			}
+			nodes = nodes[1:]
+		}
+	}
+	return root
+}
+</code></pre>
+<h3><a id="331%E9%AA%8C%E8%AF%81%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%89%8D%E5%BA%8F%E5%BA%8F%E5%88%97%E5%8C%96" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>331. 验证二叉树的前序序列化</h3>
+<p>序列化二叉树的一种方法是使用 前序遍历 。当我们遇到一个非空节点时，我们可以记录下这个节点的值。如果它是一个空节点，我们可以使用一个标记值记录，例如 #。<br />
+<img src="media/17237099130982/17238076050442.jpg" alt="" /><br />
+例如，上面的二叉树可以被序列化为字符串 &quot;9,3,4,#,#,1,#,#,2,#,6,#,#&quot;，其中 # 代表一个空节点。</p>
+<p>给定一串以逗号分隔的序列，验证它是否是正确的二叉树的前序序列化。编写一个在不重构树的条件下的可行算法。</p>
+<p>保证 每个以逗号分隔的字符或为一个整数或为一个表示 null 指针的 '#' 。</p>
+<p>你可以认为输入格式总是有效的</p>
+<p>例如它永远不会包含两个连续的逗号，比如 &quot;1,,3&quot; 。<br />
+注意：不允许重建树。</p>
+<p>示例 1:</p>
+<p>输入: preorder = &quot;9,3,4,#,#,1,#,#,2,#,6,#,#&quot;<br />
+输出: true</p>
+<h3><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h3>
+<ul>
+<li>使用栈来存储，数字+&quot;##&quot;消消乐</li>
+</ul>
+<pre><code class="language-go">func isValidSerialization(preorder string) bool {
+	stack := []string{}
+	nodes := strings.Split(preorder, &quot;,&quot;)
+	for _, node := range nodes {
+		stack = append(stack, node)
+		for len(stack) &gt;= 3 &amp;&amp; stack[len(stack)-1] == &quot;#&quot; &amp;&amp;
+			stack[len(stack)-2] == &quot;#&quot; &amp;&amp; stack[len(stack)-3] != &quot;#&quot; {
+			stack = stack[:len(stack)-3]
+			stack = append(stack, &quot;#&quot;)
+		}
+	}
+	return len(stack) == 1 &amp;&amp; stack[0] == &quot;#&quot;
+}
+</code></pre>
 
                   </article>
                   <div class="comments-wrap">
