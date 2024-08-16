@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>
       
-    day14 二叉树part02 -        凌云阁
+    day31 贪心算法part05 -        凌云阁
     
     </title>
     <link rel="shortcut icon" href="https://i.loli.net/2020/02/22/Si1K7sluept2ZgR.jpg" type="image/png" />
@@ -102,7 +102,7 @@
                   <div class="post-body single-content">
                     
                     <h1 class="title">
-                            day14 二叉树part02   
+                            day31 贪心算法part05   
                       </h1>
                      
                     
@@ -119,7 +119,7 @@
                             <div class="media-content">
                               <div class="content">
                                 <p>
-                                 <span class="date">2024/07/30 09:13 上午</span>
+                                 <span class="date">2024/08/16 09:33 上午</span>
                                   <span class="tran-posted-in">posted in</span>&nbsp; 
                                   
                                       <span class="posted-in"><a href='%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95%E5%AE%9E%E6%88%98.html'>代码随想录实战</a></span>
@@ -139,183 +139,112 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h3><a id="226%E7%BF%BB%E8%BD%AC%E4%BA%8C%E5%8F%89%E6%A0%91" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>226.翻转二叉树</h3>
-<p>翻转一棵二叉树。<br />
-<img src="media/17223019946301/17223020547571.png" alt="" /></p>
-<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
-<h5><a id="%E5%85%88%E5%BA%8F%E9%80%92%E5%BD%92%E8%A7%A3%E6%B3%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>先序递归解法</h5>
-<pre><code class="language-go">func invertTree(root *TreeNode) *TreeNode {
-	if root == nil {
-		return root
-	}
-	root.Left, root.Right = root.Right, root.Left
-	invertTree(root.Left)
-	invertTree(root.Right)
-	return root
-}
-</code></pre>
-<h5><a id="%E5%85%88%E5%BA%8F%E8%BF%AD%E4%BB%A3%E8%A7%A3%E6%B3%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>先序迭代解法</h5>
-<pre><code class="language-go">func invertTree(root *TreeNode) *TreeNode {
-	if root == nil {
-		return root
-	}
-	st := list.New()
-	st.PushBack(root)
-	for st.Len() &gt; 0 {
-		node := st.Remove(st.Back()).(*TreeNode)
-		node.Left, node.Right = node.Right, node.Left
-		if node.Right != nil {
-			st.PushBack(node.Right)
-		}
-		if node.Left != nil {
-			st.PushBack(node.Left)
-		}
-	}
-	return root
-}
-</code></pre>
-<h5><a id="%E5%B1%82%E6%AC%A1%E8%BF%AD%E4%BB%A3%E8%A7%A3%E6%B3%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>层次迭代解法</h5>
-<pre><code class="language-go">func invertTree(root *TreeNode) *TreeNode {
-	if root == nil {
-		return root
-	}
-	st := list.New()
-	st.PushBack(root)
-	for st.Len() &gt; 0 {
-		level := st.Len()
-		for level &gt; 0 {
-			node := st.Remove(st.Back()).(*TreeNode)
-			node.Left, node.Right = node.Right, node.Left
-			if node.Right != nil {
-				st.PushBack(node.Right)
-			}
-			if node.Left != nil {
-				st.PushBack(node.Left)
-			}
-			level--
-		}
-	}
-	return root
-}
-</code></pre>
-<h4><a id="%E5%88%86%E8%A7%A3%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>分解解答</h4>
-<pre><code class="language-go">func invertTree(root *TreeNode) *TreeNode {
-	if root == nil {
-		return root
-	}
-	left := invertTree(root.Left)
-	right := invertTree(root.Right)
-	root.Left = right
-	root.Right = left
-	return root
-}
-</code></pre>
-<h3><a id="101%E5%AF%B9%E7%A7%B0%E4%BA%8C%E5%8F%89%E6%A0%91" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>101. 对称二叉树</h3>
-<p>给你一个二叉树的根节点 root ， 检查它是否轴对称。<br />
-<img src="media/17223019946301/17223040190908.png" alt="" /><br />
-输入：root = [1,2,2,3,4,4,3]<br />
-输出：true<br />
-<img src="media/17223019946301/17223040366361.png" alt="" /><br />
-输入：root = [1,2,2,null,3,null,3]<br />
-输出：false</p>
+                    <h3><a id="56%E5%90%88%E5%B9%B6%E5%8C%BA%E9%97%B4" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>56. 合并区间</h3>
+<p>给出一个区间的集合，请合并所有重叠的区间。</p>
+<p>示例 1:</p>
+<p>输入: intervals = [[1,3],[2,6],[8,10],[15,18]]<br />
+输出: [[1,6],[8,10],[15,18]]<br />
+解释: 区间 [1,3] 和 [2,6] 重叠, 将它们合并为 [1,6].<br />
+示例 2:</p>
+<p>输入: intervals = [[1,4],[4,5]]<br />
+输出: [[1,5]]<br />
+解释: 区间 [1,4] 和 [4,5] 可被视为重叠区间。<br />
+注意：输入类型已于2019年4月15日更改。 请重置默认代码定义以获取新方法签名。</p>
 <h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
 <ul>
-<li>要遍历两棵树而且要比较内侧和外侧节点，所以准确的来说是一个树的遍历顺序是左右中，一个树的遍历顺序是右左中</li>
-<li>左右节点值相等，并且左右子树相等</li>
+<li>先将第一个元素压入集合</li>
+<li>然后每个元素都跟集合最后一个元素比较</li>
 </ul>
-<h5><a id="%E9%80%92%E5%BD%92%E8%A7%A3%E6%B3%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>递归解法</h5>
-<pre><code class="language-go">func isSymmetric(root *TreeNode) bool {
-	if root == nil {
-		return true
+<pre><code class="language-go">func merge(intervals [][]int) [][]int {
+	sort.Slice(intervals, func(i, j int) bool {
+		return intervals[i][0] &lt; intervals[j][0]
+	})
+	if len(intervals) == 0 {
+		return intervals
 	}
-	return compare(root.Left, root.Right)
+	ans := [][]int{}
+	ans = append(ans, intervals[0])
+	for i := 1; i &lt; len(intervals); i++ {
+		if intervals[i][0] &lt;= ans[len(ans)-1][1] {
+			ans[len(ans)-1][1] = max(intervals[i][1], ans[len(ans)-1][1])
+		} else {
+			ans = append(ans, intervals[i])
+		}
+	}
+	return ans
 }
+</code></pre>
+<h3><a id="738%E5%8D%95%E8%B0%83%E9%80%92%E5%A2%9E%E7%9A%84%E6%95%B0%E5%AD%97" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>738.单调递增的数字</h3>
+<p>给定一个非负整数 N，找出小于或等于 N 的最大的整数，同时这个整数需要满足其各个位数上的数字是单调递增。</p>
+<p>（当且仅当每个相邻位数上的数字 x 和 y 满足 x &lt;= y 时，我们称这个整数是单调递增的。）</p>
+<p>示例 1:</p>
+<p>输入: N = 10<br />
+输出: 9<br />
+示例 2:</p>
+<p>输入: N = 1234<br />
+输出: 1234<br />
+示例 3:</p>
+<p>输入: N = 332<br />
+输出: 299</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<ul>
+<li>一旦出现strNum[i - 1] &gt; strNum[i]的情况（非单调递增</li>
+<li>strNum[i - 1]--</li>
+<li>然后strNum[i]给为9</li>
+</ul>
+<pre><code class="language-go">func monotoneIncreasingDigits(n int) int {
+	s := []byte(strconv.Itoa(n))
+	flag := len(s)
+	for i := len(s) - 1; i &gt; 0; i-- {
+		if s[i-1] &gt; s[i] {
+			s[i-1]--
+			flag = i
+		}
+	}
+	for i := flag; i &lt; len(s); i++ {
+		s[i] = '9'
+	}
+	res, _ := strconv.Atoi(string(s))
+	return res
+}
+</code></pre>
+<h3><a id="968%E7%9B%91%E6%8E%A7%E4%BA%8C%E5%8F%89%E6%A0%91" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>968.监控二叉树</h3>
+<p>给定一个二叉树，我们在树的节点上安装摄像头。</p>
+<p>节点上的每个摄影头都可以监视其父对象、自身及其直接子对象。</p>
+<p>计算监控树的所有节点所需的最小摄像头数量。<br />
+<img src="media/17237719827385/17237796004152.png" alt="" /><br />
+输入：[0,0,null,0,0]<br />
+输出：1<br />
+解释：如图所示，一台摄像头足以监控所有节点。</p>
+<pre><code class="language-go">func minCameraCover(root *TreeNode) int {
+	//0：该节点无覆盖
+	//1：本节点有摄像头
+	//2：本节点有覆盖
+	result := 0
+	var travel func(node *TreeNode) int
+	travel = func(node *TreeNode) int {
+		if node == nil {
+			return 2
+		}
+		left := travel(node.Left)
+		right := travel(node.Right)
 
-func compare(left, right *TreeNode) bool {
-	if left == nil &amp;&amp; right != nil {
-		return false
-	} else if left != nil &amp;&amp; right == nil {
-		return false
-	} else if left == nil &amp;&amp; right == nil {
-		return true
-	} else if left.Val != right.Val {
-		return false
-	}
-	l := compare(left.Left, right.Right)
-	r := compare(left.Right, right.Left)
-	return l &amp;&amp; r
-}
-</code></pre>
-<h5><a id="%E8%BF%AD%E4%BB%A3%E8%A7%A3%E6%B3%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>迭代解法</h5>
-<pre><code class="language-go">func isSymmetric(root *TreeNode) bool {
-	if root == nil {
-		return true
-	}
-	st := list.New()
-	st.PushBack(root.Left)
-	st.PushBack(root.Right)
-	for st.Len() &gt; 0 {
-		left := st.Remove(st.Front()).(*TreeNode)
-		right := st.Remove(st.Front()).(*TreeNode)
-		if left == nil &amp;&amp; right == nil {
-			continue
+		if left == 2 &amp;&amp; right == 2 {
+			return 0
 		}
-
-		if left == nil &amp;&amp; right != nil {
-			return false
-		} else if left != nil &amp;&amp; right == nil {
-			return false
-		} else if left.Val != right.Val {
-			return false
+		if left == 0 || right == 0 {
+			result++
+			return 1
 		}
-		st.PushBack(left.Left)
-		st.PushBack(right.Right)
-		st.PushBack(left.Right)
-		st.PushBack(right.Left)
+		if left == 1 || right == 1 {
+			return 2
+		}
+		return -1
 	}
-	return true
-}
-</code></pre>
-<h3><a id="104%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E6%9C%80%E5%A4%A7%E6%B7%B1%E5%BA%A6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>104.二叉树的最大深度</h3>
-<p>给定一个二叉树，找出其最大深度。</p>
-<p>二叉树的深度为根节点到最远叶子节点的最长路径上的节点数。</p>
-<p>说明: 叶子节点是指没有子节点的节点。<br />
-示例： 给定二叉树 [3,9,20,null,null,15,7]，<br />
-<img src="media/17223019946301/17223070873962.png" alt="" /></p>
-<ul>
-<li>高度是后序遍历</li>
-<li>深度是前序遍历</li>
-</ul>
-<pre><code class="language-go">func maxDepth(root *TreeNode) int {
-	if root == nil {
-		return 0
+	if travel(root) == 0 {
+		result++
 	}
-	left := maxDepth(root.Left)
-	right := maxDepth(root.Right)
-	return 1 + max(left, right)
-}
-</code></pre>
-<h3><a id="111%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E6%9C%80%E5%B0%8F%E6%B7%B1%E5%BA%A6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>111.二叉树的最小深度</h3>
-<p>给定一个二叉树，找出其最小深度。</p>
-<p>最小深度是从根节点到最近叶子节点的最短路径上的节点数量。</p>
-<p>说明: 叶子节点是指没有子节点的节点。<br />
-给定二叉树 [3,9,20,null,null,15,7],<img src="media/17223019946301/17223088944219.png" alt="" /></p>
-<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
-<ul>
-<li>注意一个很大的误区<br />
-<img src="media/17223019946301/17223089197629.png" alt="" /></li>
-</ul>
-<pre><code class="language-go">func minDepth(root *TreeNode) int {
-	if root == nil {
-		return 0
-	}
-	if root.Left == nil &amp;&amp; root.Right != nil {
-		return 1 + minDepth(root.Right)
-	}
-	if root.Right == nil &amp;&amp; root.Left != nil {
-		return 1 + minDepth(root.Left)
-	}
-	return 1 + min(minDepth(root.Left), minDepth(root.Right))
+	return result
 }
 </code></pre>
 

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>
       
-    day13 二叉树part01 -        凌云阁
+    二叉树算法 -        凌云阁
     
     </title>
     <link rel="shortcut icon" href="https://i.loli.net/2020/02/22/Si1K7sluept2ZgR.jpg" type="image/png" />
@@ -102,7 +102,7 @@
                   <div class="post-body single-content">
                     
                     <h1 class="title">
-                            day13 二叉树part01   
+                            二叉树算法   
                       </h1>
                      
                     
@@ -119,7 +119,7 @@
                             <div class="media-content">
                               <div class="content">
                                 <p>
-                                 <span class="date">2024/07/29 09:33 上午</span>
+                                 <span class="date">2024/08/15 16:18 下午</span>
                                   <span class="tran-posted-in">posted in</span>&nbsp; 
                                   
                                       <span class="posted-in"><a href='%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95%E5%AE%9E%E6%88%98.html'>代码随想录实战</a></span>
@@ -139,518 +139,80 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h3><a id="%E9%80%92%E5%BD%92%E6%B5%81%E7%A8%8B" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>递归流程</h3>
+                    <h3><a id="%E5%89%8D%E4%B8%AD%E5%90%8E%E5%BA%8F%E7%9A%84%E5%8C%BA%E5%88%AB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>前中后序的区别</h3>
+<p>前序位置的代码在刚刚进入一个二叉树节点的时候执行；</p>
+<p>后序位置的代码在将要离开一个二叉树节点的时候执行；</p>
+<p>中序位置的代码在一个二叉树节点左子树都遍历完，即将开始遍历右子树的时候执行。</p>
+<h4><a id="%E5%89%8D%E5%BA%8F%E5%92%8C%E5%90%8E%E5%BA%8F%E7%9A%84%E5%8C%BA%E5%88%AB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>前序和后序的区别</h4>
 <ul>
-<li>
-<p>确定递归函数的参数和返回值： 确定哪些参数是递归的过程中需要处理的，那么就在递归函数里加上这个参数， 并且还要明确每次递归的返回值是什么进而确定递归函数的返回类型。</p>
-</li>
-<li>
-<p>确定终止条件： 写完了递归算法, 运行的时候，经常会遇到栈溢出的错误，就是没写终止条件或者终止条件写的不对，操作系统也是用一个栈的结构来保存每一层递归的信息，如果递归没有终止，操作系统的内存栈必然就会溢出。</p>
-</li>
-<li>
-<p>确定单层递归的逻辑： 确定每一层递归需要处理的信息。在这里也就会重复调用自己来实现递归的过程</p>
-</li>
+<li>一个节点在第几层，你从根节点遍历过来的过程就能顺带记录，用递归函数的参数就能传递下去</li>
+<li>而以一个节点为根的整棵子树有多少个节点，你必须遍历完子树之后才能数清楚，然后通过递归函数的返回值拿到答案</li>
+<li>一旦你发现题目和子树有关，那大概率要给函数设置合理的定义和返回值，在后序位置写代码了</li>
+<li>maxDepth 的后序位置是知道左右子树的最大深度的</li>
 </ul>
-<h3><a id="144%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%89%8D%E5%BA%8F%E9%81%8D%E5%8E%86" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>144. 二叉树的前序遍历</h3>
-<p>给你二叉树的根节点 root ，返回它节点值的 前序 遍历。<br />
-<img src="media/17222167960242/17222168235067.jpg" alt="" /><br />
-输入：root = [1,null,2,3]<br />
-输出：[1,2,3]</p>
+<h3><a id="543%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E7%9B%B4%E5%BE%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>543. 二叉树的直径</h3>
+<p>给你一棵二叉树的根节点，返回该树的 直径 。</p>
+<p>二叉树的 直径 是指树中任意两个节点之间最长路径的 长度 。这条路径可能经过也可能不经过根节点 root 。</p>
+<p>两节点之间路径的 长度 由它们之间边数表示。<br />
+<img src="media/17237099130982/17237122868352.jpg" alt="" /></p>
 <h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
 <ul>
-<li>递归解法</li>
+<li>两个节点的直径就是求每个节点的左右节点的最大深度之和</li>
 </ul>
-<pre><code class="language-go">func preorderTraversal(root *TreeNode) (ans []int) {
-	var travel func(*TreeNode)
-	travel = func(root *TreeNode) {
-		if root == nil {
-			return
+<pre><code class="language-go">func diameterOfBinaryTree(root *TreeNode) int {
+	maxDiameter := 0
+	var maxDepth func(node *TreeNode) int
+	maxDepth = func(node *TreeNode) int {
+		if node == nil {
+			return 0
 		}
-		ans = append(ans, root.Val)
-		travel(root.Left)
-		travel(root.Right)
+		left := maxDepth(node.Left)
+		right := maxDepth(node.Right)
+		maxDiameter = max(maxDiameter, left+right)
+		return 1 + max(left, right)
 	}
-	travel(root)
-	return ans
+	maxDepth(root)
+	return maxDiameter
 }
 </code></pre>
-<ul>
-<li>非递归解法</li>
-</ul>
-<pre><code class="language-go">func preorderTraversal(root *TreeNode) (ans []int) {
-	if root == nil {
-		return
-	}
-	st := list.New()
-	st.PushBack(root)
-	for st.Len() &gt; 0 {
-		node := st.Remove(st.Back()).(*TreeNode)
-		ans = append(ans, node.Val)
-		if node.Right != nil {
-			st.PushBack(node.Right)
-		}
-		if node.Left != nil {
-			st.PushBack(node.Left)
-		}
-	}
-	return
-}
-</code></pre>
-<h3><a id="145%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%90%8E%E5%BA%8F%E9%81%8D%E5%8E%86" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>145. 二叉树的后序遍历</h3>
-<p>给你一棵二叉树的根节点 root ，返回其节点值的 后序遍历 。<br />
-<img src="media/17222167960242/17222193252730.jpg" alt="" /><br />
-输入：root = [1,null,2,3]<br />
-输出：[3,2,1]<br />
+<h3><a id="114%E4%BA%8C%E5%8F%89%E6%A0%91%E5%B1%95%E5%BC%80%E4%B8%BA%E9%93%BE%E8%A1%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>114. 二叉树展开为链表</h3>
+<p>给你二叉树的根结点 root ，请你将它展开为一个单链表：</p>
+<p>展开后的单链表应该同样使用 TreeNode ，其中 right 子指针指向链表中下一个结点，而左子指针始终为 null 。<br />
+展开后的单链表应该与二叉树 先序遍历 顺序相同。<br />
+示例 1：<br />
+<img src="media/17237099130982/17237154014666.jpg" alt="" /><br />
+输入：root = [1,2,5,3,4,null,6]<br />
+输出：[1,null,2,null,3,null,4,null,5,null,6]<br />
 示例 2：</p>
 <p>输入：root = []<br />
 输出：[]<br />
 示例 3：</p>
-<p>输入：root = [1]<br />
-输出：[1]</p>
-<pre><code class="language-go">func postorderTraversal(root *TreeNode) (ans []int) {
-	var travel func(root *TreeNode)
-	travel = func(root *TreeNode) {
-		if root == nil {
-			return
-		}
-		travel(root.Left)
-		travel(root.Right)
-		ans = append(ans, root.Val)
-	}
-	travel(root)
-	return ans
-}
-</code></pre>
+<p>输入：root = [0]<br />
+输出：[0]</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
 <ul>
-<li>迭代解法</li>
+<li>通过分解</li>
+<li>对于一个节点 x，可以执行以下流程：<br />
+1、先利用 flatten(x.left) 和 flatten(x.right) 将 x 的左右子树拉平。<br />
+2、将 x 的右子树接到左子树下方，然后将整个左子树作为右子树<br />
+<img src="media/17237099130982/17237165775876.jpg" alt="" /></li>
 </ul>
-<pre><code class="language-go">func postorderTraversal(root *TreeNode) (ans []int) {
+<pre><code class="language-go">func flatten(root *TreeNode) {
 	if root == nil {
 		return
 	}
-	st := list.New()
-	st.PushBack(root)
-	for st.Len() &gt; 0 {
-		node := st.Remove(st.Back()).(*TreeNode)
-		ans = append(ans, node.Val)
-		if node.Left != nil {
-			st.PushBack(node.Left)
-		}
-		if node.Right != nil {
-			st.PushBack(node.Right)
-		}
-	}
-	for i, j := 0, len(ans)-1; i &lt; j; {
-		ans[i], ans[j] = ans[j], ans[i]
-		i++
-		j--
-	}
-	return ans
-}
+	flatten(root.Left)
+	flatten(root.Right)
+	left := root.Left
+	right := root.Right
 
-</code></pre>
-<h3><a id="94%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E4%B8%AD%E5%BA%8F%E9%81%8D%E5%8E%86" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>94. 二叉树的中序遍历</h3>
-<p>给定一个二叉树的根节点 root ，返回 它的 中序 遍历 。<br />
-<img src="media/17222167960242/17222168235067.jpg" alt="" /><br />
-输入：root = [1,null,2,3]<br />
-输出：[1,3,2]</p>
-<ul>
-<li>递归遍历</li>
-</ul>
-<pre><code class="language-go">func inorderTraversal(root *TreeNode) (ans []int) {
-	var travel func(*TreeNode)
-	travel = func(root *TreeNode) {
-		if root == nil {
-			return
-		}
-		travel(root.Left)
-		ans = append(ans, root.Val)
-		travel(root.Right)
+	root.Right = left
+	root.Left = nil
+	p := root
+	for p.Right != nil {
+		p = p.Right
 	}
-	travel(root)
-	return ans
-}
-</code></pre>
-<ul>
-<li>非递归遍历</li>
-<li>多一个指针判断是否到达左孩子的终点</li>
-</ul>
-<pre><code class="language-go">func inorderTraversal(root *TreeNode) (ans []int) {
-	if root == nil {
-		return
-	}
-	st := list.New()
-	cur := root
-	for cur != nil || st.Len() &gt; 0 {
-		if cur != nil {
-			st.PushBack(cur)
-			cur = cur.Left
-		} else {
-			cur = st.Remove(st.Back()).(*TreeNode)
-			ans = append(ans, cur.Val)
-			cur = cur.Right
-		}
-	}
-	return ans
-}
-</code></pre>
-<h3><a id="102%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%B1%82%E5%BA%8F%E9%81%8D%E5%8E%86" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>102. 二叉树的层序遍历</h3>
-<p>给你二叉树的根节点 root ，返回其节点值的 层序遍历 。 （即逐层地，从左到右访问所有节点）。</p>
-<p><img src="media/17222167960242/17222238834711.jpg" alt="" /><br />
-输入：root = [3,9,20,null,null,15,7]<br />
-输出：[[3],[9,20],[15,7]]</p>
-<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
-<ul>
-<li>先记录每个层次的元素个数level</li>
-<li>level层级遍历</li>
-<li>使用队列来模拟</li>
-</ul>
-<pre><code class="language-go">func levelOrder(root *TreeNode) [][]int {
-	ans := [][]int{}
-	if root == nil {
-		return ans
-	}
-	st := list.New()
-	st.PushBack(root)
-	for st.Len() &gt; 0 {
-		level := st.Len()
-		val := []int{}
-		for level &gt; 0 {
-			node := st.Remove(st.Front()).(*TreeNode)
-			val = append(val, node.Val)
-			level--
-			if node.Left != nil {
-				st.PushBack(node.Left)
-			}
-			if node.Right != nil {
-				st.PushBack(node.Right)
-			}
-		}
-		ans = append(ans, val)
-	}
-	return ans
-}
-</code></pre>
-<h3><a id="107%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%B1%82%E6%AC%A1%E9%81%8D%E5%8E%86-ii" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>107.二叉树的层次遍历 II</h3>
-<p>给定一个二叉树，返回其节点值自底向上的层次遍历。 （即按从叶子节点所在层到根节点所在的层，逐层从左向右遍历）<br />
-<img src="media/17222167960242/17222238834711.jpg" alt="" /><br />
-输入：root = [3,9,20,null,null,15,7]<br />
-输出：[[15,7],[9,20],[3]]</p>
-<pre><code class="language-go">func levelOrderBottom(root *TreeNode) [][]int {
-	ans := [][]int{}
-	if root == nil {
-		return ans
-	}
-	st := list.New()
-	st.PushBack(root)
-	for st.Len() &gt; 0 {
-		level := st.Len()
-		val := []int{}
-		for level &gt; 0 {
-			node := st.Remove(st.Front()).(*TreeNode)
-			val = append(val, node.Val)
-			level--
-			if node.Left != nil {
-				st.PushBack(node.Left)
-			}
-			if node.Right != nil {
-				st.PushBack(node.Right)
-			}
-		}
-		ans = append(ans, val)
-	}
-	for i, j := 0, len(ans)-1; i &lt; j; {
-		ans[i], ans[j] = ans[j], ans[i]
-		i++
-		j--
-	}
-	return ans
-}
-</code></pre>
-<h3><a id="199%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%8F%B3%E8%A7%86%E5%9B%BE" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>199.二叉树的右视图</h3>
-<p>给定一棵二叉树，想象自己站在它的右侧，按照从顶部到底部的顺序，返回从右侧所能看到的节点值。<br />
-<img src="media/17222167960242/17222430711453.png" alt="" /></p>
-<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
-<ul>
-<li>把每层的元素压入队列</li>
-<li>每层的最后一个元素就是右脸树</li>
-</ul>
-<pre><code class="language-go">func rightSideView(root *TreeNode) []int {
-	ans := []int{}
-	if root == nil {
-		return ans
-	}
-	st := list.New()
-	st.PushBack(root)
-	for st.Len() &gt; 0 {
-		level := st.Len()
-		for level &gt; 0 {
-			node := st.Remove(st.Front()).(*TreeNode)
-			if level == 1 {
-				ans = append(ans, node.Val)
-			}
-			if node.Left != nil {
-				st.PushBack(node.Left)
-			}
-			if node.Right != nil {
-				st.PushBack(node.Right)
-			}
-			level--
-		}
-	}
-	return ans
-}
-</code></pre>
-<h3><a id="637%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%B1%82%E5%B9%B3%E5%9D%87%E5%80%BC" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>637.二叉树的层平均值</h3>
-<p>给定一个非空二叉树, 返回一个由每层节点平均值组成的数组。<br />
-<img src="media/17222167960242/17222447912865.png" alt="" /></p>
-<pre><code class="language-go">func averageOfLevels(root *TreeNode) []float64 {
-	ans := []float64{}
-	if root == nil {
-		return ans
-	}
-	st := list.New()
-	st.PushBack(root)
-	for st.Len() &gt; 0 {
-		level, nodeNum := st.Len(), float64(st.Len())
-		var num float64 = 0
-		for level &gt; 0 {
-			node := st.Remove(st.Front()).(*TreeNode)
-			num += float64(node.Val)
-			level--
-			if node.Left != nil {
-				st.PushBack(node.Left)
-			}
-			if node.Right != nil {
-				st.PushBack(node.Right)
-			}
-		}
-		ans = append(ans, num/nodeNum)
-	}
-	return ans
-}
-</code></pre>
-<h3><a id="429-n%E5%8F%89%E6%A0%91%E7%9A%84%E5%B1%82%E5%BA%8F%E9%81%8D%E5%8E%86" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>429. N 叉树的层序遍历</h3>
-<p>给定一个 N 叉树，返回其节点值的层序遍历。（即从左到右，逐层遍历）。</p>
-<p>树的序列化输入是用层序遍历，每组子节点都由 null 值分隔（参见示例）。<br />
-<img src="media/17222167960242/17222456148270.png" alt="" /><br />
-输入：root = [1,null,3,2,4,null,5,6]<br />
-输出：[[1],[3,2,4],[5,6]]</p>
-<pre><code class="language-go">func levelOrder(root *Node) [][]int {
-	ans := [][]int{}
-	if root == nil {
-		return ans
-	}
-	st := list.New()
-	st.PushBack(root)
-	for st.Len() &gt; 0 {
-		level := st.Len()
-		val := []int{}
-		for level &gt; 0 {
-			node := st.Remove(st.Front()).(*Node)
-			val = append(val, node.Val)
-			for i := 0; i &lt; len(node.Children); i++ {
-				st.PushBack(node.Children[i])
-			}
-			level--
-		}
-		ans = append(ans, val)
-	}
-	return ans
-}
-</code></pre>
-<h3><a id="515%E5%9C%A8%E6%AF%8F%E4%B8%AA%E6%A0%91%E8%A1%8C%E4%B8%AD%E6%89%BE%E6%9C%80%E5%A4%A7%E5%80%BC" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>515.在每个树行中找最大值</h3>
-<p>您需要在二叉树的每一行中找到最大的值。<br />
-<img src="media/17222167960242/17222461728438.png" alt="" /></p>
-<pre><code class="language-go">func largestValues(root *TreeNode) []int {
-	ans := []int{}
-	if root == nil {
-		return ans
-	}
-	st := list.New()
-	st.PushBack(root)
-	for st.Len() &gt; 0 {
-		level := st.Len()
-		val := math.MinInt64
-		for level &gt; 0 {
-			node := st.Remove(st.Front()).(*TreeNode)
-			if node.Val &gt; val {
-				val = node.Val
-			}
-			if node.Left != nil {
-				st.PushBack(node.Left)
-			}
-			if node.Right != nil {
-				st.PushBack(node.Right)
-			}
-			level--
-		}
-		ans = append(ans, val)
-	}
-	return ans
-}
-</code></pre>
-<h3><a id="116%E5%A1%AB%E5%85%85%E6%AF%8F%E4%B8%AA%E8%8A%82%E7%82%B9%E7%9A%84%E4%B8%8B%E4%B8%80%E4%B8%AA%E5%8F%B3%E4%BE%A7%E8%8A%82%E7%82%B9%E6%8C%87%E9%92%88" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>116.填充每个节点的下一个右侧节点指针</h3>
-<p>给定一个完美二叉树，其所有叶子节点都在同一层，每个父节点都有两个子节点。二叉树定义如下：</p>
-<pre><code class="language-go">struct Node {
-  int val;
-  Node *left;
-  Node *right;
-  Node *next;
-}
-</code></pre>
-<p>填充它的每个 next 指针，让这个指针指向其下一个右侧节点。如果找不到下一个右侧节点，则将 next 指针设置为 NULL。<br />
-初始状态下，所有 next 指针都被设置为 NULL。<br />
-<img src="media/17222167960242/17222465679785.jpg" alt="" /></p>
-<pre><code class="language-go">func connect(root *Node) *Node {
-	if root == nil {
-		return root
-	}
-	st := list.New()
-	st.PushBack(root)
-	for st.Len() &gt; 0 {
-		level := st.Len()
-		temp := []*Node{}
-		for level &gt; 0 {
-			node := st.Remove(st.Front()).(*Node)
-			if node.Left != nil {
-				st.PushBack(node.Left)
-			}
-			if node.Right != nil {
-				st.PushBack(node.Right)
-			}
-			level--
-			temp = append(temp, node)
-		}
-		for i := 0; i &lt; len(temp)-1; i++ {
-			temp[i].Next = temp[i+1]
-		}
-	}
-	return root
-}
-</code></pre>
-<h4><a id="%E9%80%92%E5%BD%92%E8%A7%A3%E6%B3%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>递归解法</h4>
-<p><img src="media/17222167960242/17237152846042.png" alt="" /></p>
-<pre><code class="language-go">func connect(root *Node) *Node {
-	if root == nil {
-		return root
-	}
-	var travel func(left, right *Node)
-	travel = func(left, right *Node) {
-		if left == nil || right == nil {
-			return
-		}
-
-		left.Next = right
-		travel(left.Left, left.Right)
-		travel(right.Left, right.Right)
-		travel(left.Right, right.Left)
-	}
-	travel(root.Left, root.Right)
-	return root
-}
-</code></pre>
-<h3><a id="117%E5%A1%AB%E5%85%85%E6%AF%8F%E4%B8%AA%E8%8A%82%E7%82%B9%E7%9A%84%E4%B8%8B%E4%B8%80%E4%B8%AA%E5%8F%B3%E4%BE%A7%E8%8A%82%E7%82%B9%E6%8C%87%E9%92%88-ii" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>117. 填充每个节点的下一个右侧节点指针 II</h3>
-<p>填充它的每个 next 指针，让这个指针指向其下一个右侧节点。如果找不到下一个右侧节点，则将 next 指针设置为 NULL 。<br />
-初始状态下，所有 next 指针都被设置为 NULL 。<br />
-<img src="media/17222167960242/17222498399673.png" alt="" /><br />
-输入：root = [1,2,3,4,5,null,7]<br />
-输出：[1,#,2,3,#,4,5,7,#]<br />
-解释：给定二叉树如图 A 所示，你的函数应该填充它的每个 next 指针，以指向其下一个右侧节点，如图 B 所示。序列化输出按层序遍历顺序（由 next 指针连接），'#' 表示每层的末尾。</p>
-<pre><code class="language-go">func connect(root *Node) *Node {
-	if root == nil {
-		return nil
-	}
-	st := list.New()
-	st.PushBack(root)
-	for st.Len() &gt; 0 {
-		level := st.Len()
-		temp := []*Node{}
-		for level &gt; 0 {
-			node := st.Remove(st.Front()).(*Node)
-			temp = append(temp, node)
-			if node.Left != nil {
-				st.PushBack(node.Left)
-			}
-			if node.Right != nil {
-				st.PushBack(node.Right)
-			}
-			level--
-		}
-		for i := 0; i &lt; len(temp)-1; i++ {
-			temp[i].Next = temp[i+1]
-		}
-	}
-	return root
-}
-</code></pre>
-<h3><a id="104%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E6%9C%80%E5%A4%A7%E6%B7%B1%E5%BA%A6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>104.二叉树的最大深度</h3>
-<p>给定一个二叉树，找出其最大深度。</p>
-<p>二叉树的深度为根节点到最远叶子节点的最长路径上的节点数。</p>
-<p>说明: 叶子节点是指没有子节点的节点。<br />
-给定二叉树 [3,9,20,null,null,15,7]，<br />
-<img src="media/17222167960242/17222505576524.png" alt="" /></p>
-<pre><code class="language-go">func maxDepth(root *TreeNode) int {
-	if root == nil {
-		return 0
-	}
-	depth := 0
-	st := list.New()
-	st.PushBack(root)
-	for st.Len() &gt; 0 {
-		depth++
-		level := st.Len()
-		for level &gt; 0 {
-			node := st.Remove(st.Front()).(*TreeNode)
-			if node.Left != nil {
-				st.PushBack(node.Left)
-			}
-			if node.Right != nil {
-				st.PushBack(node.Right)
-			}
-			level--
-		}
-	}
-	return depth
-}
-</code></pre>
-<h3><a id="111%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E6%9C%80%E5%B0%8F%E6%B7%B1%E5%BA%A6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>111.二叉树的最小深度</h3>
-<p>给定一个二叉树，找出其最小深度。</p>
-<p>最小深度是从根节点到最近叶子节点的最短路径上的节点数量。</p>
-<p>说明：叶子节点是指没有子节点的节点。<br />
-<img src="media/17222167960242/17222512301778.jpg" alt="" /><br />
-输入：root = [3,9,20,null,null,15,7]<br />
-输出：2</p>
-<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
-<ul>
-<li>注意迭代解法中node.Left == nil &amp;&amp; node.Right == nil才能判定是最小深度</li>
-<li><img src="media/17222167960242/17223089822553.jpg" alt="" /></li>
-</ul>
-<pre><code class="language-go">func minDepth(root *TreeNode) int {
-	if root == nil {
-		return 0
-	}
-	st := list.New()
-	st.PushBack(root)
-	minDepth := 0
-	for st.Len() &gt; 0 {
-		level := st.Len()
-		minDepth++
-		for level &gt; 0 {
-			node := st.Remove(st.Front()).(*TreeNode)
-			if node.Left == nil &amp;&amp; node.Right == nil {
-				return minDepth
-			}
-			if node.Left != nil {
-				st.PushBack(node.Left)
-			}
-			if node.Right != nil {
-				st.PushBack(node.Right)
-			}
-			level--
-		}
-	}
-	return minDepth
+	p.Right = right
 }
 </code></pre>
 

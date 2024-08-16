@@ -2114,6 +2114,45 @@ func (s *Solution) Pick() int {
 	return res
 }
 </code></pre>
+<h3><a id="316%E5%8E%BB%E9%99%A4%E9%87%8D%E5%A4%8D%E5%AD%97%E6%AF%8D" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>316. 去除重复字母</h3>
+<p>给你一个字符串 s ，请你去除字符串中重复的字母，使得每个字母只出现一次。需保证 返回结果的字典序最小（要求不能打乱其他字符的相对位置）。</p>
+<p>示例 1：</p>
+<p>输入：s = &quot;bcabc&quot;<br />
+输出：&quot;abc&quot;<br />
+示例 2：</p>
+<p>输入：s = &quot;cbacdcbc&quot;<br />
+输出：&quot;acdb&quot;</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<ul>
+<li>去重</li>
+<li>保持相对顺序</li>
+<li>字典序最小</li>
+</ul>
+<pre><code class="language-go">func removeDuplicateLetters(s string) string {
+	count := map[rune]int{}
+	for _, c := range s {
+		count[c]++
+	}
+	stack := []rune{}
+	inStack := map[rune]bool{}
+	for _, c := range s {
+		count[c]--
+		if inStack[c] {
+			continue
+		}
+		for len(stack) &gt; 0 &amp;&amp; stack[len(stack)-1] &gt; c {
+			if count[stack[len(stack)-1]] == 0 {
+				break
+			}
+			inStack[stack[len(stack)-1]] = false
+			stack = stack[:len(stack)-1]
+		}
+		inStack[c] = true
+		stack = append(stack, c)
+	}
+	return string(stack)
+}
+</code></pre>
 
                   </article>
                   <div class="comments-wrap">
