@@ -157,7 +157,7 @@
 <img src="media/17237099130982/17237122868352.jpg" alt="" /></p>
 <h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
 <ul>
-<li>两个节点的直径就是求每个节点的左右节点的最大深度之和</li>
+<li>两个节点的直径就是求两个节点的公共祖先左右节点的最大深度之和</li>
 </ul>
 <pre><code class="language-go">func diameterOfBinaryTree(root *TreeNode) int {
 	maxDiameter := 0
@@ -352,6 +352,376 @@ func (c *Codec) deserialize(data string) *TreeNode {
 		}
 	}
 	return len(stack) == 1 &amp;&amp; stack[0] == &quot;#&quot;
+}
+</code></pre>
+<h3><a id="449%E5%BA%8F%E5%88%97%E5%8C%96%E5%92%8C%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>449. 序列化和反序列化二叉搜索树</h3>
+<p>序列化是将数据结构或对象转换为一系列位的过程，以便它可以存储在文件或内存缓冲区中，或通过网络连接链路传输，以便稍后在同一个或另一个计算机环境中重建。</p>
+<p>设计一个算法来序列化和反序列化 二叉搜索树 。 对序列化/反序列化算法的工作方式没有限制。 您只需确保二叉搜索树可以序列化为字符串，并且可以将该字符串反序列化为最初的二叉搜索树。</p>
+<p>编码的字符串应尽可能紧凑。<br />
+示例 1：</p>
+<p>输入：root = [2,1,3]<br />
+输出：[2,1,3]<br />
+示例 2：</p>
+<p>输入：root = []<br />
+输出：[]</p>
+<pre><code class="language-go">type Codec struct {
+}
+
+func Constructor() Codec {
+	return Codec{}
+}
+
+// Serializes a tree to a single string.
+
+func (this *Codec) serialize(root *TreeNode) string {
+	ans := &quot;&quot;
+	var travel func(node *TreeNode)
+	travel = func(node *TreeNode) {
+		if node == nil {
+			return
+		}
+		ans += strconv.Itoa(node.Val) + &quot;,&quot;
+		travel(node.Left)
+		travel(node.Right)
+	}
+	if root == nil {
+		return ans
+	}
+	travel(root)
+	return ans[:len(ans)-1]
+}
+
+// Deserializes your encoded data to tree.
+func (this *Codec) deserialize(data string) *TreeNode {
+	if len(data) == 0 {
+		return nil
+	}
+	nodes := strings.Split(data, &quot;,&quot;)
+	var travel func(nodes []string) *TreeNode
+	travel = func(nodes []string) *TreeNode {
+		if len(nodes) == 0 {
+			return nil
+		}
+		nodeVal := nodes[0]
+		nodes = nodes[1:]
+		val, _ := strconv.Atoi(nodeVal)
+		root := &amp;TreeNode{Val: val}
+		pos := 0
+		for ; pos &lt; len(nodes); pos++ {
+			val1, _ := strconv.Atoi(nodes[pos])
+			if val1 &gt; val {
+				break
+			}
+		}
+		root.Left = travel(nodes[:pos])
+		root.Right = travel(nodes[pos:])
+		return root
+	}
+	return travel(nodes)
+}
+</code></pre>
+<h3><a id="230%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E4%B8%AD%E7%AC%AC-k%E5%B0%8F%E7%9A%84%E5%85%83%E7%B4%A0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>230. 二叉搜索树中第K小的元素</h3>
+<p>给定一个二叉搜索树的根节点 root ，和一个整数 k ，请你设计一个算法查找其中第 k 小的元素（从 1 开始计数）。<br />
+<img src="media/17237099130982/17238953796633.jpg" alt="" /><br />
+输入：root = [3,1,4,null,2], k = 1<br />
+输出：1<br />
+<img src="media/17237099130982/17238953951633.jpg" alt="" /><br />
+输入：root = [5,3,6,2,4,null,null,1], k = 3<br />
+输出：3</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<ul>
+<li>中序遍历</li>
+</ul>
+<pre><code class="language-go">func kthSmallest(root *TreeNode, k int) int {
+	num := 0
+	ans := 0
+	var travel func(node *TreeNode)
+	travel = func(node *TreeNode) {
+		if node == nil {
+			return
+		}
+		travel(node.Left)
+		num++
+		if num == k {
+			ans = node.Val
+		}
+		travel(node.Right)
+	}
+	travel(root)
+	return ans
+}
+</code></pre>
+<h3><a id="96%E4%B8%8D%E5%90%8C%E7%9A%84%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>96. 不同的二叉搜索树</h3>
+<p>给你一个整数 n ，求恰由 n 个节点组成且节点值从 1 到 n 互不相同的 二叉搜索树 有多少种？返回满足题意的二叉搜索树的种数。<br />
+<img src="media/17237099130982/17239749298120.jpg" alt="" /><br />
+输入：n = 3<br />
+输出：5<br />
+输入：n = 1<br />
+输出：1</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<ul>
+<li>lo,hi区间内，切分的二叉树</li>
+<li>{lo,i-1}区间是左子树</li>
+<li>{i+1,hi}区间是右子树</li>
+</ul>
+<pre><code class="language-go">func numTrees(n int) int {
+	memo := make([][]int, n+1)
+	for i, _ := range memo {
+		memo[i] = make([]int, n+1)
+	}
+	var travel func(lo, hi int) int
+	travel = func(lo, hi int) int {
+		if lo &gt; hi {
+			return 1
+		}
+		if memo[lo][hi] != 0 {
+			return memo[lo][hi]
+		}
+		ans := 0
+		for i := lo; i &lt;= hi; i++ {
+			left := travel(lo, i-1)
+			right := travel(i+1, hi)
+			ans += left * right
+		}
+		memo[lo][hi] = ans
+		return ans
+	}
+	return travel(1, n)
+}
+</code></pre>
+<h3><a id="1373%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E5%AD%90%E6%A0%91%E7%9A%84%E6%9C%80%E5%A4%A7%E9%94%AE%E5%80%BC%E5%92%8C" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>1373. 二叉搜索子树的最大键值和</h3>
+<p>给你一棵以 root 为根的 二叉树 ，请你返回 任意 二叉搜索子树的最大键值和。</p>
+<p>二叉搜索树的定义如下：</p>
+<p>任意节点的左子树中的键值都 小于 此节点的键值。<br />
+任意节点的右子树中的键值都 大于 此节点的键值。<br />
+任意节点的左子树和右子树都是二叉搜索树。<br />
+<img src="media/17237099130982/17239778234868.png" alt="" /><br />
+输入：root = [1,4,3,2,4,2,5,null,null,null,null,null,null,4,6]<br />
+输出：20<br />
+解释：键值为 3 的子树是和最大的二叉搜索树。</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<ul>
+<li>1、左右子树是否是 BST。</li>
+<li>2、左子树的最大值和右子树的最小值。</li>
+<li>3、左右子树的节点值之和。</li>
+</ul>
+<pre><code class="language-go">func maxSumBST(root *TreeNode) int {
+	maxSum := 0
+	var travel func(node *TreeNode) []int
+	//res[4] 1 是否搜索二叉树 2 最小指 3 最大值 4 所有节点之和
+	travel = func(node *TreeNode) []int {
+		if node == nil {
+			return []int{1, math.MaxInt64, math.MinInt64, 0}
+		}
+		left := travel(node.Left)
+		right := travel(node.Right)
+		res := make([]int, 4)
+		//1 左右子树都是搜索二叉树 2 当前节点大于左子树最大值 3 当前节点小于右子树最小值
+		if left[0] == 1 &amp;&amp; right[0] == 1 &amp;&amp; node.Val &gt; left[2] &amp;&amp;
+			node.Val &lt; right[1] {
+			res[0] = 1
+			res[1] = min(left[1], node.Val)
+			res[2] = max(right[2], node.Val)
+			res[3] = left[3] + right[3] + node.Val
+			maxSum = max(maxSum, res[3])
+		} else {
+			//非二叉搜索树
+			res[0] = 0
+		}
+		return res
+	}
+	travel(root)
+	return maxSum
+}
+</code></pre>
+<h3><a id="236%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E6%9C%80%E8%BF%91%E5%85%AC%E5%85%B1%E7%A5%96%E5%85%88" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>236. 二叉树的最近公共祖先</h3>
+<p>给定一个二叉树, 找到该树中两个指定节点的最近公共祖先。</p>
+<p>百度百科中最近公共祖先的定义为：“对于有根树 T 的两个节点 p、q，最近公共祖先表示为一个节点 x，满足 x 是 p、q 的祖先且 x 的深度尽可能大（一个节点也可以是它自己的祖先）。”<br />
+<img src="media/17237099130982/17239791342355.png" alt="" /><br />
+输入：root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1<br />
+输出：3<br />
+解释：节点 5 和节点 1 的最近公共祖先是节点 3 。</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<ul>
+<li>后序遍历</li>
+<li>left != nil &amp;&amp; right != nil 情况一<br />
+<img src="media/17237099130982/17239796586998.jpg" alt="" /></li>
+<li>left == nil || right == nil<br />
+<img src="media/17237099130982/17239796814943.jpg" alt="" /></li>
+</ul>
+<pre><code class="language-go">func lowestCommonAncestor(root, p, q *TreeNode) *TreeNode {
+	if root == nil {
+		return nil
+	}
+	var travel func(node, p, q *TreeNode) *TreeNode
+	travel = func(node, p, q *TreeNode) *TreeNode {
+		if node == nil {
+			return nil
+		}
+		if node.Val == p.Val || node.Val == q.Val {
+			return node
+		}
+		left := travel(node.Left)
+		right := travel(node.Right)
+		if left != nil &amp;&amp; right != nil {
+			return node
+		}
+		if left != nil {
+			return left
+		}
+		return right
+	}
+	return travel(root, p, q)
+}
+</code></pre>
+<h3><a id="1650%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E6%9C%80%E8%BF%91%E5%85%AC%E5%85%B1%E7%A5%96%E5%85%88-iii" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>1650. 二叉树的最近公共祖先 III</h3>
+<p>给定一棵二叉树中的两个节点 p 和 q，返回它们的最近公共祖先节点（LCA）。</p>
+<p>每个节点都包含其父节点的引用（指针）。Node 的定义如下：</p>
+<p>class Node {<br />
+public int val;<br />
+public Node left;<br />
+public Node right;<br />
+public Node parent;<br />
+}<br />
+根据维基百科中对最近公共祖先节点的定义：“两个节点 p 和 q 在二叉树 T 中的最近公共祖先节点是后代节点中既包括 p 又包括 q 的最深节点（我们允许一个节点为自身的一个后代节点）”。一个节点 x 的后代节点是节点 x 到某一叶节点间的路径中的节点 y。<br />
+<img src="media/17237099130982/17239791342355.png" alt="" /><br />
+输入: root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1<br />
+输出: 3<br />
+解释: 节点 5 和 1 的最近公共祖先是 3。</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<ul>
+<li>而是单链表相交的问题，你把 parent 指针想象成单链表的 next 指针，题目就变成了：<br />
+<img src="media/17237099130982/17239880255775.png" alt="" /></li>
+<li></li>
+</ul>
+<pre><code class="language-go">func lowestCommonAncestor(p *Node, q *Node) *Node {
+	a, b := p, q
+	for a != b {
+		if a == nil {
+			a = q
+		} else {
+			a = a.Parent
+		}
+		if b == nil {
+			b = p
+		} else {
+			b = b.Parent
+		}
+	}
+	return a
+}
+</code></pre>
+<h3><a id="366%E5%AF%BB%E6%89%BE%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%8F%B6%E5%AD%90%E8%8A%82%E7%82%B9" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>366. 寻找二叉树的叶子节点</h3>
+<p>给你一棵二叉树的 root 节点，请按照以下方式收集树的节点：</p>
+<p>收集所有的叶子节点。<br />
+移除所有的叶子节点。<br />
+重复以上步骤，直到树为空。<br />
+<img src="media/17237099130982/17239911332497.jpg" alt="" /><br />
+输入：root = [1,2,3,4,5]<br />
+输出：[[4,5,3],[2],[1]]<br />
+解释：<br />
+[[3,5,4],[2],[1]] 和 [[3,4,5],[2],[1]] 也被视作正确答案，因为每一层返回元素的顺序不影响结果。</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<ul>
+<li>同一深度的节点输出</li>
+</ul>
+<pre><code class="language-go">func findLeaves(root *TreeNode) [][]int {
+	ans := [][]int{}
+	var travel func(node *TreeNode) int
+	travel = func(node *TreeNode) int {
+		if node == nil {
+			return 0
+		}
+		left := travel(node.Left)
+		right := travel(node.Right)
+		deepth := max(left, right) + 1
+		//相同深度的节点
+		if deepth &gt; len(ans) {
+			ans = append(ans, []int{})
+		}
+		ans[deepth-1] = append(ans[deepth-1], node.Val)
+		return deepth
+	}
+	travel(root)
+	return ans
+}
+</code></pre>
+<h3><a id="865%E5%85%B7%E6%9C%89%E6%89%80%E6%9C%89%E6%9C%80%E6%B7%B1%E8%8A%82%E7%82%B9%E7%9A%84%E6%9C%80%E5%B0%8F%E5%AD%90%E6%A0%91" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>865. 具有所有最深节点的最小子树</h3>
+<p>给定一个根为 root 的二叉树，每个节点的深度是 该节点到根的最短距离 。</p>
+<p>返回包含原始树中所有 最深节点 的 最小子树 。</p>
+<p>如果一个节点在 整个树 的任意节点之间具有最大的深度，则该节点是 最深的 。</p>
+<p>一个节点的 子树 是该节点加上它的所有后代的集合。<br />
+<img src="media/17237099130982/17239912683902.png" alt="" /><br />
+输入：root = [3,5,1,6,2,0,8,null,null,7,4]<br />
+输出：[2,7,4]<br />
+解释：<br />
+我们返回值为 2 的节点，在图中用黄色标记。<br />
+在图中用蓝色标记的是树的最深的节点。<br />
+注意，节点 5、3 和 2 包含树中最深的节点，但节点 2 的子树最小，因此我们返回它。</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<pre><code class="language-go">func subtreeWithAllDeepest(root *TreeNode) *TreeNode {
+	maxDepth := -1
+	var ans *TreeNode
+	var travel func(node *TreeNode, depth int) int
+	travel = func(node *TreeNode, depth int) int {
+		if node == nil {
+			maxDepth = max(depth, maxDepth)
+			return depth
+		}
+		left := travel(node.Left, depth+1)
+		right := travel(node.Right, depth+1)
+		if left == right &amp;&amp; left == maxDepth {
+			ans = node
+		}
+		return max(left, right)
+	}
+	travel(root, 0)
+	return ans
+}
+</code></pre>
+<h3><a id="1740%E6%89%BE%E5%88%B0%E4%BA%8C%E5%8F%89%E6%A0%91%E4%B8%AD%E7%9A%84%E8%B7%9D%E7%A6%BB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>1740. 找到二叉树中的距离</h3>
+<p>给定一棵二叉树的根节点 root 以及两个整数 p 和 q ，返回该二叉树中值为 p 的结点与值为 q 的结点间的 距离 。</p>
+<p>两个结点间的 距离 就是从一个结点到另一个结点的路径上边的数目。<br />
+<img src="media/17237099130982/17239791342355.png" alt="" /><br />
+输入：root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 0<br />
+输出：3<br />
+解释：在 5 和 0 之间有 3 条边：5-3-1-0</p>
+<pre><code class="language-go">func findLca(root *TreeNode, p, q int) *TreeNode {
+	if root == nil {
+		return nil
+	}
+	if root.Val == p || root.Val == q {
+		return root
+	}
+	left := findLca(root.Left, p, q)
+	right := findLca(root.Right, p, q)
+	if left != nil &amp;&amp; right != nil {
+		return root
+	}
+	if left != nil {
+		return left
+	}
+	return right
+}
+
+func findDepth(root *TreeNode, val int) int {
+	if root == nil {
+		return -1
+	}
+	if root.Val == val {
+		return 0
+	}
+	left := findDepth(root.Left, val)
+	right := findDepth(root.Right, val)
+	maxDepth := max(left, right)
+	if maxDepth &gt;= 0 {
+		return maxDepth + 1
+	}
+	return -1
+}
+func findDistance(root *TreeNode, p int, q int) int {
+	lca := findLca(root, p, q)
+	return findDepth(lca, p) + findDepth(lca, q)
 }
 </code></pre>
 
