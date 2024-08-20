@@ -724,6 +724,212 @@ func findDistance(root *TreeNode, p int, q int) int {
 	return findDepth(lca, p) + findDepth(lca, q)
 }
 </code></pre>
+<h3><a id="341%E6%89%81%E5%B9%B3%E5%8C%96%E5%B5%8C%E5%A5%97%E5%88%97%E8%A1%A8%E8%BF%AD%E4%BB%A3%E5%99%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>341. 扁平化嵌套列表迭代器</h3>
+<p>给你一个嵌套的整数列表 nestedList 。每个元素要么是一个整数，要么是一个列表；该列表的元素也可能是整数或者是其他列表。请你实现一个迭代器将其扁平化，使之能够遍历这个列表中的所有整数。</p>
+<p>实现扁平迭代器类 NestedIterator ：</p>
+<p>NestedIterator(List<NestedInteger> nestedList) 用嵌套列表 nestedList 初始化迭代器。<br />
+int next() 返回嵌套列表的下一个整数。<br />
+boolean hasNext() 如果仍然存在待迭代的整数，返回 true ；否则，返回 false 。<br />
+你的代码将会用下述伪代码检测：</p>
+<p>initialize iterator with nestedList<br />
+res = []<br />
+while iterator.hasNext()<br />
+append iterator.next() to the end of res<br />
+return res<br />
+如果 res 与预期的扁平化列表匹配，那么你的代码将会被判为正确。<br />
+示例 1：</p>
+<p>输入：nestedList = [[1,1],2,[1,1]]<br />
+输出：[1,1,2,1,1]<br />
+解释：通过重复调用 next 直到 hasNext 返回 false，next 返回的元素的顺序应该是: [1,1,2,1,1]。</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<pre><code class="language-go">type NestedIterator struct {
+	list []*NestedInteger
+}
+
+func Constructor(nestedList []*NestedInteger) *NestedIterator {
+	var list []*NestedInteger
+	for i := len(nestedList) - 1; i &gt;= 0; i-- {
+		list = append(list, nestedList[i])
+	}
+	return &amp;NestedIterator{list: list}
+}
+
+func (n *NestedIterator) Next() int {
+	cur := n.list[len(n.list)-1]
+	n.list = n.list[:len(n.list)-1]
+	return cur.GetInteger()
+}
+
+func (n *NestedIterator) HasNext() bool {
+	for len(n.list) &gt; 0 {
+		cur := n.list[len(n.list)-1]
+		if cur.IsInteger() {
+			return true
+		}
+		n.list = n.list[:len(n.list)-1]
+		list := cur.GetList()
+		for i := len(list) - 1; i &gt;= 0; i-- {
+			n.list = append(n.list, list[i])
+		}
+	}
+	return false
+}
+</code></pre>
+<h3><a id="215%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E7%AC%AC-k%E4%B8%AA%E6%9C%80%E5%A4%A7%E5%85%83%E7%B4%A0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>215. 数组中的第K个最大元素</h3>
+<p>给定整数数组 nums 和整数 k，请返回数组中第 k 个最大的元素。</p>
+<p>请注意，你需要找的是数组排序后的第 k 个最大的元素，而不是第 k 个不同的元素。</p>
+<p>你必须设计并实现时间复杂度为 O(n) 的算法解决此问题。<br />
+示例 1:</p>
+<p>输入: [3,2,1,5,6,4], k = 2<br />
+输出: 5<br />
+示例 2:</p>
+<p>输入: [3,2,3,1,2,4,5,5,6], k = 4<br />
+输出: 4</p>
+<pre><code class="language-go">func findKthLargest(nums []int, k int) int {
+	lo, hi := 0, len(nums)-1
+	k = len(nums) - k
+	for lo &lt;= hi {
+		p := partition(nums, lo, hi)
+		if p &lt; k {
+			lo = p + 1
+		} else if p &gt; k {
+			hi = p - 1
+		} else {
+			return nums[p]
+		}
+	}
+	return -1
+}
+
+func partition(nums []int, lo int, hi int) int {
+	pivot := nums[lo]
+	i, j := lo+1, hi
+	for i &lt;= j {
+		for i &lt; hi &amp;&amp; nums[i] &lt;= pivot {
+			i++
+		}
+		for j &gt; lo &amp;&amp; nums[j] &gt; pivot {
+			j--
+		}
+		if i &gt;= j {
+			break
+		}
+		nums[i], nums[j] = nums[j], nums[i]
+	}
+	nums[lo], nums[j] = nums[j], nums[lo]
+	return j
+}
+</code></pre>
+<h3><a id="173%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E8%BF%AD%E4%BB%A3%E5%99%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>173. 二叉搜索树迭代器</h3>
+<p>实现一个二叉搜索树迭代器类BSTIterator ，表示一个按中序遍历二叉搜索树（BST）的迭代器：<br />
+BSTIterator(TreeNode root) 初始化 BSTIterator 类的一个对象。BST 的根节点 root 会作为构造函数的一部分给出。指针应初始化为一个不存在于 BST 中的数字，且该数字小于 BST 中的任何元素。<br />
+boolean hasNext() 如果向指针右侧遍历存在数字，则返回 true ；否则返回 false 。<br />
+int next()将指针向右移动，然后返回指针处的数字。<br />
+注意，指针初始化为一个不存在于 BST 中的数字，所以对 next() 的首次调用将返回 BST 中的最小元素。</p>
+<p>你可以假设 next() 调用总是有效的，也就是说，当调用 next() 时，BST 的中序遍历中至少存在一个下一个数字。<br />
+<img src="media/17237099130982/17240819590354.png" alt="" /><br />
+[&quot;BSTIterator&quot;, &quot;next&quot;, &quot;next&quot;, &quot;hasNext&quot;, &quot;next&quot;, &quot;hasNext&quot;, &quot;next&quot;, &quot;hasNext&quot;, &quot;next&quot;, &quot;hasNext&quot;]<br />
+[[[7, 3, 15, null, null, 9, 20]], [], [], [], [], [], [], [], [], []]<br />
+输出<br />
+[null, 3, 7, true, 9, true, 15, true, 20, false]</p>
+<pre><code class="language-go">type BSTIterator struct {
+	stack []*TreeNode
+	cur   *TreeNode
+}
+
+func Constructor(root *TreeNode) BSTIterator {
+	return BSTIterator{cur: root}
+}
+
+func (b *BSTIterator) Next() int {
+	node := b.cur
+	for node != nil {
+		b.stack = append(b.stack, node)
+		node = node.Left
+	}
+	val := b.stack[len(b.stack)-1]
+	b.stack = b.stack[:len(b.stack)-1]
+	b.cur = val.Right
+	return val.Val
+}
+
+func (b *BSTIterator) HasNext() bool {
+	return b.cur != nil || len(b.stack) &gt; 0
+}
+</code></pre>
+<h3><a id="257%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E6%89%80%E6%9C%89%E8%B7%AF%E5%BE%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>257. 二叉树的所有路径</h3>
+<p>给你一个二叉树的根节点 root ，按 任意顺序 ，返回所有从根节点到叶子节点的路径。</p>
+<p>叶子节点 是指没有子节点的节点。<br />
+<img src="media/17237099130982/17241409039012.jpg" alt="" /><br />
+输入：root = [1,2,3,null,5]<br />
+输出：[&quot;1-&gt;2-&gt;5&quot;,&quot;1-&gt;3&quot;]<br />
+示例 2：</p>
+<p>输入：root = [1]<br />
+输出：[&quot;1&quot;]</p>
+<pre><code class="language-go">func binaryTreePaths(root *TreeNode) []string {
+	var ans []string
+	var traval func(*TreeNode, string)
+	traval = func(root *TreeNode, s string) {
+		if root == nil {
+			return
+		}
+		if root.Left == nil &amp;&amp; root.Right == nil {
+			s += strconv.Itoa(root.Val)
+			ans = append(ans, s)
+			return
+		}
+		s += strconv.Itoa(root.Val) + &quot;-&gt;&quot;
+		traval(root.Left, s)
+		traval(root.Right, s)
+		s = s[:len(s)-3]
+	}
+	traval(root, &quot;&quot;)
+	return ans
+}
+</code></pre>
+<h3><a id="129%E6%B1%82%E6%A0%B9%E8%8A%82%E7%82%B9%E5%88%B0%E5%8F%B6%E8%8A%82%E7%82%B9%E6%95%B0%E5%AD%97%E4%B9%8B%E5%92%8C" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>129. 求根节点到叶节点数字之和</h3>
+<p>给你一个二叉树的根节点 root ，树中每个节点都存放有一个 0 到 9 之间的数字。<br />
+每条从根节点到叶节点的路径都代表一个数字：</p>
+<p>例如，从根节点到叶节点的路径 1 -&gt; 2 -&gt; 3 表示数字 123 。<br />
+计算从根节点到叶节点生成的 所有数字之和 。</p>
+<p>叶节点 是指没有子节点的节点。<br />
+<img src="media/17237099130982/17241409738135.jpg" alt="" /><br />
+输入：root = [1,2,3]<br />
+输出：25<br />
+解释：<br />
+从根到叶子节点路径 1-&gt;2 代表数字 12<br />
+从根到叶子节点路径 1-&gt;3 代表数字 13<br />
+因此，数字总和 = 12 + 13 = 25<br />
+<img src="media/17237099130982/17241409856342.jpg" alt="" /><br />
+输入：root = [4,9,0,5,1]<br />
+输出：1026<br />
+解释：<br />
+从根到叶子节点路径 4-&gt;9-&gt;5 代表数字 495<br />
+从根到叶子节点路径 4-&gt;9-&gt;1 代表数字 491<br />
+从根到叶子节点路径 4-&gt;0 代表数字 40<br />
+因此，数字总和 = 495 + 491 + 40 = 1026</p>
+<pre><code class="language-go">func sumNumbers(root *TreeNode) int {
+	var res int
+	var s string
+	var traval func(node *TreeNode, s string)
+	traval = func(node *TreeNode, s string) {
+		if node == nil {
+			return
+		}
+		s += strconv.Itoa(node.Val)
+		if node.Left == nil &amp;&amp; node.Right == nil {
+			val, _ := strconv.Atoi(s)
+			res += val
+			return
+		}
+		traval(node.Left, s)
+		traval(node.Right, s)
+		s = s[:len(s)-1]
+	}
+	traval(root, s)
+	return res
+}
+</code></pre>
 
                   </article>
                   <div class="comments-wrap">
