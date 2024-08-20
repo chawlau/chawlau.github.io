@@ -401,6 +401,27 @@
 	return ans
 }
 </code></pre>
+<h4><a id="%E9%80%92%E5%BD%92%E8%A7%A3%E6%B3%95" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>递归解法</h4>
+<pre><code class="language-go">func rightSideView(root *TreeNode) []int {
+	ans := []int{}
+	depth := 0
+	var travel func(node *TreeNode)
+	travel = func(node *TreeNode) {
+		if node == nil {
+			return
+		}
+		depth++
+		if len(ans) &lt; depth {
+			ans = append(ans, node.Val)
+		}
+		travel(node.Right)
+		travel(node.Left)
+		depth--
+	}
+	travel(root)
+	return ans
+}
+</code></pre>
 <h3><a id="637%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%B1%82%E5%B9%B3%E5%9D%87%E5%80%BC" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>637.二叉树的层平均值</h3>
 <p>给定一个非空二叉树, 返回一个由每层节点平均值组成的数组。<br />
 <img src="media/17222167960242/17222447912865.png" alt="" /></p>
