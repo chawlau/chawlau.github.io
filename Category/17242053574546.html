@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>
       
-    day35 背包问题01 -        凌云阁
+    day36 背包问题04 -        凌云阁
     
     </title>
     <link rel="shortcut icon" href="https://i.loli.net/2020/02/22/Si1K7sluept2ZgR.jpg" type="image/png" />
@@ -102,7 +102,7 @@
                   <div class="post-body single-content">
                     
                     <h1 class="title">
-                            day35 背包问题01   
+                            day36 背包问题04   
                       </h1>
                      
                     
@@ -119,7 +119,7 @@
                             <div class="media-content">
                               <div class="content">
                                 <p>
-                                 <span class="date">2024/08/20 09:53 上午</span>
+                                 <span class="date">2024/08/21 09:55 上午</span>
                                   <span class="tran-posted-in">posted in</span>&nbsp; 
                                   
                                       <span class="posted-in"><a href='%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95%E5%AE%9E%E6%88%98.html'>代码随想录实战</a></span>
@@ -139,82 +139,125 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h3><a id="%E8%83%8C%E5%8C%8501" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>背包01</h3>
-<p>有n件物品和一个最多能背重量为w 的背包。第i件物品的重量是weight[i]，得到的价值是value[i] 。每件物品只能用一次，求解将哪些物品装入背包里物品价值总和最大</p>
-<h3><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h3>
+                    <h3><a id="1049%E6%9C%80%E5%90%8E%E4%B8%80%E5%9D%97%E7%9F%B3%E5%A4%B4%E7%9A%84%E9%87%8D%E9%87%8F-ii" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>1049.最后一块石头的重量II</h3>
+<p>题目难度：中等</p>
+<p>有一堆石头，每块石头的重量都是正整数。</p>
+<p>每一回合，从中选出任意两块石头，然后将它们一起粉碎。假设石头的重量分别为 x 和 y，且 x &lt;= y。那么粉碎的可能结果如下：</p>
+<p>如果 x == y，那么两块石头都会被完全粉碎；</p>
+<p>如果 x != y，那么重量为 x 的石头将会完全粉碎，而重量为 y 的石头新重量为 y-x。</p>
+<p>最后，最多只会剩下一块石头。返回此石头最小的可能重量。如果没有石头剩下，就返回 0。</p>
+<p>示例：</p>
+<p>输入：[2,7,4,1,8,1]<br />
+输出：1<br />
+解释：</p>
+<p>组合 2 和 4，得到 2，所以数组转化为 [2,7,1,8,1]，<br />
+组合 7 和 8，得到 1，所以数组转化为 [2,1,1,1]，<br />
+组合 2 和 1，得到 1，所以数组转化为 [1,1,1]，<br />
+组合 1 和 1，得到 0，所以数组转化为 [1]，这就是最优值。</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
 <ul>
-<li>dp[i][j] 表示从下标为[0-i]的物品里任意取，放进容量为j的背包，价值总和最大是多少</li>
-<li>dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - weight[i]] + value[i]);</li>
+<li>切分子集sum/2</li>
 </ul>
-<pre><code class="language-go">func Packet(n, weight int) int {
-   dp := make([][]int, n+1)
-   for i := range dp {
-      dp[i] = make([]int, weight+1)
-      dp[i][0] = 0
-   }
-   for i := 1; i &lt;= n; i++ {
-      dp[0][i] = value[0] 
-   }
-   for i := 1; i &lt; n ; i++ {
-      for j := 0; j &lt;= weight; j++ {
-         if j &lt; weight[i] {
-            dp[i][j] = dp[i-1][j]
-         } else {
-            dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - weight[i]] + value[i]);
-         }
-      }
-   }
-}
-</code></pre>
-<h4><a id="%E6%BB%9A%E5%8A%A8%E6%95%B0%E7%BB%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>滚动数组</h4>
-<ul>
-<li></li>
-</ul>
-<pre><code class="language-go">func knapsack(weights []int, values []int, W int) int {
-	dp := make([]int, W+1)
-	for i := 0; i &lt; len(values); i++ {
-		for j := W; j &gt;= weights[i]; j-- {
-			dp[j] = max(dp[j], dp[j-weights[i]]+values[i])
-		}
-	}
-
-	return dp[W]
-}
-</code></pre>
-<h3><a id="416%E5%88%86%E5%89%B2%E7%AD%89%E5%92%8C%E5%AD%90%E9%9B%86" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>416. 分割等和子集</h3>
-<p>题目难易：中等</p>
-<p>给定一个只包含正整数的非空数组。是否可以将这个数组分割成两个子集，使得两个子集的元素和相等。</p>
-<p>注意: 每个数组中的元素不会超过 100 数组的大小不会超过 200</p>
-<p>示例 1:</p>
-<p>输入: [1, 5, 11, 5]<br />
-输出: true<br />
-解释: 数组可以分割成 [1, 5, 5] 和 [11].<br />
-示例 2:</p>
-<p>输入: [1, 2, 3, 5]<br />
-输出: false<br />
-解释: 数组不能分割成两个元素和相等的子集.</p>
-<h3><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h3>
-<ul>
-<li>总重量=sum/2</li>
-<li>创建的dp数组的长度=target+1</li>
-</ul>
-<pre><code class="language-go">func canPartition(nums []int) bool {
+<pre><code class="language-go">func lastStoneWeightII(stones []int) int {
 	sum := 0
-	for _, val := range nums {
+	for _, val := range stones {
 		sum += val
-	}
-	if sum%2 == 1 {
-		return false
 	}
 	target := sum / 2
 	dp := make([]int, target+1)
 	dp[0] = 0
-	for _, num := range nums {
-		for j := target; j &gt;= num; j-- {
-			dp[j] = max(dp[j], dp[j-num]+num)
+	for i := 0; i &lt; len(stones); i++ {
+		for j := target; j &gt;= stones[i]; j-- {
+			dp[j] = max(dp[j], dp[j-stones[i]]+stones[i])
 		}
 	}
-	return dp[target] == target
+	return sum - dp[target] - dp[target]
+}
+</code></pre>
+<h3><a id="494%E7%9B%AE%E6%A0%87%E5%92%8C" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>494.目标和</h3>
+<p>给定一个非负整数数组，a1, a2, ..., an, 和一个目标数，S。现在你有两个符号 + 和 -。对于数组中的任意一个整数，你都可以从 + 或 -中选择一个符号添加在前面。</p>
+<p>返回可以使最终数组和为目标数 S 的所有添加符号的方法数。</p>
+<p>示例：</p>
+<p>输入：nums: [1, 1, 1, 1, 1], S: 3<br />
+输出：5<br />
+解释：</p>
+<p>-1+1+1+1+1 = 3<br />
++1-1+1+1+1 = 3<br />
++1+1-1+1+1 = 3<br />
++1+1+1-1+1 = 3<br />
++1+1+1+1-1 = 3<br />
+一共有5种方法让最终目标和为3。</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<ul>
+<li>dp[j] 表示：填满j（包括j）这么大容积的包，有dp[j]种方法</li>
+<li>已经有一个1（nums[i]） 的话，有 dp[4]种方法 凑成 容量为5的背包。<br />
+已经有一个2（nums[i]） 的话，有 dp[3]种方法 凑成 容量为5的背包。<br />
+已经有一个3（nums[i]） 的话，有 dp[2]种方法 凑成 容量为5的背包<br />
+已经有一个4（nums[i]） 的话，有 dp[1]种方法 凑成 容量为5的背包<br />
+已经有一个5 （nums[i]）的话，有 dp[0]种方法 凑成 容量为5的背包</li>
+<li>dp[0] =1</li>
+</ul>
+<pre><code class="language-go">func findTargetSumWays(nums []int, target int) int {
+	sum := 0
+	for _, val := range nums {
+		sum += val
+	}
+	if math.Abs(float64(target)) &gt; float64(sum) {
+		return 0
+	}
+	if (sum+target)%2 == 1 {
+		return 0
+	}
+	bagSize := (sum + target) / 2
+	dp := make([]int, bagSize+1)
+	dp[0] = 1
+	for i := 0; i &lt; len(nums); i++ {
+		for j := bagSize; j &gt;= nums[i]; j-- {
+			dp[j] += dp[j-nums[i]]
+		}
+	}
+	return dp[bagSize]
+}
+</code></pre>
+<h3><a id="474%E4%B8%80%E5%92%8C%E9%9B%B6" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>474.一和零</h3>
+<p>给你一个二进制字符串数组 strs 和两个整数 m 和 n 。</p>
+<p>请你找出并返回 strs 的最大子集的大小，该子集中 最多 有 m 个 0 和 n 个 1 。</p>
+<p>如果 x 的所有元素也是 y 的元素，集合 x 是集合 y 的 子集 。</p>
+<p>示例 1：</p>
+<p>输入：strs = [&quot;10&quot;, &quot;0001&quot;, &quot;111001&quot;, &quot;1&quot;, &quot;0&quot;], m = 5, n = 3</p>
+<p>输出：4</p>
+<p>解释：最多有 5 个 0 和 3 个 1 的最大子集是 {&quot;10&quot;,&quot;0001&quot;,&quot;1&quot;,&quot;0&quot;} ，因此答案是 4 。 其他满足题意但较小的子集包括 {&quot;0001&quot;,&quot;1&quot;} 和 {&quot;10&quot;,&quot;1&quot;,&quot;0&quot;} 。{&quot;111001&quot;} 不满足题意，因为它含 4 个 1 ，大于 n 的值 3 。</p>
+<p>示例 2：</p>
+<p>输入：strs = [&quot;10&quot;, &quot;0&quot;, &quot;1&quot;], m = 1, n = 1<br />
+输出：2<br />
+解释：最大的子集是 {&quot;0&quot;, &quot;1&quot;} ，所以答案是 2</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<ul>
+<li>本题中strs 数组里的元素就是物品，每个物品都是一个！</li>
+<li>而m 和 n相当于是一个背包，两个维度的背包。</li>
+</ul>
+<pre><code class="language-go">func findMaxForm(strs []string, m int, n int) int {
+	dp := make([][]int, m+1)
+	for i := range dp {
+		dp[i] = make([]int, n+1)
+	}
+	dp[0][0] = 0
+	for _, val := range strs {
+		x, y := 0, 0
+		for i := 0; i &lt; len(val); i++ {
+			if val[i] == '0' {
+				x++
+			} else {
+				y++
+			}
+		}
+		for i := m; i &gt;= x; i-- {
+			for j := n; j &gt;= y; j-- {
+				dp[i][j] = max(dp[i][j], dp[i-x][j-y]+1)
+			}
+		}
+	}
+	return dp[m][n]
 }
 </code></pre>
 
