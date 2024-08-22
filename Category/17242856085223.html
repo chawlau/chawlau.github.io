@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+      
+    # 二叉树算法 -        凌云阁
+    
+    </title>
+    <link rel="shortcut icon" href="https://i.loli.net/2020/02/22/Si1K7sluept2ZgR.jpg" type="image/png" />
+
+    
+    
+    <link href="atom.xml" rel="alternate" title="       凌云阁" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/style.min.css">
+    <link rel="stylesheet" href="asset/css/doc.css">
+    <script src="asset/app.js"></script>
+</head>
+  <body>
+    <section class="hero">
+      <div class="hero-head">
+          <nav class="navbar" role="navigation" aria-label="main navigation">
+              <div class="container">
+              <div class="navbar-brand">
+                
+                <a target="_self" class="navbar-item " href="index.html">Home</a>
+                
+                <a target="_self" class="navbar-item " href="archives.html">Archives</a>
+                
+
+                <a role="button" id="navbarSNSRssSwitchBtn" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarSNSRssButtons">
+                  <span aria-hidden="true"></span>
+                  <span aria-hidden="true"></span>
+                  <span aria-hidden="true"></span>
+                </a>
+              </div>
+            
+              <div id="navbarSNSRssButtons" class="navbar-menu">
+                <div class="navbar-start">
+                  
+                </div>
+            
+                <div class="navbar-end">
+                  <div class="navbar-item">
+                    <!--buttons start-->
+                    <div class="buttons">
+                      
+                        
+                        
+
+                        <a href="www.facebook.com" target="_blank" title="facebook">
+                            <span class="icon is-large has-text-grey-darker">
+                               <svg class="svg-inline--fa fa-facebook fa-w-16 fa-lg" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="facebook" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M504 256C504 119 393 8 256 8S8 119 8 256c0 123.78 90.69 226.38 209.25 245V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.28c-30.8 0-40.41 19.12-40.41 38.73V256h68.78l-11 71.69h-57.78V501C413.31 482.38 504 379.78 504 256z"></path></svg><!-- <i class="fab fa-facebook fa-lg"></i> -->
+                            </span>
+                          </a>
+                        
+                        
+                        <a href="www.github.com/chawlau" target="_blank" title="github">
+                            <span class="icon is-large has-text-grey-darker">
+                               <svg class="svg-inline--fa fa-github fa-w-16 fa-lg" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="github" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" data-fa-i2svg=""><path fill="currentColor" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg><!-- <i class="fab fa-github fa-lg"></i> -->
+                            </span>
+                          </a>
+                        
+                        
+                     <a href="www.twitter.com"  target="_blank" title="twitter">
+                       <span class="icon is-large has-text-grey-darker">
+                          <svg class="svg-inline--fa fa-twitter fa-w-16 fa-lg" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="twitter" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"></path></svg><!-- <i class="fab fa-twitter fa-lg"></i> -->
+                       </span>
+                     </a>
+                      
+                      
+                      <a href="www.weibo.com" target="_blank" title="weibo">
+                          <span class="icon is-large has-text-grey-darker">
+                            <svg class="svg-inline--fa fa-weibo fa-w-16 fa-lg" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="weibo" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M407 177.6c7.6-24-13.4-46.8-37.4-41.7-22 4.8-28.8-28.1-7.1-32.8 50.1-10.9 92.3 37.1 76.5 84.8-6.8 21.2-38.8 10.8-32-10.3zM214.8 446.7C108.5 446.7 0 395.3 0 310.4c0-44.3 28-95.4 76.3-143.7C176 67 279.5 65.8 249.9 161c-4 13.1 12.3 5.7 12.3 6 79.5-33.6 140.5-16.8 114 51.4-3.7 9.4 1.1 10.9 8.3 13.1 135.7 42.3 34.8 215.2-169.7 215.2zm143.7-146.3c-5.4-55.7-78.5-94-163.4-85.7-84.8 8.6-148.8 60.3-143.4 116s78.5 94 163.4 85.7c84.8-8.6 148.8-60.3 143.4-116zM347.9 35.1c-25.9 5.6-16.8 43.7 8.3 38.3 72.3-15.2 134.8 52.8 111.7 124-7.4 24.2 29.1 37 37.4 12 31.9-99.8-55.1-195.9-157.4-174.3zm-78.5 311c-17.1 38.8-66.8 60-109.1 46.3-40.8-13.1-58-53.4-40.3-89.7 17.7-35.4 63.1-55.4 103.4-45.1 42 10.8 63.1 50.2 46 88.5zm-86.3-30c-12.9-5.4-30 .3-38 12.9-8.3 12.9-4.3 28 8.6 34 13.1 6 30.8.3 39.1-12.9 8-13.1 3.7-28.3-9.7-34zm32.6-13.4c-5.1-1.7-11.4.6-14.3 5.4-2.9 5.1-1.4 10.6 3.7 12.9 5.1 2 11.7-.3 14.6-5.4 2.8-5.2 1.1-10.9-4-12.9z"></path></svg><!-- <i class="fab fa-weibo fa-lg"></i> -->
+                          </span>
+                      </a>
+                      
+                      <a href="atom.xml" target="_blank" title="RSS">
+                          <span class="icon is-large has-text-black-bis">
+                              <svg class="svg-inline--fa fa-rss fa-w-14 fa-lg" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="rss" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M128.081 415.959c0 35.369-28.672 64.041-64.041 64.041S0 451.328 0 415.959s28.672-64.041 64.041-64.041 64.04 28.673 64.04 64.041zm175.66 47.25c-8.354-154.6-132.185-278.587-286.95-286.95C7.656 175.765 0 183.105 0 192.253v48.069c0 8.415 6.49 15.472 14.887 16.018 111.832 7.284 201.473 96.702 208.772 208.772.547 8.397 7.604 14.887 16.018 14.887h48.069c9.149.001 16.489-7.655 15.995-16.79zm144.249.288C439.596 229.677 251.465 40.445 16.503 32.01 7.473 31.686 0 38.981 0 48.016v48.068c0 8.625 6.835 15.645 15.453 15.999 191.179 7.839 344.627 161.316 352.465 352.465.353 8.618 7.373 15.453 15.999 15.453h48.068c9.034-.001 16.329-7.474 16.005-16.504z"></path></svg><!-- <i class="fas fa-rss fa-lg"></i> -->
+                          </span>
+                      </a>
+                    </div>
+                    <!--buttons end-->
+
+                  </div>
+                </div>
+                </div>
+              </div>
+            </nav>
+      </div>
+
+ <div class="hero-body ct-body"></div>
+      
+    </section>
+    <section class="ct-body">
+      <div class="container">
+          <div class="columns is-variable bd-klmn-columns is-4 is-centered">
+              <div class="column is-four-fifths">
+                  <div class="post-body single-content">
+                    
+                    <h1 class="title">
+                            # 二叉树算法   
+                      </h1>
+                     
+                    
+                      <div class="media">
+                            
+                            <figure class="media-left">
+                              <p class="image is-48x48">
+                                
+                                  <img class="is-rounded" src="https://i.loli.net/2020/02/22/Si1K7sluept2ZgR.jpg">
+                                
+                              </p>
+                            </figure>
+                            
+                            <div class="media-content">
+                              <div class="content">
+                                <p>
+                                 <span class="date">2024/08/22 08:13 上午</span>
+                                  <span class="tran-posted-in">posted in</span>&nbsp; 
+                                  
+                                      <span class="posted-in"><a href='%E4%B8%9C%E5%93%A5%E7%AE%97%E6%B3%95.html'>东哥算法</a></span>
+                                         
+                                  
+
+                                   
+                                      
+                                  <br />
+                                  <span class="tran-tags">Tags:</span>&nbsp;
+                                     
+
+                                </p>
+                              </div>
+                            </div>
+                         
+                    </div>
+                </div>
+                  <article class="markdown-body single-content">
+                    <h3><a id="%E5%89%8D%E4%B8%AD%E5%90%8E%E5%BA%8F%E7%9A%84%E5%8C%BA%E5%88%AB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>前中后序的区别</h3>
+<p>前序位置的代码在刚刚进入一个二叉树节点的时候执行；</p>
+<p>后序位置的代码在将要离开一个二叉树节点的时候执行；</p>
+<p>中序位置的代码在一个二叉树节点左子树都遍历完，即将开始遍历右子树的时候执行。</p>
+<h4><a id="%E5%89%8D%E5%BA%8F%E5%92%8C%E5%90%8E%E5%BA%8F%E7%9A%84%E5%8C%BA%E5%88%AB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>前序和后序的区别</h4>
+<ul>
+<li>一个节点在第几层，你从根节点遍历过来的过程就能顺带记录，用递归函数的参数就能传递下去</li>
+<li>而以一个节点为根的整棵子树有多少个节点，你必须遍历完子树之后才能数清楚，然后通过递归函数的返回值拿到答案</li>
+<li>一旦你发现题目和子树有关，那大概率要给函数设置合理的定义和返回值，在后序位置写代码了</li>
+<li>maxDepth 的后序位置是知道左右子树的最大深度的</li>
+</ul>
+<h3><a id="543%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E7%9B%B4%E5%BE%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>543. 二叉树的直径</h3>
+<p>给你一棵二叉树的根节点，返回该树的 直径 。</p>
+<p>二叉树的 直径 是指树中任意两个节点之间最长路径的 长度 。这条路径可能经过也可能不经过根节点 root 。</p>
+<p>两节点之间路径的 长度 由它们之间边数表示。<br />
+<img src="media/17237099130982/17237122868352.jpg" alt="" /></p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<ul>
+<li>两个节点的直径就是求两个节点的公共祖先左右节点的最大深度之和</li>
+</ul>
+<pre><code class="language-go">func diameterOfBinaryTree(root *TreeNode) int {
+	maxDiameter := 0
+	var maxDepth func(node *TreeNode) int
+	maxDepth = func(node *TreeNode) int {
+		if node == nil {
+			return 0
+		}
+		left := maxDepth(node.Left)
+		right := maxDepth(node.Right)
+		maxDiameter = max(maxDiameter, left+right)
+		return 1 + max(left, right)
+	}
+	maxDepth(root)
+	return maxDiameter
+}
+</code></pre>
+<h3><a id="114%E4%BA%8C%E5%8F%89%E6%A0%91%E5%B1%95%E5%BC%80%E4%B8%BA%E9%93%BE%E8%A1%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>114. 二叉树展开为链表</h3>
+<p>给你二叉树的根结点 root ，请你将它展开为一个单链表：</p>
+<p>展开后的单链表应该同样使用 TreeNode ，其中 right 子指针指向链表中下一个结点，而左子指针始终为 null 。<br />
+展开后的单链表应该与二叉树 先序遍历 顺序相同。<br />
+示例 1：<br />
+<img src="media/17237099130982/17237154014666.jpg" alt="" /><br />
+输入：root = [1,2,5,3,4,null,6]<br />
+输出：[1,null,2,null,3,null,4,null,5,null,6]<br />
+示例 2：</p>
+<p>输入：root = []<br />
+输出：[]<br />
+示例 3：</p>
+<p>输入：root = [0]<br />
+输出：[0]</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<ul>
+<li>通过分解</li>
+<li>对于一个节点 x，可以执行以下流程：<br />
+1、先利用 flatten(x.left) 和 flatten(x.right) 将 x 的左右子树拉平。<br />
+2、将 x 的右子树接到左子树下方，然后将整个左子树作为右子树<br />
+<img src="media/17237099130982/17237165775876.jpg" alt="" /></li>
+</ul>
+<pre><code class="language-go">func flatten(root *TreeNode) {
+	if root == nil {
+		return
+	}
+	flatten(root.Left)
+	flatten(root.Right)
+	left := root.Left
+	right := root.Right
+
+	root.Right = left
+	root.Left = nil
+	p := root
+	for p.Right != nil {
+		p = p.Right
+	}
+	p.Right = right
+}
+</code></pre>
+<h3><a id="652%E5%AF%BB%E6%89%BE%E9%87%8D%E5%A4%8D%E7%9A%84%E5%AD%90%E6%A0%91" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>652. 寻找重复的子树</h3>
+<p>给你一棵二叉树的根节点 root ，返回所有 重复的子树 。</p>
+<p>对于同一类的重复子树，你只需要返回其中任意 一棵 的根结点即可。</p>
+<p>如果两棵树具有 相同的结构 和 相同的结点值 ，则认为二者是 重复 的。<br />
+<img src="media/17237099130982/17237978371624.jpg" alt="" /><br />
+输入：root = [1,2,3,4,null,2,4,null,null,4]<br />
+输出：[[2,4],[4]]</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<ul>
+<li>子树需要去重</li>
+</ul>
+<pre><code class="language-go">func findDuplicateSubtrees(root *TreeNode) []*TreeNode {
+	ans := []*TreeNode{}
+	treeArray := map[string]int{}
+	var travel func(node *TreeNode) string
+	travel = func(node *TreeNode) string {
+		if node == nil {
+			return &quot;#&quot;
+		}
+		left := travel(node.Left)
+		right := travel(node.Right)
+		res := left + &quot;,&quot; + right + &quot;,&quot; + strconv.Itoa(node.Val)
+		if treeArray[res] == 1 {
+			ans = append(ans, node)
+		}
+		treeArray[res]++
+		return res
+	}
+	travel(root)
+	return ans
+}
+</code></pre>
+<h3><a id="%E5%BA%8F%E5%88%97%E5%8C%96" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>序列化</h3>
+<ul>
+<li>什么样的序列化的数据可以反序列化出唯一的一棵二叉树</li>
+<li>前序和后序</li>
+<li>因为前序/后序遍历的结果中，可以确定根节点的位置，而中序遍历的结果中，根节点的位置是无法确定的</li>
+<li>中序无法还原</li>
+</ul>
+<h3><a id="297%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%BA%8F%E5%88%97%E5%8C%96%E4%B8%8E%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>297. 二叉树的序列化与反序列化</h3>
+<p>序列化是将一个数据结构或者对象转换为连续的比特位的操作，进而可以将转换后的数据存储在一个文件或者内存中，同时也可以通过网络传输到另一个计算机环境，采取相反方式重构得到原数据。</p>
+<p>请设计一个算法来实现二叉树的序列化与反序列化。这里不限定你的序列 / 反序列化算法执行逻辑，你只需要保证一个二叉树可以被序列化为一个字符串并且将这个字符串反序列化为原始的树结构。</p>
+<p>提示: 输入输出格式与 LeetCode 目前使用的方式一致，详情请参阅 LeetCode 序列化二叉树的格式。你并非必须采取这种方式，你也可以采用其他的方法解决这个问题。<br />
+<img src="media/17237099130982/17238049344232.jpg" alt="" /><br />
+输入：root = [1,2,3,null,null,4,5]<br />
+输出：[1,2,3,null,null,4,5]</p>
+<pre><code class="language-go">type Codec struct {
+}
+
+func Constructor() Codec {
+	return Codec{}
+}
+
+// Serializes a tree to a single string.
+func (c *Codec) serialize(root *TreeNode) string {
+	if root == nil {
+		return &quot;&quot;
+	}
+	queue := list.New()
+	queue.PushBack(root)
+	ans := &quot;&quot;
+	for queue.Len() &gt; 0 {
+		n := queue.Len()
+		for i := 0; i &lt; n; i++ {
+			node := queue.Remove(queue.Front()).(*TreeNode)
+			if node == nil {
+				ans += &quot;null,&quot;
+				continue
+			}
+			ans += strconv.Itoa(node.Val) + &quot;,&quot;
+			queue.PushBack(node.Left)
+			queue.PushBack(node.Right)
+		}
+	}
+	return ans
+}
+
+// Deserializes your encoded data to tree.
+func (c *Codec) deserialize(data string) *TreeNode {
+	if len(data) == 0 {
+		return nil
+	}
+	nodes := strings.Split(data, &quot;,&quot;)
+	val, _ := strconv.Atoi(nodes[0])
+	root := &amp;TreeNode{Val: val}
+	queue := list.New()
+	queue.PushBack(root)
+	nodes = nodes[1:]
+	for queue.Len() &gt; 0 {
+		n := queue.Len()
+		for i := 0; i &lt; n; i++ {
+			node := queue.Remove(queue.Front()).(*TreeNode)
+			if nodes[0] != &quot;null&quot; {
+				val, _ := strconv.Atoi(nodes[0])
+				node.Left = &amp;TreeNode{Val: val}
+				queue.PushBack(node.Left)
+			}
+			nodes = nodes[1:]
+			if nodes[0] != &quot;null&quot; {
+				val, _ := strconv.Atoi(nodes[0])
+				node.Right = &amp;TreeNode{Val: val}
+				queue.PushBack(node.Right)
+			}
+			nodes = nodes[1:]
+		}
+	}
+	return root
+}
+</code></pre>
+<h3><a id="331%E9%AA%8C%E8%AF%81%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%89%8D%E5%BA%8F%E5%BA%8F%E5%88%97%E5%8C%96" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>331. 验证二叉树的前序序列化</h3>
+<p>序列化二叉树的一种方法是使用 前序遍历 。当我们遇到一个非空节点时，我们可以记录下这个节点的值。如果它是一个空节点，我们可以使用一个标记值记录，例如 #。<br />
+<img src="media/17237099130982/17238076050442.jpg" alt="" /><br />
+例如，上面的二叉树可以被序列化为字符串 &quot;9,3,4,#,#,1,#,#,2,#,6,#,#&quot;，其中 # 代表一个空节点。</p>
+<p>给定一串以逗号分隔的序列，验证它是否是正确的二叉树的前序序列化。编写一个在不重构树的条件下的可行算法。</p>
+<p>保证 每个以逗号分隔的字符或为一个整数或为一个表示 null 指针的 '#' 。</p>
+<p>你可以认为输入格式总是有效的</p>
+<p>例如它永远不会包含两个连续的逗号，比如 &quot;1,,3&quot; 。<br />
+注意：不允许重建树。</p>
+<p>示例 1:</p>
+<p>输入: preorder = &quot;9,3,4,#,#,1,#,#,2,#,6,#,#&quot;<br />
+输出: true</p>
+<h3><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h3>
+<ul>
+<li>使用栈来存储，数字+&quot;##&quot;消消乐</li>
+</ul>
+<pre><code class="language-go">func isValidSerialization(preorder string) bool {
+	stack := []string{}
+	nodes := strings.Split(preorder, &quot;,&quot;)
+	for _, node := range nodes {
+		stack = append(stack, node)
+		for len(stack) &gt;= 3 &amp;&amp; stack[len(stack)-1] == &quot;#&quot; &amp;&amp;
+			stack[len(stack)-2] == &quot;#&quot; &amp;&amp; stack[len(stack)-3] != &quot;#&quot; {
+			stack = stack[:len(stack)-3]
+			stack = append(stack, &quot;#&quot;)
+		}
+	}
+	return len(stack) == 1 &amp;&amp; stack[0] == &quot;#&quot;
+}
+</code></pre>
+<h3><a id="449%E5%BA%8F%E5%88%97%E5%8C%96%E5%92%8C%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>449. 序列化和反序列化二叉搜索树</h3>
+<p>序列化是将数据结构或对象转换为一系列位的过程，以便它可以存储在文件或内存缓冲区中，或通过网络连接链路传输，以便稍后在同一个或另一个计算机环境中重建。</p>
+<p>设计一个算法来序列化和反序列化 二叉搜索树 。 对序列化/反序列化算法的工作方式没有限制。 您只需确保二叉搜索树可以序列化为字符串，并且可以将该字符串反序列化为最初的二叉搜索树。</p>
+<p>编码的字符串应尽可能紧凑。<br />
+示例 1：</p>
+<p>输入：root = [2,1,3]<br />
+输出：[2,1,3]<br />
+示例 2：</p>
+<p>输入：root = []<br />
+输出：[]</p>
+<pre><code class="language-go">type Codec struct {
+}
+
+func Constructor() Codec {
+	return Codec{}
+}
+
+// Serializes a tree to a single string.
+
+func (this *Codec) serialize(root *TreeNode) string {
+	ans := &quot;&quot;
+	var travel func(node *TreeNode)
+	travel = func(node *TreeNode) {
+		if node == nil {
+			return
+		}
+		ans += strconv.Itoa(node.Val) + &quot;,&quot;
+		travel(node.Left)
+		travel(node.Right)
+	}
+	if root == nil {
+		return ans
+	}
+	travel(root)
+	return ans[:len(ans)-1]
+}
+
+// Deserializes your encoded data to tree.
+func (this *Codec) deserialize(data string) *TreeNode {
+	if len(data) == 0 {
+		return nil
+	}
+	nodes := strings.Split(data, &quot;,&quot;)
+	var travel func(nodes []string) *TreeNode
+	travel = func(nodes []string) *TreeNode {
+		if len(nodes) == 0 {
+			return nil
+		}
+		nodeVal := nodes[0]
+		nodes = nodes[1:]
+		val, _ := strconv.Atoi(nodeVal)
+		root := &amp;TreeNode{Val: val}
+		pos := 0
+		for ; pos &lt; len(nodes); pos++ {
+			val1, _ := strconv.Atoi(nodes[pos])
+			if val1 &gt; val {
+				break
+			}
+		}
+		root.Left = travel(nodes[:pos])
+		root.Right = travel(nodes[pos:])
+		return root
+	}
+	return travel(nodes)
+}
+</code></pre>
+<h3><a id="230%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E4%B8%AD%E7%AC%AC-k%E5%B0%8F%E7%9A%84%E5%85%83%E7%B4%A0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>230. 二叉搜索树中第K小的元素</h3>
+<p>给定一个二叉搜索树的根节点 root ，和一个整数 k ，请你设计一个算法查找其中第 k 小的元素（从 1 开始计数）。<br />
+<img src="media/17237099130982/17238953796633.jpg" alt="" /><br />
+输入：root = [3,1,4,null,2], k = 1<br />
+输出：1<br />
+<img src="media/17237099130982/17238953951633.jpg" alt="" /><br />
+输入：root = [5,3,6,2,4,null,null,1], k = 3<br />
+输出：3</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<ul>
+<li>中序遍历</li>
+</ul>
+<pre><code class="language-go">func kthSmallest(root *TreeNode, k int) int {
+	num := 0
+	ans := 0
+	var travel func(node *TreeNode)
+	travel = func(node *TreeNode) {
+		if node == nil {
+			return
+		}
+		travel(node.Left)
+		num++
+		if num == k {
+			ans = node.Val
+		}
+		travel(node.Right)
+	}
+	travel(root)
+	return ans
+}
+</code></pre>
+<h3><a id="96%E4%B8%8D%E5%90%8C%E7%9A%84%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>96. 不同的二叉搜索树</h3>
+<p>给你一个整数 n ，求恰由 n 个节点组成且节点值从 1 到 n 互不相同的 二叉搜索树 有多少种？返回满足题意的二叉搜索树的种数。<br />
+<img src="media/17237099130982/17239749298120.jpg" alt="" /><br />
+输入：n = 3<br />
+输出：5<br />
+输入：n = 1<br />
+输出：1</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<ul>
+<li>lo,hi区间内，切分的二叉树</li>
+<li>{lo,i-1}区间是左子树</li>
+<li>{i+1,hi}区间是右子树</li>
+</ul>
+<pre><code class="language-go">func numTrees(n int) int {
+	memo := make([][]int, n+1)
+	for i, _ := range memo {
+		memo[i] = make([]int, n+1)
+	}
+	var travel func(lo, hi int) int
+	travel = func(lo, hi int) int {
+		if lo &gt; hi {
+			return 1
+		}
+		if memo[lo][hi] != 0 {
+			return memo[lo][hi]
+		}
+		ans := 0
+		for i := lo; i &lt;= hi; i++ {
+			left := travel(lo, i-1)
+			right := travel(i+1, hi)
+			ans += left * right
+		}
+		memo[lo][hi] = ans
+		return ans
+	}
+	return travel(1, n)
+}
+</code></pre>
+<h3><a id="1373%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E5%AD%90%E6%A0%91%E7%9A%84%E6%9C%80%E5%A4%A7%E9%94%AE%E5%80%BC%E5%92%8C" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>1373. 二叉搜索子树的最大键值和</h3>
+<p>给你一棵以 root 为根的 二叉树 ，请你返回 任意 二叉搜索子树的最大键值和。</p>
+<p>二叉搜索树的定义如下：</p>
+<p>任意节点的左子树中的键值都 小于 此节点的键值。<br />
+任意节点的右子树中的键值都 大于 此节点的键值。<br />
+任意节点的左子树和右子树都是二叉搜索树。<br />
+<img src="media/17237099130982/17239778234868.png" alt="" /><br />
+输入：root = [1,4,3,2,4,2,5,null,null,null,null,null,null,4,6]<br />
+输出：20<br />
+解释：键值为 3 的子树是和最大的二叉搜索树。</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<ul>
+<li>1、左右子树是否是 BST。</li>
+<li>2、左子树的最大值和右子树的最小值。</li>
+<li>3、左右子树的节点值之和。</li>
+</ul>
+<pre><code class="language-go">func maxSumBST(root *TreeNode) int {
+	maxSum := 0
+	var travel func(node *TreeNode) []int
+	//res[4] 1 是否搜索二叉树 2 最小指 3 最大值 4 所有节点之和
+	travel = func(node *TreeNode) []int {
+		if node == nil {
+			return []int{1, math.MaxInt64, math.MinInt64, 0}
+		}
+		left := travel(node.Left)
+		right := travel(node.Right)
+		res := make([]int, 4)
+		//1 左右子树都是搜索二叉树 2 当前节点大于左子树最大值 3 当前节点小于右子树最小值
+		if left[0] == 1 &amp;&amp; right[0] == 1 &amp;&amp; node.Val &gt; left[2] &amp;&amp;
+			node.Val &lt; right[1] {
+			res[0] = 1
+			res[1] = min(left[1], node.Val)
+			res[2] = max(right[2], node.Val)
+			res[3] = left[3] + right[3] + node.Val
+			maxSum = max(maxSum, res[3])
+		} else {
+			//非二叉搜索树
+			res[0] = 0
+		}
+		return res
+	}
+	travel(root)
+	return maxSum
+}
+</code></pre>
+<h3><a id="236%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E6%9C%80%E8%BF%91%E5%85%AC%E5%85%B1%E7%A5%96%E5%85%88" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>236. 二叉树的最近公共祖先</h3>
+<p>给定一个二叉树, 找到该树中两个指定节点的最近公共祖先。</p>
+<p>百度百科中最近公共祖先的定义为：“对于有根树 T 的两个节点 p、q，最近公共祖先表示为一个节点 x，满足 x 是 p、q 的祖先且 x 的深度尽可能大（一个节点也可以是它自己的祖先）。”<br />
+<img src="media/17237099130982/17239791342355.png" alt="" /><br />
+输入：root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1<br />
+输出：3<br />
+解释：节点 5 和节点 1 的最近公共祖先是节点 3 。</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<ul>
+<li>后序遍历</li>
+<li>left != nil &amp;&amp; right != nil 情况一<br />
+<img src="media/17237099130982/17239796586998.jpg" alt="" /></li>
+<li>left == nil || right == nil<br />
+<img src="media/17237099130982/17239796814943.jpg" alt="" /></li>
+</ul>
+<pre><code class="language-go">func lowestCommonAncestor(root, p, q *TreeNode) *TreeNode {
+	if root == nil {
+		return nil
+	}
+	var travel func(node, p, q *TreeNode) *TreeNode
+	travel = func(node, p, q *TreeNode) *TreeNode {
+		if node == nil {
+			return nil
+		}
+		if node.Val == p.Val || node.Val == q.Val {
+			return node
+		}
+		left := travel(node.Left)
+		right := travel(node.Right)
+		if left != nil &amp;&amp; right != nil {
+			return node
+		}
+		if left != nil {
+			return left
+		}
+		return right
+	}
+	return travel(root, p, q)
+}
+</code></pre>
+<h3><a id="1650%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E6%9C%80%E8%BF%91%E5%85%AC%E5%85%B1%E7%A5%96%E5%85%88-iii" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>1650. 二叉树的最近公共祖先 III</h3>
+<p>给定一棵二叉树中的两个节点 p 和 q，返回它们的最近公共祖先节点（LCA）。</p>
+<p>每个节点都包含其父节点的引用（指针）。Node 的定义如下：</p>
+<p>class Node {<br />
+public int val;<br />
+public Node left;<br />
+public Node right;<br />
+public Node parent;<br />
+}<br />
+根据维基百科中对最近公共祖先节点的定义：“两个节点 p 和 q 在二叉树 T 中的最近公共祖先节点是后代节点中既包括 p 又包括 q 的最深节点（我们允许一个节点为自身的一个后代节点）”。一个节点 x 的后代节点是节点 x 到某一叶节点间的路径中的节点 y。<br />
+<img src="media/17237099130982/17239791342355.png" alt="" /><br />
+输入: root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1<br />
+输出: 3<br />
+解释: 节点 5 和 1 的最近公共祖先是 3。</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<ul>
+<li>而是单链表相交的问题，你把 parent 指针想象成单链表的 next 指针，题目就变成了：<br />
+<img src="media/17237099130982/17239880255775.png" alt="" /></li>
+<li></li>
+</ul>
+<pre><code class="language-go">func lowestCommonAncestor(p *Node, q *Node) *Node {
+	a, b := p, q
+	for a != b {
+		if a == nil {
+			a = q
+		} else {
+			a = a.Parent
+		}
+		if b == nil {
+			b = p
+		} else {
+			b = b.Parent
+		}
+	}
+	return a
+}
+</code></pre>
+<h3><a id="366%E5%AF%BB%E6%89%BE%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%8F%B6%E5%AD%90%E8%8A%82%E7%82%B9" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>366. 寻找二叉树的叶子节点</h3>
+<p>给你一棵二叉树的 root 节点，请按照以下方式收集树的节点：</p>
+<p>收集所有的叶子节点。<br />
+移除所有的叶子节点。<br />
+重复以上步骤，直到树为空。<br />
+<img src="media/17237099130982/17239911332497.jpg" alt="" /><br />
+输入：root = [1,2,3,4,5]<br />
+输出：[[4,5,3],[2],[1]]<br />
+解释：<br />
+[[3,5,4],[2],[1]] 和 [[3,4,5],[2],[1]] 也被视作正确答案，因为每一层返回元素的顺序不影响结果。</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<ul>
+<li>同一深度的节点输出</li>
+</ul>
+<pre><code class="language-go">func findLeaves(root *TreeNode) [][]int {
+	ans := [][]int{}
+	var travel func(node *TreeNode) int
+	travel = func(node *TreeNode) int {
+		if node == nil {
+			return 0
+		}
+		left := travel(node.Left)
+		right := travel(node.Right)
+		deepth := max(left, right) + 1
+		//相同深度的节点
+		if deepth &gt; len(ans) {
+			ans = append(ans, []int{})
+		}
+		ans[deepth-1] = append(ans[deepth-1], node.Val)
+		return deepth
+	}
+	travel(root)
+	return ans
+}
+</code></pre>
+<h3><a id="865%E5%85%B7%E6%9C%89%E6%89%80%E6%9C%89%E6%9C%80%E6%B7%B1%E8%8A%82%E7%82%B9%E7%9A%84%E6%9C%80%E5%B0%8F%E5%AD%90%E6%A0%91" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>865. 具有所有最深节点的最小子树</h3>
+<p>给定一个根为 root 的二叉树，每个节点的深度是 该节点到根的最短距离 。</p>
+<p>返回包含原始树中所有 最深节点 的 最小子树 。</p>
+<p>如果一个节点在 整个树 的任意节点之间具有最大的深度，则该节点是 最深的 。</p>
+<p>一个节点的 子树 是该节点加上它的所有后代的集合。<br />
+<img src="media/17237099130982/17239912683902.png" alt="" /><br />
+输入：root = [3,5,1,6,2,0,8,null,null,7,4]<br />
+输出：[2,7,4]<br />
+解释：<br />
+我们返回值为 2 的节点，在图中用黄色标记。<br />
+在图中用蓝色标记的是树的最深的节点。<br />
+注意，节点 5、3 和 2 包含树中最深的节点，但节点 2 的子树最小，因此我们返回它。</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<pre><code class="language-go">func subtreeWithAllDeepest(root *TreeNode) *TreeNode {
+	maxDepth := -1
+	var ans *TreeNode
+	var travel func(node *TreeNode, depth int) int
+	travel = func(node *TreeNode, depth int) int {
+		if node == nil {
+			maxDepth = max(depth, maxDepth)
+			return depth
+		}
+		left := travel(node.Left, depth+1)
+		right := travel(node.Right, depth+1)
+		if left == right &amp;&amp; left == maxDepth {
+			ans = node
+		}
+		return max(left, right)
+	}
+	travel(root, 0)
+	return ans
+}
+</code></pre>
+<h3><a id="1740%E6%89%BE%E5%88%B0%E4%BA%8C%E5%8F%89%E6%A0%91%E4%B8%AD%E7%9A%84%E8%B7%9D%E7%A6%BB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>1740. 找到二叉树中的距离</h3>
+<p>给定一棵二叉树的根节点 root 以及两个整数 p 和 q ，返回该二叉树中值为 p 的结点与值为 q 的结点间的 距离 。</p>
+<p>两个结点间的 距离 就是从一个结点到另一个结点的路径上边的数目。<br />
+<img src="media/17237099130982/17239791342355.png" alt="" /><br />
+输入：root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 0<br />
+输出：3<br />
+解释：在 5 和 0 之间有 3 条边：5-3-1-0</p>
+<pre><code class="language-go">func findLca(root *TreeNode, p, q int) *TreeNode {
+	if root == nil {
+		return nil
+	}
+	if root.Val == p || root.Val == q {
+		return root
+	}
+	left := findLca(root.Left, p, q)
+	right := findLca(root.Right, p, q)
+	if left != nil &amp;&amp; right != nil {
+		return root
+	}
+	if left != nil {
+		return left
+	}
+	return right
+}
+
+func findDepth(root *TreeNode, val int) int {
+	if root == nil {
+		return -1
+	}
+	if root.Val == val {
+		return 0
+	}
+	left := findDepth(root.Left, val)
+	right := findDepth(root.Right, val)
+	maxDepth := max(left, right)
+	if maxDepth &gt;= 0 {
+		return maxDepth + 1
+	}
+	return -1
+}
+func findDistance(root *TreeNode, p int, q int) int {
+	lca := findLca(root, p, q)
+	return findDepth(lca, p) + findDepth(lca, q)
+}
+</code></pre>
+<h3><a id="341%E6%89%81%E5%B9%B3%E5%8C%96%E5%B5%8C%E5%A5%97%E5%88%97%E8%A1%A8%E8%BF%AD%E4%BB%A3%E5%99%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>341. 扁平化嵌套列表迭代器</h3>
+<p>给你一个嵌套的整数列表 nestedList 。每个元素要么是一个整数，要么是一个列表；该列表的元素也可能是整数或者是其他列表。请你实现一个迭代器将其扁平化，使之能够遍历这个列表中的所有整数。</p>
+<p>实现扁平迭代器类 NestedIterator ：</p>
+<p>NestedIterator(List<NestedInteger> nestedList) 用嵌套列表 nestedList 初始化迭代器。<br />
+int next() 返回嵌套列表的下一个整数。<br />
+boolean hasNext() 如果仍然存在待迭代的整数，返回 true ；否则，返回 false 。<br />
+你的代码将会用下述伪代码检测：</p>
+<p>initialize iterator with nestedList<br />
+res = []<br />
+while iterator.hasNext()<br />
+append iterator.next() to the end of res<br />
+return res<br />
+如果 res 与预期的扁平化列表匹配，那么你的代码将会被判为正确。<br />
+示例 1：</p>
+<p>输入：nestedList = [[1,1],2,[1,1]]<br />
+输出：[1,1,2,1,1]<br />
+解释：通过重复调用 next 直到 hasNext 返回 false，next 返回的元素的顺序应该是: [1,1,2,1,1]。</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<pre><code class="language-go">type NestedIterator struct {
+	list []*NestedInteger
+}
+
+func Constructor(nestedList []*NestedInteger) *NestedIterator {
+	var list []*NestedInteger
+	for i := len(nestedList) - 1; i &gt;= 0; i-- {
+		list = append(list, nestedList[i])
+	}
+	return &amp;NestedIterator{list: list}
+}
+
+func (n *NestedIterator) Next() int {
+	cur := n.list[len(n.list)-1]
+	n.list = n.list[:len(n.list)-1]
+	return cur.GetInteger()
+}
+
+func (n *NestedIterator) HasNext() bool {
+	for len(n.list) &gt; 0 {
+		cur := n.list[len(n.list)-1]
+		if cur.IsInteger() {
+			return true
+		}
+		n.list = n.list[:len(n.list)-1]
+		list := cur.GetList()
+		for i := len(list) - 1; i &gt;= 0; i-- {
+			n.list = append(n.list, list[i])
+		}
+	}
+	return false
+}
+</code></pre>
+<h3><a id="215%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E7%AC%AC-k%E4%B8%AA%E6%9C%80%E5%A4%A7%E5%85%83%E7%B4%A0" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>215. 数组中的第K个最大元素</h3>
+<p>给定整数数组 nums 和整数 k，请返回数组中第 k 个最大的元素。</p>
+<p>请注意，你需要找的是数组排序后的第 k 个最大的元素，而不是第 k 个不同的元素。</p>
+<p>你必须设计并实现时间复杂度为 O(n) 的算法解决此问题。<br />
+示例 1:</p>
+<p>输入: [3,2,1,5,6,4], k = 2<br />
+输出: 5<br />
+示例 2:</p>
+<p>输入: [3,2,3,1,2,4,5,5,6], k = 4<br />
+输出: 4</p>
+<pre><code class="language-go">func findKthLargest(nums []int, k int) int {
+	lo, hi := 0, len(nums)-1
+	k = len(nums) - k
+	for lo &lt;= hi {
+		p := partition(nums, lo, hi)
+		if p &lt; k {
+			lo = p + 1
+		} else if p &gt; k {
+			hi = p - 1
+		} else {
+			return nums[p]
+		}
+	}
+	return -1
+}
+
+func partition(nums []int, lo int, hi int) int {
+	pivot := nums[lo]
+	i, j := lo+1, hi
+	for i &lt;= j {
+		for i &lt; hi &amp;&amp; nums[i] &lt;= pivot {
+			i++
+		}
+		for j &gt; lo &amp;&amp; nums[j] &gt; pivot {
+			j--
+		}
+		if i &gt;= j {
+			break
+		}
+		nums[i], nums[j] = nums[j], nums[i]
+	}
+	nums[lo], nums[j] = nums[j], nums[lo]
+	return j
+}
+</code></pre>
+<h3><a id="173%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E8%BF%AD%E4%BB%A3%E5%99%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>173. 二叉搜索树迭代器</h3>
+<p>实现一个二叉搜索树迭代器类BSTIterator ，表示一个按中序遍历二叉搜索树（BST）的迭代器：<br />
+BSTIterator(TreeNode root) 初始化 BSTIterator 类的一个对象。BST 的根节点 root 会作为构造函数的一部分给出。指针应初始化为一个不存在于 BST 中的数字，且该数字小于 BST 中的任何元素。<br />
+boolean hasNext() 如果向指针右侧遍历存在数字，则返回 true ；否则返回 false 。<br />
+int next()将指针向右移动，然后返回指针处的数字。<br />
+注意，指针初始化为一个不存在于 BST 中的数字，所以对 next() 的首次调用将返回 BST 中的最小元素。</p>
+<p>你可以假设 next() 调用总是有效的，也就是说，当调用 next() 时，BST 的中序遍历中至少存在一个下一个数字。<br />
+<img src="media/17237099130982/17240819590354.png" alt="" /><br />
+[&quot;BSTIterator&quot;, &quot;next&quot;, &quot;next&quot;, &quot;hasNext&quot;, &quot;next&quot;, &quot;hasNext&quot;, &quot;next&quot;, &quot;hasNext&quot;, &quot;next&quot;, &quot;hasNext&quot;]<br />
+[[[7, 3, 15, null, null, 9, 20]], [], [], [], [], [], [], [], [], []]<br />
+输出<br />
+[null, 3, 7, true, 9, true, 15, true, 20, false]</p>
+<pre><code class="language-go">type BSTIterator struct {
+	stack []*TreeNode
+	cur   *TreeNode
+}
+
+func Constructor(root *TreeNode) BSTIterator {
+	return BSTIterator{cur: root}
+}
+
+func (b *BSTIterator) Next() int {
+	node := b.cur
+	for node != nil {
+		b.stack = append(b.stack, node)
+		node = node.Left
+	}
+	val := b.stack[len(b.stack)-1]
+	b.stack = b.stack[:len(b.stack)-1]
+	b.cur = val.Right
+	return val.Val
+}
+
+func (b *BSTIterator) HasNext() bool {
+	return b.cur != nil || len(b.stack) &gt; 0
+}
+</code></pre>
+<h3><a id="257%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E6%89%80%E6%9C%89%E8%B7%AF%E5%BE%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>257. 二叉树的所有路径</h3>
+<p>给你一个二叉树的根节点 root ，按 任意顺序 ，返回所有从根节点到叶子节点的路径。</p>
+<p>叶子节点 是指没有子节点的节点。<br />
+<img src="media/17237099130982/17241409039012.jpg" alt="" /><br />
+输入：root = [1,2,3,null,5]<br />
+输出：[&quot;1-&gt;2-&gt;5&quot;,&quot;1-&gt;3&quot;]<br />
+示例 2：</p>
+<p>输入：root = [1]<br />
+输出：[&quot;1&quot;]</p>
+<pre><code class="language-go">func binaryTreePaths(root *TreeNode) []string {
+	var ans []string
+	var traval func(*TreeNode, string)
+	traval = func(root *TreeNode, s string) {
+		if root == nil {
+			return
+		}
+		if root.Left == nil &amp;&amp; root.Right == nil {
+			s += strconv.Itoa(root.Val)
+			ans = append(ans, s)
+			return
+		}
+		s += strconv.Itoa(root.Val) + &quot;-&gt;&quot;
+		traval(root.Left, s)
+		traval(root.Right, s)
+		s = s[:len(s)-3]
+	}
+	traval(root, &quot;&quot;)
+	return ans
+}
+
+func binaryTreePaths(root *TreeNode) []string {
+	var ans []string
+	var traval func(*TreeNode, string)
+	traval = func(root *TreeNode, s string) {
+		if root == nil {
+			return
+		}
+		s += strconv.Itoa(root.Val) + &quot;-&gt;&quot;
+		if root.Left == nil &amp;&amp; root.Right == nil {
+			//s += strconv.Itoa(root.Val)
+			ans = append(ans, s[:len(s)-2])
+			return
+		}
+		//s += strconv.Itoa(root.Val) + &quot;-&gt;&quot;
+		traval(root.Left, s)
+		traval(root.Right, s)
+		s = s[:len(s)-3]
+	}
+	traval(root, &quot;&quot;)
+	return ans
+}
+</code></pre>
+<h3><a id="129%E6%B1%82%E6%A0%B9%E8%8A%82%E7%82%B9%E5%88%B0%E5%8F%B6%E8%8A%82%E7%82%B9%E6%95%B0%E5%AD%97%E4%B9%8B%E5%92%8C" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>129. 求根节点到叶节点数字之和</h3>
+<p>给你一个二叉树的根节点 root ，树中每个节点都存放有一个 0 到 9 之间的数字。<br />
+每条从根节点到叶节点的路径都代表一个数字：</p>
+<p>例如，从根节点到叶节点的路径 1 -&gt; 2 -&gt; 3 表示数字 123 。<br />
+计算从根节点到叶节点生成的 所有数字之和 。</p>
+<p>叶节点 是指没有子节点的节点。<br />
+<img src="media/17237099130982/17241409738135.jpg" alt="" /><br />
+输入：root = [1,2,3]<br />
+输出：25<br />
+解释：<br />
+从根到叶子节点路径 1-&gt;2 代表数字 12<br />
+从根到叶子节点路径 1-&gt;3 代表数字 13<br />
+因此，数字总和 = 12 + 13 = 25<br />
+<img src="media/17237099130982/17241409856342.jpg" alt="" /><br />
+输入：root = [4,9,0,5,1]<br />
+输出：1026<br />
+解释：<br />
+从根到叶子节点路径 4-&gt;9-&gt;5 代表数字 495<br />
+从根到叶子节点路径 4-&gt;9-&gt;1 代表数字 491<br />
+从根到叶子节点路径 4-&gt;0 代表数字 40<br />
+因此，数字总和 = 495 + 491 + 40 = 1026</p>
+<pre><code class="language-go">func sumNumbers(root *TreeNode) int {
+	var res int
+	var s string
+	var traval func(node *TreeNode, s string)
+	traval = func(node *TreeNode, s string) {
+		if node == nil {
+			return
+		}
+		s += strconv.Itoa(node.Val)
+		if node.Left == nil &amp;&amp; node.Right == nil {
+			val, _ := strconv.Atoi(s)
+			res += val
+			return
+		}
+		traval(node.Left, s)
+		traval(node.Right, s)
+		s = s[:len(s)-1]
+	}
+	traval(root, s)
+	return res
+}
+</code></pre>
+<h3><a id="298%E4%BA%8C%E5%8F%89%E6%A0%91%E6%9C%80%E9%95%BF%E8%BF%9E%E7%BB%AD%E5%BA%8F%E5%88%97" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>298. 二叉树最长连续序列</h3>
+<p>给你一棵指定的二叉树的根节点 root ，请你计算其中 最长连续序列路径 的长度。</p>
+<p>最长连续序列路径 是依次递增 1 的路径。该路径，可以是从某个初始节点到树中任意节点，通过「父 - 子」关系连接而产生的任意路径。且必须从父节点到子节点，反过来是不可以的。<br />
+<img src="media/17237099130982/17241438506031.jpg" alt="" /><br />
+输入：root = [1,null,3,2,4,null,null,null,5]<br />
+输出：3<br />
+解释：当中，最长连续序列是 3-4-5 ，所以返回结果为 3 。<br />
+<img src="media/17237099130982/17241438736080.jpg" alt="" /><br />
+输入：root = [2,null,3,2,null,1]<br />
+输出：2<br />
+解释：当中，最长连续序列是 2-3 。注意，不是 3-2-1，所以返回 2 。</p>
+<pre><code class="language-go">func longestConsecutive(root *TreeNode) int {
+	maxLen := math.MinInt64
+	var traval func(node *TreeNode, val, parentVal int)
+	traval = func(node *TreeNode, val, parentVal int) {
+		if node == nil {
+			return
+		}
+		if parentVal+1 == node.Val {
+			val++
+		} else {
+			val = 1
+		}
+		maxLen = max(maxLen, val)
+		traval(node.Left, val, node.Val)
+		traval(node.Right, val, node.Val)
+	}
+	traval(root, 1, math.MaxInt64)
+	return maxLen
+}
+</code></pre>
+<h3><a id="988%E4%BB%8E%E5%8F%B6%E7%BB%93%E7%82%B9%E5%BC%80%E5%A7%8B%E7%9A%84%E6%9C%80%E5%B0%8F%E5%AD%97%E7%AC%A6%E4%B8%B2" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>988. 从叶结点开始的最小字符串</h3>
+<p>给定一颗根结点为 root 的二叉树，树中的每一个结点都有一个 [0, 25] 范围内的值，分别代表字母 'a' 到 'z'。</p>
+<p>返回 按字典序最小 的字符串，该字符串从这棵树的一个叶结点开始，到根结点结束。</p>
+<p>注：字符串中任何较短的前缀在 字典序上 都是 较小 的：</p>
+<p>例如，在字典序上 &quot;ab&quot; 比 &quot;aba&quot; 要小。叶结点是指没有子结点的结点。<br />
+节点的叶节点是没有子节点的节点。<br />
+<img src="media/17237099130982/17241439307979.png" alt="" /><br />
+输入：root = [0,1,2,3,4,3,4]<br />
+输出：&quot;dba&quot;<br />
+<img src="media/17237099130982/17241439430320.png" alt="" /><br />
+输入：root = [25,1,3,1,3,0,2]<br />
+输出：&quot;adz&quot;</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<pre><code class="language-go">func smallestFromLeaf(root *TreeNode) string {
+	ans := &quot;&quot;
+	var s []byte
+	var travel func(node *TreeNode, s []byte)
+	travel = func(node *TreeNode, s []byte) {
+		if node == nil {
+			return
+		}
+		s = append(s, byte('a'+node.Val))
+		if node.Left == nil &amp;&amp; node.Right == nil {
+			s1 := reverse(string(s))
+			if len(ans) == 0 || ans &gt; s1 {
+				ans = s1
+			}
+			return
+		}
+		// s = append(s, byte('a'+node.Val))
+		travel(node.Left, s)
+		travel(node.Right, s)
+		s = s[:len(s)-1]
+	}
+	travel(root, s)
+	return ans
+}
+
+func reverse(s string) string {
+	bytes := []byte(s)
+	i, j := 0, len(bytes)-1
+	for i &lt; j {
+		bytes[i], bytes[j] = bytes[j], bytes[i]
+		i++
+		j--
+	}
+	return string(bytes)
+}
+</code></pre>
+<h3><a id="1022%E4%BB%8E%E6%A0%B9%E5%88%B0%E5%8F%B6%E7%9A%84%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%95%B0%E4%B9%8B%E5%92%8C" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>1022. 从根到叶的二进制数之和</h3>
+<p>给出一棵二叉树，其上每个结点的值都是 0 或 1 。每一条从根到叶的路径都代表一个从最高有效位开始的二进制数。</p>
+<p>例如，如果路径为 0 -&gt; 1 -&gt; 1 -&gt; 0 -&gt; 1，那么它表示二进制数 01101，也就是 13 。<br />
+对树上的每一片叶子，我们都要找出从根到该叶子的路径所表示的数字。</p>
+<p>返回这些数字之和。题目数据保证答案是一个 32 位 整数。<br />
+<img src="media/17237099130982/17241477352055.png" alt="" /><br />
+输入：root = [1,0,1,0,1,0,1]<br />
+输出：22<br />
+解释：(100) + (101) + (110) + (111) = 4 + 5 + 6 + 7 = 22<br />
+示例 2：</p>
+<p>输入：root = [0]<br />
+输出：0</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<ul>
+<li>递归遍历path&lt;&lt;1 | node.Val</li>
+</ul>
+<pre><code class="language-go">func sumRootToLeaf(root *TreeNode) int {
+	ans := 0
+	var travel func(node *TreeNode, path int)
+	travel = func(node *TreeNode, path int) {
+		if node == nil {
+			return
+		}
+		if node.Left == nil &amp;&amp; node.Right == nil {
+			path = (path &lt;&lt; 1) | node.Val
+			ans += path
+			return
+		}
+		path = (path &lt;&lt; 1) | node.Val
+		travel(node.Left, path)
+		travel(node.Right, path)
+		path = path &gt;&gt; 1
+	}
+	travel(root, 0)
+	return ans
+}
+</code></pre>
+<h3><a id="1457%E4%BA%8C%E5%8F%89%E6%A0%91%E4%B8%AD%E7%9A%84%E4%BC%AA%E5%9B%9E%E6%96%87%E8%B7%AF%E5%BE%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>1457. 二叉树中的伪回文路径</h3>
+<p>给你一棵二叉树，每个节点的值为 1 到 9 。我们称二叉树中的一条路径是 「伪回文」的，当它满足：路径经过的所有节点值的排列中，存在一个回文序列。</p>
+<p>请你返回从根到叶子节点的所有路径中 伪回文 路径的数目。<br />
+<img src="media/17237099130982/17241556831659.png" alt="" /><br />
+输入：root = [2,3,1,3,1,null,1]<br />
+输出：2<br />
+解释：上图为给定的二叉树。总共有 3 条从根到叶子的路径：红色路径 [2,3,3] ，绿色路径 [2,1,1] 和路径 [2,3,1] 。<br />
+在这些路径中，只有红色和绿色的路径是伪回文路径，因为红色路径 [2,3,3] 存在回文排列 [3,2,3] ，绿色路径 [2,1,1] 存在回文排列 [1,2,1]</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<ul>
+<li>count ^= 1 &lt;&lt; val</li>
+<li>使用count个位存储val是否奇偶</li>
+</ul>
+<pre><code class="language-go">func pseudoPalindromicPaths(root *TreeNode) int {
+	ans := 0
+	var travel func(node *TreeNode, count int)
+	travel = func(node *TreeNode, count int) {
+		if node == nil {
+			return
+		}
+		if node.Left == nil &amp;&amp; node.Right == nil {
+			count ^= 1 &lt;&lt; node.Val
+			if count&amp;(count-1) == 0 {
+				ans++
+			}
+			count ^= 1 &lt;&lt; node.Val
+		}
+		count ^= 1 &lt;&lt; node.Val
+		travel(node.Left, count)
+		travel(node.Right, count)
+		count ^= 1 &lt;&lt; node.Val
+	}
+	travel(root, 0)
+	return ans
+}
+</code></pre>
+<h3><a id="270%E6%9C%80%E6%8E%A5%E8%BF%91%E7%9A%84%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E5%80%BC" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>270. 最接近的二叉搜索树值</h3>
+<p>给你二叉搜索树的根节点 root 和一个目标值 target ，请在该二叉搜索树中找到最接近目标值 target 的数值。如果有多个答案，返回最小的那个。<br />
+<img src="media/17237099130982/17242120950198.jpg" alt="" /><br />
+输入：root = [4,2,5,1,3], target = 3.714286<br />
+输出：4<br />
+示例 2：</p>
+<p>输入：root = [1], target = 4.428571<br />
+输出：1</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<ul>
+<li>保留绝对值之差，并一直更新</li>
+</ul>
+<pre><code class="language-go">func closestValue(root *TreeNode, target float64) int {
+	ans := math.MaxInt64
+	minDiff := math.MaxFloat64
+	var travel func(node *TreeNode)
+	travel = func(node *TreeNode) {
+		if node == nil {
+			return
+		}
+		diff := math.Abs(float64(node.Val) - target)
+		if diff &lt; minDiff || (diff == minDiff &amp;&amp; node.Val &lt; ans) {
+			ans = node.Val
+			minDiff = diff
+		}
+		if float64(node.Val) &lt; target {
+			travel(node.Right)
+		} else {
+			travel(node.Left)
+		}
+	}
+	travel(root)
+	return ans
+}
+</code></pre>
+<h3><a id="404%E5%B7%A6%E5%8F%B6%E5%AD%90%E4%B9%8B%E5%92%8C" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>404. 左叶子之和</h3>
+<p>给定二叉树的根节点 root ，返回所有左叶子之和。<br />
+<img src="media/17237099130982/17242250427458.jpg" alt="" /><br />
+输入: root = [3,9,20,null,null,15,7]<br />
+输出: 24<br />
+解释: 在这个二叉树中，有两个左叶子，分别是 9 和 15，所以返回 24<br />
+示例 2:</p>
+<p>输入: root = [1]<br />
+输出: 0</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<pre><code class="language-go">func sumOfLeftLeaves(root *TreeNode) int {
+	sum := 0
+	var traval func(*TreeNode)
+	traval = func(root *TreeNode) {
+		if root == nil {
+			return
+		}
+		if root.Left != nil &amp;&amp; root.Left.Left == nil &amp;&amp; root.Left.Right == nil {
+			sum += root.Left.Val
+		}
+
+		traval(root.Left)
+		traval(root.Right)
+		return
+	}
+	traval(root)
+	return sum
+}
+</code></pre>
+<h3><a id="623%E5%9C%A8%E4%BA%8C%E5%8F%89%E6%A0%91%E4%B8%AD%E5%A2%9E%E5%8A%A0%E4%B8%80%E8%A1%8C" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>623. 在二叉树中增加一行</h3>
+<p>给定一个二叉树的根 root 和两个整数 val 和 depth ，在给定的深度 depth 处添加一个值为 val 的节点行。</p>
+<p>注意，根节点 root 位于深度 1 。</p>
+<p>加法规则如下:</p>
+<p>给定整数 depth，对于深度为 depth - 1 的每个非空树节点 cur ，创建两个值为 val 的树节点作为 cur 的左子树根和右子树根。<br />
+cur 原来的左子树应该是新的左子树根的左子树。<br />
+cur 原来的右子树应该是新的右子树根的右子树。<br />
+如果 depth == 1 意味着 depth - 1 根本没有深度，那么创建一个树节点，值 val 作为整个原始树的新根，而原始树就是新根的左子树。<br />
+<img src="media/17237099130982/17242254563086.jpg" alt="" /><br />
+输入: root = [4,2,6,3,1,5], val = 1, depth = 2<br />
+输出: [4,1,1,2,null,null,6,3,1,5]<br />
+<img src="media/17237099130982/17242254732776.jpg" alt="" /><br />
+输入: root = [4,2,null,3,1], val = 1, depth = 3<br />
+输出:  [4,2,null,1,1,3,null,null,1]</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<pre><code class="language-go">func addOneRow(root *TreeNode, val int, depth int) *TreeNode {
+	if depth == 1 {
+		node := &amp;TreeNode{Val: val}
+		node.Left = node.Left
+		node.Left = root
+		return node
+	}
+	var travel func(node *TreeNode, curDepth int)
+	travel = func(node *TreeNode, curDepth int) {
+		if node == nil {
+			return
+		}
+		if curDepth == depth-1 {
+			left := &amp;TreeNode{Val: val}
+			left.Left = node.Left
+			node.Left = left
+			right := &amp;TreeNode{Val: val}
+			right.Right = node.Right
+			node.Right = right
+		}
+		travel(node.Left, curDepth+1)
+		travel(node.Right, curDepth+1)
+	}
+	travel(root, 1)
+	return root
+}
+</code></pre>
+<h3><a id="971%E7%BF%BB%E8%BD%AC%E4%BA%8C%E5%8F%89%E6%A0%91%E4%BB%A5%E5%8C%B9%E9%85%8D%E5%85%88%E5%BA%8F%E9%81%8D%E5%8E%86" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>971. 翻转二叉树以匹配先序遍历</h3>
+<p>给你一棵二叉树的根节点 root ，树中有 n 个节点，每个节点都有一个不同于其他节点且处于 1 到 n 之间的值。</p>
+<p>另给你一个由 n 个值组成的行程序列 voyage ，表示 预期 的二叉树 先序遍历 结果。</p>
+<p>通过交换节点的左右子树，可以 翻转 该二叉树中的任意节点。例，翻转节点 1 的效果如下：<br />
+<img src="media/17237099130982/17242267753952.jpg" alt="" /><br />
+请翻转 最少 的树中节点，使二叉树的 先序遍历 与预期的遍历行程 voyage 相匹配 。</p>
+<p>如果可以，则返回 翻转的 所有节点的值的列表。你可以按任何顺序返回答案。如果不能，则返回列表 [-1]。<br />
+<img src="media/17237099130982/17242267878672.png" alt="" /><br />
+输入：root = [1,2], voyage = [2,1]<br />
+输出：[-1]<br />
+解释：翻转节点无法令先序遍历匹配预期行程。<br />
+<img src="media/17237099130982/17242267999108.png" alt="" /><br />
+输入：root = [1,2,3], voyage = [1,3,2]<br />
+输出：[1]<br />
+解释：交换节点 2 和 3 来翻转节点 1 ，先序遍历可以匹配预期行程。</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<ul>
+<li>先序遍历</li>
+</ul>
+<pre><code class="language-go">func flipMatchVoyage(root *TreeNode, voyage []int) []int {
+	ans := []int{}
+	index := 0
+
+	var traverse func(node *TreeNode) bool
+	traverse = func(node *TreeNode) bool {
+		if node == nil {
+			return true
+		}
+		if node.Val != voyage[index] {
+			return false
+		}
+		index++
+		if node.Left != nil &amp;&amp; node.Left.Val != voyage[index] {
+			ans = append(ans, node.Val)
+			node.Left, node.Right = node.Right, node.Left
+		}
+		return traverse(node.Left) &amp;&amp; traverse(node.Right)
+	}
+
+	if traverse(root) {
+		return ans
+	}
+	return []int{-1}
+}
+</code></pre>
+<h3><a id="987%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%9E%82%E5%BA%8F%E9%81%8D%E5%8E%86" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>987. 二叉树的垂序遍历</h3>
+<p>给你二叉树的根结点 root ，请你设计算法计算二叉树的 垂序遍历 序列。</p>
+<p>对位于 (row, col) 的每个结点而言，其左右子结点分别位于 (row + 1, col - 1) 和 (row + 1, col + 1) 。树的根结点位于 (0, 0) 。</p>
+<p>二叉树的 垂序遍历 从最左边的列开始直到最右边的列结束，按列索引每一列上的所有结点，形成一个按出现位置从上到下排序的有序列表。如果同行同列上有多个结点，则按结点的值从小到大进行排序。</p>
+<p>返回二叉树的 垂序遍历 序列。<br />
+<img src="media/17237099130982/17242306653511.jpg" alt="" /><br />
+输入：root = [3,9,20,null,null,15,7]<br />
+输出：[[9],[3,15],[20],[7]]<br />
+解释：<br />
+列 -1 ：只有结点 9 在此列中。<br />
+列  0 ：只有结点 3 和 15 在此列中，按从上到下顺序。<br />
+列  1 ：只有结点 20 在此列中。<br />
+列  2 ：只有结点 7 在此列中。<br />
+<img src="media/17237099130982/17242306777122.jpg" alt="" /><br />
+输入：root = [1,2,3,4,5,6,7]<br />
+输出：[[4],[2],[1,5,6],[3],[7]]<br />
+解释：<br />
+列 -2 ：只有结点 4 在此列中。<br />
+列 -1 ：只有结点 2 在此列中。<br />
+列  0 ：结点 1 、5 和 6 都在此列中。<br />
+1 在上面，所以它出现在前面。<br />
+5 和 6 位置都是 (2, 0) ，所以按值从小到大排序，5 在 6 的前面。<br />
+列  1 ：只有结点 3 在此列中。<br />
+列  2 ：只有结点 7 在此列中。<br />
+<img src="media/17237099130982/17242306914549.jpg" alt="" /><br />
+输入：root = [1,2,3,4,6,5,7]<br />
+输出：[[4],[2],[1,5,6],[3],[7]]<br />
+解释：<br />
+这个示例实际上与示例 2 完全相同，只是结点 5 和 6 在树中的位置发生了交换。<br />
+因为 5 和 6 的位置仍然相同，所以答案保持不变，仍然按值从小到大排序。</p>
+<h5><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h5>
+<ul>
+<li>统计所有节点的坐标</li>
+<li>使用Triple来存储节点和坐标</li>
+<li>进行排序，列优先，行其次，val最后</li>
+</ul>
+<pre><code class="language-go">func verticalTraversal(root *TreeNode) [][]int {
+	type Triple struct {
+		Node     *TreeNode
+		Row, Col int
+	}
+	listNodes := []*Triple{}
+	var travel func(node *TreeNode, row, col int)
+	travel = func(node *TreeNode, row, col int) {
+		if node == nil {
+			return
+		}
+		listNodes = append(listNodes, &amp;Triple{
+			Node: node,
+			Row:  row,
+			Col:  col,
+		})
+		travel(node.Left, row+1, col-1)
+		travel(node.Right, row+1, col+1)
+	}
+	travel(root, 0, 0)
+	sort.Slice(listNodes, func(i, j int) bool {
+		if listNodes[i].Row == listNodes[j].Row &amp;&amp; listNodes[i].Col == listNodes[j].Col {
+			return listNodes[i].Node.Val &lt; listNodes[j].Node.Val
+		}
+		if listNodes[i].Col == listNodes[j].Col {
+			return listNodes[i].Row &lt; listNodes[j].Row
+		}
+		return listNodes[i].Col &lt; listNodes[j].Col
+	})
+	preCol := math.MinInt64
+	var ans [][]int
+	for _, val := range listNodes {
+		if val.Col != preCol {
+			ans = append(ans, []int{})
+			preCol = val.Col
+		}
+		ans[len(ans)-1] = append(ans[len(ans)-1], val.Node.Val)
+	}
+	return ans
+}
+</code></pre>
+<h3><a id="993%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%A0%82%E5%85%84%E5%BC%9F%E8%8A%82%E7%82%B9" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>993. 二叉树的堂兄弟节点</h3>
+<p>在二叉树中，根节点位于深度 0 处，每个深度为 k 的节点的子节点位于深度 k+1 处。</p>
+<p>如果二叉树的两个节点深度相同，但 父节点不同 ，则它们是一对堂兄弟节点。</p>
+<p>我们给出了具有唯一值的二叉树的根节点 root ，以及树中两个不同节点的值 x 和 y 。</p>
+<p>只有与值 x 和 y 对应的节点是堂兄弟节点时，才返回 true 。否则，返回 false。<br />
+<img src="media/17237099130982/17242443690824.png" alt="" /><br />
+输入：root = [1,2,3,4], x = 4, y = 3<br />
+输出：false<br />
+<img src="media/17237099130982/17242443792368.png" alt="" /><br />
+输入：root = [1,2,3,null,4,null,5], x = 5, y = 4<br />
+输出：true<br />
+<img src="media/17237099130982/17242443908819.png" alt="" /><br />
+输入：root = [1,2,3,null,4], x = 2, y = 3<br />
+输出：false</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<ul>
+<li>root父节点是nil</li>
+</ul>
+<pre><code class="language-go">func isCousins(root *TreeNode, x int, y int) bool {
+	depthX, depthY := 0, 0
+	var parentX, parentY *TreeNode
+	var travel func(node, parent *TreeNode, depth int)
+	travel = func(node, parent *TreeNode, depth int) {
+		if node == nil {
+			return
+		}
+		if node.Val == x {
+			parentX = parent
+			depthX = depth
+		}
+		if node.Val == y {
+			parentY = parent
+			depthY = depth
+		}
+		travel(node.Left, node, depth+1)
+		travel(node.Right, node, depth+1)
+	}
+	travel(root, nil, 0)
+	if parentX != parentY &amp;&amp; depthX == depthY {
+		return true
+	}
+	return false
+}
+</code></pre>
+
+                  </article>
+                  <div class="comments-wrap">
+                    <div class="share-comments">
+                      
+
+                      
+
+                      
+                    </div>
+                  </div><!-- end comments wrap -->
+              </div>
+            </div><!-- end columns -->
+      </div><!-- end container -->
+    </section>
+
+
+
+    <footer class="footer">
+        <div class="content has-text-centered">
+          <p>
+              Copyright &copy; 2024
+              Powered by <a target="_blank" href="http://www.mweb.im">geraltlau</a>&nbsp; 
+          </p>
+        </div>
+      </footer>
+
+<style>.mweb-charts{background:#fff;}
+body{ box-sizing: border-box;
+    margin: 0 auto;}
+@media print{
+    pre, code, pre code {
+     overflow: visible !important;
+     white-space: pre-wrap !important;       /* css-3 */
+     white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+     white-space: -pre-wrap !important;      /* Opera 4-6 */
+     white-space: -o-pre-wrap !important;    /* Opera 7 */
+     word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+    }
+    html,body{margin:0;padding:4px;}
+}
+
+
+
+div.code-toolbar {
+  position: relative;
+}
+
+div.code-toolbar > .toolbar {
+  position: absolute;
+  z-index: 10;
+  top: .3em;
+  right: .2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
+
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
+
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
+div.code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > a {
+  cursor: pointer;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-user-select: none; /* for button */
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: inherit;
+  font-size: .8em;
+  padding: 4px .5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.4);
+  box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);
+  border-radius: .5em;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
+
+
+  
+    
+
+
+
+
+  </body>
+</html>
