@@ -1288,8 +1288,95 @@ cur 原来的右子树应该是新的右子树根的右子树。<br />
 因为 5 和 6 的位置仍然相同，所以答案保持不变，仍然按值从小到大排序。</p>
 <h5><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h5>
 <ul>
-<li></li>
+<li>统计所有节点的坐标</li>
+<li>使用Triple来存储节点和坐标</li>
+<li>进行排序，列优先，行其次，val最后</li>
 </ul>
+<pre><code class="language-go">func verticalTraversal(root *TreeNode) [][]int {
+	type Triple struct {
+		Node     *TreeNode
+		Row, Col int
+	}
+	listNodes := []*Triple{}
+	var travel func(node *TreeNode, row, col int)
+	travel = func(node *TreeNode, row, col int) {
+		if node == nil {
+			return
+		}
+		listNodes = append(listNodes, &amp;Triple{
+			Node: node,
+			Row:  row,
+			Col:  col,
+		})
+		travel(node.Left, row+1, col-1)
+		travel(node.Right, row+1, col+1)
+	}
+	travel(root, 0, 0)
+	sort.Slice(listNodes, func(i, j int) bool {
+		if listNodes[i].Row == listNodes[j].Row &amp;&amp; listNodes[i].Col == listNodes[j].Col {
+			return listNodes[i].Node.Val &lt; listNodes[j].Node.Val
+		}
+		if listNodes[i].Col == listNodes[j].Col {
+			return listNodes[i].Row &lt; listNodes[j].Row
+		}
+		return listNodes[i].Col &lt; listNodes[j].Col
+	})
+	preCol := math.MinInt64
+	var ans [][]int
+	for _, val := range listNodes {
+		if val.Col != preCol {
+			ans = append(ans, []int{})
+			preCol = val.Col
+		}
+		ans[len(ans)-1] = append(ans[len(ans)-1], val.Node.Val)
+	}
+	return ans
+}
+</code></pre>
+<h3><a id="993%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%A0%82%E5%85%84%E5%BC%9F%E8%8A%82%E7%82%B9" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>993. 二叉树的堂兄弟节点</h3>
+<p>在二叉树中，根节点位于深度 0 处，每个深度为 k 的节点的子节点位于深度 k+1 处。</p>
+<p>如果二叉树的两个节点深度相同，但 父节点不同 ，则它们是一对堂兄弟节点。</p>
+<p>我们给出了具有唯一值的二叉树的根节点 root ，以及树中两个不同节点的值 x 和 y 。</p>
+<p>只有与值 x 和 y 对应的节点是堂兄弟节点时，才返回 true 。否则，返回 false。<br />
+<img src="media/17237099130982/17242443690824.png" alt="" /><br />
+输入：root = [1,2,3,4], x = 4, y = 3<br />
+输出：false<br />
+<img src="media/17237099130982/17242443792368.png" alt="" /><br />
+输入：root = [1,2,3,null,4,null,5], x = 5, y = 4<br />
+输出：true<br />
+<img src="media/17237099130982/17242443908819.png" alt="" /><br />
+输入：root = [1,2,3,null,4], x = 2, y = 3<br />
+输出：false</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<ul>
+<li>root父节点是nil</li>
+</ul>
+<pre><code class="language-go">func isCousins(root *TreeNode, x int, y int) bool {
+	depthX, depthY := 0, 0
+	var parentX, parentY *TreeNode
+	var travel func(node, parent *TreeNode, depth int)
+	travel = func(node, parent *TreeNode, depth int) {
+		if node == nil {
+			return
+		}
+		if node.Val == x {
+			parentX = parent
+			depthX = depth
+		}
+		if node.Val == y {
+			parentY = parent
+			depthY = depth
+		}
+		travel(node.Left, node, depth+1)
+		travel(node.Right, node, depth+1)
+	}
+	travel(root, nil, 0)
+	if parentX != parentY &amp;&amp; depthX == depthY {
+		return true
+	}
+	return false
+}
+</code></pre>
 
                   </article>
                   <div class="comments-wrap">
