@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>
       
-    day44 动态规划11 -        凌云阁
+    day45 动态规划12 -        凌云阁
     
     </title>
     <link rel="shortcut icon" href="https://i.loli.net/2020/02/22/Si1K7sluept2ZgR.jpg" type="image/png" />
@@ -102,7 +102,7 @@
                   <div class="post-body single-content">
                     
                     <h1 class="title">
-                            day44 动态规划11   
+                            day45 动态规划12   
                       </h1>
                      
                     
@@ -119,7 +119,7 @@
                             <div class="media-content">
                               <div class="content">
                                 <p>
-                                 <span class="date">2024/08/29 10:24 上午</span>
+                                 <span class="date">2024/08/30 08:28 上午</span>
                                   <span class="tran-posted-in">posted in</span>&nbsp; 
                                   
                                       <span class="posted-in"><a href='%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95%E5%AE%9E%E6%88%98.html'>代码随想录实战</a></span>
@@ -139,132 +139,109 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4><a id="1143%E6%9C%80%E9%95%BF%E5%85%AC%E5%85%B1%E5%AD%90%E5%BA%8F%E5%88%97" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>1143.最长公共子序列</h4>
-<p>给定两个字符串 text1 和 text2，返回这两个字符串的最长公共子序列的长度。</p>
-<p>一个字符串的 子序列 是指这样一个新的字符串：它是由原字符串在不改变字符的相对顺序的情况下删除某些字符（也可以不删除任何字符）后组成的新字符串。</p>
-<p>例如，&quot;ace&quot; 是 &quot;abcde&quot; 的子序列，但 &quot;aec&quot; 不是 &quot;abcde&quot; 的子序列。两个字符串的「公共子序列」是这两个字符串所共同拥有的子序列。</p>
-<p>若这两个字符串没有公共子序列，则返回 0。</p>
-<p>示例 1:</p>
-<p>输入：text1 = &quot;abcde&quot;, text2 = &quot;ace&quot;<br />
-输出：3<br />
-解释：最长公共子序列是 &quot;ace&quot;，它的长度为 3。<br />
-示例 2:</p>
-<p>输入：text1 = &quot;abc&quot;, text2 = &quot;abc&quot;<br />
-输出：3<br />
-解释：最长公共子序列是 &quot;abc&quot;，它的长度为 3。<br />
-示例 3:</p>
-<p>输入：text1 = &quot;abc&quot;, text2 = &quot;def&quot;<br />
-输出：0<br />
-解释：两个字符串没有公共子序列，返回 0。</p>
+                    <h3><a id="115%E4%B8%8D%E5%90%8C%E7%9A%84%E5%AD%90%E5%BA%8F%E5%88%97" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>115.不同的子序列</h3>
+<p>给定一个字符串 s 和一个字符串 t ，计算在 s 的子序列中 t 出现的个数。</p>
+<p>字符串的一个 子序列 是指，通过删除一些（也可以不删除）字符且不干扰剩余字符相对位置所组成的新字符串。（例如，&quot;ACE&quot; 是 &quot;ABCDE&quot; 的一个子序列，而 &quot;AEC&quot; 不是）</p>
+<p>题目数据保证答案符合 32 位带符号整数范围。<br />
+<img src="media/17249776891220/17249778436544.jpg" alt="" /></p>
 <h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
 <ul>
-<li>三个方向推导</li>
-<li><img src="media/17248982459113/17249012247724.jpg" alt="" /></li>
+<li>dp[i][j] = dp[i - 1][j - 1] + dp[i - 1][j]; 和 dp[i][j] = dp[i - 1][j];<br />
+<img src="media/17249776891220/17249798328320.jpg" alt="" /></li>
 </ul>
-<pre><code class="language-go">func longestCommonSubsequence(text1 string, text2 string) int {
-	t1, t2 := len(text1), len(text2)
-	dp := make([][]int, t1+1)
-	for i := range dp {
-		dp[i] = make([]int, t2+1)
-	}
-	for i := 1; i &lt;= t1; i++ {
-		for j := 1; j &lt;= t2; j++ {
-			if text1[i-1] == text2[j-1] {
-				dp[i][j] = dp[i-1][j-1] + 1
-			} else {
-				dp[i][j] = max(dp[i][j-1], dp[i-1][j])
-			}
-		}
-	}
-	return dp[t1][t2]
-}
-</code></pre>
-<h3><a id="1035%E4%B8%8D%E7%9B%B8%E4%BA%A4%E7%9A%84%E7%BA%BF" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>1035.不相交的线</h3>
-<p>我们在两条独立的水平线上按给定的顺序写下 A 和 B 中的整数。</p>
-<p>现在，我们可以绘制一些连接两个数字 A[i] 和 B[j] 的直线，只要 A[i] == B[j]，且我们绘制的直线不与任何其他连线（非水平线）相交。</p>
-<p>以这种方法绘制线条，并返回我们可以绘制的最大连线数。<br />
-<img src="media/17248982459113/17249012798900.png" alt="" /></p>
-<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
-<pre><code class="language-go">func maxUncrossedLines(nums1 []int, nums2 []int) int {
-	n1, n2 := len(nums1), len(nums2)
+<pre><code class="language-go">func numDistinct(s string, t string) int {
+	n1, n2 := len(s), len(t)
 	dp := make([][]int, n1+1)
 	for i := range dp {
 		dp[i] = make([]int, n2+1)
+		dp[i][0] = 1
+	}
+	for i := 1; i &lt;= n2; i++ {
+		dp[0][i] = 0
 	}
 	for i := 1; i &lt;= n1; i++ {
 		for j := 1; j &lt;= n2; j++ {
-			if nums1[i-1] == nums2[j-1] {
-				dp[i][j] = dp[i-1][j-1] + 1
+			if s[i-1] == t[j-1] {
+				dp[i][j] = dp[i-1][j-1] + dp[i-1][j]
 			} else {
-				dp[i][j] = max(dp[i][j-1], dp[i-1][j])
+				dp[i][j] = dp[i-1][j]
 			}
 		}
 	}
 	return dp[n1][n2]
 }
 </code></pre>
-<h3><a id="53%E6%9C%80%E5%A4%A7%E5%AD%90%E5%BA%8F%E5%92%8C" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>53. 最大子序和</h3>
-<p>给定一个整数数组 nums ，找到一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。</p>
-<p>示例:</p>
-<p>输入: [-2,1,-3,4,-1,2,1,-5,4]<br />
-输出: 6<br />
-解释: 连续子数组 [4,-1,2,1] 的和最大，为 6。</p>
+<h3><a id="583%E4%B8%A4%E4%B8%AA%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E5%88%A0%E9%99%A4%E6%93%8D%E4%BD%9C" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>583. 两个字符串的删除操作</h3>
+<p>给定两个单词 word1 和 word2，找到使得 word1 和 word2 相同所需的最小步数，每步可以删除任意一个字符串中的一个字符。</p>
+<p>示例：</p>
+<p>输入: &quot;sea&quot;, &quot;eat&quot;<br />
+输出: 2<br />
+解释: 第一步将&quot;sea&quot;变为&quot;ea&quot;，第二步将&quot;eat&quot;变为&quot;ea&quot;</p>
 <h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
 <ul>
-<li>dp[i]：包括下标i（以nums[i]为结尾）的最大连续子序列和为dp[i]。</li>
-<li>dp[i - 1] + nums[i]，即：nums[i]加入当前连续子序列和</li>
-<li>nums[i]，即：从头开始计算当前连续子序列和，不加入</li>
+<li>dp[i][j] = min(dp[i - 1][j - 1] + 2, min(dp[i - 1][j], dp[i][j - 1]) + 1);<br />
+<img src="media/17249776891220/17249811949855.jpg" alt="" /></li>
 </ul>
-<pre><code class="language-go">func maxSubArray(nums []int) int {
-	n := len(nums)
-	if n == 0 {
-		return 0
-	}
-	dp := make([]int, n)
-	dp[0] = nums[0]
-	ans := dp[0]
-	for i := 1; i &lt; n; i++ {
-		dp[i] = max(dp[i-1]+nums[i], nums[i])
-		if ans &lt; dp[i] {
-			ans = dp[i]
-		}
-	}
-	return ans
-}
-</code></pre>
-<h3><a id="392%E5%88%A4%E6%96%AD%E5%AD%90%E5%BA%8F%E5%88%97" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>392.判断子序列</h3>
-<p>给定字符串 s 和 t ，判断 s 是否为 t 的子序列。</p>
-<p>字符串的一个子序列是原始字符串删除一些（也可以不删除）字符而不改变剩余字符相对位置形成的新字符串。（例如，&quot;ace&quot;是&quot;abcde&quot;的一个子序列，而&quot;aec&quot;不是）。</p>
-<p>示例 1：</p>
-<p>输入：s = &quot;abc&quot;, t = &quot;ahbgdc&quot;<br />
-输出：true<br />
-示例 2：</p>
-<p>输入：s = &quot;axc&quot;, t = &quot;ahbgdc&quot;<br />
-输出：false</p>
-<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
-<ul>
-<li>dp[i][j] 表示以下标i-1为结尾的字符串s，和以下标j-1为结尾的字符串t，相同子序列的长度为dp[i][j]</li>
-<li>if (s[i - 1] == t[j - 1]) t中找到了一个字符在s中也出现了</li>
-<li>if (s[i - 1] != t[j - 1])相当于t要删除元素，继续匹配</li>
-<li><img src="media/17248982459113/17249045329063.jpg" alt="" /></li>
-</ul>
-<pre><code class="language-go">func isSubsequence(s string, t string) bool {
-	n1, n2 := len(s), len(t)
+<pre><code class="language-go">func minDistance(word1 string, word2 string) int {
+	n1, n2 := len(word1), len(word2)
 	dp := make([][]int, n1+1)
 	for i := range dp {
 		dp[i] = make([]int, n2+1)
+		dp[i][0] = i
+	}
+	for i := 0; i &lt;= n2; i++ {
+		dp[0][i] = i
 	}
 	for i := 1; i &lt;= n1; i++ {
 		for j := 1; j &lt;= n2; j++ {
-			if s[i-1] == t[j-1] {
-				dp[i][j] = dp[i-1][j-1] + 1
+			if word1[i-1] == word2[j-1] {
+				dp[i][j] = dp[i-1][j-1]
 			} else {
-				dp[i][j] = dp[i][j-1]
+				dp[i][j] = min(dp[i-1][j-1]+2, min(dp[i-1][j]+1, dp[i][j-1]+1))
 			}
 		}
 	}
-	return dp[n1][n2] == len(s)
+	return dp[n1][n2]
 }
+</code></pre>
+<h3><a id="72%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>72. 编辑距离</h3>
+<p>给你两个单词 word1 和 word2，请你计算出将 word1 转换成 word2 所使用的最少操作数 。</p>
+<p>你可以对一个单词进行如下三种操作：</p>
+<p>插入一个字符</p>
+<p>删除一个字符</p>
+<p>替换一个字符</p>
+<p>示例 1：</p>
+<p>输入：word1 = &quot;horse&quot;, word2 = &quot;ros&quot;</p>
+<p>输出：3</p>
+<p>解释： horse -&gt; rorse (将 'h' 替换为 'r') rorse -&gt; rose (删除 'r') rose -&gt; ros (删除 'e')</p>
+<p>示例 2：</p>
+<p>输入：word1 = &quot;intention&quot;, word2 = &quot;execution&quot;</p>
+<p>输出：5</p>
+<p>解释： intention -&gt; inention (删除 't') inention -&gt; enention (将 'i' 替换为 'e') enention -&gt; exention (将 'n' 替换为 'x') exention -&gt; exection (将 'n' 替换为 'c') exection -&gt; execution (插入 'u')</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<pre><code class="language-go">func minDistance(word1 string, word2 string) int {
+	n1, n2 := len(word1), len(word2)
+	dp := make([][]int, n1+1)
+	for i := range dp {
+		dp[i] = make([]int, n2+1)
+		dp[i][0] = i
+	}
+	for i := 0; i &lt;= n2; i++ {
+		dp[0][i] = i
+	}
+	for i := 1; i &lt;= n1; i++ {
+		for j := 1; j &lt;= n2; j++ {
+			if word1[i-1] == word2[j-1] {
+				dp[i][j] = dp[i-1][j-1]
+			} else {
+				dp[i][j] = min(dp[i-1][j]+1, min(dp[i-1][j-1]+1, dp[i][j-1]+1))
+			}
+		}
+	}
+	return dp[n1][n2]
+}
+</code></pre>
+<pre><code class="language-py">
 </code></pre>
 
                   </article>
