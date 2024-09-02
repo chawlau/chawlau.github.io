@@ -170,6 +170,17 @@
 	return res
 }
 </code></pre>
+<pre><code class="language-py">class Solution:
+    def dailyTemperatures(self, nums : List[int]) -&gt; List[int]:
+        n = len(nums)
+        res, s = [0]*n, []
+        for i in range(n-1, -1, -1):
+            while s and  nums[s[-1]] &lt;= nums[i]:
+                s.pop()
+            res[i] = 0 if not s else s[-1] - i
+            s.append(i)
+        return res
+</code></pre>
 <h3><a id="496%E4%B8%8B%E4%B8%80%E4%B8%AA%E6%9B%B4%E5%A4%A7%E5%85%83%E7%B4%A0-i" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>496.下一个更大元素 I</h3>
 <p>给你两个 没有重复元素 的数组 nums1 和 nums2 ，其中nums1 是 nums2 的子集。</p>
 <p>请你找出 nums1 中每个元素在 nums2 中的下一个比其大的值。</p>
@@ -220,6 +231,31 @@
 	return res
 }
 </code></pre>
+<pre><code class="language-python">class Solution:
+    def nextGreaterElement(self, nums1: List[int], nums2: List[int]) -&gt; List[int]:
+        greater = self.helper(nums2)
+        mmap = {}
+        for i in range(len(nums2)):
+            mmap[nums2[i]] = greater[i]
+        res = [0]*len(nums1)
+        for i in range(len(nums1)):
+            res[i] = mmap[nums1[i]]
+        return res
+
+
+
+    def helper(self, nums: List[int]) -&gt; List[int]:
+        n = len(nums)
+        res = [-1]*n
+        s = []
+        for i in range(n-1, -1, -1):
+            while s and s[-1] &lt;= nums[i]:
+                s.pop()
+            if s:
+                res[i] = s[-1]
+            s.append(nums[i])
+        return res
+</code></pre>
 <h3><a id="503%E4%B8%8B%E4%B8%80%E4%B8%AA%E6%9B%B4%E5%A4%A7%E5%85%83%E7%B4%A0-ii" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>503.下一个更大元素II</h3>
 <p>给定一个循环数组（最后一个元素的下一个元素是数组的第一个元素），输出每个元素的下一个更大元素。数字 x 的下一个更大的元素是按数组遍历顺序，这个数字之后的第一个比它更大的数，这意味着你应该循环地搜索它的下一个更大的数。如果不存在，则输出 -1。</p>
 <p>示例 1:</p>
@@ -250,6 +286,18 @@
 	}
 	return res
 }
+</code></pre>
+<pre><code class="language-py">class Solution:
+    def nextGreaterElements(self, nums: List[int]) -&gt; List[int]:
+        n = len(nums)
+        res, s = [-1]*n, []
+        for i in range(2*n -1, -1, -1):
+            while s and s[-1] &lt;= nums[i%n]:
+                s.pop()
+            if s:
+                res[i%n] = s[-1]
+            s.append(nums[i%n])
+        return res
 </code></pre>
 
                   </article>
