@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>
       
-    Pytorch训练 -        凌云阁
+    day49 图论 -        凌云阁
     
     </title>
     <link rel="shortcut icon" href="https://i.loli.net/2020/02/22/Si1K7sluept2ZgR.jpg" type="image/png" />
@@ -102,7 +102,7 @@
                   <div class="post-body single-content">
                     
                     <h1 class="title">
-                            Pytorch训练   
+                            day49 图论   
                       </h1>
                      
                     
@@ -119,10 +119,10 @@
                             <div class="media-content">
                               <div class="content">
                                 <p>
-                                 <span class="date">2024/08/26 17:09 下午</span>
+                                 <span class="date">2024/09/04 09:19 上午</span>
                                   <span class="tran-posted-in">posted in</span>&nbsp; 
                                   
-                                      <span class="posted-in"><a href='%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html'>机器学习</a></span>
+                                      <span class="posted-in"><a href='%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95%E5%AE%9E%E6%88%98.html'>代码随想录实战</a></span>
                                          
                                   
 
@@ -139,15 +139,52 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h4><a id="api" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>API</h4>
-<p>创建神经网络的步骤</p>
-<p>构建神经网</p>
-<p>构建数据集</p>
-<p>是数据集放入神经网络中进行训练损失值的计算 loss</p>
-<p>反向传播求其梯度</p>
-<p>更新参数</p>
-<h4><a id="%E8%AE%A1%E7%AE%97%E9%93%BE%E6%9D%A1" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>计算链条</h4>
-<p><img src="media/17246633472106/17253620484984.jpg" alt="" /></p>
+                    <h3><a id="797%E6%89%80%E6%9C%89%E5%8F%AF%E8%83%BD%E7%9A%84%E8%B7%AF%E5%BE%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>797. 所有可能的路径</h3>
+<p>给你一个有 n 个节点的 有向无环图（DAG），请你找出所有从节点 0 到节点 n-1 的路径并输出（不要求按特定顺序）</p>
+<p>graph[i] 是一个从节点 i 可以访问的所有节点的列表（即从节点 i 到节点 graph[i][j]存在一条有向边）。<br />
+<img src="media/17254127481886/17254127900012.jpg" alt="" /><br />
+输入：graph = [[1,2],[3],[3],[]]<br />
+输出：[[0,1,3],[0,2,3]]<br />
+解释：有两条路径 0 -&gt; 1 -&gt; 3 和 0 -&gt; 2 -&gt; 3<br />
+<img src="media/17254127481886/17254128025848.jpg" alt="" /><br />
+输入：graph = [[4,3,1],[3,2,4],[3],[4],[]]<br />
+输出：[[0,4],[0,3,4],[0,1,3,4],[0,1,2,3,4],[0,1,4]]</p>
+<pre><code class="language-go">func allPathsSourceTarget(graph [][]int) [][]int {
+	ans, path, n := [][]int{}, []int{}, len(graph)
+	var travel func(s int, path []int)
+	travel = func(s int, path []int) {
+		path = append(path, s)
+		if s == n-1 {
+			ans = append(ans, append([]int{}, path...))
+			path = path[:len(path)-1]
+			return
+		}
+		for _, val := range graph[s] {
+			travel(val, path)
+		}
+		path = path[:len(path)-1]
+	}
+	travel(0, path)
+	return ans
+}
+</code></pre>
+<pre><code class="language-py">class Solution:
+    def __init__(self):
+        self.res = []
+    def travel(self, graph: List[List[int]], s: int, path: List[int]):
+        path.append(s)
+        if s == len(graph) - 1:
+            self.res.append(list(path))
+            path.pop()
+            return
+        for val in graph[s]:
+            self.travel(graph, val, path)
+        path.pop()
+    def allPathsSourceTarget(self, graph: List[List[int]]) -&gt; List[List[int]]:
+        path = []
+        self.travel(graph, 0, path)
+        return self.res
+</code></pre>
 
                   </article>
                   <div class="comments-wrap">
@@ -175,6 +212,7 @@
         </div>
       </footer>
 
+<script>(n=>{"use strict";let s,r,e;const l=["cdn.jsdelivr.net","fastly.jsdelivr.net","gcore.jsdelivr.net","cdn.zenless.top","testingcf.jsdelivr.net"],t="//",i=l[0],o=Date.now(),a=2e3,c="jsdelivr-auto-fallback",f="/gh/PipecraftNet/jsdelivr-auto-fallback@main/empty.css?",d=e=>e&&e.includes(t+i),m=e=>e.replace(t+i,t+s),u=window.setTimeout,v=n.querySelectorAll.bind(n),b=()=>{let e,t;for(e of v('link[rel="stylesheet"]'))t=e.href,d(t)&&!t.includes(f)&&(e.href=m(t));for(e of v("script"))if(t=e.src,d(t)){const s=n.createElement("script");s.src=m(t),e.defer=!0,e.src="",e.before(s),e.remove()}for(e of v("img"))t=e.src,d(t)&&(e.src="",e.src=m(t));for(e of v("*[style]"))t=e.getAttribute("style"),d(t)&&e.setAttribute("style",m(t));for(e of v("style"))t=e.innerHTML,d(t)&&(e.innerHTML=m(t))},h=()=>{!e&&r&&s&&(console.warn(i+" is not available. Use "+s),e=!0,u(b,0),u(b,20),setInterval(b,500))},g=(()=>{try{return Object.assign({},JSON.parse(localStorage.getItem(c)||"{}"))}catch{return{}}})(),y=()=>{g.time=o,g.failed=!1,g.fastNode=null;for(const t of l)((e,t)=>{let s;const r=n.createElement("link"),l=e=>{s&&(clearTimeout(s),s=0,e||(r.href="data:text/css;base64,"),r.remove(),t(e))};s=u(l,a),r.addEventListener("error",()=>l(!1)),r.addEventListener("load",()=>l(!0)),r.rel="stylesheet",r.text="text/css",r.href=e+f+o,n.head.insertAdjacentElement("afterbegin",r)})("https://"+t,e=>{e||t!==i||(r=!0,g.failed=!0),e&&!s&&(s=t),e&&!g.fastNode&&(g.fastNode=t),h()});u(()=>{r&&!s&&(s=l[1],h()),localStorage.setItem(c,JSON.stringify(g))},a+100)};if(g.time&&o-g.time<36e5&&g.failed&&g.fastNode)r=!0,s=g.fastNode,h(),u(y,1e3);else if(n.head)y();else{const j=new MutationObserver(()=>{n.head&&(j.disconnect(),y())});j.observe(n,{childList:!0,subtree:!0})}})(document);</script>
 <style>.mweb-charts{background:#fff;}
 body{ box-sizing: border-box;
     margin: 0 auto;}
@@ -257,7 +295,7 @@ div.code-toolbar > .toolbar > .toolbar-item > span:focus {
   color: inherit;
   text-decoration: none;
 }
-</style>
+</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
 
 
   
