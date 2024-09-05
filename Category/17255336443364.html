@@ -256,7 +256,19 @@ func main() {
 <p>输入：grid = [[0,0,0,0,0,0,0,0]]<br />
 输出：0</p>
 <h3><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h3>
-<pre><code class="language-go">func maxAreaOfIsland(grid [][]int) int {
+<pre><code class="language-go">package main
+import (
+	&quot;fmt&quot;
+)
+
+func max(x, y int) int {
+    if x &lt; y {
+        return y
+    }
+    return x
+}
+
+func maxAreaOfIsland(grid [][]int) int {
 	ans, m, n := 0, len(grid), len(grid[0])
 	var travel func(i, j int) int
 	travel = func(i, j int) int {
@@ -275,6 +287,22 @@ func main() {
 		}
 	}
 	return ans
+}
+
+func main() {
+	var n, m int
+	fmt.Scan(&amp;n, &amp;m)
+
+	grid := make([][]int, n)
+	for i := range grid {
+		grid[i] = make([]int, m)
+		for j := range grid[i] {
+			fmt.Scan(&amp;grid[i][j])
+		}
+	}
+    res := maxAreaOfIsland(grid)
+    fmt.Println(res)
+	// 后续的代码可以在这里继续
 }
 </code></pre>
 
