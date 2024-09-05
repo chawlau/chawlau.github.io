@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>
       
-    day49 图论01 -        凌云阁
+    day50 图论02 -        凌云阁
     
     </title>
     <link rel="shortcut icon" href="https://i.loli.net/2020/02/22/Si1K7sluept2ZgR.jpg" type="image/png" />
@@ -102,7 +102,7 @@
                   <div class="post-body single-content">
                     
                     <h1 class="title">
-                            day49 图论01   
+                            day50 图论02   
                       </h1>
                      
                     
@@ -119,7 +119,7 @@
                             <div class="media-content">
                               <div class="content">
                                 <p>
-                                 <span class="date">2024/09/04 09:19 上午</span>
+                                 <span class="date">2024/09/05 18:54 下午</span>
                                   <span class="tran-posted-in">posted in</span>&nbsp; 
                                   
                                       <span class="posted-in"><a href='%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95%E5%AE%9E%E6%88%98.html'>代码随想录实战</a></span>
@@ -139,51 +139,143 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h3><a id="797%E6%89%80%E6%9C%89%E5%8F%AF%E8%83%BD%E7%9A%84%E8%B7%AF%E5%BE%84" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>797. 所有可能的路径</h3>
-<p>给你一个有 n 个节点的 有向无环图（DAG），请你找出所有从节点 0 到节点 n-1 的路径并输出（不要求按特定顺序）</p>
-<p>graph[i] 是一个从节点 i 可以访问的所有节点的列表（即从节点 i 到节点 graph[i][j]存在一条有向边）。<br />
-<img src="media/17254127481886/17254127900012.jpg" alt="" /><br />
-输入：graph = [[1,2],[3],[3],[]]<br />
-输出：[[0,1,3],[0,2,3]]<br />
-解释：有两条路径 0 -&gt; 1 -&gt; 3 和 0 -&gt; 2 -&gt; 3<br />
-<img src="media/17254127481886/17254128025848.jpg" alt="" /><br />
-输入：graph = [[4,3,1],[3,2,4],[3],[4],[]]<br />
-输出：[[0,4],[0,3,4],[0,1,3,4],[0,1,2,3,4],[0,1,4]]</p>
-<pre><code class="language-go">func allPathsSourceTarget(graph [][]int) [][]int {
-	ans, path, n := [][]int{}, []int{}, len(graph)
-	var travel func(s int, path []int)
-	travel = func(s int, path []int) {
-		path = append(path, s)
-		if s == n-1 {
-			ans = append(ans, append([]int{}, path...))
-			path = path[:len(path)-1]
+                    <h3><a id="200%E5%B2%9B%E5%B1%BF%E6%95%B0%E9%87%8F" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>200岛屿数量</h3>
+<p>给定一个由 1（陆地）和 0（水）组成的矩阵，你需要计算岛屿的数量。岛屿由水平方向或垂直方向上相邻的陆地连接而成，并且四周都是水域。你可以假设矩阵外均被水包围。</p>
+<p>输入描述：</p>
+<p>第一行包含两个整数 N, M，表示矩阵的行数和列数。</p>
+<p>后续 N 行，每行包含 M 个数字，数字为 1 或者 0。</p>
+<p>输出描述：</p>
+<p>输出一个整数，表示岛屿的数量。如果不存在岛屿，则输出 0。</p>
+<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
+<pre><code class="language-go">func numIslands(grid [][]byte) int {
+	ans := 0
+	m, n := len(grid), len(grid[0])
+	var travel func(i, j int)
+	travel = func(i, j int) {
+		if i &lt; 0 || j &lt; 0 || i &gt;= m || j &gt;= n {
 			return
 		}
-		for _, val := range graph[s] {
-			travel(val, path)
+		if grid[i][j] == '0' {
+			return
 		}
-		path = path[:len(path)-1]
+		grid[i][j] = '0'
+		travel(i+1, j)
+		travel(i-1, j)
+		travel(i, j+1)
+		travel(i, j-1)
+
 	}
-	travel(0, path)
+	for i := 0; i &lt; m; i++ {
+		for j := 0; j &lt; n; j++ {
+			if grid[i][j] == 1 {
+				ans++
+				travel(i, j)
+			}
+		}
+	}
 	return ans
 }
 </code></pre>
-<pre><code class="language-py">class Solution:
-    def __init__(self):
-        self.res = []
-    def travel(self, graph: List[List[int]], s: int, path: List[int]):
-        path.append(s)
-        if s == len(graph) - 1:
-            self.res.append(list(path))
-            path.pop()
-            return
-        for val in graph[s]:
-            self.travel(graph, val, path)
-        path.pop()
-    def allPathsSourceTarget(self, graph: List[List[int]]) -&gt; List[List[int]]:
-        path = []
-        self.travel(graph, 0, path)
-        return self.res
+<h4><a id="%E5%B9%BF%E5%BA%A6%E4%BC%98%E5%85%88%E6%90%9C%E7%B4%A2" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>广度优先搜索</h4>
+<pre><code class="language-go">package main
+
+import (
+	&quot;fmt&quot;
+)
+
+var dir = [4][2]int{{0, 1}, {1, 0}, {-1, 0}, {0, -1}} // 四个方向
+
+func bfs(grid [][]int, visited [][]bool, x int, y int) {
+	que := make([]pair, 0)
+	que = append(que, pair{x, y})
+	visited[x][y] = true // 只要加入队列，立刻标记
+	for len(que) &gt; 0 {
+		cur := que[0]
+		que = que[1:]
+		curx := cur.x
+		cury := cur.y
+		for i := 0; i &lt; 4; i++ {
+			nextx := curx + dir[i][0]
+			nexty := cury + dir[i][1]
+			if nextx &lt; 0 || nextx &gt;= len(grid) || nexty &lt; 0 || nexty &gt;= len(grid[0]) {
+				continue // 越界了，直接跳过
+			}
+			if !visited[nextx][nexty] &amp;&amp; grid[nextx][nexty] == 1 {
+				que = append(que, pair{nextx, nexty})
+				visited[nextx][nexty] = true // 只要加入队列立刻标记
+			}
+		}
+	}
+}
+
+type pair struct {
+	x int
+	y int
+}
+
+func main() {
+	var n int
+	var m int
+	fmt.Scan(&amp;n, &amp;m)
+	grid := make([][]int, n)
+	for i := range grid {
+		grid[i] = make([]int, m)
+		for j := range grid[i] {
+			fmt.Scan(&amp;grid[i][j])
+		}
+	}
+
+	visited := make([][]bool, n)
+	for i := range visited {
+		visited[i] = make([]bool, m)
+	}
+
+	result := 0
+	for i := 0; i &lt; n; i++ {
+		for j := 0; j &lt; m; j++ {
+			if !visited[i][j] &amp;&amp; grid[i][j] == 1 {
+				result++ // 遇到没访问过的陆地，+1
+				bfs(grid, visited, i, j) // 将与其链接的陆地都标记上 true
+			}
+		}
+	}
+
+	fmt.Println(result)
+}
+</code></pre>
+<h3><a id="695%E5%B2%9B%E5%B1%BF%E7%9A%84%E6%9C%80%E5%A4%A7%E9%9D%A2%E7%A7%AF" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>695 岛屿的最大面积</h3>
+<p>给你一个大小为 m x n 的二进制矩阵 grid 。</p>
+<p>岛屿 是由一些相邻的 1 (代表土地) 构成的组合，这里的「相邻」要求两个 1 必须在 水平或者竖直的四个方向上 相邻。你可以假设 grid 的四个边缘都被 0（代表水）包围着。</p>
+<p>岛屿的面积是岛上值为 1 的单元格的数目。</p>
+<p>计算并返回 grid 中最大的岛屿面积。如果没有岛屿，则返回面积为 0 。</p>
+<p><img src="media/17255336443364/17255375964859.jpg" alt="" /><br />
+输入：grid = [[0,0,1,0,0,0,0,1,0,0,0,0,0],[0,0,0,0,0,0,0,1,1,1,0,0,0],[0,1,1,0,1,0,0,0,0,0,0,0,0],[0,1,0,0,1,1,0,0,1,0,1,0,0],[0,1,0,0,1,1,0,0,1,1,1,0,0],[0,0,0,0,0,0,0,0,0,0,1,0,0],[0,0,0,0,0,0,0,1,1,1,0,0,0],[0,0,0,0,0,0,0,1,1,0,0,0,0]]<br />
+输出：6<br />
+解释：答案不应该是 11 ，因为岛屿只能包含水平或垂直这四个方向上的 1<br />
+示例 2：</p>
+<p>输入：grid = [[0,0,0,0,0,0,0,0]]<br />
+输出：0</p>
+<h3><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h3>
+<pre><code class="language-go">func maxAreaOfIsland(grid [][]int) int {
+	ans, m, n := 0, len(grid), len(grid[0])
+	var travel func(i, j int) int
+	travel = func(i, j int) int {
+		if i &lt; 0 || i &gt;= m || j &lt; 0 || j &gt;= n || grid[i][j] == 0 {
+			return 0
+		}
+		grid[i][j] = 0
+		return travel(i+1, j) + travel(i-1, j) +
+			travel(i, j+1) + travel(i, j-1) + 1
+	}
+	for i := 0; i &lt; m; i++ {
+		for j := 0; j &lt; n; j++ {
+			if grid[i][j] == 1 {
+				ans = max(ans, travel(i, j))
+			}
+		}
+	}
+	return ans
+}
 </code></pre>
 
                   </article>
