@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>
       
-    day62 图论part11 -        凌云阁
+    day63 总结篇 -        凌云阁
     
     </title>
     <link rel="shortcut icon" href="https://i.loli.net/2020/02/22/Si1K7sluept2ZgR.jpg" type="image/png" />
@@ -102,7 +102,7 @@
                   <div class="post-body single-content">
                     
                     <h1 class="title">
-                            day62 图论part11   
+                            day63 总结篇   
                       </h1>
                      
                     
@@ -119,7 +119,7 @@
                             <div class="media-content">
                               <div class="content">
                                 <p>
-                                 <span class="date">2024/09/18 09:33 上午</span>
+                                 <span class="date">2024/09/18 09:48 上午</span>
                                   <span class="tran-posted-in">posted in</span>&nbsp; 
                                   
                                       <span class="posted-in"><a href='%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95%E5%AE%9E%E6%88%98.html'>代码随想录实战</a></span>
@@ -139,203 +139,46 @@
                     </div>
                 </div>
                   <article class="markdown-body single-content">
-                    <h3><a id="97%E5%B0%8F%E6%98%8E%E9%80%9B%E5%85%AC%E5%9B%AD" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>97.小明逛公园</h3>
-<p>【题目描述】</p>
-<p>小明喜欢去公园散步，公园内布置了许多的景点，相互之间通过小路连接，小明希望在观看景点的同时，能够节省体力，走最短的路径。</p>
-<p>给定一个公园景点图，图中有 N 个景点（编号为 1 到 N），以及 M 条双向道路连接着这些景点。每条道路上行走的距离都是已知的。</p>
-<p>小明有 Q 个观景计划，每个计划都有一个起点 start 和一个终点 end，表示他想从景点 start 前往景点 end。由于小明希望节省体力，他想知道每个观景计划中从起点到终点的最短路径长度。 请你帮助小明计算出每个观景计划的最短路径长度。</p>
-<p>【输入描述】</p>
-<p>第一行包含两个整数 N, M, 分别表示景点的数量和道路的数量。</p>
-<p>接下来的 M 行，每行包含三个整数 u, v, w，表示景点 u 和景点 v 之间有一条长度为 w 的双向道路。</p>
-<p>接下里的一行包含一个整数 Q，表示观景计划的数量。</p>
-<p>接下来的 Q 行，每行包含两个整数 start, end，表示一个观景计划的起点和终点。</p>
-<p>【输出描述】</p>
-<p>对于每个观景计划，输出一行表示从起点到终点的最短路径长度。如果两个景点之间不存在路径，则输出 -1。</p>
-<p>【输入示例】</p>
-<p>7 3 1 2 4 2 5 6 3 6 8 2 1 2 2 3</p>
-<p>【输出示例】</p>
-<p>4 -1</p>
-<p>【提示信息】</p>
-<p>从 1 到 2 的路径长度为 4，2 到 3 之间并没有道路。</p>
-<p>1 &lt;= N, M, Q &lt;= 1000.</p>
-<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
-<pre><code class="language-go">package main
-
-import (
-    &quot;fmt&quot;
-)
-
-func min(a, b int) int {
-    if a &lt; b {
-        return a
-    }
-    return b
-}
-
-func main() {
-    var n, m, p1, p2, val int
-    fmt.Scan(&amp;n, &amp;m)
-
-    grid := make([][][]int, n+1)
-    for i := range grid {
-        grid[i] = make([][]int, n+1)
-        for j := range grid[i] {
-            grid[i][j] = make([]int, n+1)
-            for k := range grid[i][j] {
-                grid[i][j][k] = 10005
-            }
-        }
-    }
-
-    for i := 0; i &lt; m; i++ {
-        fmt.Scan(&amp;p1, &amp;p2, &amp;val)
-        grid[p1][p2][0] = val
-        grid[p2][p1][0] = val
-    }
-
-    // 开始 floyd
-    for k := 1; k &lt;= n; k++ {
-        for i := 1; i &lt;= n; i++ {
-            for j := 1; j &lt;= n; j++ {
-                grid[i][j][k] = min(grid[i][j][k-1], grid[i][k][k-1]+grid[k][j][k-1])
-            }
-        }
-    }
-
-    // 输出结果
-    var z, start, end int
-    fmt.Scan(&amp;z)
-    for ; z &gt; 0; z-- {
-        fmt.Scan(&amp;start, &amp;end)
-        if grid[start][end][n] == 10005 {
-            fmt.Println(-1)
-        } else {
-            fmt.Println(grid[start][end][n])
-        }
-    }
-}
-</code></pre>
-<h3><a id="126%E9%AA%91%E5%A3%AB%E7%9A%84%E6%94%BB%E5%87%BB" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>126 骑士的攻击</h3>
-<p>题目描述</p>
-<p>在象棋中，马和象的移动规则分别是“马走日”和“象走田”。现给定骑士的起始坐标和目标坐标，要求根据骑士的移动规则，计算从起点到达目标点所需的最短步数。</p>
-<p>骑士移动规则如图，红色是起始位置，黄色是骑士可以走的地方。<br />
-<img src="media/17266231899604/17266233197823.png" alt="" /><br />
-棋盘大小 1000 x 1000（棋盘的 x 和 y 坐标均在 [1, 1000] 区间内，包含边界）</p>
-<p>输入描述</p>
-<p>第一行包含一个整数 n，表示测试用例的数量。</p>
-<p>接下来的 n 行，每行包含四个整数 a1, a2, b1, b2，分别表示骑士的起始位置 (a1, a2) 和目标位置 (b1, b2)。</p>
-<p>输出描述</p>
-<p>输出共 n 行，每行输出一个整数，表示骑士从起点到目标点的最短路径长度。</p>
-<p>输入示例</p>
-<pre><code class="language-go">6
-5 2 5 4
-1 1 2 2
-1 1 8 8
-1 1 8 7
-2 1 3 3
-4 6 4 6
-</code></pre>
-<h4><a id="%E8%A7%A3%E7%AD%94" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>解答</h4>
-<pre><code class="language-go">package main
-
-import (
-    &quot;container/heap&quot;
-    &quot;fmt&quot;
-)
-
-type Knight struct {
-    x, y int
-    g, h int
-    f    int
-}
-
-type PriorityQueue []Knight
-
-func (pq PriorityQueue) Len() int {
-    return len(pq)
-}
-
-func (pq PriorityQueue) Less(i, j int) bool {
-    return pq[i].f &lt; pq[j].f
-}
-
-func (pq PriorityQueue) Swap(i, j int) {
-    pq[i], pq[j] = pq[j], pq[i]
-}
-
-func (pq *PriorityQueue) Push(x interface{}) {
-    *pq = append(*pq, x.(Knight))
-}
-
-func (pq *PriorityQueue) Pop() interface{} {
-    old := *pq
-    n := len(old)
-    item := old[n-1]
-    *pq = old[0 : n-1]
-    return item
-}
-
-var dir = [8][2]int{{-2, -1}, {-2, 1}, {-1, 2}, {1, 2}, {2, 1}, {2, -1}, {1, -2}, {-1, -2}}
-
-func Heuristic(k Knight) int {
-    return (k.x-k.b1)*(k.x-k.b1) + (k.y-k.b2)*(k.y-k.b2)
-}
-
-func astar(start Knight) int {
-    pq := make(PriorityQueue, 0)
-    heap.Push(&amp;pq, start)
-    moves := make([][]int, 1001)
-    for i := range moves {
-        moves[i] = make([]int, 1001)
-    }
-    for pq.Len() &gt; 0 {
-        cur := heap.Pop(&amp;pq).(Knight)
-        if cur.x == cur.b1 &amp;&amp; cur.y == cur.b2 {
-            return cur.g
-        }
-        for _, d := range dir {
-            next := Knight{
-                x: cur.x + d[0],
-                y: cur.y + d[1],
-            }
-            if next.x &lt; 1 || next.x &gt; 1000 || next.y &lt; 1 || next.y &gt; 1000 {
-                continue
-            }
-            if moves[next.x][next.y] == 0 {
-                moves[next.x][next.y] = moves[cur.x][cur.y] + 1
-                next.g = cur.g + 5
-                next.h = Heuristic(next)
-                next.f = next.g + next.h
-                next.b1 = cur.b1
-                next.b2 = cur.b2
-                heap.Push(&amp;pq, next)
-            }
-        }
-    }
-    return -1
-}
-
-func main() {
-    var n int
-    fmt.Scan(&amp;n)
-    for i := 0; i &lt; n; i++ {
-        var a1, a2, b1, b2 int
-        fmt.Scan(&amp;a1, &amp;a2, &amp;b1, &amp;b2)
-        start := Knight{
-            x:  a1,
-            y:  a2,
-            g:  0,
-            h:  Heuristic(Knight{x: a1, y: a2, b1: b1, b2: b2}),
-            f:  start.g + start.h,
-            b1: b1,
-            b2: b2,
-        }
-        result := astar(start)
-        fmt.Println(result)
-    }
-}
-</code></pre>
-<h3><a id="" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a></h3>
+                    <h3><a id="%E6%80%BB%E7%BB%93" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>总结</h3>
+<ul>
+<li>数据结构它们的存储方式只有两种，数组（顺序存储）和链表（链式存储）；它们做的事情只有两个，遍历 + 访问，具体说就是增删查改几种操作</li>
+</ul>
+<h3><a id="%E9%93%BE%E8%A1%A8" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>链表</h3>
+<ul>
+<li>链表的常规操作，需要注意空指针</li>
+<li>所有复杂操作都是基本链表的简单组合</li>
+</ul>
+<h3><a id="%E4%BA%8C%E5%8F%89%E6%A0%91" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>二叉树</h3>
+<ul>
+<li>用数组实现就是「堆」，因为「堆」是一个完全二叉树，用数组存储不需要节点指针，操作也比较简单；用链表实现就是很常见的那种「树」，因为不一定是完全二叉树，所以不适合用数组存储。为此，在这种链表「树」结构之上，又衍生出各种巧妙的设计，比如二叉搜索树、AVL 树、红黑树、区间树、B 树等等</li>
+<li>大部分习题都是链表树上进行操作，有前序，后序，中序遍历，基本上以后序遍历结合递归的习题为主</li>
+</ul>
+<h3><a id="%E5%9B%9E%E6%BA%AF%E5%92%8C%E9%80%92%E5%BD%92" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>回溯和递归</h3>
+<ul>
+<li>解决一个回溯问题，实际上就是遍历一棵决策树的过程，树的每个叶子节点存放着一个合法答案。把整棵树遍历一遍，把叶子节点上的答案都收集起来，就能得到所有的合法答案</li>
+<li>站在回溯树的一个节点上，需要思考 3 个问题：<br />
+1、路径：也就是已经做出的选择。<br />
+2、选择列表：也就是当前可以做的选择。<br />
+3、结束条件：也就是到达决策树底层，无法再做选择的条件。</li>
+</ul>
+<h3><a id="%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>动态规划</h3>
+<ul>
+<li>动态规划问题的一般形式就是求最值，动态规划的问题的本质是穷举，把所有可行性的答案都穷举出来<br />
+在其中寻找最值<br />
+动规五部曲分别为：</li>
+<li>确定dp数组（dp table）以及下标的含义</li>
+<li>确定递推公式</li>
+<li>dp数组如何初始化</li>
+<li>确定遍历顺序</li>
+<li>举例推导dp数组</li>
+<li>最大的感悟是状态转移方程虽然重要，但是dp数组的初始化同等重要</li>
+</ul>
+<h3><a id="%E5%9B%BE%E8%AE%BA" class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>图论</h3>
+<ul>
+<li>图的存储方式需要以ACM的模式来刷题，一开始不适应，后面习惯了之后，就熟能生巧了</li>
+<li>邻接表和邻接矩阵这两种存储方式也熟悉起来</li>
+<li>主要广搜和深度搜索，深度搜索就是DFS+递归，广度搜索是迭代+队列来实现</li>
+</ul>
 
                   </article>
                   <div class="comments-wrap">
@@ -363,7 +206,6 @@ func main() {
         </div>
       </footer>
 
-<script>(n=>{"use strict";let s,r,e;const l=["cdn.jsdelivr.net","fastly.jsdelivr.net","gcore.jsdelivr.net","cdn.zenless.top","testingcf.jsdelivr.net"],t="//",i=l[0],o=Date.now(),a=2e3,c="jsdelivr-auto-fallback",f="/gh/PipecraftNet/jsdelivr-auto-fallback@main/empty.css?",d=e=>e&&e.includes(t+i),m=e=>e.replace(t+i,t+s),u=window.setTimeout,v=n.querySelectorAll.bind(n),b=()=>{let e,t;for(e of v('link[rel="stylesheet"]'))t=e.href,d(t)&&!t.includes(f)&&(e.href=m(t));for(e of v("script"))if(t=e.src,d(t)){const s=n.createElement("script");s.src=m(t),e.defer=!0,e.src="",e.before(s),e.remove()}for(e of v("img"))t=e.src,d(t)&&(e.src="",e.src=m(t));for(e of v("*[style]"))t=e.getAttribute("style"),d(t)&&e.setAttribute("style",m(t));for(e of v("style"))t=e.innerHTML,d(t)&&(e.innerHTML=m(t))},h=()=>{!e&&r&&s&&(console.warn(i+" is not available. Use "+s),e=!0,u(b,0),u(b,20),setInterval(b,500))},g=(()=>{try{return Object.assign({},JSON.parse(localStorage.getItem(c)||"{}"))}catch{return{}}})(),y=()=>{g.time=o,g.failed=!1,g.fastNode=null;for(const t of l)((e,t)=>{let s;const r=n.createElement("link"),l=e=>{s&&(clearTimeout(s),s=0,e||(r.href="data:text/css;base64,"),r.remove(),t(e))};s=u(l,a),r.addEventListener("error",()=>l(!1)),r.addEventListener("load",()=>l(!0)),r.rel="stylesheet",r.text="text/css",r.href=e+f+o,n.head.insertAdjacentElement("afterbegin",r)})("https://"+t,e=>{e||t!==i||(r=!0,g.failed=!0),e&&!s&&(s=t),e&&!g.fastNode&&(g.fastNode=t),h()});u(()=>{r&&!s&&(s=l[1],h()),localStorage.setItem(c,JSON.stringify(g))},a+100)};if(g.time&&o-g.time<36e5&&g.failed&&g.fastNode)r=!0,s=g.fastNode,h(),u(y,1e3);else if(n.head)y();else{const j=new MutationObserver(()=>{n.head&&(j.disconnect(),y())});j.observe(n,{childList:!0,subtree:!0})}})(document);</script>
 <style>.mweb-charts{background:#fff;}
 body{ box-sizing: border-box;
     margin: 0 auto;}
@@ -446,7 +288,7 @@ div.code-toolbar > .toolbar > .toolbar-item > span:focus {
   color: inherit;
   text-decoration: none;
 }
-</style><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script><script>!function(){if("undefined"!=typeof Prism&&"undefined"!=typeof document){var e=[],t={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var r;r="function"==typeof a?a:function(e){var t;return"function"==typeof a.onClick?((t=document.createElement("button")).type="button",t.addEventListener("click",(function(){a.onClick.call(this,e)}))):"string"==typeof a.url?(t=document.createElement("a")).href=a.url:t=document.createElement("span"),a.className&&t.classList.add(a.className),t.textContent=a.text,t},n in t?console.warn('There is a button with the key "'+n+'" registered already.'):e.push(t[n]=r)},r=Prism.plugins.toolbar.hook=function(a){var r=a.element.parentNode;var l=a.element.classList;if(l.contains('language-mermaid') || l.contains('language-echarts') || l.contains('language-plantuml')){return;} if(r&&/pre/i.test(r.nodeName)&&!r.parentNode.classList.contains("code-toolbar")){var o=document.createElement("div");o.classList.add("code-toolbar"),r.parentNode.insertBefore(o,r),o.appendChild(r);var i=document.createElement("div");i.classList.add("toolbar");var l=e,d=function(e){for(;e;){var t=e.getAttribute("data-toolbar-order");if(null!=t)return(t=t.trim()).length?t.split(/\s*,\s*/g):[];e=e.parentElement}}(a.element);d&&(l=d.map((function(e){return t[e]||n}))),l.forEach((function(e){var t=e(a);if(t){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(t),i.appendChild(n)}})),o.appendChild(i)}};a("label",(function(e){var t=e.element.parentNode;if(t&&/pre/i.test(t.nodeName)&&t.hasAttribute("data-label")){var n,a,r=t.getAttribute("data-label");try{a=document.querySelector("template#"+r)}catch(e){}return a?n=a.content:(t.hasAttribute("data-url")?(n=document.createElement("a")).href=t.getAttribute("data-url"):n=document.createElement("span"),n.textContent=r),n}})),Prism.hooks.add("complete",r)}}();</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css"><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><style>div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {padding: 4px .5em; background: #f5f2f0; background: rgba(224, 224, 224, 0.4);}</style>
+</style>
 
 
   
